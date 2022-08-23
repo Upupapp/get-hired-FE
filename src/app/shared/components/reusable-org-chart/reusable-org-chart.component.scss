@@ -1,0 +1,99 @@
+@import "src/assets/styles/colors";
+
+:host ::ng-deep{
+	.ngx-org-ceo{
+		background: #FDEDE5 !important;
+		border-top: #FF8548 14px solid;
+		border-radius: 15px 15px 15px 15px;
+		border-bottom: none;
+		border-left: none;  
+		border-right: none;
+	}
+
+	.ngx-org-head{
+		background: #F7FDFF !important;
+		border-top: #48D3FF 14px solid;
+		border-radius: 15px 15px 15px 15px;
+		border-bottom: none;
+		border-left: none;  
+		border-right: none;
+	}
+
+	.ngx-org-vp{
+		background: #F5EFFE !important;
+		border-top: #8E48FF 14px solid;
+		border-radius: 15px 15px 15px 15px;
+		border-bottom: none;
+		border-left: none;  
+		border-right: none;
+	}
+
+	.ngx-org-image{
+		width: 65px;
+		height: 65px;
+		//background-fit: cover;
+		background-size: 100% auto;
+		background-position: 50% 50%;
+		margin-left: 33%;
+		border-radius: 50%;
+		border: none;
+	}
+
+	.ngx-org-box{
+		padding: 30px 20px;
+		display: block !important;
+		text-align: center;
+		width: 250px;
+		box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.05) !important;
+		-webkit-box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.05) !important;
+		-moz-box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.05) !important;
+	}
+
+	.ngx-org-name{
+		margin-top: 10px;
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 24px;
+		/* identical to box height, or 150% */
+
+		text-align: center;
+
+		color: #000000;
+	}
+
+	.ngx-org-title{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 24px;
+		/* identical to box height, or 171% */
+
+		text-align: center;
+
+		color: #7E858E;
+	}
+
+	.ngx-org-connector{
+		border-style: dashed !important;  
+		border-color: #198BB4;
+		opacity: 0.8 !important;
+		border-width: 1px !important;
+	}
+
+	.ngx-org-connector-vertical{
+		border-style: dashed !important;  
+		border-color: #198BB4;
+		opacity: 0.8 !important;
+		border-width: 1px !important;
+		min-height: 50px;
+		//margin-bottom: 10px;
+	}
+
+	.ng-star-inserted{
+		opacity: 1 !important;
+		//display: block !important;
+	}
+}

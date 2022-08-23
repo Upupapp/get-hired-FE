@@ -1,0 +1,132 @@
+<ng-container *ngIf="!labelTop && !isMultiple">
+    <div class="text-input">
+        <div class="d-flex" [ngClass]="labelTop ? 'text-center': ''">
+            <div class="container-label flex-wrap  d-flex align-items-center"
+            [ngClass]="!labelTop ? 'justify-content-end me-3': 'justify-content-end mx-2'"
+            [ngStyle]="{
+                'width': labelTop ? 'auto': ''
+            }">
+                <div class="d-flex">
+                    <p [innerHtml]="label"></p>
+                    <div *ngIf="required" class="asterisk-required">*</div>
+                </div>
+            </div>
+
+            <div class="container-input flex-wrap"
+                [ngStyle]="{
+                    'width': labelTop ? '62%': '',
+                    'margin-left': labelTop ? '0px': ''
+                }">
+                <div class="d-flex">
+                    <div *ngIf="!uploadedFile">
+                        <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
+                        <button  (click)="uploadFile.click()" class="btn btn-primary float-end">Choose File</button>
+                    </div>
+
+                    <div class="upload-chips" *ngIf="uploadedFile">
+                        <div class="d-flex">
+                            <mat-chip-list>
+                            <mat-chip class="mat-chip-height" [class.disabled]="disabled">
+                                <span class="chip-text">{{uploadedFile.name || uploadedFile.filename}}</span>
+                                <mat-icon (click)="removeImage()" matChipRemove>close</mat-icon>
+                            </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                    </div>
+                    <p *ngIf="isTouched" class="error-msg">*Empty Field</p>
+                </div>
+
+                <div class="container-info">
+                    <span class="img-info-container" *ngIf="info">
+                        <img src="/assets/images/icons/info-input-icon.png" 
+                        [matTooltip]="infoTitle"
+                        matTooltipPosition="above"
+                        class="img-fluid">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div> 
+</ng-container>
+
+<ng-container *ngIf="labelTop && !isMultiple">
+    <div class="text-input">
+        <div>
+            <p class="label-top text-start text-truncate">
+                <span [innerHtml]="label"></span>
+                <span *ngIf="required" class="asterisk-required">*</span>
+            </p> 
+        </div>
+
+        <div class="container-input pt-2 px-md-4"
+        [ngStyle]="{
+            'width': labelTop ? '100%': '',
+            'margin-left': labelTop ? '0px': ''
+        }">
+            <div *ngIf="!isMultiple" class="d-flex">
+                <div *ngIf="!uploadedFile">
+                    <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
+                    <button  (click)="uploadFile.click()" class="btn btn-primary btn-uploader float-end">
+                    {{ subtitle || 'Choose File'}}</button>
+                </div>
+
+                <div class="upload-chips" *ngIf="uploadedFile">
+                    <div class="d-flex">
+                        <mat-chip-list>
+                        <mat-chip class="mat-chip-height" [class.disabled]="disabled">
+                            <span class="chip-text truncate">{{uploadedFile.name}}</span>
+                            <mat-icon (click)="removeImage()" matChipRemove>close</mat-icon>
+                        </mat-chip>
+                        </mat-chip-list>
+                    </div>
+                </div>
+                <p *ngIf="isTouched" class="error-msg">*Empty Field</p>
+            </div>
+        </div>
+
+        <div class="container-info">
+            <span class="img-info-container" *ngIf="info">
+                <img src="/assets/images/icons/info-input-icon.png" 
+                [matTooltip]="infoTitle"
+                matTooltipPosition="above"
+                class="img-fluid">
+            </span>
+        </div>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="isMultiple">
+    <div class="row">
+        <div class="text-center uploader-container"
+        [ngClass]="row !== 'col-12' ? 'col-sm-8 offset-sm-2' : 'col-12'">
+            <div
+            appFileDrop
+            class="upload-container py-3"
+            (whenFileDropped)="uploadMultiple($event, true)"
+            (click)="uploadFile.click()">
+                <input #uploadFile hidden type="file" (change)="uploadMultiple($event)" [accept]="acceptType" multiple/>
+                <div>
+                    <span>Drop files here or click to <button type="button" class="btn btn-uploader">Upload</button></span>
+                </div>
+            </div>
+
+            <div class="row upload-chips mt-3" *ngIf="fileArray.length > 0">
+                <div [ngClass]="row" class="mb-3 " *ngFor="let file of fileArray; let i = index">
+                    <div class="d-flex file">
+                        <div class="img-circle me-2">
+                            <img src="/assets/images/icons/document-empty.png" width="20px">
+                        </div>
+
+                        <span class="chip-text truncate">{{file.filename}}</span>
+                        
+                        <mat-icon class="close" (click)="removeImageInArray(i)">close</mat-icon>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+</ng-container>

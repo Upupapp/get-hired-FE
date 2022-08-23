@@ -1,0 +1,269 @@
+<ng-container *ngIf="!withSideBar && !formOnly && loading;">
+	<div class="container-fluid p-0 ms-0 ms-md-0 pe-0 pe-md-3" 
+	[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+		<div class="row">
+			<section class="col-12 col-md-7 pb-3" *ngIf="!fromDetailTab">
+				<!-- PROFILE SECTION -->
+				<div *ngIf="loading" class="mb-3" 
+				[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+
+					<div class="card ps-3 py-3 mt-3" style="height: 310px;">
+						<div class="card-body">
+							<section class="custom-loader" *ngIf="loading">
+								<div class="ml-3 me-0">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+								<hr>
+								
+								<div class="row">
+									<div class="col-2">
+										<img src="/assets/images/placeholder/img-placeholder.jpg" class="img img-fluid mt-3" width="120px">
+									</div>
+
+									<div class="col-8">
+										<div class="me-3 mt-3">
+											<div class="title-header"></div>
+											<div class="title-description-up-small mt-3 mb-3"></div>
+											<div class="title-description-bottom-small"></div>
+										</div>
+									</div>
+								</div>
+
+							
+							</section>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="col-12 col-md-5 pb-3" *ngIf="!fromDetailTab">
+				<!-- PROFILE SECTION -->
+				<div *ngIf="loading" class="my-3" 
+				[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+
+					<div class="card ps-0 py-3"  style="height: 310px;">
+						<div class="card-body">
+							<section class="custom-loader" *ngIf="loading">
+								<div class="ml-3 me-0">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+								<hr>
+								
+								<div class="me-3">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+									<div class="title-description-bottom"></div>
+									<div class="title-description-bottom-2 mt-3"></div>
+								</div>
+							</section>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="col-12 col-md-12 pb-3">
+				<!-- PROFILE SECTION -->
+				<div *ngIf="loading" class="mb-3" 
+				[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+					<div class="custom-loader mb-3" *ngIf="!fromDetailTab">
+						<div class="pb-1 table-header">
+							<div class="left-filter-outer"></div>
+
+						</div>
+					</div>
+
+					<div class="card custom-loader ps-3 py-3">
+						<div class="card-body row">
+							<div class="col-12 pb-0 table-header">
+								<div class="float-start">
+									<div class="left-filter"></div>
+								</div>
+
+								<div class="float-end" >
+									<div class="left-filter"></div>
+								</div>
+							</div>
+
+							<div class="col-12 pb-0 table-content">
+								<div class="col-12 px-1 table-data-head"></div>
+
+								<div class="row px-2 table-data">
+									<div class="col-3 table-data-left"></div>
+
+									<div class="col-9 px-0 table-data-right">
+										<div class="odd"></div>
+										<div class="even"></div>
+										<div class="odd"></div>
+										<div class="even"></div>
+										<div class="odd"></div>
+										<div class="even"></div>
+										<div class="odd"></div>
+										<div class="even"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>	
+	</div>
+</ng-container>
+
+<ng-container *ngIf="withSideBar && !formOnly && loading">
+	<div class="container-fluid p-0 ms-0 ms-md-2 pe-0 pe-md-3" 
+	[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+		<div class="row">
+			<section class="col-12 col-md-3 pb-3">
+				<!-- PROFILE SECTION -->
+				<div *ngIf="loading" class="mb-3" 
+				[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+
+					<div class="card ps-3 py-3 mt-3" style="min-height: 600px;">
+						<div class="card-body">
+							<section class="custom-loader" *ngIf="loading">
+								<div class="ml-3 me-0">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+								<hr>
+								
+								<div class="row">
+									<div class="col-4">
+										<img src="/assets/images/placeholder/img-placeholder.jpg" class="img img-fluid mt-3 w-100">
+									</div>
+
+									<div class="col-8">
+										<div class="me-3 mt-3">
+											<!-- <div class="title-header"></div> -->
+											<div class="title-description-bottom-small"></div>
+											<div class="title-description-up-small mt-3 mb-3"></div>
+											<div class="title-description-bottom-small"></div>
+										</div>
+									</div>
+								</div>
+
+								<hr>
+								<div class="me-3">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+									<div class="title-description-bottom"></div>
+									<!-- <div class="title-description-bottom-2 mt-3"></div> -->
+								</div>
+							</section>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="col-12 col-md-9 pb-3">
+				<!-- PROFILE SECTION -->
+				<div *ngIf="loading" class="my-3" 
+				[@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+
+					<div class="card ps-3 py-3">
+						<div class="card-body">
+							<section class="custom-loader" *ngIf="loading">
+								<div class="ml-3 me-0">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+								<hr>
+								
+								<div class="me-3">
+									<div class="title-description-up"></div>
+									<div class="title-description-bottom mt-3 mb-3"></div>
+									<!-- <div class="title-header"></div> -->
+									
+									<div class="title-description-bottom-2 mt-3"></div>
+									<div class="title-description-bottom-3 mt-3"></div>
+								</div>
+
+								<hr>
+
+								<div class="row">
+									<div class="col-2">
+										<img src="/assets/images/placeholder/img-placeholder.jpg" class="img img-fluid mt-3 w-100" >
+									</div>
+
+									<div class="col-8">
+										<div class="me-1 mt-3">
+											<div class="title-header"></div>
+											<div class="title-description-up mt-3 mb-3"></div>
+											<div class="title-description-bottom"></div>
+										</div>
+									</div>
+								</div>
+
+							</section>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>	
+	</div>
+</ng-container>
+
+<ng-container *ngIf="formOnly && loading">
+	<div class="container-fluid p-0 ms-0 ms-md-2 pe-0 pe-md-3" 
+	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" >
+		<div class="row">
+			<section class="col-12 col-md-12 pb-3" style="min-height: 400px;" *ngIf="!tableOnly">
+				<div [@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+
+					<div class="card ps-3 py-3">
+						<div class="card-body">
+							<section class="custom-loader" *ngIf="loading">
+								<div class="ml-3 me-0">
+									<div class="title-header"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+								<hr>
+
+								<div class="ml-3 me-0">
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+
+								<div class="ml-3 me-0">
+									<div class="title-description-bottom mt-3 mb-3"></div>
+									<div class="title-description-up mt-3 mb-3"></div>
+								</div>
+								<br>
+							</section>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="col-12 col-md-12 pb-3" *ngIf="tableOnly" style="margin-top: -30px;">
+				<div class="mb-3" [@animate]="{value:'*', params:{ y:'-100px', delay:'200ms' }}" >
+					
+					<div class="card custom-loader ps-0 pb-3 pt-0 mt-0">
+						<div class="card-body row">
+							<div class="col-12 pb-0 table-content">
+								<div class="col-12 px-1 table-data-head"></div>
+
+								<div class="row px-2 table-data">
+									<div class="col-3 table-data-left"></div>
+
+									<div class="col-9 px-0 table-data-right">
+										<div class="odd"></div>
+										<div class="even"></div>
+										<div class="odd"></div>
+										<div class="even"></div>
+										<div class="odd"></div>
+										<div class="even"></div>
+										<div class="odd"></div>
+										<div class="even"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>	
+	</div>
+</ng-container>
