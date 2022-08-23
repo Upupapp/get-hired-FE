@@ -81,3 +81,52 @@
   padding-top: 12px !important;
   padding-bottom: 12px !important;
 }
+
+.title-latest-job{
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 42px;
+  /* identical to box height, or 162% */
+
+
+  color: #666666;
+}
+
+.title-latest-job-description{
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  /* or 143% */
+
+
+  color: #666666;
+}
+
+
+.card{
+  padding: 10px;
+  box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  border: none;
+}
+
+.filter-by{
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 24px;
+  /* identical to box height */
+
+
+  color: #626262;
+  cursor: pointer;
+
+  &:hover{
+    text-decoration: underline;
+  }
+}

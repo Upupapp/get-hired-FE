@@ -22,6 +22,16 @@ const rootRouterConfig: Routes = [
 
   {
     path: '',
+    children: [
+      {
+        path: 'applicant',
+        loadChildren: () => import('./views/auth/applicant/applicant.module').then(m => m.ApplicantsModule)
+      }
+    ]
+  },
+
+  {
+    path: '',
     component: HeaderComponent,
     children: [
       {

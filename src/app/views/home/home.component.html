@@ -1,66 +1,47 @@
 
+<!-- Banner section -->
+<app-banner
+[screenSize]="screenSize"></app-banner>
 
-<app-banner></app-banner>
+
+<!-- Companies -->
+<app-companies></app-companies>
 
 
-<div class="bg-login">
-	<div class="container text-center py-5 px-lg-5">
-		<div class="row"
-		[@animate]="{value:'*', params:{ y:'-100px', delay:'400ms' }}">
-			<div class="col-12 col-md-8 offset-md-2 col-lg-4 offset-lg-4 p-lg-5">
-				<img src="/assets/images/placeholder/logo.png" class="img-fluid w-100">
-			</div>
-		</div>
-
+<div class="container-fluid  px-5 mb-5">
+	<div class="mt-5 px-lg-5">
 		<div class="row">
-			<div class="col-12 col-md-6 col-lg-4 mt-3">
-				<div class="card card-body w-100" 
-				[@animate]="{value:'*', params:{ y:'100px', delay:'400ms' }}">
-					<h4 class="main-title">Agency Manager</h4>
-					<h5 class="title-sub">Grursus mal suada faci lisis Lorem ipsum dolarorit more ametion.
-					</h5>
-
-					<div class="registration">
-						<button class="btn btn-primary d-block w-100 hvr-grow" 
-						routerLink="/agency-manager/register">Register</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-12 col-md-6 col-lg-4 mt-3">
-				<div class="card card-body" 
-				[@animate]="{value:'*', params:{ y:'100px', delay:'500ms' }}">
-					<h4 class="main-title">Team Member</h4>
-					<h5 class="title-sub">Grursus mal suada faci lisis Lorem ipsum dolarorit more ametion.
-					</h5>
-
-					<div class="registration">
-						<button class="btn btn-primary d-block w-100 hvr-grow">Register</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-12 col-md-6 col-lg-4 mt-3">
-				<div class="card card-body" 
-				[@animate]="{value:'*', params:{ y:'100px', delay:'560ms' }}">
-					<h4 class="main-title">Guest</h4>
-					<h5 class="title-sub">Grursus mal suada faci lisis Lorem ipsum dolarorit more ametion.
-					</h5>
-
-					<div class="registration">
-						<button class="btn btn-primary d-block w-100 hvr-grow">Register</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-12 col-md-8 offset-md-2 col-lg-8 offset-lg-2 mt-5 text-center p-lg-5">
-				<h5 class="title-copyright">
-					© 2022 The Life Guide. All Rights Reserved
+			<div class="col-12 mb-3 ps-4">
+				<h5 class="title-latest-job" 
+				[@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">Start your career now
+					<span class="float-end d-flex">
+						<span class="me-3 filter-by">View All</span>
+						<span class="me-3 filter-by">Development</span>
+						<span class="me-3 filter-by">Data Science</span>
+						<span class="me-3 filter-by">Business</span>
+						<span class="me-2 filter-by">Marketing</span>
+						<img src="/assets/images/placeholder/icons/arrow-down.png" 
+						class="mt-1" style="width: 12px; height: 12px;">
+					</span>
 				</h5>
+				<p class="title-latest-job-description"
+				[@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt<br> ut labore et dolore magna aliqua. </p>
 			</div>
+
+			<ng-container *ngFor="let data of jobLists; let i = index">
+				<div class="col-12 col-md-6 col-lg-3"
+				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+					<app-job-card [data]="data"></app-job-card>
+				</div>
+			</ng-container>
+
+			<ng-container *ngFor="let data of jobLists; let i = index">
+				<div class="col-12 col-md-6 col-lg-3"
+				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+					<app-job-card [data]="data"
+					[i]="i"></app-job-card>
+				</div>
+			</ng-container>
 		</div>
 	</div>
 </div>
-

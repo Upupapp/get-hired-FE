@@ -7,6 +7,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../shared/components/material-components/material-components.module';
 import { BannerComponent } from './banner/banner.component';
+import { JobCardComponent } from './components/job-card/job-card.component';
+import { CompaniesComponent } from './companies/companies.component';
 
 @NgModule({
   imports: [
@@ -19,6 +21,8 @@ import { BannerComponent } from './banner/banner.component';
   declarations: [
     BannerComponent,
   	HomeComponent,
+    JobCardComponent,
+    CompaniesComponent,
   ]
 })
 export class HomeModule{ }

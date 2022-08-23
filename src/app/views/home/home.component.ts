@@ -9,6 +9,7 @@ import {
   HostListener
 } from '@angular/core';
 import { mainAnimations } from '../../shared/animations/main-animations';
+import { jobLists, Job } from './utils/job-list-model-interface';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +20,9 @@ import { mainAnimations } from '../../shared/animations/main-animations';
 export class HomeComponent implements OnInit {
   public loading: boolean = true;
   public screenSize: number = 1600;
+
+  public jobLists: Job[] = jobLists;
+
   constructor() { }
 
   ngOnInit(): void {

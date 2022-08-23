@@ -2,13 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
-  selector: 'app-banner',
+  selector: 'app-job-card',
   animations: [mainAnimations],
-  templateUrl: './banner.component.html',
-  styleUrls: ['./banner.component.scss']
+  templateUrl: './job-card.component.html',
+  styleUrls: ['./job-card.component.scss']
 })
-export class BannerComponent implements OnInit {
-  @Input() screenSize: number = 1600;
+export class JobCardComponent implements OnInit {
+  @Input() data: any;
+  @Input() i: number;
+
   constructor() { }
 
   ngOnInit(): void {

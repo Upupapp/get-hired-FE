@@ -5,6 +5,7 @@
   height: 80px; 
   background: #FFFFFF;
   box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
+  position: fixed;
 }
 
 .main{
@@ -229,10 +230,16 @@
 
     .navbar-brand{
       margin-left: 20px;
+      width: 200px;
+      margin-top: 5px;
+      position: absolute;
+
     }
 
     .navbar-toggler{
       margin-right: 20px;
+      position: absolute;
+      right: 30px
     }
 
     &-collapse{
@@ -263,6 +270,7 @@
 }
 
 .navbar-expand-lg .navbar-collapse {
+  max-height: 80px;
   @media (min-width: 999px){
     display: flex!important;
     justify-content: space-around;

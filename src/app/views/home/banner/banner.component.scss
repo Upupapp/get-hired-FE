@@ -38,11 +38,15 @@
 	background-repeat: no-repeat;
 	//background-attachment: fixed;
 	background-position: 5% 10%;
-	background-size: 100% auto;
+	background-size: cover;
 	background-color: linear-gradient(96.52deg, #F85B4B -3.5%, #F85B4B 44.54%, #F85B4B 128.45%) !important;
 	border-radius: 16px;
 	position: relative;
 	height: 360px;
+
+	@media (max-width: 1099px){
+		height: 400px !important;
+	}
 }
 
 .banner-person{
@@ -50,13 +54,97 @@
 	position: absolute;
 	right: 0;
 	bottom: -12.5%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		top: 5%;
+		right: -10%;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.banner-float-1{
+	width: 120px;
+	position: absolute;
+	right: 80px;
+	top: 35%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.search-key{
+	max-width: 450px;
+	min-width: 450px;
+
+	@media (min-width: 1155px) and (max-width: 1400px){
+		max-width: 400px;
+		min-width: 300px !important;
+	}
+
+	@media (max-width: 1154px){
+		max-width: 300px;
+		min-width: 200px !important;
+	}
+}
+
+.banner-float-2{
+	width: 160px;
+	position: absolute;
+	right: 250px;
+	top: 51%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.banner-float-3{
+	width: 130px;
+	position: absolute;
+	right: 310px;
+	top: 10%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.banner-float-4{
+	width: 410px;
+	position: absolute;
+	right: 250px;
+	top: 37%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
 }
 
 .bg-transparent{
 	background: rgba(255, 255, 255, 0.54) !important;
 	backdrop-filter: blur(4px) !important;
 	/* Note: backdrop-filter has minimal browser support */
-
+	max-height: 76px;
 	border-radius: 15px;
 
 	input{
@@ -100,14 +188,20 @@
 			color: #FF4D3C;
 			transition: all 0.2s ease !important;
 			background: transparent;
-			padding-bottom: 8px !important;
-			padding-top: 8px !important;
+			//padding-bottom: 8px !important;
+			//padding-top: 8px !important;
+			background: white;
+		}
+
+		@media (max-width: 1129px){
+			padding-left: 15px !important;
+			padding-right: 15px !important;
 		}
 	}
 }
 
 .d-semi-large{
-	@media (max-width: 1160px){
+	@media (max-width: 1060px){
 		display: none;
 	}
 }

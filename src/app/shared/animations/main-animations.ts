@@ -21,7 +21,7 @@ const reusable = animation([
 	animate('{{duration}} {{delay}} cubic-bezier(0.0, 0.0, 0.2, 1)', style('*'))
 	], {
 		params: {
-			duration: '300ms',
+			duration: '600ms',
 			delay: '0ms',
 			opacity: '0',
 			scale: '1',
