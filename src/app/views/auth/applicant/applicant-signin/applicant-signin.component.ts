@@ -32,7 +32,9 @@ export class ApplicantSigninComponent implements OnInit {
   public adminLoginForm : FormGroup;
   public message : any = localStorage.getItem('loginMessage');
   public error : any = localStorage.getItem('loginError');
-
+  public inputType: string = 'password';
+  public submitting: boolean = false;
+  
   constructor(private router:Router, 
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -68,6 +70,7 @@ export class ApplicantSigninComponent implements OnInit {
   }
 
   loginAdmin(event: Event): void {
+    this.submitting = true;
     //get value from form controls
     this.admin_email = this.adminLoginForm?.get('email')?.value;
     this.admin_password = this.adminLoginForm?.get('password')?.value;
@@ -77,9 +80,6 @@ export class ApplicantSigninComponent implements OnInit {
       email: this.admin_email,
       password: this.admin_password,
     };
-
-    // Show Spinner
-    //this.spinner.show();
 
     // execute http post request
     this.postReq = this.adminService
@@ -92,7 +92,7 @@ export class ApplicantSigninComponent implements OnInit {
 
         this.error = localStorage.getItem('loginError');
         //this.spinner.hide();
-        this.router.navigate(['/admin/signin']);
+        this.router.navigate(['/applicant/signin']);
       } 
 
       // if no error, execute login validation
@@ -116,12 +116,16 @@ export class ApplicantSigninComponent implements OnInit {
 
         // spinner ends after 2 seconds 
         setTimeout(() => {
-          this.router.navigate(['/admin/profile']);
-        }, 2000);
+          this.router.navigate(['/']);
+        }, 1000);
       }
+
+      this.submitting = false;
+    
     },
     // If error in server/api temporary navigate to error page
     (err: any) => {
+      this.submitting = false;
       localStorage.setItem('sessionError', err);
       localStorage.setItem('sessionUrl', this.router.url);
     });    

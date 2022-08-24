@@ -31,7 +31,7 @@
           </li>
         </ng-container> -->
 
-        <li class="nav-item me-4" >
+        <li class="nav-item me-1" >
           <div class="search-div">
             <div class="input-group">
               <img src="/assets/images/placeholder/icons/search-red.png">
@@ -42,11 +42,36 @@
           </div>
         </li>
 
-        <li class="nav-item me-4" >
-          <div class="dropdown d-lg-flex">
-            <button class="btn btn-nav-gradient" type="button" routerLink="/applicant/signin">
+        <li class="nav-item" >
+          <div class="dropdown d-lg-flex ms-4" *ngIf="!loggedInApplicant">
+            <button class="btn btn-nav-gradient" type="button" 
+            routerLink="/applicant/signup" >
               Register
             </button>
+          </div>
+
+          <div class="dropdown d-flex" *ngIf="loggedInApplicant">
+            <button class="btn" id="dropdownMenuButton1" 
+            data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="/assets/images/face-3.jpg" class="img-avatar">
+            </button>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
+            style="position: absolute; left: -100px" >
+              <li class="pt-2" >
+                <span class="dropdown-item d-flex" >
+                  <img src="/assets/images/face-3.jpg" class="img-avatar me-3">
+                  <div>
+                    <h5 class="title-user">Jordan Clark</h5>
+                    <p class="title-position">User</p>
+                  </div>
+                </span>
+              </li>
+
+              <li class="pb-2">
+                <span class="dropdown-item nav-drop-link" (click)="adminLogout()">Log out</span>
+              </li>
+            </ul>
           </div>
         </li>
       </ul>

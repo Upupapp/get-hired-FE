@@ -9,6 +9,9 @@ import { ApplicantSigninComponent } from './applicant-signin/applicant-signin.co
 import { ApplicantSignupComponent } from './applicant-signup/applicant-signup.component';
 import { ApplicantProfileComponent } from './applicant-profile/applicant-profile.component';
 import { SharedModule } from '../../../shared/shared.module';
+import { MaterialComponentsModule } from '@app-shared/components/material-components/material-components.module';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   imports: [
@@ -16,6 +19,9 @@ import { SharedModule } from '../../../shared/shared.module';
     FormsModule, 
     ReactiveFormsModule,
     SharedModule,
+    MaterialComponentsModule,
+    EffectsModule,
+    StoreModule,
     RouterModule.forChild(ApplicantsRoutes)
   ],
   declarations: [

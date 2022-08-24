@@ -95,6 +95,27 @@
 	}
 }
 
+
+.search-key-2{
+	max-width: 380px;
+	min-width: 380px;
+
+	@media (min-width: 1401px) and (max-width: 1560px){
+		max-width: 380px;
+		min-width: 340px !important;
+	}
+
+	@media (min-width: 1155px) and (max-width: 1400px){
+		max-width: 350px;
+		min-width: 220px !important;
+	}
+
+	@media (max-width: 1154px){
+		max-width: 300px;
+		min-width: 200px !important;
+	}
+}
+
 .banner-float-2{
 	width: 160px;
 	position: absolute;
@@ -237,4 +258,120 @@
 		width: 100%;
 		margin-left: 0;
 	}
+}
+
+.green{
+	background: #09C986;
+
+	transition: all 0.4s ease !important;
+
+	&:hover{
+		background: white;
+		border: solid 2px #09C986;
+		padding: 18px 12px 8px 15px;
+		transition: all 0.2s ease !important;
+
+		.title-card{
+			color: #09C986;
+		}
+
+		.title-stat{
+			color: #09C986;
+		}
+	}
+}
+
+.orange{
+	background: #FE742B;
+
+	&:hover{
+		background: white;
+		border: solid 2px #FE742B;
+		padding: 18px 12px 8px 15px;
+		transition: all 0.2s ease !important;
+
+		.title-card{
+			color: #FE742B;
+		}
+
+		.title-stat{
+			color: #FE742B;
+		}
+	}
+}
+
+.yellow{
+	background: #EFA20D;
+
+	&:hover{
+		background: white;
+		border: solid 2px #EFA20D;
+		padding: 18px 12px 8px 15px;
+		transition: all 0.2s ease !important;
+
+		.title-card{
+			color: #EFA20D;
+		}
+
+		.title-stat{
+			color: #EFA20D;
+		}
+	}
+
+}
+
+
+.card-application{
+	border-radius: 15px;
+	padding: 18px 12px 5px 15px;
+	cursor: pointer;
+	height: 110px;
+}
+
+.card-application-interview{
+	border-radius: 15px;
+	padding: 20px 12px 10px 15px;
+	cursor: pointer;
+	height: 110px;
+	@media(min-width: 990px){
+		height: 125px !important;
+		padding-top: 12px !important;
+
+		.card-img{
+			margin-top: 3px !important;
+		}
+	}
+}
+
+.title-card{
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15.5px;
+	line-height: 21px;
+	/* identical to box height, or 131% */
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #FFFFFF;
+	position: relative;
+
+	.card-img{
+		position: absolute;
+		right: 0;
+		top: 0
+	}
+}
+
+.title-stat{
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 35px;
+	line-height: 36px;
+	/* or 166% */
+	margin-top: 20px;
+	display: flex;
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #FFFFFF;
 }

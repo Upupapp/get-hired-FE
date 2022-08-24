@@ -40,7 +40,7 @@ const jobLists: Job[] = [
     work_setup: "Hybrid",  
     salary_min: 25000,
     salary_max: 50000,  
-    tags: ["Marketing", "Professionalism", "Time Management"],
+    tags: ["Marketing",  "Time Management"],
     address: "Ranchview, California ",
   },
 

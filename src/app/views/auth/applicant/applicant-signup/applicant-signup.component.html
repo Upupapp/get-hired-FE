@@ -1,1 +1,114 @@
-<p>applicant-signup works!</p>
+<div class="container-fluid bg-white " >
+	<div class="row">
+		<div class="col-12 col-md-12 col-lg-6 px-5 py-2 bg-left">
+			<div class="img-banner text-center" 
+			style="z-index: 999999 !important; position: relative;">
+				<img src="/assets/images/placeholder/signup-object-1.png" class="img-left mb-3"
+				[@animate]="{value:'*', params:{ scale:'0.8', delay:'200ms' }}">
+				<img src="/assets/images/placeholder/signup-object-3.png" class="img-left-2 mb-3"
+				[@animate]="{value:'*', params:{ x:'-20px', delay:'700ms' }}">
+				<img src="/assets/images/placeholder/signup-object-2.png" class="img-left-3 mb-3"
+				[@animate]="{value:'*', params:{ x:'20px', delay:'700ms' }}">
+			</div>
+		</div>
+
+		<div class="col-12 col-md-6 bg-form">
+			<div class="card py-5"  [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+				<!-- Error Message -->
+				<form class="px-3" (submit)="loginAdmin($event)" [formGroup]="adminLoginForm">
+					<div class="form-group text-start mb-5">
+						<h4 class="main-title m-0">Sign Up
+							<img src="/assets/images/placeholder/logo.png" 
+							routerLink="/"
+							[@animate]="{value:'*', params:{ y:'-50px', delay:'400ms' }}"
+							style="width: 100px; cursor: pointer" class="float-end">
+						</h4>
+					</div>
+
+
+					<div class="alert alert-danger alert-dismissible fade show error-message" [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
+					  	<button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close" (click)="onAlertClose()"></button>
+					  	<span [innerHtml]="error"></span>
+					</div>  
+
+					<div class="form-group mt-3">
+						<input type="text" class="form-control" formControlName="first_name" name="first_name" placeholder="First Name">
+					</div>
+
+					<div class="form-group mt-3">
+						<input type="text" class="form-control" formControlName="last_name" name="last_name" placeholder="Last Name">
+					</div>
+
+					<div class="form-group mt-3">
+						<input type="email" class="form-control" formControlName="email" name="email" placeholder="Email">
+					</div>
+
+					<div class="form-group mt-3">
+						<input [type]="inputType" class="form-control" id="password" placeholder="Password" formControlName="password">
+
+						<div>
+							<img src="/assets/images/placeholder/icons/hide-password.png" width="23px" 
+							class="img-fluid me-2 img-plc" *ngIf="inputType === 'password'"
+							(click)="inputType = 'text'"
+							style="margin-top: -16px;">
+
+							<img src="/assets/images/placeholder/icons/show-password.png" width="23px" 
+							class="img-fluid me-2 img-plc" *ngIf="inputType === 'text'"
+							(click)="inputType = 'password'"
+							style="margin-top: -16px;">
+						</div>
+					</div>
+
+					<div class="form-group mt-3">
+						<input [type]="inputType" class="form-control" id="confirm_password" placeholder="Confirm Password" formControlName="confirm_password">
+
+						<div>
+							<img src="/assets/images/placeholder/icons/hide-password.png" width="23px" 
+							class="img-fluid me-2 img-plc" *ngIf="inputType === 'password'"
+							(click)="inputType = 'text'"
+							style="margin-top: -16px;">
+
+							<img src="/assets/images/placeholder/icons/show-password.png" width="23px" 
+							class="img-fluid me-2 img-plc" *ngIf="inputType === 'text'"
+							(click)="inputType = 'password'"
+							style="margin-top: -16px;">
+						</div>
+					</div>
+
+					<select class="form-select mt-3" aria-label="Default select example">
+						<option selected disabled>I want to register as</option>
+					  	<option value="Applicant">Applicant</option>
+					  	<option value="Company">Company</option>
+					</select>
+
+					<div class="mt-3">
+						
+						<a class="mat-primary float-start forget-password">
+							<mat-checkbox class="remember-me mt-1">
+							</mat-checkbox>
+
+							<span class="ms-2">
+								By creating your account, you agree to Chewy's Privacy Policy and Terms of Use.
+							</span>
+							
+						</a>
+					</div>
+
+					<br>
+					<button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3"
+					[disabled]="submitting">
+						Register
+						<img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2" *ngIf="submitting">
+					</button>
+
+					<div class="text-center mt-5 join-us">
+						<br><br>
+						Already Have an account? <a [routerLink]="'/applicant/signin'">Login</a>
+					</div>
+				</form> 
+			</div>
+		</div>
+	</div>
+</div>
+
+

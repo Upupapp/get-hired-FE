@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   public screenSize: number = 1600;
 
   public jobLists: Job[] = jobLists;
-
+  public listView: boolean = false;
   constructor() { }
 
   ngOnInit(): void {

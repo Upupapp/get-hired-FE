@@ -1,5 +1,9 @@
 .img-banner{
-
+	width: 300px;
+	height: 200px;
+	object-position: center;
+	object-fit: cover;
+	border-radius: 5px;
 }
 
 .card{
@@ -7,7 +11,6 @@
 	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
 	border-radius: 10px;
 	border: none;
-	min-height: 550px !important;
 }
 
 .title-job-title{

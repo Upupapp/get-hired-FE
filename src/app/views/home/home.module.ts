@@ -9,6 +9,7 @@ import { MaterialComponentsModule } from '../../shared/components/material-compo
 import { BannerComponent } from './banner/banner.component';
 import { JobCardComponent } from './components/job-card/job-card.component';
 import { CompaniesComponent } from './companies/companies.component';
+import { JobCardListViewComponent } from './components/job-card-list-view/job-card-list-view.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { CompaniesComponent } from './companies/companies.component';
   	HomeComponent,
     JobCardComponent,
     CompaniesComponent,
+    JobCardListViewComponent,
   ]
 })
 export class HomeModule{ }

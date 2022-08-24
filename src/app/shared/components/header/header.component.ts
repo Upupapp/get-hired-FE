@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit {
   ];
 
   public loggedInCustomer: any;
-  public loggedInClient: any;
+  public loggedInApplicant: any;
   public location: any;
 
   constructor(private router:Router, 
@@ -57,7 +57,7 @@ export class HeaderComponent implements OnInit {
       this.location = this.router.url;
 
       this.adminService.adminStatus$.subscribe((result: any) => {
-        this.loggedInClient = result;
+        this.loggedInApplicant = result;
       });
     });
   }

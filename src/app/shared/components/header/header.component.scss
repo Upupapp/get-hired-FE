@@ -21,6 +21,32 @@
   
 }
 
+.btn{
+  outline: none !important;
+  &:hover{
+    outline: none !important;
+    border: none !important;
+  }
+
+  &:active{
+    outline: none !important;
+    border: none !important;
+  }
+}
+
+.img-avatar{
+  border-radius: 50%;
+  width: 39px;
+  height: 39px;
+  margin-right: 5px;
+  margin-top: -5px;
+  outline: none !important;
+
+  &:hover{
+    outline: none;
+  }
+}
+
 .navbar-transparent{
   background: rgba(255, 255, 255, 1) !important;
 }

@@ -118,7 +118,8 @@ export class AdminService {
         localStorage.clear();
         this.isAdminLoggedIn = false;
         this.adminStatus.next(undefined);
-        this.router.navigate(['/']);
+        //this.router.navigate(['/']);
+        window.location.href = "/applicant/signin"
         return res;
       }),
       catchError(this.handleError)

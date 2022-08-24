@@ -12,7 +12,7 @@
 
 			<ng-container *ngFor="let company of companies; let i = index">
 				<div class="col-6 col-md-6 col-lg-2 mb-3" 
-				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 50) + 'ms' }}">
 					<div class="card card-body">
 						<img src="/assets/images/placeholder/{{company?.image}}.png" 
 						class="img img-fluid hvr-grow company-image">
