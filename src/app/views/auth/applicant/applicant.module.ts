@@ -12,6 +12,7 @@ import { SharedModule } from '../../../shared/shared.module';
 import { MaterialComponentsModule } from '@app-shared/components/material-components/material-components.module';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { ApplicantForgotPasswordComponent } from './applicant-forgot-password/applicant-forgot-password.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { StoreModule } from '@ngrx/store';
   declarations: [
     ApplicantSigninComponent,
     ApplicantSignupComponent,
-    ApplicantProfileComponent
+    ApplicantProfileComponent,
+    ApplicantForgotPasswordComponent
   ]
 })
 export class ApplicantsModule { }
