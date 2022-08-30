@@ -119,7 +119,7 @@ export class AdminService {
         this.isAdminLoggedIn = false;
         this.adminStatus.next(undefined);
         //this.router.navigate(['/']);
-        window.location.href = "/applicant/signin"
+        window.location.href = "/signin"
         return res;
       }),
       catchError(this.handleError)

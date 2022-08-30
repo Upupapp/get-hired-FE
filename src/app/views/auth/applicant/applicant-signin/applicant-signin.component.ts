@@ -92,7 +92,7 @@ export class ApplicantSigninComponent implements OnInit {
 
         this.error = localStorage.getItem('loginError');
         //this.spinner.hide();
-        this.router.navigate(['/applicant/signin']);
+        this.router.navigate(['/signin']);
       } 
 
       // if no error, execute login validation

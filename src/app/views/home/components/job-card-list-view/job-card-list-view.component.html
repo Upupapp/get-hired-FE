@@ -8,9 +8,10 @@
 		<div class="p-3 py-3 flex-wrap d-flex w-100">
 			<div class="w-100 flex-wrap">
 				<div class="d-flex float-end">
-					<img src="/assets/images/placeholder/icons/{{badge}}.png" 
-					*ngFor="let badge of data?.badge"
-					style="width: 30px; " class="me-3">
+					<img src="/assets/images/placeholder/icons/{{badge?.logo}}.png" 
+					[title]="badge?.title"
+					*ngFor="let badge of data?.badge?.slice(0,3)"
+					style="width: 30px; " class="me-2">
 				</div>
 
 				<div>
@@ -57,7 +58,8 @@
 	</div>
 
 	<div class="w-100 mt-1">
-		<button class="btn btn-primary d-block w-100 hvr-hang">Apply Now</button>
+		<button class="btn btn-primary d-block w-100 hvr-bob"
+		routerLink="/job-post/details/{{data?.id}}">Apply Now</button>
 	</div>
 	
 </div>

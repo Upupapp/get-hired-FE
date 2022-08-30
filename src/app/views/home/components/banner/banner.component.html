@@ -62,10 +62,10 @@
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'600ms' }}"
 			style="z-index: 11">
 
-			<img src="/assets/images/placeholder/banner-float-3.png" class="banner-float-2"
+			<!-- <img src="/assets/images/placeholder/banner-float-3.png" class="banner-float-2"
 			[@animate]="{value:'*', params:{ y:'-20px', delay:'700ms' }}"
 			style="z-index: 11"
-			*ngIf="screenSize > 1559 && !loggedInApplicant">
+			*ngIf="screenSize > 1559 && !loggedInApplicant"> -->
 			
 			<img src="/assets/images/placeholder/banner-float-2.png" class="banner-float-3"
 			[@animate]="{value:'*', params:{ y:'10px', delay:'800ms' }}"style="z-index: 1"
@@ -75,7 +75,7 @@
 		<div class="col-12 col-lg-2 ps-4 row" *ngIf="loggedInApplicant">
 			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0 pe-lg-0">
 				<div class="card-application green mb-2 mt-md-3 mt-lg-0"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'650ms' }}">
+				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
 					<h5 class="title-card">Application
 						<img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
 					</h5>
@@ -85,7 +85,7 @@
 
 			<div class="col-6 col-lg-12 mt-md-4 mt-lg-0 pe-lg-0">
 				<div class="orange mb-2 card-application-interview" 
-				[@animate]="{value:'*', params:{ y:'10px', delay:'650ms' }}">
+				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
 					<h5 class="title-card">Interview 
 						<br *ngIf="screenSize > 990">Schedule
 						<img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
@@ -96,7 +96,7 @@
 
 			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0  pe-lg-0">
 				<div class="card-application yellow mb-2"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'650ms' }}">
+				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
 					<h5 class="title-card">Video Interview
 						<img src="/assets/images/placeholder/icons/card-video-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
 					</h5>

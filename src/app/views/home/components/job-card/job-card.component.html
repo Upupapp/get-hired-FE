@@ -6,8 +6,9 @@
 
 	<div class="p-3 py-3">
 		<div class="d-flex mb-3">
-			<img src="/assets/images/placeholder/icons/{{badge}}.png" 
-			*ngFor="let badge of data?.badge"
+			<img src="/assets/images/placeholder/icons/{{badge?.logo}}.png" 
+			[title]="badge?.title"
+			*ngFor="let badge of data?.badge?.slice(0, 3)"
 			style="width: 30px" class="me-3">
 		</div>
 
@@ -46,8 +47,9 @@
 			<div class="title-tags me-2 mb-2" *ngFor="let tag of data?.tags">{{tag}}</div>
 		</div>
 
-		<div class="w-100"  [ngClass]="data?.tags?.length < 3 ? 'mt-4' : 'mt-1'">
-			<button class="btn btn-primary d-block w-100 hvr-grow">Apply Now</button>
+		<div class="w-100"  [ngClass]="data?.tags?.length < 3 ? 'mt-2' : 'mt-2'">
+			<button class="btn btn-primary d-block w-100 hvr-grow"
+			(click)="applyNow(data)">Apply Now</button>
 		</div>
 	</div>
 </div>
