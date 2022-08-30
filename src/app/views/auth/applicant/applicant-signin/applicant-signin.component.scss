@@ -358,11 +358,12 @@ input{
 	padding-left: 20px;
 	padding-top: 15px;
 	padding-bottom: 15px;
+	letter-spacing: 0px !important;
 	
 }
 
 input::placeholder{
-	padding-top: 35px;
+	padding-top: 35px !important;
 	padding-left: 5px;
 	
 }
