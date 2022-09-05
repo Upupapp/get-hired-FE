@@ -8,7 +8,7 @@ import { map, delay } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminGuard implements CanActivate {
+export class ApplicantGuard implements CanActivate {
   constructor(private adminService: AdminService, private router: Router){}
 
   canActivate(

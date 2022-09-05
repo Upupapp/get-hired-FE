@@ -104,20 +104,36 @@ export class ApplicantSigninComponent implements OnInit {
         localStorage.setItem('token', 'Bearer ' + data.token);
         localStorage.setItem('token_authorization', data.token.replace('Bearer ', ''));
         localStorage.setItem('refreshToken', result.refreshToken);
-        localStorage.setItem('admin', JSON.stringify({
-          _id: result?.teacher._id,
-          name: result?.teacher.name,
-          email: result?.teacher.email
-        }));
+        
+        if(result?.teacher.email !== 'dapito.sherwin@yahoo.com'){
+          localStorage.setItem('userData', JSON.stringify({
+            _id: result?.teacher._id,
+            name: result?.teacher.name,
+            email: result?.teacher.email,
+            applicant: true
+          }));
+
+          setTimeout(() => {
+             this.router.navigate(['/']);
+          }, 1000);
+        }
+
+        else {
+          localStorage.setItem('userData', JSON.stringify({
+            _id: result?.teacher._id,
+            name: result?.teacher.name,
+            email: result?.teacher.email,
+            employer: true
+          }));
+
+          setTimeout(() => {
+             this.router.navigate(['/company']);
+          }, 1000);
+        }
 
         this.adminLoginForm.reset();
         this.message = localStorage.getItem('loginMessage');
-        this.adminService.setAdminLogin(true);
-
-        // spinner ends after 2 seconds 
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 1000);
+        this.adminService.setAdminLogin(true);  
       }
 
       this.submitting = false;

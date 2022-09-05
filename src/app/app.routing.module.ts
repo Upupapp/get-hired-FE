@@ -32,6 +32,16 @@ const rootRouterConfig: Routes = [
 
   {
     path: '',
+    children: [
+      {
+        path: 'company',
+        loadChildren: () => import('./views/company-panel/company-panel.module').then(m => m.CompanyPanelModule)
+      }
+    ]
+  },
+
+  {
+    path: '',
     component: HeaderComponent,
     children: [
       {
