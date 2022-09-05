@@ -114,8 +114,8 @@ export class StatChartComponent implements OnInit {
       legend: {
         position: 'right',
         labels: {
-          boxWidth: 7,
-          boxHeight: 7,
+          boxWidth: 10,
+          boxHeight: 10,
           fontColor: '#333',
           fontSize: 15,
           pointStyle: 'circle',
@@ -152,8 +152,8 @@ export class StatChartComponent implements OnInit {
       hoverOffset: 6,
       borderJoinStyle: 'miter',
       borderAlign: 'center',
-      offset: [0, 3],
-      cutout: ['70%', '75%'],
+      offset: [0, 3, 11],
+      cutout: ['70%', '75%', '40%'],
       //weight: [5, 1, 1, 1],
       //radius: '45%',
       //circumference: 45,  

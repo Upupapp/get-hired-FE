@@ -32,6 +32,11 @@ export class SidebarComponent implements OnInit {
     private route: ActivatedRoute) { 
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
     });
   }
 
