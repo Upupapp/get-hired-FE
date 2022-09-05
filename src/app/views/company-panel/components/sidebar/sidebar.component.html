@@ -1,0 +1,23 @@
+<div class="sidebar-details bg-gray mt-4">
+	<div class="card card-body mb-3 p-4">
+		<div class="text-center">
+			<img src="/assets/images/face-3.jpg" class="img-avatar">
+			<h5 class="img-avatar-full-name">Jordan Clark</h5>
+			<h5 class="img-avatar-full-email">jordan.clark@gmail.com</h5>
+		</div>
+	</div>
+
+	<div class="card card-body p-4">
+		<ng-container *ngFor="let item of sidebarItems">
+			<div class="w-100 d-flex mb-3"
+			(click)="changeRoute('/company/' + item?.route)">
+				<div class="sidebar-icon ms-lg-3" style="width: 20px">
+					<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.icon" 
+					[ngClass]="item?.class">
+				</div>
+				<h5 class="sidebar-title" 
+				[ngClass]="location?.match(item?.route) ? 'sidebar-title-active' : ''">{{item?.title}}</h5>
+			</div>
+		</ng-container>
+	</div>
+</div>

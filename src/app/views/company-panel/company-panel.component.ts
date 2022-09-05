@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./company-panel.component.scss']
 })
 export class CompanyPanelComponent implements OnInit {
-
+  sidebarWidth
   constructor() { }
 
   ngOnInit(): void {

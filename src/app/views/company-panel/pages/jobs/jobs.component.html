@@ -1,0 +1,60 @@
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+		<div class="card card-body">
+			<div class="w-100">
+				<span class="main-title mt-3">Company Jobs</span>
+
+				<div class="float-end">
+					<!-- <button class="btn btn-menu me-3" 
+					[ngStyle]="{
+						'padding': !listView ? '11px 15px': '10px 13px'
+					}"
+					(click)="listView ? listView = false : listView = true">
+						<img src="/assets/images/placeholder/icons/organization.png" 
+						[@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}"
+						*ngIf="listView" width="21px" class="img-fluid"
+						title="Organization Chart View">
+
+						<img src="/assets/images/placeholder/icons/list-icon.png" 
+						[@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}"
+						*ngIf="!listView" width="15px" class="img-fluid"
+						title="List View">
+					</button>  -->
+
+					<button class="btn btn-add-service" (click)="addJobs()">
+						New Job
+						<img src="/assets/images/placeholder/icons/add-new.png" 
+						style="width: 20px;" class="ms-1">
+					</button>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="mt-2 card card-body" *ngIf="listView && !loading">
+			<!-- <app-reusable-org-chart></app-reusable-org-chart>
+			 --><app-reusable-table
+				[loading]="loading"
+				[statusArray]="status"
+				[statusFilter]="true"
+				statusName="Status"
+				(updateSelectedRowDialog)="viewJobs($event)"
+				(viewDetails)="viewJobs($event)"			
+				[componentTitle]="'Company Jobs'"								
+				[displayedColumns]="displayedColumns"
+				[selectedColumns]="selectedColumns"
+				[selectedColumnsMobile]="selectedColumns"
+				[searchSource]="searchSource"
+				[maxRows]="10"
+				[listDataSource]="jobLists">
+			</app-reusable-table>
+		</div>
+
+
+		<!-- LOADING ANIMATION SCREEN -->
+		<custom-profile-loader 
+			[withSideBar]="false"
+			[fromDetailTab]="true"
+			[loading]="loading">
+		</custom-profile-loader>
+	</div>
+</div>
