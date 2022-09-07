@@ -80,7 +80,7 @@ const jobLists: Job[] = [
     work_setup: "Hybrid",  
     salary_min: 25000,
     salary_max: 50000,  
-    tags: ["Marketing",  "Time Management"],
+    tags: ["Marketing",  "Time Management", "Development"],
     address: "Ranchview, California ",
     job_description: "Looking to add a pricing calculator to your website? Search no more, we created this user-based pricing calculator for you. Is your business operating in multiple countries? Show different pricing plans depending on their currency with our Multi Currency Pricing Table. This is an ideal opportunity for any technical Architectural Assistants and Technicians/ Technologists looking to work for a growing practice.",
     job_duties: "Looking to add a pricing calculator to your website? Search no more, we created this user-based pricing calculator for you.  young and dynamic company in Frankfurt am Main, Germany, with the mission to provide patients with a contemporary.", 

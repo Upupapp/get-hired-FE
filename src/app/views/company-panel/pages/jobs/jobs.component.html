@@ -1,6 +1,6 @@
 <div class="mt-4 ps-4 pe-4" id="job-order-main-container">
 	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
-		<div class="card card-body">
+		<div class="card card-body py-3">
 			<div class="w-100">
 				<span class="main-title mt-3">Company Jobs</span>
 
@@ -24,13 +24,13 @@
 					<button class="btn btn-add-service" (click)="addJobs()">
 						New Job
 						<img src="/assets/images/placeholder/icons/add-new.png" 
-						style="width: 20px;" class="ms-1">
+						style="width: 16px;" class="ms-1">
 					</button>
 				</div>
 			</div>
 		</div>
 		<br>
-		<div class="mt-2 card card-body" *ngIf="listView && !loading">
+		<div class="card card-body" *ngIf="listView && !loading">
 			<!-- <app-reusable-org-chart></app-reusable-org-chart>
 			 --><app-reusable-table
 				[loading]="loading"

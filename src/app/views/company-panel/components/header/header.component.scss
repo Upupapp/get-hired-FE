@@ -139,11 +139,12 @@
 
 
 .dropdown{
-  //color: red !important;
-  //padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
 
   .dropdown-menu{
-    border-radius: 15px;
+    border-radius: 5px !important;
+    border: none !important;
 
     li{
       min-width: 230px;
@@ -215,7 +216,7 @@
         /* identical to box height, or 150% */
         color: #000000;
         margin-bottom: 0;
-        margin-top: 5px;
+        margin-top: 1px;
       }
 
       .title-position{

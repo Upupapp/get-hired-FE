@@ -1,0 +1,27 @@
+
+<div class="container mb-5">
+	<div class="bg-banner" >
+		<div class="p-5">
+			
+			<div class="banner-text">
+				<ng-container *ngIf="loggedUserData?.applicant">
+					<h5 class="title-banner mb-3" >Let employers find you</h5>
+
+					<div class="mt-4">
+						<button class="btn btn-upload">Upload Your Resume</button>
+					</div>
+				</ng-container>
+
+				<ng-container *ngIf="loggedUserData?.employer">
+					<h5 class="title-banner mb-3" >Let's find a solution to your problem</h5>
+
+					<div class="mt-4">
+						<button class="btn btn-upload">Create Jobs</button>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+
+
+</div>

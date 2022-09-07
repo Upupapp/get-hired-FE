@@ -43,8 +43,8 @@ export class HeaderComponent implements OnInit {
     },
   ];
 
-  public loggedInCustomer: any;
-  public loggedInApplicant: any;
+  public loggedUser: any;
+  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public location: any;
 
   constructor(private router:Router, 
@@ -55,9 +55,9 @@ export class HeaderComponent implements OnInit {
 
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
-
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
       this.adminService.adminStatus$.subscribe((result: any) => {
-        this.loggedInApplicant = result;
+        this.loggedUser = result;
       });
     });
   }

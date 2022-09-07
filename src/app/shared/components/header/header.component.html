@@ -43,28 +43,44 @@
         </li>
 
         <li class="nav-item" >
-          <div class="dropdown d-lg-flex ms-4" *ngIf="!loggedInApplicant">
+          <div class="dropdown d-lg-flex ms-4" *ngIf="!loggedUser">
             <button class="btn btn-nav-gradient" type="button" 
             routerLink="/signup" >
               Register
             </button>
           </div>
 
-          <div class="dropdown d-flex" *ngIf="loggedInApplicant">
+          <div class="dropdown d-flex" *ngIf="loggedUser">
             <button class="btn" id="dropdownMenuButton1" 
             data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="/assets/images/face-3.jpg" class="img-avatar">
+              <ng-container *ngIf="loggedUserData?.employer">
+                <img src="/assets/images/face-6.jpg" class="img-avatar">
+              </ng-container>
+
+              <ng-container *ngIf="loggedUserData?.applicant">
+                <img src="/assets/images/face-3.jpg" class="img-avatar">
+              </ng-container>
             </button>
 
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
-            style="position: absolute; left: -100px" >
+            style="position: absolute; left: -140px" >
               <li class="pt-2" >
                 <span class="dropdown-item d-flex" >
-                  <img src="/assets/images/face-3.jpg" class="img-avatar me-3">
-                  <div>
-                    <h5 class="title-user">Jordan Clark</h5>
-                    <p class="title-position">User</p>
-                  </div>
+                  <ng-container  *ngIf="loggedUserData?.employer">
+                    <img src="/assets/images/face-6.jpg" class="img-avatar me-3">
+                    <div routerLink="/company">
+                      <h5 class="title-user">James Cooper</h5>
+                      <p class="title-position">Employer</p>
+                    </div>
+                  </ng-container>
+
+                  <ng-container  *ngIf="loggedUserData?.applicant">
+                    <img src="/assets/images/face-3.jpg" class="img-avatar me-3">
+                    <div routerLink="/applicant">
+                      <h5 class="title-user">Jordan Clark</h5>
+                      <p class="title-position">Applicant</p>
+                    </div>
+                  </ng-container>
                 </span>
               </li>
 

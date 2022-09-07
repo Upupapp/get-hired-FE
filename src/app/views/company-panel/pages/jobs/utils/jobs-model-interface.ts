@@ -66,7 +66,7 @@ const jobLists: Job[] = [
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
     category: "", 
-    status: "Active", 
+    status: "Published", 
     badge: [
       {
         title: "Gender Equality",  
@@ -121,7 +121,7 @@ const jobLists: Job[] = [
     title: "Angular Developer",
     company: "Moveup Wev Inc.",  
     category: "", 
-    status: "Active", 
+    status: "Published", 
     badge: [
       {
         title: "Gender Equality",  
@@ -161,7 +161,7 @@ const jobLists: Job[] = [
     title: "SQL Developer",
     company: "Moveup Wev Inc.",  
     category: "", 
-    status: "Active", 
+    status: "Published", 
     badge: [
       {
         title: "Worklife Balance",  
@@ -201,7 +201,7 @@ const jobLists: Job[] = [
     title: "Data Analyst",
     company: "Moveup Wev Inc.",  
     category: "", 
-    status: "Active", 
+    status: "Published", 
     badge: [
       {
         title: "Gender Equality",  

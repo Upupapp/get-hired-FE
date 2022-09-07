@@ -1,6 +1,7 @@
 @import "src/assets/styles/colors";
 
 
+
 .head-title{
 	font-weight: bold;
 	color: #404040;
@@ -183,6 +184,24 @@
 	}
 }
 
+.cv-link{
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 15px;
+	/* identical to box height */
+	padding-left: 0px;
+	padding-right: 0px;
+	border:none !important;
+	//color: #757474;
+
+	&:hover{
+		border:none;
+		text-decoration: underline;
+	}
+}
+
 .btn-active-client{
 	padding: 5px 10px !important;
 }
@@ -196,7 +215,7 @@
 	font-size: 12px !important;
 	line-height: 15px;
 	font-family: 'Poppins';  
-	font-weight: 100;
+	font-weight: 500;
 	font-style: normal;
 }
 
@@ -206,38 +225,31 @@
 	//font-weight: 600 !important;
 }
 
-.lead,
-.invited{
-	background: #2A9DF4;
-	color: #fff;
-	min-width: 110px;
+.published{
+	background: #FFF1CC;
+	color: #625D5D
 }
 
-.attended-seminar{
-	background: #FFA500;
-	color: #fff;
-	min-width: 110px;
+.initial-interview{
+	background: #FFF1CC;
+	color: #625D5D
 }
 
-.policy-owner{
-	background: #48D1D0;
-	color: #fff;
-	min-width: 110px;
+.technical-interview{
+	background: #EBE6FE;
+	color: #625D5D
 }
 
-.recruited{
-	background: #772AF4;
-	color: #fff;
-	min-width: 110px;
+.contract-signing{
+	background: #FFCCE4;
+	color: #625D5D
 }
 
-.in-delivery,
-.registered{
-	background: $color-blue-primary;
-	color: #fff;
-	min-width: 110px;
-	//font-weight: 600 !important;
+.applied{
+	background: #E6F7D9;
+	color: #625D5D
 }
+
 
 .cancelled{
 	background: white;
@@ -521,6 +533,12 @@ tr:last-child{
 			width: 35px;
 			border-radius: 50%;
 			vertical-align: center;
+		}
+
+		.menu-image{
+			border-radius: 0 !important;
+			width: 18px !important;
+			margin-right: 11px;
 		}
 
 		.delete-image{

@@ -82,7 +82,7 @@ export class JobsComponent implements OnInit {
   viewJobs(event): void {
     console.log(event)
 
-    this.router.navigate([`/`])
+    //this.router.navigate([`/`])
   }
 
 

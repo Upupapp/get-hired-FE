@@ -15,7 +15,8 @@ import {
 })
 export class BannerComponent implements OnInit, OnDestroy {
   @Input() screenSize: number = 1600;
-  public loggedInApplicant: any;
+  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  public loggedUser: any;
   private req?: Subscription;
 
   constructor(private router:Router, 
@@ -23,7 +24,9 @@ export class BannerComponent implements OnInit, OnDestroy {
     private adminService: AdminService) { 
     this.req = this.router.events.subscribe((event: any) => {
       this.adminService.adminStatus$.subscribe((result: any) => {
-        this.loggedInApplicant = result;
+        this.loggedUser = result;
+
+        console.log(result, this.loggedUserData)
       });
     });
   }

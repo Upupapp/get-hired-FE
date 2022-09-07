@@ -132,7 +132,9 @@
 					|| header?.col_name == 'action'" class="table_img">
 						
 						<span *ngIf="header?.col_name == 'action'">
-							<mat-icon class="mat-icon me-3 hvr-grow" (click)="openDialog('edit', data)">edit_note</mat-icon>
+							<img src="/assets/images/placeholder/icons/menu.png" class="hvr-grow menu-image" 
+							(click)="openDialog('edit', data)">
+
 							<img src="/assets/images/placeholder/icons/delete-circle-red.png" class="hvr-grow delete-image" 
 							(click)="openDialog('delete', data)">
 						</span>
@@ -143,6 +145,7 @@
 						 && header?.col_name !== 'icon'
 						 && header?.col_name !== 'action'
 						 && header?.type !== 'date'
+						 && header?.type !== 'action_button'
 						 && header?.col_name !== 'status'"
 
 						 [ngClass]="header?.type === 'hash_code' ? 'text-primary' : ''">
@@ -155,6 +158,15 @@
 									: data[header?.col_name]
 								) || '-' 
 							}} 
+						</span>
+
+						<span *ngIf="header?.type === 'action_button'">
+
+							<button class="btn" 
+								[ngClass]="header?.button_class">
+								<img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
+								{{ header?.button_title }} 
+							</button>
 						</span>
 
 						<span *ngIf="header?.type === 'date'">

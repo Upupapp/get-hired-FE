@@ -1,7 +1,7 @@
-<div class="container-fluid px-5" [ngClass]="loggedInApplicant ? 'pe-3' : ''">
+<div class="container-fluid px-5" [ngClass]="loggedUser ? 'pe-3' : ''">
 	<div class="row pt-4 ps-lg-4">
 		<div class="row px-5 text-white py-5  bg-banner "
-		[ngClass]="loggedInApplicant ? 'col-12 col-lg-10' : 'col-12 col-lg-12'">
+		[ngClass]="loggedUser ? 'col-12 col-lg-10' : 'col-12 col-lg-12'">
 			<div class="col-12 col-md-8" 
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}"
 			*ngIf="screenSize >= 1600 ? 'col-lg-4' : 'col-lg-6'">
@@ -20,7 +20,7 @@
 			[ngClass]="screenSize > 1500 ? ' col-lg-10' : 'col-lg-11'"
 			[@animate]="{value:'*', params:{ y:'10px', delay:'300ms' }}">
 				<div class="d-flex mt-3 py-3 px-3 bg-transparent">
-					<div class="me-3 " [ngClass]="loggedInApplicant ? 'search-key-2' : 'search-key'">
+					<div class="me-3 " [ngClass]="loggedUser ? 'search-key-2' : 'search-key'">
 						<input type="text" class="form-control" placeholder="Enter keyword">
 					</div>
 
@@ -65,14 +65,15 @@
 			<!-- <img src="/assets/images/placeholder/banner-float-3.png" class="banner-float-2"
 			[@animate]="{value:'*', params:{ y:'-20px', delay:'700ms' }}"
 			style="z-index: 11"
-			*ngIf="screenSize > 1559 && !loggedInApplicant"> -->
+			*ngIf="screenSize > 1559 && !loggedUser"> -->
 			
 			<img src="/assets/images/placeholder/banner-float-2.png" class="banner-float-3"
 			[@animate]="{value:'*', params:{ y:'10px', delay:'800ms' }}"style="z-index: 1"
 			>
 		</div>
 
-		<div class="col-12 col-lg-2 ps-4 row" *ngIf="loggedInApplicant">
+		<!-- APPLICANT HOME STAT -->
+		<div class="col-12 col-lg-2 ps-4 row" *ngIf="loggedUser && loggedUserData?.applicant">
 			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0 pe-lg-0">
 				<div class="card-application green mb-2 mt-md-3 mt-lg-0"
 				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
@@ -88,6 +89,39 @@
 				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
 					<h5 class="title-card">Interview 
 						<br *ngIf="screenSize > 990">Schedule
+						<img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
+					</h5>
+					<h3 class="title-stat">122</h3>
+				</div>
+			</div>
+
+			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0  pe-lg-0">
+				<div class="card-application yellow mb-2"
+				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
+					<h5 class="title-card">Video Interview
+						<img src="/assets/images/placeholder/icons/card-video-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
+					</h5>
+					<h3 class="title-stat">223</h3>
+				</div>
+			</div>
+		</div>
+
+		<!-- EMPLOYER HOME STAT -->
+		<div class="col-12 col-lg-2 ps-4 row" *ngIf="loggedUser && loggedUserData?.employer">
+			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0 pe-lg-0">
+				<div class="card-application green mb-2 mt-md-3 mt-lg-0"
+				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
+					<h5 class="title-card">Active Jobs
+						<img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
+					</h5>
+					<h3 class="title-stat">34</h3>
+				</div>
+			</div>
+
+			<div class="col-6 col-lg-12 mt-md-4 mt-lg-0 pe-lg-0">
+				<div class="orange mb-2 card-application" 
+				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
+					<h5 class="title-card">Applicants 
 						<img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
 					</h5>
 					<h3 class="title-stat">122</h3>

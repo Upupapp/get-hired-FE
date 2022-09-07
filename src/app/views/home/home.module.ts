@@ -15,6 +15,8 @@ import { JobDetailsBannerComponent } from './components/job-details-banner/job-d
 import { JobDetailsSidecardComponent } from './components/job-details-sidecard/job-details-sidecard.component';
 import { JobDetailsMainCardComponent } from './components/job-details-main-card/job-details-main-card.component';
 import { JobDetailsFeaturedJobsComponent } from './components/job-details-featured-jobs/job-details-featured-jobs.component';
+import { JobPostsListComponent } from './components/job-posts-list/job-posts-list.component';
+import { ExploreUsersComponent } from './components/explore-users/explore-users.component';
 
 @NgModule({
   imports: [
@@ -35,6 +37,8 @@ import { JobDetailsFeaturedJobsComponent } from './components/job-details-featur
     JobDetailsSidecardComponent,
     JobDetailsMainCardComponent,
     JobDetailsFeaturedJobsComponent,
+    JobPostsListComponent,
+    ExploreUsersComponent,
   ]
 })
 export class HomeModule{ }
