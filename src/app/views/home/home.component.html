@@ -9,7 +9,7 @@
 
 
 <!-- JOB POSTS -->
-<ng-container *ngIf="loggedUserData?.applicant">
+<ng-container *ngIf="!loggedUserData?.employer">
 	<app-job-posts-list></app-job-posts-list>
 </ng-container>
 
