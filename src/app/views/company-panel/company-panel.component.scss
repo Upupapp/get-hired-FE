@@ -1,48 +1,49 @@
 #body-main-container{
   z-index: 1 !important;
-  //background-color: red;
-  background-color: #F6F7FB !important;
+  background-color: #2222 !important;
+  margin-bottom: 0 !important;
 }
 
 #main-company-component{
   width: 100% !important;
   overflow: auto;
-  //background-color: red;
   background-color: #F6F7FB !important;
   padding-left: 0px !important;
   padding-right: 0px !important;
-  margin-bottom: 10px;
+  margin-bottom: 0 !important;
 }
 
 #sub-company-component{
   margin: 0 !important;
-  margin-top: 0px !important;
   padding: 0 !important;
   position: relative !important;
-  //margin-top: 20px !important;
   background-color: #F6F7FB !important;
-  //background-color: green;
   overflow-x: hidden !important;
+  overflow-y: none !important;
+  margin-bottom: 30px !important;
 }
 
 
 #body-row {
   margin-left:0;
   margin-right:0;
-  margin-top: 30px !important;
-  padding-top: 50px !important;
-  padding-bottom: 50px !important;
+  //padding-bottom: 50px !important;
   flex-wrap: nowrap !important;
-  background-color: #F6F7FB !important;
+  background-color: inherit !important;
   min-height: 70vh;
+  margin-bottom: 0 !important;
+  overflow-y: none !important;
 }
 
 #sidebar-container {
   // min-height: 100vh;
-  background-color: #F6F7FBF6F7FB;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   padding: 0;
+  background: #444152;
+  max-width: 250px;
+  min-height: 100vh;
+  margin-bottom: 0 !important;
 }
 
 /* Menu item*/

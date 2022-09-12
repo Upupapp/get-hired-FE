@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 
 @Component({
   selector: 'app-applicants',
@@ -80,10 +81,21 @@ export class ApplicantsComponent implements OnInit {
   }
 
 
-  viewApplicants(event): void {
-    console.log(event)
+  viewMenu(event): void {
+    let openDialog = this.dialog.open(
+      TableControlModalComponent,
+      { 
+        width: '34vw',
+        data: event,
+      }
+    );
 
-    //this.router.navigate([`/`])
+    openDialog
+    .afterClosed()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(result => {
+
+    });
   }
 
 

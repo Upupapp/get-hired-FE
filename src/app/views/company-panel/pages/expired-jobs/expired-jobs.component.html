@@ -2,11 +2,9 @@
 	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 		<div class="card card-body py-3">
 			<div class="w-100">
-				<span class="main-title mt-3">Applicants</span>
+				<span class="main-title mt-3">Expired Jobs</span>
 
-				<div class="float-end">
-					
-				</div>
+				<div class="float-end"></div>
 			</div>
 		</div>
 		<br>
@@ -19,13 +17,13 @@
 				statusName="Status"
 				(updateSelectedRowDialog)="viewMenu($event)"
 				(viewDetails)="viewMenu($event)"			
-				[componentTitle]="'Applicants'"								
+				[componentTitle]="'Expired Jobs'"								
 				[displayedColumns]="displayedColumns"
 				[selectedColumns]="selectedColumns"
 				[selectedColumnsMobile]="selectedColumns"
 				[searchSource]="searchSource"
 				[maxRows]="10"
-				[listDataSource]="applicantLists">
+				[listDataSource]="jobLists">
 			</app-reusable-table>
 		</div>
 

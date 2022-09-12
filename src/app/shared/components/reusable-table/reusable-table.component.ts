@@ -245,7 +245,7 @@ export class ReusableTableComponent implements OnInit {
   */
   openDialog(action_type: string, data: any): void {
 
-    if(action_type === 'edit') {
+    if(action_type === 'menu') {
       this.updateSelectedRowDialog.emit({
         action: action_type,
         data: data

@@ -1,50 +1,84 @@
 .sidebar-details{
 	position: sticky !important;
-	top: 104px !important;
-	left: 30px
+	top: 0px !important;
+	left: 30px;
+	width: 250px;
 }
 
 .card{
 	border: none !important;
-	min-width: 250px;
-	background: #FFFFFF;
-	border-radius: 15px;
+	//min-width: 250px;
+	//background: #FFFFFF;
+	border-radius: 0px;
 	box-shadow: none;
+}
+
+.bg-menu{
+	background: #444152;
+}
+
+.bg-user{
+	background: #7A637F;
+	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
+	border-radius: 12px;
+	position: absolute;
+	bottom: 50px;
+	min-width: 230px;
+}
+
+.img-logo{
+	width: 100px;
+}
+
+.bg-logo{
+	background: white;
+	border-bottom-right-radius: 30px;
 }
 
 .img-avatar{
 	border-radius: 50%;
-	width: 80px;
+	width: 50px;
+	height: 50px;
 	margin-bottom: 10px;
 
 	&-full-name{
-		font-family: 'Poppins';
+		font-family: 'Montserrat';
 		font-style: normal;
-		font-weight: 500;
-		font-size: 18px;
-		line-height: 26px;
-		/* identical to box height, or 108% */
+		font-weight: 700;
+		font-size: 14px;
+		line-height: 17px;
+		/* identical to box height */
 
-		text-align: center;
-		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+		letter-spacing: 0.2px;
 
-		color: #000000;
-		margin-bottom: 5px;
+		color: #FFFFFF;
 	}
 
 	&-full-email{
-		font-family: 'Poppins';
+		font-family: 'Montserrat';
 		font-style: normal;
-		font-weight: 300;
-		font-size: 14px;
-		line-height: 21px;
-		/* identical to box height, or 150% */
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 15px;
+		/* identical to box height */
 
-		text-align: center;
-		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+		letter-spacing: 0.2px;
 
-		color: #4E4E4E;
-		margin-bottom: 5px;
+		color: #FFFFFF;
+	}
+
+	&-button{
+		font-family: 'Montserrat';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 20px;
+		/* identical to box height */
+
+
+		color: #FFFFFF;
+		background: #FC8B79;
+		border-radius: 9px;
 	}
 }
 
@@ -59,32 +93,43 @@
 	}
 
 	&-title{
-		font-family: 'Poppins';
-		font-style: normal;
-		font-weight: 400;
-		font-size: 14px;
-		line-height: 23px;
-
-		/* identical to box height, or 100% */
-		color: #8E8E8E;
+		color: #FFFFFF;
 		cursor: pointer;
 
+		font-family: 'Montserrat';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 20px;
+		/* identical to box height */
+
+		letter-spacing: 0.2px;
+
+
 		&:hover{
-			color: #FF7062;
-			font-weight: 600;
+			color: #FFFFFF;
+			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
 
 	}
 
 	&-title-active{
-		color: #FF7062 !important;
+		color: #FFFFFF !important;
 		cursor: pointer;
+		background: #FE6F61;
+		border-radius: 100px;
+		padding: 10px 15px 5px 5px;
+		font-family: 'Montserrat';
+		font-style: normal;
 		font-weight: 600;
+		font-size: 14px;
+		line-height: 20px;
+		letter-spacing: 0.2px;
 		
 		&:hover{
 			color: #FF7062;
-			font-weight: 600;
+			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
 
@@ -97,14 +142,14 @@
 }
 
 .jobs{
-	width: 16px !important;
-	height: 14px !important;
+	width: 14px !important;
+	height: 17px !important;
 	margin-top: -2px;
 }
 
 .applicants{
-	width: 20px !important;
-	height: 15px !important;
+	width: 15px !important;
+	height: 17px !important;
 	margin-top: -3px;
 }
 
@@ -116,12 +161,12 @@
 
 .interviews{
 	width: 16px !important;
-	height: 15px !important;
+	height: 16px !important;
 	//margin-top: -1px;
 }
 
 .expired{
-	width: 16px !important;
-	height: 17px !important;
+	width: 15px !important;
+	height: 15px !important;
 	margin-top: -5px;
 }

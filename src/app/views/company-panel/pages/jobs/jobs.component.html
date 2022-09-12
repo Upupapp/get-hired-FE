@@ -5,22 +5,6 @@
 				<span class="main-title mt-3">Company Jobs</span>
 
 				<div class="float-end">
-					<!-- <button class="btn btn-menu me-3" 
-					[ngStyle]="{
-						'padding': !listView ? '11px 15px': '10px 13px'
-					}"
-					(click)="listView ? listView = false : listView = true">
-						<img src="/assets/images/placeholder/icons/organization.png" 
-						[@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}"
-						*ngIf="listView" width="21px" class="img-fluid"
-						title="Organization Chart View">
-
-						<img src="/assets/images/placeholder/icons/list-icon.png" 
-						[@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}"
-						*ngIf="!listView" width="15px" class="img-fluid"
-						title="List View">
-					</button>  -->
-
 					<button class="btn btn-add-service" (click)="addJobs()">
 						New Job
 						<img src="/assets/images/placeholder/icons/add-new.png" 
@@ -37,8 +21,8 @@
 				[statusArray]="status"
 				[statusFilter]="true"
 				statusName="Status"
-				(updateSelectedRowDialog)="viewJobs($event)"
-				(viewDetails)="viewJobs($event)"			
+				(updateSelectedRowDialog)="viewMenu($event)"
+				(viewDetails)="viewMenu($event)"			
 				[componentTitle]="'Company Jobs'"								
 				[displayedColumns]="displayedColumns"
 				[selectedColumns]="selectedColumns"

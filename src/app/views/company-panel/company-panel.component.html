@@ -1,9 +1,5 @@
 <section id="body-main-container">
-<!-- AGENCY MANAGER HEADER -->
-	<app-company-panel-header></app-company-panel-header>
-
-	<div class="d-flex ps-4" id="body-row">
-
+	<div class="d-flex" id="body-row">
 		<!-- SIDEBAR  -->
 		<div class="d-none d-md-block" id="sidebar-container">
 			<app-company-panel-sidebar
@@ -11,10 +7,11 @@
 			></app-company-panel-sidebar> 
 		</div>
 
-		<div class="" id="main-company-component">
-			<!-- HEADER -->
-			<!-- <app-agency-manager-panel-header
-			></app-agency-manager-panel-header> --> 
+		<div id="main-company-component">
+			<!-- COMPANY/EMPLOYER HEADER -->	
+			<div style="margin-bottom: 80px; ">
+				<app-company-panel-header></app-company-panel-header>
+			</div>
 
 			<div id="sub-company-component">
 				<router-outlet></router-outlet>

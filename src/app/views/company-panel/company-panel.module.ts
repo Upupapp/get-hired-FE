@@ -19,6 +19,11 @@ import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 import { NgxOrgChartModule } from 'ngx-org-chart';
 import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
 import { SharedModule } from '@app-shared/shared.module';
+import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
+import { TableControlModalComponent as JobsControl } from './pages/jobs/dialogs/table-control-modal/table-control-modal.component';
+import { TableControlModalComponent as ApplicantsControl } from './pages/applicants/dialogs/table-control-modal/table-control-modal.component';
+import { TableControlModalComponent as ExpiredJobsControl} from './pages/expired-jobs/dialogs/table-control-modal/table-control-modal.component';
+import { CreateInterviewComponent } from './pages/create-interview/create-interview.component';
 
 @NgModule({
   imports: [
@@ -43,6 +48,11 @@ import { SharedModule } from '@app-shared/shared.module';
    BannerComponent,
    StatChartComponent,
    StatTotalComponent,
+   ExpiredJobsComponent,
+   JobsControl,
+   ApplicantsControl,
+   CreateInterviewComponent,
+   ExpiredJobsControl
   ]
 })
 export class CompanyPanelModule{ }

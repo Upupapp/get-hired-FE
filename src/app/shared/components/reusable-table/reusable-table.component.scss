@@ -217,6 +217,7 @@
 	font-family: 'Poppins';  
 	font-weight: 500;
 	font-style: normal;
+	min-width: 125px;
 }
 
 .completed{
@@ -226,7 +227,7 @@
 }
 
 .published{
-	background: #FFF1CC;
+	background: rgba(#FFF1CC, 0.8);
 	color: #625D5D
 }
 
@@ -251,9 +252,9 @@
 }
 
 
-.cancelled{
-	background: white;
-	color: #F8334C;
+.cancelled, .expired{
+	background: rgba(#FBCCCC, 0.8);
+	color: #625D5D;
 	//font-weight: 600 !important;
 }
 
@@ -537,7 +538,7 @@ tr:last-child{
 
 		.menu-image{
 			border-radius: 0 !important;
-			width: 18px !important;
+			width: 28px !important;
 			margin-right: 11px;
 		}
 

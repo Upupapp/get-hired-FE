@@ -1,23 +1,44 @@
-<div class="sidebar-details bg-gray mt-4">
-	<div class="card card-body mb-3 p-4">
-		<div class="text-center">
-			<img src="/assets/images/face-6.jpg" class="img-avatar">
-			<h5 class="img-avatar-full-name text-capitalize">James Cooper</h5>
-			<h5 class="img-avatar-full-email">james.c_tech@gmail.com</h5>
+<div class="sidebar-details">
+	<div style="position: relative; height: 100vh;">
+		<div class="card card-body bg-logo text-center d-flex align-items-center">
+			<img src="/assets/images/placeholder/logo.png" class="hvr-grow img-logo img-fluid"
+			[@animate]="{value:'*', params:{ scale:'0.8', delay:'200ms' }}">
 		</div>
-	</div>
 
-	<div class="card card-body p-4">
-		<ng-container *ngFor="let item of sidebarItems">
-			<div class="w-100 d-flex mb-3"
-			(click)="changeRoute('/company/' + item?.route)">
-				<div class="sidebar-icon ms-lg-3" style="width: 20px">
-					<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.icon" 
-					[ngClass]="item?.class">
+		<div class="card card-body p-3 mt-3 bg-menu"  
+		[@animate]="{value:'*', params:{ x:'-20px', delay:'200ms' }}">
+			<ng-container *ngFor="let item of sidebarItems">
+				<div class="w-100 d-flex mb-3"
+				[ngClass]="location?.match(item?.route) && !location?.match('expired') 
+				? 'sidebar-title-active' 
+				: location?.match('expired') && item?.route === 'expired-jobs' 
+				? 'sidebar-title-active'
+				: ''"
+
+				(click)="changeRoute('/company/' + item?.route)">
+					<div class="sidebar-icon ms-lg-3" style="width: 20px">
+						<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.icon" 
+						[ngClass]="item?.class">
+					</div>
+					<h5 class="sidebar-title">{{item?.title}}</h5>
 				</div>
-				<h5 class="sidebar-title" 
-				[ngClass]="location?.match(item?.route) ? 'sidebar-title-active' : ''">{{item?.title}}</h5>
+			</ng-container>
+		</div>
+
+		<div class="px-2">
+			<div class="card card-body py-4 bg-user"
+			[@animate]="{value:'*', params:{ x:'-20px', delay:'200ms' }}">
+				<div class="d-flex">
+					<img src="/assets/images/face-6.jpg" class="img-avatar me-2">
+					
+					<div class="mt-1">
+						<h5 class="img-avatar-full-name text-capitalize">James Cooper</h5>
+						<h5 class="img-avatar-full-email text-truncate">UpUpTech</h5>
+					</div>
+				</div>
+
+				<button class="btn img-avatar-button mt-2">Change Profile</button>
 			</div>
-		</ng-container>
+		</div>
 	</div>
 </div>

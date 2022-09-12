@@ -1,7 +1,8 @@
 
 export interface Applicant {
+  id: any;
   job_id: any;
-  banner_thumbnail: string;  
+  profile_image: string;  
   first_name: string;
   last_name: string;
   company: string;  
@@ -58,9 +59,10 @@ const selectedColumns: string[] =  [
  
 const applicantLists: Applicant[] = [
   {
+    id: 10011,
     company_id: 12001,
     job_id: 3001,
-    banner_thumbnail: "/assets/images/placeholder/applicant-post-thumb-1.png",  
+    profile_image: "/assets/images/face-1.jpg",  
     first_name: "Jordan",
     last_name: "Clark",
     company: "Software Wev Inc.",  
@@ -75,9 +77,10 @@ const applicantLists: Applicant[] = [
   },
 
   {
+    id: 10012,
     company_id: 12002,
     job_id: 3002,
-    banner_thumbnail: "/assets/images/placeholder/applicant-post-thumb-2.png",  
+    profile_image: "/assets/images/face-2.jpg",  
     first_name: "Samuel",
     last_name: "Solomon",
     company: "Moveup Wev Inc.",  
@@ -92,9 +95,10 @@ const applicantLists: Applicant[] = [
   },
 
   {
+    id: 10013,
     company_id: 12003,
     job_id: 3003,
-    banner_thumbnail: "/assets/images/placeholder/applicant-post-thumb-3.png",  
+    profile_image: "/assets/images/face-3.jpg",  
     first_name: "Michael",
     last_name: "Yemeni",
     company: "Moveup Wev Inc.",  
@@ -109,9 +113,10 @@ const applicantLists: Applicant[] = [
   },
 
   {
+    id: 10014,
     company_id: 12004,
     job_id: 3004,
-    banner_thumbnail: "/assets/images/placeholder/applicant-post-thumb-4.png",  
+    profile_image: "/assets/images/face-4.jpg",  
     first_name: "Brian",
     last_name: "Mitchelle",
     company: "Moveup Wev Inc.",  

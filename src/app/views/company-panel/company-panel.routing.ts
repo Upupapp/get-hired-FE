@@ -5,6 +5,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { JobsComponent } from './pages/jobs/jobs.component';
 import { ApplicantsComponent } from './pages/applicants/applicants.component';
 import { AccountDetailsComponent } from './pages/account-details/account-details.component';
+import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
+import { CreateInterviewComponent } from './pages/create-interview/create-interview.component';
 
 export const CompanyPanelRoutes: Routes = [
   {
@@ -33,8 +35,18 @@ export const CompanyPanelRoutes: Routes = [
       },
 
       {
+        path: 'create-interview',  
+        component: CreateInterviewComponent
+      },
+
+      {
         path: 'account-details',  
         component: AccountDetailsComponent
+      },
+
+      {
+        path: 'expired-jobs',  
+        component: ExpiredJobsComponent
       },
     ]
   },

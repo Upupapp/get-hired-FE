@@ -15,9 +15,11 @@ import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs';
 import * as Model from '@main/app.model';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
   selector: 'app-company-panel-sidebar',
+  animations: [mainAnimations],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })

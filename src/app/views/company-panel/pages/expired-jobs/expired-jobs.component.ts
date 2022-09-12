@@ -26,12 +26,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 
 @Component({
-  selector: 'app-jobs',
+  selector: 'app-expired-jobs',
   animations: [mainAnimations],
-  templateUrl: './jobs.component.html',
-  styleUrls: ['./jobs.component.scss']
+  templateUrl: './expired-jobs.component.html',
+  styleUrls: ['./expired-jobs.component.scss']
 })
-export class JobsComponent implements OnInit {
+export class ExpiredJobsComponent implements OnInit {
 
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
