@@ -3,6 +3,8 @@ import { CompanyPanelComponent } from './company-panel.component';
 import { CompanyGuard } from '@app-shared/guard/auth/company.guard';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { JobsComponent } from './pages/jobs/jobs.component';
+import { CreateJobPostComponent } from './pages/jobs/pages/create-job-post/create-job-post.component';
+
 import { ApplicantsComponent } from './pages/applicants/applicants.component';
 import { AccountDetailsComponent } from './pages/account-details/account-details.component';
 import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
@@ -26,7 +28,16 @@ export const CompanyPanelRoutes: Routes = [
 
       {
         path: 'jobs',  
-        component: JobsComponent
+        children: [
+          {
+            path: '',  
+            component: JobsComponent,
+          },
+          {
+            path: 'create',  
+            component: CreateJobPostComponent
+          }
+        ]
       },
 
       {

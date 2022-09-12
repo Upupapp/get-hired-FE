@@ -99,7 +99,7 @@ export class JobsComponent implements OnInit {
 
 
   addJobs(){
-    
+    this.router.navigate(['/company/jobs/create'])
   }
 
 }

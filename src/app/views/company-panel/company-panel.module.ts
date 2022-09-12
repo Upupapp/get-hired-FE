@@ -1,29 +1,36 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CompanyPanelRoutes } from './company-panel.routing';
-import { CompanyPanelComponent } from './company-panel.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialComponentsModule } from '../../shared/components/material-components/material-components.module';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { JobsComponent } from './pages/jobs/jobs.component';
-import { ApplicantsComponent } from './pages/applicants/applicants.component';
-import { AccountDetailsComponent } from './pages/account-details/account-details.component';
-import { HeaderComponent } from './components/header/header.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { BannerComponent } from './pages/dashboard/components/banner/banner.component';
-import { StatChartComponent } from './pages/dashboard/components/stat-chart/stat-chart.component';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 import { NgxOrgChartModule } from 'ngx-org-chart';
-import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
+import { CompanyPanelRoutes } from './company-panel.routing';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialComponentsModule } from '../../shared/components/material-components/material-components.module';
 import { SharedModule } from '@app-shared/shared.module';
-import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
+
+import { CompanyPanelComponent } from './company-panel.component';
+import { HeaderComponent } from './components/header/header.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { BannerComponent } from './pages/dashboard/components/banner/banner.component';
+import { StatChartComponent } from './pages/dashboard/components/stat-chart/stat-chart.component';
+import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
+
+import { JobsComponent } from './pages/jobs/jobs.component';
+import { CreateJobPostComponent } from './pages/jobs/pages/create-job-post/create-job-post.component';
 import { TableControlModalComponent as JobsControl } from './pages/jobs/dialogs/table-control-modal/table-control-modal.component';
+
+import { ApplicantsComponent } from './pages/applicants/applicants.component';
+import { AccountDetailsComponent } from './pages/account-details/account-details.component';
+import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
 import { TableControlModalComponent as ApplicantsControl } from './pages/applicants/dialogs/table-control-modal/table-control-modal.component';
 import { TableControlModalComponent as ExpiredJobsControl} from './pages/expired-jobs/dialogs/table-control-modal/table-control-modal.component';
 import { CreateInterviewComponent } from './pages/create-interview/create-interview.component';
+import { JobPostStepperComponent } from './pages/jobs/pages/create-job-post/components/job-post-stepper/job-post-stepper.component';
 
 @NgModule({
   imports: [
@@ -52,7 +59,9 @@ import { CreateInterviewComponent } from './pages/create-interview/create-interv
    JobsControl,
    ApplicantsControl,
    CreateInterviewComponent,
-   ExpiredJobsControl
+   ExpiredJobsControl,
+   CreateJobPostComponent,
+   JobPostStepperComponent
   ]
 })
 export class CompanyPanelModule{ }
