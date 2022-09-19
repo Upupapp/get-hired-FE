@@ -8,7 +8,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./create-job-post.component.scss']
 })
 export class CreateJobPostComponent implements OnInit {
-  public stepper: number = 2;
+  public stepper: number = 1;
   
   constructor() { }
 
@@ -17,6 +17,11 @@ export class CreateJobPostComponent implements OnInit {
 
   changeStep(number){
     this.stepper = number;
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }
 
 }

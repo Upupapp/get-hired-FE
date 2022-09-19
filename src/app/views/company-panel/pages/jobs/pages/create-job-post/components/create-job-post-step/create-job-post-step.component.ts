@@ -80,4 +80,18 @@ export class CreateJobPostStepComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  addItem(event, arrayItem){
+    let value = event?.target?.value;
+    let index = arrayItem.findIndex(el => el === value);
+
+    if(index === -1){
+      arrayItem.push(value);
+    }
+  }
+
+  removeItem(item, arrayItem){
+    let index = arrayItem?.findIndex(el => el?.id === item?.id);
+    arrayItem.splice(index, 1);
+  }
+
 }

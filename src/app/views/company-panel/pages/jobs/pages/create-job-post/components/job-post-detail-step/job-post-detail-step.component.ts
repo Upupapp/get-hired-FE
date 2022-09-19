@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
-  selector: 'app-preview-job-post-step',
+  selector: 'app-job-post-detail-step',
   animations: [mainAnimations],
-  templateUrl: './preview-job-post-step.component.html',
-  styleUrls: ['./preview-job-post-step.component.scss']
+  templateUrl: './job-post-detail-step.component.html',
+  styleUrls: ['./job-post-detail-step.component.scss']
 })
-export class PreviewJobPostStepComponent implements OnInit {
+export class JobPostDetailStepComponent implements OnInit {
+
   public workSetup: string[] = ["Hybrid", "Remote", "Onsite"];
   public workSetupSelected: string = "";
 
@@ -190,4 +191,5 @@ export class PreviewJobPostStepComponent implements OnInit {
     let index = arrayItem?.findIndex(el => el?.id === item?.id);
     arrayItem.splice(index, 1);
   }
+
 }

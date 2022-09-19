@@ -13,7 +13,7 @@
 	                [accept]="acceptType" multiple/>
 	                
 	                <ng-container  *ngIf="!viewingOnly">
-	                	<div class=" text-center">
+	                	<div class="mt-3 text-center">
 	                		<img src="/assets/images/placeholder/image-upload-placeholder.png" style="width: 60px">
 	                		<h6>Drop your 
 	                			<ng-container *ngIf="!isDocument; else showDocs">image</ng-container>
@@ -63,9 +63,16 @@
 	                    </div>
 	                </div>
 	            </div>
+
+	            <div class="upload-chips w-100 row" *ngIf="fileArray.length === 0">
+	                <div class="mb-3 col-12 col-md-12 col-lg-12 pe-2">
+	                    <div class="uploaded-container">
+	                    	<img [src]="defaultImage" class="img-fluid"> 
+	                    </div>
+	                </div>
+	            </div>
 	        </div>
 	    </div>
-
 	</ng-container>
 
 	<ng-container *ngIf="isMultiple">

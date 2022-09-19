@@ -3,7 +3,7 @@
 	font-style: normal;
 	font-weight: 500;
 	font-size: 27px;
-	line-height: 28px;
+	line-height: 58px;
 	/* or 215% */
 
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
@@ -11,24 +11,62 @@
 	color: #03011A;
 }
 
+.title-label{
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18px;
+	line-height: 27px;
+	/* identical to box height */
+	margin-bottom: 5px;
+
+	color: #282828;
+}
+
+.title-label-sub{
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 21px;
+	/* or 131% */
+	color: #A8A8A8;
+	margin-bottom: 5px;
+}
+
 .card{
-	border: none;
 	background: #FFFFFF;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
+	border: none;
+	padding: 20px 30px !important;
 }
 
 .form-control{
 	background: #FFFFFF;
-}
-
-.form-control-main{
-	background: #FFFFFF;
+	min-height: 50px;
 	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-	height: 50px;
 }
 
+.form-select-multiple{
+	margin-bottom: 20px;
+	min-height: 170px !important;
+
+	option{
+		border-radius: 4px;
+		padding: 6px 10px;
+		margin-bottom: 5px;
+		
+	}
+
+
+	option select {
+	    margin: 40px;
+	    background: red !important;
+	    color: #fff;
+	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+	}
+}
 
 .form-select{
 	height: 50px;
@@ -37,11 +75,66 @@
 	border-radius: 6px !important;
 }
 
+.badge-selection{
+	background: #FFFFFF;
+	border: 2px dashed rgba(#AFBCC6, 0.7);
+	border-radius: 10px;
+	min-height: 170px;
+	margin-top: 30px;
+	padding: 20px;
+
+	.badge-item{
+		background: #FFFFFF;
+		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
+		border-radius: 10px;
+		padding: 10px 10px 10px 17px;
+
+		img{
+			height: 30px;
+			margin-right: 10px;
+			width: auto;
+			margin-top: 3px;
+		}
+
+		.badge-title{
+			font-family: 'Poppins';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 16px;
+			line-height: 27px;
+			/* identical to box height */
+			margin-top: 3px;
+
+			color: #0C264C;
+		}
+
+		.remove-badge{
+			position: absolute; 
+			right: 0px; 
+			top: 3px; 
+			cursor: pointer; 
+			.mat-icon{
+				font-size: 16px !important;
+			}
+		}
+	}
+}
+
+.requirement-badge{
+	background: #868686;
+	border-radius: 6px;
+	color: white;
+	padding: 7px 15px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+	position: relative;
+}
+
 .img-banner{
 	margin-bottom: 35px;
 	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
 	border-radius: 10.624px;
-	min-width: 260px;
 	height: 150px;
 	object-position: center;
 	object-fit: cover;
@@ -176,10 +269,28 @@ label{
 	color: #FFFFFF;
 }
 
-.talent-badge{
+.category-badge{
 	background: #0C264C;
 	border-radius: 6px;
 	color: white;
 	padding: 5px 15px;
 	cursor: pointer;
+}
+
+.btn-work-setup{
+	background: #FFFFFF;
+	border: 1px solid #AFBCC6;
+	border-radius: 6px !important;
+	padding: 15px 20px !important;
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+
+.active{
+	background: #0C264D;
+	color: white !important;
 }

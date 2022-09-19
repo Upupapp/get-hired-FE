@@ -32,6 +32,8 @@ import { TableControlModalComponent as ExpiredJobsControl} from './pages/expired
 import { CreateInterviewComponent } from './pages/create-interview/create-interview.component';
 import { CreateJobPostStepComponent } from './pages/jobs/pages/create-job-post/components/create-job-post-step/create-job-post-step.component';
 import { PreviewJobPostStepComponent } from './pages/jobs/pages/create-job-post/components/preview-job-post-step/preview-job-post-step.component';
+import { CreateInterviewComponent as JobPostInterview } from './pages/jobs/pages/create-job-post/components/create-interview/create-interview.component';
+import { JobPostDetailStepComponent } from './pages/jobs/pages/create-job-post/components/job-post-detail-step/job-post-detail-step.component';
 
 @NgModule({
   imports: [
@@ -63,7 +65,9 @@ import { PreviewJobPostStepComponent } from './pages/jobs/pages/create-job-post/
    ExpiredJobsControl,
    CreateJobPostComponent,
    CreateJobPostStepComponent,
-   PreviewJobPostStepComponent
+   PreviewJobPostStepComponent,
+   JobPostInterview,
+   JobPostDetailStepComponent
   ]
 })
 export class CompanyPanelModule{ }

@@ -94,7 +94,8 @@ export class DragAndDropComponent {
 
   @Output() keyevents: EventEmitter<any> = new EventEmitter<any>();
   protected _onChangeCallback: (_: any) => void = noop;
-
+  public defaultImage: string = "/assets/images/placeholder/banner-uploader-sample.png";  
+  
   constructor(
     private dialog: MatDialog,) { }
 
