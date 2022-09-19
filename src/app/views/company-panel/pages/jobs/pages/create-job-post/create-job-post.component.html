@@ -6,7 +6,7 @@
 		</button>
 
 		<button class="btn flex-wrap d-flex" (click)="changeStep(2)"
-		style="border-radius: 4px !important;"
+		style="border-radius: 1px !important;"
 		[ngClass]="stepper >= 2 ? 'btn-stepper-active' : 'btn-stepper-next'">
 			<div class="badge-step" *ngIf="stepper < 2">2</div>
 			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
@@ -15,7 +15,7 @@
 		</button>
 
 		<button class="btn flex-wrap d-flex" (click)="changeStep(3)"
-		style="border-radius: 4px !important;"
+		style="border-radius: 1px !important;"
 		[ngClass]="stepper >= 3 ? 'btn-stepper-active' : 'btn-stepper-next'">
 			<div class="badge-step" *ngIf="stepper < 3">3</div>
 			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
@@ -24,7 +24,7 @@
 		</button>
 
 		<button class="btn flex-wrap d-flex btn-stepper-next" (click)="changeStep(4)"
-		style="border-radius: 4px !important;">
+		style="border-radius: 1px !important;">
 			<div class="badge-step">4</div>
 			Preview Job Post
 		</button>
@@ -36,11 +36,15 @@
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 2">
-		<app-preview-job-post-step></app-preview-job-post-step>
+		<app-job-post-detail-step></app-job-post-detail-step>
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 3">
 		<app-create-interview-questions></app-create-interview-questions>
+	</ng-container>
+
+	<ng-container *ngIf="stepper === 4">
+		<app-preview-job-post-step></app-preview-job-post-step>
 	</ng-container>
 
 	<section>
