@@ -89,7 +89,7 @@ export class AdminService {
       return this.http
       .post(`${this.server}/api/teacher/token/refresh`, 
         ({ 
-          teacher: localStorage.getItem('admin'),
+          teacher: localStorage.getItem('userData'),
           refreshToken: localStorage.getItem('refreshToken') 
         })
       )
@@ -118,7 +118,8 @@ export class AdminService {
         localStorage.clear();
         this.isAdminLoggedIn = false;
         this.adminStatus.next(undefined);
-        this.router.navigate(['/']);
+        //this.router.navigate(['/']);
+        window.location.href = "/signin"
         return res;
       }),
       catchError(this.handleError)

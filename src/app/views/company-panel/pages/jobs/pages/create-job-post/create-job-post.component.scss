@@ -1,0 +1,72 @@
+.btn-stepper-active{
+	background: #FE6F61;
+	border-radius: 4px;
+	color:white;
+	padding: 15px 20px;
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18.3259px;
+	line-height: 27px;
+	position: relative !important;
+	//z-index: 999 !important;
+  
+
+	&:after {
+	  content: " ";
+	  position:absolute;
+	  top:28%; 
+	  right: -1%;
+	  //z-index: 999 !important;
+	  width: 0;
+	  height: 0;
+	  border-style: solid;
+	  border-width: 20px 0px 20px 20px;
+	  border-color: #FE6F61 transparent transparent transparent;
+	  transform: rotate(45deg);
+	}
+}
+
+.btn-stepper-next{
+	background: #FFEFED;
+	border-radius: 4px;
+	padding: 15px 20px;
+
+	color: #121212;
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18.3259px;
+	line-height: 27px;
+
+	&:hover{
+		border: solid 2px #FE6F61;
+	}
+}
+
+.badge-step{
+	background: #FE6F61;
+	height: 30px;
+	width: 30px;
+	margin-right: 8px;
+	color: white;
+	border-radius: 50%;
+
+
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 27px;
+
+	color: #FFFFFF;
+}
+
+.btn-preview-job-post{
+	background: #FF7062;
+	border-radius: 10px;
+	color: white; 
+	border-radius: 6px;
+	padding: 10px 25px;
+	margin-top: 10px;
+}

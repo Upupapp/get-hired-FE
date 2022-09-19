@@ -12,10 +12,9 @@ import {
   FormGroup, 
   Validators 
 } from '@angular/forms';
-import { AdminService } from '../../../../shared/services/auth/admin/admin.service';
-import { mainAnimations } from '../../../../shared/animations/main-animations';
+import { AdminService } from '@app-shared/services/auth/admin/admin.service';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Subscription } from 'rxjs';
-import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'admin-signin',
@@ -36,7 +35,6 @@ export class AdminSigninComponent implements OnInit {
   constructor(private router:Router, 
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private spinner: NgxSpinnerService,
     private adminService: AdminService) { 
     this.adminLoginForm = this.formBuilder.group({
       email: [

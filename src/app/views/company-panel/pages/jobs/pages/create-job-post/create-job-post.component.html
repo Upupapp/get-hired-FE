@@ -1,0 +1,65 @@
+<div class="p-3 p-lg-5">
+	<div class="d-flex" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+		<button class="btn btn-stepper-active flex-wrap" (click)="changeStep(1)">
+			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
+			style="height: 25px; margin-top: -3px;">Create Job Post
+		</button>
+
+		<button class="btn flex-wrap d-flex" (click)="changeStep(2)"
+		style="border-radius: 4px !important;"
+		[ngClass]="stepper >= 2 ? 'btn-stepper-active' : 'btn-stepper-next'">
+			<div class="badge-step" *ngIf="stepper < 2">2</div>
+			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
+			style="height: 25px; margin-top: 3px;" *ngIf="stepper >= 2">
+			Job Post Details
+		</button>
+
+		<button class="btn flex-wrap d-flex" (click)="changeStep(3)"
+		style="border-radius: 4px !important;"
+		[ngClass]="stepper >= 3 ? 'btn-stepper-active' : 'btn-stepper-next'">
+			<div class="badge-step" *ngIf="stepper < 3">3</div>
+			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
+			style="height: 25px; margin-top: 3px;" *ngIf="stepper >= 3">
+			Create Interview
+		</button>
+
+		<button class="btn flex-wrap d-flex btn-stepper-next" (click)="changeStep(4)"
+		style="border-radius: 4px !important;">
+			<div class="badge-step">4</div>
+			Preview Job Post
+		</button>
+	</div>
+	
+	<!-- SECTION CREATE JOB POST -->
+	<ng-container *ngIf="stepper === 1">
+		<app-create-job-post-step></app-create-job-post-step>
+	</ng-container>
+
+	<ng-container *ngIf="stepper === 2">
+		<app-preview-job-post-step></app-preview-job-post-step>
+	</ng-container>
+
+	<ng-container *ngIf="stepper === 3">
+		<app-create-interview-questions></app-create-interview-questions>
+	</ng-container>
+
+	<section>
+		<div class="text-end">
+			<button class="btn btn-preview-job-post" (click)="changeStep(2)" *ngIf="stepper === 1">
+				Job Post Details
+			</button>
+
+			<button class="btn btn-preview-job-post" (click)="changeStep(3)" *ngIf="stepper === 2">
+				Create Interview
+			</button>
+
+			<button class="btn btn-preview-job-post" (click)="changeStep(3)" *ngIf="stepper === 3">
+				Preview Job Post
+			</button>
+
+			<button class="btn btn-preview-job-post" (click)="changeStep(4)" *ngIf="stepper === 4">
+				Publish Job Post
+			</button>
+		</div>
+	</section>
+</div>

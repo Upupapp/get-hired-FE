@@ -1,0 +1,166 @@
+@import "src/assets/styles/colors";
+
+.attachment-card-view{
+	background: #FFFFFF;
+	border-radius: 7px;
+	padding-top: 0px;
+	padding-left: 20px;
+	padding-bottom: 0px;
+	height: 260px;
+
+	h6{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 16px;
+		/* identical to box height */
+
+		text-align: center;
+
+		color: #32618F;
+	}
+
+	p{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 13px;
+		text-align: center;
+
+		color: #ACACAC;
+
+		opacity: 0.6;
+	}
+
+	.uploaded-container{
+		position: relative;
+
+		img{
+			height: 260px;
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			border-radius: 7px;
+		}
+
+		.video-player{
+			height: 180px;
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			border-radius: 7px;
+		}
+
+		.close{
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			cursor: pointer;
+			background: white;
+			border-radius: 50%;
+			padding: 2px 0px 2px 1px;
+			font-size: 22px;
+		}
+	}
+
+}
+
+.attachment-card{
+	background: #FFFFFF;
+	border: 2px dashed rgba(#AFBCC6, 0.77);
+	border-radius: 7px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+
+	h6{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 16px;
+		/* identical to box height */
+
+		text-align: center;
+
+		color: #32618F;
+	}
+
+	p{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 13px;
+		text-align: center;
+
+		color: #ACACAC;
+
+		opacity: 0.6;
+	}
+
+	.uploaded-container{
+		position: relative;
+
+		img{
+			height: 180px;
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			border-radius: 15px;
+		}
+
+		.video-player{
+			height: 180px;
+			width: 100%;
+			object-fit: cover;
+			object-position: center;
+			border-radius: 15px;
+		}
+
+		.close{
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			cursor: pointer;
+			background: white;
+			border-radius: 50%;
+			padding: 2px 0px 2px 1px;
+			font-size: 22px;
+		}
+	}
+
+}
+
+.browse-files{
+	color: $color-blue-primary;
+	cursor: pointer;
+	&:hover{
+		text-decoration: underline;
+
+	}
+}
+
+
+.label-main{
+	margin-bottom: 7px;
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 20px;
+	color: #191919;
+}
+
+.label-sub{
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18px;
+	line-height: 27px;
+	/* identical to box height */
+
+
+	color: #313131;
+}

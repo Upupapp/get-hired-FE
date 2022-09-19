@@ -6,9 +6,17 @@ import { HomeComponent } from './home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../shared/components/material-components/material-components.module';
-import { BannerComponent } from './banner/banner.component';
+import { BannerComponent } from './components/banner/banner.component';
 import { JobCardComponent } from './components/job-card/job-card.component';
-import { CompaniesComponent } from './companies/companies.component';
+import { CompaniesComponent } from './components/companies/companies.component';
+import { JobCardListViewComponent } from './components/job-card-list-view/job-card-list-view.component';
+import { JobPostDetailsComponent } from './pages/job-post-details/job-post-details.component';
+import { JobDetailsBannerComponent } from './components/job-details-banner/job-details-banner.component';
+import { JobDetailsSidecardComponent } from './components/job-details-sidecard/job-details-sidecard.component';
+import { JobDetailsMainCardComponent } from './components/job-details-main-card/job-details-main-card.component';
+import { JobDetailsFeaturedJobsComponent } from './components/job-details-featured-jobs/job-details-featured-jobs.component';
+import { JobPostsListComponent } from './components/job-posts-list/job-posts-list.component';
+import { ExploreUsersComponent } from './components/explore-users/explore-users.component';
 
 @NgModule({
   imports: [
@@ -23,6 +31,14 @@ import { CompaniesComponent } from './companies/companies.component';
   	HomeComponent,
     JobCardComponent,
     CompaniesComponent,
+    JobCardListViewComponent,
+    JobPostDetailsComponent,
+    JobDetailsBannerComponent,
+    JobDetailsSidecardComponent,
+    JobDetailsMainCardComponent,
+    JobDetailsFeaturedJobsComponent,
+    JobPostsListComponent,
+    ExploreUsersComponent,
   ]
 })
 export class HomeModule{ }

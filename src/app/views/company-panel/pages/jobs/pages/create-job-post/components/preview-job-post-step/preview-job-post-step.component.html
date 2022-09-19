@@ -1,0 +1,197 @@
+<section style="transition: all 0.4s ease !important;">
+	<!-- TITLE -->
+	<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+		<h5 class="main-title">Job Details</h5>
+	</div>
+
+	<section class="card card-body mb-3">
+		<!-- WORK SETUP -->
+		<div class="title-container mb-3">
+			<h5 class="title-label">Work Setup</h5>
+			 
+			<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<div class="col-12 col-md-6 mb-3 col-lg-4"
+				*ngFor="let item of workSetup">
+					<button class="btn btn-work-setup w-100 text-start hvr-hang"
+					(click)="workSetupSelected = item"
+					[ngClass]="item === workSetupSelected ? 'active': ''">{{item}}
+						<img src="/assets/images/placeholder/icons/check-blank.png" 
+						*ngIf="item !== workSetupSelected"
+						class="float-end" style="width: 20px;">
+
+						<img src="/assets/images/placeholder/icons/check-white.png" 
+						*ngIf="item === workSetupSelected"
+						class="float-end" style="width: 20px;">
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- BANNER UPLOADER -->
+		<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+			<app-drag-and-drop
+			multipleAttachmentTitle="Upload Banner"
+			[isMultiple]="false"></app-drag-and-drop>
+		</div>
+
+		<!-- BADGES -->
+		<div class="row px-lg-2" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+			<div class="col-12 col-lg-5" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+				<h5 class="title-label">Add Badges</h5>
+				<select class="form-select form-select-multiple" size="3" multiple>
+				  	<option *ngFor="let item of badges; let i = index"
+				  	(click)="addBadge(item);">{{item?.name}}</option>
+				</select>
+			</div>
+
+			<div class="col-12 col-lg-7" 
+			[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+				<div class="badge-selection">
+					<div class="row">
+						<div class="col-12 col-lg-6 mb-3" *ngFor="let item of badgeSelected">
+							<div class="d-flex me-3 badge-item">
+								<img [src]="'/assets/images/placeholder/icons/' + item?.badge_logo">
+
+								<h5 class="badge-title w-100" style="position: relative !important;">
+									{{item?.name}}
+
+									<div class="remove-badge">
+										<mat-icon class="close" 
+										(click)="removeItem(item, this.badgeSelected)">close</mat-icon>
+									</div>
+								</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<hr style="border-style: dashed">
+		
+		<section class="px-lg-3">
+			<!-- TYPE -->
+			<div class="title-container my-3" 
+			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<h5 class="title-label">Job Type</h5>
+				 
+				<div class="row">
+					<div class="col-12 col-md-6 mb-3 col-lg-4"
+					*ngFor="let item of jobType">
+						<button class="btn btn-work-setup w-100 text-start hvr-hang"
+						(click)="jobTypeSelected = item"
+						[ngClass]="item === jobTypeSelected ? 'active': ''">{{item}}
+							<img src="/assets/images/placeholder/icons/check-blank.png" 
+							*ngIf="item !== jobTypeSelected"
+							class="float-end" style="width: 20px;">
+
+							<img src="/assets/images/placeholder/icons/check-white.png" 
+							*ngIf="item === jobTypeSelected"
+							class="float-end" style="width: 20px;">
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<h5 class="title-label">Add a Title</h5>
+				<div class="form-group">
+					<input type="text" name="job-title" class="form-control" placeholder="Lead UI/UX Designer">
+				</div>
+			</div>
+
+			<div class="title-container mb-3" 
+			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<h5 class="title-label">Job Description</h5>
+				<div class="form-group">
+					<textarea name="job-title" class="form-control" rows="6"
+					placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."></textarea> 
+				</div>
+			</div>
+
+			<div class="title-container mb-3"
+			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<h5 class="title-label">Duties & Responsibilities</h5>
+				<p class="title-label-sub mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod <br>tempor incididunt ut labore et dolore magna aliqua.</p>
+				<div class="form-group">
+					<textarea name="job-title" class="form-control" rows="6"
+					placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas."></textarea> 
+				</div>
+			</div>
+
+			<hr class="my-4" style="border-style: dashed">
+
+			<!-- OTHER REQUIREMENTS -->
+			<div class="mt-2 row" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<div class="col-12 col-md-6 mb-3">
+					<div class="col-12">
+						<h5 class="title-label">Requirements</h5>
+					</div>
+
+					<p class="title-label-sub mb-3">Add Requirements for your job</p>
+
+					<div class="form-group">
+						<input type="text" name="search" class="form-control" placeholder="ex, create custom material table, basic encoding using google sheet"
+						(keyup.enter)="addItem($event, this.requirements)">
+					</div>
+
+					<div class="mt-3">
+						<ng-container *ngFor="let item of requirements">
+							<h5 class="me-3 w-100 requirement-badge">{{item}}
+								<img src="/assets/images/placeholder/icons/remove-white.png" 
+								style="height: 10px; margin-top: 3px" class="ms-2 float-end"
+								(click)="removeItem(item, this.requirements)">
+							</h5>
+						</ng-container>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6 mb-3">
+					<div class="col-12">
+						<h5 class="title-label">Educational Background</h5>
+					</div>
+
+					<p class="title-label-sub mb-3">Add educational background</p>
+
+					<div class="form-group">
+						<input type="text" name="search" class="form-control" placeholder="ex, computer science graduate, have atleast 2.5 GPA"
+						(keyup.enter)="addItem($event, this.educationalBackground)">
+					</div>
+
+					<div class="mt-3">
+						<ng-container *ngFor="let item of educationalBackground">
+							<h5 class="me-3 w-100 requirement-badge">{{item}}
+								<img src="/assets/images/placeholder/icons/remove-white.png" 
+								style="height: 10px; margin-top: 3px" class="ms-2 float-end"
+								(click)="removeItem(item, this.educationalBackground)">
+							</h5>
+						</ng-container>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6 mb-3">
+					<div class="col-12">
+						<h5 class="title-label">Good to Have</h5>
+					</div>
+
+					<p class="title-label-sub mb-3">Add good to have skills but not a deal breaker</p>
+
+					<div class="form-group">
+						<input type="text" name="search" class="form-control" placeholder="ex, with driver's license, covid vaccine certification"
+						(keyup.enter)="addItem($event, this.goodToHave)">
+					</div>
+
+					<div class="mt-3">
+						<ng-container *ngFor="let item of goodToHave">
+							<h5 class="me-3 w-100 requirement-badge">{{item}}
+								<img src="/assets/images/placeholder/icons/remove-white.png" 
+								style="height: 10px; margin-top: 3px" class="ms-2 float-end"
+								(click)="removeItem(item, this.goodToHave)">
+							</h5>
+						</ng-container>
+					</div>
+				</div>
+			</div>
+		</section>
+	</section>
+</section>

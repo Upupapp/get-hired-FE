@@ -24,8 +24,18 @@ const rootRouterConfig: Routes = [
     path: '',
     children: [
       {
-        path: 'applicant',
+        path: '',
         loadChildren: () => import('./views/auth/applicant/applicant.module').then(m => m.ApplicantsModule)
+      }
+    ]
+  },
+
+  {
+    path: '',
+    children: [
+      {
+        path: 'company',
+        loadChildren: () => import('./views/company-panel/company-panel.module').then(m => m.CompanyPanelModule)
       }
     ]
   },

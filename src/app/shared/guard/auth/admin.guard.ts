@@ -21,7 +21,7 @@ export class AdminGuard implements CanActivate {
         localStorage.setItem('loginError', "You are not allowed to access this URL. Please login to continue.");
         localStorage.setItem('returnURL', this.router.url);
         this.adminService.logoutAdmin().subscribe((res: any) => res);
-        this.router.navigate(['/admin/signin']);
+        this.router.navigate(['/signin']);
         return false;
       }
       else {

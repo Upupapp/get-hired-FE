@@ -21,6 +21,32 @@
   
 }
 
+.btn{
+  outline: none !important;
+  &:hover{
+    outline: none !important;
+    border: none !important;
+  }
+
+  &:active{
+    outline: none !important;
+    border: none !important;
+  }
+}
+
+.img-avatar{
+  border-radius: 50%;
+  width: 39px;
+  height: 39px;
+  margin-right: 5px;
+  margin-top: -5px;
+  outline: none !important;
+
+  &:hover{
+    outline: none;
+  }
+}
+
 .navbar-transparent{
   background: rgba(255, 255, 255, 1) !important;
 }
@@ -113,11 +139,12 @@
 
 
 .dropdown{
-  //color: red !important;
-  //padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
 
   .dropdown-menu{
-    border-radius: 15px;
+    border-radius: 5px !important;
+    border: none !important;
 
     li{
       min-width: 230px;
@@ -189,7 +216,7 @@
         /* identical to box height, or 150% */
         color: #000000;
         margin-bottom: 0;
-        margin-top: 5px;
+        margin-top: 1px;
       }
 
       .title-position{
@@ -214,6 +241,7 @@
     }
   }
 }
+
 
 .navbar{
   .navbar-brand{
