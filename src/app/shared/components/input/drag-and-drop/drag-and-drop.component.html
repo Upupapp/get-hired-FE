@@ -1,0 +1,140 @@
+<div class="attachment-container mb-3">
+	<ng-container *ngIf="!isMultiple">
+	    <label class="label-sub ">{{multipleAttachmentTitle}}</label>
+
+	    <div class="row px-3">
+	        <div class="uploader-container attachment-card col-12 col-lg-5 pe-0">
+	            <div class="text-center"
+	            appFileDrop
+	            class="upload-container py-4"
+	            (whenFileDropped)="uploadMultiple($event, true)"
+	            (click)="uploadFile.click()">
+	                <input #uploadFile hidden type="file" (change)="uploadMultiple($event)" 
+	                [accept]="acceptType" multiple/>
+	                
+	                <ng-container  *ngIf="!viewingOnly">
+	                	<div class=" text-center">
+	                		<img src="/assets/images/placeholder/image-upload-placeholder.png" style="width: 60px">
+	                		<h6>Drop your 
+	                			<ng-container *ngIf="!isDocument; else showDocs">image</ng-container>
+	                			<ng-template #showDocs>documents</ng-template>
+	                		 	here or <span class="browse-files">browse</span>
+	                		</h6>
+
+	                		<p class="mb-2">Supported:  
+	                			<ng-container *ngIf="!isDocument; else showSupported">
+	                				JPEG,  PNG,  GIF, SVG
+	                			</ng-container>
+	                			<ng-template #showSupported>{{supported}}</ng-template>
+	                		</p>
+
+	                		<p class="mb-0">Max size: 200MB</p>
+	                	</div>
+	                </ng-container>
+
+	                <ng-container *ngIf="viewingOnly">
+	                	<div class=" text-center">
+	                		<img src="/assets/images/placeholder/image-upload-placeholder.png" style="width: 60px">
+	                		<h6>
+	                			Results document goes here.
+	                		</h6>
+	                	</div>
+	                </ng-container>
+	            </div>
+	        </div>
+
+	        <div class="uploader-container-view attachment-card-view col-12 col-lg-7 pe-0">
+	            <div class="upload-chips w-100 row" *ngIf="fileArray.length > 0">
+	                <div class="mb-3 col-12 col-md-12 col-lg-12 pe-2" 
+	                *ngFor="let file of fileArray?.slice(0,1); let i = index">
+	                    <div class="uploaded-container" *ngIf="file?.type.match('image')"
+	                    (click)="viewImageVideo(file)">
+	                    	<img [src]="file?.file" class="img-fluid"> 
+	                    	<mat-icon class="close" (click)="removeImageInArray(i)">close</mat-icon>
+	                    </div>
+
+	                    <div class="uploaded-container" *ngIf="file?.type.match('video')"
+	                    (click)="viewImageVideo(file)">
+	                    	<video class="video-player" controls muted>
+	                    	   <source [src]="file?.file" [type]="file?.type">
+	                    		Your browser does not support the video tag.
+	                    	</video>
+	                    	<mat-icon class="close" (click)="removeImageInArray(i)">close</mat-icon>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+	</ng-container>
+
+	<ng-container *ngIf="isMultiple">
+	    <label class="label-sub ">{{multipleAttachmentTitle}}</label>
+
+	    <div class="row px-3">
+	        <div class="uploader-container attachment-card col-12 pe-0">
+	        	
+	            <div class="text-center"
+	            appFileDrop
+	            class="upload-container py-4"
+	            (whenFileDropped)="uploadMultiple($event, true)"
+	            (click)="uploadFile.click()">
+	                <input #uploadFile hidden type="file" (change)="uploadMultiple($event)" 
+	                [accept]="acceptType" multiple/>
+	                
+	                <ng-container  *ngIf="!viewingOnly">
+	                	<div class=" text-center">
+	                		<img src="/assets/images/placeholder/image-upload-placeholder.png" style="width: 60px">
+	                		<h6>Drop your 
+	                			<ng-container *ngIf="!isDocument; else showDocs">image,video</ng-container>
+	                			<ng-template #showDocs>documents</ng-template>
+	                		 	here or <span class="browse-files">browse</span>
+	                		</h6>
+
+	                		<p class="mb-2">Supported:  
+	                			<ng-container *ngIf="!isDocument; else showSupported">
+	                				JPEG,  PNG,  GIF, SVG, MP4
+	                			</ng-container>
+	                			<ng-template #showSupported>{{supported}}</ng-template>
+	                		</p>
+
+	                		<p class="mb-0">Max size: 1GB</p>
+	                	</div>
+	                </ng-container>
+
+	                <ng-container *ngIf="viewingOnly">
+	                	<div class=" text-center">
+	                		<img src="/assets/images/placeholder/image-upload-placeholder.png" style="width: 60px">
+	                		<h6>
+	                			Results document goes here.
+	                		</h6>
+	                	</div>
+	                </ng-container>
+	            </div>
+
+	            <div class="upload-chips w-100 mt-3 row" *ngIf="fileArray.length > 0">
+	                <div class="mb-3 col-12 col-md-6 col-lg-3 pe-2" 
+	                *ngFor="let file of fileArray; let i = index">
+	                    <div class="uploaded-container" *ngIf="file?.type.match('image')"
+	                    (click)="viewImageVideo(file)">
+	                    	<img [src]="file?.file" class="img-fluid"> 
+	                    	<mat-icon class="close" (click)="removeImageInArray(i)">close</mat-icon>
+	                    </div>
+
+	                    <div class="uploaded-container" *ngIf="file?.type.match('video')"
+	                    (click)="viewImageVideo(file)">
+	                    	<video class="video-player" controls muted>
+	                    	   <source [src]="file?.file" [type]="file?.type">
+	                    		Your browser does not support the video tag.
+	                    	</video>
+	                    	<mat-icon class="close" (click)="removeImageInArray(i)">close</mat-icon>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+
+	        
+	    </div>
+
+	</ng-container>
+</div>

@@ -13,6 +13,7 @@ import { DatepickerComponent } from './components/input/date-picker/date-picker.
 import { ReusableTableComponent } from './components/reusable-table/reusable-table.component';
 import { ReusableOrgChartComponent } from './components/reusable-org-chart/reusable-org-chart.component';
 import { FileUploadComponent } from './components/input/file-upload/file-upload.component';
+import { DragAndDropComponent } from './components/input/drag-and-drop/drag-and-drop.component';
 import { NgxOrgChartModule } from 'ngx-org-chart';
 
 const classesToInclude: any[] = [
@@ -22,7 +23,8 @@ const classesToInclude: any[] = [
   DatepickerComponent,
   ReusableTableComponent,
   FileUploadComponent,
-  ReusableOrgChartComponent
+  ReusableOrgChartComponent,
+  DragAndDropComponent
 ];
 
 @NgModule({

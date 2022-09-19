@@ -1,0 +1,102 @@
+<section style="transition: all 0.4s ease !important;">
+	<!-- TITLE -->
+	<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+		<h5 class="main-title">Job Details</h5>
+	</div>
+
+	<section class="card card-body mb-3">
+		<!-- WORK SETUP -->
+		<div class="title-container mb-3">
+			<h5 class="title-label">Work Setup</h5>
+			 
+			<div class="row">
+				<div class="col-12 col-md-6 col-lg-4">
+					<button class="btn btn-work-setup active w-100 text-start hvr-hang">Hybrid
+						<img src="/assets/images/placeholder/icons/check-white.png" class="float-end" style="width: 20px;">
+					</button>
+				</div>
+
+				<div class="col-12 col-md-6 col-lg-4">
+					<button class="btn btn-work-setup w-100 text-start hvr-hang">Remote
+						<img src="/assets/images/placeholder/icons/check-blank.png" class="float-end" style="width: 20px;">
+					</button>
+				</div>
+
+				<div class="col-12 col-md-6 col-lg-4">
+					<button class="btn btn-work-setup w-100 text-start hvr-hang">Onsite
+						<img src="/assets/images/placeholder/icons/check-blank.png" class="float-end" style="width: 20px;">
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- BANNER UPLOADER -->
+		<div class="mt-3">
+			<app-drag-and-drop
+			multipleAttachmentTitle="Upload Banner"
+			[isMultiple]="false"></app-drag-and-drop>
+		</div>
+
+		<!-- BADGES -->
+		<div class=""></div>
+
+		<div class="title-container mb-3">
+			<h5 class="title-label">Add a Title</h5>
+			<div class="form-group">
+				<input type="text" name="job-title" class="form-control" placeholder="Lead UI/UX Designer">
+			</div>
+		</div>
+
+		<div class="title-container mb-3">
+			<h5 class="title-label">Describe what you need</h5>
+			<p class="title-label-sub mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod <br>tempor incididunt ut labore et dolore magna aliqua.</p>
+			<div class="form-group">
+				<textarea name="job-title" class="form-control" rows="6"
+				placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas."></textarea> 
+			</div>
+		</div>
+
+
+		<div class="mt-2 row">
+			<div class="col-12 col-md-6"
+			[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+				<label>Categories</label>
+				<select class="form-select">
+				  <option *ngFor="let item of categories; let i = index">{{item?.title}}</option>
+				</select>
+			</div>
+
+			<div class="col-12 col-md-6"
+			[@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+				<label>Budget</label>
+				
+				<div class="row">
+					<div class="col-5 form-group">
+						<input type="number" name="search" class="form-control" placeholder="$60">
+					</div>
+
+					<div class="col-1 text-center">
+						<h5 class="title-label-sub mt-2">To</h5>
+					</div>
+
+					<div class="col-5 form-group">
+						<input type="number" name="search" class="form-control" placeholder="$80">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="mt-3">
+			<p class="title-label-sub">Categories Selected</p>
+
+			<div class="mt-3">
+				<ng-container *ngFor="let category of categoriesSelected">
+					<span class="me-3 category-badge">{{category?.title}}
+						<img src="/assets/images/placeholder/icons/remove-white.png" 
+						style="height: 10px; margin-top: -3px" class="ms-2">
+					</span>
+				</ng-container>
+			</div>
+		</div>
+	</section>
+</section>
