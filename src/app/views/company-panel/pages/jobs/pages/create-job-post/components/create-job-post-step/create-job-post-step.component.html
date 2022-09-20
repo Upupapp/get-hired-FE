@@ -8,8 +8,11 @@
 		<div class="col-12 col-md-6"
 		[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
 			<label>Categories</label>
-			<select class="form-select">
-			  <option *ngFor="let item of categories; let i = index">{{item?.title}}</option>
+			<select class="form-select" [(ngModel)]="selectedCategory">
+				<ng-container *ngFor="let item of categoriesFiltered; let i = index">
+					<option [value]="item?.title">{{item?.title}}</option>
+				</ng-container>
+			  
 			</select>
 		</div>
 
@@ -17,17 +20,19 @@
 		[@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
 			<label>Search</label>
 			<div class="form-group search-group d-flex">
-				<input type="text" name="search" class="form-control" placeholder="ex. Marketing, Development">
-				<div class="btn btn-search">Search</div>
+				<input type="text" name="search" class="form-control" placeholder="ex. Marketing, Development" [(ngModel)]="search" (keyup.enter)="searchCategory()">
+				<div class="btn btn-search" (click)="searchCategory()">Search</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- CATEGORY -->
 	<div class="mt-5 row" >
-		<ng-container *ngFor="let item of categories; let i = index">
+		<ng-container *ngFor="let item of categoriesFiltered; let i = index">
 			<div class="col-12 col-md-6 col-lg-3 mb-3">
 				<div class="card card-body hvr-hang category-skills"
+				(click)="selectCategory(item?.title)"
+				[ngClass]="selectedCategory === item?.title ? 'active-category' : ''"
 				[@animate]="{value:'*', params:{ y:'10px', delay: (i * 150) + 'ms' }}">
 					<div class="img-banner">
 						<img [src]="item?.banner_thumbnail" class="img-fluid">
@@ -47,21 +52,41 @@
 
 	<!-- SKILLS -->
 	<div class="mt-3 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-		<div class="col-12 col-md-6">
-			<h5 class="main-title">Add Skills</h5>
+		<div class="col-12 col-md-6 mb-3">
+			<h5 class="main-title">Relevant Skills</h5>
 			<label>Add Skill for your job to see relavant talent</label>
 
 			<div class="form-group search-group d-flex">
-				<input type="text" name="search" class="form-control" placeholder="ex. how to create website" (keyup.enter)="addItem($event, this.talents)">
-				<div class="btn btn-search">Search</div>
+				<input type="text" name="search" class="form-control" placeholder="ex. Data Encoding, Ruby, JavaScript" [(ngModel)]="skillModel"
+				(keyup.enter)="this.skill_requirements?.length < 3 ? addItem($event, this.skill_requirements, 'skill_requirements'): ''">
 			</div>
 
 			<div class="mt-3">
-				<ng-container *ngFor="let talent of talents">
+				<ng-container *ngFor="let talent of skill_requirements, 'skill_requirements'">
 					<span class="me-3 talent-badge">{{talent}}
 						<img src="/assets/images/placeholder/icons/remove-white.png" 
 						style="height: 10px; margin-top: -3px" class="ms-2"
-						(click)="removeItem(talent, this.talents)">
+						(click)="removeItem(talent, this.skill_requirements, 'skill_requirements')">
+					</span>
+				</ng-container>
+			</div>
+		</div>
+
+		<div class="col-12 col-md-6 mb-3">
+			<!-- <h5 class="main-title">Add Tags</h5> -->
+			<label style="margin-top: 35px">Add tags for others to identify your job post easily</label>
+
+			<div class="form-group search-group d-flex">
+				<input type="text" name="search" class="form-control" placeholder="ex. Software, Angular Project, JavaScript" [(ngModel)]="tagModel"
+				(keyup.enter)="this.tags?.length < 3 ? addItem($event, this.tags, 'tags') : ''">
+			</div>
+
+			<div class="mt-3">
+				<ng-container *ngFor="let talent of tags, 'tags'">
+					<span class="me-3 talent-badge">{{talent}}
+						<img src="/assets/images/placeholder/icons/remove-white.png" 
+						style="height: 10px; margin-top: -3px" class="ms-2"
+						(click)="removeItem(talent, this.tags, 'tags')">
 					</span>
 				</ng-container>
 			</div>
@@ -69,39 +94,28 @@
 	</div>
 
 	<!-- RATES -->
-	<div class="mt-5 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="mt-2 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
 		<div class="col-12 col-md-6 mb-3">
 			<div class="card card-body">
 				<h5 class="main-title">Add Rate</h5>
 				<label>Add a budget if you one in mind</label>
 				
 				<div class="row">
-					<div class="col-12 col-md-6 col-lg-4 hvr-hang">
-						<div class="rate-card rate-card-active">
-							<img src="/assets/images/placeholder/icons/check-white.png" class="check">
-							<img src="/assets/images/placeholder/icons/rate-monthly.png" 
-							style="height: 45px" class="img-fluid mt-2">
-							<h6 class="title-rate-active mt-3">Monthly</h6>
-						</div>
-					</div>
+					<ng-container *ngFor="let item of rates">
+						<div class="col-12 col-md-6 col-lg-4 hvr-hang"
+						(click)="selectedRates = item; rebuildObject('rates', item?.title)">
+							<div [ngClass]="selectedRates === item ? 'rate-card-active' : 'rate-card'">
+								<img [src]="'/assets/images/placeholder/icons/' + (selectedRates === item ? 'check-white.png' : 'check-blank.png')" class="check">
 
-					<div class="col-12 col-md-6 col-lg-4 hvr-hang">
-						<div class="rate-card rate-card">
-							<img src="/assets/images/placeholder/icons/check-blank.png" class="check">
-							<img src="/assets/images/placeholder/icons/rate-daily.png" 
-							style="height: 45px" class="img-fluid mt-2">
-							<h6 class="title-rate mt-3">Daily</h6>
-						</div>
-					</div>
+								<img [src]="'/assets/images/placeholder/icons' 
+								+ (selectedRates === item ? item?.icon + '-white' : item?.icon) + '.png'" 
+								style="height: 45px" class="img-fluid mt-2">
 
-					<div class="col-12 col-md-6 col-lg-4 hvr-hang">
-						<div class="rate-card rate-card">
-							<img src="/assets/images/placeholder/icons/check-blank.png" class="check">
-							<img src="/assets/images/placeholder/icons/rate-24.png" 
-							style="height: 45px" class="img-fluid mt-2">
-							<h6 class="title-rate mt-3">Hourly</h6>
+								<h6 class="title-rate mt-3"
+								[ngClass]="selectedRates === item ? 'title-rate-active' : 'title-rate'">{{item?.title}}</h6>
+							</div>
 						</div>
-					</div>
+					</ng-container>
 				</div>
 
 				<div class="mt-3 row">
@@ -113,7 +127,8 @@
 						
 						<div class="row">
 							<div class="col-5 form-group">
-								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 25,000">
+								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 25,000" [(ngModel)]="budget.min" 
+								(ngModelChange)="rebuildObject('salary_min', this.budget?.min)">
 							</div>
 
 							<div class="col-1 text-center">
@@ -121,7 +136,8 @@
 							</div>
 
 							<div class="col-5 form-group">
-								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 35,500">
+								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 35,500" [(ngModel)]="budget.max" 
+								(ngModelChange)="rebuildObject('salary_max', this.budget?.max)">
 							</div>
 						</div>
 					</div>

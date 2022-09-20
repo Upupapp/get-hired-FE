@@ -19,7 +19,10 @@ export interface Job {
   other_requirements: string[];
   work_setup: string;  
   salary_min: number;
-  salary_max: number;  
+  salary_max: number; 
+  rates?: any;
+  rates_start_date?: any;  
+  rates_end_date?: any; 
   tags: string[];
   address: string;
   date_posted: Date;  

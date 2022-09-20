@@ -1,3 +1,6 @@
+<!-- {{jobPostData | json}}
+ -->
+
 <div class="p-3 p-lg-5">
 	<div class="d-flex" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
 		<button class="btn btn-stepper-active flex-wrap" (click)="changeStep(1)">
@@ -32,11 +35,15 @@
 	
 	<!-- SECTION CREATE JOB POST -->
 	<ng-container *ngIf="stepper === 1">
-		<app-create-job-post-step></app-create-job-post-step>
+		<app-create-job-post-step
+		(jobPostCategoryEvent)="updateObject($event, 'jobPostCategory')"
+		[jobPostCategory]="jobPostData?.jobPostCategory"></app-create-job-post-step>
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 2">
-		<app-job-post-detail-step></app-job-post-detail-step>
+		<app-job-post-detail-step
+		(jobPostDetailsEvent)="updateObject($event, 'jobPostDetails')"
+		[jobPostDetails]="jobPostData?.jobPostDetails"></app-job-post-detail-step>
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 3">
@@ -44,7 +51,8 @@
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 4">
-		<app-preview-job-post-step></app-preview-job-post-step>
+		<app-preview-job-post-step
+		[jobPostData]="jobPostData"></app-preview-job-post-step>
 	</ng-container>
 
 	<section>

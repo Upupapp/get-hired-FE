@@ -8,6 +8,12 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./create-job-post.component.scss']
 })
 export class CreateJobPostComponent implements OnInit {
+  public jobPostData: any = {
+    jobPostCategory: {},  
+    jobPostDetails: {},
+    jobPostInterviewQuestions: {}
+  }
+
   public stepper: number = 1;
   
   constructor() { }
@@ -15,13 +21,13 @@ export class CreateJobPostComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  changeStep(number){
+  changeStep(number: number){
     this.stepper = number;
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
+  }
+
+  updateObject(data: any, field: string){
+    this.jobPostData[`${field}`] = data;
+    console.log(data, field, this.jobPostData)
   }
 
 }

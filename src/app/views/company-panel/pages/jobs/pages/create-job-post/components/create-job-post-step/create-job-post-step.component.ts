@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
@@ -8,6 +8,10 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./create-job-post-step.component.scss']
 })
 export class CreateJobPostStepComponent implements OnInit {
+  @Input() jobPostCategory: any;
+  @Output() jobPostCategoryEvent: EventEmitter<any> = new EventEmitter<any>();
+
+  public search: string = "";
   public categories: any[] = [
     {
       id: 1,
@@ -72,26 +76,88 @@ export class CreateJobPostStepComponent implements OnInit {
       banner_thumbnail: '/assets/images/placeholder/category-2.png'
     },
   ];
+  public rates: any[] = [
+    {
+      title: "Monthly",  
+      icon: '/rate-monthly'
+    },
 
-  public talents: string[] = ["Designer", "UI Designer", "Full-time", "UI/UX"];
+    {
+      title: "Daily",  
+      icon: '/rate-daily'
+    },
+
+    {
+      title: "Hourly",  
+      icon: '/rate-24'
+    },
+  ];
+  public categoriesFiltered: any[] = [...this.categories];
+  public skill_requirements: string[] = [];
+  public tags: string[] = [];
+  public selectedCategory: any = "";
+  public selectedRates: any = "";
+  public budget: any = {
+    min: 0,  
+    max: 0
+  }
+
+  public skillModel: string = "";  
+  public tagModel: string = "";
 
   constructor() { }
 
   ngOnInit(): void {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+    console.log(this.jobPostCategory)
   }
 
-  addItem(event, arrayItem){
+
+  selectCategory(item){
+    this.selectedCategory = item;
+    this.rebuildObject('category', item)
+  }
+
+  addItem(event, arrayItem, field){
     let value = event?.target?.value;
     let index = arrayItem.findIndex(el => el === value);
 
     if(index === -1){
       arrayItem.push(value);
     }
+
+    // rebuild request body
+    this.rebuildObject(`${field}`, arrayItem);
   }
 
-  removeItem(item, arrayItem){
+  removeItem(item, arrayItem, field){
     let index = arrayItem?.findIndex(el => el?.id === item?.id);
     arrayItem.splice(index, 1);
+    
+    // rebuild request body
+    this.rebuildObject(`${field}`, arrayItem);
+  }
+
+
+  rebuildObject(field, data){
+    this.jobPostCategory[`${field}`] = data;
+    this.jobPostCategoryEvent.emit(this.jobPostCategory);
+    this.skillModel = undefined;
+    this.tagModel = undefined;
+  }
+
+  searchCategory(){
+    const listDataSource = [...this.categories]
+    .filter(el => {
+      return JSON.stringify(el).toLowerCase().includes(this.search.toLowerCase());
+    });
+
+    this.categoriesFiltered = listDataSource;
+
   }
 
 }
