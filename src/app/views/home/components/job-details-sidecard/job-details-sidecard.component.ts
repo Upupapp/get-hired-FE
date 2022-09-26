@@ -19,6 +19,7 @@ export class JobDetailsSidecardComponent implements OnInit {
   @Input() data: any;
  
   public loggedInApplicant: any;
+  public location: any;
   private req?: Subscription;
 
   constructor(private router:Router, 
@@ -27,6 +28,7 @@ export class JobDetailsSidecardComponent implements OnInit {
     this.req = this.router.events.subscribe((event: any) => {
       this.adminService.adminStatus$.subscribe((result: any) => {
         this.loggedInApplicant = result;
+        this.location = this.router.url;
       });
     });
   }

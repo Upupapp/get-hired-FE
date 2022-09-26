@@ -11,7 +11,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
 export const ApplicantsPanelRoutes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'profile',
     pathMatch: 'full'
   },
   { 

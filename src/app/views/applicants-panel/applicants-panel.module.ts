@@ -18,6 +18,8 @@ import { JobsOpeningComponent } from './pages/jobs-opening/jobs-opening.componen
 import { InboxComponent } from './pages/inbox/inbox.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { AvatarComponent } from './pages/profile/components/avatar/avatar.component';
+import { DetailsComponent } from './pages/profile/components/details/details.component';
 
 @NgModule({
   imports: [
@@ -40,6 +42,8 @@ import { SettingsComponent } from './pages/settings/settings.component';
     InboxComponent,
     ProfileComponent,
     SettingsComponent,
+    AvatarComponent,
+    DetailsComponent,
   ]
 })
 export class ApplicantsPanelModule{ }
