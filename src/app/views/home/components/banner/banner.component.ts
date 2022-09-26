@@ -26,7 +26,7 @@ export class BannerComponent implements OnInit, OnDestroy {
       this.adminService.adminStatus$.subscribe((result: any) => {
         this.loggedUser = result;
 
-        console.log(result, this.loggedUserData)
+        //console.log(result, this.loggedUserData)
       });
     });
   }

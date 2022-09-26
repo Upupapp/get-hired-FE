@@ -17,6 +17,10 @@ import { JobDetailsMainCardComponent } from './components/job-details-main-card/
 import { JobDetailsFeaturedJobsComponent } from './components/job-details-featured-jobs/job-details-featured-jobs.component';
 import { JobPostsListComponent } from './components/job-posts-list/job-posts-list.component';
 import { ExploreUsersComponent } from './components/explore-users/explore-users.component';
+import { JobPostDetailsApplyComponent } from './pages/job-post-details-apply/job-post-details-apply.component';
+import { JobDetailsInterviewComponent } from './components/job-details-interview/job-details-interview.component';
+import { JobPostDetailsAnswerQuestionComponent } from './pages/job-post-details-answer-question/job-post-details-answer-question.component';
+import { JobDetailsAnswerInterviewComponent } from './components/job-details-answer-interview/job-details-answer-interview.component';
 
 @NgModule({
   imports: [
@@ -39,6 +43,10 @@ import { ExploreUsersComponent } from './components/explore-users/explore-users.
     JobDetailsFeaturedJobsComponent,
     JobPostsListComponent,
     ExploreUsersComponent,
+    JobPostDetailsApplyComponent,
+    JobDetailsInterviewComponent,
+    JobPostDetailsAnswerQuestionComponent,
+    JobDetailsAnswerInterviewComponent,
   ]
 })
 export class HomeModule{ }

@@ -1,0 +1,40 @@
+<section class="card card-body mb-3">
+	<div class="p-4">
+		<label class="title-job-interview text-capitalize mb-3">Answer to Interview</label>
+
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-12 mb-4"
+			[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+				<div class="d-flex">
+					<div class="bg-interview me-3">
+						<img src="/assets/images/placeholder/icons/interview-logo.png" class="img-fluid">
+					</div>
+
+					<div class="mt-2 w-75">
+						<p class="title-question-number">
+							<img src="/assets/images/placeholder/icons/interview-logo-2.png" 
+							style="height: 14px" class="me-1">
+							Question
+						</p>
+						<h5 class="title-question-title">{{question}}</h5>
+
+						<!-- <div class="mb-3">
+						  <label for="interview-answer" class="form-label">Type your answer here*</label>
+						  <textarea class="form-control" id="interview-answer" rows="3"></textarea>
+						</div> -->
+
+						<div class="mb-3">
+						  <label for="interview-answer" class="form-label">Answer in video format (Max 3 minutes)</label>
+						  <button class="btn btn-take-interview"> 
+						  	<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-2">
+						  Record Now</button>
+						</div>
+
+
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

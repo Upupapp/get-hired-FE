@@ -26,7 +26,8 @@
 			Create Interview
 		</button>
 
-		<button class="btn flex-wrap d-flex btn-stepper-next" (click)="changeStep(4)"
+		<button class="btn flex-wrap d-flex btn-stepper-next" 
+		(click)="changeStep(4)"
 		style="border-radius: 1px !important;">
 			<div class="badge-step">4</div>
 			Preview Job Post
@@ -47,7 +48,9 @@
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 3">
-		<app-create-interview-questions></app-create-interview-questions>
+		<app-create-interview-questions
+		(jobPostInterviewQuestionsEvent)="updateObject($event, 'jobPostInterviewQuestions')"
+		[jobPostInterviewQuestions]="jobPostData?.jobPostInterviewQuestions"></app-create-interview-questions>
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 4">
@@ -56,7 +59,9 @@
 	</ng-container>
 
 	<section>
-		<div class="text-end">
+		<div class="text-end mt-3">
+			<button class="btn btn-save-draft me-2"  (click)="saveAsDraft()">Save as Draft</button>
+
 			<button class="btn btn-preview-job-post" (click)="changeStep(2)" *ngIf="stepper === 1">
 				Job Post Details
 			</button>
@@ -65,11 +70,11 @@
 				Create Interview
 			</button>
 
-			<button class="btn btn-preview-job-post" (click)="changeStep(3)" *ngIf="stepper === 3">
+			<button class="btn btn-preview-job-post" (click)="changeStep(4)" *ngIf="stepper === 3">
 				Preview Job Post
 			</button>
 
-			<button class="btn btn-preview-job-post" (click)="changeStep(4)" *ngIf="stepper === 4">
+			<button class="btn btn-preview-job-post" (click)="publishJobPost()" *ngIf="stepper === 4">
 				Publish Job Post
 			</button>
 		</div>

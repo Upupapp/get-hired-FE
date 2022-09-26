@@ -1,0 +1,29 @@
+<section class="card card-body mb-3">
+	<div class="p-4">
+		<label class="title-job-interview text-capitalize mb-3">Interview Questions</label>
+
+		<div class="row">
+			<ng-container 
+			*ngFor="let item of interview_questions; let i = index">
+				<div class="col-12 col-md-6 mb-4"
+				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+					<div class="d-flex">
+						<div class="bg-interview me-3">
+							<img src="/assets/images/placeholder/icons/interview-logo.png" class="img-fluid">
+						</div>
+
+						<div class="mt-2">
+							<p class="title-question-number">
+								<img src="/assets/images/placeholder/icons/interview-logo-2.png" 
+								style="height: 14px" class="me-1">
+								Question {{i + 1}}
+							</p>
+							<h5 class="title-question-title">{{item}}</h5>
+							<button class="btn btn-take-interview" routerLink="/job-post/answer-interview/{{data?.id}}/{{i + 1}}">Take Interview Now</button>
+						</div>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+	</div>
+</section>

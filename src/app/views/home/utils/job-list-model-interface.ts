@@ -13,6 +13,7 @@ export interface Job {
   job_type: string;
   job_description: string;
   job_duties: string;  
+  job_level: string;
   skill_requirements: string[];
   skill_experience: string[];
   education_requirements: string[];
@@ -50,6 +51,7 @@ const jobLists: Job[] = [
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
     category: "",  
+    job_level: "Intermediate: 2-3 Years Experience",
     badge: [
       {
         title: "Gender Equality",  
@@ -115,6 +117,7 @@ const jobLists: Job[] = [
         logo: 'badge-2'
       },   
     ],  
+    job_level: "Intermediate: 2-3 Years Experience",
     job_type: "Full-Time",
     work_setup: "Remote",  
     salary_min: 56000,
@@ -154,6 +157,7 @@ const jobLists: Job[] = [
         logo: 'badge-3'
       },
     ],  
+    job_level: "Intermediate: 2-3 Years Experience",
     job_type: "Part-Time",
     work_setup: "Remote",  
     salary_min: 36000,
@@ -198,6 +202,7 @@ const jobLists: Job[] = [
         logo: 'badge-3'
       },
     ],   
+    job_level: "Intermediate: 2-3 Years Experience",
     job_type: "Part-Time",
     work_setup: "Remote",  
     salary_min: 20000,

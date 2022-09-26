@@ -44,7 +44,7 @@
 
 .form-control{
 	background: #FFFFFF;
-	min-height: 50px;
+	height: 46px;
 	border: 1px solid #AFBCC6 !important;
 }
 
@@ -293,4 +293,14 @@ label{
 .active{
 	background: #0C264D;
 	color: white !important;
+}
+
+.btn-create-interview{
+	background: #FF7062;
+	border-radius: 10px;
+	color: white; 
+	border-radius: 6px;
+	padding: 10px 35px;
+	margin-left: 10px;
+	min-width: 200px
 }

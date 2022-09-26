@@ -56,7 +56,7 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Create an Interview', icon: 'create-interview.png', class: 'interviews', route: 'create-interview'
+      title: 'Interview Settings', icon: 'create-interview.png', class: 'interviews', route: 'interview-settings'
     },
 
     {

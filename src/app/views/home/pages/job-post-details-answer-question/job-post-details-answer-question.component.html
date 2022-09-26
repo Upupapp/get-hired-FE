@@ -1,0 +1,48 @@
+<app-job-details-banner
+[data]="selectedJobPost"
+[screenSize]="screenSize"></app-job-details-banner>
+
+
+<div class="container-fluid px-3 px-lg-5 mb-4" style="margin-top: -100px">
+	<div class="row">
+		<div class="col-12 col-md-12 col-lg-3">
+			<app-job-details-sidecard
+			[data]="selectedJobPost"
+			[company]="selectedCompany"
+			[screenSize]="screenSize"></app-job-details-sidecard>
+		</div>
+
+		<div class="col-12 col-md-12 col-lg-9">
+			<app-job-details-answer-interview></app-job-details-answer-interview>
+		</div>
+	</div>
+
+
+	<div class="card card-body mt-3">
+		<div class="row">
+			<div class="col-12">
+				<div class="job-requirements mb-3">
+					<div class="row">
+						<div class="col-12 col-md-12 col-lg-6 offset-lg-3">
+							<h5 class="title-job-description mb-4 text-center">
+								<strong class="ms-2">Featured Jobs</strong>
+								<br>
+								<span>
+									At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati
+								</span>
+							</h5>
+						</div>
+					</div>
+
+					<div class="px-lg-5">
+						<app-job-details-featured-jobs
+						[data]="selectedJobPost"
+						[jobLists]="jobLists"></app-job-details-featured-jobs>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>

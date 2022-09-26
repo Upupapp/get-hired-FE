@@ -68,7 +68,7 @@
                 <span class="dropdown-item d-flex" >
                   <ng-container  *ngIf="loggedUserData?.employer">
                     <img src="/assets/images/face-6.jpg" class="img-avatar me-3">
-                    <div routerLink="/company">
+                    <div (click)="navigateTo('/company')">
                       <h5 class="title-user">James Cooper</h5>
                       <p class="title-position">Employer</p>
                     </div>
@@ -76,7 +76,7 @@
 
                   <ng-container  *ngIf="loggedUserData?.applicant">
                     <img src="/assets/images/face-3.jpg" class="img-avatar me-3">
-                    <div routerLink="/applicant">
+                    <div (click)="navigateTo('/applicant/dashboard')">
                       <h5 class="title-user">Jordan Clark</h5>
                       <p class="title-position">Applicant</p>
                     </div>

@@ -1,18 +1,14 @@
 <section style="transition: all 0.4s ease !important;">
-	<!-- TITLE -->
-	<!-- <div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-		<h5 class="main-title">Post Job</h5>
-	</div> -->
-
 	<div class="mt-4 row">
 		<div class="col-12 col-md-6"
 		[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
 			<label>Categories</label>
-			<select class="form-select" [(ngModel)]="selectedCategory">
+			<select class="form-select" [(ngModel)]="selectedCategory"
+
+			(ngModelChange)="selectCategory(selectedCategory)">
 				<ng-container *ngFor="let item of categoriesFiltered; let i = index">
 					<option [value]="item?.title">{{item?.title}}</option>
 				</ng-container>
-			  
 			</select>
 		</div>
 
@@ -58,7 +54,7 @@
 
 			<div class="form-group search-group d-flex">
 				<input type="text" name="search" class="form-control" placeholder="ex. Data Encoding, Ruby, JavaScript" [(ngModel)]="skillModel"
-				(keyup.enter)="this.skill_requirements?.length < 3 ? addItem($event, this.skill_requirements, 'skill_requirements'): ''">
+				(keyup.enter)="this.skill_requirements?.length < 10 ? addItem($event, this.skill_requirements, 'skill_requirements'): ''">
 			</div>
 
 			<div class="mt-3">
@@ -126,7 +122,7 @@
 						<label>Budget</label>
 						
 						<div class="row">
-							<div class="col-5 form-group">
+							<div class="col-4 form-group">
 								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 25,000" [(ngModel)]="budget.min" 
 								(ngModelChange)="rebuildObject('salary_min', this.budget?.min)">
 							</div>
@@ -135,9 +131,13 @@
 								<h5 class="title-label-sub mt-2">To</h5>
 							</div>
 
-							<div class="col-5 form-group">
+							<div class="col-4 form-group">
 								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 35,500" [(ngModel)]="budget.max" 
 								(ngModelChange)="rebuildObject('salary_max', this.budget?.max)">
+							</div>
+
+							<div class="col-2 text-center">
+								<label class="label-rate mt-2">/ {{selectedRates?.rate}}</label>
 							</div>
 						</div>
 					</div>
@@ -147,25 +147,19 @@
 
 		<div class="col-12 col-md-6 mb-3">
 			<div class="rate-selection">
-				<h5 class="title-rate-selection">Monthly</h5>
+				<h5 class="title-rate-selection">Project Duration</h5>
 				
-				<h6 class="title-rate-range">Start</h6>
+				<h6 class="title-rate-range">Start Date</h6>
 				<div class="row">
 					<div class="col-12 col-lg-6">
 						<select class="form-select">
-						  	<option selected>August</option>
-						  	<option>September</option>
-						  	<option>October</option>
-						  	<option>November</option>
+						  	<option *ngFor="let month of months">{{month}}</option>
 						</select>
 					</div>
 
 					<div class="col-12 col-lg-3">
 						<select class="form-select">
-						  	<option selected>23</option>
-						  	<option>24</option>
-						  	<option>25</option>
-						  	<option>26</option>
+						  	<option *ngFor="let day of days">{{day}}</option>
 						</select>
 					</div>
 
@@ -179,14 +173,11 @@
 					</div>
 				</div>
 
-				<h6 class="title-rate-range mt-3">Deadline</h6>
+				<h6 class="title-rate-range mt-3">End Date</h6>
 				<div class="row">
 					<div class="col-12 col-lg-6">
 						<select class="form-select">
-						  	<option selected>August</option>
-						  	<option>September</option>
-						  	<option>October</option>
-						  	<option>November</option>
+						  	<option *ngFor="let month of months">{{month}}</option>
 						</select>
 					</div>
 

@@ -8,29 +8,34 @@
 	[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
 		<!-- OTHER REQUIREMENTS -->
 		<div class="mt-2 row">
-			<div class="col-12 col-md-8 mb-3">
+			<div class="col-12 col-md-12 mb-3 py-3">
 				<div class="col-12">
 					<h5 class="title-label">Create Interview Questions</h5>
 				</div>
 
 				<p class="title-label-sub mb-3">Add Interview Questions for your Job Post</p>
 
-				<div class="form-group">
-					<input type="text" name="search" class="form-control" placeholder="What have been your key as a web designer?"
-					(keyup.enter)="addItem($event, this.interviewQuestions)">
+				<div class="form-group d-flex">
+					<input type="text" name="search" class="form-control" 
+					[(ngModel)]="interviewInput"
+					placeholder="i.e. What have been your key as a web designer?"
+					(keyup.enter)="addItem($event, this.interview_questions, 'interview_questions')">
+
+					<button class="btn btn-create-interview" 
+					(click)="addItem(interviewInput, this.interview_questions, 'interview_questions')">Add Question</button>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<section class="card card-body mt-3" *ngFor="let item of interviewQuestions; let i = index"
+	<section class="card card-body mt-3" *ngFor="let item of interview_questions; let i = index"
 	[@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
 		<!-- OTHER REQUIREMENTS -->
 		<div class="mt-2 row">
 			<div class="col-12">
 				<img src="/assets/images/placeholder/icons/remove-gray.png" 
 				style="height: 15px; margin-top: 3px; cursor: pointer;" class="ms-2 float-end"
-				(click)="removeItem(item, this.interviewQuestions)">
+				(click)="removeItem(item, this.interview_questions, 'interview_questions')">
 
 				<p class="title-label-sub">Question {{i + 1}}</p>
 				<div class="col-12">

@@ -79,16 +79,19 @@ export class CreateJobPostStepComponent implements OnInit {
   public rates: any[] = [
     {
       title: "Monthly",  
+      rate: "month",
       icon: '/rate-monthly'
     },
 
     {
       title: "Daily",  
+      rate: "day",
       icon: '/rate-daily'
     },
 
     {
       title: "Hourly",  
+      rate: "hour",
       icon: '/rate-24'
     },
   ];
@@ -101,9 +104,29 @@ export class CreateJobPostStepComponent implements OnInit {
     min: 0,  
     max: 0
   }
+  public project_duration = {
+    start_date: new Date(),
+    end_date: new Date()
+  }
 
   public skillModel: string = "";  
   public tagModel: string = "";
+  public months: string[] = [
+    "January",  
+    "February",  
+    "March",
+    "April",
+    "May",
+    "June",  
+    "July",  
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  public days: number[] = new Array(31).fill(1).map((el,i) => i + 1);
 
   constructor() { }
 
@@ -115,6 +138,14 @@ export class CreateJobPostStepComponent implements OnInit {
     });
     console.log(this.jobPostCategory)
   }
+
+
+  generateProjectDuration(date){
+
+  }
+
+
+
 
 
   selectCategory(item){

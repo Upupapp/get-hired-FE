@@ -14,7 +14,7 @@ export class JobPostDetailStepComponent implements OnInit {
   public workSetup: string[] = ["Hybrid", "Remote", "Onsite"];
   public workSetupSelected: string = "";
   public jobType: string[] = ["Full-time", "Part-time"];
-  public jobTypeSelected: string = "";
+  public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience"]
   public badges: any[] = [
     {
       id: "career-growth",
@@ -51,7 +51,6 @@ export class JobPostDetailStepComponent implements OnInit {
       title: "Flexitime",
       logo: "badge-2.png"
     },
-    
   ];
 
   public categories: any[] = [
@@ -125,22 +124,11 @@ export class JobPostDetailStepComponent implements OnInit {
   public job_description: string = '';
   public job_duties: string = '';
   public badgeSelected: any[] = [];
-  public skill_experience: any[] = [
-    "Looking to add a pricing calculator",
-    "Website Search no more",
-    "User-based pricing calculator for you", 
-    "Is your business operating in multiple countries",
-  ];
-
-  public education_requirements: any[] = [
-    "Bachelor’s degree in Economics, Marketing, Business, or a related discipline is highly desired", 
-    "2+ years of relevant work experience in buying", 
-    "An equivalent combination of education, training and experience may be accepted."
-  ];
-
-  public other_requirements: string[] =  ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"];
+  public skill_experience: any[] = [];
+  public education_requirements: any[] = [];
+  public other_requirements: string[] =  [];
+  public job_level: string = "";
   
-
   constructor() { }
 
   ngOnInit(): void {

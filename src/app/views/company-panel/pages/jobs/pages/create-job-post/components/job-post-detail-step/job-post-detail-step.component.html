@@ -5,6 +5,41 @@
 	</div>
 
 	<section class="card card-body mb-4">
+
+		<div [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+			<div class="title-container mb-3">
+				<h5 class="title-label">Job Title</h5>
+				<div class="form-group">
+					<input type="text" name="job-title" class="form-control" placeholder="Lead UI/UX Designer" [(ngModel)]="title" (ngModelChange)="rebuildObject('title', title)">
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-md-6 mb-3"
+				[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+					<label>Job Type</label>
+					<select class="form-select" [(ngModel)]="job_type" 
+					(ngModelChange)="rebuildObject('job_type', job_type)">
+						<ng-container *ngFor="let item of jobType; let i = index">
+							<option [value]="item">{{item}}</option>
+						</ng-container>
+					  
+					</select>
+				</div>
+
+				<div class="col-12 col-md-6 mb-3"
+				[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+					<label>Job Level</label>
+					<select class="form-select" [(ngModel)]="job_level" 
+					(ngModelChange)="rebuildObject('job_level', job_level)">
+						<ng-container *ngFor="let item of jobLevel; let i = index">
+							<option [value]="item">{{item}}</option>
+						</ng-container>
+					</select>
+				</div>
+			</div>
+		</div>
+
 		<!-- WORK SETUP -->
 		<div class="title-container mb-2">
 			<h5 class="title-label"
@@ -31,7 +66,7 @@
 
 		<!-- Location -->
 		<div class="mt-2 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-			<div class="col-12 col-md-6 mb-3">
+			<div class="col-12 col-md-8 mb-3">
 				<label>Address</label>
 				<p class="title-label-sub mb-3">This is your main office location/address.</p>
 
@@ -85,42 +120,14 @@
 		<hr style="border-style: dashed">
 		
 		<section class="px-lg-3">
-			<!-- TYPE -->
-			<div class="title-container my-3" 
-			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
-				<h5 class="title-label">Job Type</h5>
-				 
-				<div class="row">
-					<div class="col-12 col-md-6 mb-3 col-lg-4"
-					*ngFor="let item of jobType">
-						<button class="btn btn-work-setup w-100 text-start hvr-hang"
-						(click)="jobTypeSelected = item; rebuildObject('job_type', item)"
-						[ngClass]="item === jobTypeSelected ? 'active': ''">{{item}}
-							<img src="/assets/images/placeholder/icons/check-blank.png" 
-							*ngIf="item !== jobTypeSelected"
-							class="float-end" style="width: 20px;">
-
-							<img src="/assets/images/placeholder/icons/check-white.png" 
-							*ngIf="item === jobTypeSelected"
-							class="float-end" style="width: 20px;">
-						</button>
-					</div>
-				</div>
-			</div>
-
-			<div class="title-container mb-3">
-				<h5 class="title-label">Add a Title</h5>
-				<div class="form-group">
-					<input type="text" name="job-title" class="form-control" placeholder="Lead UI/UX Designer" [(ngModel)]="title" (ngModelChange)="rebuildObject('title', title)">
-				</div>
-			</div>
+			
 
 			<div class="title-container mb-3" 
 			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
 				<h5 class="title-label">Job Description</h5>
 				<div class="form-group">
 					<textarea name="job-title" class="form-control" rows="6"
-					placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+					placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi u"
 					[(ngModel)]="job_description" (ngModelChange)="rebuildObject('job_description', job_description)"></textarea> 
 				</div>
 			</div>
@@ -131,7 +138,7 @@
 				<p class="title-label-sub mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod <br>tempor incididunt ut labore et dolore magna aliqua.</p>
 				<div class="form-group">
 					<textarea name="job-title" class="form-control" rows="6"
-					placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas."
+					placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. "
 					[(ngModel)]="job_duties" (ngModelChange)="rebuildObject('job_duties', job_duties)"></textarea> 
 				</div>
 			</div>

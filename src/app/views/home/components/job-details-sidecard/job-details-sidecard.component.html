@@ -71,6 +71,38 @@
 
 				<div class="bg-bluish mt-4">
 					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/experience.png" 
+						style="height: 20px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Job Level</h5>
+							<p class="title-job-details-description">{{data?.job_level}}</p>
+						</div>
+					</div>
+
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/company-job-title.png" 
+						class="mt-1" 
+						style="height: 17px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Rate</h5>
+							<p class="title-job-details-description">{{data?.job_type}}</p>
+						</div>
+					</div>
+
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/company-salary.png" 
+						class="mt-1" 
+						style="height: 18px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Salary</h5>
+							<p class="title-job-details-description">PHP {{data?.salary_min | number:'1.0':'en-US' }} - PHP {{data?.salary_max | number:'1.0':'en-US' }}</p>
+						</div>
+					</div>
+
+					<div class="d-flex mb-3">
 						<img src="/assets/images/placeholder/icons/company-date-posted.png" 
 						class="mt-1" 
 						style="height: 20px;">
@@ -103,44 +135,15 @@
 						</div>
 					</div>
 
-					<div class="d-flex mb-3">
-						<img src="/assets/images/placeholder/icons/company-job-title.png" 
-						class="mt-1" 
-						style="height: 17px;">
+					
 
-						<div class="ms-4 ps-1 text-start">
-							<h5 class="title-job-details">Job Title</h5>
-							<p class="title-job-details-description">{{data?.title}}</p>
-						</div>
-					</div>
-
-					<div class="d-flex mb-3">
-						<img src="/assets/images/placeholder/icons/company-job-title.png" 
-						class="mt-1" 
-						style="height: 17px;">
-
-						<div class="ms-4 ps-1 text-start">
-							<h5 class="title-job-details">Rate</h5>
-							<p class="title-job-details-description">{{data?.job_type}}</p>
-						</div>
-					</div>
-
-					<div class="d-flex mb-3">
-						<img src="/assets/images/placeholder/icons/company-salary.png" 
-						class="mt-1" 
-						style="height: 18px;">
-
-						<div class="ms-4 ps-1 text-start">
-							<h5 class="title-job-details">Salary</h5>
-							<p class="title-job-details-description">PHP {{data?.salary_min | number:'1.0':'en-US' }} - PHP {{data?.salary_max | number:'1.0':'en-US' }}</p>
-						</div>
-					</div>
+					
 
 					
 				</div>
 
 				<div class="d-flex my-3">
-					<button class="btn btn-apply-now w-100">Apply now</button>
+					<button class="btn btn-apply-now w-100" (click)="navigateToInterview()">Apply now</button>
 
 					<img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2" style="height: 45px; cursor: pointer;">
 				</div>

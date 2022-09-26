@@ -30,4 +30,11 @@ export class CreateJobPostComponent implements OnInit {
     console.log(data, field, this.jobPostData)
   }
 
+  publishJobPost(){
+    console.log(this.jobPostData)
+  }
+
+  saveAsDraft(){
+    console.log(this.jobPostData)
+  }
 }

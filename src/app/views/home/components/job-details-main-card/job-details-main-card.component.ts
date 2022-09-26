@@ -38,4 +38,14 @@ export class JobDetailsMainCardComponent implements OnInit {
     if(this.req) this.req.unsubscribe();
   }
 
+  navigateToInterview(){
+    if(this.loggedInApplicant){
+      this.router.navigate([`/job-post/apply/${this.data?.id}`])
+    }
+
+    else {
+      this.router.navigate(['/signup'])
+    }
+  }
+
 }

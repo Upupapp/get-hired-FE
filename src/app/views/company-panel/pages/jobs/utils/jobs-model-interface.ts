@@ -11,6 +11,7 @@ export interface Job {
   category: string;  
   badge: Badge[];  
   job_type: string;
+  job_level?: string;
   job_description: string;
   job_duties: string;  
   skill_requirements: string[];
@@ -26,7 +27,8 @@ export interface Job {
   tags: string[];
   address: string;
   date_posted: Date;  
-  expiration_date: Date;  
+  expiration_date: Date;
+  interview_questions?: any[];  
   company_id: number;
   status: string;
 }

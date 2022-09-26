@@ -1,0 +1,43 @@
+.card{
+	// /background: #FFFFFF;
+	// /border: 1px solid rgba(231, 231, 231, 0.65);
+	/* shawos */
+
+	// /box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
+	border: none;
+	border-radius: 10px;
+	padding: 40px;
+}
+
+.title-job-description{
+
+	font-family: 'Poppins';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 21px;
+
+	color: #666666;
+
+	strong{
+		color: #000 !important;
+		font-weight: 500 !important;
+		font-size: 18px !important;
+		line-height: 35px !important;
+	}
+
+	a{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 21px;
+		text-decoration: none;
+		margin-top: 7px !important;
+		color: #5B8FDE !important;
+
+		&:hover{
+			text-decoration: underline;
+		}
+	}
+}

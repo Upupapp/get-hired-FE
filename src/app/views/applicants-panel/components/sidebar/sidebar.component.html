@@ -1,0 +1,51 @@
+<div class="sidebar-details">
+	<div style="position: relative; height: 100vh;">
+		<div class="card card-body bg-logo text-center d-flex align-items-center" 
+		style="height: 120px">
+			<img src="/assets/images/placeholder/logo.png" class="hvr-grow img-logo img-fluid"
+			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}">
+		</div>
+
+		<div class="card card-body p-3 mt-3 bg-menu"  
+		[@animate]="{value:'*', params:{ scale: '0.95', delay:'200ms' }}">
+			<ng-container *ngFor="let item of sidebarItems">
+				<div class="w-100 d-flex mb-3"
+				[ngClass]="location?.match(item?.route) && !location?.match('expired') 
+				? 'sidebar-title-active' 
+				: location?.match('expired') && item?.route === 'expired-jobs' 
+				? 'sidebar-title-active'
+				: ''"
+
+				(click)="changeRoute('/applicant/' + item?.route)">
+					<div class="sidebar-icon ms-lg-3" style="width: 20px">
+						<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.icon" 
+						[ngClass]="item?.class">
+					</div>
+					<h5 class="sidebar-title">{{item?.title}}</h5>
+				</div>
+			</ng-container>
+		</div>
+
+		<div class="px-2">
+			<div class="card card-body py-4 bg-user"
+			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
+				<div class="d-flex">
+					<img src="/assets/images/face-3.jpg" class="img-avatar me-2">
+					
+					<div class="mt-1">
+						<h5 class="img-avatar-full-name text-capitalize">Jordan Clark</h5>
+						<h5 class="img-avatar-full-email text-truncate">UpUpTech</h5>
+					</div>
+				</div>
+
+				<button class="btn img-avatar-button mt-2">Change Profile</button>
+			</div>
+
+			<h5 class="text-center copy-right mt-4">
+				© 2022 Gethired
+			</h5>
+		</div>
+
+		
+	</div>
+</div>
