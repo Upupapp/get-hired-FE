@@ -3,6 +3,12 @@
 	border: none;
 }
 
+.edit-details{
+	&:hover{
+		text-decoration: underline;
+	}
+}
+
 .btn-save-later{
 	font-family: 'Poppins';
 	font-style: normal;

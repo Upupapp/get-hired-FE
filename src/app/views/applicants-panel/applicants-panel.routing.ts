@@ -7,6 +7,7 @@ import { JobsOpeningComponent } from './pages/jobs-opening/jobs-opening.componen
 import { InboxComponent } from './pages/inbox/inbox.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { UpdateProfileComponent } from './pages/update-profile/update-profile.component';
 
 export const ApplicantsPanelRoutes: Routes = [
   {
@@ -37,7 +38,12 @@ export const ApplicantsPanelRoutes: Routes = [
       {
         path: 'profile',  
         component: ProfileComponent
-      },    
+      },   
+
+      {
+        path: 'edit/details',  
+        component: UpdateProfileComponent
+      },  
 
       {
         path: 'settings',  

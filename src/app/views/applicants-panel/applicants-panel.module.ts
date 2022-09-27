@@ -20,6 +20,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AvatarComponent } from './pages/profile/components/avatar/avatar.component';
 import { DetailsComponent } from './pages/profile/components/details/details.component';
+import { UpdateProfileComponent } from './pages/update-profile/update-profile.component';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { DetailsComponent } from './pages/profile/components/details/details.com
     SettingsComponent,
     AvatarComponent,
     DetailsComponent,
+    UpdateProfileComponent,
   ]
 })
 export class ApplicantsPanelModule{ }
