@@ -1,0 +1,34 @@
+<div class="card card-body mb-3" 
+[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+	<div class="banner-thumbnail">
+		<img [src]="data?.banner_thumbnail" class="img img-fluid imb-banner">
+	</div>
+
+	<div class="p-3 py-3">
+		<h5 class="title-job-title">{{data?.title}}</h5>
+		<p class="title-job-description">{{data?.job_description}}</p>
+
+		<div class="d-flex">
+			<h5 class="d-flex title-details me-3 ms-1">
+				<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;"> 
+				{{data?.job_type}}
+			</h5>
+
+			<h5 class="d-flex title-details me-2">
+				<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;"> 
+				{{data?.work_setup}}
+			</h5>
+		</div>
+
+		<div class="d-flex mt-1">
+			<h5 class="d-flex title-details me-3 ms-1">
+				<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;"> 
+				PHP {{data?.salary_min | number:'1.0':'en-US' }} - PHP {{data?.salary_max | number:'1.0':'en-US' }}
+			</h5>
+		</div>
+
+		<div class="mt-2 ms-1">
+			<p class="title-posted">5 Days Ago</p>
+		</div>
+	</div>
+</div>
