@@ -105,7 +105,7 @@ export class ApplicantSigninComponent implements OnInit {
         localStorage.setItem('token_authorization', data.token.replace('Bearer ', ''));
         localStorage.setItem('refreshToken', result.refreshToken);
         
-        if(result?.teacher.email !== 'dapito.sherwin@yahoo.com'){
+        if(result?.teacher.email !== 'gethired.employer@moveup.app'){
           localStorage.setItem('userData', JSON.stringify({
             _id: result?.teacher._id,
             name: result?.teacher.name,

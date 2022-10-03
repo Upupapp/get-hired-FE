@@ -1,40 +1,193 @@
 <section class="card card-body mb-3">
-	<div class="p-4">
-		<label class="title-job-interview text-capitalize mb-3">Answer to Interview</label>
-
+	<div class="p-4 pb-0">
 		<div class="row">
-			<div class="col-12 col-md-12 col-lg-12 mb-4"
+			<!-- BANNER LEFT -->
+			<div class="col-12 col-md-12 col-lg-8 mb-4"
 			[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
-				<div class="d-flex">
-					<div class="bg-interview me-3">
-						<img src="/assets/images/placeholder/icons/interview-logo.png" class="img-fluid">
+				<div class="record-container" *ngIf="!startRecording">
+					<div class="get-hired-logo">
+						<img src="/assets/images/placeholder/logo.png">
 					</div>
 
+					<img src="/assets/images/placeholder/record-interview-placeholder.png" class="placeholder-img">
+
+					<button class="btn btn-take-interview" (click)="startRecording = true"> 
+						<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-2">
+						Start Recording
+					</button>
+				</div>
+
+				<div class="record-container" *ngIf="startRecording">
+					<div class="get-hired-logo">
+						<img src="/assets/images/placeholder/logo.png">
+					</div>
+				</div>
+			</div>
+
+			<!-- BANNER RIGHT -->
+			<div class="col-12 col-md-12 col-lg-4 mb-4 pt-lg-4 question-container"
+			[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+				<div class="d-flex mb-4">
+					<div>
+						<img src="/assets/images/face-3.jpg" class="img-avatar">
+					</div>
+
+					<div class="mt-2">
+						<h5 class="title-applicant">{{ loggedUserData?.name }}</h5>
+
+						<p class="title-applicant-email">Angular Developer</p>
+						<p class="title-applicant-email">{{ loggedUserData?.email }}</p>
+						
+					</div>
+				</div>
+
+				<hr style="border-style: dashed;">
+				
+				<div class="d-flex mt-4">
+					<div class="d-flex w-50">
+						<img src="/assets/images/placeholder/icons/interview-type.png" style="height: 35px;" class="me-3">
+						<div class="mb-3">
+							<label for="interview-answer">
+								<strong>Duration:</strong>
+							</label>
+							3 minutes
+						</div>
+					</div>
+
+					<div class="d-flex w-50">
+						<img src="/assets/images/placeholder/icons/interview-type-2.png" style="height: 35px;" class="me-3">
+						<div class="mb-3">
+							<label for="interview-answer">
+								<strong>Type:</strong>
+							</label>
+							Video Interview
+						</div>
+					</div>
+				</div>
+
+
+				<div class="d-flex bg-question">
 					<div class="mt-2 w-75">
 						<p class="title-question-number">
 							<img src="/assets/images/placeholder/icons/interview-logo-2.png" 
 							style="height: 14px" class="me-1">
-							Question
+							Question ({{this.getQuestionIndex(question)}} / 
+							{{interview_questions?.length + 2}})
 						</p>
 						<h5 class="title-question-title">{{question}}</h5>
 
-						<!-- <div class="mb-3">
-						  <label for="interview-answer" class="form-label">Type your answer here*</label>
-						  <textarea class="form-control" id="interview-answer" rows="3"></textarea>
-						</div> -->
-
-						<div class="mb-3">
-						  <label for="interview-answer" class="form-label">Answer in video format (Max 3 minutes)</label>
-						  <button class="btn btn-take-interview"> 
-						  	<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-2">
-						  Record Now</button>
-						</div>
-
-
-						
+					
 					</div>
+				</div>
+
+				<div class="justify-content-center align-items-center mt-4 d-flex">
+					<button class="btn btn-upload me-2">Upload</button>
+					<button class="btn btn-record"><img src="/assets/images/placeholder/arrow-right-white.png" style="height: 10px" class="me-2">Skip Interview</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+<!-- INTERVIEW QUESTIONS -->
+<section class="card card-body my-3">
+	<div class="p-4">
+		<div class="d-flex">
+			<label class="title-job-interview text-capitalize mb-3 me-3" 
+			[ngClass]="interviewTab === 'questions' ? 'active' : ''"
+			(click)="interviewTab = 'questions'">Interview Questions</label>
+
+			<label class="title-job-answer text-capitalize mb-3"
+			[ngClass]="interviewTab === 'answers' ? 'active' : ''"
+			(click)="interviewTab = 'answers'">Interview Answers</label>
+		</div>
+
+		<ng-container *ngIf="interviewTab === 'questions'">
+			<section class="interview-card card-body p-2 px-1 mb-1" 
+				id="interview-list"
+				*ngFor="let item of interview_questions; let i = index">
+				<!-- INTERVIEWS -->
+				<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}">
+					<div class="col-12">
+						<div class="float-end">
+							<div class="mt-3 me-2">
+								<button class="btn btn-upload me-2">Upload</button>
+
+								<button class="btn btn-record"
+								routerLink="/job-post/answer-interview/{{data?.id}}/{{i + 1}}"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record Interview</button>
+							</div>
+						</div>
+
+						<div class="d-flex">
+							<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+								<img src="/assets/images/placeholder/icons/interview-logo-4.png">
+							</div>
+
+							<div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
+								<img src="/assets/images/placeholder/icons/interview-logo-4-active.png">
+							</div>
+
+							<div class="mt-3">
+								<p class="title-label-sub">
+									<img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+									Question {{i + 2}}
+								</p>
+								<h5 class="title-label">{{item}}</h5>
+								<p class="title-label-sub-duration"><span>Estimated Duration:</span> 3 minutes</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</ng-container>
+
+		<ng-container *ngIf="interviewTab === 'answers'">
+			<section class="interview-card card-body p-2 px-1 mb-1" 
+				id="interview-list"
+				*ngFor="let item of interview_answers; let i = index">
+				<!-- INTERVIEWS -->
+				<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}">
+					<div class="col-12">
+						<div class="float-end">
+							<div class="mt-3 me-2">
+								<button class="btn btn-upload me-2">Upload</button>
+
+								<button class="btn btn-record"
+								routerLink="/job-post/answer-interview/{{data?.id}}/{{i + 1}}"><img src="/assets/images/placeholder/icons/retake-interview.png" style="height: 10px" class="me-2">Retake</button>
+							</div>
+						</div>
+
+						<div class="d-flex">
+							<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+								<img src="/assets/images/placeholder/icons/interview-logo-4.png">
+							</div>
+
+							<div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
+								<img src="/assets/images/placeholder/icons/interview-logo-4-active.png">
+							</div>
+
+							<div class="mt-3">
+								<p class="title-label-sub">
+									<img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+									Answer {{i + 1}}
+								</p>
+								<h5 class="title-label">{{item}}</h5>
+								<p class="title-label-sub-duration"><span>Date Recorded:</span> September 21, 2022 4:00pm</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</ng-container>
+	</div>
+</section>
+
+<div class="d-flex align-items-end justify-content-end">
+	<button class="btn btn-draft me-3" >
+		Save as Draft
+	</button>
+
+	<button class="btn btn-submit" >
+		Finalize Application
+	</button>
+</div>

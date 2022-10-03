@@ -11,7 +11,7 @@ export class CreateInterviewComponent implements OnInit {
   @Input() jobPostInterviewQuestions: any;
   @Output() jobPostInterviewQuestionsEvent: EventEmitter<any> = new EventEmitter<any>();
 
-  public interview_questions: any[] = [];
+  public interview_questions: any[] = ["How long have you been using angular?", "Are You Available For Part-time or Full-time?"];
   public interviewInput: string = "";
 
   constructor() { }

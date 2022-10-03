@@ -10,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class JobDetailsAnswerInterviewComponent implements OnInit {
   @Input() data: any;
-  
+  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public interview_questions: any[] = [
     "How long have you been using Angular?", 
     "Have you use ngRx/ngsx and rxJS before?",
@@ -19,12 +19,25 @@ export class JobDetailsAnswerInterviewComponent implements OnInit {
     "How did this job post interests you?"
   ];
 
-  public question: any = this.interview_questions[1];
+  public interview_answers: any[] = [
+    "Are you willing to learn ReactJS on other projects?"
+  ];
+
+  public question: any = "How long have you been using Angular?"
+  public startRecording: boolean = false;
+  public interviewTab: string = 'questions';
 
   constructor(public router: Router,  
-    public route: ActivatedRoute) { }
+    public route: ActivatedRoute) { 
+    console.log(this.data)
+  }
 
   ngOnInit(): void {
+    this.interview_questions = [...this.interview_questions].filter(el => el !== this.question)
+  }
+
+  getQuestionIndex(question){
+    return [this.question, this.interview_questions].findIndex(el => el === question) + 1;
   }
 
 }

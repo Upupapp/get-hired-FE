@@ -11,21 +11,26 @@ export interface Job {
   category: string;  
   badge: Badge[];  
   job_type: string;
+  job_level?: string;
   job_description: string;
   job_duties: string;  
-  job_level: string;
   skill_requirements: string[];
   skill_experience: string[];
   education_requirements: string[];
   other_requirements: string[];
   work_setup: string;  
   salary_min: number;
-  salary_max: number;  
+  salary_max: number; 
+  rates?: any;
+  rates_start_date?: any;  
+  rates_end_date?: any; 
   tags: string[];
   address: string;
   date_posted: Date;  
-  expiration_date: Date;  
+  expiration_date: Date;
+  interview_questions?: any[];  
   company_id: number;
+  status: string;
 }
 
 export interface TableHeader {
@@ -50,7 +55,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-1.png",  
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
-    category: "",  
+    category: "Development & IT",  
     job_level: "Intermediate: 2-3 Years Experience",
     badge: [
       {
@@ -64,11 +69,11 @@ const jobLists: Job[] = [
       },  
 
       {
-        title: "Gym and Health Membership",  
+        title: "Gym & Health Membership",  
         logo: 'badge-3'
       },  
 
-      {
+      /*{
         title: "Friendly Team Members",  
         logo: 'badge-2'
       },  
@@ -76,7 +81,7 @@ const jobLists: Job[] = [
       {
         title: "Competetive Salary",  
         logo: 'badge-1'
-      },  
+      },  */
     ],  
     job_type: "Full-Time",
     work_setup: "Hybrid",  
@@ -97,6 +102,11 @@ const jobLists: Job[] = [
     other_requirements: ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"],
     date_posted: new Date(),  
     expiration_date: new Date(), 
+    interview_questions: [
+      "How long have you been using angular?",
+      "Are You Available For Part-time or Full-time?"
+    ],
+    status: 'Active'
   },
 
   {
@@ -105,7 +115,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-2.png",  
     title: "Angular Developer",
     company: "Moveup Wev Inc.",  
-    category: "",  
+    category: "Development & IT",  
     badge: [
       {
         title: "Gender Equality",  
@@ -137,6 +147,11 @@ const jobLists: Job[] = [
     other_requirements: ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"],
     date_posted: new Date(),  
     expiration_date: new Date(), 
+    interview_questions: [
+      "How long have you been using angular?",
+      "Are You Available For Part-time or Full-time?"
+    ],
+    status: 'Active'
   },
 
   {
@@ -145,7 +160,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-3.png",  
     title: "SQL Developer",
     company: "Moveup Wev Inc.",  
-    category: "",  
+    category: "Development & IT",  
     badge: [
       {
         title: "Worklife Balance",  
@@ -153,7 +168,7 @@ const jobLists: Job[] = [
       },  
 
       {
-        title: "Gym and Health Membership",  
+        title: "Gym & Health Membership",  
         logo: 'badge-3'
       },
     ],  
@@ -177,6 +192,11 @@ const jobLists: Job[] = [
     other_requirements: ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"],
     date_posted: new Date(),  
     expiration_date: new Date(), 
+    interview_questions: [
+      "How long have you been using angular?",
+      "Are You Available For Part-time or Full-time?"
+    ],
+    status: 'Active'
   },
 
   {
@@ -185,7 +205,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-4.png",  
     title: "Data Analyst",
     company: "Moveup Wev Inc.",  
-    category: "",  
+    category: "Development & IT",  
     badge: [
       {
         title: "Gender Equality",  
@@ -198,7 +218,7 @@ const jobLists: Job[] = [
       },  
 
       {
-        title: "Gym and Health Membership",  
+        title: "Gym & Health Membership",  
         logo: 'badge-3'
       },
     ],   
@@ -222,6 +242,11 @@ const jobLists: Job[] = [
     other_requirements: ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"],
     date_posted: new Date(),  
     expiration_date: new Date(),  
+    interview_questions: [
+      "How long have you been using angular?",
+      "Are You Available For Part-time or Full-time?"
+    ],
+    status: 'Active'
   },
 
 ];

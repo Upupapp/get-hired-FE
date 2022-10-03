@@ -21,7 +21,7 @@ import * as Model from '@main/app.model';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-
+  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   private req?: Subscription;
 
   public headerItems: any = [
@@ -58,6 +58,7 @@ export class HeaderComponent implements OnInit {
       this.location = this.router.url;
 
       this.adminService.adminStatus$.subscribe((result: any) => {
+        this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
         this.loggedInApplicant = result;
       });
     });

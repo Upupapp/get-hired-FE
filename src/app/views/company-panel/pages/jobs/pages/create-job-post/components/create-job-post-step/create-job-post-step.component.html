@@ -57,13 +57,13 @@
 				(keyup.enter)="this.skill_requirements?.length < 10 ? addItem($event, this.skill_requirements, 'skill_requirements'): ''">
 			</div>
 
-			<div class="mt-3">
+			<div class="d-flex flex-wrap">
 				<ng-container *ngFor="let talent of skill_requirements, 'skill_requirements'">
-					<span class="me-3 talent-badge">{{talent}}
+					<div class="flex-wrap me-3 talent-badge">{{talent}}
 						<img src="/assets/images/placeholder/icons/remove-white.png" 
 						style="height: 10px; margin-top: -3px" class="ms-2"
 						(click)="removeItem(talent, this.skill_requirements, 'skill_requirements')">
-					</span>
+					</div>
 				</ng-container>
 			</div>
 		</div>
@@ -77,13 +77,13 @@
 				(keyup.enter)="this.tags?.length < 3 ? addItem($event, this.tags, 'tags') : ''">
 			</div>
 
-			<div class="mt-3">
-				<ng-container *ngFor="let talent of tags, 'tags'">
-					<span class="me-3 talent-badge">{{talent}}
+			<div class="d-flex flex-wrap">
+				<ng-container *ngFor="let tag of tags, 'skill_requirements'">
+					<div class="flex-wrap me-3 talent-badge">{{tag}}
 						<img src="/assets/images/placeholder/icons/remove-white.png" 
 						style="height: 10px; margin-top: -3px" class="ms-2"
-						(click)="removeItem(talent, this.tags, 'tags')">
-					</span>
+						(click)="removeItem(tag, this.tags, 'tags')">
+					</div>
 				</ng-container>
 			</div>
 		</div>

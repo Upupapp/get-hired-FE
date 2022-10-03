@@ -29,11 +29,13 @@ export class SidebarComponent implements OnInit {
   @Input() sidebarWidth;
 
   public location: any = '';
-
+  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  
   constructor(private router: Router,
     private route: ActivatedRoute) { 
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
       window.scrollTo({
         top: 0,
         left: 0,
