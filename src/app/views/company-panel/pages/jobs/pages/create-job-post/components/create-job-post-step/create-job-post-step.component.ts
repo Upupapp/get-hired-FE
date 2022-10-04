@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { industries, job_role } from '../../../../utils/jobs-model-interface';
 
 @Component({
   selector: 'app-create-job-post-step',
@@ -8,74 +9,12 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./create-job-post-step.component.scss']
 })
 export class CreateJobPostStepComponent implements OnInit {
-  @Input() jobPostCategory: any;
-  @Output() jobPostCategoryEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Input() jobPostIndustry: any;
+  @Output() jobPostIndustryEvent: EventEmitter<any> = new EventEmitter<any>();
 
   public search: string = "";
-  public categories: any[] = [
-    {
-      id: 1,
-      title: 'Development & IT',  
-      skills: 100,  
-      rating: 4.2,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-    {
-      id: 2,
-      title: 'Sales & Marketing',  
-      skills: 154,  
-      rating: 4.6,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
-    },
-
-    {
-      id: 3,
-      title: 'Development & Marketing',  
-      skills: 98,  
-      rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-
-    {
-      id: 4,
-      title: 'Architecture',  
-      skills: 144,  
-      rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-
-    {
-      id: 5,
-      title: 'Software Engineering',  
-      skills: 255,  
-      rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
-    },
-
-    {
-      id: 6,
-      title: 'Database Architecture',  
-      skills: 117,  
-      rating: 4.4,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-
-    {
-      id: 7,
-      title: 'Civil Engineering',  
-      skills: 224,  
-      rating: 4.5,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
-    },
-
-    {
-      id: 8,
-      title: 'Virtual Assistant',  
-      skills: 89,  
-      rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
-    },
-  ];
+  public industries: any[] = industries;
+  public job_role: any[] = job_role;
   public rates: any[] = [
     {
       title: "Monthly",  
@@ -95,10 +34,11 @@ export class CreateJobPostStepComponent implements OnInit {
       icon: '/rate-24'
     },
   ];
-  public categoriesFiltered: any[] = [...this.categories];
+  public industriesFiltered: any[] = [...this.industries];
   public skill_requirements: string[] = [];
   public tags: string[] = [];
-  public selectedCategory: any = "";
+  public selectedIndustry: any = "";
+  public selectedJobRole: any = "";
   public selectedRates: any = "";
   public budget: any = {
     min: 0,  
@@ -136,21 +76,11 @@ export class CreateJobPostStepComponent implements OnInit {
       left: 0,
       behavior: 'smooth'
     });
-    console.log(this.jobPostCategory)
+    console.log(this.jobPostIndustry)
   }
-
 
   generateProjectDuration(date){
 
-  }
-
-
-
-
-
-  selectCategory(item){
-    this.selectedCategory = item;
-    this.rebuildObject('category', item)
   }
 
   addItem(event, arrayItem, field){
@@ -175,19 +105,19 @@ export class CreateJobPostStepComponent implements OnInit {
 
 
   rebuildObject(field, data){
-    this.jobPostCategory[`${field}`] = data;
-    this.jobPostCategoryEvent.emit(this.jobPostCategory);
+    this.jobPostIndustry[`${field}`] = data;
+    this.jobPostIndustryEvent.emit(this.jobPostIndustry);
     this.skillModel = undefined;
     this.tagModel = undefined;
   }
 
-  searchCategory(){
-    const listDataSource = [...this.categories]
+  searchIndustry(){
+    const listDataSource = [...this.industries]
     .filter(el => {
       return JSON.stringify(el).toLowerCase().includes(this.search.toLowerCase());
     });
 
-    this.categoriesFiltered = listDataSource;
+    this.industriesFiltered = listDataSource;
 
   }
 

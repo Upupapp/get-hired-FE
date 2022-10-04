@@ -8,7 +8,8 @@ export interface Job {
   banner_thumbnail: string;  
   title: string;
   company: string;  
-  category: string;  
+  industry: string;  
+  job_role?: string;
   badge: Badge[];  
   job_type: string;
   job_level?: string;
@@ -70,7 +71,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-1.png",  
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Published", 
     badge: [
       {
@@ -131,7 +132,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-2.png",  
     title: "Angular Developer",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Published", 
     badge: [
       {
@@ -177,7 +178,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-3.png",  
     title: "SQL Developer",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Published", 
     badge: [
       {
@@ -223,7 +224,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-4.png",  
     title: "Data Analyst",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Published", 
     badge: [
       {
@@ -270,6 +271,53 @@ const jobLists: Job[] = [
 
 ];
 
+// industry - Business Process Outsoursing
+// function - Virtual Assistant
+// C-Level - Job Level
+export const industries: any[] = [
+  "Business Process Outsoursing",
+  "Technology",  
+  "Financial Services",  
+  "Advertisment",  
+  "Ecommerce",  
+  "Transportation",  
+  "Real Estate",  
+  "Health And Beauty Care",  
+  "Education",  
+  "Travel, Restaurant, Hotel",  
+  "Food Service",  
+  "Retail",  
+  "Quick Consumption",  
+  "Telecommunication",  
+  "Sell",
+  "Skill",
+].sort((a,b) => a.localeCompare(b)).concat("Other");
+
+export const job_role: any[] = [
+  "Virtual Assistant",
+  "Accountant",
+  "Design",
+  "Business Development",
+  "Customer Care",
+  "Finance",
+  "Personnel",
+  "Hardware Engineer",
+  "Software Engineer",
+  "Administration",
+  "Marketing", 
+  "The Media", 
+  "Coordinator", 
+  "Product Management", 
+  "Project Management", 
+  "Purchase", 
+  "Quality Management", 
+  "Research And Development", 
+  "Law", 
+  "Supply Chain", 
+  "Data Science", 
+  "Business Intelligent", 
+  "Video Games", 
+].sort((a,b) => a.localeCompare(b)).concat("Other");
 
 
 

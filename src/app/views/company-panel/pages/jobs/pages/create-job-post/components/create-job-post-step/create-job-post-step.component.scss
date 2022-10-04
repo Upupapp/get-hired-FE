@@ -2,7 +2,7 @@
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
-	font-size: 27px;
+	font-size: 21px;
 	line-height: 28px;
 	/* or 215% */
 
@@ -11,7 +11,7 @@
 	color: #03011A;
 }
 
-.active-category{
+.active-industry{
 	background: #0C264C !important;
 	transition: all 0.3s ease !important;
 
@@ -20,11 +20,13 @@
 	}
 }
 
+
 .card{
-	border: none;
 	background: #FFFFFF;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
+	border: none;
+	padding: 30px 30px !important;
 }
 
 .form-control{
@@ -76,7 +78,7 @@
 	padding: 10px;
 }
 
-.category-skills{
+.industry-skills{
 	border: none !important;
 	background: #FFFFFF;
 	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
@@ -84,7 +86,7 @@
 	cursor: pointer;
 }
 
-.category-title{
+.industry-title{
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
@@ -94,7 +96,7 @@
 	color: #000000;
 }
 
-.category-subtitle{
+.industry-subtitle{
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 300;

@@ -9,8 +9,9 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 })
 export class CreateJobPostComponent implements OnInit {
   public jobPostData: any = {
-    jobPostCategory: {
-      "category": "Development & IT",
+    jobPostIndustry: {
+      "industry": "Technology",
+      "job_role": "Business Development",
       "skill_requirements": [
           "Web Development",
           "Angular 8/10/12",

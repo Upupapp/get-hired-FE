@@ -37,8 +37,8 @@
 	<!-- SECTION CREATE JOB POST -->
 	<ng-container *ngIf="stepper === 1">
 		<app-create-job-post-step
-		(jobPostCategoryEvent)="updateObject($event, 'jobPostCategory')"
-		[jobPostCategory]="jobPostData?.jobPostCategory"></app-create-job-post-step>
+		(jobPostIndustryEvent)="updateObject($event, 'jobPostIndustry')"
+		[jobPostIndustry]="jobPostData?.jobPostIndustry"></app-create-job-post-step>
 	</ng-container>
 
 	<ng-container *ngIf="stepper === 2">

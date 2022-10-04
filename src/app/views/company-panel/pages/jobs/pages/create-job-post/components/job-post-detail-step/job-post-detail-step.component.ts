@@ -14,7 +14,7 @@ export class JobPostDetailStepComponent implements OnInit {
   public workSetup: string[] = ["Hybrid", "Remote", "Onsite"];
   public workSetupSelected: string = "";
   public jobType: string[] = ["Full-time", "Part-time"];
-  public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience"]
+  public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
   public badges: any[] = [
     {
       id: "career-growth",
@@ -56,17 +56,17 @@ export class JobPostDetailStepComponent implements OnInit {
   public categories: any[] = [
     {
       id: 1,
-      title: 'Development & IT',  
+      title: 'Technology',  
       skills: 100,  
       rating: 4.2,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
     {
       id: 2,
       title: 'Sales & Marketing',  
       skills: 154,  
       rating: 4.6,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
@@ -74,7 +74,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Development & Marketing',  
       skills: 98,  
       rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
@@ -82,7 +82,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Architecture',  
       skills: 144,  
       rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
@@ -90,7 +90,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Software Engineering',  
       skills: 255,  
       rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
@@ -98,7 +98,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Database Architecture',  
       skills: 117,  
       rating: 4.4,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
@@ -106,7 +106,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Civil Engineering',  
       skills: 224,  
       rating: 4.5,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
@@ -114,7 +114,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Virtual Assistant',  
       skills: 89,  
       rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
   ];
 
@@ -127,6 +127,12 @@ export class JobPostDetailStepComponent implements OnInit {
   public skill_experience: any[] = [];
   public education_requirements: any[] = [];
   public other_requirements: string[] =  [];
+
+  public skillExperienceModel: string = ""
+  public educationRequirementsModel: string = ""
+  public otherRequirementsModel: string = ""
+
+
   public job_level: string = "";
   
   constructor() { }
@@ -176,8 +182,11 @@ export class JobPostDetailStepComponent implements OnInit {
 
   rebuildObject(field, data){
     this.jobPostDetails[`${field}`] = data;
-    this.jobPostDetails.emit(this.jobPostDetails);
+    this.jobPostDetailsEvent.emit(this.jobPostDetails);
 
+    this.skillExperienceModel = undefined;
+    this.educationRequirementsModel = undefined;
+    this.otherRequirementsModel = undefined;
     console.log(this.jobPostDetails)
   }
 }

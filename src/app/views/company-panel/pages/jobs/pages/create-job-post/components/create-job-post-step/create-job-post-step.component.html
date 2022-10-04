@@ -1,41 +1,54 @@
-<section style="transition: all 0.4s ease !important;">
-	<div class="mt-4 row">
-		<div class="col-12 col-md-6"
+<section class="card card-body mt-4" style="transition: all 0.4s ease !important;">
+	<div class="row">
+		<div class="col-12 col-md-6 mb-3"
 		[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
-			<label>Categories</label>
-			<select class="form-select" [(ngModel)]="selectedCategory"
-
-			(ngModelChange)="selectCategory(selectedCategory)">
-				<ng-container *ngFor="let item of categoriesFiltered; let i = index">
-					<option [value]="item?.title">{{item?.title}}</option>
+			<h5 class="main-title">Industry</h5>
+			<label >Describe what industry or field this job post is part of </label>
+			<select class="form-select" [(ngModel)]="selectedIndustry"
+			(ngModelChange)="rebuildObject('industry', selectedIndustry)">
+				<option selected disabled value="">Select Industry</option>
+				<ng-container *ngFor="let item of industries; let i = index">
+					<option [value]="item">{{item}}</option>
 				</ng-container>
 			</select>
 		</div>
 
-		<div class="col-12 col-md-6"
+		<div class="col-12 col-md-6 mb-3"
+		[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+			<label style="margin-top: 36px;">Job Role</label>
+			<select class="form-select" [(ngModel)]="selectedJobRole"
+			(ngModelChange)="rebuildObject('job_role', selectedJobRole)">
+				<option selected disabled value="">Select Job Role</option>
+				<ng-container *ngFor="let item of job_role; let i = index">
+					<option [value]="item">{{item}}</option>
+				</ng-container>
+			</select>
+		</div>
+
+		<!-- <div class="col-12 col-md-6"
 		[@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
 			<label>Search</label>
 			<div class="form-group search-group d-flex">
-				<input type="text" name="search" class="form-control" placeholder="ex. Marketing, Development" [(ngModel)]="search" (keyup.enter)="searchCategory()">
-				<div class="btn btn-search" (click)="searchCategory()">Search</div>
+				<input type="text" name="search" class="form-control" placeholder="ex. Marketing, Development" [(ngModel)]="search" (keyup.enter)="searchIndustry()">
+				<div class="btn btn-search" (click)="searchIndustry()">Search</div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 
-	<!-- CATEGORY -->
+	<!-- CATEGORY 
 	<div class="mt-5 row" >
-		<ng-container *ngFor="let item of categoriesFiltered; let i = index">
+		<ng-container *ngFor="let item of industriesFiltered?.slice(0, 8); let i = index">
 			<div class="col-12 col-md-6 col-lg-3 mb-3">
-				<div class="card card-body hvr-hang category-skills"
-				(click)="selectCategory(item?.title)"
-				[ngClass]="selectedCategory === item?.title ? 'active-category' : ''"
+				<div class="card card-body hvr-hang industry-skills"
+				(click)="selectIndustry(item?.title)"
+				[ngClass]="selectedIndustry === item?.title ? 'active-industry' : ''"
 				[@animate]="{value:'*', params:{ y:'10px', delay: (i * 150) + 'ms' }}">
 					<div class="img-banner">
 						<img [src]="item?.banner_thumbnail" class="img-fluid">
 					</div>
 
-					<h5 class="category-title">{{item?.title}}</h5>
-					<h6 class="category-sub-title">{{item?.skills}} Skills 
+					<h5 class="industry-title">{{item?.title}}</h5>
+					<h6 class="industry-sub-title">{{item?.skills}} Skills 
 						<span class="float-end">
 						<img src="/assets/images/placeholder/rating.png" 
 						style="height: 17px; margin-top: -5px !important;">
@@ -44,7 +57,7 @@
 				</div>
 			</div>
 		</ng-container>
-	</div>
+	</div>-->
 
 	<!-- SKILLS -->
 	<div class="mt-3 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
@@ -69,12 +82,14 @@
 		</div>
 
 		<div class="col-12 col-md-6 mb-3">
+			<h5 class="main-title">Tags</h5>
+			
 			<!-- <h5 class="main-title">Add Tags</h5> -->
-			<label style="margin-top: 35px">Add tags for others to identify your job post easily</label>
+			<label >Add tags for others to identify your job post easily</label>
 
 			<div class="form-group search-group d-flex">
 				<input type="text" name="search" class="form-control" placeholder="ex. Software, Angular Project, JavaScript" [(ngModel)]="tagModel"
-				(keyup.enter)="this.tags?.length < 3 ? addItem($event, this.tags, 'tags') : ''">
+				(keyup.enter)="this.tags?.length < 7 ? addItem($event, this.tags, 'tags') : ''">
 			</div>
 
 			<div class="d-flex flex-wrap">
@@ -90,7 +105,7 @@
 	</div>
 
 	<!-- RATES -->
-	<div class="mt-2 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="mt-4 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
 		<div class="col-12 col-md-6 mb-3">
 			<div class="card card-body">
 				<h5 class="main-title">Add Rate</h5>
@@ -122,16 +137,16 @@
 						<label>Budget</label>
 						
 						<div class="row">
-							<div class="col-4 form-group">
+							<div class="col-4 form-group pe-0">
 								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 25,000" [(ngModel)]="budget.min" 
 								(ngModelChange)="rebuildObject('salary_min', this.budget?.min)">
 							</div>
 
-							<div class="col-1 text-center">
+							<div class="col-2 text-center">
 								<h5 class="title-label-sub mt-2">To</h5>
 							</div>
 
-							<div class="col-4 form-group">
+							<div class="col-4 form-group pe-0">
 								<input type="number" name="search" class="form-control form-control-main" placeholder="Php 35,500" [(ngModel)]="budget.max" 
 								(ngModelChange)="rebuildObject('salary_max', this.budget?.max)">
 							</div>

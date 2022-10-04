@@ -6,7 +6,7 @@ export interface Applicant {
   first_name: string;
   last_name: string;
   company: string;  
-  category: string;  
+  industry: string;  
   job_type: string;
   work_setup: string;  
   expected_salary_min: number;
@@ -66,7 +66,7 @@ const applicantLists: Applicant[] = [
     first_name: "Jordan",
     last_name: "Clark",
     company: "Software Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Initial Interview", 
     job_type: "Full-Time",
     work_setup: "Hybrid",  
@@ -84,7 +84,7 @@ const applicantLists: Applicant[] = [
     first_name: "Samuel",
     last_name: "Solomon",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Technical Interview",  
     job_type: "Full-Time",
     work_setup: "Remote",  
@@ -102,7 +102,7 @@ const applicantLists: Applicant[] = [
     first_name: "Michael",
     last_name: "Yemeni",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Initial Interview", 
     job_type: "Part-Time",
     work_setup: "Remote",  
@@ -120,7 +120,7 @@ const applicantLists: Applicant[] = [
     first_name: "Brian",
     last_name: "Mitchelle",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Contract Signing",   
     job_type: "Part-Time",
     work_setup: "Remote",  

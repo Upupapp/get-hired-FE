@@ -20,10 +20,10 @@
 					<label>Job Type</label>
 					<select class="form-select" [(ngModel)]="job_type" 
 					(ngModelChange)="rebuildObject('job_type', job_type)">
+						<option selected disabled value="">Select Job Type</option>
 						<ng-container *ngFor="let item of jobType; let i = index">
 							<option [value]="item">{{item}}</option>
 						</ng-container>
-					  
 					</select>
 				</div>
 
@@ -32,6 +32,7 @@
 					<label>Job Level</label>
 					<select class="form-select" [(ngModel)]="job_level" 
 					(ngModelChange)="rebuildObject('job_level', job_level)">
+						<option selected disabled value="">Select Job Level</option>
 						<ng-container *ngFor="let item of jobLevel; let i = index">
 							<option [value]="item">{{item}}</option>
 						</ng-container>
@@ -120,8 +121,6 @@
 		<hr style="border-style: dashed">
 		
 		<section class="px-lg-3">
-			
-
 			<div class="title-container mb-3" 
 			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
 				<h5 class="title-label">Job Description</h5>
@@ -156,6 +155,7 @@
 
 					<div class="form-group">
 						<input type="text" name="search" class="form-control" placeholder="ex, create custom material table, basic encoding using google sheet"
+						[(ngModel)]="skillExperienceModel"
 						(keyup.enter)="addItem($event, this.skill_experience, 'skill_experience')">
 					</div>
 
@@ -179,6 +179,7 @@
 
 					<div class="form-group">
 						<input type="text" name="search" class="form-control" placeholder="ex, computer science graduate, have atleast 2.5 GPA"
+						[(ngModel)]="educationRequirementsModel"
 						(keyup.enter)="addItem($event, this.education_requirements, 'education_requirements')">
 					</div>
 
@@ -201,7 +202,8 @@
 					<p class="title-label-sub mb-3">Add good to have skills but not a deal breaker</p>
 
 					<div class="form-group">
-						<input type="text" name="search" class="form-control" placeholder="ex, with driver's license, covid vaccine certification"
+						<input type="text" name="search" class="form-control" placeholder="ex, with driver's license, covid vaccine certification" 
+						[(ngModel)]="otherRequirementsModel"
 						(keyup.enter)="addItem($event, this.other_requirements, 'other_requirements')">
 					</div>
 

@@ -6,7 +6,9 @@
 			*ngIf="screenSize >= 1600 ? 'col-lg-4' : 'col-lg-6'">
 				<h5 class="title-banner" >{{data?.title}}</h5>
 				<p class="title-banner-description mb-2">
-					{{data?.category}} / {{data?.job_type}} / {{data?.work_setup}} / PHP {{data?.salary_min | number:'1.0':'en-US' }} - PHP {{data?.salary_max | number:'1.0':'en-US' }}
+					<ng-container>
+						{{data?.job_role}} /
+					</ng-container> {{data?.job_type}} / {{data?.work_setup}} / PHP {{data?.salary_min | number:'1.0':'en-US' }} - PHP {{data?.salary_max | number:'1.0':'en-US' }}
 				</p>
 			</div>
 		</div>
