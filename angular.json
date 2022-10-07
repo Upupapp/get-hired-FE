@@ -69,6 +69,27 @@
               ],
               "outputHashing": "all"
             },
+            "staging": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "150kb",
+                  "maximumError": "150kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -85,6 +106,9 @@
           "configurations": {
             "production": {
               "browserTarget": "get-hired:build:production"
+            },
+            "staging": {
+              "browserTarget": "get-hired:build:staging"
             },
             "development": {
               "browserTarget": "get-hired:build:development"
@@ -135,6 +159,15 @@
                 }
               ]
             },
+            "staging": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "sourceMap": true,
@@ -149,6 +182,10 @@
             "development": {
               "browserTarget": "get-hired:build:development",
               "serverTarget": "get-hired:server:development"
+            },
+            "staging": {
+              "browserTarget": "get-hired:build:staging",
+              "serverTarget": "get-hired:server:staging"
             },
             "production": {
               "browserTarget": "get-hired:build:production",
@@ -168,6 +205,10 @@
             "production": {
               "browserTarget": "get-hired:build:production",
               "serverTarget": "get-hired:server:production"
+            },
+            "staging": {
+              "browserTarget": "get-hired:build:staging",
+              "serverTarget": "get-hired:server:staging"
             },
             "development": {
               "browserTarget": "get-hired:build:development",

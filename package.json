@@ -11,7 +11,9 @@
     "serve:ssr": "node dist/get-hired/server/main.js",
     "build:ssr": "ng build && ng run get-hired:server",
     "prerender": "ng run get-hired:prerender",
-    "heroku-postinstall": "npm install --force"
+    "heroku-postinstall": "npm install --force",
+    "build-dev": "ng build --configuration=staging",
+    "build-prod": "ng build --configuration=production"
   },
   "private": true,
   "dependencies": {
@@ -52,7 +54,7 @@
     "zone.js": "~0.11.5"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~13.2.5",
+    "@angular-devkit/build-angular": "^13.3.9",
     "@angular/cli": "~13.2.5",
     "@angular/compiler-cli": "~13.2.5",
     "@nguniversal/builders": "^13.0.2",
