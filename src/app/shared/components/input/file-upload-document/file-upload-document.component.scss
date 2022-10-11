@@ -27,7 +27,7 @@
 }
 
 .truncate {
-  width: 230px;
+  width: 250px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -232,9 +232,6 @@
         font-weight: 500;
         font-size: 15px;
         line-height: 18px;
-        /* or 483% */
-
-        display: flex;
         align-items: center;
         font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 
