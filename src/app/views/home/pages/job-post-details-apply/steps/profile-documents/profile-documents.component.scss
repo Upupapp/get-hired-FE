@@ -1,0 +1,34 @@
+.card{
+	background: #FFFFFF;
+	border: 1px solid #F5F5F5;
+	box-shadow: 0px 6px 15px rgba(128, 128, 128, 0.1);
+	border-radius: 8px;
+	padding: 20px 30px 20px 40px !important;
+}
+
+
+.title-main{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 29px;
+	/* identical to box height, or 162% */
+
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+
+	color: #444152;
+
+	span{
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 21px;
+		/* identical to box height */
+
+
+		color: #989898;
+	}
+}

@@ -15,11 +15,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-job-post-details-apply',
+  animations: [mainAnimations],
   templateUrl: './job-post-details-apply.component.html',
   styleUrls: ['./job-post-details-apply.component.scss']
 })
 export class JobPostDetailsApplyComponent implements OnInit {
-
   public loading: boolean = true;
   public screenSize: number = 1600;
   public jobLists: Job[] = jobLists;
@@ -27,6 +27,29 @@ export class JobPostDetailsApplyComponent implements OnInit {
   public listView: boolean = false;
   public selectedJobPost: Job;
   public selectedCompany: Company;
+  public stepperItems: any[] = [
+    {
+      id: 1,
+      title: "Show Applicant"
+    },
+
+    {
+      id: 2,
+      title: "Attach Document"
+    },
+
+    {
+      id: 3,
+      title: "Interview"
+    },
+
+    {
+      id: 4,
+      title: "Summary"
+    },
+  ];
+
+  public stepper: number = 1;
 
   constructor(public router: Router,  
     public route: ActivatedRoute) { }
@@ -49,5 +72,9 @@ export class JobPostDetailsApplyComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenSize = window.innerWidth;
+  }
+
+  changeStep(step: number): void {
+    this.stepper = step;
   }
 }

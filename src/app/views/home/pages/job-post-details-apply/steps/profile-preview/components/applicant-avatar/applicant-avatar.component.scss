@@ -1,8 +1,7 @@
 .avatar-main{
-	width: 108px;
-	height: 108px;
-	
 	img{
+		width: 70px;
+		height: 70px;
 		filter: drop-shadow(0px 12px 27px rgba(63, 63, 63, 0.17));
 		border-radius: 50%;
 		border: 2.68116px solid #FFFFFF;
@@ -15,7 +14,7 @@
 	border: 1px solid #F5F5F5;
 	box-shadow: 0px 6px 15px rgba(128, 128, 128, 0.1);
 	border-radius: 8px;
-	padding: 10px 30px 10px 40px !important;
+	padding: 0px 0px 0px 40px !important;
 }
 
 
@@ -37,7 +36,7 @@
 	font-size: 15px;
 	line-height: 14px;
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
+	margin-bottom: 8px;
 	color: #666666;
 }
 
@@ -69,6 +68,9 @@
 }
 
 .title-contact{
+	@media (min-width: 900px){
+		margin-top:15px;
+	}
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
@@ -80,11 +82,15 @@
 	color: #838383;
 }
 
+.title-rating{
+	font-size: 11px;
+}
+
 .title-label{
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 400;
-	font-size: 15px;
+	font-size: 14px;
 	line-height: 21px;
 	color: #989898;
 }
@@ -93,23 +99,23 @@
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
-	font-size: 15px;
+	font-size: 14px;
 	line-height: 21px;
 	color: #444152;
 }
 
 .contact-table{
 	@media (min-width: 899px){
-		padding-right: 60px !important;
+		padding-right: 0px !important;
 	}
 	td{
-		height: 28px !important;
+		height: 38px !important;
 	}
 }
 
 .document-table{
 	@media (min-width: 899px){
-		padding-right: 60px !important;
+		padding-right: 0px !important;
 	}
 
 	.image-border{
@@ -123,7 +129,7 @@
 	}
 
 	td{
-		height: 35px !important;
+		height: 38px !important;
 
 		&:hover{
 			text-decoration: underline;
@@ -136,5 +142,18 @@
 			height: 18px;
 			cursor: pointer;
 		}
+	}
+}
+
+.btn-edit{
+	border-radius: 4px;
+	border: 1px solid #c9c9c9;
+	font-size: 13px;
+	font-weight: 500;
+	color: #868686 !important;
+	margin-left: -65px !important; margin-top: -100px;
+
+	@media(max-width: 899px){
+		display: none !important;
 	}
 }
