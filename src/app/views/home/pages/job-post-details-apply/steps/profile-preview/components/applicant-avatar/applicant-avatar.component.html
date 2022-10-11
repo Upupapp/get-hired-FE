@@ -1,8 +1,9 @@
-<div class="card card-body" [@animate]="{value:'*', params:{ x:'-10px', delay:'350ms' }}">
+<div class="card card-body mt-3" [@animate]="{value:'*', params:{ x:'-10px', delay:'350ms' }}">
 	<div class="row">
-		<div class="col-12 col-md-6 col-lg-4 mb-3">
-			<div class="d-flex mt-3">
-				<div class="avatar-main me-4">
+		<!-- AVATAR IMAGE -->
+		<div class="col-12 col-md-8 offset-md-2 offset-lg-0 col-lg-3 mb-3">
+			<div class="text-start mt-3">
+				<div class="avatar-main">
 					<img src="/assets/images/face-3.jpg" class="img-fluid">
 				</div>
 
@@ -12,17 +13,17 @@
 						<p class="title-job">Frontend Developer</p>
 					</div>
 
-					<div class="d-flex">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-2">
+					<div class="d-flex justify-content-start align-self-start">
+						<img src="/assets/images/placeholder/icons/star.svg" height="14px" class="me-1">
+						<img src="/assets/images/placeholder/icons/star.svg" height="14px" class="me-1">
+						<img src="/assets/images/placeholder/icons/star.svg" height="14px" class="me-1">
+						<img src="/assets/images/placeholder/icons/star.svg" height="14px" class="me-1">
+						<img src="/assets/images/placeholder/icons/star.svg" height="14px" class="me-2">
 
-						(4.5) Rating
+						<span class="title-rating">(4.5) Rating</span>
 					</div>
 
-					<div class="d-flex mt-2">
+					<div class="d-flex mt-2 justify-content-start align-self-start">
 						<button class="btn btn-message me-2 hvr-grow">
 						<img src="/assets/images/placeholder/icons/message.png" 
 						style="height: 16px; margin-top: -3px;" class="me-1">
@@ -36,33 +37,34 @@
 			</div>
 		</div>
 
-		<div class="col-12 col-md-6 col-lg-4  mb-3 mt-3">
+		<!-- APPLICANT CONTACT DETAILS -->
+		<div class="col-12 col-md-8 offset-md-2 offset-lg-0 col-lg-4  mb-3 mt-3">
 			<h5 class="title-contact">Contact</h5>
 
 			<table class="w-100 contact-table">
 				<tbody>
 					<tr>
 						<td class="title-label">Available</td>
-						<td class="title-details text-end pe-lg-5">Full Time</td>
+						<td class="title-details text-end pe-4">Full Time</td>
 					</tr>
 					<tr>
 						<td class="title-label">Email Address</td>
-						<td class="title-details text-end pe-lg-5">usertest@gmail.com</td>
+						<td class="title-details text-end pe-4">usertest@gmail.com</td>
 					</tr>
 					<tr>
 						<td class="title-label">Address</td>
-						<td class="title-details text-end pe-lg-5">San Antonio MI 47096</td>
+						<td class="title-details text-end pe-4">San Antonio MI 47096</td>
 					</tr>
 					<tr>
 						<td class="title-label">Mobile Phone</td>
-						<td class="title-details text-end pe-lg-5">(+63) 934 3432</td>
+						<td class="title-details text-end pe-4">(+63) 934 3432</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 
-
-		<div class="mt-4 col-12 col-md-6 col-lg-4" >
+		<!-- APPLICANT DOCUMENTS FROM PROFILE -->
+		<div class="mt-4 col-12 col-md-8 offset-md-2 offset-lg-0 col-lg-4" >
 			<h5 class="title-contact">Documents</h5>
 
 			<table class="w-100 document-table">
@@ -73,7 +75,7 @@
 							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
 						</td>
 						<td class="title-label">Resume.pdf</td>
-						<td class="title-details download text-end pe-lg-5">
+						<td class="title-details download text-end pe-4">
 							<img src="/assets/images/placeholder/icons/download.png">
 						</td>
 					</tr>
@@ -83,7 +85,7 @@
 							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
 						</td>
 						<td class="title-label">CV 2022.pdf</td>
-						<td class="title-details download text-end pe-lg-5">
+						<td class="title-details download text-end pe-4">
 							<img src="/assets/images/placeholder/icons/download.png">
 						</td>
 					</tr>
@@ -93,12 +95,18 @@
 							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
 						</td>
 						<td class="title-label">Cover Letter 2022.pdf</td>
-						<td class="title-details download text-end pe-lg-5">
+						<td class="title-details download text-end pe-4">
 							<img src="/assets/images/placeholder/icons/download.png">
 						</td>
 					</tr>
 				</tbody>
 			</table>
+		</div>
+
+		<div class="mt-4 col-12 col-md-8 offset-md-2 offset-lg-0 col-lg-1" >
+			<button class="btn btn-edit d-flex" style="margin-left: -65px !important; margin-top: -100px">
+			<img src="/assets/images/placeholder/icons/company-edit-2.png" style="height:12px; margin-top: 3px" class="me-2">
+			Edit Profile</button>
 		</div>
 	</div>
 </div>

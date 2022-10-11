@@ -57,6 +57,7 @@ const jobLists: Job[] = [
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
     industry: "Technology",  
+    job_role: "Business Development",
     job_level: "Intermediate: 2-3 Years Experience",
     badge: [
       {
@@ -130,6 +131,7 @@ const jobLists: Job[] = [
     ],  
     job_level: "Intermediate: 2-3 Years Experience",
     job_type: "Full-Time",
+    job_role: "Business Development",
     work_setup: "Remote",  
     salary_min: 56000,
     salary_max: 85000,  
@@ -175,6 +177,7 @@ const jobLists: Job[] = [
     ],  
     job_level: "Intermediate: 2-3 Years Experience",
     job_type: "Part-Time",
+    job_role: "Business Development",
     work_setup: "Remote",  
     salary_min: 36000,
     salary_max: 65000,  
@@ -225,6 +228,7 @@ const jobLists: Job[] = [
     ],   
     job_level: "Intermediate: 2-3 Years Experience",
     job_type: "Part-Time",
+    job_role: "Business Development",
     work_setup: "Remote",  
     salary_min: 20000,
     salary_max: 50000,  

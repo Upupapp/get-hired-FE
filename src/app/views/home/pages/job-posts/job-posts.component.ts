@@ -8,8 +8,8 @@ import {
   OnDestroy,
   HostListener
 } from '@angular/core';
-import { mainAnimations } from '../../shared/animations/main-animations';
-import { jobLists, Job } from './utils/job-list-model-interface';
+import { mainAnimations } from '@app-shared/animations/main-animations';
+import { jobLists, Job } from '../../utils/job-list-model-interface';
 import { 
   Router, 
   ActivatedRoute 
@@ -18,12 +18,13 @@ import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-job-posts',
   animations: [mainAnimations],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  templateUrl: './job-posts.component.html',
+  styleUrls: ['./job-posts.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class JobPostsComponent implements OnInit {
+
   private req: Subscription;
   public loading: boolean = true;
   public screenSize: number = 1600;
@@ -62,4 +63,5 @@ export class HomeComponent implements OnInit {
   onResize(event: any) {
     this.screenSize = window.innerWidth;
   }
+
 }

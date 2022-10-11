@@ -13,8 +13,49 @@
 		</div>
 
 		<div class="col-12 col-md-12 col-lg-9">
-			<app-job-details-interview
-			[data]="selectedJobPost"></app-job-details-interview>
+			<div class="card card-body">
+				<!-- STEPPER CONTAINER -->
+				<div class="d-flex">
+					<ng-container *ngFor="let item of stepperItems; let i = index">
+						<button class="btn d-flex" (click)="changeStep(item?.id)"
+						[ngClass]="stepper >= item?.id && item?.id !== 4 ? 'btn-stepper-active' 
+						: stepper === item?.id && item?.id === 4 ? 'btn-stepper-active-2' 
+						: 'btn-stepper-next'">
+							<div class="badge-step" *ngIf="stepper < item?.id && item?.id !== 1">{{item?.id}}</div>
+							<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
+							style="height: 25px; margin-top: 3px;" *ngIf="stepper >= item?.id">
+							<div class="text-start">
+								{{item?.title}}
+								<div class="title-step">
+									Step {{item?.id}}
+								</div>
+							</div>
+						</button>
+					</ng-container>
+				</div>
+
+				<!-- STEPPER STEPS -->
+				<section>
+					<ng-container *ngIf="stepper === 1">
+						<app-profile-preview></app-profile-preview>
+					</ng-container>
+
+					<ng-container *ngIf="stepper === 2">
+						<app-profile-documents></app-profile-documents>
+					</ng-container>
+
+					<ng-container *ngIf="stepper === 3">
+						<app-interview-questions></app-interview-questions>
+					</ng-container>
+
+					<ng-container *ngIf="stepper === 4">
+						<app-profile-preview></app-profile-preview>
+					</ng-container>
+				</section>
+			</div>
+
+
+			
 		</div>
 	</div>
 </div>
