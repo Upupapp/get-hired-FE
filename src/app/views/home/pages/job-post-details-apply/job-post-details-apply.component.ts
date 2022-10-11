@@ -30,7 +30,7 @@ export class JobPostDetailsApplyComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Show Applicant"
+      title: "My Details"
     },
 
     {
