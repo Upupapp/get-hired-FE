@@ -82,6 +82,6 @@ export class HeaderComponent implements OnInit {
 
   navigateTo(route){
     console.log(route)
-    this.router.navigate([`${route}`]);
+    this.router.navigate([`..${route}`]);
   }
 }

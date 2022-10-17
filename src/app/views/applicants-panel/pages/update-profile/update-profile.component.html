@@ -1,1 +1,7 @@
-<p>update-profile works!</p>
+<div class="p-4">
+	<!-- STEPPER CONTAINER changeStepper-->
+	<app-main-stepper
+	[stepper]="stepper"
+	[stepperItems]="stepperItems"
+	(changeStepper)="changeStep($event)"></app-main-stepper>
+</div>

@@ -20,14 +20,14 @@
 								</h5>
 							</div>
 
-							<button class="btn btn-take-interview mt-5 me-2" (click)="startRecorder()"> 
+							<button class="btn btn-take-interview mt-5 me-2 text-truncate" (click)="startRecorder()"> 
 								<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
 
 								Start Recording
 								
 							</button>
 
-							<button class="btn btn-settings mt-5 me-2" (click)="startRecorder()"> 
+							<button class="btn btn-settings mt-5 me-2" (click)="openInterviewSettings()"> 
 								<img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
 							</button>
 						</div>
@@ -47,7 +47,7 @@
 									{{interview_answers}}
 								</h5>
 							</div>
-							<button class="btn btn-take-interview mt-4" (click)="stopRecorder()"> 
+							<button class="btn btn-take-interview mt-4 text-truncate" (click)="stopRecorder()"> 
 								<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
 
 								Stop Recorder
@@ -100,7 +100,7 @@
 				<div class="d-flex mt-2">
 					<div class="d-flex w-50">
 						<img src="/assets/images/placeholder/icons/interview-type.png" style="height: 35px;" class="me-3">
-						<div class="mb-3">
+						<div class="mb-3  text-truncate">
 							<label for="interview-answer">
 								<strong>Duration:</strong>
 							</label>
@@ -110,7 +110,7 @@
 
 					<div class="d-flex w-50">
 						<img src="/assets/images/placeholder/icons/interview-type-2.png" style="height: 35px;" class="me-3">
-						<div class="mb-3">
+						<div class="mb-3  text-truncate">
 							<label for="interview-answer">
 								<strong>Type:</strong>
 							</label>
@@ -133,21 +133,21 @@
 
 				<div class="row mt-4">
 					<div class="col-12 col-lg-6">
-						<button class="btn btn-upload w-100">Upload
+						<button class="btn btn-upload w-100  text-truncate">Upload
 							<img src="/assets/images/placeholder/icons/interview-upload.png" 
 							style="height: 10px" class="ms-2">
 						</button>
 					</div>
 
 					<div class="col-12 col-lg-6">
-						<button class="btn btn-skip w-100">Skip Interview
+						<button class="btn btn-skip w-100  text-truncate">Skip Interview
 							<img src="/assets/images/placeholder/icons/next-interview.png" 
 							style="height: 10px" class="ms-2">
 						</button>
 					</div>
 					
 					<div class="col-12 col-lg-12 mt-3">
-						<button class="btn btn-submit w-100 text-start" 
+						<button class="btn btn-submit w-100 text-start  text-truncate" 
 						*ngIf="startRecording || recordedData">
 							Submit Recording
 							<img src="/assets/images/placeholder/icons/arrow-right-white.png" 

@@ -1,1 +1,59 @@
-<p>application-preview works!</p>
+<div style="overflow: hidden; position: relative;"
+[ngStyle]="{
+	'height': profileSummary ? '650px' : '100%'
+}">
+	<app-profile-preview></app-profile-preview>
+	<div class="bg-opacity" *ngIf="profileSummary"></div>
+</div>
+
+<div class="text-center mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-read-more" (click)="viewMore()">
+		<ng-container *ngIf="profileSummary">View More</ng-container>
+		<ng-container *ngIf="!profileSummary">Show Less</ng-container>
+	 </button>
+</div>
+
+<div id="profile-document">
+	<div class="card card-body mt-3">
+		<h5>Documents</h5>
+		<hr style="border: dashed 1px #969696">
+
+		<div class="row">
+			<div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
+				<h5 class="mb-2 title-main">Upload Cover Letter <span>(Optional)</span></h5>
+
+				<app-file-upload-document
+				[labelTop]="true"
+				label="Browse Cover Letter"></app-file-upload-document>
+			</div>
+
+			<div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
+				<h5 class="mb-2 title-main">Upload CV/Resume <strong class="text-danger">*</strong></h5>
+
+				<app-file-upload-document
+				[labelTop]="true"
+				label="Browse Resume"></app-file-upload-document>
+			</div>
+
+			<div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'550ms' }}">
+				<h5 class="mb-2 title-main">Government Files <span>(Optional)</span></h5>
+
+				<app-file-upload-document
+				[labelTop]="true"
+				label="Browse Government Files"></app-file-upload-document>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div>
+	<app-job-details-answer-interview></app-job-details-answer-interview>
+</div>
+
+
+<div class="text-end mt-4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-save-draft me-3">Save as Draft</button>
+
+	<button class="btn btn-save me-2">Submit for Evaluation</button>
+
+</div>

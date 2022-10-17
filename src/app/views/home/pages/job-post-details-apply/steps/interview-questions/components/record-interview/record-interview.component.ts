@@ -1,6 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
+import {
+  Subscription,
+  Observable,
+  forkJoin,
+  combineLatest
+} from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-record-interview',
@@ -10,6 +20,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class RecordInterviewComponent implements OnInit {
   @Input() data: any;
+  private req: Subscription;
+  private unsubscribe$ = new Subject<void>();
+
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public interview_questions: any[] = [
     "How long have you been using Angular?", 
@@ -33,6 +46,7 @@ export class RecordInterviewComponent implements OnInit {
   public timer_value: number = 0;
 
   constructor(public router: Router,  
+    private dialog: MatDialog,
     public route: ActivatedRoute) { 
     console.log(this.data)
   }
@@ -81,6 +95,23 @@ export class RecordInterviewComponent implements OnInit {
 
   pauseTimer() {
     clearInterval(this.interval);
+  }
+
+  openInterviewSettings(data?: any) {
+    let dialogModal = this.dialog.open(
+      SettingsModalComponent,
+      {
+        minWidth: '30vw',
+        data: data,
+      }
+    );
+
+    dialogModal
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+
+      });
   }
 }
 

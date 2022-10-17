@@ -14,25 +14,11 @@
 
 		<div class="col-12 col-md-12 col-lg-9">
 			<div class="card card-body">
-				<!-- STEPPER CONTAINER -->
-				<div class="d-flex">
-					<ng-container *ngFor="let item of stepperItems; let i = index">
-						<button class="btn d-flex" (click)="changeStep(item?.id)"
-						[ngClass]="stepper >= item?.id && item?.id !== 4 ? 'btn-stepper-active' 
-						: stepper === item?.id && item?.id === 4 ? 'btn-stepper-active-2' 
-						: 'btn-stepper-next'">
-							<div class="badge-step" *ngIf="stepper < item?.id && item?.id !== 1">{{item?.id}}</div>
-							<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
-							style="height: 25px; margin-top: 3px;" *ngIf="stepper >= item?.id">
-							<div class="text-start">
-								{{item?.title}}
-								<div class="title-step">
-									Step {{item?.id}}
-								</div>
-							</div>
-						</button>
-					</ng-container>
-				</div>
+				<!-- STEPPER CONTAINER changeStepper-->
+				<app-main-stepper
+				[stepper]="stepper"
+				[stepperItems]="stepperItems"
+				(changeStepper)="changeStep($event)"></app-main-stepper>
 
 				<!-- STEPPER STEPS -->
 				<section>
@@ -49,7 +35,7 @@
 					</ng-container>
 
 					<ng-container *ngIf="stepper === 4">
-						<app-profile-preview></app-profile-preview>
+						<app-application-preview></app-application-preview>
 					</ng-container>
 				</section>
 			</div>
