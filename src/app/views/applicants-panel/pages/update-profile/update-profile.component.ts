@@ -16,6 +16,11 @@ export class UpdateProfileComponent implements OnInit {
 
     {
       id: 2,
+      title: "Skills and Experience"
+    },
+
+    {
+      id: 3,
       title: "Documents"
     },
   ];

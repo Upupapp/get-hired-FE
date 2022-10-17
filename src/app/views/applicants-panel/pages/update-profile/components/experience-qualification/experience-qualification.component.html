@@ -1,0 +1,349 @@
+<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="row">
+		<div class="col-12">
+			<h5 class="title-label">Work Experience
+				<span class="float-end btn btn-add">Add Item</span>
+			</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3">
+				<label>Job title</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="i.e. Full Stack Developer">
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Address</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Office Full Address">
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Duration</label>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+				  <label class="form-check-label" for="flexCheckDefault">
+				    I currently work here
+				  </label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label>Start Date</label>
+						<select class="form-select">
+							<option selected disabled value="">Select Month</option>
+							<ng-container *ngFor="let item of month; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label> </label>
+						<select class="form-select">
+							<option selected disabled value="">Select Year</option>
+							<ng-container *ngFor="let item of year; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label>End Date</label>
+						<select class="form-select">
+							<option selected disabled value="">Select Month</option>
+							<ng-container *ngFor="let item of month; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label> </label>
+						<select class="form-select">
+							<option selected disabled value="">Select Year</option>
+							<ng-container *ngFor="let item of year; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3">
+				<label>Company</label>
+				<div class="form-group">
+					<input type="text"  class="form-control"  placeholder="i.e. Microsoft, Google, Apple">
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Job Type</label>
+				<select class="form-select">
+					<option selected disabled value="">Select Job Type</option>
+					<ng-container *ngFor="let item of jobType; let i = index">
+						<option [value]="item">{{item}}</option>
+					</ng-container>
+				</select>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Description</label>
+				<div class="form-group">
+					<textarea type="text"  class="form-control" placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. " rows="9"></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="row">
+		<div class="col-12">
+			<h5 class="title-label">Educational Background
+				<span class="float-end btn btn-add">Add Item</span>
+			</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3">
+				<label>Level of Education</label>
+				<select class="form-select">
+					<option selected disabled value="">Select Level of Education</option>
+					<ng-container *ngFor="let item of levelOfEducation; let i = index">
+						<option [value]="item">{{item}}</option>
+					</ng-container>
+				</select>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Field of Study</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="i.e. Communication, Engineering, Advertising, Psychology, etc" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Time Period</label>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+				  <label class="form-check-label" for="flexCheckDefault">
+				    I currently work here
+				  </label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label>Start Date</label>
+						<select class="form-select">
+							<option selected disabled value="">Select Month</option>
+							<ng-container *ngFor="let item of month; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label> </label>
+						<select class="form-select">
+							<option selected disabled value="">Select Year</option>
+							<ng-container *ngFor="let item of year; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label>End Date</label>
+						<select class="form-select">
+							<option selected disabled value="">Select Month</option>
+							<ng-container *ngFor="let item of month; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label> </label>
+						<select class="form-select">
+							<option selected disabled value="">Select Year</option>
+							<ng-container *ngFor="let item of year; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3">
+				<label>School</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Name of the University or School" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>School Address</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="School Location or Landmark" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Description</label>
+				<div class="form-group">
+					<textarea type="text"  class="form-control" placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. " rows="9"></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="row">
+		<div class="col-12 col-md-6 mb-3">
+			<label>Professional Skills</label>
+
+			<div class="form-group d-flex">
+				<input type="text" name="search" class="form-control" placeholder="ex. Data Encoding, Ruby, JavaScript" [(ngModel)]="skillModel"
+				(keyup.enter)="this.skill_requirements?.length < 10 ? addItem($event, this.skill_requirements, 'skill_requirements'): ''">
+			</div>
+
+			<div class="d-flex flex-wrap">
+				<ng-container *ngFor="let talent of skill_requirements, 'skill_requirements'">
+					<div class="flex-wrap me-3 talent-badge">{{talent}}
+						<img src="/assets/images/placeholder/icons/remove-white.png" 
+						style="height: 10px; margin-top: -3px" class="ms-2"
+						(click)="removeItem(talent, this.skill_requirements, 'skill_requirements')">
+					</div>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="row">
+		<div class="col-12">
+			<h5 class="title-label">Certification / Awards
+				<span class="float-end btn btn-add">Add Item</span>
+			</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3">
+				<label>Title</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Award Title" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Time Period</label>
+				<div class="form-check">
+				  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+				  <label class="form-check-label" for="flexCheckDefault">
+				    This certification or award does not expire
+				  </label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label>Start Date</label>
+						<select class="form-select">
+							<option selected disabled value="">Select Month</option>
+							<ng-container *ngFor="let item of month; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label> </label>
+						<select class="form-select">
+							<option selected disabled value="">Select Year</option>
+							<ng-container *ngFor="let item of year; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label>End Date</label>
+						<select class="form-select">
+							<option selected disabled value="">Select Month</option>
+							<ng-container *ngFor="let item of month; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-6">
+					<div class="title-container mb-3">
+						<label> </label>
+						<select class="form-select">
+							<option selected disabled value="">Select Year</option>
+							<ng-container *ngFor="let item of year; let i = index">
+								<option [value]="item">{{item}}</option>
+							</ng-container>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3">
+				<label>Description</label>
+				<div class="form-group">
+					<textarea type="text"  class="form-control" placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. " rows="9"></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="text-end mt-4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-save-draft me-3">Profile Preview</button>
+	<button class="btn btn-save me-2">Submit Changes</button>
+</div>
