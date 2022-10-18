@@ -48,7 +48,7 @@ export class JobPostDetailsApplyComponent implements OnInit {
 
     {
       id: 2,
-      title: "Attach Document"
+      title: "Additional Documents"
     },
 
     {
