@@ -34,16 +34,16 @@ export class DetailsComponent implements OnInit {
   public education_background: any[] = [
     {
       id: 1,  
-      title: "Master Degree",  
-      job_type: "Full-Time",
+      field_of_study: "Master Degree",  
+      school_address: "Manila, Philippines",
       school: "De La Salle-College of Saint Benilde",
       start_date: new Date("June 11, 2021"),
       end_date: new Date("April 12, 2022")
     },
     {
       id: 2,  
-      title: "BS Computer Science",  
-      job_type: "Full-Time",
+      field_of_study: "BS Computer Science",  
+      school_address: "Manila, Philippines",
       school: "Ateneo de Naga University",
       start_date: new Date("April 09, 2009"),
       end_date: new Date("March 12, 2015")
