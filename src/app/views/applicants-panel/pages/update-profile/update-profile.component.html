@@ -1,0 +1,20 @@
+<div class="p-4">
+	<!-- STEPPER CONTAINER changeStepper-->
+	<app-main-stepper
+	[stepper]="stepper"
+	[stepperItems]="stepperItems"
+	(changeStepper)="changeStep($event)"></app-main-stepper>
+
+	<ng-container *ngIf="stepper === 1">
+		<app-profile-details></app-profile-details>
+	</ng-container>
+
+	<ng-container *ngIf="stepper === 2">
+		<app-experience-qualification></app-experience-qualification>
+	</ng-container>
+
+	<ng-container *ngIf="stepper === 3">
+		<app-documents></app-documents>
+	</ng-container>
+</div>
+

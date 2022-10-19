@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { industries, job_role } from '../../../../utils/jobs-model-interface';
 
 @Component({
   selector: 'app-create-job-post-step',
@@ -8,90 +9,116 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./create-job-post-step.component.scss']
 })
 export class CreateJobPostStepComponent implements OnInit {
-  public categories: any[] = [
+  @Input() jobPostIndustry: any;
+  @Output() jobPostIndustryEvent: EventEmitter<any> = new EventEmitter<any>();
+
+  public search: string = "";
+  public industries: any[] = industries;
+  public job_role: any[] = job_role;
+  public rates: any[] = [
     {
-      id: 1,
-      title: 'Development & IT',  
-      skills: 100,  
-      rating: 4.2,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-    {
-      id: 2,
-      title: 'Sales & Marketing',  
-      skills: 154,  
-      rating: 4.6,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      title: "Monthly",  
+      rate: "month",
+      icon: '/rate-monthly'
     },
 
     {
-      id: 3,
-      title: 'Development & Marketing',  
-      skills: 98,  
-      rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      title: "Daily",  
+      rate: "day",
+      icon: '/rate-daily'
     },
 
     {
-      id: 4,
-      title: 'Architecture',  
-      skills: 144,  
-      rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-
-    {
-      id: 5,
-      title: 'Software Engineering',  
-      skills: 255,  
-      rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
-    },
-
-    {
-      id: 6,
-      title: 'Database Architecture',  
-      skills: 117,  
-      rating: 4.4,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
-    },
-
-    {
-      id: 7,
-      title: 'Civil Engineering',  
-      skills: 224,  
-      rating: 4.5,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
-    },
-
-    {
-      id: 8,
-      title: 'Virtual Assistant',  
-      skills: 89,  
-      rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      title: "Hourly",  
+      rate: "hour",
+      icon: '/rate-24'
     },
   ];
+  public industriesFiltered: any[] = [...this.industries];
+  public skill_requirements: string[] = [];
+  public tags: string[] = [];
+  public selectedIndustry: any = "";
+  public selectedJobRole: any = "";
+  public selectedRates: any = "";
+  public budget: any = {
+    min: 0,  
+    max: 0
+  }
+  public project_duration = {
+    start_date: new Date(),
+    end_date: new Date()
+  }
 
-  public talents: string[] = ["Designer", "UI Designer", "Full-time", "UI/UX"];
+  public skillModel: string = "";  
+  public tagModel: string = "";
+  public months: string[] = [
+    "January",  
+    "February",  
+    "March",
+    "April",
+    "May",
+    "June",  
+    "July",  
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  public days: number[] = new Array(31).fill(1).map((el,i) => i + 1);
 
   constructor() { }
 
   ngOnInit(): void {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+    console.log(this.jobPostIndustry)
   }
 
-  addItem(event, arrayItem){
+  generateProjectDuration(date){
+
+  }
+
+  addItem(event, arrayItem, field){
     let value = event?.target?.value;
     let index = arrayItem.findIndex(el => el === value);
 
     if(index === -1){
       arrayItem.push(value);
     }
+
+    // rebuild request body
+    this.rebuildObject(`${field}`, arrayItem);
   }
 
-  removeItem(item, arrayItem){
+  removeItem(item, arrayItem, field){
     let index = arrayItem?.findIndex(el => el?.id === item?.id);
     arrayItem.splice(index, 1);
+    
+    // rebuild request body
+    this.rebuildObject(`${field}`, arrayItem);
+  }
+
+
+  rebuildObject(field, data){
+    this.jobPostIndustry[`${field}`] = data;
+    this.jobPostIndustryEvent.emit(this.jobPostIndustry);
+    this.skillModel = undefined;
+    this.tagModel = undefined;
+  }
+
+  searchIndustry(){
+    const listDataSource = [...this.industries]
+    .filter(el => {
+      return JSON.stringify(el).toLowerCase().includes(this.search.toLowerCase());
+    });
+
+    this.industriesFiltered = listDataSource;
+
   }
 
 }

@@ -8,7 +8,7 @@ export interface Job {
   banner_thumbnail: string;  
   title: string;
   company: string;  
-  category: string;  
+  industry: string;  
   badge: Badge[];  
   job_type: string;
   job_description: string;
@@ -65,7 +65,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-1.png",  
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Expired", 
     badge: [
       {
@@ -120,7 +120,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-2.png",  
     title: "Angular Developer",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Expired", 
     badge: [
       {
@@ -160,7 +160,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-3.png",  
     title: "SQL Developer",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Expired", 
     badge: [
       {
@@ -200,7 +200,7 @@ const jobLists: Job[] = [
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-4.png",  
     title: "Data Analyst",
     company: "Moveup Wev Inc.",  
-    category: "", 
+    industry: "", 
     status: "Expired", 
     badge: [
       {

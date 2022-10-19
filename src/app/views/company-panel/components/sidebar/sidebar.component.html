@@ -1,9 +1,9 @@
 <div class="sidebar-details">
 	<div style="position: relative; height: 100vh;">
 		<div class="card card-body bg-logo text-center d-flex align-items-center" 
-		style="height: 120px">
+		style="height: 120px; cursor: pointer;">
 			<img src="/assets/images/placeholder/logo.png" class="hvr-grow img-logo img-fluid"
-			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}">
+			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}" routerLink="/">
 		</div>
 
 		<div class="card card-body p-3 mt-3 bg-menu"  
@@ -33,7 +33,7 @@
 					<img src="/assets/images/face-6.jpg" class="img-avatar me-2">
 					
 					<div class="mt-1">
-						<h5 class="img-avatar-full-name text-capitalize">James Cooper</h5>
+						<h5 class="img-avatar-full-name text-capitalize">{{ loggedUserData?.name }}</h5>
 						<h5 class="img-avatar-full-email text-truncate">UpUpTech</h5>
 					</div>
 				</div>

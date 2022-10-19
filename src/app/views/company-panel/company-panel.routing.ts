@@ -46,7 +46,7 @@ export const CompanyPanelRoutes: Routes = [
       },
 
       {
-        path: 'create-interview',  
+        path: 'interview-settings',  
         component: CreateInterviewComponent
       },
 

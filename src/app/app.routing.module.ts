@@ -42,6 +42,16 @@ const rootRouterConfig: Routes = [
 
   {
     path: '',
+    children: [
+      {
+        path: 'applicant',
+        loadChildren: () => import('./views/applicants-panel/applicants-panel.module').then(m => m.ApplicantsPanelModule)
+      }
+    ]
+  },
+
+  {
+    path: '',
     component: HeaderComponent,
     children: [
       {

@@ -34,6 +34,10 @@ import { CreateJobPostStepComponent } from './pages/jobs/pages/create-job-post/c
 import { PreviewJobPostStepComponent } from './pages/jobs/pages/create-job-post/components/preview-job-post-step/preview-job-post-step.component';
 import { CreateInterviewComponent as JobPostInterview } from './pages/jobs/pages/create-job-post/components/create-interview/create-interview.component';
 import { JobPostDetailStepComponent } from './pages/jobs/pages/create-job-post/components/job-post-detail-step/job-post-detail-step.component';
+import { BannerAccountDetailsComponent } from './pages/account-details/components/banner-account-details/banner-account-details.component';
+import { LatestJobAccountDetailsComponent } from './pages/account-details/components/latest-job-account-details/latest-job-account-details.component';
+import { FeaturedTopJobsAccountDetailsComponent } from './pages/account-details/components/featured-top-jobs-account-details/featured-top-jobs-account-details.component';
+import { InterviewLinkAccountDetailsComponent } from './pages/account-details/components/interview-link-account-details/interview-link-account-details.component';
 
 @NgModule({
   imports: [
@@ -67,7 +71,11 @@ import { JobPostDetailStepComponent } from './pages/jobs/pages/create-job-post/c
    CreateJobPostStepComponent,
    PreviewJobPostStepComponent,
    JobPostInterview,
-   JobPostDetailStepComponent
+   JobPostDetailStepComponent,
+   BannerAccountDetailsComponent,
+   LatestJobAccountDetailsComponent,
+   FeaturedTopJobsAccountDetailsComponent,
+   InterviewLinkAccountDetailsComponent
   ]
 })
 export class CompanyPanelModule{ }

@@ -1,0 +1,47 @@
+<app-job-details-banner
+[data]="selectedJobPost"
+[screenSize]="screenSize"></app-job-details-banner>
+
+
+<div class="container-fluid px-3 px-lg-5 mb-4" style="margin-top: -100px">
+	<div class="row">
+		<div class="col-12 col-md-12 col-lg-3">
+			<app-job-details-sidecard
+			[data]="selectedJobPost"
+			[company]="selectedCompany"
+			[screenSize]="screenSize"></app-job-details-sidecard>
+		</div>
+
+		<div class="col-12 col-md-12 col-lg-9">
+			<div class="card card-body">
+				<!-- STEPPER CONTAINER changeStepper-->
+				<app-main-stepper
+				[stepper]="stepper"
+				[stepperItems]="stepperItems"
+				(changeStepper)="changeStep($event)"></app-main-stepper>
+
+				<!-- STEPPER STEPS -->
+				<section>
+					<ng-container *ngIf="stepper === 1">
+						<app-profile-preview></app-profile-preview>
+					</ng-container>
+
+					<ng-container *ngIf="stepper === 2">
+						<app-profile-documents></app-profile-documents>
+					</ng-container>
+
+					<ng-container *ngIf="stepper === 3">
+						<app-interview-questions></app-interview-questions>
+					</ng-container>
+
+					<ng-container *ngIf="stepper === 4">
+						<app-application-preview></app-application-preview>
+					</ng-container>
+				</section>
+			</div>
+
+
+			
+		</div>
+	</div>
+</div>

@@ -79,4 +79,9 @@ export class HeaderComponent implements OnInit {
       window.scrollTo(0, 0);
     });
   }
+
+  navigateTo(route){
+    console.log(route)
+    this.router.navigate([`..${route}`]);
+  }
 }

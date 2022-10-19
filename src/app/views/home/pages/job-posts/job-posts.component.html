@@ -1,0 +1,16 @@
+
+<!-- Banner section -->
+<app-banner
+[screenSize]="screenSize"></app-banner>
+
+<!-- Companies -->
+<app-companies></app-companies>
+
+<!-- JOB POSTS -->
+<ng-container *ngIf="!loggedUserData?.employer">
+	<app-job-posts-list></app-job-posts-list>
+</ng-container>
+
+
+<app-explore-users
+[loggedUserData]="loggedUserData"></app-explore-users>

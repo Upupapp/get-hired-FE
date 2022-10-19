@@ -1,6 +1,8 @@
 .btn-stepper-active{
 	background: #FE6F61;
-	border-radius: 4px;
+	border-radius: 1px;
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
 	color:white;
 	padding: 15px 20px;
 	font-family: 'Montserrat';
@@ -53,7 +55,7 @@
 	border-radius: 50%;
 
 
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 600;
 	font-size: 18px;
@@ -64,6 +66,15 @@
 
 .btn-preview-job-post{
 	background: #FF7062;
+	border-radius: 10px;
+	color: white; 
+	border-radius: 6px;
+	padding: 10px 25px;
+	margin-top: 10px;
+}
+
+.btn-save-draft{
+	background: #7A637F;
 	border-radius: 10px;
 	color: white; 
 	border-radius: 6px;

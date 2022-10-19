@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-transparent py-4 fixed-top">
-  <div class="container-fluid d-flex px-0 px-lg-5">
+  <div class="container-fluid d-flex px-0 px-lg-5"  style="height: 80px !important;">
     <a class="navbar-brand me-3 me-lg-5" routerLink="/">
       <img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-fluid">
     </a>
@@ -68,16 +68,16 @@
                 <span class="dropdown-item d-flex" >
                   <ng-container  *ngIf="loggedUserData?.employer">
                     <img src="/assets/images/face-6.jpg" class="img-avatar me-3">
-                    <div routerLink="/company">
-                      <h5 class="title-user">James Cooper</h5>
+                    <div (click)="navigateTo('/company')">
+                      <h5 class="title-user text-capitalize">{{ loggedUserData?.name }}</h5>
                       <p class="title-position">Employer</p>
                     </div>
                   </ng-container>
 
                   <ng-container  *ngIf="loggedUserData?.applicant">
                     <img src="/assets/images/face-3.jpg" class="img-avatar me-3">
-                    <div routerLink="/applicant">
-                      <h5 class="title-user">Jordan Clark</h5>
+                    <div (click)="navigateTo('/applicant/profile')">
+                      <h5 class="title-user text-capitalize">{{ loggedUserData?.name }}</h5>
                       <p class="title-position">Applicant</p>
                     </div>
                   </ng-container>

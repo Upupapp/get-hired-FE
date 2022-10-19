@@ -123,7 +123,7 @@ export class StatChartComponent implements OnInit {
           padding: 25,
           font: {
             size: 15,
-            family: 'Poppins'
+            family: 'Manrope'
           }
         }
       },

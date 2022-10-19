@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
@@ -8,67 +8,65 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./job-post-detail-step.component.scss']
 })
 export class JobPostDetailStepComponent implements OnInit {
+  @Input() jobPostDetails: any;
+  @Output() jobPostDetailsEvent: EventEmitter<any> = new EventEmitter<any>();
 
   public workSetup: string[] = ["Hybrid", "Remote", "Onsite"];
   public workSetupSelected: string = "";
-
   public jobType: string[] = ["Full-time", "Part-time"];
-  public jobTypeSelected: string = "";
-
-
+  public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
   public badges: any[] = [
     {
       id: "career-growth",
-      name: "Career Growth",  
-      badge_logo: "badge-1.png"
+      title: "Career Growth",  
+      logo: "badge-1.png"
     }, 
     {
       id: "performance-incentive",
-      name: "Performance Incentive",  
-      badge_logo: "badge-1.png"
+      title: "Performance Incentive",  
+      logo: "badge-1.png"
     },
     {
       id: "benefit-package", 
-      name: "Benefit Package", 
-      badge_logo: "badge-2.png"
+      title: "Benefit Package", 
+      logo: "badge-2.png"
     },
     {
       id: "gender-equality", 
-      name: "Gender Equality", 
-      badge_logo: "badge-3.png"
+      title: "Gender Equality", 
+      logo: "badge-3.png"
     },
     {
       id:"work-life-balance", 
-      name: "Work-life Balance", 
-      badge_logo: "badge-2.png"
+      title: "Work-life Balance", 
+      logo: "badge-2.png"
     },
     {
       id:"friendly-environment", 
-      name: "Friendly Environment", 
-      badge_logo: "badge-3.png"
+      title: "Friendly Environment", 
+      logo: "badge-3.png"
     },
     {
       id:"flexitime",
-      name: "Flexitime",
-      badge_logo: "badge-2.png"
+      title: "Flexitime",
+      logo: "badge-2.png"
     },
-    
   ];
 
   public categories: any[] = [
     {
       id: 1,
-      title: 'Development & IT',  
+      title: 'Technology',  
       skills: 100,  
       rating: 4.2,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
     {
       id: 2,
       title: 'Sales & Marketing',  
       skills: 154,  
       rating: 4.6,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
@@ -76,7 +74,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Development & Marketing',  
       skills: 98,  
       rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
@@ -84,7 +82,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Architecture',  
       skills: 144,  
       rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
@@ -92,7 +90,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Software Engineering',  
       skills: 255,  
       rating: 4.7,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
@@ -100,7 +98,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Database Architecture',  
       skills: 117,  
       rating: 4.4,
-      banner_thumbnail: '/assets/images/placeholder/category-1.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
@@ -108,7 +106,7 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Civil Engineering',  
       skills: 224,  
       rating: 4.5,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
@@ -116,54 +114,35 @@ export class JobPostDetailStepComponent implements OnInit {
       title: 'Virtual Assistant',  
       skills: 89,  
       rating: 4.1,
-      banner_thumbnail: '/assets/images/placeholder/category-2.png'
+      banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
   ];
 
-  public categoriesSelected: any[] = [
-    {
-          id: 1,
-          title: 'Development & IT',  
-          skills: 100,  
-          rating: 4.2,
-          banner_thumbnail: '/assets/images/placeholder/category-1.png'
-        },
-    {
-          id: 3,
-          title: 'Development & Marketing',  
-          skills: 98,  
-          rating: 4.1,
-          banner_thumbnail: '/assets/images/placeholder/category-1.png'
-        },
-    {
-          id: 5,
-          title: 'Software Engineering',  
-          skills: 255,  
-          rating: 4.7,
-          banner_thumbnail: '/assets/images/placeholder/category-2.png'
-        },
-  ];
-
+  public address: string = '';
+  public title: string = '';
+  public job_type: string = '';
+  public job_description: string = '';
+  public job_duties: string = '';
   public badgeSelected: any[] = [];
-  public requirements: any[] = [
-    "Looking to add a pricing calculator",
-    "Website Search no more",
-    "User-based pricing calculator for you", 
-    "Is your business operating in multiple countries",
-  ];
+  public skill_experience: any[] = [];
+  public education_requirements: any[] = [];
+  public other_requirements: string[] =  [];
 
-  public educationalBackground: any[] = [
-    "Bachelor’s degree in Economics, Marketing, Business, or a related discipline is highly desired", 
-    "2+ years of relevant work experience in buying", 
-    "An equivalent combination of education, training and experience may be accepted."
-  ];
+  public skillExperienceModel: string = ""
+  public educationRequirementsModel: string = ""
+  public otherRequirementsModel: string = ""
 
-  public goodToHave: string[] =  ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"];
+
+  public job_level: string = "";
   
-
   constructor() { }
 
   ngOnInit(): void {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }
 
   addBadge(item){
@@ -175,21 +154,39 @@ export class JobPostDetailStepComponent implements OnInit {
       this.badgeSelected.push(item);
     }
 
+    this.rebuildObject('badge', this.badgeSelected);
+
     //else this.badgeSelected.splice(index, 1);
   }
 
-  addItem(event, arrayItem){
+  addItem(event, arrayItem, field){
     let value = event?.target?.value;
     let index = arrayItem.findIndex(el => el === value);
 
     if(index === -1){
       arrayItem.push(value);
     }
+
+    // rebuild request body
+    this.rebuildObject(`${field}`, arrayItem);
   }
 
-  removeItem(item, arrayItem){
+  removeItem(item, arrayItem, field){
     let index = arrayItem?.findIndex(el => el?.id === item?.id);
     arrayItem.splice(index, 1);
+
+    // rebuild request body
+    this.rebuildObject(`${field}`, arrayItem);
   }
 
+
+  rebuildObject(field, data){
+    this.jobPostDetails[`${field}`] = data;
+    this.jobPostDetailsEvent.emit(this.jobPostDetails);
+
+    this.skillExperienceModel = undefined;
+    this.educationRequirementsModel = undefined;
+    this.otherRequirementsModel = undefined;
+    console.log(this.jobPostDetails)
+  }
 }

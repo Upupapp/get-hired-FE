@@ -1,5 +1,5 @@
 .main-title{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 27px;
@@ -12,26 +12,41 @@
 }
 
 .title-label{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-	margin-bottom: 5px;
-
-	color: #282828;
+	font-size: 17px;
+	line-height: 20px;
+	color: #4D4D4D;
+	margin-bottom: 7px;
 }
 
 .title-label-sub{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* or 131% */
-	color: #A8A8A8;
-	margin-bottom: 5px;
+	font-size: 16px;
+	line-height: 16px;
+	color: #9C9C9C;
+	margin-bottom: 4px;
+}
+
+.title-label-sub-duration{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 13px;
+	/* identical to box height */
+
+	//letter-spacing: 0.2px;
+
+	color: #9C9C9C;
+
+	span{
+		font-weight: 600 !important;
+		color: #9C9C9C;
+	}
 }
 
 .card{
@@ -44,7 +59,7 @@
 
 .form-control{
 	background: #FFFFFF;
-	min-height: 50px;
+	//height: 46px;
 	border: 1px solid #AFBCC6 !important;
 }
 
@@ -97,7 +112,7 @@
 		}
 
 		.badge-title{
-			font-family: 'Poppins';
+			font-family: 'Manrope';
 			font-style: normal;
 			font-weight: 400;
 			font-size: 16px;
@@ -150,7 +165,7 @@
 .btn-search{
 	background: #FF7062;
 	border-radius: 4px;
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 400;
 	font-size: 14px;
@@ -160,7 +175,7 @@
 	padding: 10px;
 }
 
-.category-skills{
+.industry-skills{
 	border: none !important;
 	background: #FFFFFF;
 	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
@@ -168,8 +183,8 @@
 	cursor: pointer;
 }
 
-.category-title{
-	font-family: 'Poppins';
+.industry-title{
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 15.936px;
@@ -178,8 +193,8 @@
 	color: #000000;
 }
 
-.category-subtitle{
-	font-family: 'Poppins';
+.industry-subtitle{
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 300;
 	font-size: 15.936px;
@@ -188,7 +203,7 @@
 }
 
 label{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 18px;
@@ -209,7 +224,7 @@ label{
 
 
 .title-rate{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 400;
 	font-size: 18px;
@@ -234,7 +249,7 @@ label{
 }
 
 .title-rate-active{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 400;
 	font-size: 18px;
@@ -251,7 +266,7 @@ label{
 }
 
 .title-rate-range{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 16px;
@@ -261,7 +276,7 @@ label{
 
 
 .title-rate-selection{
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 27px;
@@ -269,7 +284,7 @@ label{
 	color: #FFFFFF;
 }
 
-.category-badge{
+.industry-badge{
 	background: #0C264C;
 	border-radius: 6px;
 	color: white;
@@ -282,7 +297,7 @@ label{
 	border: 1px solid #AFBCC6;
 	border-radius: 6px !important;
 	padding: 15px 20px !important;
-	font-family: 'Poppins';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 16px;
@@ -293,4 +308,55 @@ label{
 .active{
 	background: #0C264D;
 	color: white !important;
+}
+
+.btn-create-interview{
+	background: #FF7062;
+	border-radius: 10px;
+	color: white; 
+	border-radius: 6px;
+	padding: 10px 20px;
+	margin-left: 10px;
+	min-width: 150px;
+	font-size: 16px;
+}
+
+
+.logo-thumbnail{
+	background: #F3F3F3;
+	border-radius: 14px;
+	height: 80px;
+	width: 80px;
+	
+	img{
+		width: auto;
+		height: 34px;
+	}
+}
+
+.btn-record{
+	background: #FF7062;
+	box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
+	border-radius: 566.808px;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 10px;
+
+	color: #FFFFFF;
+	padding: 15px 20px
+}
+
+.btn-upload{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 17px;
+	/* identical to box height */
+	border-radius: 566.808px;
+
+	color: #959595;
+	padding: 10px 25px
 }

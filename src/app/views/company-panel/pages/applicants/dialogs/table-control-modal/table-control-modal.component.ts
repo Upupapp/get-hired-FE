@@ -15,8 +15,8 @@ export class TableControlModalComponent implements OnInit {
 
   public tableControls: any[] = [
     {
-      id: "view-cv",
-      title: "View CV",
+      id: "Video-cv",
+      title: "Video CV",
       icon: "/assets/images/icons/client-menu/about-me.png",  
       background: "#FEF1FC"
     },

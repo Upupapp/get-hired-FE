@@ -1,0 +1,29 @@
+<section class="mt-4 px-4">
+	<div class="ps-2 mb-3"
+	[@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
+		
+		<div class="text-end">
+			<h5 class="title-experience float-start mt-3">Public View 
+				<span class="edit-details" routerLink="/applicant/profile/edit/details">(Edit)</span>
+			</h5>
+
+			<button class="btn btn-save-later me-3 hvr-grow">
+				<img src="/assets/images/placeholder/icons/applicant-bookmark.png" style="height: 17px" class="me-1">
+				Save Later</button>
+			<button class="btn btn-invite me-2 hvr-grow">Invite to Job</button>
+		</div>
+	</div>
+
+
+	<div class="card card-body">
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-12">
+				<app-applicant-avatar></app-applicant-avatar>
+			</div>
+
+			<div class="col-12 col-md-12 col-lg-12">
+				<app-applicant-details></app-applicant-details>
+			</div>
+		</div>
+	</div>
+</section>
