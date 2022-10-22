@@ -41,7 +41,7 @@ export const ApplicantsPanelRoutes: Routes = [
       },   
 
       {
-        path: 'edit/details',  
+        path: 'profile/edit/details',  
         component: UpdateProfileComponent
       },  
 

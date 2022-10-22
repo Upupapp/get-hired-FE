@@ -21,6 +21,12 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { AvatarComponent } from './pages/profile/components/avatar/avatar.component';
 import { DetailsComponent } from './pages/profile/components/details/details.component';
 import { UpdateProfileComponent } from './pages/update-profile/update-profile.component';
+import { DocumentsComponent } from './pages/update-profile/components/documents/documents.component';
+import { ProfileDetailsComponent } from './pages/update-profile/components/profile-details/profile-details.component';
+import { ExperienceQualificationComponent } from './pages/update-profile/components/experience-qualification/experience-qualification.component';
+import { WorkExperienceComponent } from './pages/update-profile/components/work-experience/work-experience.component';
+import { EducationalBackgroundComponent } from './pages/update-profile/components/educational-background/educational-background.component';
+import { AwardsComponent } from './pages/update-profile/components/awards/awards.component';
 
 @NgModule({
   imports: [
@@ -46,6 +52,12 @@ import { UpdateProfileComponent } from './pages/update-profile/update-profile.co
     AvatarComponent,
     DetailsComponent,
     UpdateProfileComponent,
+    DocumentsComponent,
+    ProfileDetailsComponent,
+    ExperienceQualificationComponent,
+    WorkExperienceComponent,
+    EducationalBackgroundComponent,
+    AwardsComponent,
   ]
 })
 export class ApplicantsPanelModule{ }

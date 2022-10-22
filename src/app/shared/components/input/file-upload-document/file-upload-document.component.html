@@ -6,7 +6,7 @@
             appFileDrop
             class="upload-container py-3"
             (whenFileDropped)="uploadMultiple($event, true)"
-            (click)="uploadFile.click()">
+            (click)="fileArray.length === 0 ? uploadFile.click() : ''">
                 <input #uploadFile hidden type="file" (change)="uploadMultiple($event)" [accept]="acceptType" />
                 <div class="row">
                     <div class="col-8 text-start">
@@ -15,7 +15,8 @@
                     </div>
 
                     <div class="col-4">
-                        <button type="button" class="btn btn-uploader">Browse Files</button>
+                        <button type="button" class="btn btn-uploader"
+                        [disabled]="fileArray.length > 0">Browse Files</button>
                     </div>
                 </div>
             </div>  

@@ -66,7 +66,7 @@
 
 		<ng-container *ngFor="let item of education_background; let i = index">
 			<hr style="border-color: #909090"  *ngIf="i > 0">
-			<h5 class="title-experience">{{item?.title}}
+			<h5 class="title-experience">{{item?.field_of_study}}
 				<span class="float-end title-duration">
 					<img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
 					{{item?.start_date | date: 'MMM d, yyyy'}} - {{item?.start_date | date: 'MMM d, yyyy'}}

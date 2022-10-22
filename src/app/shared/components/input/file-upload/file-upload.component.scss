@@ -32,24 +32,27 @@
 .text-input {
     margin-bottom: 25px;
         
-        .label-top{
-            //margin-left: -20px !important;
-            font-weight: 500;
-            padding-left: 25px !important;
-            font-size: 13px !important;
-            //width: 160px;
-            text-align: left !important;
-        }
+    .label-top{
+        //margin-left: -20px !important;
+        font-weight: 500;
+        padding-left: 25px !important;
+        font-size: 13px !important;
+        //width: 160px;
+        text-align: left !important;
+    }
+
     .asterisk-required {
         margin-left: 4px;
         color: #FF0000;
     }
 
     p {
+        font-size: 'Manrope';
         text-align: right !important;
         margin-bottom: 0px;
         font-weight: 500 !important;
         color: #666;
+
     }
 
     .error-msg {
@@ -84,12 +87,12 @@
         width: 100%;
 
         &:focus {
-            outline: 1px solid $color-blue-primary;
+            outline: 1px solid #FF7062;
         }
     }
 
     input:focus {
-        outline: 1px solid $color-blue-primary;
+        outline: 1px solid #FF7062;
     }
 
     .container{
@@ -98,7 +101,7 @@
         }
 
         &-input{
-            width: 50%;
+            //width: 50%;
             
             .mat-icon{
                 vertical-align: center;
@@ -128,7 +131,7 @@
 
     .container-info{
         .img-info-container{
-            color: $color-blue-primary !important;
+            color: #FF7062 !important;
             img{
                 margin-left: 13px;
                 margin-top: 6px;
@@ -141,19 +144,19 @@
 
 .btn-primary{
     padding: 8px 15px !important;
-    background: $color-blue-primary !important;
+    background: #FF7062 !important;
     border-radius: 5px !important;
     font-size: 14px !important;
 }
 
 .uploader-container{
     border: solid 1px #c9c9c9;
-    border-radius: 8px;
-    padding: 30px;
+    border-radius: 6px;
+    padding: 10px 15px;
 
     .btn-uploader{
         padding: 8px 15px !important;
-        background: $color-blue-primary !important;
+        background: #FF7062 !important;
         border-radius: 5px !important;
         font-size: 14px !important;
         margin-left: 10px;
@@ -176,6 +179,7 @@
 
         .chip-text{
             margin-top: 5px;
+            max-width: 200px;
         }
 
         .close{
@@ -194,3 +198,4 @@
         border-radius: 5px !important;
     }
 }
+

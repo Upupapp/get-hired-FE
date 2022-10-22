@@ -12,6 +12,16 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { jobLists, Job } from '../../utils/job-list-model-interface';
 import { companyLists, Company } from '../../utils/company-list-model-interface';
 import { Router, ActivatedRoute } from '@angular/router';
+import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
+import {
+  Subscription,
+  Observable,
+  forkJoin,
+  combineLatest
+} from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-job-post-details-apply',
@@ -20,6 +30,9 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./job-post-details-apply.component.scss']
 })
 export class JobPostDetailsApplyComponent implements OnInit {
+  private req: Subscription;
+  private unsubscribe$ = new Subject<void>();
+
   public loading: boolean = true;
   public screenSize: number = 1600;
   public jobLists: Job[] = jobLists;
@@ -35,7 +48,7 @@ export class JobPostDetailsApplyComponent implements OnInit {
 
     {
       id: 2,
-      title: "Attach Document"
+      title: "Additional Documents"
     },
 
     {
@@ -51,7 +64,9 @@ export class JobPostDetailsApplyComponent implements OnInit {
 
   public stepper: number = 1;
 
-  constructor(public router: Router,  
+  constructor(
+    private dialog: MatDialog,
+    public router: Router,  
     public route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -76,5 +91,30 @@ export class JobPostDetailsApplyComponent implements OnInit {
 
   changeStep(step: number): void {
     this.stepper = step;
+
+    if(step === 3){
+      this.openInterviewNotification()
+    }
+  }
+
+  openInterviewNotification(data?: any) {
+    let dialogModal = this.dialog.open(
+      InterviewNotificationComponent,
+      {
+        width: '37vw',
+        data: data,
+      }
+    );
+
+    dialogModal
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        console.log(result)
+
+        if(result?.skip){
+          this.changeStep(4);
+        }
+      });
   }
 }

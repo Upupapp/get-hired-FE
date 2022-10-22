@@ -16,6 +16,7 @@ import { FileUploadComponent } from './components/input/file-upload/file-upload.
 import { FileUploadDocumentComponent } from './components/input/file-upload-document/file-upload-document.component';
 import { DragAndDropComponent } from './components/input/drag-and-drop/drag-and-drop.component';
 import { NgxOrgChartModule } from 'ngx-org-chart';
+import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
 
 const classesToInclude: any[] = [
   HeaderComponent,
@@ -26,7 +27,8 @@ const classesToInclude: any[] = [
   FileUploadComponent,
   FileUploadDocumentComponent,
   ReusableOrgChartComponent,
-  DragAndDropComponent
+  DragAndDropComponent,
+  MainStepperComponent
 ];
 
 @NgModule({

@@ -29,6 +29,8 @@ import { ApplicantDetailsComponent } from './pages/job-post-details-apply/steps/
 import { ApplicantAvatarComponent } from './pages/job-post-details-apply/steps/profile-preview/components/applicant-avatar/applicant-avatar.component';
 import { SharedModule } from '@app-shared/shared.module';
 import { RecordInterviewComponent } from './pages/job-post-details-apply/steps/interview-questions/components/record-interview/record-interview.component';
+import { SettingsModalComponent } from './pages/job-post-details-apply/steps/interview-questions/components/settings-modal/settings-modal.component';
+import { InterviewNotificationComponent } from './pages/job-post-details-apply/steps/interview-questions/components/interview-notification/interview-notification.component';
 
 @NgModule({
   imports: [
@@ -63,6 +65,8 @@ import { RecordInterviewComponent } from './pages/job-post-details-apply/steps/i
     ApplicantDetailsComponent,
     ApplicantAvatarComponent,
     RecordInterviewComponent,
+    SettingsModalComponent,
+    InterviewNotificationComponent,
   ]
 })
 export class HomeModule{ }
