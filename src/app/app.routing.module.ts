@@ -6,6 +6,13 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 const rootRouterConfig: Routes = [
   {
     path: '',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
+    data: {
+      withNav: false
+    }
+  },
+  {
+    path: '',
     redirectTo: 'job-post',
     pathMatch: 'full'
   },

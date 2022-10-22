@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';  
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
@@ -37,11 +37,14 @@ const classesToInclude: any[] = [
     HttpClientModule,
     ReactiveFormsModule,
     NgxOrgChartModule,
-    MaterialComponentsModule,
+    MaterialComponentsModule
   ],
-  entryComponents: [classesToInclude],
+  entryComponents: [...classesToInclude],
   providers: [],
   declarations: classesToInclude,
-  exports: classesToInclude
+  exports: [
+    ...classesToInclude,
+    MaterialComponentsModule
+  ]
 })
 export class SharedModule { }
