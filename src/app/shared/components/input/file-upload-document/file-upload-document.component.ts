@@ -35,7 +35,7 @@ export class FileUploadDocumentComponent implements OnInit {
   @Input() fileArray:any[] = [];
   @Input() row: string = 'col-sm-6';
   @Input() file: any;
-
+  @Input() multiple: boolean = false;
   fileObject: any = {
     filename: '',
     size: '',

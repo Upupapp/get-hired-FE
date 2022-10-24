@@ -1,7 +1,15 @@
-<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+<div class="card card-body mt-2" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
 	<div class="row">
 		<div class="col-12">
-			<h5 class="title-label"><span *ngIf="length !== 1">{{index}}.</span> Educational Background
+			<h5 class="title-label">
+
+				{{education_background?.field_of_study || '-'}}<!--  Work Experience --> 
+
+				<ng-container  *ngIf="education_background?.school">
+					<span class="mx-2">|</span> 
+					<i>{{education_background?.school || '-'}}</i>
+				</ng-container>
+
 				<span class="float-end btn btn-add"  *ngIf="length !== 1" 
 				(click)="removeEducationBackground(index)">
 					<img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">

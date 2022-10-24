@@ -38,6 +38,7 @@ import { BannerAccountDetailsComponent } from './pages/account-details/component
 import { LatestJobAccountDetailsComponent } from './pages/account-details/components/latest-job-account-details/latest-job-account-details.component';
 import { FeaturedTopJobsAccountDetailsComponent } from './pages/account-details/components/featured-top-jobs-account-details/featured-top-jobs-account-details.component';
 import { InterviewLinkAccountDetailsComponent } from './pages/account-details/components/interview-link-account-details/interview-link-account-details.component';
+import { MySubscriptionComponent } from './pages/my-subscription/my-subscription.component';
 
 @NgModule({
   imports: [
@@ -75,7 +76,8 @@ import { InterviewLinkAccountDetailsComponent } from './pages/account-details/co
    BannerAccountDetailsComponent,
    LatestJobAccountDetailsComponent,
    FeaturedTopJobsAccountDetailsComponent,
-   InterviewLinkAccountDetailsComponent
+   InterviewLinkAccountDetailsComponent,
+   MySubscriptionComponent
   ]
 })
 export class CompanyPanelModule{ }

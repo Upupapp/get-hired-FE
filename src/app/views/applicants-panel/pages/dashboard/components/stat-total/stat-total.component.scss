@@ -1,0 +1,119 @@
+.card-application{
+	border-radius: 15px;
+	padding: 22px 22px 5px 25px !important;
+	cursor: pointer;
+	//height: 110px;
+	background: #FFFFFF;
+	box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.06);
+	border-radius: 15px;
+	height: 185px;
+}
+
+.card-application-hired{
+	border-radius: 15px;
+	padding: 18px 22px 5px 25px !important;
+	cursor: pointer;
+	//height: 110px;
+	//box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.06);
+	border-radius: 15px;	
+
+	background: url(~/src/assets/images/placeholder/total-hired.png);
+	background-repeat: no-repeat;
+	//background-attachment: fixed;
+	background-position: right;
+	background-size: cover;
+	background-color: #0C5ED8;//linear-gradient(121.09deg, #0C5ED8 31.19%, #0C5ED8 95.32%);
+	
+	height: 185px;
+}
+
+
+.title-card{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 20px;
+	/* identical to box height, or 100% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #121212;
+	.card-img{
+		position: absolute;
+		right: 0;
+		top: 0
+	}
+}
+
+.title-stat{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 60px;
+	line-height: 58px;
+	/* identical to box height, or 83% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #EFA20D;
+	margin-top: 40px;
+	//color: #FFFFFF;
+}
+
+.title-stat-sub{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 15px;
+	/* identical to box height, or 83% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #EFA20D;
+	//margin-top: 20px;
+	//color: #FFFFFF;
+}
+
+
+.title-card-hired{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 20px;
+	/* identical to box height, or 100% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #FFFFFF;
+	.card-img{
+		position: absolute;
+		right: 0;
+		top: 0
+	}
+}
+
+.title-stat-hired{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 60px;
+	line-height: 58px;
+	/* identical to box height, or 83% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+	margin-top: 40px;
+	color: #FFFFFF;
+}
+
+.title-stat-sub-hired{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 24px;
+	/* identical to box height */
+	color: #FFFFFF;
+}

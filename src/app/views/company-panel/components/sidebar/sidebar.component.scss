@@ -159,6 +159,13 @@
 	margin-top: -3px;
 }
 
+.subscription{
+	width: 22px !important;
+	height: 22px !important;
+	margin-top: -3px;
+	margin-left: -2px;
+}
+
 .interviews{
 	width: 16px !important;
 	height: 16px !important;
@@ -187,4 +194,31 @@
 	bottom: 10px;
 	left: 70px;
 
+}
+
+.btn-sub-route{
+	color: white;
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 20px;
+	/* identical to box height */
+	border: none;
+	letter-spacing: 0.2px;
+
+	&:hover{
+		border: none;
+	}
+}
+
+.active-sub-route{
+	border-bottom: dashed white 1px;
+	margin-left: 35px;	
+	margin-right: 20px;
+}
+
+.inactive-sub-route{
+	margin-left: 35px;	
+	margin-right: 20px;
 }

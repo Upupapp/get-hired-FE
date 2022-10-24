@@ -10,7 +10,7 @@
 		[@animate]="{value:'*', params:{ scale: '0.95', delay:'200ms' }}">
 			<ng-container *ngFor="let item of sidebarItems">
 				<div class="w-100 d-flex mb-3"
-				[ngClass]="location?.match(item?.route) && !location?.match('expired') 
+				[ngClass]="location?.match(item?.route)
 				? 'sidebar-title-active' 
 				: location?.match('expired') && item?.route === 'expired-jobs' 
 				? 'sidebar-title-active'
@@ -23,6 +23,19 @@
 					</div>
 					<h5 class="sidebar-title">{{item?.title}}</h5>
 				</div>
+
+				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
+					<ng-container *ngFor="let sub_route of item?.sub_routes">
+						<div 
+						[ngClass]="location === ('/company/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'" 
+						style="margin-top: -10px; margin-bottom: 19px;">
+							<button class="btn btn-sub-route"
+							(click)="changeRoute('/company/' + sub_route?.route)">
+								{{sub_route?.title}}
+							</button>
+						</div>
+					</ng-container>
+				</ng-container>
 			</ng-container>
 		</div>
 
@@ -38,7 +51,7 @@
 					</div>
 				</div>
 
-				<button class="btn img-avatar-button mt-2">Change Profile</button>
+				<button class="btn img-avatar-button mt-2">Update Profile</button>
 			</div>
 
 			<h5 class="text-center copy-right mt-4">
