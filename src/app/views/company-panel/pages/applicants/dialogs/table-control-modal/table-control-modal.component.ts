@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-table-control-modal',
@@ -39,7 +40,8 @@ export class TableControlModalComponent implements OnInit {
       id: "view-details",
       title: "Applicant Details",
       icon: "/assets/images/icons/client-menu/service-templates.png",  
-      background: "#f7f2e4"
+      background: "#f7f2e4",
+      route: `/company/applicants/details/${this.data?.data?.id}`
     },
 
     /*{
@@ -86,6 +88,7 @@ export class TableControlModalComponent implements OnInit {
   ];
   
   constructor(
+    private router: Router,
     public dialogRef: MatDialogRef<TableControlModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private snackBar: MatSnackBar
@@ -108,7 +111,10 @@ export class TableControlModalComponent implements OnInit {
   }
 
   openControlMenu(menu: any){
-
+    if(menu?.route){
+      this.dialogRef.close()
+      this.router.navigate([`${menu?.route}`])
+    }
   }
 
 

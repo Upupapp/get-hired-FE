@@ -64,27 +64,27 @@
 
 .title-main{
 	font-style: normal;
-	font-weight: 500;
-	font-size: 35px;
+	font-weight: 600;
+	font-size: 30px;
 	line-height: 25px;
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 
-	color: #03011A;
+	color: #494949;
 }
 
 .bg-pink{
-	padding: 50px 30px 100px 30px;
+	padding: 60px 30px 150px 30px;
 	background: #FFE9E7;
 }
 
 .title-sub-type{
 	font-style: normal;
-	font-weight: 500;
+	font-weight: 600;
 	font-size: 18px;
 	line-height: 13px;
 	margin-top: 30px;
 	color: #0A0A0A;
-	margin-bottom: 15px;
+	margin-bottom: 12px;
 }
 
 
@@ -92,11 +92,10 @@
 	margin-top: 15px;
 	margin-bottom: 15px;
 	font-style: normal;
-	font-weight: 600;
+	font-weight: 700;
 	font-size: 30px;
 	line-height: 26px;
-
-	color: #0A0A0A;
+	color: #494949;
 }
 
 .title-recur{
@@ -132,10 +131,11 @@
 	padding: 0;
 	border: 1px solid #f9f9f9;
 	border-radius: 15px !important;
+	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
 }
 
 .btn-subscribe{
-	font-style: normal;
+	font-style: italic;
 	font-weight: 400;
 	font-size: 14px;
 	line-height: 21px;
@@ -143,11 +143,12 @@
 	border-radius: 111px;
 	color: #A7A7A7;
 	padding: 10px 20px;
+	margin-bottom: 20px;
 
 }
 
 .btn-subscribe-active{
-	font-style: normal;
+	font-style: italic;
 	font-weight: 500;
 	font-size: 14px;
 	line-height: 21px;
@@ -156,5 +157,6 @@
 	border-radius: 111px;
 	color: #FE6F61;
 	padding: 10px 20px;
+	margin-bottom: 20px;
 
 }

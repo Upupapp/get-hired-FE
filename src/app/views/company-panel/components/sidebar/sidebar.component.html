@@ -26,7 +26,7 @@
 
 				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
 					<ng-container *ngFor="let sub_route of item?.sub_routes">
-						<div 
+						<div [@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
 						[ngClass]="location === ('/company/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'" 
 						style="margin-top: -10px; margin-bottom: 19px;">
 							<button class="btn btn-sub-route"

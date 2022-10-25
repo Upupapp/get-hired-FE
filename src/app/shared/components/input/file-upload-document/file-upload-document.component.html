@@ -1,7 +1,7 @@
 
 <ng-container>
     <div class="row">
-        <div class="uploader-container col-12 col-md-6">
+        <div class="uploader-container" [ngClass]="singleLine ? 'col-12' : 'col-12 col-md-6'">
             <div
             appFileDrop
             class="upload-container py-3"
@@ -24,7 +24,7 @@
             </div>  
         </div>
 
-        <div class="col-12 col-md-6">
+        <div class="col-12" [ngClass]="singleLine ? 'col-12 pt-4' : 'col-12 col-md-6'">
             <div class="preview-file" *ngIf="fileArray.length > 0">
                 <h5 class="title-preview">Preview File</h5>
                 <div class="mb-3 p-3" *ngFor="let file of fileArray; let i = index">

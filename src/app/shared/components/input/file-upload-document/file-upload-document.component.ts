@@ -42,7 +42,7 @@ export class FileUploadDocumentComponent implements OnInit {
     type: '',
     file: ''
   }
-  
+  @Input() singleLine: boolean = false;
 
   @Output() upload: EventEmitter<any> = new EventEmitter();
   @ViewChild('uploadFile') uploadInput: ElementRef;
