@@ -1,7 +1,7 @@
-<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+<div class="card card-body mt-2" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
 	<div class="row">
 		<div class="col-12">
-			<h5 class="title-label"><span *ngIf="length !== 1">{{index}}.</span> Certification / Awards
+			<h5 class="title-label">{{awards?.title || '-'}}
 				<span class="float-end btn btn-add"  *ngIf="length !== 1" 
 				(click)="removeAward(index)">
 					<img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">

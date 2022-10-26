@@ -35,14 +35,14 @@ export class FileUploadDocumentComponent implements OnInit {
   @Input() fileArray:any[] = [];
   @Input() row: string = 'col-sm-6';
   @Input() file: any;
-
+  @Input() multiple: boolean = false;
   fileObject: any = {
     filename: '',
     size: '',
     type: '',
     file: ''
   }
-  
+  @Input() singleLine: boolean = false;
 
   @Output() upload: EventEmitter<any> = new EventEmitter();
   @ViewChild('uploadFile') uploadInput: ElementRef;

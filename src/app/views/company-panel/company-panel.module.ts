@@ -38,6 +38,12 @@ import { BannerAccountDetailsComponent } from './pages/account-details/component
 import { LatestJobAccountDetailsComponent } from './pages/account-details/components/latest-job-account-details/latest-job-account-details.component';
 import { FeaturedTopJobsAccountDetailsComponent } from './pages/account-details/components/featured-top-jobs-account-details/featured-top-jobs-account-details.component';
 import { InterviewLinkAccountDetailsComponent } from './pages/account-details/components/interview-link-account-details/interview-link-account-details.component';
+import { MySubscriptionComponent } from './pages/my-subscription/my-subscription.component';
+import { ContactListComponent } from './pages/contact-list/contact-list.component';
+import { AddContactComponent } from './pages/contact-list/dialogs/add-contact/add-contact.component';
+import { ApplicantDetailsComponent } from './pages/applicants/pages/applicant-details/applicant-details.component';
+import { ApplicantDetailsAvatarComponent } from './pages/applicants/components/applicant-details-avatar/applicant-details-avatar.component';
+import { ApplicantDetailsMainComponent } from './pages/applicants/components/applicant-details-main/applicant-details-main.component';
 
 @NgModule({
   imports: [
@@ -75,7 +81,13 @@ import { InterviewLinkAccountDetailsComponent } from './pages/account-details/co
    BannerAccountDetailsComponent,
    LatestJobAccountDetailsComponent,
    FeaturedTopJobsAccountDetailsComponent,
-   InterviewLinkAccountDetailsComponent
+   InterviewLinkAccountDetailsComponent,
+   MySubscriptionComponent,
+   ContactListComponent,
+   AddContactComponent,
+   ApplicantDetailsComponent,
+   ApplicantDetailsAvatarComponent,
+   ApplicantDetailsMainComponent
   ]
 })
 export class CompanyPanelModule{ }

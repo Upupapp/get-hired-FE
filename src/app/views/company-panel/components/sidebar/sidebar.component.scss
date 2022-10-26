@@ -42,33 +42,33 @@
 	margin-bottom: 10px;
 
 	&-full-name{
-		font-family: 'Montserrat';
+		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 700;
 		font-size: 14px;
 		line-height: 17px;
 		/* identical to box height */
 
-		letter-spacing: 0.2px;
+		/*letter-spacing: 0.2px;*/
 
 		color: #FFFFFF;
 	}
 
 	&-full-email{
-		font-family: 'Montserrat';
+		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 400;
 		font-size: 12px;
 		line-height: 15px;
 		/* identical to box height */
 
-		letter-spacing: 0.2px;
+		/*letter-spacing: 0.2px;*/
 
 		color: #FFFFFF;
 	}
 
 	&-button{
-		font-family: 'Montserrat';
+		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 500;
 		font-size: 16px;
@@ -96,14 +96,14 @@
 		color: #FFFFFF;
 		cursor: pointer;
 
-		font-family: 'Montserrat';
+		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 500;
 		font-size: 14px;
 		line-height: 20px;
 		/* identical to box height */
 
-		letter-spacing: 0.2px;
+		/*letter-spacing: 0.2px;*/
 
 
 		&:hover{
@@ -120,12 +120,12 @@
 		background: #FE6F61;
 		border-radius: 100px;
 		padding: 10px 15px 5px 5px;
-		font-family: 'Montserrat';
+		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 600;
 		font-size: 14px;
 		line-height: 20px;
-		letter-spacing: 0.2px;
+		/*letter-spacing: 0.2px;*/
 		
 		&:hover{
 			color: #FF7062;
@@ -159,6 +159,13 @@
 	margin-top: -3px;
 }
 
+.subscription{
+	width: 22px !important;
+	height: 22px !important;
+	margin-top: -3px;
+	margin-left: -2px;
+}
+
 .interviews{
 	width: 16px !important;
 	height: 16px !important;
@@ -173,18 +180,47 @@
 
 
 .copy-right{
-	font-family: 'Montserrat';
+	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
 	font-size: 12px;
 	line-height: 15px;
 	/* identical to box height */
 
-	letter-spacing: 0.2px;
+	/*letter-spacing: 0.2px;*/
 
 	color: #FFFFFF;
 	position: absolute;
 	bottom: 10px;
 	left: 70px;
 
+}
+
+.btn-sub-route{
+	color: white;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 20px;
+	/* identical to box height */
+	border: none;
+	/*letter-spacing: 0.2px;*/
+	padding-left: 10px !important;
+	padding-bottom: 10px !important;
+	
+	&:hover{
+		border: none;
+	}
+}
+
+.active-sub-route{
+	border-bottom: dashed white 1px;
+	margin-left: 35px;	
+	margin-right: 20px;
+}
+
+.inactive-sub-route{
+	margin-left: 35px;	
+	margin-right: 20px;
 }

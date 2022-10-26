@@ -6,9 +6,13 @@ import { JobsComponent } from './pages/jobs/jobs.component';
 import { CreateJobPostComponent } from './pages/jobs/pages/create-job-post/create-job-post.component';
 
 import { ApplicantsComponent } from './pages/applicants/applicants.component';
+import { ApplicantDetailsComponent } from './pages/applicants/pages/applicant-details/applicant-details.component';
+
 import { AccountDetailsComponent } from './pages/account-details/account-details.component';
 import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
 import { CreateInterviewComponent } from './pages/create-interview/create-interview.component';
+import { MySubscriptionComponent } from './pages/my-subscription/my-subscription.component';
+import { ContactListComponent } from './pages/contact-list/contact-list.component';
 
 export const CompanyPanelRoutes: Routes = [
   {
@@ -42,12 +46,34 @@ export const CompanyPanelRoutes: Routes = [
 
       {
         path: 'applicants',  
-        component: ApplicantsComponent
-      },
+        
+        children: [
+          {
+            path: '',  
+            component: ApplicantsComponent,
+          },
 
+           {
+            path: 'details/:id',  
+            component: ApplicantDetailsComponent,
+          },
+
+          {
+            path: 'contact-list',  
+            component: ContactListComponent,
+          },
+        ]
+
+      },
+     
       {
         path: 'interview-settings',  
         component: CreateInterviewComponent
+      },
+
+      {
+        path: 'my-subscription',  
+        component: MySubscriptionComponent
       },
 
       {
@@ -59,6 +85,8 @@ export const CompanyPanelRoutes: Routes = [
         path: 'expired-jobs',  
         component: ExpiredJobsComponent
       },
+
+     
     ]
   },
 ];

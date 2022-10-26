@@ -61,7 +61,7 @@ const selectedColumns: string[] =  [
 const jobLists: Job[] = [
   {
     company_id: 12001,
-    id: 3001,
+    id: 4001,
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-1.png",  
     title: "Administrative Assistant",
     company: "Software Wev Inc.",  
@@ -116,7 +116,7 @@ const jobLists: Job[] = [
 
   {
     company_id: 12002,
-    id: 3002,
+    id: 4002,
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-2.png",  
     title: "Angular Developer",
     company: "Moveup Wev Inc.",  
@@ -156,7 +156,7 @@ const jobLists: Job[] = [
 
   {
     company_id: 12003,
-    id: 3003,
+    id: 4003,
     banner_thumbnail: "/assets/images/placeholder/job-post-thumb-3.png",  
     title: "SQL Developer",
     company: "Moveup Wev Inc.",  
@@ -192,51 +192,6 @@ const jobLists: Job[] = [
     other_requirements: ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"],
     date_posted: new Date(),  
     expiration_date: new Date(), 
-  },
-
-  {
-    company_id: 12004,
-    id: 3004,
-    banner_thumbnail: "/assets/images/placeholder/job-post-thumb-4.png",  
-    title: "Data Analyst",
-    company: "Moveup Wev Inc.",  
-    industry: "", 
-    status: "Expired", 
-    badge: [
-      {
-        title: "Gender Equality",  
-        logo: 'badge-1'
-      },  
-
-      {
-        title: "Worklife Balance",  
-        logo: 'badge-2'
-      },  
-
-      {
-        title: "Gym and Health Membership",  
-        logo: 'badge-3'
-      },
-    ],   
-    job_type: "Part-Time",
-    work_setup: "Remote",  
-    salary_min: 20000,
-    salary_max: 50000,  
-    tags: ["Data Science", "Professionalism", "Time Management"],
-    address: "Soutville, USA ",
-    job_description: "Looking to add a pricing calculator to your website? Search no more, we created this user-based pricing calculator for you. Is your business operating in multiple countries? Show different pricing plans depending on their currency with our Multi Currency Pricing Table. This is an ideal opportunity for any technical Architectural Assistants and Technicians/ Technologists looking to work for a growing practice.",
-    job_duties: "Looking to add a pricing calculator to your website? Search no more, we created this user-based pricing calculator for you.  young and dynamiccompany in Frankfurt am Main, Germany, with the mission to provide patients with a contemporary.", 
-    skill_requirements: [
-      "Looking to add a pricing calculator",
-      "Website Search no more",
-      "User-based pricing calculator for you", 
-      "Is your business operating in multiple countries",
-    ],
-    skill_experience: ["Advanced degree or equivalent experience in graphic and web design3 or more years of professional design experience", "Direct response email experience", "Ecommerce website design experience", "Familiarity with mobile and web apps preferred", "Excellent communication skills, most notably a demonstrated ability to solicit and address creative and design feedback", "Must be able to work under pressure and meet deadlines while maintaining a positive attitude and providing exemplary customer service", "Ability to work independently and to carry out assignments"],
-    education_requirements: ["Bachelor’s degree in Economics, Marketing, Business, or a related discipline is highly desired", "2+ years of relevant work experience in buying", "An equivalent combination of education, training and experience may be accepted."],
-    other_requirements: ["Graduated from a top university", "Proven success in school or at work", "Professional experience with native English speakers", "Experience working from home", "Professional presentation on resume and online"],
-    date_posted: new Date(),  
-    expiration_date: new Date(),  
   },
 
 ];
