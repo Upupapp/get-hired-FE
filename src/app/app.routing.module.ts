@@ -5,7 +5,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 const rootRouterConfig: Routes = [
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
     data: {
       withNav: false
