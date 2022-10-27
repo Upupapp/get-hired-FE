@@ -6,6 +6,10 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '@app-shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthEffects } from './state/auth.effects';
+import { authReducer } from './state/auth.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 
 const routes: Routes = [
   { path: 'signin', component: SigninComponent },
@@ -24,6 +28,8 @@ const routes: Routes = [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
+    StoreModule.forFeature('status', authReducer),
+    EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)
   ]
 })

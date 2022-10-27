@@ -17,6 +17,10 @@ body {
   width: 100%;
 }
 
+.text-primary-red {
+  color: #FF7062;
+}
+
 .hvr-underline-from-left {
   &::before {
     background: $color-blue-primary;

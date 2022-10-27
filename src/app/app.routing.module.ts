@@ -5,6 +5,13 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 const rootRouterConfig: Routes = [
   {
+    path: 'admin',
+    loadChildren: () => import('./admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
+    data: {
+      withNav: false
+    }
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
     data: {

@@ -1,6 +1,11 @@
 
 @import "src/assets/styles/colors";
 
+.verify {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .bg-auth{
 	background: linear-gradient(178.76deg, #6160DC -47.98%, #54C5EB 163.51%);
 }
