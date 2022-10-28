@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';  
+import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
@@ -17,6 +17,7 @@ import { FileUploadDocumentComponent } from './components/input/file-upload-docu
 import { DragAndDropComponent } from './components/input/drag-and-drop/drag-and-drop.component';
 import { NgxOrgChartModule } from 'ngx-org-chart';
 import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 const classesToInclude: any[] = [
   HeaderComponent,
@@ -28,7 +29,8 @@ const classesToInclude: any[] = [
   FileUploadDocumentComponent,
   ReusableOrgChartComponent,
   DragAndDropComponent,
-  MainStepperComponent
+  MainStepperComponent,
+  LoadingComponent
 ];
 
 @NgModule({
@@ -39,11 +41,14 @@ const classesToInclude: any[] = [
     HttpClientModule,
     ReactiveFormsModule,
     NgxOrgChartModule,
-    MaterialComponentsModule,
+    MaterialComponentsModule
   ],
-  entryComponents: [classesToInclude],
+  entryComponents: [...classesToInclude],
   providers: [],
   declarations: classesToInclude,
-  exports: classesToInclude
+  exports: [
+    ...classesToInclude,
+    MaterialComponentsModule
+  ]
 })
 export class SharedModule { }

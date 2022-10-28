@@ -1,7 +1,14 @@
-<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+<div class="card card-body mt-2" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
 	<div class="row">
 		<div class="col-12">
-			<h5 class="title-label"><span *ngIf="length !== 1">{{index}}.</span> Work Experience
+			<h5 class="title-label"><span *ngIf="length !== 1"><!-- {{index}}. --></span>
+				{{work_experience?.title || '-'}}<!--  Work Experience --> 
+
+				<ng-container  *ngIf="work_experience?.company">
+					<span class="mx-2">|</span> 
+					<i>{{work_experience?.company || '-'}}</i>
+				</ng-container>
+
 				<span class="float-end btn btn-add"  *ngIf="length !== 1" 
 				(click)="removeExperience(index)">
 					<img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">
@@ -9,6 +16,7 @@
 
 				<span class="float-end btn btn-add" (click)="addExperience()">Add Item</span>
 			</h5>
+
 			<hr style="border: dashed 1px #868686">
 		</div>
 
@@ -36,8 +44,8 @@
 				<div class="form-check">
 				  <input class="form-check-input" type="checkbox" value="" 
 				  [(ngModel)]="work_experience.currently_work_here"
-				  id="flexCheckDefault">
-				  <label class="form-check-label" for="flexCheckDefault">
+				  [id]="work_experience.title">
+				  <label class="form-check-label">
 				    I currently work here
 				  </label>
 				</div>

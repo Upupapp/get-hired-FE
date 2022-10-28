@@ -32,7 +32,7 @@ export class ExperienceQualificationComponent implements OnInit {
       job_type: "Full-time",
       details: "Lorem Ipsum Sample Details",
       location: "123 Street Sampaloc Manila",
-      company: "Appel",
+      company: "Microsoft Inc.",
       start_date: new Date("January 2021"),
       end_date: new Date("June 2022"),
       currently_work_here: false
@@ -50,7 +50,7 @@ export class ExperienceQualificationComponent implements OnInit {
   }[] = [
     {
       level_of_education: "Bachelor’s or equivalent level",
-      field_of_study: "Master Degree",  
+      field_of_study: "Computer Science",  
       school_address: "Manila, Philippines",
       school: "De La Salle-College of Saint Benilde",
       start_date: new Date("June 11, 2021"),

@@ -1,0 +1,41 @@
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+		<div class="card card-body py-3">
+			<div class="w-100">
+				<span class="main-title mt-3">Contact List</span>
+
+				<div class="float-end">
+					<button class="btn btn-add-service" (click)="addContacts()">
+						Add Contact
+						<img src="/assets/images/placeholder/icons/add-new.png" 
+						style="width: 16px;" class="ms-1">
+					</button>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="card card-body" *ngIf="listView && !loading">
+			<!-- <app-reusable-org-chart></app-reusable-org-chart>
+			 --><app-reusable-table
+				[loading]="loading"
+				(updateSelectedRowDialog)="viewMenu($event)"
+				(viewDetails)="viewMenu($event)"			
+				[componentTitle]="'Contact List'"								
+				[displayedColumns]="displayedColumns"
+				[selectedColumns]="selectedColumns"
+				[selectedColumnsMobile]="selectedColumns"
+				[searchSource]="searchSource"
+				[maxRows]="10"
+				[listDataSource]="contactLists">
+			</app-reusable-table>
+		</div>
+
+
+		<!-- LOADING ANIMATION SCREEN -->
+		<custom-profile-loader 
+			[withSideBar]="false"
+			[fromDetailTab]="true"
+			[loading]="loading">
+		</custom-profile-loader>
+	</div>
+</div>

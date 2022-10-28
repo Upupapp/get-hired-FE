@@ -43,8 +43,7 @@ export class HeaderComponent implements OnInit {
 
     },
   ];
-
-  public loggedInCustomer: any;
+  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public loggedInApplicant: any;
   public location: any;
 
@@ -56,7 +55,7 @@ export class HeaderComponent implements OnInit {
 
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
-
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
       this.adminService.adminStatus$.subscribe((result: any) => {
         this.loggedInApplicant = result;
       });

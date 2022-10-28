@@ -50,11 +50,29 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Jobs', icon: 'jobs.png', class: 'jobs', route: 'jobs'
+      title: 'Jobs', icon: 'jobs.png', class: 'jobs', route: 'jobs',  
+      sub_routes: [
+        {
+          title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs', 
+        }, 
+
+        {
+          title: 'Expired Jobs',  icon: 'expired-jobs.png', class: 'expired', route: 'expired-jobs'
+        },  
+      ]
     },
 
     {
-      title: 'Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants'
+      title: 'Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+      sub_routes: [
+        {
+          title: 'Job Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants', 
+        }, 
+
+        {
+          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'applicants/contact-list'
+        },  
+      ]
     },
 
     {
@@ -62,11 +80,11 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Account Details', icon: 'account.png', class: 'accounts', route: 'account-details'
+      title: 'My Subscription', icon: 'subscribe.png', class: 'subscription', route: 'my-subscription'
     },
 
     {
-      title: 'Expired Jobs', icon: 'expired-jobs.png', class: 'expired', route: 'expired-jobs'
+      title: 'Account Details', icon: 'account.png', class: 'accounts', route: 'account-details'
     },
   ]
 

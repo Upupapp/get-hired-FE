@@ -27,6 +27,9 @@ import { ExperienceQualificationComponent } from './pages/update-profile/compone
 import { WorkExperienceComponent } from './pages/update-profile/components/work-experience/work-experience.component';
 import { EducationalBackgroundComponent } from './pages/update-profile/components/educational-background/educational-background.component';
 import { AwardsComponent } from './pages/update-profile/components/awards/awards.component';
+import { BannerComponent } from './pages/dashboard/components/banner/banner.component';
+import { StatChartComponent } from './pages/dashboard/components/stat-chart/stat-chart.component';
+import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
 
 @NgModule({
   imports: [
@@ -58,6 +61,9 @@ import { AwardsComponent } from './pages/update-profile/components/awards/awards
     WorkExperienceComponent,
     EducationalBackgroundComponent,
     AwardsComponent,
+    BannerComponent,
+    StatChartComponent,
+    StatTotalComponent,
   ]
 })
 export class ApplicantsPanelModule{ }

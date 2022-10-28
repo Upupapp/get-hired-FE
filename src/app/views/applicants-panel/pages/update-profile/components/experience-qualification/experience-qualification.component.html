@@ -1,4 +1,7 @@
 <!-- WORK EXPERIENCE -->
+<div class="mb-3 mt-4 ms-2">
+	<h5 class="mt-3 main-title">Work Experience</h5>
+</div>
 <ng-container *ngFor="let data of workExperienceArr; let i = index">
 	<app-work-experience 
 		[work_experience]="data"
@@ -9,6 +12,9 @@
 </ng-container>
 
 <!-- EDUCATION BACKGROUND -->
+<div class="mb-3 mt-5 ms-2">
+	<h5 class="mt-3 main-title">Educational Background</h5>
+</div>
 <ng-container *ngFor="let data of educationBackgroundArr; let i = index">
 	<app-educational-background 
 		[education_background]="data"
@@ -19,7 +25,7 @@
 </ng-container>
 
 <div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-	<div class="row">
+	<div class="row mt-3">
 		<div class="col-12 col-md-6 mb-3">
 			<label>Professional Skills</label>
 
@@ -42,6 +48,9 @@
 </div>
 
 <!-- AWARDS  -->
+<div class="mb-3 mt-5 ms-2">
+	<h5 class="mt-3 main-title">Certification / Awards</h5>
+</div>
 <ng-container *ngFor="let data of awardsArr; let i = index">
 	<app-awards-details
 		[awards]="data"
@@ -52,6 +61,6 @@
 </ng-container>
 
 <div class="text-end mt-4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-	<button class="btn btn-save-draft me-3">Profile Preview</button>
+	<button class="btn btn-save-draft me-3" routerLink="/applicant/profile">Profile Preview</button>
 	<button class="btn btn-save me-2">Submit Changes</button>
 </div>

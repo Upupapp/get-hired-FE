@@ -76,6 +76,28 @@ export class CreateJobPostComponent implements OnInit {
     }
   }
 
+  public stepperItems: any[] = [
+    {
+      id: 1,
+      title: "Create Job Post"
+    },
+
+    {
+      id: 2,
+      title: "Job Post Details"
+    },
+
+    {
+      id: 3,
+      title: "Create Interview"
+    },
+
+    {
+      id: 4,
+      title: "Preview Job Post"
+    },
+  ];
+
   public stepper: number = 1;
   
   constructor() { }
