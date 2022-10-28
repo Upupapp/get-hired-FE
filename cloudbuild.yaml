@@ -1,6 +1,6 @@
 steps:
 - name: bash
-  args: ['echo', 'I am running a bash command']
+  args: ['cd', 'dist']
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
 timeout: "1600s"
