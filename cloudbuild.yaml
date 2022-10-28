@@ -1,6 +1,10 @@
 steps:
-- name: bash
-  args: ['cd', 'dist']
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - |
+    cd dist/
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
 timeout: "1600s"
