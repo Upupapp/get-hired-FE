@@ -4,7 +4,7 @@ steps:
   args: ['install']
 - name: 'gcr.io/cloud-builders/npm'
   entrypoint: 'npm'
-  args: ['install', '-g'. '@angular/cli']
+  args: ['install', '-g', '@angular/cli']
 - name: 'gcr.io/cloud-builders/npm'
   entrypoint: 'npm'
   args: ['run', 'build-prod']
