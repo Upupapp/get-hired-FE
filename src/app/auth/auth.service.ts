@@ -42,9 +42,8 @@ export class AuthService {
     return this.baseService.post(`${this.authUrl}/verifyemail?oobCode=${oobCode}`);
   }
 
-  resendVerification(email: string, name: string) {
-    const body = { email, name };
-    return this.baseService.post(`${this.authUrl}/resendverificationlink`, body);
+  resendVerification(email: string) {
+    return this.baseService.post(`${this.authUrl}/resendverificationlink?email=${email}`);
   }
 
   getEmailPwLink(email: string) {

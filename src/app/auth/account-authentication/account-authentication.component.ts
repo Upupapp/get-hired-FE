@@ -1,0 +1,106 @@
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { mainAnimations } from '@app-shared/animations/main-animations';
+import { catchError, map, of } from 'rxjs';
+import { AuthService } from '../auth.service';
+
+@Component({
+  selector: 'app-account-authentication',
+  templateUrl: './account-authentication.component.html',
+  styleUrls: ['./account-authentication.component.scss'],
+  animations: [mainAnimations]
+})
+export class AccountAuthenticationComponent implements OnInit {
+
+  mode: string;
+  code: string;
+  continueUrl: string;
+  lang: string;
+  isVerified: boolean = false;
+  role: string;
+  email: string;
+  loading: boolean = false;
+  isResent: boolean;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService,
+    private snackBar: MatSnackBar
+  ) {
+    this.route.queryParams.subscribe(params => {
+      this.mode = params.mode;
+      this.code = params.oobCode;
+      this.continueUrl = params.continueUrl;
+      this.lang = params.lang
+      this.role = params.role
+      this.email = params.email
+    });
+  }
+
+  ngOnInit(): void {
+    switch (this.mode) {
+      case 'resendVerification':
+        this.resendVerification();
+        break;
+      case 'resetPassword':
+        this.router.navigate(['../change-password'],
+        { relativeTo: this.route, queryParams: { role: this.role, oobCode: this.code, email: this.email } })
+        break;
+      case 'recoverEmail':
+        console.log('For implementation')
+        break;
+      case 'verifyEmail':
+        this.verifyEmail();
+        break;
+      default:
+        console.log('mode missing');
+        break;
+    }
+  }
+
+  verifyEmail() {
+    this.authService.verifyEmailLink(this.code)
+      .pipe(
+        map((result: any) => {
+          this.loading = false;
+          if (result?.data) {
+            this.isVerified = true;
+            localStorage.removeItem('loginError');
+          }
+        }),
+        catchError((err: any) => {
+          this.loading = false;
+          return of(err);
+        })
+      ).subscribe();
+  }
+
+  resendVerification() {
+    this.authService.resendVerification(this.email)
+      .pipe(
+        map((result: any) => {
+          this.loading = false;
+          if (result?.data) {
+            this.isResent = true;
+            localStorage.removeItem('loginError');
+            localStorage.removeItem('loginMessage');
+            // this.snackBar.open(`Verification link send to your email. Please verify and login again.`,
+            //   '', { duration: 4000, panelClass: ['danger-snackbar'] });
+            // setTimeout(() => this.redirectToLogin(), 3000);
+          }
+        }),
+        catchError((err: any) => {
+          this.isResent = false;
+          this.loading = false;
+          console.log(err);
+          return of(err);
+        })
+      ).subscribe();
+  }
+
+  redirectToLogin() {
+    this.router.navigate(['../signin']);
+  }
+}

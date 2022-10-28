@@ -1,0 +1,50 @@
+<div *ngIf="!isVerified else verified" class="d-flex justify-content-center align-items-center h-100">
+  <div *ngIf="loading">
+    <app-loading></app-loading>
+  </div>
+  <div *ngIf="!loading" class="text-center">
+    <div *ngIf="isResent; else errorSent">
+      <img src="assets/images/success.gif" />
+      <h5 class="title-main px-5">
+        Verification link send to your email. Please verify and login again.
+      </h5>
+      <div class="text-center mb-3">
+        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3"
+        (click)="redirectToLogin()">
+          Login
+        </button>
+      </div>
+    </div>
+    <ng-template #errorSent>
+      <img src="assets/images/camera.gif" />
+      <h5 class="title-main px-5">Error Verifying your account.
+      </h5>
+      <div class="text-center mb-3">
+        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3"
+        (click)="resendVerification()">
+          Resend Verification link
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</div>
+<ng-template #verified>
+  <div class="container-fluid bg-verified p-3 py-5 w-50 card-shadow mt-5" style="position: relative;"
+    [@animate]="{value:'*', params:{ x:'-10px', delay:'300ms' }}">
+    <div class="text-center px-lg-3 px-3" style="z-index: 999 !important;">
+      <div class="py-5">
+        <img src="/assets/images/placeholder/success.gif" style="width: 35%;">
+
+        <h5 class="title-verified mt-2 px-5">Your account in <span class="gwana-trademark"> <img src="/assets/images/logo.png" style="width: 15%;"></span> is verified!
+        </h5>
+
+        <div class="mt-2">
+          <button class="btn btn-submit text-center w-50 mt-2"
+          (click)="redirectToLogin()">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

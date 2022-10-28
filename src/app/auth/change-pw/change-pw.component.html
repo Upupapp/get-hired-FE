@@ -1,0 +1,76 @@
+  <div class="container-fluid bg-white vh-100">
+    <div class="row">
+      <div class="col-12 col-md-12 col-lg-6 bg-form offset-lg-3">
+        <div class="card p-0" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+          <form
+          class="p-lg-5 pb-0"
+          [formGroup]="pwForm"
+          (ngSubmit)="changePW()"
+        >
+            <div class="form-group text-start mb-3">
+              <h4 class="main-title text-center m-0">Change Password</h4>
+            </div>
+
+            <div class="alert alert-success alert-dismissible fade show success-message"
+              [@animate]="{ value: '*', params: { y: '50px', delay: '600ms' } }" *ngIf="message" role="alert">
+              <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
+                (click)="onAlertClose()"></button>
+              <span [innerHtml]="message"></span>
+            </div>
+
+            <!-- Error Message -->
+            <div class="alert alert-danger alert-dismissible fade show error-message"
+              [@animate]="{ value: '*', params: { y: '50px', delay: '600ms' } }" *ngIf="error" role="alert">
+              <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
+                (click)="onAlertClose()"></button>
+              <span [innerHtml]="error"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="mb-2">New Password</label>
+              <input type="password" class="form-control" name="newPassword" placeholder="**********"
+                formControlName="newPassword" />
+              <div *ngIf="
+                  (pw_validators?.invalid && pw_validators?.touched) ||
+                  pw_validators?.dirty
+                ">
+                <small *ngIf="pw_validators?.errors?.required" class="text-danger">Password is required</small>
+                <small *ngIf="pw_validators?.errors?.pattern" class="text-danger">
+                  Password must be 8 characters long with mixed uppercase,
+                  special characters and numbers.
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group mt-2">
+              <label class="mb-2">Confirm Password</label>
+              <input type="password" class="form-control" name="confirmPassword" placeholder="**********"
+                formControlName="confirmPassword" />
+              <div *ngIf="
+                  (pw_reValidators?.invalid && pw_reValidators?.touched) ||
+                  pw_reValidators?.dirty
+                ">
+                <small *ngIf="pw_reValidators?.errors?.required" class="text-danger">Re-enter Password is
+                  required</small>
+                <small *ngIf="pw_reValidators?.hasError('notEquivalent')" class="text-danger">
+                  Passwords do not match
+                </small>
+              </div>
+            </div>
+
+            <div class="w-100 mt-2 px-2">
+              <button type="submit" *ngIf="!loading" [disabled]="!pwForm.valid"
+                class="btn btn-submit d-block w-100 float-end mt-2 mb-3">
+                Change Password
+              </button>
+              <button type="button" class="btn btn-submit d-block w-100 float-end mt-2 mb-3" [disabled]="true"
+                *ngIf="loading">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

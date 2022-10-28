@@ -34,6 +34,8 @@ export class SigninComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.onAlertClose();
+
     this.loginForm = this.formBuilder.group({
       email: [null, Validators.compose([Validators.required, Validators.email])],
       password: [null, Validators.compose([Validators.required, Validators.minLength(8)])]
@@ -62,9 +64,9 @@ export class SigninComponent implements OnInit {
       this.message = localStorage.getItem('loginMessage');
 
       if(user.role == 1) {
-        this.router.navigate(['../../admin'], { relativeTo: this.activatedRoute });
+        this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
       } else {
-        this.router.navigate(['../../dashboard'], { relativeTo: this.activatedRoute });
+        this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
       }
     }
   }
@@ -93,7 +95,7 @@ export class SigninComponent implements OnInit {
   resendVerification() {
     // TODO
     this.onAlertClose();
-    const url = '../../auth/verify';
+    const url = '../verify';
     this.router.navigate([url], {
       relativeTo: this.activatedRoute, queryParams: {
         role: 1,

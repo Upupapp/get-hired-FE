@@ -10,11 +10,15 @@ import { AuthEffects } from './state/auth.effects';
 import { authReducer } from './state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { ChangePwComponent } from './change-pw/change-pw.component';
+import { AccountAuthenticationComponent } from './account-authentication/account-authentication.component';
 
 const routes: Routes = [
   { path: 'signin', component: SigninComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'change-password', component: ChangePwComponent },
+  { path: 'verify', component: AccountAuthenticationComponent },
   { path: '', redirectTo: 'signin', pathMatch: 'full' }
 ];
 
@@ -22,7 +26,9 @@ const routes: Routes = [
   declarations: [
     SignupComponent,
     SigninComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ChangePwComponent,
+    AccountAuthenticationComponent
   ],
   imports: [
     CommonModule,
