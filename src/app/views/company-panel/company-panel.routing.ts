@@ -88,7 +88,7 @@ export const CompanyPanelRoutes: Routes = [
 
       // COMPANY DETAILS
       {
-        path: 'details',  
+        path: 'company-details',  
         component: AccountDetailsComponent
       },
 

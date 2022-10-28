@@ -1,3 +1,15 @@
+.submit-container{
+	z-index: 99 !important;;
+	position: fixed !important;
+	right: 20px;
+	top: 105px;
+}
+
+
+.bg-upper-gray{
+	background: #F5F6FA;
+}
+
 .main-title{
 	font-family: 'Manrope';
 	font-style: normal;
@@ -304,7 +316,7 @@ label{
 	line-height: 27px;
 
 	color: #FFFFFF;
-	padding: 10px 30px;
+	padding: 7px 20px !important;
 }
 
 .btn-save-draft{
@@ -317,7 +329,7 @@ label{
 	background: #FFFFFF;
 	border: 1px solid #a9a9a9;
 	border-radius: 7px;
-	padding: 10px 30px;
+	padding: 7px 20px !important;
 }
 
 
