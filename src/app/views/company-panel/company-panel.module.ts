@@ -5,21 +5,17 @@ import { NgChartsModule } from 'ng2-charts';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 import { NgxOrgChartModule } from 'ngx-org-chart';
 import { CompanyPanelRoutes } from './company-panel.routing';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../shared/components/material-components/material-components.module';
 import { SharedModule } from '@app-shared/shared.module';
-
 import { CompanyPanelComponent } from './company-panel.component';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { BannerComponent } from './pages/dashboard/components/banner/banner.component';
 import { StatChartComponent } from './pages/dashboard/components/stat-chart/stat-chart.component';
 import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
-
 import { JobsComponent } from './pages/jobs/jobs.component';
 import { CreateJobPostComponent } from './pages/jobs/pages/create-job-post/create-job-post.component';
 import { TableControlModalComponent as JobsControl } from './pages/jobs/dialogs/table-control-modal/table-control-modal.component';
@@ -44,6 +40,10 @@ import { AddContactComponent } from './pages/contact-list/dialogs/add-contact/ad
 import { ApplicantDetailsComponent } from './pages/applicants/pages/applicant-details/applicant-details.component';
 import { ApplicantDetailsAvatarComponent } from './pages/applicants/components/applicant-details-avatar/applicant-details-avatar.component';
 import { ApplicantDetailsMainComponent } from './pages/applicants/components/applicant-details-main/applicant-details-main.component';
+import { CompanySettingsComponent } from './pages/company-settings/company-settings.component';
+import { CompanyDetailsComponent } from './pages/company-settings/components/company-details/company-details.component';
+import { AccountSettingsComponent } from './pages/company-settings/components/account-settings/account-settings.component';
+import { AddAccessModalComponent } from './pages/company-settings/dialogs/add-access-modal/add-access-modal.component';
 
 @NgModule({
   imports: [
@@ -87,7 +87,11 @@ import { ApplicantDetailsMainComponent } from './pages/applicants/components/app
    AddContactComponent,
    ApplicantDetailsComponent,
    ApplicantDetailsAvatarComponent,
-   ApplicantDetailsMainComponent
+   ApplicantDetailsMainComponent,
+   CompanySettingsComponent,
+   CompanyDetailsComponent,
+   AccountSettingsComponent,
+   AddAccessModalComponent
   ]
 })
 export class CompanyPanelModule{ }

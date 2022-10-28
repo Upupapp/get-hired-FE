@@ -1,0 +1,16 @@
+<div class="p-4">
+	<!-- STEPPER CONTAINER changeStepper-->
+	<app-tab-selectors
+	[stepper]="stepper"
+	[stepperItems]="stepperItems"
+	(changeStepper)="changeStep($event)"></app-tab-selectors>
+
+	<ng-container *ngIf="stepper === 1">
+		<app-company-settings-details></app-company-settings-details>
+	</ng-container>
+	
+	<ng-container *ngIf="stepper === 2">
+		<app-account-settings></app-account-settings>
+	</ng-container>
+</div>
+
