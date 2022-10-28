@@ -1,5 +1,7 @@
 steps:
-- name: "gcr.io/cloud-builders/gcloud"
-  dir: dist/
-  args: ["app", "deploy"]
+steps:
+- name: bash
+  script: |
+    #!/bin/bash
+    echo "Hello Natoy"
 timeout: "1600s"
