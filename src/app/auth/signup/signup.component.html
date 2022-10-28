@@ -14,7 +14,7 @@
     <div class="col-12 col-md-6 bg-form">
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <!-- Error Message -->
-        <form class="px-3" (submit)="register($event)" [formGroup]="registerForm">
+        <form class="px-3" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
           <div class="form-group text-start mb-5">
             <h4 class="main-title m-0">Sign Up
               <img src="/assets/images/placeholder/logo.png" routerLink="/"
@@ -121,6 +121,13 @@
             Already Have an account? <a [routerLink]="'/signin'">Login</a>
           </div>
         </form>
+
+        <div *ngIf="isResent" class="text-center">
+          <img src="assets/images/success.gif" class="w-25" />
+          <h5 class="title-sub px-5">
+            Verification link send to your email. Redirecting to Login ...
+          </h5>
+        </div>
       </div>
     </div>
   </div>

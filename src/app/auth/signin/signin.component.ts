@@ -60,7 +60,10 @@ export class SigninComponent implements OnInit {
         email: data.email,
       }));
 
-      this.loginForm.reset();
+      if(this.loginForm) {
+        this.loginForm.reset();
+      }
+
       this.message = localStorage.getItem('loginMessage');
 
       if(user.role == 1) {

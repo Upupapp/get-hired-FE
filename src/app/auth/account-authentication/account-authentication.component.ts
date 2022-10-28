@@ -20,7 +20,7 @@ export class AccountAuthenticationComponent implements OnInit {
   isVerified: boolean = false;
   role: string;
   email: string;
-  loading: boolean = false;
+  loading: boolean = true;
   isResent: boolean;
 
   constructor(
@@ -42,17 +42,17 @@ export class AccountAuthenticationComponent implements OnInit {
   ngOnInit(): void {
     switch (this.mode) {
       case 'resendVerification':
-        this.resendVerification();
+        setTimeout(() => this.resendVerification(), 3000);
         break;
       case 'resetPassword':
-        this.router.navigate(['../change-password'],
-        { relativeTo: this.route, queryParams: { role: this.role, oobCode: this.code, email: this.email } })
+        setTimeout(() => this.router.navigate(['../change-password'],
+        { relativeTo: this.route, queryParams: { role: this.role, oobCode: this.code, email: this.email } }), 3000);
         break;
       case 'recoverEmail':
         console.log('For implementation')
         break;
       case 'verifyEmail':
-        this.verifyEmail();
+        setTimeout(() => this.verifyEmail(), 3000);
         break;
       default:
         console.log('mode missing');

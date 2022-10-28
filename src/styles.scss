@@ -42,6 +42,10 @@ body {
   }
 }
 
+.container-fluid {
+  height: 100vh;
+}
+
 .hvr-underline-from-left {
   &::before {
     background: $color-blue-primary;

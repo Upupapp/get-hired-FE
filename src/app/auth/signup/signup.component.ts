@@ -6,6 +6,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { AuthService } from '../auth.service';
 import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
+import { combineLatest, map, Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -14,12 +15,22 @@ import * as Model from '../auth.model';
   animations: [mainAnimations]
 })
 export class SignupComponent implements OnInit {
+  unsubscribe$ = new Subject<void>();
+  req$: Subscription;
+
   registerForm: FormGroup;
   message: any = localStorage.getItem('loginMessage');
   error: any = localStorage.getItem('loginError');
   inputType: string = 'password';
   submitting: boolean = false;
   pwPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
+  email: string;
+  isResent: boolean;
+
+  success$ = this.authFacade.success$;
+  loading$ = this.authFacade.loading$;
+  error$ = this.authFacade.error$
+    .pipe().subscribe(this.showError.bind(this));
 
   constructor(
     private router: Router,
@@ -40,11 +51,21 @@ export class SignupComponent implements OnInit {
       lastName: [null, Validators.compose([Validators.required])],
       agreeToTerms: [null, Validators.compose([Validators.required])],
       role: [null, Validators.compose([Validators.required])]
-    },{ validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
+    }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
+
+    this.req$ = combineLatest([this.success$, this.loading$]).pipe(
+      map(([success, loading]) => {
+        if (success && !loading) {
+          this.submitting = false;
+          this.openVerification(this.email);
+        }
+      })).subscribe();
   }
 
   register(event) {
-    if(this.registerForm.valid) {
+    this.submitting = true;
+    if (this.registerForm.valid) {
+      this.email = this.registerForm.get('email').value;
       let credentials: Model.Credentials = {
         email: this.registerForm.get('email').value,
         password: this.registerForm.get('password').value,
@@ -54,6 +75,22 @@ export class SignupComponent implements OnInit {
       };
 
       this.authFacade.signUp(credentials);
+    }
+  }
+
+  openVerification(email: string) {
+    if (email) {
+      this.isResent = true;
+      setTimeout(() => this.router.navigate(['../signin'], { relativeTo: this.activatedRoute }), 3000);
+    }
+  }
+
+  showError(err: any) {
+    console.log(err);
+    if (err) {
+      this.submitting = false;
+      window.scroll(0, 0);
+      this.error = err;
     }
   }
 
@@ -86,6 +123,14 @@ export class SignupComponent implements OnInit {
 
   get pw_reValidators() {
     return this.registerForm.get('confirmPassword');
+  }
+
+  ngOnDestroy(): void {
+    localStorage.removeItem('signupError');
+    localStorage.removeItem('signupMessage');
+
+    if (this.req$) this.req$.unsubscribe();
+
   }
 
 }
