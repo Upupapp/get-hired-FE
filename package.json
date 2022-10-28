@@ -9,7 +9,8 @@
     "test": "ng test",
     "heroku-postinstall": "npm install --force",
     "build-dev": "ng build --configuration=staging",
-    "build-prod": "ng build --configuration=production"
+    "build-prod": "ng build --configuration=production",
+    "deploy": "cd dist && gcloud app deploy --project get-hired-363107"
   },
   "private": true,
   "dependencies": {
