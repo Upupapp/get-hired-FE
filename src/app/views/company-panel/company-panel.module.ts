@@ -44,6 +44,7 @@ import { CompanySettingsComponent } from './pages/company-settings/company-setti
 import { CompanyDetailsComponent } from './pages/company-settings/components/company-details/company-details.component';
 import { AccountSettingsComponent } from './pages/company-settings/components/account-settings/account-settings.component';
 import { AddAccessModalComponent } from './pages/company-settings/dialogs/add-access-modal/add-access-modal.component';
+import { InviteApplicantModalComponent } from './pages/applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
 
 @NgModule({
   imports: [
@@ -91,7 +92,8 @@ import { AddAccessModalComponent } from './pages/company-settings/dialogs/add-ac
    CompanySettingsComponent,
    CompanyDetailsComponent,
    AccountSettingsComponent,
-   AddAccessModalComponent
+   AddAccessModalComponent,
+   InviteApplicantModalComponent
   ]
 })
 export class CompanyPanelModule{ }

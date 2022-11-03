@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
+import { InviteApplicantModalComponent } from './dialogs/invite-applicant-modal/invite-applicant-modal.component';
 
 @Component({
   selector: 'app-applicants',
@@ -99,8 +100,21 @@ export class ApplicantsComponent implements OnInit {
   }
 
 
-  addApplicants(){
-    
+  inviteApplicant(){
+    let openDialog = this.dialog.open(
+      InviteApplicantModalComponent,
+      { 
+        width: '34vw',
+        data: event,
+      }
+    );
+
+    openDialog
+    .afterClosed()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(result => {
+
+    });
   }
 
 }
