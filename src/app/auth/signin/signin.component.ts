@@ -69,6 +69,7 @@ export class SigninComponent implements OnInit {
       if(user.role == 1) {
         this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
       } else {
+        // console.log('Redirect to employer');
         this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
       }
     }

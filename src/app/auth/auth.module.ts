@@ -12,6 +12,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ChangePwComponent } from './change-pw/change-pw.component';
 import { AccountAuthenticationComponent } from './account-authentication/account-authentication.component';
+import { ErrorNotFoundComponent } from './error-not-found/error-not-found.component';
 
 const routes: Routes = [
   { path: 'signin', component: SigninComponent },
@@ -19,7 +20,8 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'change-password', component: ChangePwComponent },
   { path: 'verify', component: AccountAuthenticationComponent },
-  { path: '', redirectTo: 'signin', pathMatch: 'full' }
+  { path: '', redirectTo: 'signin', pathMatch: 'full' },
+  { path: '**', component: ErrorNotFoundComponent },
 ];
 
 @NgModule({
@@ -28,7 +30,8 @@ const routes: Routes = [
     SigninComponent,
     ResetPasswordComponent,
     ChangePwComponent,
-    AccountAuthenticationComponent
+    AccountAuthenticationComponent,
+    ErrorNotFoundComponent
   ],
   imports: [
     CommonModule,

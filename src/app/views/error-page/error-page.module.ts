@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ErrorPageRoutes } from './error-page.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ErrorNotFoundComponent } from './error-not-found/error-not-found.component';
+import { ErrorNotFoundComponent } from '../../auth/error-not-found/error-not-found.component';
 
 
 @NgModule({
@@ -15,8 +15,8 @@ import { ErrorNotFoundComponent } from './error-not-found/error-not-found.compon
     RouterModule.forChild(ErrorPageRoutes)
   ],
   declarations: [
-  
-    ErrorNotFoundComponent
+
+    // ErrorNotFoundComponent
   ]
 })
 export class ErrorPageModule{ }
