@@ -22,8 +22,25 @@
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
-	bottom: 50px;
+	bottom: 35px;
 	min-width: 230px;
+}
+
+.copy-right{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 15px;
+	/* identical to box height */
+
+	/*letter-spacing: 0.2px;*/
+
+	color: #FFFFFF;
+	position: absolute;
+	bottom: 0px;
+	left: 70px;
+
 }
 
 .img-logo{
@@ -71,7 +88,7 @@
 		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 500;
-		font-size: 16px;
+		font-size: 15px;
 		line-height: 20px;
 		/* identical to box height */
 
@@ -179,22 +196,7 @@
 }
 
 
-.copy-right{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 12px;
-	line-height: 15px;
-	/* identical to box height */
 
-	/*letter-spacing: 0.2px;*/
-
-	color: #FFFFFF;
-	position: absolute;
-	bottom: 10px;
-	left: 70px;
-
-}
 
 .btn-sub-route{
 	color: white;

@@ -18,13 +18,31 @@
 }
 
 .bg-user{
-	background: #444152;
+	background: #7A637F;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
-	bottom: 50px;
+	bottom: 35px;
 	min-width: 230px;
 }
+
+.copy-right{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 15px;
+	/* identical to box height */
+
+	/*letter-spacing: 0.2px;*/
+
+	color: #FFFFFF;
+	position: absolute;
+	bottom: 0px;
+	left: 70px;
+
+}
+
 
 .img-logo{
 	width: 100px;
@@ -172,19 +190,3 @@
 }
 
 
-.copy-right{
-	font-family: 'Montserrat';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 12px;
-	line-height: 15px;
-	/* identical to box height */
-
-	letter-spacing: 0.2px;
-
-	color: #FFFFFF;
-	position: absolute;
-	bottom: 10px;
-	left: 70px;
-
-}

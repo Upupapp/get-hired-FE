@@ -84,7 +84,7 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Account Details', icon: 'account.png', class: 'accounts', route: 'account-details'
+      title: 'Company Details', icon: 'account.png', class: 'accounts', route: 'company-details'
     },
   ]
 

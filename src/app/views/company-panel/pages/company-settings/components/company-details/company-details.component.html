@@ -1,0 +1,153 @@
+<div class="text-end submit-container" 
+[@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-save-draft me-3" routerLink="/company/company-details">Company Preview</button>
+	<button class="btn btn-save me-2">Submit Changes</button>
+</div>
+
+<div class="card card-body mt-3">
+	<form class="row"
+	[formGroup]="profileDetailsForm"
+	[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+		<!-- EMPLOYMENT DETAILS -->
+		<div class="col-12">
+			<h5 class="title-label">Company Details</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-3"  *ngIf="profileImage">
+			<div >
+				<div class="text-center mb-3 bg-gray" *ngIf="profileImage">
+					<img [src]="profileImage" class="avatar-image">
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-9" *ngIf="!profileImage"></div>
+
+		<div class="col-12 col-lg-6" [ngClass]="profileImage ? 'mt-3' : ''">
+			<div class="title-container mb-3" >
+				<label>Company Logo</label>
+				<app-file-upload
+				formControlName="company_logo"
+				(upload)="onUpload($event)"
+				label="Select Profile Photo"
+				[labelTop]="false"></app-file-upload>
+			</div>
+
+			<div class="title-container mb-3"  *ngIf="profileImage">
+				<label>Company Name</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="i.e. Google, Apple, Microsoft" >
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-12 col-lg-6">
+			<div class="title-container mb-3"  *ngIf="!profileImage">
+				<label>Company Name</label>
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="i.e. Google, Apple, Microsoft" >
+				</div>
+			</div>
+		</div>
+
+		
+		<div class="col-lg-6" *ngIf="!profileImage">
+		</div>
+
+		<div class="col-12 mb-3"  *ngIf="profileImage">
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-12 mb-3">
+			<div class="title-container mb-3">
+				<label>Company Details</label>
+				<div class="form-group">
+					<textarea type="text"  class="form-control" placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided." rows="4"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6 mb-3">
+			<div class="title-container mb-3">
+				<label>Type of Industry</label>
+				<select class="form-select">
+					<option selected disabled value="">Select Industry</option>
+					<ng-container *ngFor="let item of industries; let i = index">
+						<option [value]="item">{{item}}</option>
+					</ng-container>
+				</select>
+			</div>
+
+			<div class="title-container mb-3" >
+				<label>Number of Employee</label>
+				<div class="form-group">
+					<input type="number"  class="form-control" 
+					placeholder="0-1000" >
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6 mb-3">
+			<div class="title-container mb-3">
+				<label>Work Setup</label>
+				<select class="form-select">
+					<option selected disabled value="">Select Work Setup</option>
+					<ng-container *ngFor="let item of workSetup; let i = index">
+						<option [value]="item">{{item}}</option>
+					</ng-container>
+				</select>
+			</div>
+		</div>
+
+		<!-- CONTACT DETAILS -->
+		<div class="col-12 mt-2">
+			<h5 class="title-label">Contact Details</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-6 mb-3">
+			<div class="title-container mb-3">
+				<label>Email</label>
+
+				<div class="form-group">
+					<input type="email"  class="form-control" placeholder="sample.email@gmail.com" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Work Phone</label>
+
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="000-000000" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Company Address</label>
+
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Street No. Building No, Post Code" >
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6 mb-3">
+			<div class="title-container mb-3">
+				<label>City/Municipality</label>
+
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Manila" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Country</label>
+
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Philippines" >
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

@@ -13,6 +13,7 @@ import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.componen
 import { CreateInterviewComponent } from './pages/create-interview/create-interview.component';
 import { MySubscriptionComponent } from './pages/my-subscription/my-subscription.component';
 import { ContactListComponent } from './pages/contact-list/contact-list.component';
+import { CompanySettingsComponent } from './pages/company-settings/company-settings.component';
 
 export const CompanyPanelRoutes: Routes = [
   {
@@ -25,11 +26,12 @@ export const CompanyPanelRoutes: Routes = [
     component: CompanyPanelComponent,
     canActivate: [CompanyGuard],
     children: [
+      // DASHBOARD
       {
         path: 'dashboard',  
         component: DashboardComponent
       },
-
+      // JOB POSTS
       {
         path: 'jobs',  
         children: [
@@ -44,6 +46,12 @@ export const CompanyPanelRoutes: Routes = [
         ]
       },
 
+      {
+        path: 'expired-jobs',  
+        component: ExpiredJobsComponent
+      },
+
+      // APPLICANTS
       {
         path: 'applicants',  
         
@@ -65,26 +73,32 @@ export const CompanyPanelRoutes: Routes = [
         ]
 
       },
-     
+      
+      // INTERVIEW SETTINGS
       {
         path: 'interview-settings',  
         component: CreateInterviewComponent
       },
 
+      // SUBSCRIPTION
       {
         path: 'my-subscription',  
         component: MySubscriptionComponent
       },
 
+      // COMPANY DETAILS
       {
-        path: 'account-details',  
+        path: 'company-details',  
         component: AccountDetailsComponent
       },
 
+      // COMPANY SETTINGS
       {
-        path: 'expired-jobs',  
-        component: ExpiredJobsComponent
+        path: 'settings',  
+        component: CompanySettingsComponent
       },
+
+      
 
      
     ]

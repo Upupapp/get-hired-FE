@@ -3,18 +3,20 @@
 	position: fixed !important;
 	right: 20px;
 	top: 105px;
-
-	/*@media (max-width: 899px){
-		margin-top: -100px !important;
-		position: relative !important;
-	}*/
 }
 
 
-:host ::ng-deep{
-	.uploader-container{
-		padding: 50px !important;
-		max-height: 205px !important;
+.btn-add-service{
+	background: #FF7062;
+	border-radius: 6px;
+	padding: 7px 10px 7px 20px;
+	color: white;
+	margin-top: -10px;
+	//position: absolute;
+	//right: 0px;
+
+	&:hover{
+		background: rgba(#FF7062, 0.7);
 	}
 }
 
@@ -22,8 +24,8 @@
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
-	font-size: 21px;
-	line-height: 28px;
+	font-size: 27px;
+	line-height: 58px;
 	/* or 215% */
 
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
@@ -31,15 +33,28 @@
 	color: #03011A;
 }
 
-.active-industry{
-	background: #0C264C !important;
-	transition: all 0.3s ease !important;
+.title-label{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight:500;
+	font-size: 18px;
+	line-height: 27px;
+	/* identical to box height */
+	margin-bottom: 5px;
 
-	h5,h6{
-		color: white !important;
-	}
+	color: #464646;
 }
 
+.title-label-sub{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 21px;
+	/* or 131% */
+	color: #868686;
+	margin-bottom: 5px;
+}
 
 .card{
 	background: #FFFFFF;
@@ -82,12 +97,66 @@
 	border-radius: 6px !important;
 }
 
+.badge-selection{
+	background: #FFFFFF;
+	border: 2px dashed rgba(#AFBCC6, 0.7);
+	border-radius: 10px;
+	min-height: 170px;
+	margin-top: 30px;
+	padding: 20px;
+
+	.badge-item{
+		background: #FFFFFF;
+		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
+		border-radius: 10px;
+		padding: 10px 10px 10px 17px;
+
+		img{
+			height: 30px;
+			margin-right: 10px;
+			width: auto;
+			margin-top: 3px;
+		}
+
+		.badge-title{
+			font-family: 'Manrope';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 16px;
+			line-height: 27px;
+			/* identical to box height */
+			margin-top: 3px;
+
+			color: #0C264C;
+		}
+
+		.remove-badge{
+			position: absolute; 
+			right: 0px; 
+			top: 3px; 
+			cursor: pointer; 
+			.mat-icon{
+				font-size: 16px !important;
+			}
+		}
+	}
+}
+
+.requirement-badge{
+	background: #868686;
+	border-radius: 6px;
+	color: white;
+	padding: 7px 15px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+	position: relative;
+}
 
 .img-banner{
 	margin-bottom: 35px;
 	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
 	border-radius: 10.624px;
-	min-width: 260px;
 	height: 150px;
 	object-position: center;
 	object-fit: cover;
@@ -222,76 +291,30 @@ label{
 	color: #FFFFFF;
 }
 
-.title-preview{
+.industry-badge{
+	background: #0C264C;
+	border-radius: 6px;
+	color: white;
+	padding: 5px 15px;
+	cursor: pointer;
+}
+
+.btn-work-setup{
+	background: #FFFFFF;
+	border: 1px solid #AFBCC6;
+	border-radius: 6px !important;
+	padding: 15px 20px !important;
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
-	font-size: 15px;
-	line-height: 18px;
-	/* or 322% */
-
-	display: flex;
-	align-items: center;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #03011A;
-}
-
-.label-rate{
-	font-weight: 500;
-	font-style: italic;
-	color: #a9a9a9;
+	font-size: 16px;
+	line-height: 24px;
 }
 
 
-.title-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight:500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-	margin-bottom: 5px;
-
-	color: #464646;
-}
-
-.title-label-sub{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* or 131% */
-	color: #868686;
-	margin-bottom: 5px;
-}
-
-.btn-create{
-	background: #FF7062;
-	border-radius: 7px;
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #FFFFFF;
-	padding: 14px 30px;
-	border-radius: 32.809px;
-}
-
-.btn-upload{
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #a9a9a9;
-	background: #F4F4F4;
-	border: 1px solid #F4F4F4;
-	border-radius: 7px;
-	padding: 14px 30px;
-	border-radius: 32.809px;
+.active{
+	background: #0C264D;
+	color: white !important;
 }
 
 .btn-save{
@@ -317,4 +340,27 @@ label{
 	border: 1px solid #a9a9a9;
 	border-radius: 7px;
 	padding: 7px 20px !important;
+}
+
+
+
+.bg-gray{
+	background-size: cover !important;
+	background-position: center !important;
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
+	border-radius: 7px;
+	padding: 20px;
+	background-repeat: no-repeat;
+	//background-color: rgba(0, 0, 0, 0.1)!important;
+	
+}
+
+.avatar-image{
+	background-color: white;
+	object-fit: cover;
+	object-position: center;
+	height: 200px;
+	width: 200px;
+	border-radius: 50%;
+	border: solid 2px #c9c9c9;
 }
