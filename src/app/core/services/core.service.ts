@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class CoreService {
   roleAs: string;
 
   constructor(
-    private baseService: BaseService
+    private baseService: BaseService,
+    private router: Router
   ) { }
 
   checkEmailIfExist(email: string) {

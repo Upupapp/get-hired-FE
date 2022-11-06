@@ -1,0 +1,37 @@
+<div>
+	<div class="card card-body" *ngIf="listView && !loading">
+		<h5 class="title-label mt-2">Company Users
+			<span class="float-end">
+				<button class="btn btn-add-service" (click)="addAccess()">
+					Add New Access
+					<img src="/assets/images/placeholder/icons/add-new.png"
+					style="width: 16px;" class="ms-1">
+				</button>
+			</span>
+		</h5>
+
+		<hr style="border: dashed 1px #868686">
+		<!-- <app-reusable-org-chart></app-reusable-org-chart>
+		 -->
+     <app-reusable-table
+			[loading]="loading"
+			(updateSelectedRowDialog)="viewMenu($event)"
+			(viewDetails)="viewMenu($event)"
+			[componentTitle]="'Company Users'"
+			[displayedColumns]="displayedColumns"
+			[selectedColumns]="selectedColumns"
+			[selectedColumnsMobile]="selectedColumns"
+			[searchSource]="searchSource"
+			[maxRows]="10"
+			[listDataSource]="companyUserLists">
+		</app-reusable-table>
+	</div>
+
+	<!-- LOADING ANIMATION SCREEN -->
+
+</div>
+<custom-profile-loader
+	[withSideBar]="false"
+	[fromDetailTab]="true"
+	[loading]="loading">
+</custom-profile-loader>

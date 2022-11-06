@@ -53,8 +53,10 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
           this.router.navigateByUrl('/admin');
           return false;
         case '2':
+          console.log('case2 in employer guard')
           return true;
         case '3':
+          console.log('case3 in employer guard')
           this.router.config.splice(i, 1);
           this.router.navigate(['../dashboard']);
           return false;

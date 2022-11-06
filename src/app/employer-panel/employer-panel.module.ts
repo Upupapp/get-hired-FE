@@ -4,17 +4,22 @@ import { EmployerPanelComponent } from './employer-panel.component';
 import { RouterModule, Routes } from '@angular/router';
 import { EmployerDashboardComponent } from './employer-dashboard/employer-dashboard.component';
 import { EmployerGuard } from '@app-shared/guard/employer.guard';
+import { CoreModule } from '@main/core/core.module';
+import { EmployerSidebarComponent } from './employer-sidebar/employer-sidebar.component';
 
 const routes: Routes = [
   {
     path: '',
     component: EmployerPanelComponent,
-    canActivate: [EmployerGuard],
     children: [
       {
         path: 'dashboard', component: EmployerDashboardComponent
       },
-      { path: '', redirectTo: 'dashboard' }
+      {
+        path: 'company',
+        loadChildren: () => import ('./employer-settings/employer-settings.module').then(m => m.EmployerSettingsModule)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ]
@@ -22,10 +27,12 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     EmployerPanelComponent,
-    EmployerDashboardComponent
+    EmployerDashboardComponent,
+    EmployerSidebarComponent
   ],
   imports: [
     CommonModule,
+    CoreModule,
     RouterModule.forChild(routes)
   ]
 })

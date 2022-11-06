@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
-  selector: 'app-company-settings',
-  animations: [mainAnimations],
-  templateUrl: './company-settings.component.html',
-  styleUrls: ['./company-settings.component.scss']
+  selector: 'app-employer-settings',
+  templateUrl: './employer-settings.component.html',
+  styleUrls: ['./employer-settings.component.scss']
 })
-export class CompanySettingsComponent implements OnInit {
+export class EmployerSettingsComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
       title: "Company Details"
     },
-
     {
       id: 2,
-      title: "Company Settings"
+      title: "Company Users"
+    },
+    {
+      id: 3,
+      title: "Account Settings"
     },
 
   ];
@@ -30,6 +31,7 @@ export class CompanySettingsComponent implements OnInit {
   }
 
   changeStep(step: number): void {
+    console.log(step);
     this.stepper = step;
   }
 }

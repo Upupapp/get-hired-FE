@@ -11,16 +11,23 @@ export interface AuthState {
   success: boolean;
   error?: any;
   loading: boolean;
+  credentials: Model.Credentials
 }
 
 const initialState: AuthState = {
   success: false,
   error: null,
-  loading: false
+  loading: false,
+  credentials: null
 }
 
 export const authReducer = createReducer<AuthState>(
   initialState,
+  on(AuthActions.resetCredentials, (state): AuthState => {
+    return {
+      ...initialState
+    };
+  }),
   on(AuthActions.getAuthCredentials, (state): AuthState => {
     return {
       ...state,
@@ -52,8 +59,8 @@ export const authReducer = createReducer<AuthState>(
     return {
       ...state,
       loading: false,
-      success: true
-      // credentials: action.credentials
+      success: true,
+      credentials: action.credentials
     };
   }),
   on(AuthActions.createAuthCredentialsFail, (state, action): AuthState => {

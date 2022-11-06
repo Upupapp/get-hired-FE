@@ -1,11 +1,10 @@
 <div class="d-flex">
 	<ng-container *ngFor="let item of stepperItems; let i = index">
 		<button class="btn d-flex" (click)="changeStep(item?.id)"
-		[ngClass]="stepper === item?.id ? 'btn-stepper-active-2' 
+		[ngClass]="stepper === item?.id ? 'btn-stepper-active-2'
 		: 'btn-stepper-next'">
 			<div class="text-start">
 				{{item?.title}}
-				
 			</div>
 		</button>
 	</ng-container>

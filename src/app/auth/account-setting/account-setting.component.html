@@ -1,0 +1,56 @@
+<div class="text-end submit-container"
+[@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-save-draft me-3" routerLink="/company/company-details">Company Preview</button>
+	<button class="btn btn-save me-2">Submit Changes</button>
+</div>
+
+<div class="card card-body mt-3">
+
+	<form class="row"
+	[formGroup]="profileDetailsForm"
+	[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+
+
+		<!-- CONTACT DETAILS -->
+		<div class="col-12 mt-2">
+			<h5 class="title-label">Main Account</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12 col-lg-6 mb-3">
+			<div class="title-container mb-3">
+				<label>First Name</label>
+
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="George" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Email</label>
+
+				<div class="form-group">
+					<input type="email"  class="form-control" placeholder="sample.email@gmail.com" >
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6 mb-3">
+			<div class="title-container mb-3">
+				<label>Last Name</label>
+
+				<div class="form-group">
+					<input type="text"  class="form-control" placeholder="Cruz" >
+				</div>
+			</div>
+
+			<div class="title-container mb-3">
+				<label>Password</label>
+
+				<div class="form-group">
+					<input type="password"  class="form-control" placeholder="***********" >
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

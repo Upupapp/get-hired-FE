@@ -16,7 +16,12 @@ enum AllAuthActionTypes {
   RefreshAuthCredentialsSuccess = '[Auth] - Refresh Auth Credentials Success',
   RefreshAuthCredentialsFail = '[Auth] - Get Refresh Credentials Fail',
 
+  ResetCredentials = '[Auth] - Reset Credentials'
 };
+
+export const resetCredentials = createAction(
+  AllAuthActionTypes.ResetCredentials
+);
 
 export const getAuthCredentials = createAction(
   AllAuthActionTypes.GetAuthCredentials,

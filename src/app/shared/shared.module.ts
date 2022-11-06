@@ -19,6 +19,7 @@ import { NgxOrgChartModule } from 'ngx-org-chart';
 import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
+import { AddAccessModalComponent } from './components/add-access-modal/add-access-modal.component';
 
 
 const classesToInclude: any[] = [
@@ -33,7 +34,8 @@ const classesToInclude: any[] = [
   DragAndDropComponent,
   MainStepperComponent,
   LoadingComponent,
-  TabSelectorsComponent
+  TabSelectorsComponent,
+  AddAccessModalComponent
 ];
 
 @NgModule({

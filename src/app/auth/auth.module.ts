@@ -12,7 +12,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ChangePwComponent } from './change-pw/change-pw.component';
 import { AccountAuthenticationComponent } from './account-authentication/account-authentication.component';
-import { ErrorNotFoundComponent } from './error-not-found/error-not-found.component';
+import { ErrorNotFoundComponent } from '../views/error-page/error-not-found/error-not-found.component';
+import { AuthFacade } from './state/auth.facade';
+import { AccountSettingComponent } from './account-setting/account-setting.component';
 
 const routes: Routes = [
   { path: 'signin', component: SigninComponent },
@@ -21,7 +23,7 @@ const routes: Routes = [
   { path: 'change-password', component: ChangePwComponent },
   { path: 'verify', component: AccountAuthenticationComponent },
   { path: '', redirectTo: 'signin', pathMatch: 'full' },
-  { path: '**', component: ErrorNotFoundComponent },
+  // { path: '**', component: ErrorNotFoundComponent },
 ];
 
 @NgModule({
@@ -31,7 +33,8 @@ const routes: Routes = [
     ResetPasswordComponent,
     ChangePwComponent,
     AccountAuthenticationComponent,
-    ErrorNotFoundComponent
+    ErrorNotFoundComponent,
+    AccountSettingComponent
   ],
   imports: [
     CommonModule,
@@ -40,6 +43,8 @@ const routes: Routes = [
     StoreModule.forFeature('status', authReducer),
     EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)
-  ]
+  ],
+  providers: [AuthFacade],
+  exports: [AccountSettingComponent]
 })
 export class AuthModule { }

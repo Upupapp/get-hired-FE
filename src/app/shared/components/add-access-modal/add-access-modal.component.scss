@@ -1,0 +1,232 @@
+@import "src/assets/styles/colors";
+
+:host ::ng-deep{
+  ::-webkit-scrollbar {
+    width: 3px !important;
+    height: 10px;
+    cursor: move; /* fallback if grab cursor is unsupported */
+  }
+}
+
+.employee-container{
+	padding: 0;
+	border-radius: 0 !important;
+	//padding: 20px !important;
+	.card{
+		padding: 0px !important;
+		border: none;
+		background: #f8f8f8;
+		border-radius: 0px !important;
+		cursor: pointer;
+	}
+
+	.employee-details{
+		padding: 0px 0px;
+		background: red;
+		border-radius:  0px;
+
+		.employee-title{
+			font-family: 'Manrope';
+			font-style: normal;
+			font-weight: 600;
+			font-size: 17px;
+			line-height: 15px;
+			font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+			color: #03011A;
+			position: relative;
+
+			.btn-import-csv{
+				position: absolute;
+				right: 0;
+				top: -7px;
+				background: #86C5F4;
+				border-radius: 5px;
+				border: none !important;
+				img{
+					margin-top: -2px;
+				}
+
+				&:hover{
+					transform: scale(1.1);
+					transition: 0.7s all ease;
+				}
+			}
+		}
+		
+		.line-max-text{
+			overflow: hidden;
+		   text-overflow: ellipsis;
+		   display: -webkit-box;
+		   -webkit-line-clamp: 3; /* number of lines to show */
+		           line-clamp: 3; 
+		   -webkit-box-orient: vertical;
+		}
+
+	}
+}
+
+.max-height-scroll{
+	max-height: 250px;
+	overflow-y: auto;
+}
+
+.share-container{
+	background: #fff;
+	padding: 20px;
+
+	.social-image{
+		width: 45px;
+		height: 45px;
+		cursor: pointer;
+	}
+
+	.title-add{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 20px;
+		line-height: 27px;
+
+		color: #494949;
+	}
+
+	.title-description{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 19px;
+		color: #757575;
+	}
+
+	label{
+		font-family: 'Manrope' !important;
+		font-style: normal !important;
+		font-weight: 500 !important;
+		font-size: 15px !important;
+		line-height: 20px !important;
+		color: #191919 !important;
+	}
+
+	.form-control{
+		background: #f8f8f8 !important;
+		border-radius: 5px !important;
+		border: none !important;
+	}
+
+	.bg-gray{
+		background: #F7F7F7;
+		border-radius: 5px;
+		padding: 20px;
+	}
+
+	.employee-email{
+		border-bottom: 1px solid #E4E4E4;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 22px;
+		color: #757575;
+		margin-top: 7px;
+		padding-bottom: 12px;
+	}
+}
+
+.invite-other{
+	width: 100px;
+	//padding: 7px !important;
+	border-radius: 5px !important
+}
+
+.btn-default{
+	background: #F4F4F4 !important;
+	font-style: normal !important;
+	font-weight: 400 !important;
+	font-size: 14px !important;
+	line-height: 16px !important;
+	/* identical to box height */
+	border: none !important;
+	min-width: 145px;
+	padding: 12px 20px !important;
+}
+
+.btn-warning{
+	color: white !important;
+	background: #F7931A !important;
+}
+
+.btn-primary{
+	color: white !important;
+	background: #FF7062 !important;
+	border-radius: 5px !important;
+	font-style: normal !important;
+	font-weight: 400 !important;
+	font-size: 14px !important;
+	line-height: 16px !important;
+	min-width: 145px;
+	padding: 12px 20px !important;
+}
+
+.btn-add{
+	background: #FE6F61 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	padding: 15px 20px !important;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 15px;
+	/* identical to box height, or 75% */
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+	color: #fff;
+
+	&:hover{
+		border: 0 !important;
+	}
+}
+
+.inactive{
+	color: #B6B6B6 !important;
+	font-weight: 500 !important;
+	background: #ECECEC !important;
+}
+
+.congrats-circle{
+	background: rgba(65, 143, 222, 0.15);
+	padding: 20px;
+	width: 140px;
+	border-radius: 50%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.title-congrats{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 800;
+	font-size: 25px;
+	line-height: 41px;
+	text-align: center;
+	color: #323232;
+}
+
+.title-congrats-description{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 26px;
+	text-align: center;
+	color: #7D7C7C;
+}
+
+.btn-upload{
+	background: #FF7062 !important;
+	padding: 5px 10px !important;
+	font-size: 14px !important;
+	height: 34px !important;
+	color: white !important;
+	border-radius: 5px !important;
+	margin-top: 6px;
+}

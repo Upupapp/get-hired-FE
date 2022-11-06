@@ -1,0 +1,364 @@
+.submit-container{
+	z-index: 99 !important;;
+	position: fixed !important;
+	right: 20px;
+	top: 105px;
+}
+
+
+.btn-add-service{
+	background: #FF7062;
+	border-radius: 6px;
+	padding: 7px 10px 7px 20px;
+	color: white;
+	margin-top: -10px;
+	//position: absolute;
+	//right: 0px;
+
+	&:hover{
+		background: rgba(#FF7062, 0.7);
+	}
+}
+
+.main-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 27px;
+	line-height: 58px;
+	/* or 215% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #03011A;
+}
+
+.title-label{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight:500;
+	font-size: 18px;
+	line-height: 27px;
+	/* identical to box height */
+	margin-bottom: 5px;
+
+	color: #464646;
+}
+
+.title-label-sub{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 21px;
+	/* or 131% */
+	color: #868686;
+	margin-bottom: 5px;
+}
+
+.card{
+	background: #FFFFFF;
+	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
+	border-radius: 10px;
+	border: none;
+	padding: 30px 30px !important;
+}
+
+.form-control{
+	background: #FFFFFF;
+	min-height: 50px;
+	border: 1px solid #AFBCC6 !important;
+}
+
+.form-select-multiple{
+	margin-bottom: 20px;
+	min-height: 170px !important;
+
+	option{
+		border-radius: 4px;
+		padding: 6px 10px;
+		margin-bottom: 5px;
+
+	}
+
+
+	option select {
+	    margin: 40px;
+	    background: red !important;
+	    color: #fff;
+	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+	}
+}
+
+.form-select{
+	height: 50px;
+	//background: #FFFFFF !important;
+	border: 1px solid #AFBCC6 !important;
+	border-radius: 6px !important;
+}
+
+.badge-selection{
+	background: #FFFFFF;
+	border: 2px dashed rgba(#AFBCC6, 0.7);
+	border-radius: 10px;
+	min-height: 170px;
+	margin-top: 30px;
+	padding: 20px;
+
+	.badge-item{
+		background: #FFFFFF;
+		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
+		border-radius: 10px;
+		padding: 10px 10px 10px 17px;
+
+		img{
+			height: 30px;
+			margin-right: 10px;
+			width: auto;
+			margin-top: 3px;
+		}
+
+		.badge-title{
+			font-family: 'Manrope';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 16px;
+			line-height: 27px;
+			/* identical to box height */
+			margin-top: 3px;
+
+			color: #0C264C;
+		}
+
+		.remove-badge{
+			position: absolute;
+			right: 0px;
+			top: 3px;
+			cursor: pointer;
+			.mat-icon{
+				font-size: 16px !important;
+			}
+		}
+	}
+}
+
+.requirement-badge{
+	background: #868686;
+	border-radius: 6px;
+	color: white;
+	padding: 7px 15px;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 500;
+	position: relative;
+}
+
+.img-banner{
+	margin-bottom: 35px;
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+	border-radius: 10.624px;
+	height: 150px;
+	object-position: center;
+	object-fit: cover;
+}
+
+.search-group{
+	border: 1px solid #AFBCC6;
+	padding: 5px;
+	border-radius: 6px;
+	height: 50px;
+}
+
+.btn-search{
+	background: #FF7062;
+	border-radius: 4px;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 14px;	/* identical to box height */
+	color: #FFFFFF;
+	min-width: 100px;
+	padding: 10px;
+}
+
+.industry-skills{
+	border: none !important;
+	background: #FFFFFF;
+	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
+	border-radius: 10.624px;
+	cursor: pointer;
+}
+
+.industry-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 15.936px;
+	line-height: 15px;
+	letter-spacing: -0.03em;
+	color: #000000;
+}
+
+.industry-subtitle{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 15.936px;
+	line-height: 140%;
+	color: #4F4F4F;
+}
+
+label{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 24px;
+	/* identical to box height */
+
+
+	color: #464646;
+}
+
+.rate-card{
+	border: solid 2px #0C264C;
+	border-radius: 6px;
+	padding: 20px 10px 10px 15px;
+	cursor: pointer;
+	position: relative;
+}
+
+
+.title-rate{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 20px;
+	color: #0C264C;
+}
+
+.check{
+	position: absolute;
+	height: 19px;
+	top: 8px;
+	right: 8px;
+}
+
+
+.rate-card-active{
+	background: #0C264C;
+	border-radius: 6px;
+	padding: 20px 10px 10px 15px;
+	cursor: pointer;
+	position: relative;
+}
+
+.title-rate-active{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 20px;
+	color: #FFFFFF;
+}
+
+.rate-selection{
+	background: #444152;
+	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
+	border-radius: 10px;
+	min-height: 300px;
+	padding: 20px;
+}
+
+.title-rate-range{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 24px;
+	color: #FFFFFF;
+}
+
+
+.title-rate-selection{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 27px;
+	line-height: 58px;
+	color: #FFFFFF;
+}
+
+.industry-badge{
+	background: #0C264C;
+	border-radius: 6px;
+	color: white;
+	padding: 5px 15px;
+	cursor: pointer;
+}
+
+.btn-work-setup{
+	background: #FFFFFF;
+	border: 1px solid #AFBCC6;
+	border-radius: 6px !important;
+	padding: 15px 20px !important;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+
+.active{
+	background: #0C264D;
+	color: white !important;
+}
+
+.btn-save{
+	background: #FF7062;
+	border-radius: 7px;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 27px;
+
+	color: #FFFFFF;
+	padding: 7px 20px !important;
+}
+
+.btn-save-draft{
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 27px;
+
+	color: #a9a9a9;
+	background: #FFFFFF;
+	border: 1px solid #a9a9a9;
+	border-radius: 7px;
+	padding: 7px 20px !important;
+}
+
+.bg-gray{
+	background-size: cover !important;
+	background-position: center !important;
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
+	border-radius: 7px;
+	padding: 20px;
+	background-repeat: no-repeat;
+	//background-color: rgba(0, 0, 0, 0.1)!important;
+
+}
+
+.avatar-image{
+	background-color: white;
+	object-fit: cover;
+	object-position: center;
+	height: 200px;
+	width: 200px;
+	border-radius: 50%;
+	border: solid 2px #c9c9c9;
+}

@@ -16,91 +16,86 @@ import { ContactListComponent } from './pages/contact-list/contact-list.componen
 import { CompanySettingsComponent } from './pages/company-settings/company-settings.component';
 
 export const CompanyPanelRoutes: Routes = [
+  // {
+  //   path: '',
+  //   redirectTo: 'dashboard',
+  //   pathMatch: 'full'
+  // },
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
-  },
-  { 
-    path: '', 
     component: CompanyPanelComponent,
-    canActivate: [CompanyGuard],
     children: [
       // DASHBOARD
       {
-        path: 'dashboard',  
+        path: 'dashboard',
         component: DashboardComponent
       },
       // JOB POSTS
       {
-        path: 'jobs',  
+        path: 'jobs',
         children: [
           {
-            path: '',  
+            path: '',
             component: JobsComponent,
           },
           {
-            path: 'create',  
+            path: 'create',
             component: CreateJobPostComponent
           }
         ]
       },
 
       {
-        path: 'expired-jobs',  
+        path: 'expired-jobs',
         component: ExpiredJobsComponent
       },
 
       // APPLICANTS
       {
-        path: 'applicants',  
-        
+        path: 'applicants',
+
         children: [
           {
-            path: '',  
+            path: '',
             component: ApplicantsComponent,
           },
 
            {
-            path: 'details/:id',  
+            path: 'details/:id',
             component: ApplicantDetailsComponent,
           },
 
           {
-            path: 'contact-list',  
+            path: 'contact-list',
             component: ContactListComponent,
           },
         ]
 
       },
-      
+
       // INTERVIEW SETTINGS
       {
-        path: 'interview-settings',  
+        path: 'interview-settings',
         component: CreateInterviewComponent
       },
 
       // SUBSCRIPTION
       {
-        path: 'my-subscription',  
+        path: 'my-subscription',
         component: MySubscriptionComponent
       },
 
       // COMPANY DETAILS
       {
-        path: 'company-details',  
+        path: 'company-details',
         component: AccountDetailsComponent
       },
 
       // COMPANY SETTINGS
       {
-        path: 'settings',  
+        path: 'settings',
         component: CompanySettingsComponent
       },
-
-      
-
-     
     ]
   },
 ];

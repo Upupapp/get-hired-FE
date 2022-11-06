@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CoreService } from '@main/core/services/core.service';
 
 @Component({
   selector: 'app-employer-panel',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EmployerPanelComponent implements OnInit {
 
-  constructor() { }
+  isUserLoggedIn: boolean;
+
+  constructor(
+    private coreService: CoreService
+  ) { }
 
   ngOnInit(): void {
+    console.log('im here');
+    this.isUserLoggedIn = this.coreService.isLoggedIn();
   }
 
 }

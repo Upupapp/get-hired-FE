@@ -29,4 +29,8 @@ export class AuthFacade {
     this.store.dispatch(Actions.getAuthCredentials({ loginCredentials }));
   }
 
+  logout() {
+    this.store.dispatch(Actions.resetCredentials());
+  }
+
 }
