@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 
@@ -13,15 +15,17 @@ export class EmployerPanelComponent implements OnInit {
   employee$ = this.employeeFacade.employeeDetails$;
   loading$ = this.employeeFacade.loading$;
 
+
   constructor(
     private coreService: CoreService,
-    private employeeFacade: EmployeeFacade
+    private employeeFacade: EmployeeFacade,
   ) { }
 
   ngOnInit(): void {
     console.log('im here');
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.userId);
+    this.employeeFacade.getEmployeeCompany(this.userId);
   }
 
 }

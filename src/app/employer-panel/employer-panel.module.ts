@@ -8,6 +8,8 @@ import { CoreModule } from '@main/core/core.module';
 import { EmployerSidebarComponent } from './employer-sidebar/employer-sidebar.component';
 import { EmployeeModule } from '@main/employee/employee.module';
 import { SharedModule } from '@main/shared/shared.module';
+import { InternalEmployerGuard } from './employer-internal-authguard';
+import { EmployeeFacade } from '@main/employee/state/employee.facade';
 
 const routes: Routes = [
   {
@@ -15,7 +17,9 @@ const routes: Routes = [
     component: EmployerPanelComponent,
     children: [
       {
-        path: 'dashboard', component: EmployerDashboardComponent
+        path: 'dashboard',
+        component: EmployerDashboardComponent,
+        canActivate: [InternalEmployerGuard]
       },
       {
         path: 'company',
@@ -38,6 +42,7 @@ const routes: Routes = [
     SharedModule,
     EmployeeModule,
     RouterModule.forChild(routes)
-  ]
+  ],
+  providers: [InternalEmployerGuard]
 })
 export class EmployerPanelModule { }

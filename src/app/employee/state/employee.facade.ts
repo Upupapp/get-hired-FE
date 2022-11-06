@@ -10,7 +10,7 @@ export class EmployeeFacade {
     loading$ = this.store.pipe(select(fromfeature.loading));
     employeeDetails$ = this.store.pipe(select(fromfeature.getEmployeeDetails));
     employeeList$ = this.store.pipe(select(fromfeature.getEmployeeList));
-    comapny$ = this.store.pipe(select(fromfeature.getEmployeeCompany));
+    company$ = this.store.pipe(select(fromfeature.getEmployeeCompany));
 
     constructor(
       private store: Store<State>,
