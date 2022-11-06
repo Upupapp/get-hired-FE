@@ -10,7 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialComponentsModule } from '../../shared/components/material-components/material-components.module';
 import { SharedModule } from '@app-shared/shared.module';
 import { CompanyPanelComponent } from './company-panel.component';
-import { HeaderComponent } from './components/header/header.component';
+import { HeaderComponent } from './components/header-bak/header.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { BannerComponent } from './pages/dashboard/components/banner/banner.component';

@@ -1,4 +1,20 @@
-export interface Company {
+export interface Employee {
+  id?: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  gender?: string;
+  phoneNumber?: string;
+  address?: string;
+  zip?: string;
+  city?: string;
+  isProfileUpdated: boolean
+}
+
+export interface EmployeeCompany {
+  employeedCompanyId: string;
   companyId: string;
   companyName: string;
   companyLogoUrl: string;
@@ -14,5 +30,4 @@ export interface Company {
   createdAt: Date
   createdBy: string;
   updatedAt: Date;
-  companyLogoFile?: File;
 }

@@ -11,8 +11,12 @@ export class CompanyService {
 
   companyUrl = `${environment.api_url}/company`;
 
-  getAllCompany(){
-    return of();
+  constructor(
+    private baseService: BaseService
+  ) { }
+
+  createCompany(company: Model.Company){
+    return this.baseService.post<Model.Company>(`${this.companyUrl}/createcompany`, company);
   }
 
 }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule, ROUTES, Routes } from '@angular/router';
-import { HeaderComponent } from './shared/components/header/header.component';
+import { HeaderComponent } from './shared/components/header-bak/header.component.bak';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthGuard } from '@app-shared/guard/auth.guard'
 import { EmployerGuard } from './shared/guard/employer.guard';

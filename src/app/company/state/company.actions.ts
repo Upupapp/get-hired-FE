@@ -4,37 +4,42 @@ import {
 } from "@ngrx/store";
 import * as Model from '../company.model';
 
-enum AllFeatureActionTypes {
+enum AllCompanyActionTypes {
   GetAllCompany = '[company] - Get All Job Order',
   GetAllCompanySuccess = '[company] - Get All Job Order Success',
   GetAllCompanyFail = '[company] - Get All Job Order Fail',
+
+  CreateCompany = '[company] - Create Company',
+  CreateCompanySuccess = '[company] - Create Company Success',
+  CreateCompanyFail = '[company] - Create Company Fail'
+
 }
 
 export const getAllcompany = createAction(
-  AllFeatureActionTypes.GetAllCompany,
+  AllCompanyActionTypes.GetAllCompany,
 );
 
 export const getAllcompanySuccess = createAction(
-  AllFeatureActionTypes.GetAllCompanySuccess,
+  AllCompanyActionTypes.GetAllCompanySuccess,
   props<{ company: Model.Company[] }>()
 );
 
 export const getAllcompanyFail = createAction(
-  AllFeatureActionTypes.GetAllCompanyFail,
+  AllCompanyActionTypes.GetAllCompanyFail,
   props<{ payload: any }>()
 );
 
-// export const createFeature = createAction(
-//   AllFeatureActionTypes.CreateFeature,
-//   props<{ feature: Model.Company }>()
-// );
+export const createCompany = createAction(
+  AllCompanyActionTypes.CreateCompany,
+  props<{ company: Model.Company }>()
+);
 
-// export const createFeatureSuccess = createAction(
-//   AllFeatureActionTypes.CreateFeatureSuccess,
-//   props<{ payload: any }>()
-// );
+export const createCompanySuccess = createAction(
+  AllCompanyActionTypes.CreateCompanySuccess,
+  props<{ company: Model.Company }>()
+);
 
-// export const createFeatureFail = createAction(
-//   AllFeatureActionTypes.CreateFeatureFail,
-//   props<{ payload: any }>()
-// );
+export const createCompanyFail = createAction(
+  AllCompanyActionTypes.CreateCompanyFail,
+  props<{ payload: any }>()
+);

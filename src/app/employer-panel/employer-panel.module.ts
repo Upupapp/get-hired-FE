@@ -6,6 +6,8 @@ import { EmployerDashboardComponent } from './employer-dashboard/employer-dashbo
 import { EmployerGuard } from '@app-shared/guard/employer.guard';
 import { CoreModule } from '@main/core/core.module';
 import { EmployerSidebarComponent } from './employer-sidebar/employer-sidebar.component';
+import { EmployeeModule } from '@main/employee/employee.module';
+import { SharedModule } from '@main/shared/shared.module';
 
 const routes: Routes = [
   {
@@ -33,6 +35,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CoreModule,
+    SharedModule,
+    EmployeeModule,
     RouterModule.forChild(routes)
   ]
 })

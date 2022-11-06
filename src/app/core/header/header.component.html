@@ -37,14 +37,21 @@
           <div class="dropdown d-flex" *ngIf="isUserLoggedIn && user">
             <button class="btn" id="dropdownMenuButton1"
             data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="/assets/images/face-6.jpg" class="img-avatar">
+            <div *ngIf="!user.photoURL" class="img-avatar initial-thumbnail" >
+              {{ initials }}
+            </div>
+              <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="img-avatar">
             </button>
 
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
             style="position: absolute; left: -140px" >
               <li class="pt-2" >
                 <span class="dropdown-item d-flex" >
-                  <img [src]="user.photoUrl" class="img-avatar me-3">
+                  <img [src]="user.photoUrl"
+                  *ngIf="user.photoUrl" class="img-avatar me-3">
+                  <div *ngIf="!user.photoURL" class="img-avatar initial-thumbnail" >
+                    {{ initials }}
+                  </div>
                   <div routerLink="/company">
                     <h5 class="title-user">{{ user.firstName + ' ' +user.lastName }}</h5>
                     <p class="title-position">UpUpTech</p>

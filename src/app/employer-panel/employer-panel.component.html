@@ -1,18 +1,22 @@
-<section id="body-main-container">
-	<div class="d-flex" id="body-row">
+<section id="body-main-container" *ngIf="employee$ | async as employee">
+  <div class="d-flex" id="body-row">
 
-		<div class="d-none d-md-block" id="sidebar-container">
+    <div class="d-none d-md-block" id="sidebar-container">
       <app-employer-sidebar></app-employer-sidebar>
-		</div>
+    </div>
 
-		<div id="main-company-component">
-			<div style="margin-bottom: 80px; ">
-				<app-header [isUserLoggedIn]="isUserLoggedIn"></app-header>
-			</div>
+    <div id="main-company-component">
+      <div style="margin-bottom: 80px; ">
+        <app-header [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
+      </div>
 
-			<div id="sub-company-component">
-				<router-outlet></router-outlet>
-			</div>
-		</div>
-	</div>
+      <div id="sub-company-component">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
 </section>
+
+<div *ngIf="loading$ | async">
+  <app-loading></app-loading>
+</div>

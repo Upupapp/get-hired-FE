@@ -10,7 +10,7 @@ import { CoreService } from '../services/core.service';
 })
 export class HeaderComponent implements OnInit {
   @Input() user: any;
-  fullName: string;
+  initials: string;
   @Input() isUserLoggedIn: boolean;
 
   constructor(
@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.isUserLoggedIn);
-    // this.fullName = this.user.firstName + ' ' + this.user.lastName;
+    this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
   }
 
   redirectToRegister() {

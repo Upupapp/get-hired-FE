@@ -4,11 +4,11 @@ import { Component,
   EventEmitter,
   ViewChild,
   AfterViewInit,
-  OnDestroy 
+  OnDestroy
 } from '@angular/core';
-import { 
-  Router, 
-  ActivatedRoute 
+import {
+  Router,
+  ActivatedRoute
 } from '@angular/router';
 import { AdminService } from '../../services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
@@ -16,9 +16,9 @@ import { tap } from 'rxjs';
 import * as Model from '@main/app.model';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  selector: 'app-header-bak',
+  templateUrl: './header.component.bak.html',
+  styleUrls: ['./header.component.bak.scss']
 })
 export class HeaderComponent implements OnInit {
   private req?: Subscription;
@@ -28,14 +28,14 @@ export class HeaderComponent implements OnInit {
     { title: 'About Us', id: 'about', route: '/about' },
     { title: 'Blog', id: 'about', route: '/about' },
     { title: 'Watch', id: 'about', route: '/about' },
-    { 
-      title: 'Free Account', 
-      id: 'profile', 
-      route: '/profile', 
+    {
+      title: 'Free Account',
+      id: 'profile',
+      route: '/profile',
       sub_routes: [
         {
-          title: "Account Settings",  
-          id: 'account-settings',  
+          title: "Account Settings",
+          id: 'account-settings',
           route: '/profile'
         },
       ]
@@ -47,9 +47,9 @@ export class HeaderComponent implements OnInit {
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public location: any;
 
-  constructor(private router:Router, 
+  constructor(private router:Router,
     private activatedRoute: ActivatedRoute,
-    private adminService: AdminService) { 
+    private adminService: AdminService) {
 
     this.location = this.router.url;
 

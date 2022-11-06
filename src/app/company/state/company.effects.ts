@@ -41,4 +41,22 @@ export class CompanyEffects {
   //     )
   //   );
   // });
+
+   createCompany$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.createCompany),
+      mergeMap((action) => this.companyService.createCompany(action.company)
+        .pipe(
+          map((res: any) => {
+            const company: Model.Company = res.data;
+            return CompanyActions.createCompanySuccess({ company });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.createCompanyFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
 }

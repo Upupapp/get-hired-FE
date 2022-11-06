@@ -1,5 +1,15 @@
 @import "src/assets/styles/colors";
 
+.initial-thumbnail {
+  font-size: 14px;
+  // line-height: 2;
+  color: #FF7062;
+  padding: 5px;
+  text-align: center;
+  border: 2px solid #FF7062;
+  line-height: 25px;
+}
+
 .fixed-top{
   z-index: 999 !important;
   height: 80px;
