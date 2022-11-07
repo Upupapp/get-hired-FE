@@ -45,6 +45,10 @@ import { CompanyDetailsComponent } from './pages/company-settings/components/com
 import { AccountSettingsComponent } from './pages/company-settings/components/account-settings/account-settings.component';
 import { AddAccessModalComponent } from './pages/company-settings/dialogs/add-access-modal/add-access-modal.component';
 import { InviteApplicantModalComponent } from './pages/applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
+import { AddInterviewTemplatesComponent } from './pages/create-interview/pages/add-interview-templates/add-interview-templates.component';
+import { CreateInterviewStepComponent } from './pages/create-interview/pages/add-interview-templates/components/create-interview-step/create-interview-step.component';
+import { InterviewTemplateStepComponent } from './pages/create-interview/pages/add-interview-templates/components/interview-template-step/interview-template-step.component';
+import { InterviewPublishStepComponent } from './pages/create-interview/pages/add-interview-templates/components/interview-publish-step/interview-publish-step.component';
 
 @NgModule({
   imports: [
@@ -93,7 +97,11 @@ import { InviteApplicantModalComponent } from './pages/applicants/dialogs/invite
    CompanyDetailsComponent,
    AccountSettingsComponent,
    AddAccessModalComponent,
-   InviteApplicantModalComponent
+   InviteApplicantModalComponent,
+   AddInterviewTemplatesComponent,
+   CreateInterviewStepComponent,
+   InterviewTemplateStepComponent,
+   InterviewPublishStepComponent
   ]
 })
 export class CompanyPanelModule{ }
