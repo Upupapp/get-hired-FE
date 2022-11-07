@@ -34,6 +34,8 @@ export class ApplicantSigninComponent implements OnInit {
   public error : any = localStorage.getItem('loginError');
   public inputType: string = 'password';
   public submitting: boolean = false;
+
+  public activeImage: number = 1;  
   
   constructor(private router:Router, 
     private activatedRoute: ActivatedRoute,
@@ -53,6 +55,13 @@ export class ApplicantSigninComponent implements OnInit {
 
   ngOnInit(): void {
     //this.createForm();
+
+    setInterval(() => {
+      if(this.activeImage <= 2) this.activeImage = this.activeImage + 1;  
+      else this.activeImage = 1;  
+
+      console.log(this.activeImage)
+    }, 4000) 
   }
 
   ngOnDestroy(): void {

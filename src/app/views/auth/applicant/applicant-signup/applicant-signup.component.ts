@@ -24,17 +24,16 @@ import { NgxSpinnerService } from "ngx-spinner";
   styleUrls: ['./applicant-signup.component.scss']
 })
 export class ApplicantSignupComponent implements OnInit {
-
   private req? : Subscription;
   private postReq? : Subscription;
   private admin_email : string = '';
   private admin_password : string = '';
-
   public adminLoginForm : FormGroup;
   public message : any = localStorage.getItem('loginMessage');
   public error : any = localStorage.getItem('loginError');
   public inputType: string = 'password';
   public submitting: boolean = false;
+  public activeImage: number = 1;  
   
   constructor(private router:Router, 
     private activatedRoute: ActivatedRoute,
@@ -67,6 +66,13 @@ export class ApplicantSignupComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
+
+    setInterval(() => {
+      if(this.activeImage <= 2) this.activeImage = this.activeImage + 1;  
+      else this.activeImage = 1;  
+
+      console.log(this.activeImage)
+    }, 4000) 
   }
 
   ngOnDestroy(): void {
