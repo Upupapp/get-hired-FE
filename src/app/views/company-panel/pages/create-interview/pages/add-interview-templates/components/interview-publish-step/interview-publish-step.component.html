@@ -1,1 +1,95 @@
-<p>interview-publish-step works!</p>
+<div class="text-end submit-container" 
+[@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-save-draft me-2" >Back</button>
+	<button class="btn btn-save me-2">Publish</button>
+</div>
+
+<div class="card card-body mt-3">
+	<form class="row"
+	[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+		<!-- EMPLOYMENT DETAILS -->
+		<div class="col-12">
+			<h5 class="title-label">Invitations</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		
+		<div class="col-12 col-lg-5 mb-2">
+			<div class="title-container w-100 mb-3" >
+				<div class="w-100">
+					<span class="time-zone float-end">Timezone UTC</span>
+					<label >Live Until</label>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="End Date" >
+				</div>
+			</div>
+
+			<div class="title-container w-100 mb-3" >
+				<label >Redirect URL (Optional)</label>
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Enter redicect link here" >
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-1"></div>
+
+		<div class="col-12 col-lg-5 mb-2">
+			<div class="title-container mb-4 mt-2" >
+				<label class="mb-2">Display “Hint & Tips” page</label>
+				<mat-slide-toggle [disableRipple]="true"></mat-slide-toggle>
+			</div>
+
+			<div class="title-container mb-4" >
+				<label class="mb-2">Request availability for follow up</label>
+				<mat-slide-toggle [disableRipple]="true"></mat-slide-toggle>
+			</div>
+		</div>
+	</form>
+</div>
+
+
+<div class="card card-body mt-3"
+[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	<div class="row">
+		<!-- EMPLOYMENT DETAILS -->
+		<div class="col-12">
+			<h5 class="title-label">Share with others</h5>
+			<hr style="border: dashed 1px #868686">
+		</div>
+
+		<div class="col-12">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>User Email</th>
+						<th>Candidate</th>
+						<th>Notification</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<tr *ngFor="let item of shareWith">
+						<td>{{item?.email}}</td>
+						<td>
+							<mat-checkbox class="remember-me mt-1">
+							</mat-checkbox>
+						</td>
+						<td><mat-checkbox class="remember-me mt-1">
+							</mat-checkbox>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<div class="text-end submit-container" 
+[@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+	<button class="btn btn-save-draft me-2" >Back</button>
+	<button class="btn btn-save me-2">Publish</button>
+</div>
+

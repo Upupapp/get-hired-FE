@@ -1,1 +1,27 @@
-<p>add-interview-templates works!</p>
+<div class="bg-gray">
+	<div style="position: relative;">
+		<!-- STEPPER CONTAINER changeStepper-->
+		<div class="bg-upper-gray">
+			<app-main-stepper
+			[stepper]="stepper"
+			[stepperItems]="stepperItems"
+			(changeStepper)="changeStep($event)"></app-main-stepper>
+		</div>
+
+		<div class="p-4" style="margin-top: 50px;">
+			<ng-container *ngIf="stepper === 1">
+				<app-create-interview-step></app-create-interview-step>
+			</ng-container>
+			
+			<ng-container *ngIf="stepper === 2">
+				<app-interview-template-step></app-interview-template-step>
+			</ng-container>
+
+			<ng-container *ngIf="stepper === 3">
+				<app-interview-publish-step></app-interview-publish-step>
+			</ng-container>
+		</div>
+	</div>
+
+
+</div>

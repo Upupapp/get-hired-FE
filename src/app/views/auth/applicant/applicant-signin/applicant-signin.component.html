@@ -47,8 +47,6 @@
 						</h5>
 						
 						<h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
-
-
 					</div>
 					<img src="/assets/images/placeholder/login-object-new-3.png" 
 						[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
@@ -105,7 +103,7 @@
 
 					<br>
 					<button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3"
-					[disabled]="submitting">
+					[disabled]="submitting" style="height: 55px !important">
 						Sign In
 						<img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2" *ngIf="submitting">
 					</button>
