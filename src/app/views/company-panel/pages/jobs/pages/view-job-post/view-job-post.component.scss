@@ -1,4 +1,17 @@
 @import "src/assets/styles/colors";
+.btn-save-draft{
+	font-style: normal;
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 23px;
+
+	color: #a9a9a9;
+	background: #FFFFFF;
+	border: 1px solid #c9c9c9 !important;
+	border-radius: 7px;
+
+	padding: 7px 25px !important;
+}
 
 #banner{
 	@mixin center-v () {
@@ -25,18 +38,7 @@
 	}
 
 
-	.btn-save-draft{
-		font-style: normal;
-		font-weight: 500;
-		font-size: 14px;
-		line-height: 27px;
-
-		color: #a9a9a9;
-		background: #FFFFFF;
-		border: 1px solid #a9a9a9 !important;
-		border-radius: 7px;
-		padding: 7px 10px !important;
-	}
+	
 
 
 	.btn-primary{

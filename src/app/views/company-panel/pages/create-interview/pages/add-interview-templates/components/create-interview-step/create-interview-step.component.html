@@ -14,7 +14,7 @@
 		</div>
 
 		
-		<div class="col-12 col-lg-6 mb-2">
+		<div class="col-12 col-lg-6 mb-3">
 			<div class="title-container" >
 				<label>Title</label>
 				<div class="form-group">
@@ -23,11 +23,27 @@
 			</div>
 		</div>
 
-		<div class="col-12 col-lg-6 mb-2">
+		<div class="col-12 col-lg-6 mb-32">
 			<div class="title-container" >
 				<label>Created By</label>
 				<div class="form-group">
 					<input type="text"  class="form-control" placeholder="Full Name" >
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-lg-6 mb-2">
+			<div class="title-container" >
+				<label>Job Post</label>
+				<div class="form-group">
+					<select class="form-select">
+						<option selected disabled value="">Select Job Post</option>
+						<ng-container *ngFor="let item of jobLists; let i = index">
+							<option [value]="item?.id">
+								[{{item?.id}}] {{item?.title}} - {{item?.work_setup}}, {{item?.job_type}}
+							</option>
+						</ng-container>
+					</select>
 				</div>
 			</div>
 		</div>

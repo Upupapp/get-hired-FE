@@ -4,9 +4,10 @@
 	<button class="btn btn-save me-2">Publish</button>
 </div>
 
-<div class="card card-body mt-3">
+<div class="card card-body mt-3"
+[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
 	<form class="row"
-	[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+	>
 		<!-- EMPLOYMENT DETAILS -->
 		<div class="col-12">
 			<h5 class="title-label">Invitations</h5>
@@ -51,11 +52,20 @@
 
 
 <div class="card card-body mt-3"
-[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+[@animate]="{value:'*', params:{ y:'50px', delay:'250ms' }}">
 	<div class="row">
 		<!-- EMPLOYMENT DETAILS -->
 		<div class="col-12">
-			<h5 class="title-label">Share with others</h5>
+			<h5 class="title-label">Share with others
+				<span class="float-end">
+					<button class="btn  btn-save" style="margin-top: -15px !important" 
+					(click)="inviteInterview()">
+						Invite
+						<img src="/assets/images/placeholder/icons/add-new.png" 
+						style="width: 16px;" class="ms-1">
+					</button>
+				</span>
+			</h5>
 			<hr style="border: dashed 1px #868686">
 		</div>
 

@@ -1,3 +1,7 @@
+i{
+	font-style: italic !important;
+}
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -58,6 +62,9 @@
 		padding: 6px 10px;
 		margin-bottom: 5px;
 		
+		i{
+			font-style: italic !important;
+		}
 	}
 
 
@@ -74,6 +81,29 @@
 	//background: #FFFFFF !important;
 	border: 1px solid #AFBCC6 !important;
 	border-radius: 6px !important;
+
+	option{
+		border-radius: 4px;
+		padding: 6px 10px;
+		margin-bottom: 5px;
+		
+		i{
+			font-style: italic !important;
+			
+		}
+	}
+
+
+	option select {
+	    margin: 40px;
+	    background: red !important;
+	    color: #fff;
+	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+	}
+
+	.job-title-option{
+		color: red !important;
+	}
 }
 
 
@@ -233,9 +263,12 @@ label{
 	border: solid 1px #c9c9c9;
 	margin-right: 20px;
 	margin-top: -15px !important;
-
+	font-size: 14px !important;
+	padding: 7px 25px !important;
 	&:hover{
 		border-color: #FE6F61;
-		color: #FE6F61; 
+		background: #FE6F61; 
+		color: #fff;
+		font-weight: 600;
 	}
 }

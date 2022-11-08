@@ -5,7 +5,7 @@
 				<span class="main-title mt-3">Candidates</span>
 
 				<div class="float-end">
-					<button class="btn btn-add-service" (click)="inviteApplicant()">
+					<button class="btn btn-add-service" (click)="inviteCandidate()">
 						Invite Candidates
 						<img src="/assets/images/placeholder/icons/add-new.png" 
 						style="width: 16px;" class="ms-1">
@@ -23,13 +23,13 @@
 				statusName="Status"
 				(updateSelectedRowDialog)="viewMenu($event)"
 				(viewDetails)="viewMenu($event)"			
-				[componentTitle]="'Applicants'"								
+				[componentTitle]="'Candidates'"								
 				[displayedColumns]="displayedColumns"
 				[selectedColumns]="selectedColumns"
 				[selectedColumnsMobile]="selectedColumns"
 				[searchSource]="searchSource"
 				[maxRows]="10"
-				[listDataSource]="applicantLists">
+				[listDataSource]="candidateLists">
 			</app-reusable-table>
 		</div>
 

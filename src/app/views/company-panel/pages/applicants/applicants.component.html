@@ -2,7 +2,7 @@
 	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 		<div class="card card-body py-3">
 			<div class="w-100">
-				<div class="float-end">
+				<div class="float-end">			
 					<button class="btn btn-add-service" (click)="inviteApplicant()">
 						Invite Applicant
 						<img src="/assets/images/placeholder/icons/add-new.png" 
@@ -10,8 +10,12 @@
 					</button>
 				</div>
 
-				<span class="main-title mt-3">
-				{{selectedJob?.title}}
+				<div class="float-end me-2">
+					<button class="btn btn-save-draft" (click)="goBack()">Back</button>
+				</div>
+
+				<span class="main-title mt-3 mb-0">
+				{{selectedJob?.id}} - {{selectedJob?.title}}
 
 				</span> (<small>{{selectedJob?.work_setup}}, {{selectedJob?.job_type}}</small>)
 

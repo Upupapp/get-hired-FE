@@ -1,5 +1,18 @@
 @import "src/assets/styles/colors";
 
+.btn-save-draft{
+	font-style: normal;
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 23px;
+
+	color: #a9a9a9;
+	background: #FFFFFF;
+	border: 1px solid #a9a9a9 !important;
+	border-radius: 6px;
+	padding: 6px 25px !important;
+}
+
 .breadcrumbs{
 	font-family: 'Manrope';
 	font-style: normal;
@@ -18,7 +31,7 @@
 	font-style: normal;
 	font-weight: 600;
 	font-size: 21px;
-	line-height: 39px;
+	line-height: 20px;
 	color: #121F3F;
 }
 
@@ -33,7 +46,8 @@
 .btn-add-service{
 	background: #FF7062;
 	border-radius: 6px;
-	padding: 7px 10px 7px 20px;
+	padding: 7px 10px 7px 20px !important;
+	font-size: 13px;
 	color: white;
 	//position: absolute;
 	//right: 0px;

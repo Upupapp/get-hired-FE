@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { Job, jobLists } from '@main/views/company-panel/pages/jobs/utils/jobs-model-interface';
 
 @Component({
   selector: 'app-create-interview-step',
@@ -27,13 +28,16 @@ export class CreateInterviewStepComponent implements OnInit {
     number_of_retakes: 5
   }];
 
+  public jobLists: Job[] = jobLists;
+
   constructor(private formBuilder: FormBuilder,
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.interviewQuestions = this.formBuilder.group({
       template_title: ['',/* [Validators.required]*/],
-      created_by: ['']
+      created_by: [''],
+      job_id: ['']
     });
   }
 

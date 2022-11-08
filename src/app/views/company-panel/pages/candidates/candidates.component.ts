@@ -16,9 +16,9 @@ import {
   displayedColumns,
   selectedColumns,
   TableHeader,
-  Applicant,
-  applicantLists
-} from '../applicants/utils/applicants-model-interface';
+  Candidate,
+  candidateLists
+} from './utils/candidates-model-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -40,7 +40,7 @@ export class CandidatesComponent implements OnInit {
   public loading: boolean = true;
   public id;
   public displayedColumns: TableHeader[] = displayedColumns;
-  public applicantLists: Applicant[] = applicantLists;
+  public candidateLists: Candidate[] = candidateLists;
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
   public searchSource: any = (el) => {
@@ -68,7 +68,7 @@ export class CandidatesComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.applicantLists.forEach((el) => {
+    this.candidateLists.forEach((el) => {
       el['salary'] = `₱${el?.expected_salary_min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${el?.expected_salary_max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
       el['full_name'] = `${el?.first_name} ${el.last_name}`;
     });
@@ -100,7 +100,7 @@ export class CandidatesComponent implements OnInit {
   }
 
 
-  inviteApplicant(event?: any){
+  inviteCandidate(event?: any){
     let openDialog = this.dialog.open(
       InviteApplicantModalComponent,
       { 

@@ -1,7 +1,8 @@
 
-export interface Applicant {
+export interface Candidate {
   id: any;
   job_id: any;
+  job_title: string;
   profile_image: string;  
   first_name: string;
   last_name: string;
@@ -36,7 +37,8 @@ export interface TableHeader {
 }
 
 const displayedColumns: TableHeader[] = [
-  { col_name: 'job_id', title: 'Job Id' },
+  { col_name: 'job_id', title: 'Job ID' },
+  { col_name: 'job_title', title: 'Job Title' },
   { col_name: 'full_name', title: 'Full Name'  },
   { col_name: 'date_applied', title: 'Date Applied', type: 'date'  },
   { col_name: 'address', title: 'Location'  },
@@ -57,9 +59,10 @@ const displayedColumns: TableHeader[] = [
 
 const selectedColumns: string[] =  [
   'job_id',
+  'job_title',
   'full_name',
   'date_applied',
-  'address',
+  //'address',
   'salary',
   'cv_link',
   'status',
@@ -68,11 +71,12 @@ const selectedColumns: string[] =  [
 
 
  
-const applicantLists: Applicant[] = [
+const candidateLists: Candidate[] = [
   {
     id: 10011,
     company_id: 12001,
     job_id: 3001,
+    job_title: "Administrative Assistant",
     profile_image: "/assets/images/face-1.jpg",  
     first_name: "Jordan",
     last_name: "Clark",
@@ -149,6 +153,7 @@ const applicantLists: Applicant[] = [
     id: 10012,
     company_id: 12002,
     job_id: 3002,
+    job_title: "Angular Developer",
     profile_image: "/assets/images/face-2.jpg",  
     first_name: "Samuel",
     last_name: "Solomon",
@@ -224,6 +229,7 @@ const applicantLists: Applicant[] = [
     id: 10013,
     company_id: 12003,
     job_id: 3003,
+    job_title: "SQL Developer",
     profile_image: "/assets/images/face-7.jpg",  
     first_name: "Michael",
     last_name: "Yemeni",
@@ -299,6 +305,7 @@ const applicantLists: Applicant[] = [
     id: 10014,
     company_id: 12004,
     job_id: 3004,
+    job_title: "Data Analyst",
     profile_image: "/assets/images/face-4.jpg",  
     first_name: "Brian",
     last_name: "Mitchelle",
@@ -379,5 +386,5 @@ const applicantLists: Applicant[] = [
 export {
   displayedColumns,
   selectedColumns,
-  applicantLists
+  candidateLists
 }

@@ -5,6 +5,10 @@ import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { InviteApplicantModalComponent } from '@main/views/company-panel/pages/applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-interview-publish-step',
@@ -14,8 +18,8 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 })
 export class InterviewPublishStepComponent implements OnInit {
   private req: Subscription;
+  private unsubscribe$ = new Subject<void>();
   public templateForm!: FormGroup;
-
   public shareWith: any[] = [
     {
       email: "joesnane@gmail.com",
@@ -55,6 +59,7 @@ export class InterviewPublishStepComponent implements OnInit {
   ]
 
   constructor(private formBuilder: FormBuilder,
+    private dialog: MatDialog,
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -63,6 +68,27 @@ export class InterviewPublishStepComponent implements OnInit {
       redirect_url: [''],
       display_hints: [''],
       request_availability: [''],
+    });
+  }
+
+  inviteInterview(event?: any){
+    let openDialog = this.dialog.open(
+      InviteApplicantModalComponent,
+      { 
+        width: '34vw',
+        data: {
+          ...event,  
+          title: "User",
+          sub_title: "user"
+        },
+      }
+    );
+
+    openDialog
+    .afterClosed()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(result => {
+
     });
   }
 
