@@ -21,8 +21,7 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let url: string = state.url;
-    // return (this.checkUserLogin(next, url) && this.checkScreenSize());
-    return (this.checkUserLogin(next, url));
+    return this.checkUserLogin(next, url);
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,
@@ -42,32 +41,12 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
     return true;
   }
 
-  checkUserLogin(route: ActivatedRouteSnapshot, url: any): boolean {
-    const { path } = route.routeConfig;
-    const role = this.coreService.getRole();
-    const i = this.router.config.findIndex(x => x.data.name == 'auth');
-
-    console.log(role);
-    console.log('Hala');
-
-    // if (!role && !this.coreService.isLoggedIn()) {
-    //   console.log(route);
-
-    //   return true;
-    // } else if (role == '1' && this.coreService.isLoggedIn()) {
-    //   this.router.navigateByUrl('/admin');
-    //   return false
-    // } else if((role == '2' || role == '3') && this.coreService.isLoggedIn()) {
-    //   this.router.config.splice(i, 1);
-    //   this.router.navigateByUrl('/dashboard');
-    //   return false;
-    // } else {
-    //   console.log('Patay');
-    //   return false;
-    // }
-
-    return false;
-
+  async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
+    const logged = await this.coreService.getState();
+    if(logged) {
+      this.router.navigateByUrl('/dashboard');
+    }
+    return logged;
   }
 
 }

@@ -42,7 +42,6 @@ export class CoreService {
     localStorage.setItem('state', 'false');
     localStorage.setItem('role', '');
     localStorage.clear();
-
     return of({ success: !this.isLogin, role: '' });
   }
 
@@ -52,6 +51,11 @@ export class CoreService {
       return true;
     else
       return false;
+  }
+
+  async getState() {
+    const state = await this.asyncLocalStorage.getItem('state');
+    return state == 'true' ? true: false;
   }
 
   getRole() {
