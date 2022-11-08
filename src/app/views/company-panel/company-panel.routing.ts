@@ -13,6 +13,8 @@ import { MySubscriptionComponent } from './pages/my-subscription/my-subscription
 import { ContactListComponent } from './pages/contact-list/contact-list.component';
 import { CompanySettingsComponent } from './pages/company-settings/company-settings.component';
 import { AddInterviewTemplatesComponent } from './pages/create-interview/pages/add-interview-templates/add-interview-templates.component';
+import { CandidatesComponent } from './pages/candidates/candidates.component';
+import { ViewJobPostComponent } from './pages/jobs/pages/view-job-post/view-job-post.component';
 
 export const CompanyPanelRoutes: Routes = [
   {
@@ -41,7 +43,27 @@ export const CompanyPanelRoutes: Routes = [
           {
             path: 'create',  
             component: CreateJobPostComponent
-          }
+          },
+
+          {
+            path: 'details/:job-id',  
+            component: ViewJobPostComponent,
+          },
+
+          {
+            path: 'edit/:job-id',  
+            component: CreateJobPostComponent,
+          },
+
+          {
+            path: ':job-id/applicants',  
+            component: ApplicantsComponent,
+          },
+
+           {
+            path: ':job-id/applicants/details/:id',  
+            component: ApplicantDetailsComponent,
+          },
         ]
       },
 
@@ -52,25 +74,22 @@ export const CompanyPanelRoutes: Routes = [
 
       // APPLICANTS
       {
-        path: 'applicants',  
-        
+        path: 'contact-list',  
         children: [
           {
             path: '',  
-            component: ApplicantsComponent,
+            component: ContactListComponent,
+          },
+          {
+            path: 'candidates',  
+            component: CandidatesComponent,
           },
 
            {
             path: 'details/:id',  
             component: ApplicantDetailsComponent,
           },
-
-          {
-            path: 'contact-list',  
-            component: ContactListComponent,
-          },
         ]
-
       },
       
       // INTERVIEW SETTINGS

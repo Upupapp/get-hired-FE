@@ -13,8 +13,7 @@ export interface Applicant {
   expected_salary_min: number;
   expected_salary_max: number;  
   address: string;
-  date_applied: Date;
-  time_applied: string;  
+  date_applied: Date;  
   company_id: number;
 
   title?: string;
@@ -37,11 +36,9 @@ export interface TableHeader {
 }
 
 const displayedColumns: TableHeader[] = [
-  { col_name: 'id', title: 'Applicant Id' },
+  { col_name: 'job_id', title: 'Job Id' },
   { col_name: 'full_name', title: 'Full Name'  },
   { col_name: 'date_applied', title: 'Date Applied', type: 'date'  },
-  { col_name: 'time_applied', title: 'Time'  },
-  
   { col_name: 'address', title: 'Location'  },
   { col_name: 'work_setup', title: 'Work Setup'  },
   { col_name: 'job_type', title: 'Type'  },
@@ -59,10 +56,9 @@ const displayedColumns: TableHeader[] = [
 ];
 
 const selectedColumns: string[] =  [
-  'id',
+  'job_id',
   'full_name',
   'date_applied',
-  'time_applied',
   'address',
   'salary',
   'cv_link',
@@ -90,7 +86,7 @@ const applicantLists: Applicant[] = [
     expected_salary_max: 50000,  
     address: "Ranchview, California ",
     date_applied: new Date(),  
-    time_applied: "8:00 AM",
+
     title: 'Fullstack Developer',
     short_bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.',  
     services_provided: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
@@ -166,7 +162,6 @@ const applicantLists: Applicant[] = [
     expected_salary_max: 85000,  
     address: "Manila, Philippines ",
     date_applied: new Date(), 
-    time_applied: "10:00 AM",
     title: 'Angular Developer',
     short_bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.',  
     services_provided: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
@@ -242,8 +237,6 @@ const applicantLists: Applicant[] = [
     expected_salary_max: 65000,  
     address: "123 Street Office, Singapore ",
     date_applied: new Date(), 
-    time_applied: "8:15 AM",
-    
     title: 'SQL Developer',
     short_bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.',  
     services_provided: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
@@ -320,8 +313,6 @@ const applicantLists: Applicant[] = [
     expected_salary_max: 50000,  
     address: "Soutville, USA ",
     date_applied: new Date(),
-    time_applied: "8:00 AM",
-    
     title: 'Frontend Engineer',
     short_bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.',  
     services_provided: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',

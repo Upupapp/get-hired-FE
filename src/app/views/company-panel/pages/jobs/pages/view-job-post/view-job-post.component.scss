@@ -1,0 +1,461 @@
+@import "src/assets/styles/colors";
+
+#banner{
+	@mixin center-v () {
+	  position: absolute;
+	  //top: 0;
+	  bottom: -55%;
+	  //margin: auto;
+	  z-index: 9999;
+	  transition: all 1s ease-in-out-back !important;
+	}
+
+	.item {
+	  &--primary {
+	    @include center-v;
+	    //right: 20px;
+	    //background: green;
+	  }
+	  
+	  &--secondary {
+	    @include center-v;
+	    transform: scale(1.1) !important;
+	    //left: 20px;
+	  }
+	}
+
+
+	.btn-save-draft{
+		font-style: normal;
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 27px;
+
+		color: #a9a9a9;
+		background: #FFFFFF;
+		border: 1px solid #a9a9a9 !important;
+		border-radius: 7px;
+		padding: 7px 10px !important;
+	}
+
+
+	.btn-primary{
+		font-family: 'Circular-Regular' !important;
+		// /font-weight: 100 !important;
+		border: none;
+		padding: 12px 30px !important;
+		background: $color-blue-primary !important;
+		border-radius: 2px !important;
+	}
+
+	.bg-banner{
+		background: url(~/src/assets/images/placeholder/job-post-banner.png);
+		background-repeat: no-repeat;
+		//background-attachment: fixed;
+		background-position: 5% 10%;
+		background-size: cover;
+		background-color: linear-gradient(96.52deg, #F85B4B -3.5%, #F85B4B 44.54%, #F85B4B 128.45%) !important;
+		border-radius: 0px;
+		position: relative;
+		height: 260px;
+
+		@media (max-width: 1099px){
+			height: 400px !important;
+		}
+	}
+
+
+	.title-banner{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 600;
+		font-size: 37px;
+		line-height: 41px;
+		/* or 111% */
+
+		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+		color: #FFFFFF;
+	}
+
+	.title-banner-description{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 24px;
+
+		color: #FFFFFF;
+	}
+
+	.title-details{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 16px;
+		/* identical to box height, or 150% */
+
+		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+		color: #fff;
+	}
+}
+
+
+.card{
+	background: #FFFFFF;
+	border: 1px solid rgba(231, 231, 231, 0.65);
+	/* shawos */
+
+	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
+	border-radius: 10px;
+	padding: 30px 10px 20px 30px;
+}
+
+.title-badge{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 13px;
+	padding-top: 7px;
+	color: #000000;
+}
+
+.title-details{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 21px;
+	/* identical to box height, or 150% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #666666;
+}
+
+.title-job-description{
+
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 21px;
+
+	color: #666666;
+
+	strong{
+		color: #000 !important;
+		font-weight: 500 !important;
+		font-size: 16px !important;
+		line-height: 35px !important;
+	}
+
+	a{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 21px;
+		text-decoration: none;
+		margin-top: 7px !important;
+		color: #5B8FDE !important;
+
+		&:hover{
+			text-decoration: underline;
+		}
+	}
+}
+
+.title-requirements{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 16px;
+
+	color: #666666;
+}
+
+.btn-apply-now{
+	background: #FF7062;
+	border-radius: 5px;
+	color: white;
+	padding: 9px;
+}
+
+.badge-card{
+	width: 100%;;
+	border-radius: 5px;
+	padding: 10px 10px 7px 15px;
+}
+
+.badge-0{
+	@extend .badge-card;
+	background: #E1E7FF;
+}
+
+.badge-1{
+	@extend .badge-card;
+	background: #CCFBF1;
+}
+
+.badge-2{
+	@extend .badge-card;
+	background: #FFF1CC;
+}
+
+.badge-3{
+	@extend .badge-card;
+	background: #FFCCE4;
+}
+
+.badge-4{
+	@extend .badge-card;
+	background: #E6F7D9;
+}
+
+.badge-5{
+	@extend .badge-card;
+	background: #EBE6FE;
+}
+
+.tags{
+	display: flex;
+  	flex-wrap: wrap;
+}
+
+.title-tags{
+	background: #F3F2F1;
+	border-radius: 5px;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 12px;
+	line-height: 18px;
+	/* identical to box height */
+	padding: 5px 10px;
+	//max-width: 130px;
+	color: #6A6A6A;
+	cursor: pointer;
+
+	&:hover{
+		text-decoration: underline;
+	}
+}
+
+.title-job-interview{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 20px;
+	line-height: 34px;
+	/* identical to box height, or 170% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #222222;
+}
+
+#interview-list{
+
+
+	.bg-interview{
+		background: #DADADA;
+		border-radius: 11px;
+		padding-top: 40px;
+		padding-left: 35px;
+		padding-right: 35px;
+		height: 110px;
+
+		img{
+			width: 40px;
+		}
+	}
+
+	
+
+	.title-question-number{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 15px;
+		/* or 94% */
+		margin-bottom: 10px;
+
+		color: #808080;
+	}
+
+	.title-question-title{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 18px;
+		line-height: 18px;
+		/* or 100% */
+
+
+		color: #4D4D4D;
+	}
+
+	.btn-take-interview{
+		background: #FFFFFF;
+		border: 1px solid #FE6F61;
+		border-radius: 100px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 21px;
+		/* identical to box height */
+
+		display: flex;
+		align-items: center;
+		text-align: center;
+
+		color: #FE6F61;
+
+		&:hover{
+			background: #FE6F61;
+			color: white;
+		}
+	}
+	
+	border: 1px solid #ffffff;
+
+	&:hover{
+		background: #FFFFFF;
+		border: 1px solid #FF7062;
+		border-radius: 12px;
+		transition: all 0.3s ease !important;
+		cursor: pointer;
+
+		.logo-thumbnail{
+			display: none !important;
+		}
+
+		.logo-thumbnail-2{
+			transition: all 0.3s ease !important;
+			display: flex !important;
+			background: #FFF6F5;
+			border-radius: 14px;
+			height: 100px;
+			width: 100px;
+			
+			img{
+				width: auto;
+				height: 34px;
+				transition: all 0.8s !important;
+			}
+		}
+	}
+
+	.btn-create-interview{
+		background: #FF7062;
+		border-radius: 10px;
+		color: white; 
+		border-radius: 6px;
+		padding: 10px 20px;
+		margin-left: 10px;
+		min-width: 150px;
+		font-size: 16px;
+	}
+
+	.logo-thumbnail-2{
+		display: none !important;
+	}
+
+	.logo-thumbnail{
+		background: #F3F3F3;
+		border-radius: 14px;
+		height: 100px;
+		width: 100px;
+		
+		img{
+			width: auto;
+			height: 34px;
+			transition: all 0.8s !important;
+		}
+	}
+
+	.btn-record{
+		background: #FF7062;
+		box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
+		border-radius: 566.808px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 10px;
+
+		color: #FFFFFF;
+		padding: 15px 20px
+	}
+
+	.btn-upload{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 17px;
+		/* identical to box height */
+		border-radius: 566.808px;
+
+		color: #959595;
+		padding: 10px 25px
+	}
+
+	.title-label{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 17px;
+		line-height: 20px;
+		color: #4D4D4D;
+		margin-bottom: 7px;
+	}
+
+	.title-label-sub{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 16px;
+		color: #9C9C9C;
+		margin-bottom: 4px;
+	}
+
+	.title-label-sub-duration{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 13px;
+		/* identical to box height */
+
+		//letter-spacing: 0.2px;
+
+		color: #9C9C9C;
+
+		span{
+			font-weight: 600 !important;
+			color: #9C9C9C;
+		}
+	}
+}
+
+.btn-view-more{
+	background: #FF7062;
+	border-radius: 10px;
+	color: white; 
+	border-radius: 6px;
+	padding: 10px 20px;
+	margin-left: 10px;
+	min-width: 150px;
+	font-size: 16px;
+	margin-bottom: -10px;
+	margin-right: 10px;
+}

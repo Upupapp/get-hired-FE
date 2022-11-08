@@ -2,31 +2,15 @@
 	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 		<div class="card card-body py-3">
 			<div class="w-100">
+				<span class="main-title mt-3">Candidates</span>
+
 				<div class="float-end">
 					<button class="btn btn-add-service" (click)="inviteApplicant()">
-						Invite Applicant
+						Invite Candidates
 						<img src="/assets/images/placeholder/icons/add-new.png" 
 						style="width: 16px;" class="ms-1">
 					</button>
 				</div>
-
-				<span class="main-title mt-3">
-				{{selectedJob?.title}}
-
-				</span> (<small>{{selectedJob?.work_setup}}, {{selectedJob?.job_type}}</small>)
-
-				<span class="d-flex flex-wrap">
-					<ng-container *ngFor="let tag of selectedJob?.tags, 'skill_requirements'">
-						<span class="flex-wrap me-2 talent-badge">{{tag}}
-						</span>
-					</ng-container>
-				</span>
-				
-
-				
-
-				
-				
 			</div>
 		</div>
 		<br>

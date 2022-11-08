@@ -16,11 +16,6 @@ export class AddInterviewTemplatesComponent implements OnInit {
 
     {
       id: 2,
-      title: "Templates"
-    },
-
-    {
-      id: 3,
       title: "Publish"
     },
   ];

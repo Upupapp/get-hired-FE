@@ -18,25 +18,22 @@ import {
   TableHeader,
   Applicant,
   applicantLists
-} from './utils/applicants-model-interface';
-import {
-  jobLists,  
-  Job
-} from '../jobs/utils/jobs-model-interface';
+} from '../applicants/utils/applicants-model-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
-import { InviteApplicantModalComponent } from './dialogs/invite-applicant-modal/invite-applicant-modal.component';
+import { TableControlModalComponent } from '../applicants/dialogs/table-control-modal/table-control-modal.component';
+import { InviteApplicantModalComponent } from '../applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
 
 @Component({
-  selector: 'app-applicants',
+  selector: 'app-candidates',
   animations: [mainAnimations],
-  templateUrl: './applicants.component.html',
-  styleUrls: ['./applicants.component.scss']
+  templateUrl: './candidates.component.html',
+  styleUrls: ['./candidates.component.scss']
 })
-export class ApplicantsComponent implements OnInit {
+export class CandidatesComponent implements OnInit {
+
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
   public routerUrl: any[] = [];
@@ -60,9 +57,7 @@ export class ApplicantsComponent implements OnInit {
     };
   };
   public status: string[] = ["Initial Interview", "Technical Interview", "Contract Signing"];
-  public jobLists: Job[] = jobLists;  
-  public selectedJob: Job;
-
+  
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -72,10 +67,6 @@ export class ApplicantsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.params['job-id'];  
-
-    this.selectedJob = [...this.jobLists].find(el => el?.id == id);
-    console.log(id, this.selectedJob)
 
     this.applicantLists.forEach((el) => {
       el['salary'] = `₱${el?.expected_salary_min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${el?.expected_salary_max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
@@ -116,8 +107,8 @@ export class ApplicantsComponent implements OnInit {
         width: '34vw',
         data: {
           ...event,  
-          title: "Applicant",
-          sub_title: "applicant"
+          title: "Candidates",
+          sub_title: "candidate"
         },
       }
     );

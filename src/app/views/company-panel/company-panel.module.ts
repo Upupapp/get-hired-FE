@@ -49,6 +49,8 @@ import { AddInterviewTemplatesComponent } from './pages/create-interview/pages/a
 import { CreateInterviewStepComponent } from './pages/create-interview/pages/add-interview-templates/components/create-interview-step/create-interview-step.component';
 import { InterviewTemplateStepComponent } from './pages/create-interview/pages/add-interview-templates/components/interview-template-step/interview-template-step.component';
 import { InterviewPublishStepComponent } from './pages/create-interview/pages/add-interview-templates/components/interview-publish-step/interview-publish-step.component';
+import { CandidatesComponent } from './pages/candidates/candidates.component';
+import { ViewJobPostComponent } from './pages/jobs/pages/view-job-post/view-job-post.component';
 
 @NgModule({
   imports: [
@@ -101,7 +103,9 @@ import { InterviewPublishStepComponent } from './pages/create-interview/pages/ad
    AddInterviewTemplatesComponent,
    CreateInterviewStepComponent,
    InterviewTemplateStepComponent,
-   InterviewPublishStepComponent
+   InterviewPublishStepComponent,
+   CandidatesComponent,
+   ViewJobPostComponent
   ]
 })
 export class CompanyPanelModule{ }
