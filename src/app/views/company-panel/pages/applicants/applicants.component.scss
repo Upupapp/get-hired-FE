@@ -1,5 +1,16 @@
 @import "src/assets/styles/colors";
 
+.breadcrumb-label{
+	letter-spacing: 1.5px;
+
+	span{
+		&:hover{
+			text-decoration: underline;
+			cursor: pointer;
+		}
+	}
+}
+
 .btn-save-draft{
 	font-style: normal;
 	font-weight: 500;

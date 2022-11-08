@@ -1,4 +1,13 @@
-<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+<div class="px-4 mt-4 ms-1">
+	<p class="breadcrumb-label">
+		<img src="/assets/images/placeholder/icons/home.png" style="height: 14px; margin-top: -3px;" class="me-2">
+		<span routerLink="/company/jobs">Jobs</span> /
+		<span routerLink="/company/jobs/details/{{selectedJob?.id}}">{{selectedJob?.id}}</span> /
+		Applicants
+	</p>
+</div>
+
+<div class="ps-4 pe-4" id="job-order-main-container">
 	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 		<div class="card card-body py-3">
 			<div class="w-100">
@@ -15,7 +24,7 @@
 				</div>
 
 				<span class="main-title mt-3 mb-0">
-				{{selectedJob?.id}} - {{selectedJob?.title}}
+				{{selectedJob?.title}}
 
 				</span> (<small>{{selectedJob?.work_setup}}, {{selectedJob?.job_type}}</small>)
 

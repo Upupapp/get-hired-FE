@@ -12,3 +12,14 @@
 	margin-bottom: 10px;
 
 }
+
+.breadcrumb-label{
+	letter-spacing: 1.5px;
+
+	span{
+		&:hover{
+			text-decoration: underline;
+			cursor: pointer;
+		}
+	}
+}
