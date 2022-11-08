@@ -8,6 +8,11 @@ export const loading = createSelector (
   state => state.loading
 );
 
+export const getSuccessMsg = createSelector (
+  getCompanyInitState,
+  state => state.succesMsg
+);
+
 export const getCompanyList = createSelector (
   getCompanyInitState,
   state => state.list

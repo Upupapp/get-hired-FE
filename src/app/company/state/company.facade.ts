@@ -10,6 +10,7 @@ export class CompanyFacade {
     loading$ = this.store.pipe(select(fromfeature.loading));
     companyDetails$ = this.store.pipe(select(fromfeature.getCompanyDetails));
     companyList$ = this.store.pipe(select(fromfeature.getCompanyList));
+    success$ = this.store.pipe(select(fromfeature.getSuccessMsg));
 
     constructor(
       private store: Store<State>,
@@ -17,6 +18,10 @@ export class CompanyFacade {
 
     getAllCompany() {
       this.store.dispatch(CompanyAction.getAllcompany());
+    }
+
+    createCompany(company: Model.Company) {
+      this.store.dispatch(CompanyAction.createCompany({ company }));
     }
 
     // getfeatureList() {

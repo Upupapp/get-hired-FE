@@ -11,6 +11,7 @@ import { SharedModule } from '@app-shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CompanyUsersComponent } from './company-users/company-users.component';
 import { CompanyNotSetupComponent } from './company-not-setup/company-not-setup.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const exportedComponents = [
   CompanyComponent,
@@ -27,6 +28,7 @@ const exportedComponents = [
     CommonModule,
     ReactiveFormsModule,
     SharedModule,
+    MatDialogModule,
     StoreModule.forFeature('company', companyReducer),
     EffectsModule.forFeature([CompanyEffects])
   ],

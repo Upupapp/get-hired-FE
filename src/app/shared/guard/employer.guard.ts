@@ -42,8 +42,8 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
     return this.checkUserLogin();
   }
 
-  checkUserLogin(): boolean {
-    const role = this.coreService.getRole();
+  async checkUserLogin(): Promise<boolean> {
+    const role = await this.getLoggedRole();
     console.log(role);
     const i = this.router.config.findIndex(x => x.data.name == 'employer');
 
@@ -61,9 +61,14 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
           this.router.navigate(['../dashboard']);
           return false;
       }
+    } else {
+      this.router.navigateByUrl('/signin');
+      return false;
     }
-    this.router.navigateByUrl('/signin');
-    return false;
+  }
+
+  async getLoggedRole() {
+    return await this.coreService.getRole();
   }
 
   // TODO for mobile screen

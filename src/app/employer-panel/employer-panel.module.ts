@@ -10,6 +10,7 @@ import { EmployeeModule } from '@main/employee/employee.module';
 import { SharedModule } from '@main/shared/shared.module';
 import { InternalEmployerGuard } from './employer-internal-authguard';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const routes: Routes = [
   {
@@ -25,7 +26,7 @@ const routes: Routes = [
         path: 'company',
         loadChildren: () => import ('./employer-settings/employer-settings.module').then(m => m.EmployerSettingsModule)
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   }
 ]
@@ -39,6 +40,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CoreModule,
+    MatDialogModule,
     SharedModule,
     EmployeeModule,
     RouterModule.forChild(routes)

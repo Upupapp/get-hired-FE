@@ -15,11 +15,11 @@ import { ReusableOrgChartComponent } from './components/reusable-org-chart/reusa
 import { FileUploadComponent } from './components/input/file-upload/file-upload.component';
 import { FileUploadDocumentComponent } from './components/input/file-upload-document/file-upload-document.component';
 import { DragAndDropComponent } from './components/input/drag-and-drop/drag-and-drop.component';
-import { NgxOrgChartModule } from 'ngx-org-chart';
 import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
 import { AddAccessModalComponent } from './components/add-access-modal/add-access-modal.component';
+// import { NgxOrgChartModule } from 'ngx-org-chart';
 
 
 const classesToInclude: any[] = [
@@ -45,7 +45,6 @@ const classesToInclude: any[] = [
     RouterModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgxOrgChartModule,
     MaterialComponentsModule
   ],
   entryComponents: [...classesToInclude],

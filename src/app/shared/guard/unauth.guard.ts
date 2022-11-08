@@ -45,17 +45,28 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
   checkUserLogin(route: ActivatedRouteSnapshot, url: any): boolean {
     const { path } = route.routeConfig;
     const role = this.coreService.getRole();
-    console.log(role);
+    const i = this.router.config.findIndex(x => x.data.name == 'auth');
 
-    if (!role) {
-      return true;
-    } else if (role == '1') {
-      this.router.navigateByUrl('/admin');
-      return false
-    } else {
-      this.router.navigateByUrl('/dashboard');
-      return false;
-    }
+    console.log(role);
+    console.log('Hala');
+
+    // if (!role && !this.coreService.isLoggedIn()) {
+    //   console.log(route);
+
+    //   return true;
+    // } else if (role == '1' && this.coreService.isLoggedIn()) {
+    //   this.router.navigateByUrl('/admin');
+    //   return false
+    // } else if((role == '2' || role == '3') && this.coreService.isLoggedIn()) {
+    //   this.router.config.splice(i, 1);
+    //   this.router.navigateByUrl('/dashboard');
+    //   return false;
+    // } else {
+    //   console.log('Patay');
+    //   return false;
+    // }
+
+    return false;
 
   }
 

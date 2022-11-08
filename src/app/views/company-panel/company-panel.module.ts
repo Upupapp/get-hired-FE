@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
-import { NgxOrgChartModule } from 'ngx-org-chart';
+// import { NgxOrgChartModule } from 'ngx-org-chart';
 import { CompanyPanelRoutes } from './company-panel.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -54,7 +54,7 @@ import { InviteApplicantModalComponent } from './pages/applicants/dialogs/invite
     MaterialComponentsModule,
     NgChartsModule,
     NgxMatTimepickerModule,
-    NgxOrgChartModule,
+    // NgxOrgChartModule,
     SharedModule,
     RouterModule.forChild(CompanyPanelRoutes)
   ],

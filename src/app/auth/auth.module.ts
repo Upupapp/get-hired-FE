@@ -17,13 +17,18 @@ import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
 
 const routes: Routes = [
-  { path: 'signin', component: SigninComponent },
-  { path: 'signup', component: SignupComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
-  { path: 'change-password', component: ChangePwComponent },
-  { path: 'verify', component: AccountAuthenticationComponent },
-  { path: '', redirectTo: 'signin', pathMatch: 'full' },
-  // { path: '**', component: ErrorNotFoundComponent },
+  {
+    path: '',
+    children: [
+      { path: 'signin', component: SigninComponent },
+      { path: 'signup', component: SignupComponent },
+      { path: 'reset-password', component: ResetPasswordComponent },
+      { path: 'change-password', component: ChangePwComponent },
+      { path: 'verify', component: AccountAuthenticationComponent },
+      { path: '', redirectTo: 'signin', pathMatch: 'full' },
+
+    ]
+  }
 ];
 
 @NgModule({

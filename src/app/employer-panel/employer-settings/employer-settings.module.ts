@@ -7,10 +7,16 @@ import { CompanyModule } from '@main/company/company.module';
 import { EmployerCompanyDetailsComponent } from './employer-company-details/employer-company-details.component';
 import { EmployerCompanyUsersComponent } from './employer-company-users/employer-company-users.component';
 import { AuthModule } from '@main/auth/auth.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const routes: Routes = [
-  { path: 'settings', component: EmployerSettingsComponent },
-  { path: '', redirectTo: 'settings', pathMatch: 'full' }
+  {
+    path: '',
+    children: [
+      { path: 'settings', component: EmployerSettingsComponent },
+      { path: '', redirectTo: 'settings', pathMatch: 'full' }
+    ]
+  }
 ];
 
 @NgModule({
@@ -22,6 +28,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CompanyModule,
+    MatDialogModule,
     SharedModule,
     AuthModule,
     RouterModule.forChild(routes)

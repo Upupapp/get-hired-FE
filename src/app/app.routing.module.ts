@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule, ROUTES, Routes } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule, Routes } from '@angular/router';
 import { HeaderComponent } from './shared/components/header-bak/header.component.bak';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthGuard } from '@app-shared/guard/auth.guard'
@@ -20,24 +20,24 @@ const rootRouterConfig: Routes = [
   },
   {
     path: '',
-    // loadChildren: () => import('./views/company-panel/company-panel.module').then(m => m.CompanyPanelModule),
     loadChildren: () => import('./employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
     canActivate: [AuthGuard, EmployerGuard],
     data: { name: "employer" }
   },
-  // {
-  //   path: '',
-  //   loadChildren: async () =>
-  //     import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
-  //   canActivate: [AuthGuard, ApplicantGuard],
-  //   data: { name: "applicant" }
-  // },
+  {
+    path: '',
+    loadChildren: async () =>
+      import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
+    canActivate: [AuthGuard, ApplicantGuard],
+    data: { name: "applicant" }
+  },
   {
     path: '',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
-    canActivate: [UnauthGuard],
+    canActivate: [AuthGuard],
     data: { name: "auth" }
   }
+
 
   //   {
   //     path: 'admin',

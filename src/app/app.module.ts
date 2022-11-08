@@ -5,9 +5,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app.routing.module';
-import { AuthInterceptor } from './shared/services/set-auth-header';
 import { SharedModule } from './shared/shared.module';
-import { NgxSpinnerModule } from "ngx-spinner";
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
@@ -15,6 +13,9 @@ import { StoreModule } from '@ngrx/store';
 import { AppFacade } from './state/app.facade';
 import { AppEffects } from './state/app.effects';
 import { appReducer } from '@main/app.state';
+import { AuthInterceptor } from './core/interceptor/authentication.interceptor';
+import { UnAuthorizedInterceptor } from './core/interceptor/unauthorize.interceptor';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,12 @@ import { appReducer } from '@main/app.state';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     AppFacade,
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UnAuthorizedInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

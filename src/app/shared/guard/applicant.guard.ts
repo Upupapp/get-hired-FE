@@ -42,12 +42,11 @@ export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactiv
       return this.checkUserLogin();
     }
 
-  checkUserLogin(): boolean {
-    const role = this.coreService.getRole();
+  async checkUserLogin() {
     console.log(this.router.config);
 
     const i = this.router.config.findIndex(x => x.data.name == 'employer');
-
+    const role = await this.coreService.getRole();
     console.log(i);
 
     if (role) {
@@ -66,19 +65,5 @@ export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactiv
     this.router.navigateByUrl('/signin');
     return false;
   }
-  // TODO for mobile screen
-  // checkScreenSize() {
-  //   const height = window.screen.availHeight;
-  //   const width = window.screen.availWidth;
-  //   const userRole = this.coreService.getRole();
-
-  //   if(width < 1025 && userRole == '3') {
-  //     window.location.href = 'https://app.gwana.app/show-mobile-app';
-  //   } else if (width < 1025 && userRole == '1') {
-  //     this.router.navigateByUrl('/error/invalid-screen');
-  //   } else {
-  //     return true;
-  //   }
-  // }
 
 }

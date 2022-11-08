@@ -3,7 +3,6 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
-import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
@@ -18,7 +17,6 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
 
   constructor(
     private employeeFacade: EmployeeFacade,
-    private dialog: MatDialog,
     private router: Router
   ) { }
 
@@ -51,13 +49,7 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
   checkUserLogin(company) {
     if (!company || company.length == 0) {
       this.withCompany = false;
-      const noCompany = this.dialog.open(CompanyNotSetupComponent, {
-        width: '50vw',
-      });
-
-      noCompany.afterClosed().subscribe(res => {
-        this.router.navigateByUrl('/company/settings');
-      })
+      this.router.navigate(['../company']);
     } else {
       this.withCompany = true;
     }

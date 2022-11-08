@@ -9,6 +9,19 @@ import { Router } from '@angular/router';
 })
 export class CoreService {
 
+  asyncLocalStorage = {
+    setItem: function (key, value) {
+      return Promise.resolve().then(function () {
+        localStorage.setItem(key, value);
+      });
+    },
+    getItem: function (key) {
+      return Promise.resolve().then(function () {
+        return localStorage.getItem(key);
+      });
+    }
+  };
+
   authUrl = `${environment.api_url}/auth`;
   isLogin = false;
   roleAs: string;
@@ -28,11 +41,13 @@ export class CoreService {
     this.roleAs = '';
     localStorage.setItem('state', 'false');
     localStorage.setItem('role', '');
-    return of({ success: this.isLogin, role: '' });
+    localStorage.clear();
+
+    return of({ success: !this.isLogin, role: '' });
   }
 
   isLoggedIn() {
-    const loggedIn = localStorage.getItem('state');
+    const loggedIn = localStorage.getItem('state') || null;
     if (loggedIn == 'true')
       return true;
     else
@@ -40,7 +55,8 @@ export class CoreService {
   }
 
   getRole() {
-    this.roleAs = localStorage.getItem('role');
-    return this.roleAs;
+    return this.asyncLocalStorage.getItem('role');
+    // this.roleAs = localStorage.getItem('role');
+    // return this.roleAs;
   }
 }
