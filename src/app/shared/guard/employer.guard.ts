@@ -1,18 +1,32 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, UrlSegment, Route, CanActivateChild, CanDeactivate, CanLoad, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, UrlSegment, Route, CanActivateChild, CanDeactivate, CanLoad, ActivatedRoute, Routes } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { CoreService } from '@app-core/services/core.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { adminRoutes, applicantRoutes, authRoutes, employerRoutes } from './routes';
+import { routes } from '@main/app.routing.module';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactivate<unknown>, CanLoad {
-
+  asyncLocalStorage = {
+    setItem: function (key, value) {
+      return Promise.resolve().then(function () {
+        localStorage.setItem(key, value);
+      });
+    },
+    getItem: function (key) {
+      return Promise.resolve().then(function () {
+        return localStorage.getItem(key);
+      });
+    }
+  };
 
   constructor(
     private coreService: CoreService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
   ) { }
@@ -21,8 +35,7 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let url: string = state.url;
-    // return (this.checkUserLogin(next, url) && this.checkScreenSize());
-    return (this.checkUserLogin());
+    return this.checkUserLogin(next, url);
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,
@@ -36,54 +49,74 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
     nextState?: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return true;
   }
+
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
     return this.checkUserLogin();
   }
 
-  async checkUserLogin(): Promise<boolean> {
-    const role = await this.getLoggedRole();
-    console.log(role);
-    const i = this.router.config.findIndex(x => x.data.name == 'employer');
+  async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
 
-    if (role) {
-      switch (role) {
-        case '1':
-          this.router.navigateByUrl('/admin');
-          return false;
-        case '2':
-          console.log('case2 in employer guard')
-          return true;
-        case '3':
-          console.log('case3 in employer guard')
-          this.router.config.splice(i, 1);
-          this.router.navigate(['../dashboard']);
-          return false;
-      }
-    } else {
-      this.router.navigateByUrl('/signin');
+
+    const logged = await this.asyncLocalStorage.getItem('state');
+    const role = await this.asyncLocalStorage.getItem('role');
+    const isAuthRoute = this.isAuthPath(url);
+    console.log(url);
+    console.log(this.router.config);
+    console.log(logged);
+    console.log(isAuthRoute);
+
+    if (logged != 'true') {
+      console.log('HOY Login!');
+      this.router.resetConfig([
+        ...authRoutes
+      ]);
+      this.router.navigate(['../']);
       return false;
+    } else {
+      if(role != '2') {
+        console.log('Ligaw');
+        this.router.resetConfig([
+          ...adminRoutes,
+          ...applicantRoutes
+        ]);
+        return false;
+      } else {
+        // if(isAuthRoute) {
+        //   console.log(this.router.config)
+        //   console.log(url);
+        //   this.router.resetConfig([
+        //     ...employerRoutes
+        //   ]);
+        //   this.router.navigate(['./dashboard']);
+        //   return true;
+        // } else
+        if(url == '/' || isAuthRoute) {
+          console.log('talaga ba?')
+          this.router.navigate(['./dashboard']);
+          this.router.resetConfig([
+            ...employerRoutes
+          ]);
+          return false;
+        } else {
+          console.log('mali')
+          console.log(url);
+          this.router.resetConfig(routes);
+          return true;
+        }
+      }
     }
   }
 
-  async getLoggedRole() {
-    return await this.coreService.getRole();
+  isAuthPath(url: string) {
+    return [
+      '/signin',
+      '/signup',
+      '/reset-password',
+      '/change-password',
+      '/verfiy'
+    ].includes(url);
   }
-
-  // TODO for mobile screen
-  // checkScreenSize() {
-  //   const height = window.screen.availHeight;
-  //   const width = window.screen.availWidth;
-  //   const userRole = this.coreService.getRole();
-
-  //   if(width < 1025 && userRole == '3') {
-  //     window.location.href = 'https://app.gwana.app/show-mobile-app';
-  //   } else if (width < 1025 && userRole == '1') {
-  //     this.router.navigateByUrl('/error/invalid-screen');
-  //   } else {
-  //     return true;
-  //   }
-  // }
 
 }

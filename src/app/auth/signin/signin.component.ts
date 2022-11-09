@@ -60,17 +60,24 @@ export class SigninComponent implements OnInit {
         email: data.email,
       }));
 
-      if(this.loginForm) {
+      if (this.loginForm) {
         this.loginForm.reset();
       }
 
       this.message = localStorage.getItem('loginMessage');
 
-      if(user.role == 1) {
+      if (user.role == 1) {
         this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
       } else {
-        // console.log('Redirect to employer');
-        this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
+        if (!user.withCompany && user.role == 2) {
+          console.log('cant');
+          console.log()
+          this.router.navigateByUrl('./company/settings');
+        } else {
+          // console.log('Redirect to employer');
+          this.router.navigate(['../dashboard']);
+        }
+
       }
     }
   }

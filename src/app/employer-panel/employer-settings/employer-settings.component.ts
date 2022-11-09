@@ -28,8 +28,7 @@ export class EmployerSettingsComponent implements OnInit {
 
   public stepper: number = 1;
 
-  company$ = this.employeeFacade.company$
-    .pipe().subscribe(this.checkCompany.bind(this));
+
 
   constructor(
     private employeeFacade: EmployeeFacade,
@@ -38,24 +37,11 @@ export class EmployerSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    console.log('on settings');
   }
 
   changeStep(step: number): void {
     console.log(step);
     this.stepper = step;
-  }
-
-  checkCompany(company) {
-    if (!company || company.length == 0) {
-      const noCompany = this.dialog.open(CompanyNotSetupComponent, {
-        width: '50vw',
-        disableClose: true
-      });
-
-      // noCompany.afterClosed().subscribe(res => {
-      //   this.router.navigateByUrl('/company/settings');
-      // })
-    }
   }
 }

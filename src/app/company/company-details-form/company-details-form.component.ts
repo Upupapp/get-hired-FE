@@ -109,6 +109,8 @@ export class CompanyDetailsFormComponent implements OnInit {
           selfClose: false
         }
       });
+    } else{
+      setTimeout(() => this.loadingDialog.closeAll(), 2000);
     }
   }
 }

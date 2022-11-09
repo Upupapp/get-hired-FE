@@ -9,23 +9,24 @@ import { CoreService } from './core/services/core.service';
 import { UnauthGuard } from './shared/guard/unauth.guard';
 import { AdminGuard } from './shared/guard/admin.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('@main/admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
+    canActivate: [AdminGuard],
     data: { name: "admin" }
   },
   {
     path: '',
     loadChildren: () => import('./employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
-    canActivate: [AuthGuard],
+    canActivate: [EmployerGuard],
     data: { name: "employer" }
   },
   {
     path: '',
-    loadChildren: async () =>
+    loadChildren: () =>
       import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
-    canActivate: [AuthGuard],
+    // canActivate: [ApplicantGuard],
     data: { name: "applicant" }
   },
   {

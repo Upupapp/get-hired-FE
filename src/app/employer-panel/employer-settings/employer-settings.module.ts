@@ -10,13 +10,8 @@ import { AuthModule } from '@main/auth/auth.module';
 import { MatDialogModule } from '@angular/material/dialog';
 
 const routes: Routes = [
-  {
-    path: '',
-    children: [
-      { path: 'settings', component: EmployerSettingsComponent },
-      { path: '', redirectTo: 'settings', pathMatch: 'full' }
-    ]
-  }
+  { path: 'settings', component: EmployerSettingsComponent },
+  { path: '', redirectTo: 'settings', pathMatch: 'full' }
 ];
 
 @NgModule({

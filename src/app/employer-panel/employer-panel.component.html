@@ -10,7 +10,7 @@
         <app-header [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
       </div>
 
-      <div id="sub-company-component">
+      <div id="sub-company-component" *ngIf="withCompany && path != '/company'">
         <router-outlet></router-outlet>
       </div>
     </div>

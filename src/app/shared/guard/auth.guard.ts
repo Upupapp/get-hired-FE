@@ -24,9 +24,10 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   constructor(
     private coreService: CoreService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
-  ) { }
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -86,16 +87,27 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
     ]
 
     const logged = await this.asyncLocalStorage.getItem('state');
+    console.log(url);
+    console.log(this.router.config);
+    console.log(logged);
     if (logged != 'true') {
+      console.log('HOY');
       this.router.resetConfig([
         ...authRoutes
       ]);
-      this.router.navigateByUrl('/signin');
+      this.router.navigate(['../signin'], { relativeTo: this.route});
+    } else {
+      console.log('Nyek');
+
+      this.router.resetConfig([
+        ...featureRoutes
+      ]);
+      this.router.navigate(['../'], { relativeTo: this.route});
     }
-    this.router.resetConfig([
-      ...featureRoutes
-    ]);
-    return logged == 'true';
+
+    console.log(this.router.config);
+
+    return url != '/signin';
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterEvent } from '@angular/router';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 
 @Component({
@@ -13,6 +13,7 @@ export class CompanyNotSetupComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<CompanyNotSetupComponent>,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -20,6 +21,7 @@ export class CompanyNotSetupComponent implements OnInit {
 
   redirectToSetup() {
     this.dialogRef.close();
+    // this.router.navigate(['../company/settings']);
   }
 
 }

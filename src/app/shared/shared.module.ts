@@ -19,6 +19,7 @@ import { MainStepperComponent } from './components/main-stepper/main-stepper.com
 import { LoadingComponent } from './components/loading/loading.component';
 import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
 import { AddAccessModalComponent } from './components/add-access-modal/add-access-modal.component';
+import { MatDialogRef } from '@angular/material/dialog';
 // import { NgxOrgChartModule } from 'ngx-org-chart';
 
 
@@ -48,7 +49,10 @@ const classesToInclude: any[] = [
     MaterialComponentsModule
   ],
   entryComponents: [...classesToInclude],
-  providers: [],
+  providers: [{
+    provide: MatDialogRef,
+    useValue: {}
+  }],
   declarations: classesToInclude,
   exports: [
     ...classesToInclude,

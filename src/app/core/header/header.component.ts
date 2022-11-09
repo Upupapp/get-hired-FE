@@ -32,6 +32,7 @@ export class HeaderComponent implements OnInit {
     this.coreService.logout().subscribe(isLogout => {
       console.log(isLogout);
       if(isLogout.success) {
+        console.log('ikaw naman');
         this.router.navigateByUrl('/signin');
       }
     });

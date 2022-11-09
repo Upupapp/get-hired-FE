@@ -17,7 +17,8 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
 
   constructor(
     private employeeFacade: EmployeeFacade,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   canActivate(
@@ -47,9 +48,10 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
   }
 
   checkUserLogin(company) {
+    console.log(company);
     if (!company || company.length == 0) {
       this.withCompany = false;
-      this.router.navigate(['../company']);
+      this.router.navigate(['../company/settings'], { relativeTo: this.route})
     } else {
       this.withCompany = true;
     }

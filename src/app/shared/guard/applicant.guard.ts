@@ -1,18 +1,31 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, UrlSegment, Route, CanActivateChild, CanDeactivate, CanLoad, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router, UrlSegment, Route, CanActivateChild, CanDeactivate, CanLoad, ActivatedRoute, Routes } from '@angular/router';
+import { Observable, of } from 'rxjs';
 import { CoreService } from '@app-core/services/core.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { adminRoutes, applicantRoutes, authRoutes, employerRoutes } from './routes';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactivate<unknown>, CanLoad {
-
+  asyncLocalStorage = {
+    setItem: function (key, value) {
+      return Promise.resolve().then(function () {
+        localStorage.setItem(key, value);
+      });
+    },
+    getItem: function (key) {
+      return Promise.resolve().then(function () {
+        return localStorage.getItem(key);
+      });
+    }
+  };
 
   constructor(
     private coreService: CoreService,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
   ) { }
@@ -21,8 +34,7 @@ export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactiv
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let url: string = state.url;
-    // return (this.checkUserLogin(next, url) && this.checkScreenSize());
-    return (this.checkUserLogin());
+    return this.checkUserLogin(next, url);
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,
@@ -36,34 +48,43 @@ export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactiv
     nextState?: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return true;
   }
+
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-      return this.checkUserLogin();
-    }
+    return this.checkUserLogin();
+  }
 
-  async checkUserLogin() {
+  async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
+
+
+    const logged = await this.asyncLocalStorage.getItem('state');
+    const role = await this.asyncLocalStorage.getItem('role');
+
+    console.log(url);
     console.log(this.router.config);
+    console.log(logged);
 
-    const i = this.router.config.findIndex(x => x.data.name == 'employer');
-    const role = await this.coreService.getRole();
-    console.log(i);
+    if (logged != 'true') {
+      console.log('HOY Login!');
+      this.router.resetConfig([
+        ...authRoutes
+      ]);
+      return false;
+    } else {
+      if(role != '3') {
+        console.log('Ligaw');
+        this.router.resetConfig([
+          ...adminRoutes,
+          ...employerRoutes
+        ]);
+        return false;
+      } else {
+        console.log('dito b? baka');
 
-    if (role) {
-      switch (role) {
-        case '1':
-          this.router.navigateByUrl('/admin');
-          return false;
-        case '2':
-          // this.router.config.splice(i, 1);
-          this.router.navigate(['../dashboard']);
-          return false;
-        case '3':
-          return true;
+        return true
       }
     }
-    this.router.navigateByUrl('/signin');
-    return false;
   }
 
 }
