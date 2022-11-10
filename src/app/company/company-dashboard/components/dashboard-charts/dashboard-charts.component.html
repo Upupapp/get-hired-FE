@@ -1,0 +1,43 @@
+<div class="px-4 px-lg-5 mb-4" [@animate]="{value:'*', params:{ y:'10px', delay:'150ms' }}">
+	<div class="card card-body">
+		<div class="row">
+			<div class=" col-12 col-lg-8 px-4">
+				<h5 class="title-main mt-4 mb-3">
+					Current Activity
+
+					<div class="float-end mt-3">
+						<div class="d-flex">
+							<h5 class="chart-label d-flex me-3">
+								<div class="chart-symbol-green"></div> Job View
+							</h5>
+							<h5 class="chart-label d-flex">
+								<div class="chart-symbol-red"></div> Job Applicants
+							</h5>
+						</div>
+					</div>
+				</h5>
+
+				<div class="chart-container">
+					<canvas
+					baseChart
+					[datasets]="activityGraphChartData"
+					[labels]="activityGraphChartLabels"
+					[options]="activityGraphChartOptions"
+					[legend]="activityGraphChartLegend"
+					[type]="activityGraphChartType">
+					</canvas>
+				</div>
+			</div>
+
+			<div class="chart-container-2 col-12 col-lg-4 px-4 py-lg-3 mt-lg-5">
+				<canvas baseChart
+					[datasets]="doughnutChartData"
+					[legend]="doughnutChartLegend"
+					[labels]="doughnutChartLabels"
+					[options]="doughnutChartOptions"
+					[type]="doughnutChartType">
+				</canvas>
+			</div>
+		</div>
+	</div>
+</div>

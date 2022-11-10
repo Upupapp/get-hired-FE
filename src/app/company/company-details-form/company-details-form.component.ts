@@ -9,6 +9,7 @@ import { industries } from '@main/views/company-panel/pages/jobs/utils/jobs-mode
 import { Subscription } from 'rxjs';
 import { CompanyFacade } from '../state/company.facade';
 import * as Model from '../company.model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-details-form',
@@ -49,7 +50,9 @@ export class CompanyDetailsFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar,
     private companyFacade: CompanyFacade,
-    private loadingDialog: MatDialog
+    private loadingDialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -99,10 +102,16 @@ export class CompanyDetailsFormComponent implements OnInit {
       this.companyDetailsForm.get('industryId')?.setValue(industryId);
       this.companyDetailsForm.get('workSetupId')?.setValue(workSetupId);
       this.companyDetailsForm.get('numberOfEmployee')?.setValue(numberOfEmployee);
+      this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
 
       this.profileImage = companyLogoUrl;
       this.canView = true;
     }
+  }
+
+  redirectToPreview() {
+    console.log(this.router.config);
+    // this.router.navigate(['../company-details'], {relativeTo: this.route });
   }
 
   onUpload(file: any) {

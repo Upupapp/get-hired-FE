@@ -14,6 +14,11 @@ import { CompanyNotSetupComponent } from './company-not-setup/company-not-setup.
 import { MatDialogModule } from '@angular/material/dialog';
 import { CompanyDetailsComponent } from './company-details/company-details.component';
 import { BannerDetailsComponent } from './company-details/components/banner-details/banner-details.component';
+import { CompanyDashboardComponent } from './company-dashboard/company-dashboard.component';
+import { DashboardBannerComponent } from './company-dashboard/components/dashboard-banner/dashboard-banner.component';
+import { DashboardChartsComponent } from './company-dashboard/components/dashboard-charts/dashboard-charts.component';
+import { DashboardStatisticsComponent } from './company-dashboard/components/dashboard-statistics/dashboard-statistics.component';
+import { NgChartsModule } from 'ng2-charts';
 
 const exportedComponents = [
   CompanyComponent,
@@ -21,7 +26,11 @@ const exportedComponents = [
   CompanyUsersComponent,
   CompanyNotSetupComponent,
   CompanyDetailsComponent,
-  BannerDetailsComponent
+  BannerDetailsComponent,
+  CompanyDashboardComponent,
+  DashboardBannerComponent,
+  DashboardChartsComponent,
+  DashboardStatisticsComponent
 ];
 
 @NgModule({
@@ -33,6 +42,7 @@ const exportedComponents = [
     ReactiveFormsModule,
     SharedModule,
     MatDialogModule,
+    NgChartsModule,
     StoreModule.forFeature('company', companyReducer),
     EffectsModule.forFeature([CompanyEffects])
   ],

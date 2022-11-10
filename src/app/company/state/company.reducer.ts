@@ -13,6 +13,7 @@ export interface CompanyState {
   error: any;
   succesMsg: string;
   loading: boolean;
+  dashboard: Model.Dashboard
 }
 
 const initialState: CompanyState = {
@@ -21,6 +22,7 @@ const initialState: CompanyState = {
   succesMsg: '',
   error: null,
   loading: false,
+  dashboard: null
 };
 
 export const companyReducer = createReducer<CompanyState>(
@@ -108,6 +110,28 @@ export const companyReducer = createReducer<CompanyState>(
     };
   }),
   on(CompanyActions.updateCompanyFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(CompanyActions.companyDashboard, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(CompanyActions.companyDashboardSuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      dashboard: action.dashboard
+    };
+  }),
+  on(CompanyActions.companyDashboardFail, (state, action): CompanyState => {
     return {
       ...state,
       loading: false,

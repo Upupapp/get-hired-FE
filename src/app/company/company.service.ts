@@ -27,4 +27,8 @@ export class CompanyService {
     return this.baseService.get<Model.Company>(`${this.companyUrl}/details?id=${companyId}`);
   }
 
+  getDashboardDetails() {
+    return this.baseService.get<Model.Dashboard>(`${this.companyUrl}/dashboard`);
+  }
+
 }

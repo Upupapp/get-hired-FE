@@ -23,3 +23,7 @@ export const getCompanyDetails = createSelector (
   state => state.selected
 );
 
+export const companyDashboard = createSelector (
+  getCompanyInitState,
+  state => state.dashboard
+);

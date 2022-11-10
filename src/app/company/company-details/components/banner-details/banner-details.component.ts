@@ -11,7 +11,7 @@ import * as Model from '@main/company/company.model';
 })
 export class BannerDetailsComponent implements OnInit {
   @Input() details: Model.Company;
-  userRoles = localStorage.getItem('role');
+  userRole = localStorage.getItem('role');
 
   constructor(
     private router: Router,

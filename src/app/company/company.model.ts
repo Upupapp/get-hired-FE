@@ -16,3 +16,23 @@ export interface Company {
   updatedAt: Date;
   companyLogoFile?: File;
 }
+
+export interface Dashboard {
+  company: {
+    companyId: string;
+    companyName: string;
+    companyLogoUrl: string;
+    companyCity: string;
+    companyCountry: string;
+    companyEmail: string;
+  },
+  charts: {
+    activeJobs: number;
+    applicants: number;
+    interviews: number;
+  },
+  statistic: {
+    totalHired: number;
+    interviewAppointments: number;
+  }
+}

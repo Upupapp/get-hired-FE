@@ -95,4 +95,22 @@ export class CompanyEffects {
       )
     );
   });
+
+  companyDashboard$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.companyDashboard),
+      mergeMap(() => this.companyService.getDashboardDetails()
+        .pipe(
+          map((res: any) => {
+            const dashboard: Model.Dashboard = res.data;
+            return CompanyActions.companyDashboardSuccess({ dashboard });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.companyDashboardFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
 }
