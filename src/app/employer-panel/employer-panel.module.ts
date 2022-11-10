@@ -11,6 +11,8 @@ import { SharedModule } from '@main/shared/shared.module';
 import { InternalEmployerGuard } from './employer-internal-authguard';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { EmployerCompanyDetailsComponent } from './employer-company-details/employer-company-details.component';
+import { CompanyModule } from '@main/company/company.module';
 
 const routes: Routes = [
   {
@@ -21,6 +23,10 @@ const routes: Routes = [
         path: 'dashboard',
         component: EmployerDashboardComponent,
         canActivate: [InternalEmployerGuard]
+      },
+      {
+        path: 'company-details',
+        component: EmployerCompanyDetailsComponent
       },
       {
         path: 'company',
@@ -35,7 +41,8 @@ const routes: Routes = [
   declarations: [
     EmployerPanelComponent,
     EmployerDashboardComponent,
-    EmployerSidebarComponent
+    EmployerSidebarComponent,
+    EmployerCompanyDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -43,6 +50,7 @@ const routes: Routes = [
     MatDialogModule,
     SharedModule,
     EmployeeModule,
+    CompanyModule,
     RouterModule.forChild(routes)
   ],
   providers: [InternalEmployerGuard]

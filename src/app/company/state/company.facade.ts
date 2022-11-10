@@ -24,6 +24,9 @@ export class CompanyFacade {
       this.store.dispatch(CompanyAction.createCompany({ company }));
     }
 
+    getCompany(companyId?: string) {
+      this.store.dispatch(CompanyAction.getCompany({ companyId }));
+    }
     // getfeatureList() {
 
     // }

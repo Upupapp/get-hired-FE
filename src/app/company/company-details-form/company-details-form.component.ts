@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmployeeCompany } from '@main/employee/employee.model';
 import { mainAnimations } from '@main/shared/animations/main-animations';
@@ -50,6 +50,8 @@ export class CompanyDetailsFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.companyFacade.getCompany();
+
     this.companyDetailsForm = this.formBuilder.group({
       companyEmail: ['', [Validators.required, Validators.email]],
       companyContactNumber: [''],
@@ -67,12 +69,36 @@ export class CompanyDetailsFormComponent implements OnInit {
   }
 
   setCompany(company: EmployeeCompany) {
+    console.log(company);
     if (company && company.companyId != null) {
+      console.log('here');
       const {
-        companyName
+        companyName,
+        companyEmail,
+        companyContactNumber,
+        companyAddress,
+        companyCity,
+        companyCountry,
+        companyLogoUrl,
+        companyDetails,
+        industryId,
+        workSetupId,
+        numberOfEmployee
       } = company;
 
       this.companyDetailsForm.get('companyName')?.setValue(companyName);
+      this.companyDetailsForm.get('companyEmail')?.setValue(companyEmail);
+      this.companyDetailsForm.get('companyContactNumber')?.setValue(companyContactNumber);
+      this.companyDetailsForm.get('companyAddress')?.setValue(companyAddress);
+      this.companyDetailsForm.get('companyCity')?.setValue(companyCity);
+      this.companyDetailsForm.get('companyCountry')?.setValue(companyCountry);
+      this.companyDetailsForm.get('companyDetails')?.setValue(companyDetails);
+      this.companyDetailsForm.get('industryId')?.setValue(industryId);
+      this.companyDetailsForm.get('workSetupId')?.setValue(workSetupId);
+      this.companyDetailsForm.get('numberOfEmployee')?.setValue(numberOfEmployee);
+
+      this.profileImage = companyLogoUrl;
+      this.canView = true;
     }
   }
 

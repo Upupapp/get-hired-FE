@@ -10,7 +10,8 @@ export interface Employee {
   address?: string;
   zip?: string;
   city?: string;
-  isProfileUpdated: boolean
+  isProfileUpdated: boolean,
+  companyName?: string;
 }
 
 export interface EmployeeCompany {

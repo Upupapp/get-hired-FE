@@ -5,9 +5,13 @@ import {
 import * as Model from '../company.model';
 
 enum AllCompanyActionTypes {
-  GetAllCompany = '[company] - Get All Job Order',
-  GetAllCompanySuccess = '[company] - Get All Job Order Success',
-  GetAllCompanyFail = '[company] - Get All Job Order Fail',
+  GetAllCompany = '[company] - Get All Company',
+  GetAllCompanySuccess = '[company] - Get All CompanySuccess',
+  GetAllCompanyFail = '[company] - Get All Company Fail',
+
+  GetCompany = '[company] - Get Company',
+  GetCompanySuccess = '[company] - Get Company Success',
+  GetCompanyFail = '[company] - Get Company Fail',
 
   CreateCompany = '[company] - Create Company',
   CreateCompanySuccess = '[company] - Create Company Success',
@@ -26,6 +30,21 @@ export const getAllcompanySuccess = createAction(
 
 export const getAllcompanyFail = createAction(
   AllCompanyActionTypes.GetAllCompanyFail,
+  props<{ payload: any }>()
+);
+
+export const getCompany = createAction(
+  AllCompanyActionTypes.GetCompany,
+  props<{ companyId: string }>()
+);
+
+export const getCompanySuccess = createAction(
+  AllCompanyActionTypes.GetCompanySuccess,
+  props<{ company: Model.Company }>()
+);
+
+export const getCompanyFail = createAction(
+  AllCompanyActionTypes.GetCompanyFail,
   props<{ payload: any }>()
 );
 

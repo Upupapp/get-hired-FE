@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { Subscription } from 'rxjs';
 
@@ -13,12 +14,15 @@ export class EmployerSidebarComponent implements OnInit {
   private req: Subscription;
 
   @Input() sidebarWidth;
+  employee$ = this.employeeFacade.employeeDetails$;
 
   public location: any = '';
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
 
-  constructor(private router: Router,
-    private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private employeeFacade: EmployeeFacade) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
       this.loggedUserData = JSON.parse(localStorage.getItem('userData'));

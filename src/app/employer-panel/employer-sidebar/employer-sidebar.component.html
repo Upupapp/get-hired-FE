@@ -40,14 +40,14 @@
 		</div>
 
 		<div class="px-2">
-			<div class="card card-body py-4 bg-user"
+			<div class="card card-body py-4 bg-user" *ngIf="employee$ | async as employee"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex">
 					<img src="assets/images/face-6.jpg" class="img-avatar me-2">
 
 					<div class="mt-1">
-						<h5 class="img-avatar-full-name text-capitalize">{{ loggedUserData?.name }}</h5>
-						<h5 class="img-avatar-full-email text-truncate">UpUpTech</h5>
+						<h5 class="img-avatar-full-name text-capitalize">{{ employee.firstName + ' ' + employee.lastName }}</h5>
+						<h5 class="img-avatar-full-email text-truncate">{{ employee.companyName }}</h5>
 					</div>
 				</div>
 

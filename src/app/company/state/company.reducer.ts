@@ -58,10 +58,33 @@ export const companyReducer = createReducer<CompanyState>(
     return {
       ...state,
       loading: false,
-      succesMsg: 'created'
+      succesMsg: 'created',
+      selected: action.company
     };
   }),
   on(CompanyActions.createCompanyFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(CompanyActions.getCompany, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(CompanyActions.getCompanySuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      selected: action.company
+    };
+  }),
+  on(CompanyActions.getCompanyFail, (state, action): CompanyState => {
     return {
       ...state,
       loading: false,

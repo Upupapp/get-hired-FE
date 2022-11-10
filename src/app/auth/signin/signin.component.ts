@@ -58,6 +58,7 @@ export class SigninComponent implements OnInit {
       localStorage.setItem('user', JSON.stringify({
         _id: data.id,
         email: data.email,
+        companyName: data.companyName
       }));
 
       if (this.loginForm) {

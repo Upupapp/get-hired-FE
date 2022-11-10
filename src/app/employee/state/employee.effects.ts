@@ -5,7 +5,8 @@ import {
 import {
   catchError,
   map,
-  mergeMap
+  mergeMap,
+  switchMap
 } from 'rxjs/operators';
 import {
   Actions,
@@ -15,6 +16,7 @@ import {
 import * as EmployeeActions from './employee.actions';
 import * as Model from '../employee.model';
 import { EmployeeService } from '../employee.service';
+import * as CompanyActions from '@main/company/state/company.actions';
 
 @Injectable()
 export class EmployeeEffects {
@@ -83,9 +85,12 @@ export class EmployeeEffects {
       ofType(EmployeeActions.getEmployeeCompany),
       mergeMap((action) => this.employeeService.getEmployeeCompany(action.id)
         .pipe(
-          map((res: any) => {
+          switchMap((res: any) => {
             const company: Model.EmployeeCompany = res.data;
-            return EmployeeActions.getEmployeeCompanySuccess({ company });
+            return [
+              EmployeeActions.getEmployeeCompanySuccess({ company }),
+              // CompanyActions.getCompanySuccess({ company })
+            ];
           }),
           catchError((err) => {
             const { error } = err.error;

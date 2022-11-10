@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,12 +21,12 @@ export class CompanyDetailsComponent implements OnInit {
   public workSetupSelected: string = "";
   public industries: string[] = industries;
   public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
-  
+
   public title: string = '';
   public job_type: string = '';
   public job_description: string = '';
   public job_duties: string = '';
-  public profileImage: any; 
+  public profileImage: any;
   constructor(private formBuilder: FormBuilder,
     private snackBar: MatSnackBar) { }
 
@@ -36,10 +35,10 @@ export class CompanyDetailsComponent implements OnInit {
       email: ['',/* [Validators.required]*/],
       phone: [''],
       address: [''],
-      city: [''], 
+      city: [''],
       country: [''],
 
-      company_logo: [''],  
+      company_logo: [''],
       company_name: [''],
       company_details: [''],
       industry_type: [''],

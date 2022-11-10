@@ -12,17 +12,21 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CompanyUsersComponent } from './company-users/company-users.component';
 import { CompanyNotSetupComponent } from './company-not-setup/company-not-setup.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CompanyDetailsComponent } from './company-details/company-details.component';
+import { BannerDetailsComponent } from './company-details/components/banner-details/banner-details.component';
 
 const exportedComponents = [
   CompanyComponent,
   CompanyDetailsFormComponent,
   CompanyUsersComponent,
-  CompanyNotSetupComponent
+  CompanyNotSetupComponent,
+  CompanyDetailsComponent,
+  BannerDetailsComponent
 ];
 
 @NgModule({
   declarations: [
-    ...exportedComponents
+    ...exportedComponents,
   ],
   imports: [
     CommonModule,

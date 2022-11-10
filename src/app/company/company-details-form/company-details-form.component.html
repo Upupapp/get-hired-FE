@@ -2,7 +2,7 @@
 <div class="text-end submit-container"
 [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
 	<button class="btn btn-save-draft me-3" routerLink="/company/company-details"
-    *ngIf="canView">
+    *ngIf="canView" type="button">
     Company Preview
   </button>
 	<button class="btn btn-save me-2" type="submit"
@@ -51,7 +51,7 @@
 			<div class="title-container mb-3"  *ngIf="!profileImage">
 				<label>Company Name</label>
 				<div class="form-group">
-					<input type="text"  class="form-control" placeholder="i.e. Google, Apple, Microsoft" >
+					<input type="text"  class="form-control" formControlName="companyName" placeholder="i.e. Google, Apple, Microsoft" >
 				</div>
 			</div>
 		</div>
