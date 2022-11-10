@@ -15,8 +15,11 @@ enum AllCompanyActionTypes {
 
   CreateCompany = '[company] - Create Company',
   CreateCompanySuccess = '[company] - Create Company Success',
-  CreateCompanyFail = '[company] - Create Company Fail'
+  CreateCompanyFail = '[company] - Create Company Fail',
 
+  UpdateCompany = '[company] - Update Company',
+  UpdateCompanySuccess = '[company] - Update Company Success',
+  UpdateCompanyFail = '[company] - Update Company Fail'
 }
 
 export const getAllcompany = createAction(
@@ -60,5 +63,20 @@ export const createCompanySuccess = createAction(
 
 export const createCompanyFail = createAction(
   AllCompanyActionTypes.CreateCompanyFail,
+  props<{ payload: any }>()
+);
+
+export const updateCompany = createAction(
+  AllCompanyActionTypes.UpdateCompany,
+  props<{ company: Model.Company }>()
+);
+
+export const updateCompanySuccess = createAction(
+  AllCompanyActionTypes.UpdateCompanySuccess,
+  props<{ company: Model.Company }>()
+);
+
+export const updateCompanyFail = createAction(
+  AllCompanyActionTypes.UpdateCompanyFail,
   props<{ payload: any }>()
 );

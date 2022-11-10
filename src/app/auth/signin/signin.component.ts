@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { routes } from '@main/app.routing.module';
 import { mainAnimations } from '@main/shared/animations/main-animations';
+import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
 
 @Component({
@@ -66,19 +68,22 @@ export class SigninComponent implements OnInit {
       }
 
       this.message = localStorage.getItem('loginMessage');
-
-      if (user.role == 1) {
-        this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
-      } else {
-        if (!user.withCompany && user.role == 2) {
-          console.log('cant');
-          console.log()
-          this.router.navigateByUrl('./company/settings');
-        } else {
-          // console.log('Redirect to employer');
-          this.router.navigate(['../dashboard']);
-        }
-
+      console.log(user);
+      switch(user.role) {
+        case 1:
+          this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
+          break;
+        case 2:
+          this.router.resetConfig(employerRoutes);
+          if (!user.withCompany) {
+            console.log('cant');
+            this.router.navigateByUrl('./company/settings');
+          } else {
+            this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
+          }
+          break;
+        default:
+          break;
       }
     }
   }

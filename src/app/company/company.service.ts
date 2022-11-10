@@ -19,6 +19,10 @@ export class CompanyService {
     return this.baseService.post<Model.Company>(`${this.companyUrl}/createcompany`, company);
   }
 
+  updateCompany(company: Model.Company){
+    return this.baseService.put<Model.Company>(`${this.companyUrl}/update`, company);
+  }
+
   getCompanyById(companyId: string = ''){
     return this.baseService.get<Model.Company>(`${this.companyUrl}/details?id=${companyId}`);
   }

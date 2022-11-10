@@ -8,6 +8,7 @@ import { LoadingComponent } from '@main/shared/components/loading/loading.compon
 import { industries } from '@main/views/company-panel/pages/jobs/utils/jobs-model-interface';
 import { Subscription } from 'rxjs';
 import { CompanyFacade } from '../state/company.facade';
+import * as Model from '../company.model';
 
 @Component({
   selector: 'app-company-details-form',
@@ -24,6 +25,8 @@ export class CompanyDetailsFormComponent implements OnInit {
   public workSetupSelected: string = "";
   public industries: string[] = industries;
   // public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
+
+  company: Model.Company;
 
   public title: string = '';
   public job_type: string = '';
@@ -71,7 +74,7 @@ export class CompanyDetailsFormComponent implements OnInit {
   setCompany(company: EmployeeCompany) {
     console.log(company);
     if (company && company.companyId != null) {
-      console.log('here');
+      this.company = company;
       const {
         companyName,
         companyEmail,
@@ -109,17 +112,31 @@ export class CompanyDetailsFormComponent implements OnInit {
 
   onSubmit() {
     if (this.companyDetailsForm.valid) {
-      this.companyFacade.createCompany({
-        ...this.companyDetailsForm.value,
-        workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
-        industryId: parseInt(this.companyDetailsForm.controls.industryId.value)
-      });
+      if(this.company && this.company.companyId) {
+        this.companyFacade.updateCompany({
+          ...this.companyDetailsForm.value,
+          companyId: this.company.companyId,
+          workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
+          industryId: parseInt(this.companyDetailsForm.controls.industryId.value)
+        });
+      } else {
+        this.companyFacade.createCompany({
+          ...this.companyDetailsForm.value,
+          workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
+          industryId: parseInt(this.companyDetailsForm.controls.industryId.value)
+        });
+      }
     }
   }
 
   afterSubmit(event) {
     if (event == 'created') {
       this.snackBar.open(`Company successfully setup. You can now access other features`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
+    }else if (event == 'updated') {
+      this.snackBar.open(`Company successfully Updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });

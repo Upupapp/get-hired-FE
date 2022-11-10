@@ -101,6 +101,8 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
           return false;
         } else {
           console.log('mali')
+          console.log(this.router.config);
+
           console.log(url);
           this.router.resetConfig(routes);
           return true;

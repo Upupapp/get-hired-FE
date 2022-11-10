@@ -24,6 +24,10 @@ export class CompanyFacade {
       this.store.dispatch(CompanyAction.createCompany({ company }));
     }
 
+    updateCompany(company: Model.Company) {
+      this.store.dispatch(CompanyAction.updateCompany({ company }));
+    }
+
     getCompany(companyId?: string) {
       this.store.dispatch(CompanyAction.getCompany({ companyId }));
     }

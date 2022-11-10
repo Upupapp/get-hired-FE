@@ -60,6 +60,24 @@ export class CompanyEffects {
     );
   });
 
+  updateCompany$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.updateCompany),
+      mergeMap((action) => this.companyService.updateCompany(action.company)
+        .pipe(
+          map((res: any) => {
+            const company: Model.Company = res.data;
+            return CompanyActions.updateCompanySuccess({ company });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.updateCompanyFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   getCompany$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CompanyActions.getCompany),

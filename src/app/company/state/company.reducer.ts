@@ -90,5 +90,28 @@ export const companyReducer = createReducer<CompanyState>(
       loading: false,
       error: action.payload
     };
-  })
+  }),
+  on(CompanyActions.updateCompany, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(CompanyActions.updateCompanySuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      succesMsg: 'updated',
+      selected: action.company
+    };
+  }),
+  on(CompanyActions.updateCompanyFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
 );
