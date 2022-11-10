@@ -10,7 +10,7 @@
       </h5>
       <div class="text-center mb-3">
         <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3"
-        (click)="redirectToLogin()">
+        (click)="redirectToLogin()" type="button">
           Login
         </button>
       </div>
@@ -20,10 +20,16 @@
       <h5 class="title-main px-5">Error Verifying your account.
       </h5>
       <div class="text-center mb-3">
+        <form [formGroup]="resendLinkForm" (ngSubmit)="resendVerification()">
+
+        <input type="email" formControlName="email" class="form-control" placeholder="sample@email.com" />
+
         <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3"
         (click)="resendVerification()">
           Resend Verification link
         </button>
+      </form>
+
       </div>
     </ng-template>
   </div>
@@ -40,7 +46,7 @@
 
         <div class="mt-2">
           <button class="btn btn-submit text-center w-50 mt-2"
-          (click)="redirectToLogin()">
+          (click)="redirectToLogin()" type="button">
             Login
           </button>
         </div>

@@ -61,8 +61,8 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
 
     const logged = await this.asyncLocalStorage.getItem('state');
     const role = await this.asyncLocalStorage.getItem('role');
-    const isAuthRoute = this.isAuthPath(url);
-    console.log(url);
+    const isAuthRoute = this.isAuthPath(location.pathname);
+    console.log(location.pathname);
     console.log(this.router.config);
     console.log(logged);
     console.log(isAuthRoute);
@@ -72,7 +72,7 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
       this.router.resetConfig([
         ...authRoutes
       ]);
-      this.router.navigate(['../']);
+      this.router.navigateByUrl(url);
       return false;
     } else {
       if(role != '2') {
@@ -117,7 +117,7 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
       '/signup',
       '/reset-password',
       '/change-password',
-      '/verfiy'
+      '/verify'
     ].includes(url);
   }
 

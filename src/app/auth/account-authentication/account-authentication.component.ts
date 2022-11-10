@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -22,12 +23,14 @@ export class AccountAuthenticationComponent implements OnInit {
   email: string;
   loading: boolean = true;
   isResent: boolean;
+  resendLinkForm: FormGroup;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private fb: FormBuilder
   ) {
     this.route.queryParams.subscribe(params => {
       this.mode = params.mode;
@@ -40,6 +43,10 @@ export class AccountAuthenticationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.resendLinkForm = this.fb.group({
+      'email': ['', [Validators.required, Validators.email]]
+    });
+
     switch (this.mode) {
       case 'resendVerification':
         setTimeout(() => this.resendVerification(), 3000);
@@ -78,7 +85,8 @@ export class AccountAuthenticationComponent implements OnInit {
   }
 
   resendVerification() {
-    this.authService.resendVerification(this.email)
+    const userEmail = this.email || this.resendLinkForm.controls.email.value;
+    this.authService.resendVerification(userEmail)
       .pipe(
         map((result: any) => {
           this.loading = false;
