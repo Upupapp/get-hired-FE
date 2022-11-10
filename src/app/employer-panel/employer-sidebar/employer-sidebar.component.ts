@@ -74,7 +74,7 @@ export class EmployerSidebarComponent implements OnInit {
     },
 
     {
-      title: 'Company Details', icon: 'account.png', class: 'accounts', route: 'company-details'
+      title: 'Company Details', icon: 'account.png', class: 'accounts', route: 'company/details'
     },
   ]
 

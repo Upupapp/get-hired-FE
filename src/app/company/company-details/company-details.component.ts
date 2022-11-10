@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@main/shared/animations/main-animations';
+import { Job, jobLists } from '@main/views/home/utils/job-list-model-interface';
 import { CompanyFacade } from '../state/company.facade';
 
 @Component({
@@ -11,6 +12,7 @@ import { CompanyFacade } from '../state/company.facade';
 export class CompanyDetailsComponent implements OnInit {
 
   company$ = this.companyFacade.companyDetails$;
+  latestjobs: Job[] = jobLists;
 
   constructor(
     private companyFacade: CompanyFacade
