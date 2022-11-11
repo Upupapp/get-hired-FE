@@ -66,4 +66,38 @@ export class AuthEffects {
         ))
     )
   });
+
+  profile$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.getUserProfile),
+      mergeMap(() => this.authService.getUserProfile()
+        .pipe(
+          map((res: any) => {
+            const profile: Model.User = res.data;
+            return AuthActions.getUserProfileSuccess({ profile });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(AuthActions.getUserProfileFail({payload: error}))
+          })
+        ))
+    )
+  });
+
+  profileUpdate$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AuthActions.updateUserProfile),
+      mergeMap((action) => this.authService.updateUserProfile(action.profile)
+        .pipe(
+          map((res: any) => {
+            const profile: Model.User = res.data;
+            return AuthActions.updateUserProfileSuccess({ profile });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(AuthActions.updateUserProfileFail({payload: error}))
+          })
+        ))
+    )
+  });
 }

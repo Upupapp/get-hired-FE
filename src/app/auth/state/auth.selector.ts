@@ -16,9 +16,14 @@ export const getAuthCredentials = createSelector(
   state => state.credentials
 );
 
-export const successThrow = createSelector(
+export const getUserProfile = createSelector(
   getAuthFeatureState,
-  state => state.success
+  state => state.profile
+);
+
+export const successMsg = createSelector(
+  getAuthFeatureState,
+  state => state.successMsg
 );
 
 export const errorMsg = createSelector(

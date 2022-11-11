@@ -9,16 +9,20 @@ export interface State extends AppState.State {
 
 export interface AuthState {
   success: boolean;
+  successMsg: string;
   error?: any;
   loading: boolean;
-  credentials: Model.Credentials
+  credentials: Model.Credentials;
+  profile: Model.User;
 }
 
 const initialState: AuthState = {
   success: false,
+  successMsg: null,
   error: null,
   loading: false,
-  credentials: null
+  credentials: null,
+  profile: null
 }
 
 export const authReducer = createReducer<AuthState>(
@@ -70,4 +74,49 @@ export const authReducer = createReducer<AuthState>(
       error: action.payload
     };
   }),
+  on(AuthActions.getUserProfile, (state): AuthState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(AuthActions.getUserProfileSuccess, (state, action): AuthState => {
+    return {
+      ...state,
+      loading: false,
+      success: true,
+      profile: action.profile
+    };
+  }),
+  on(AuthActions.getUserProfileFail, (state, action): AuthState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(AuthActions.updateUserProfile, (state): AuthState => {
+    return {
+      ...state,
+      loading: true,
+      successMsg: null
+    };
+  }),
+  on(AuthActions.updateUserProfileSuccess, (state, action): AuthState => {
+    return {
+      ...state,
+      loading: false,
+      successMsg: 'updated',
+      profile: action.profile
+    };
+  }),
+  on(AuthActions.updateUserProfileFail, (state, action): AuthState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      successMsg: null
+    };
+  }),
 );
+

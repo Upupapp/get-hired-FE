@@ -11,9 +11,10 @@ import * as Model from '../auth.model';
 export class AuthFacade {
 
   loading$ = this.store.pipe(select(fromAuth.getLoading));
-  success$ = this.store.pipe(select(fromAuth.successThrow));
+  success$ = this.store.pipe(select(fromAuth.successMsg));
   error$ = this.store.pipe(select(fromAuth.errorMsg));
   credentials$ = this.store.pipe(select(fromAuth.getAuthCredentials));
+  profile$ = this.store.pipe(select(fromAuth.getUserProfile));
 
   constructor(private store: Store<State>) { }
 
@@ -33,4 +34,11 @@ export class AuthFacade {
     this.store.dispatch(Actions.resetCredentials());
   }
 
+  getUserProfile() {
+    this.store.dispatch(Actions.getUserProfile());
+  }
+
+  updateProfile(profile:Model.User) {
+    this.store.dispatch(Actions.updateUserProfile({ profile }));
+  }
 }

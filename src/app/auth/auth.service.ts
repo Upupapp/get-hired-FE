@@ -59,4 +59,12 @@ export class AuthService {
 
     return this.baseService.post(`${this.authUrl}/changepassword`, body);
   }
+
+  getUserProfile() {
+    return this.baseService.get<Model.User>(`${this.authUrl}/getprofile`);
+  }
+
+  updateUserProfile(user: Model.User) {
+    return this.baseService.put<Model.User>(`${this.authUrl}/updateprofile`, user);
+  }
 }

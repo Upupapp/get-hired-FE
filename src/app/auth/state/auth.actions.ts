@@ -16,6 +16,14 @@ enum AllAuthActionTypes {
   RefreshAuthCredentialsSuccess = '[Auth] - Refresh Auth Credentials Success',
   RefreshAuthCredentialsFail = '[Auth] - Get Refresh Credentials Fail',
 
+  GetUserProfile = '[Auth] - Get User Profile',
+  GetUserProfileSuccess = '[Auth] - Get User Profile Success',
+  GetUserProfileFail = '[Auth] - Get User Profile Fail',
+
+  UpdateUserProfile = '[Auth] - Update User Profile',
+  UpdateUserProfileSuccess = '[Auth] - Update User Profile Success',
+  UpdateUserProfileFail = '[Auth] - Update User Profile Fail',
+
   ResetCredentials = '[Auth] - Reset Credentials'
 };
 
@@ -65,5 +73,34 @@ export const refreshAuthCredentialsSuccess = createAction(
 
 export const refreshAuthCredentialsFail = createAction(
   AllAuthActionTypes.RefreshAuthCredentialsFail,
+  props<{ payload: any }>()
+);
+
+export const getUserProfile = createAction(
+  AllAuthActionTypes.GetUserProfile,
+);
+
+export const getUserProfileSuccess = createAction(
+  AllAuthActionTypes.GetUserProfileSuccess,
+  props<{ profile: Model.User }>()
+);
+
+export const getUserProfileFail = createAction(
+  AllAuthActionTypes.GetUserProfileFail,
+  props<{ payload: any }>()
+);
+
+export const updateUserProfile = createAction(
+  AllAuthActionTypes.UpdateUserProfile,
+  props<{ profile: Model.User }>()
+);
+
+export const updateUserProfileSuccess = createAction(
+  AllAuthActionTypes.UpdateUserProfileSuccess,
+  props<{ profile: Model.User }>()
+);
+
+export const updateUserProfileFail = createAction(
+  AllAuthActionTypes.UpdateUserProfileFail,
   props<{ payload: any }>()
 );

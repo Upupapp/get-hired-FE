@@ -9,3 +9,21 @@ export interface Credentials {
   token?: string;
   refreshToken?: string;
 }
+
+export interface User {
+    uid: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    dateOfBirth: Date;
+    age: number;
+    email: string;
+    gender: string;
+    phoneNumber: string;
+    cellNumber: string;
+    photoURL: string;
+    address: string;
+    zip: string;
+    city: string;
+    addressB: string;
+}
