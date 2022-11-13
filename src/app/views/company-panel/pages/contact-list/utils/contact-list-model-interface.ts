@@ -55,6 +55,7 @@ const selectedColumns: string[] =  [
   'company',
   'code_number',
   'address',
+  'action'
 ];
  
 const contactLists: Contact[] = [

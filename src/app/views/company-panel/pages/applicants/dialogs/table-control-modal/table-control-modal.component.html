@@ -1,14 +1,22 @@
 <div class="side-sub-menu px-0">
+	<span class="close float-end">
+		<img src="/assets/images/placeholder/icons/remove-gray.png" 
+		style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
+	</span>
 
-	<h6 class="pb-3" style="border-bottom: dashed 1px #d9d9d9;">
+	<h6 class="pb-3 d-flex" style="border-bottom: dashed 1px #d9d9d9;">
 		<img [src]="data?.data?.profile_image" class="img-avatar">
-		{{data?.data?.full_name}} - Applied to Job ID {{data?.data?.job_id}}
+		
+		<div class="mt-1 ms-2">
+			<strong>{{data?.data?.full_name}}</strong>
 
-		<span class="close float-end">
-			<img src="/assets/images/placeholder/icons/remove-gray.png" 
-			style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
-		</span>
+			<br><!--  - Applied to Job ID {{data?.data?.job_id}} -->
+			<small>{{data?.data?.title}} - </small>
+			<small>{{data?.data?.work_setup}}, {{data?.data?.job_type}}</small>
+		</div>
 	</h6>
+
+
 
 	<div class="row">
 		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls">

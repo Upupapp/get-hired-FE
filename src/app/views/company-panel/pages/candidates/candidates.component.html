@@ -1,0 +1,44 @@
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+		<div class="card card-body py-3">
+			<div class="w-100">
+				<span class="main-title mt-3">Candidates</span>
+
+				<div class="float-end">
+					<button class="btn btn-add-service" (click)="inviteCandidate()">
+						Invite Candidates
+						<img src="/assets/images/placeholder/icons/add-new.png" 
+						style="width: 16px;" class="ms-1">
+					</button>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="card card-body" *ngIf="listView && !loading">
+			<!-- <app-reusable-org-chart></app-reusable-org-chart>
+			 --><app-reusable-table
+				[loading]="loading"
+				[statusArray]="status"
+				[statusFilter]="true"
+				statusName="Status"
+				(updateSelectedRowDialog)="viewMenu($event)"
+				(viewDetails)="viewMenu($event)"			
+				[componentTitle]="'Candidates'"								
+				[displayedColumns]="displayedColumns"
+				[selectedColumns]="selectedColumns"
+				[selectedColumnsMobile]="selectedColumns"
+				[searchSource]="searchSource"
+				[maxRows]="10"
+				[listDataSource]="candidateLists">
+			</app-reusable-table>
+		</div>
+
+
+		<!-- LOADING ANIMATION SCREEN -->
+		<custom-profile-loader 
+			[withSideBar]="false"
+			[fromDetailTab]="true"
+			[loading]="loading">
+		</custom-profile-loader>
+	</div>
+</div>

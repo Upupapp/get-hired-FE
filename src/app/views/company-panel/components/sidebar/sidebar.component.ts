@@ -63,20 +63,22 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+      title: 'Contacts', icon: 'create-interview.png', class: 'interviews', route: 'contact-list',
       sub_routes: [
         {
-          title: 'Job Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants', 
-        }, 
+          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'contact-list'
+        },  
 
         {
-          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'applicants/contact-list'
-        },  
+          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contact-list/candidates', 
+        }, 
+
+        
       ]
     },
 
     {
-      title: 'Interview Settings', icon: 'create-interview.png', class: 'interviews', route: 'interview-settings'
+      title: 'Create Interview', icon: 'applicants.png', class: 'applicants', route: 'create-interview'
     },
 
     {

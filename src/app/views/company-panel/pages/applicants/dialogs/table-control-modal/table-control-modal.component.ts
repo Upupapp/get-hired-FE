@@ -37,11 +37,10 @@ export class TableControlModalComponent implements OnInit {
     },
 
     {
-      id: "view-details",
+      id: "view-applicant",
       title: "Applicant Details",
       icon: "/assets/images/icons/client-menu/service-templates.png",  
-      background: "#f7f2e4",
-      route: `/company/applicants/details/${this.data?.data?.id}`
+      background: "#f7f2e4"
     },
 
     /*{
@@ -114,6 +113,11 @@ export class TableControlModalComponent implements OnInit {
     if(menu?.route){
       this.dialogRef.close()
       this.router.navigate([`${menu?.route}`])
+    }
+
+    if(menu?.id === 'view-applicant'){
+      this.dialogRef.close();
+      this.router.navigate([`/company/jobs/${this.data?.job_id}/applicants/details/${this.data?.data?.id}`])
     }
   }
 

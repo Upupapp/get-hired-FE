@@ -6,7 +6,7 @@
 				<button class="btn btn-add w-100" 
 				[ngClass]="importEmployee ? 'inactive' : ''"
 				(click)="importEmployee = false">
-					New Applicant
+					New {{data?.title}}
 				</button>
 			</div>
 
@@ -14,7 +14,7 @@
 				<button class="btn btn-add w-100"
 				[ngClass]="!importEmployee ? 'inactive' : ''"
 				(click)="importApplicantTab()">
-					Import Applicant
+					Import {{data?.title}}
 				</button>
 			</div>
 		</div>
@@ -26,7 +26,7 @@
 				<div class="row pt-2" *ngIf="!importEmployee"
 				[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 					<div class="col-12 mb-4">
-						<h4 class="title-add">Invite applicants, one at a time.</h4>
+						<h4 class="title-add">Invite {{data?.sub_title}}, one at a time.</h4>
 						<h5 class="title-description">Input the email of the person you want to add to your team</h5>
 					</div>
 				</div>
@@ -46,7 +46,7 @@
 							(click)="dialogRef.close()">Cancel </button>
 
 							<button type="button" 
-							class="btn me-1 btn-primary hvr-grow">Import Applicant </button>
+							class="btn me-1 btn-primary hvr-grow">Import {{data?.title}} </button>
 						</div>
 					</div>
 				</div>
@@ -112,13 +112,13 @@
 				<div class="text-center" 
 				[@animate]="{value:'*', params:{ y:'-20px', delay:'300ms' }}">
 					<h5 class="title-congrats">Congratulations! </h5>
-					<p class="title-congrats-description">Congratulation for adding a new applicant to your list. <br>You can still add more applicant.</p>
+					<p class="title-congrats-description">Congratulation for adding a new {{data?.sub_title}} to your list. <br>You can still add more {{data?.sub_title}}.</p>
 
 					<div class="mt-4">
 						<div style="position: relative;" class="mt-2 w-100 text-center">
 							<button class="btn me-3 btn-primary invite-other hvr-grow" 
 							style="width: 200px !important;" 
-							(click)="addMoreEmployee()">Add More Applicants</button>
+							(click)="addMoreEmployee()">Add More {{data?.title}}</button>
 						</div>
 					</div>
 				</div>

@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-table-control-modal',
@@ -81,6 +82,8 @@ export class TableControlModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<TableControlModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) { 
     console.log(data)
@@ -101,6 +104,23 @@ export class TableControlModalComponent implements OnInit {
   }
 
   openControlMenu(menu: any){
+    console.log(menu, this.data)
+
+    if(menu?.id === 'view-job'){
+      this.dialogRef.close();
+      this.router.navigate([`/company/jobs/details/${this.data?.data?.id}`])
+    }
+
+    else if(menu?.id === 'edit-job'){
+      this.dialogRef.close();
+      this.router.navigate([`/company/jobs/edit/${this.data?.data?.id}`])
+    }
+
+    else if(menu?.id === 'view-applicants'){
+      this.dialogRef.close();
+      this.router.navigate([`/company/jobs/${this.data?.data?.id}/applicants`])
+    }
+
 
   }
 

@@ -19,12 +19,17 @@ import {
   Applicant,
   applicantLists
 } from './utils/applicants-model-interface';
+import {
+  jobLists,  
+  Job
+} from '../jobs/utils/jobs-model-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 import { InviteApplicantModalComponent } from './dialogs/invite-applicant-modal/invite-applicant-modal.component';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-applicants',
@@ -33,7 +38,6 @@ import { InviteApplicantModalComponent } from './dialogs/invite-applicant-modal/
   styleUrls: ['./applicants.component.scss']
 })
 export class ApplicantsComponent implements OnInit {
-
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
   public routerUrl: any[] = [];
@@ -57,16 +61,24 @@ export class ApplicantsComponent implements OnInit {
     };
   };
   public status: string[] = ["Initial Interview", "Technical Interview", "Contract Signing"];
-  
+  public jobLists: Job[] = jobLists;  
+  public selectedJob: Job;
+  public job_id: any;
+
   constructor(
     private router: Router,
     private dialog: MatDialog,
+    private location: Location,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar) {
 
   }
 
   ngOnInit(): void {
+    this.job_id = this.route.snapshot.params['job-id'];  
+
+    this.selectedJob = [...this.jobLists].find(el => el?.id == this.job_id);
+    console.log(this.job_id, this.selectedJob)
 
     this.applicantLists.forEach((el) => {
       el['salary'] = `₱${el?.expected_salary_min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${el?.expected_salary_max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
@@ -87,7 +99,10 @@ export class ApplicantsComponent implements OnInit {
       TableControlModalComponent,
       { 
         width: '34vw',
-        data: event,
+        data: {
+          job_id: this.job_id,
+          ...event
+        },
       }
     );
 
@@ -100,12 +115,16 @@ export class ApplicantsComponent implements OnInit {
   }
 
 
-  inviteApplicant(){
+  inviteApplicant(event?: any){
     let openDialog = this.dialog.open(
       InviteApplicantModalComponent,
       { 
         width: '34vw',
-        data: event,
+        data: {
+          ...event,  
+          title: "Applicant",
+          sub_title: "applicant"
+        },
       }
     );
 
@@ -117,4 +136,7 @@ export class ApplicantsComponent implements OnInit {
     });
   }
 
+  goBack(){
+    this.location.back()
+  }
 }
