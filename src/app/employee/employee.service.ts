@@ -15,8 +15,8 @@ export class EmployeeService {
     private baseService: BaseService
   ) { }
 
-  getEmployeeCompany(id: string){
-    return this.baseService.get<Model.Employee>(`${this.employerUrl}/company?id=${id}`);
+  getEmployeeCompany(userId: string){
+    return this.baseService.get<Model.Employee>(`${this.employerUrl}/company?id=${userId}`);
   }
 
   getEmployeeProfile(id: string){

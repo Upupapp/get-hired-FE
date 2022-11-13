@@ -6,7 +6,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { CompanyModule } from '@main/company/company.module';
 import { EmployerCompanyDetailsComponent } from './employer-company-details/employer-company-details.component';
 import { EmployerCompanyUsersComponent } from './employer-company-users/employer-company-users.component';
-import { AuthModule } from '@main/auth/auth.module';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EmployerCompanyComponent } from '../employer-company/employer-company.component';
 
@@ -28,7 +27,6 @@ const routes: Routes = [
     CompanyModule,
     MatDialogModule,
     SharedModule,
-    AuthModule,
     RouterModule.forChild(routes)
   ],
   providers:[]

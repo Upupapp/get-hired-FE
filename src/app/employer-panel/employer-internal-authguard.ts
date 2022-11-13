@@ -19,7 +19,10 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
     private employeeFacade: EmployeeFacade,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {
+    const uid = JSON.parse(localStorage.getItem('user'))._id;
+    this.employeeFacade.getEmployeeCompany(uid);
+  }
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -51,7 +54,7 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
     console.log(company);
     if (!company || company.length == 0) {
       this.withCompany = false;
-      this.router.navigate(['../company/settings'], { relativeTo: this.route})
+      this.router.navigateByUrl('/recruiter/company')
     } else {
       this.withCompany = true;
     }

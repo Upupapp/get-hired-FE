@@ -24,7 +24,9 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
   };
 
   constructor(
-    private router: Router
+    private router: Router,
+    private coreService: CoreService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   canActivate(
@@ -55,10 +57,29 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
   async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
     const logged = await this.asyncLocalStorage.getItem('state');
     console.log(logged);
-    if (logged != 'false') {
-      console.log(url);
-      // this.router.navigateByUrl(url);
+    if (logged == 'true') {
+      const userRole = await this.coreService.getRole();
+      this.navigateToUserRole(userRole);
+      return false;
+    } else {
+      return true;
     }
-    return true;
+  }
+
+  navigateToUserRole(role) {
+    switch (role) {
+      case '1':
+        this.router.navigateByUrl('/admin');
+        return true;
+      case '2':
+        console.log('eto');
+        this.router.navigateByUrl('/recruiter');
+        return true;
+      case '3':
+        this.router.navigateByUrl('/user');
+        return true;
+      default:
+        return false;
+    }
   }
 }

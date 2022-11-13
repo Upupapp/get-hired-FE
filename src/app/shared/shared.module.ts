@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Routes, RouterModule } from '@angular/router';
-import { HeaderComponent } from './components/header-bak/header.component.bak';
 import { CustomProfileLoaderComponent } from './components/custom-profile-loader/custom-profile-loader.component';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialComponentsModule } from './components/material-components/material-components.module';
@@ -24,7 +23,6 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 const classesToInclude: any[] = [
-  HeaderComponent,
   CustomProfileLoaderComponent,
   FooterComponent,
   DatepickerComponent,
@@ -43,7 +41,6 @@ const classesToInclude: any[] = [
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
     HttpClientModule,
     ReactiveFormsModule,
     MaterialComponentsModule

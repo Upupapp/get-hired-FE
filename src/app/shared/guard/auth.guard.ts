@@ -22,7 +22,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   constructor(
     private coreService: CoreService,
     private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
   ) {}
@@ -49,22 +48,25 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-    return this.checkUserLogin();
+    return true;
   }
 
   async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
     const logged = await this.asyncLocalStorage.getItem('state');
     if (logged == 'true') {
+      console.log('meron ako')
       const userRole = await this.coreService.getRole();
       if (route.data.role && route.data.role.indexOf(userRole) === -1) {
         this.navigateToUserRole(userRole);
       }
       return true;
+    } else {
+      console.log('wala ako');
+      this.snackBar.open(`You are not Authorized to access that page. Please Login first`,
+        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      this.router.navigateByUrl('signin');
+      return false;
     }
-    this.snackBar.open(`You are not Authorized to access that page. Please Login first`,
-              '', { duration: 4000, panelClass: ['danger-snackbar'] });
-    this.router.navigateByUrl('/signin');
-    return false;
   }
 
   navigateToUserRole(role) {
