@@ -5,7 +5,6 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthGuard } from '@app-shared/guard/auth.guard'
 import { EmployerGuard } from './shared/guard/employer.guard';
 import { ApplicantGuard } from './shared/guard/applicant.guard';
-import { CoreService } from './core/services/core.service';
 import { UnauthGuard } from './shared/guard/unauth.guard';
 import { AdminGuard } from './shared/guard/admin.guard';
 
@@ -13,27 +12,30 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('@main/admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
-    canActivate: [AdminGuard],
-    data: { name: "admin" }
+    canActivate: [AuthGuard],
+    data: {
+      role: '1'
+    }
   },
   {
-    path: '',
+    path: 'recruiter',
     loadChildren: () => import('./employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
-    canActivate: [EmployerGuard],
-    data: { name: "employer" }
+    canActivate: [AuthGuard],
+    data: {
+      role: '2'
+    }
   },
   {
-    path: '',
+    path: 'user',
     loadChildren: () =>
       import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
-    // canActivate: [ApplicantGuard],
-    data: { name: "applicant" }
+    canActivate: [AuthGuard],
+    data: { role: '3' }
   },
   {
     path: '',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
     canActivate: [UnauthGuard],
-    data: { name: "auth" }
   }
 ];
 

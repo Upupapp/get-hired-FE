@@ -1,13 +1,62 @@
 <div class="container-fluid bg-white vh-100">
   <div class="row">
     <div class="col-12 col-md-12 col-lg-6 px-5 py-2 bg-left">
-      <div class="img-banner text-center" style="z-index: 999999 !important; position: relative;">
-        <img src="/assets/images/placeholder/login-object-1.png" class="img-left mb-3"
-          [@animate]="{value:'*', params:{ scale:'0.8', delay:'200ms' }}">
-        <img src="/assets/images/placeholder/login-object-2.png" class="img-left-2 mb-3"
-          [@animate]="{value:'*', params:{ x:'-10px', delay:'700ms' }}">
-        <img src="/assets/images/placeholder/login-object-3.png" class="img-left-3 mb-3"
-          [@animate]="{value:'*', params:{ x:'10px', delay:'700ms' }}">
+      <div class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="0" class="active"
+            aria-current="true"></button>
+
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1"></button>
+
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner pb-5" id="admin-welcome-screens">
+          <div class="carousel-item active text-center">
+            <div class="text-center" style="margin-top: 20px;">
+              <img src="/assets/images/placeholder/logo.png" style="height: 100px; cursor: pointer;" routerLink="/">
+              <h5 class="title-left-main">
+                Bring all your applicants in</h5>
+              <h4 class="title-left-gradient">ONE PLATFORM</h4>
+              <h5 class="title-left-main">in just 3 clicks.</h5>
+            </div>
+            <div style="height: 400px;">
+              <img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
+                src="assets/images/placeholder/login-object-new-2.png" class="img-object">
+            </div>
+          </div>
+
+          <div class="carousel-item text-center">
+            <div class="text-center" style="margin-top: 20px;">
+              <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
+                <img src="/assets/images/placeholder/logo.png" style="height: 100px; cursor: pointer;" routerLink="/">
+                <h5 class="title-left-main">
+                  Interview
+                  <span class="title-left-gradient">ALL </span> your applicants
+                </h5>
+
+                <h4 class="title-left-gradient">AUTOMATICALLY</h4>
+              </div>
+            </div>
+            <img src="assets/images/placeholder/login-object-new-1.png"
+              [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
+          </div>
+
+          <div class="carousel-item text-center">
+            <div class="text-center" style="margin-top: 20px;">
+              <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
+                <img src="/assets/images/placeholder/logo.png" style="height: 100px; cursor: pointer;" routerLink="/">
+                <h5 class="title-left-main">
+                  Choose the
+                  <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
+                </h5>
+
+                <h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
+              </div>
+            </div>
+            <img src="assets/images/placeholder/login-object-new-3.png"
+              [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
+          </div>
+        </div>
       </div>
     </div>
 

@@ -60,7 +60,5 @@ export class CoreService {
 
   getRole() {
     return this.asyncLocalStorage.getItem('role');
-    // this.roleAs = localStorage.getItem('role');
-    // return this.roleAs;
   }
 }

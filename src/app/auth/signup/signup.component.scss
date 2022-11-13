@@ -128,7 +128,7 @@
 }
 
 .bg-form{
-	padding: 40px 120px 20px 120px;
+	padding: 40px 50px;
 	//background-color: #DCF3FC !important; //linear-gradient(227.75deg, rgba(255, 255, 255, 0.9) -14.05%, rgba(200, 239, 255, 0.9) -14.04%, rgba(229, 244, 250, 0.9) 83.26%) !important;
 
 	@media(min-width: 899px) and (max-width: 1360px){
@@ -203,6 +203,11 @@
 
 }
 
+.img-object{
+  height: auto;
+  width: 100%;
+}
+
 .img-banner{
 	//background: rgba(255,255,255, 0.2);
 	padding: 0px 10px;
@@ -212,10 +217,7 @@
 	height: 100%;
 	z-index: 99999 !important;
 
-	.img-object{
-		height: auto;
-		width: 100%;
-	}
+
 
 	.carousel-indicators button{
 		//background: red;

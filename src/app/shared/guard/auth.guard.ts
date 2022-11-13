@@ -9,15 +9,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<unknown>, CanLoad {
   asyncLocalStorage = {
-    setItem: function (key, value) {
-      return Promise.resolve().then(function () {
-        localStorage.setItem(key, value);
-      });
+    setItem: async function (key, value) {
+      await Promise.resolve();
+      localStorage.setItem(key, value);
     },
-    getItem: function (key) {
-      return Promise.resolve().then(function () {
-        return localStorage.getItem(key);
-      });
+    getItem: async function (key) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
     }
   };
 
@@ -55,59 +53,34 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   }
 
   async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
-    const featureRoutes: Routes = [
-      {
-        path: 'admin',
-        loadChildren: () => import('@main/admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
-        data: { name: "admin" }
-      },
-      {
-        path: '',
-        loadChildren: () => import('@main/employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
-        data: { name: "employer" }
-      },
-    ];
-
-    const applicantRoutes: Routes = [
-      {
-        path: '',
-        loadChildren: async () =>
-          import('@main/applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
-        canActivate: [AuthGuard],
-        data: { name: "applicant" }
-      }
-    ]
-
-    const authRoutes: Routes = [
-      {
-        path: '',
-        loadChildren: () => import('@main/auth/auth.module').then(m => m.AuthModule),
-        data: { name: "auth" }
-      }
-    ]
-
     const logged = await this.asyncLocalStorage.getItem('state');
-    console.log(url);
-    console.log(this.router.config);
-    console.log(logged);
-    if (logged != 'true') {
-      console.log('HOY');
-      this.router.resetConfig([
-        ...authRoutes
-      ]);
-      this.router.navigate(['../signin'], { relativeTo: this.route});
-    } else {
-      console.log('Nyek');
-
-      this.router.resetConfig([
-        ...featureRoutes
-      ]);
-      this.router.navigate(['../'], { relativeTo: this.route});
+    if (logged == 'true') {
+      const userRole = await this.coreService.getRole();
+      if (route.data.role && route.data.role.indexOf(userRole) === -1) {
+        this.navigateToUserRole(userRole);
+      }
+      return true;
     }
+    this.snackBar.open(`You are not Authorized to access that page. Please Login first`,
+              '', { duration: 4000, panelClass: ['danger-snackbar'] });
+    this.router.navigateByUrl('/signin');
+    return false;
+  }
 
-    console.log(this.router.config);
-
-    return url != '/signin';
+  navigateToUserRole(role) {
+    switch (role) {
+      case '1':
+        this.router.navigateByUrl('/admin');
+        return true;
+      case '2':
+        this.router.navigateByUrl('/recruiter');
+        return true;
+      case '3':
+        this.router.navigateByUrl('/user');
+        return true;
+      default:
+        return false;
+    }
   }
 
 }
