@@ -1,0 +1,223 @@
+<section style="transition: all 0.4s ease !important;">
+	<!-- TITLE -->
+	<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+		<h5 class="main-title">Job Details</h5>
+	</div>
+
+	<section class="card card-body mb-4">
+
+		<div [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+			<div class="title-container mb-3">
+				<h5 class="title-label">Job Title</h5>
+				<div class="form-group">
+					<input type="text" name="job-title" class="form-control" placeholder="Lead UI/UX Designer" [(ngModel)]="title" (ngModelChange)="rebuildObject('title', title)">
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-12 col-md-6 mb-3"
+				[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+					<label>Job Type</label>
+					<select class="form-select" [(ngModel)]="job_type" 
+					(ngModelChange)="rebuildObject('job_type', job_type)">
+						<option selected disabled value="">Select Job Type</option>
+						<ng-container *ngFor="let item of jobType; let i = index">
+							<option [value]="item">{{item}}</option>
+						</ng-container>
+					</select>
+				</div>
+
+				<div class="col-12 col-md-6 mb-3"
+				[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+					<label>Job Level</label>
+					<select class="form-select" [(ngModel)]="job_level" 
+					(ngModelChange)="rebuildObject('job_level', job_level)">
+						<option selected disabled value="">Select Job Level</option>
+						<ng-container *ngFor="let item of jobLevel; let i = index">
+							<option [value]="item">{{item}}</option>
+						</ng-container>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<!-- WORK SETUP -->
+		<div class="title-container mb-2">
+			<h5 class="title-label"
+			[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">Work Setup</h5>
+			 
+			<div class="row">
+				<div class="col-12 col-md-6 mb-3 col-lg-4"
+				*ngFor="let item of workSetup; let i = index">
+					<button class="btn btn-work-setup w-100 text-start hvr-hang"
+					[@animate]="{value:'*', params:{ y:'40px', delay: ((i * 100) + 250) + 'ms' }}"
+					(click)="workSetupSelected = item; rebuildObject('work_setup', item)"
+					[ngClass]="item === workSetupSelected ? 'active': ''">{{item}}
+						<img src="/assets/images/placeholder/icons/check-blank.png" 
+						*ngIf="item !== workSetupSelected"
+						class="float-end" style="width: 20px;">
+
+						<img src="/assets/images/placeholder/icons/check-white.png" 
+						*ngIf="item === workSetupSelected"
+						class="float-end" style="width: 20px;">
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Location -->
+		<div class="mt-2 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+			<div class="col-12 col-md-8 mb-3">
+				<label>Address</label>
+				<p class="title-label-sub mb-3">This is your main office location/address.</p>
+
+				<div class="form-group d-flex">
+					<input type="text" name="address" class="form-control" placeholder="Address" 
+					[(ngModel)]="address" (ngModelChange)="rebuildObject('address', address)">
+				</div>
+			</div>
+		</div>
+
+		<!-- BANNER UPLOADER -->
+		<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay: '500ms' }}">
+			<app-drag-and-drop
+			multipleAttachmentTitle="Upload Banner"
+			[isMultiple]="false"></app-drag-and-drop>
+		</div>
+
+		<!-- BADGES -->
+		<div class="row px-lg-2" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+			<div class="col-12 col-lg-5" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+				<h5 class="title-label">Add Badges</h5>
+				<select class="form-select form-select-multiple" size="3" multiple>
+				  	<option *ngFor="let item of badges; let i = index"
+				  	(click)="addBadge(item);">{{item?.title}}</option>
+				</select>
+			</div>
+
+			<div class="col-12 col-lg-7" 
+			[@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
+				<div class="badge-selection">
+					<div class="row">
+						<div class="col-12 col-lg-6 mb-3" *ngFor="let item of badgeSelected">
+							<div class="d-flex me-3 badge-item">
+								<img [src]="'/assets/images/placeholder/icons/' + item?.logo">
+
+								<h5 class="badge-title w-100" style="position: relative !important;">
+									{{item?.title}}
+
+									<div class="remove-badge">
+										<mat-icon class="close" 
+										(click)="removeItem(item, this.badgeSelected, 'badge')">close</mat-icon>
+									</div>
+								</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<hr style="border-style: dashed">
+		
+		<section class="px-lg-3">
+			<div class="title-container mb-3" 
+			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<h5 class="title-label">Job Description</h5>
+				<div class="form-group">
+					<textarea name="job-title" class="form-control" rows="6"
+					placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi u"
+					[(ngModel)]="job_description" (ngModelChange)="rebuildObject('job_description', job_description)"></textarea> 
+				</div>
+			</div>
+
+			<div class="title-container mb-3"
+			[@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<h5 class="title-label">Duties & Responsibilities</h5>
+				<p class="title-label-sub mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod <br>tempor incididunt ut labore et dolore magna aliqua.</p>
+				<div class="form-group">
+					<textarea name="job-title" class="form-control" rows="6"
+					placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. "
+					[(ngModel)]="job_duties" (ngModelChange)="rebuildObject('job_duties', job_duties)"></textarea> 
+				</div>
+			</div>
+
+			<hr class="my-4" style="border-style: dashed">
+
+			<!-- OTHER REQUIREMENTS -->
+			<div class="mt-2 row" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+				<div class="col-12 col-md-6 mb-3">
+					<div class="col-12">
+						<h5 class="title-label">Requirements</h5>
+					</div>
+
+					<p class="title-label-sub mb-3">Add Requirements for your job</p>
+
+					<div class="form-group">
+						<input type="text" name="search" class="form-control" placeholder="ex, create custom material table, basic encoding using google sheet"
+						[(ngModel)]="skillExperienceModel"
+						(keyup.enter)="addItem($event, this.skill_experience, 'skill_experience')">
+					</div>
+
+					<div class="mt-3">
+						<ng-container *ngFor="let item of skill_experience">
+							<h5 class="me-3 w-100 requirement-badge">{{item}}
+								<img src="/assets/images/placeholder/icons/remove-white.png" 
+								style="height: 10px; margin-top: 3px" class="ms-2 float-end"
+								(click)="removeItem(item, this.skill_experience, 'skill_experience')">
+							</h5>
+						</ng-container>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6 mb-3">
+					<div class="col-12">
+						<h5 class="title-label">Educational Background</h5>
+					</div>
+
+					<p class="title-label-sub mb-3">Add educational background</p>
+
+					<div class="form-group">
+						<input type="text" name="search" class="form-control" placeholder="ex, computer science graduate, have atleast 2.5 GPA"
+						[(ngModel)]="educationRequirementsModel"
+						(keyup.enter)="addItem($event, this.education_requirements, 'education_requirements')">
+					</div>
+
+					<div class="mt-3">
+						<ng-container *ngFor="let item of education_requirements">
+							<h5 class="me-3 w-100 requirement-badge">{{item}}
+								<img src="/assets/images/placeholder/icons/remove-white.png" 
+								style="height: 10px; margin-top: 3px" class="ms-2 float-end"
+								(click)="removeItem(item, this.education_requirements, 'education_requirements')">
+							</h5>
+						</ng-container>
+					</div>
+				</div>
+
+				<div class="col-12 col-md-6 mb-3">
+					<div class="col-12">
+						<h5 class="title-label">Good to Have</h5>
+					</div>
+
+					<p class="title-label-sub mb-3">Add good to have skills but not a deal breaker</p>
+
+					<div class="form-group">
+						<input type="text" name="search" class="form-control" placeholder="ex, with driver's license, covid vaccine certification" 
+						[(ngModel)]="otherRequirementsModel"
+						(keyup.enter)="addItem($event, this.other_requirements, 'other_requirements')">
+					</div>
+
+					<div class="mt-3">
+						<ng-container *ngFor="let item of other_requirements">
+							<h5 class="me-3 w-100 requirement-badge">{{item}}
+								<img src="/assets/images/placeholder/icons/remove-white.png" 
+								style="height: 10px; margin-top: 3px" class="ms-2 float-end"
+								(click)="removeItem(item, this.other_requirements, 'other_requirements')">
+							</h5>
+						</ng-container>
+					</div>
+				</div>
+			</div>
+		</section>
+	</section>
+</section>

@@ -1,0 +1,375 @@
+.job-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 36px;
+	line-height: 37px;
+	/* identical to box height, or 103% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #222222;
+}
+
+.main-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 27px;
+	line-height: 58px;
+	/* or 215% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #03011A;
+}
+
+.title-label{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18px;
+	line-height: 27px;
+	/* identical to box height */
+	margin-bottom: 5px;
+
+	color: #282828;
+}
+
+.title-label-sub{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 21px;
+	/* or 131% */
+	color: #A8A8A8;
+	margin-bottom: 5px;
+}
+
+.card{
+	background: #FFFFFF;
+	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
+	border-radius: 10px;
+	border: none;
+	padding: 0px 0px !important;
+}
+
+.interview-card{
+	background: #FFFFFF;
+	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
+	border-radius: 10px;
+	border: none;
+	//padding: 0px 0px !important;
+}
+
+.banner-container{
+	position: relative;
+	.banner-image{
+		height: 300px;
+		width: 100%;
+		object-position: center;
+		object-fit: cover;
+		border-radius: 10px;
+	}
+}
+
+.badge-logo{
+	height: 35px;
+	margin-right: 10px;
+}
+
+.floating-card{
+	position: absolute;
+	width: 359px;
+	height: 206px;
+	top: 170px;
+	right: 50px;
+
+	background: #FFFFFF;
+	border: 1px solid rgba(231, 231, 231, 0.65);
+	border-radius: 10px;
+	padding: 30px;
+}
+
+
+.title-job-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18px;
+	line-height: 24px;
+	/* or 189% */
+
+	display: flex;
+	align-items: center;
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+	margin-bottom: 5px;
+	color: #222222;
+}
+
+.title-job-description{
+
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 21px;
+
+	color: #666666;
+
+	strong{
+		color: #000 !important;
+		font-weight: 500 !important;
+		font-size: 16px !important;
+		line-height: 35px !important;
+	}
+
+	a{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 21px;
+		text-decoration: none;
+		margin-top: 7px !important;
+		color: #5B8FDE !important;
+
+		&:hover{
+			text-decoration: underline;
+		}
+	}
+}
+
+.title-requirements{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 16px;
+
+	color: #666666;
+}
+
+.title-company{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 14px;
+	/* identical to box height, or 114% */
+
+	display: flex;
+	align-items: center;
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #1D72F1;
+}
+
+.title-details{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 21px;
+	/* identical to box height, or 150% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #666666;
+}
+
+.btn-primary{
+	background: linear-gradient(95.7deg, #1D72F1 14.94%, #0056D8 76.21%);
+	border-radius: 5px;
+}
+
+.tags{
+	display: flex;
+  flex-wrap: wrap;
+}
+
+.title-tags{
+	background: #F3F2F1;
+	border-radius: 5px;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 18px;
+	/* identical to box height */
+	padding: 5px 10px;
+	//max-width: 130px;
+	color: #6A6A6A;
+	cursor: pointer;
+	margin-top: 5px;
+
+	&:hover{
+		text-decoration: underline;
+	}
+}
+
+
+.bg-interview{
+	background: #DADADA;
+	border-radius: 11px;
+	padding-top: 40px;
+	padding-left: 35px;
+	padding-right: 35px;
+	height: 110px;
+
+	img{
+		width: 40px;
+	}
+}
+
+.title-job-interview{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 20px;
+	line-height: 34px;
+	/* identical to box height, or 170% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #222222;
+}
+
+.title-question-number{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 15px;
+	/* or 94% */
+	margin-bottom: 10px;
+
+	color: #808080;
+}
+
+.title-question-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 18px;
+	/* or 100% */
+
+
+	color: #4D4D4D;
+}
+
+.btn-take-interview{
+	background: #FFFFFF;
+	border: 1px solid #FE6F61;
+	border-radius: 100px;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 21px;
+	/* identical to box height */
+
+	display: flex;
+	align-items: center;
+	text-align: center;
+
+	color: #FE6F61;
+
+	&:hover{
+		background: #FE6F61;
+		color: white;
+	}
+}
+
+#interview-list{
+	.btn-create-interview{
+		background: #FF7062;
+		border-radius: 10px;
+		color: white; 
+		border-radius: 6px;
+		padding: 10px 20px;
+		margin-left: 10px;
+		min-width: 150px;
+		font-size: 16px;
+	}
+
+
+	.logo-thumbnail{
+		background: #F3F3F3;
+		border-radius: 14px;
+		height: 80px;
+		width: 80px;
+		
+		img{
+			width: auto;
+			height: 34px;
+		}
+	}
+
+	.btn-record{
+		background: #FF7062;
+		box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
+		border-radius: 566.808px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 10px;
+
+		color: #FFFFFF;
+		padding: 15px 20px
+	}
+
+	.btn-upload{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 17px;
+		/* identical to box height */
+		border-radius: 566.808px;
+
+		color: #959595;
+		padding: 10px 25px
+	}
+
+	.title-label{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 17px;
+		line-height: 20px;
+		color: #4D4D4D;
+		margin-bottom: 7px;
+	}
+
+	.title-label-sub{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 16px;
+		color: #9C9C9C;
+		margin-bottom: 4px;
+	}
+
+	.title-label-sub-duration{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 13px;
+		/* identical to box height */
+
+		//letter-spacing: 0.2px;
+
+		color: #9C9C9C;
+
+		span{
+			font-weight: 600 !important;
+			color: #9C9C9C;
+		}
+	}
+}

@@ -104,7 +104,7 @@ export class EmployerGuard implements CanActivate, CanActivateChild, CanDeactiva
           console.log(this.router.config);
 
           console.log(url);
-          this.router.resetConfig(routes);
+          this.router.resetConfig(employerRoutes);
           return true;
         }
       }

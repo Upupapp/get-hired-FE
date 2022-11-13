@@ -24,6 +24,11 @@ const routes: Routes = [
         canActivate: [InternalEmployerGuard]
       },
       {
+        path: 'jobs',
+        loadChildren: () => import('./employer-jobs/employer-jobs.module').then(m => m.EmployerJobsModule),
+        canActivate: [InternalEmployerGuard]
+      },
+      {
         path: 'company',
         loadChildren: () => import('./employer-settings/employer-settings.module').then(m => m.EmployerSettingsModule)
       },
