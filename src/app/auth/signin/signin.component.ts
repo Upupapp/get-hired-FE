@@ -74,7 +74,11 @@ export class SigninComponent implements OnInit {
           this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
           break;
         case 2:
-          this.router.navigate(['../recruiter'], { relativeTo: this.activatedRoute });
+          if(user.withCompany) {
+            this.router.navigate(['../recruiter/dashboard'], { relativeTo: this.activatedRoute });
+          } else {
+            this.router.navigate(['../recruiter/company'], { relativeTo: this.activatedRoute });
+          }
           break;
         case 3:
           this.router.navigate(['../user'], { relativeTo: this.activatedRoute });

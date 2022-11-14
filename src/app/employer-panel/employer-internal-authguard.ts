@@ -9,27 +9,30 @@ import { MatDialog } from '@angular/material/dialog';
   providedIn: 'root'
 })
 export class InternalEmployerGuard implements CanActivate, CanActivateChild, CanDeactivate<unknown>, CanLoad {
+  asyncLocalStorage = {
+    setItem: async function (key, value) {
+      await Promise.resolve();
+      localStorage.setItem(key, value);
+    },
+    getItem: async function (key) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
+    }
+  };
 
   withCompany: boolean;
 
-  company$ = this.employeeFacade.company$
-    .pipe().subscribe(this.checkUserLogin.bind(this));
-
   constructor(
-    private employeeFacade: EmployeeFacade,
     private router: Router,
     private route: ActivatedRoute
-  ) {
-    const uid = JSON.parse(localStorage.getItem('user'))._id;
-    this.employeeFacade.getEmployeeCompany(uid);
-  }
+  ) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     let url: string = state.url;
     // return (this.checkUserLogin(next, url) && this.checkScreenSize());
-    return this.withCompany;
+    return this.checkUserLogin();
   }
   canActivateChild(
     next: ActivatedRouteSnapshot,
@@ -47,16 +50,18 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-    return this.withCompany;
+    return this.checkUserLogin();
   }
 
-  checkUserLogin(company) {
-    console.log(company);
-    if (!company || company.length == 0) {
-      this.withCompany = false;
-      this.router.navigateByUrl('/recruiter/company')
+  async checkUserLogin() {
+    const user = await this.asyncLocalStorage.getItem('user');
+    const company = JSON.parse(user).companyName;
+
+    if (!company || company == '') {
+      this.router.navigateByUrl('/recruiter/company');
+      return false
     } else {
-      this.withCompany = true;
+      return true;
     }
   }
 }

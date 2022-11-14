@@ -4,11 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
+import { mainAnimations } from '@main/shared/animations/main-animations';
 
 @Component({
   selector: 'app-employer-panel',
   templateUrl: './employer-panel.component.html',
-  styleUrls: ['./employer-panel.component.scss']
+  styleUrls: ['./employer-panel.component.scss'],
+  animations: [mainAnimations]
 })
 export class EmployerPanelComponent implements OnInit {
   isUserLoggedIn: boolean;

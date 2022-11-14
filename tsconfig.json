@@ -19,10 +19,11 @@
       "esnext"
     ],
     "paths": {
-      "@main/*": ["app/*"],
       "@app-core/*": ["app/core/*"],
       "@environments/*": ["environments/*"],
-      "@app-shared/*": ["app/shared/*"]
+      "@app-shared/*": ["app/shared/*"],
+      "@app-job/*": ["app/job/*"],
+      "@main/*": ["app/*"]
     },
     "allowSyntheticDefaultImports": true
   },

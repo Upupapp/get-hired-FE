@@ -36,11 +36,12 @@ export class EmployerSidebarComponent implements OnInit {
 
   public sidebarItems: any[] = [
     {
-      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'recruiter/dashboard'
     },
 
     {
-      title: 'Jobs', icon: 'jobs.png', class: 'jobs', route: 'jobs',
+      title: 'Jobs', icon: 'jobs.png', class: 'jobs',
+      route: 'recruiter/jobs',
       sub_routes: [
         {
           title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs',
@@ -74,7 +75,8 @@ export class EmployerSidebarComponent implements OnInit {
     },
 
     {
-      title: 'Company Details', icon: 'account.png', class: 'accounts', route: 'company/details'
+      title: 'Company Details', icon: 'account.png', class: 'accounts',
+      route: 'recruiter/company/details'
     },
   ]
 
