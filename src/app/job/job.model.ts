@@ -36,6 +36,7 @@ export interface InitialDetails {
   requirements?: string[];
   goodToHave?: string[];
   educationalBackground?: string[];
+  jobCategoryId?: number;
 }
 
 export interface Options {

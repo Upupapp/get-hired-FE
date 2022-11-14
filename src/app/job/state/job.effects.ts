@@ -78,6 +78,24 @@ export class JobEffects {
   //   );
   // });
 
+  categoryList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getCategoryList),
+      mergeMap(() => this.jobService.getCategoryList()
+        .pipe(
+          map((res: any) => {
+            const category: Model.Options[] = res.data;
+            return JobActions.getCategoryListSuccess({ category });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getCategoryListFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   industryList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.getIndustryList),

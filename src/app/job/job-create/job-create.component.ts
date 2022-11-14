@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JobFacade } from '@app-job/state/job.facade';
+import * as Model from '../job.model';
 
 @Component({
   selector: 'app-job-create',
@@ -11,17 +14,17 @@ export class JobCreateComponent implements OnInit {
       "industry": "Technology",
       "job_role": "Business Development",
       "skill_requirements": [
-          "Web Development",
-          "Angular 8/10/12",
-          "Mongo",
-          "TypeScript",
-          "Advance JavaScript",
-          "ES6 - Functional Programming"
+        "Web Development",
+        "Angular 8/10/12",
+        "Mongo",
+        "TypeScript",
+        "Advance JavaScript",
+        "ES6 - Functional Programming"
       ],
       "tags": [
-          "Web Development",
-          "Angular Project",
-          "Frontend"
+        "Web Development",
+        "Angular Project",
+        "Frontend"
       ],
       "rates": "Monthly",
       "salary_min": 45000,
@@ -34,36 +37,36 @@ export class JobCreateComponent implements OnInit {
       "work_setup": "Remote",
       "address": "Block 33, 123 Street Sampaloc Manila",
       "badge": [
-          {
-              "id": "career-growth",
-              "title": "Career Growth",
-              "logo": "badge-1.png"
-          },
-          {
-              "id": "benefit-package",
-              "title": "Benefit Package",
-              "logo": "badge-2.png"
-          },
-          {
-              "id": "performance-incentive",
-              "title": "Performance Incentive",
-              "logo": "badge-1.png"
-          }
+        {
+          "id": "career-growth",
+          "title": "Career Growth",
+          "logo": "badge-1.png"
+        },
+        {
+          "id": "benefit-package",
+          "title": "Benefit Package",
+          "logo": "badge-2.png"
+        },
+        {
+          "id": "performance-incentive",
+          "title": "Performance Incentive",
+          "logo": "badge-1.png"
+        }
       ],
       "job_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi u",
       "job_duties": "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent.",
       "skill_experience": [
-          "Looking to add a pricing calculator",
-          "Website Search no more",
-          "User-based pricing calculator for you",
-          "Is your business operating in multiple countries"
+        "Looking to add a pricing calculator",
+        "Website Search no more",
+        "User-based pricing calculator for you",
+        "Is your business operating in multiple countries"
       ],
       "other_requirements": [
-          "Graduated from a top university",
-          "Proven success in school or at work"
+        "Graduated from a top university",
+        "Proven success in school or at work"
       ],
       "education_requirements": [
-          "Computer Science Graduate or related discipline is highly desired."
+        "Computer Science Graduate or related discipline is highly desired."
       ]
     },
     jobPostInterviewQuestions: {
@@ -73,6 +76,8 @@ export class JobCreateComponent implements OnInit {
       ]
     }
   }
+
+  jobForm: FormGroup
 
   stepper: number = 1;
 
@@ -98,9 +103,52 @@ export class JobCreateComponent implements OnInit {
     },
   ];
 
-  constructor() { }
+  initial$ = this.jobFacade.initial$
+    .pipe().subscribe(this.setInitialForm.bind(this));
+
+  constructor(
+    private fb: FormBuilder,
+    private jobFacade: JobFacade
+  ) { }
 
   ngOnInit(): void {
+    this.jobForm = this.fb.group({
+      initialData: this.fb.group({
+        jobTitle: ['', Validators.required],
+        jobTypeId: [''],
+        jobLevelId: [''],
+        jobAddress: [''],
+        jobCity: [''],
+        jobDescription: [''],
+        jobDuties: [''],
+        jobCategoryId: [''],
+        workSetupId: [''],
+        bannerFile: [''],
+        badges: new FormArray([]),
+        requirements: new FormArray([]),
+        goodToHave: new FormArray([]),
+        educationalBackground: new FormArray([]),
+        requirementsTxt: [''],
+        goodToHaveTxt: [''],
+        educationalBackgroundTxt: ['']
+      })
+    });
+  }
+
+  setInitialForm(raw: Model.InitialDetails) {
+    if(raw) {
+      this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
+      this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
+      this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
+      this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
+      this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
+      this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
+      this.jobForm.controls.initialData.get('jobDuties').setValue(raw.jobDuties);
+      this.jobForm.controls.initialData.get('jobCategoryId').setValue(raw.jobCategoryId);
+      this.jobForm.controls.initialData.get('badges').setValue(raw.badges);
+      this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
+      this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
+    }
   }
 
   saveAsDraft() {
@@ -111,16 +159,24 @@ export class JobCreateComponent implements OnInit {
 
   }
 
-  changeStep(number: number){
+  changeStep(number: number, formName?: string) {
     this.stepper = number;
+    // formName.ngSubmit.emit();
+    const body = this.jobForm.controls[formName].value;
+
+    switch(formName) {
+      case 'initialData':
+        this.jobFacade.saveInitialForm(body);
+        break;
+    }
   }
 
-  updateObject(data: any, field: string){
+  updateObject(data: any, field: string) {
     this.jobPostData[`${field}`] = data;
     console.log(data, field, this.jobPostData)
   }
 
-  publishJobPost(){
+  publishJobPost() {
     console.log(this.jobPostData)
   }
 }

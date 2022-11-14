@@ -17,6 +17,11 @@ export class JobFacade {
   setup$ = this.store.pipe(select(fromfeature.getSetupList));
   typeList$ = this.store.pipe(select(fromfeature.getTypeList));
   level$ = this.store.pipe(select(fromfeature.getLevelList));
+  category$ = this.store.pipe(select(fromfeature.getCategoryList));
+
+  initial$ = this.store.pipe(select(fromfeature.getIntialDetails));
+
+
   error$: any;
 
   constructor(
@@ -34,6 +39,14 @@ export class JobFacade {
   // saveProfile(userProfile: Model.Job) {
   //   this.store.dispatch(JobAction.updateProfile({ userProfile }));
   // }
+
+  saveInitialForm(initialDetails: Model.InitialDetails) {
+    this.store.dispatch(JobAction.setJobInitialDetails({ initialDetails }));
+  }
+
+  getCategory() {
+    this.store.dispatch(JobAction.getCategoryList());
+  }
 
   getIndustry() {
     this.store.dispatch(JobAction.getIndustryList());

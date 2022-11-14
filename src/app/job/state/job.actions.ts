@@ -9,6 +9,10 @@ enum AllFeatureActionTypes {
   GetIndustryListSuccess = '[job] - Get Industry List Success',
   GetIndustryListFail = '[job] - Get Industry List Fail',
 
+  GetCategoryList = '[job] - Get Category List',
+  GetCategoryListSuccess = '[job] - Get Category List Success',
+  GetCategoryListFail = '[job] - Get Category List Fail',
+
   GetBadgeList = '[job] - Get Badge List',
   GetBadgeListSuccess = '[job] - Get Badge List Success',
   GetBadgeListFail = '[job] - Get Badge List Fail',
@@ -27,8 +31,29 @@ enum AllFeatureActionTypes {
 
   GetLevelList = '[job] - Get Level List',
   GetLevelListSuccess = '[job] - Get Level List Success',
-  GetLevelListFail = '[job] - Get Level List Fail'
+  GetLevelListFail = '[job] - Get Level List Fail',
+
+  SetJobInitialDetails = '[job] - Set Job Initial Details'
 };
+
+export const setJobInitialDetails = createAction(
+  AllFeatureActionTypes.SetJobInitialDetails,
+  props<{ initialDetails: Model.InitialDetails }>()
+);
+
+export const getCategoryList = createAction(
+  AllFeatureActionTypes.GetCategoryList
+);
+
+export const getCategoryListSuccess = createAction(
+  AllFeatureActionTypes.GetCategoryListSuccess,
+  props<{ category: Model.Options[] }>()
+);
+
+export const getCategoryListFail = createAction(
+  AllFeatureActionTypes.GetCategoryListFail,
+  props<{ payload: any }>()
+);
 
 export const getIndustryList = createAction(
   AllFeatureActionTypes.GetIndustryList

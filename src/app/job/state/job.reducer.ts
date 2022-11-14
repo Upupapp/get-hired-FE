@@ -19,6 +19,8 @@ export interface JobState {
   setup: Model.Options[];
   typeList: Model.Options[];
   level: Model.Options[];
+  category: Model.Options[];
+  initialDetails: Model.InitialDetails;
 }
 
 const initialState: JobState  = {
@@ -32,11 +34,40 @@ const initialState: JobState  = {
   jobRole: [],
   setup: [],
   typeList: [],
-  level: []
+  level: [],
+  category: [],
+  initialDetails: null
 }
 
 export const jobReducer = createReducer<JobState>(
   initialState,
+  on(JobActions.setJobInitialDetails, (state, action): JobState => {
+    return {
+      ...state,
+      initialDetails: action.initialDetails
+    };
+  }),
+  on(JobActions.getCategoryList, (state): JobState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(JobActions.getCategoryListSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      category: action.category,
+      error: null,
+    };
+  }),
+  on(JobActions.getCategoryListFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
   on(JobActions.getIndustryList, (state): JobState => {
     return {
       ...state,

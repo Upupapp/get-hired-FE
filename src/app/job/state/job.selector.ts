@@ -48,6 +48,15 @@ export const getLevelList = createSelector (
   state => state.level
 );
 
+export const getCategoryList = createSelector (
+  getJobInitState,
+  state => state.category
+);
+
+export const getIntialDetails = createSelector (
+  getJobInitState,
+  state => state.initialDetails
+);
 
 
 

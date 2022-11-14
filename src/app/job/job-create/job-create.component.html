@@ -1,28 +1,30 @@
-<div class="card card-body py-3">
-  <div class="w-100">
-    <span class="main-title mt-3">Create a Job</span>
+<form [formGroup]="jobForm">
 
-    <div class="float-end">
-      <button class="btn btn-save-draft" (click)="saveAsDraft()">
-        Save as Draft
-      </button>
+  <div class="card card-body py-3">
+    <div class="w-100">
+      <span class="main-title mt-3">Create a Job</span>
 
-      <button class="btn btn-add-service mx-2" (click)="cancel()">
-        Cancel
-      </button>
+      <div class="float-end">
+        <button class="btn btn-save-draft" (click)="saveAsDraft()">
+          Save as Draft
+        </button>
+
+        <button class="btn btn-add-service mx-2" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="mt-4 row">
-  <div class="bg-upper-gray col-12 col-md-8">
-    <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
-    </app-main-stepper>
-  </div>
+  <div class="mt-4 row">
+    <div class="bg-upper-gray col-12 col-md-8">
+      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+      </app-main-stepper>
+    </div>
 
     <div class="text-end mt-3 col-12 col-md-4">
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2)"
-        *ngIf="stepper == 1">
+      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2, 'initialData')" *ngIf="stepper == 1"
+        type="submit">
         Next: Job Requirements
       </button>
 
@@ -51,27 +53,29 @@
       </button>
     </div>
 
-</div>
+  </div>
 
-<div class="p-3">
-  <ng-container *ngIf="stepper === 1">
-    <app-job-post-detail-step (jobPostDetailsEvent)="updateObject($event, 'jobPostDetails')"
-      [jobPostDetails]="jobPostData?.jobPostDetails"></app-job-post-detail-step>
+  <div class="p-3">
+    <ng-container *ngIf="stepper === 1">
+      <app-job-post-detail-step (jobPostDetailsEvent)="updateObject($event, 'jobPostDetails')"
+        [jobPostDetails]="jobPostData?.jobPostDetails" formGroupName="initialData"></app-job-post-detail-step>
 
-  </ng-container>
+    </ng-container>
 
-  <ng-container *ngIf="stepper === 2">
-    <app-create-job-post-step (jobPostIndustryEvent)="updateObject($event, 'jobPostIndustry')"
-      [jobPostIndustry]="jobPostData?.jobPostIndustry"></app-create-job-post-step>
-  </ng-container>
+    <ng-container *ngIf="stepper === 2">
+      <app-create-job-post-step (jobPostIndustryEvent)="updateObject($event, 'jobPostIndustry')"
+        [jobPostIndustry]="jobPostData?.jobPostIndustry"></app-create-job-post-step>
+    </ng-container>
 
-  <ng-container *ngIf="stepper === 3">
-    <app-create-interview-questions (jobPostInterviewQuestionsEvent)="updateObject($event, 'jobPostInterviewQuestions')"
-      [jobPostInterviewQuestions]="jobPostData?.jobPostInterviewQuestions"></app-create-interview-questions>
-  </ng-container>
+    <ng-container *ngIf="stepper === 3">
+      <app-create-interview-questions
+        (jobPostInterviewQuestionsEvent)="updateObject($event, 'jobPostInterviewQuestions')"
+        [jobPostInterviewQuestions]="jobPostData?.jobPostInterviewQuestions"></app-create-interview-questions>
+    </ng-container>
 
-  <ng-container *ngIf="stepper === 4">
-    <app-preview-job-post-step [jobPostData]="jobPostData"></app-preview-job-post-step>
-  </ng-container>
+    <ng-container *ngIf="stepper === 4">
+      <app-preview-job-post-step [jobPostData]="jobPostData"></app-preview-job-post-step>
+    </ng-container>
 
-</div>
+  </div>
+</form>

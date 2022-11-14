@@ -38,4 +38,7 @@ export class JobService {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/levels`);
   }
 
+  getCategoryList(){
+    return this.baseService.get<Model.Options>(`${this.jobUrl}/categories`);
+  }
 }

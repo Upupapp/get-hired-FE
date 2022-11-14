@@ -1,37 +1,37 @@
-import { 
-  Component, 
-  ElementRef, 
-  EventEmitter, 
-  forwardRef, 
-  Host, 
-  Input, 
-  OnInit, 
-  Optional, 
-  Output, 
-  SkipSelf, 
-  ViewChild 
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  Host,
+  Input,
+  OnInit,
+  Optional,
+  Output,
+  SkipSelf,
+  ViewChild
 } from '@angular/core';
 
-import { 
-  AbstractControl, 
-  ControlContainer, 
-  ControlValueAccessor, 
-  NG_VALUE_ACCESSOR 
+import {
+  AbstractControl,
+  ControlContainer,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR
 } from '@angular/forms';
 
 import { noop } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 //import { ViewImageVideoComponent } from '@app-shared/components/dialogs/view-image-video/view-image-video.component';
-import { 
-  Subscription, 
-  Observable, 
-  forkJoin, 
-  combineLatest 
+import {
+  Subscription,
+  Observable,
+  forkJoin,
+  combineLatest
 } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { 
-  select, 
-  Store 
+import {
+  select,
+  Store
 } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -73,6 +73,7 @@ export class DragAndDropComponent {
   @Input() isMultiple:boolean = true;
   @Input() row: string = 'col-sm-6';
   @Input() file: any;
+  @Input() maxSize: number = 200000;
 
   fileObject: any = {
     filename: '',
@@ -80,7 +81,7 @@ export class DragAndDropComponent {
     type: '',
     file: ''
   }
-  
+
   @Output() upload: EventEmitter<any> = new EventEmitter();
   @ViewChild('uploadFile') uploadInput: ElementRef;
 
@@ -89,13 +90,13 @@ export class DragAndDropComponent {
 
   onChange: (value: any) => {};
   onTouched: () => {
-  
+
   };
 
   @Output() keyevents: EventEmitter<any> = new EventEmitter<any>();
   protected _onChangeCallback: (_: any) => void = noop;
-  public defaultImage: string = "/assets/images/placeholder/banner-uploader-sample.png";  
-  
+  public defaultImage: string = "/assets/images/placeholder/banner-uploader-sample.png";
+
   constructor(
     private dialog: MatDialog,) { }
 
@@ -130,7 +131,7 @@ export class DragAndDropComponent {
       reader.readAsDataURL(uploaded[0]);
       reader.onload = (_event) => {
         this.uploadedFileBase64 = reader.result;
-        this.fileObject.file = reader.result; 
+        this.fileObject.file = reader.result;
         this.writeValue(this.fileObject);
         this.upload.emit(this.fileObject);
       }
@@ -144,7 +145,7 @@ export class DragAndDropComponent {
 
     if (uploaded.length !== 0) {
       for (let i = 0; i < uploaded.length; i++) {
-        
+
         let fileObject: any = {
           filename: '',
           size: '',
@@ -155,11 +156,17 @@ export class DragAndDropComponent {
         fileObject.filename = uploaded[i].name;
         fileObject.type = uploaded[i].type;
         fileObject.size = uploaded[i].size
+
+        if(uploaded[i].size > this.maxSize) {
+          this.upload.emit([])
+          break;
+        }
+
         const reader = new FileReader();
         reader.readAsDataURL(uploaded[i]);
         reader.onload = (_event) => {
           fileObject.file = reader.result;
-          this.fileArray.push(fileObject) 
+          this.fileArray.push(fileObject)
           this.writeValue(this.fileArray);
           this.upload.emit(this.fileArray);
 
@@ -194,7 +201,7 @@ export class DragAndDropComponent {
   viewImageVideo(data: any){
     /*let viewImageDialog = this.dialog.open(
       ViewImageVideoComponent,
-      { 
+      {
         width: '65vw',
         maxHeight: '95vh',
         data: data,
