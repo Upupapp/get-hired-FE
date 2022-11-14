@@ -44,7 +44,13 @@ export const jobReducer = createReducer<JobState>(
   on(JobActions.setJobInitialDetails, (state, action): JobState => {
     return {
       ...state,
-      initialDetails: action.initialDetails
+      initialDetails: {
+        ...action.initialDetails,
+        jobTypeId: action.initialDetails.jobTypeId as number,
+        jobLevelId: action.initialDetails.jobLevelId as number,
+        jobCategoryId: action.initialDetails.jobCategoryId as number,
+        workSetupId: action.initialDetails.workSetupId as number
+      }
     };
   }),
   on(JobActions.getCategoryList, (state): JobState => {

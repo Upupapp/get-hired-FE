@@ -140,6 +140,8 @@ export class JobCreateComponent implements OnInit {
       this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
       this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
       this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
+      this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
+      this.jobForm.controls.initialData.get('workSetupId').setValue(raw.workSetupId);
       this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
       this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
       this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
@@ -148,6 +150,8 @@ export class JobCreateComponent implements OnInit {
       this.jobForm.controls.initialData.get('badges').setValue(raw.badges);
       this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
       this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
+      this.jobForm.controls.initialData.get('bannerFile').setValue(raw.bannerFile);
+
     }
   }
 
