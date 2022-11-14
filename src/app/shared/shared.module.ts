@@ -18,7 +18,7 @@ import { DragAndDropComponent } from './components/input/drag-and-drop/drag-and-
 import { NgxOrgChartModule } from 'ngx-org-chart';
 import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
 import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
-
+import { EmptySectionComponent } from './components/empty-section/empty-section.component';
 
 const classesToInclude: any[] = [
   HeaderComponent,
@@ -31,7 +31,8 @@ const classesToInclude: any[] = [
   ReusableOrgChartComponent,
   DragAndDropComponent,
   MainStepperComponent,
-  TabSelectorsComponent
+  TabSelectorsComponent,
+  EmptySectionComponent
 ];
 
 @NgModule({

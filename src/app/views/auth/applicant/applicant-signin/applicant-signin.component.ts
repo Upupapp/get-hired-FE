@@ -61,7 +61,7 @@ export class ApplicantSigninComponent implements OnInit {
       else this.activeImage = 1;  
 
       console.log(this.activeImage)
-    }, 4000) 
+    }, 5000) 
   }
 
   ngOnDestroy(): void {

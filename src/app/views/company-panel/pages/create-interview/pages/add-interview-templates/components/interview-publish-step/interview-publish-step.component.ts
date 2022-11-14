@@ -20,43 +20,85 @@ export class InterviewPublishStepComponent implements OnInit {
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
   public templateForm!: FormGroup;
-  public shareWith: any[] = [
+  
+  
+  /* GROUP CONTACTS */
+  public selectAllGroup: boolean = false;
+  public groupContact: any[] = [
+    {
+      name: "HR Group",
+      selected: false,
+      id: 1
+    },
+
+    {
+      name: "Web Development Team",
+      selected: false,
+      id: 2
+    },
+  ];
+
+  /* INDIVIDUAL EMAILS */
+  public selectAllIndividual: boolean = false;
+  public individualEmail: any[] = [
     {
       email: "joesnane@gmail.com",
-      candidate: true,  
-      notification: false,
+      selected: false,
+      id: 1
     },
 
     {
       email: "michelscruz@amazon.com",
-      candidate: true,  
-      notification: false,
+      selected: false,
+      id: 2
     },
 
     {
       email: "joesnane@gmail.com",
-      candidate: true,  
-      notification: false,
+      selected: false,
+      id: 3
     },
 
     {
       email: "michelscruz@amazon.com",
-      candidate: true,  
-      notification: false,
+      selected: false,
+      id: 4
     },
 
     {
       email: "joesnane@gmail.com",
-      candidate: true,  
-      notification: false,
+      selected: false,
+      id: 5
     },
 
     {
       email: "michelscruz@amazon.com",
-      candidate: true,  
-      notification: false,
+      selected: false,
+      id: 6
     },
-  ]
+  ];
+
+  /* EMAIL BY JOB POST */
+  public selectAllEmail: boolean = false;
+  public emailByJobPost: any[] = [
+    {
+      email: "joesnane@gmail.com",
+      selected: false,
+      id: 101
+    },
+
+    {
+      email: "michelscruz@amazon.com",
+      selected: false,
+      id: 102
+    },
+
+    {
+      email: "joesnane@gmail.com",
+      selected: false,
+      id: 103
+    },
+  ];
 
   constructor(private formBuilder: FormBuilder,
     private dialog: MatDialog,
@@ -68,6 +110,12 @@ export class InterviewPublishStepComponent implements OnInit {
       redirect_url: [''],
       display_hints: [''],
       request_availability: [''],
+    });
+  }
+
+  selectAll(arr, selection){
+    return arr.forEach((el) => {
+      el.selected = selection;
     });
   }
 

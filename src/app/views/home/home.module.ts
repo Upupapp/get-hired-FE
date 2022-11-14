@@ -19,7 +19,6 @@ import { JobDetailsFeaturedJobsComponent } from './components/job-details-featur
 import { JobPostsListComponent } from './components/job-posts-list/job-posts-list.component';
 import { JobPostDetailsApplyComponent } from './pages/job-post-details-apply/job-post-details-apply.component';
 import { JobDetailsInterviewComponent } from './components/job-details-interview/job-details-interview.component';
-import { JobPostDetailsAnswerQuestionComponent } from './pages/job-post-details-answer-question/job-post-details-answer-question.component';
 import { JobDetailsAnswerInterviewComponent } from './pages/job-post-details-apply/steps/interview-questions/components/job-details-answer-interview/job-details-answer-interview.component';
 import { ProfilePreviewComponent } from './pages/job-post-details-apply/steps/profile-preview/profile-preview.component';
 import { ProfileDocumentsComponent } from './pages/job-post-details-apply/steps/profile-documents/profile-documents.component';
@@ -31,6 +30,11 @@ import { SharedModule } from '@app-shared/shared.module';
 import { RecordInterviewComponent } from './pages/job-post-details-apply/steps/interview-questions/components/record-interview/record-interview.component';
 import { SettingsModalComponent } from './pages/job-post-details-apply/steps/interview-questions/components/settings-modal/settings-modal.component';
 import { InterviewNotificationComponent } from './pages/job-post-details-apply/steps/interview-questions/components/interview-notification/interview-notification.component';
+import { CompanyDetailsComponent } from './pages/company-details/company-details.component';
+import { CompanyBannerComponent } from './pages/company-details/components/company-banner/company-banner.component';
+import { TopJobsComponent } from './pages/company-details/components/top-jobs/top-jobs.component';
+import { LatestJobPostComponent } from './pages/company-details/components/latest-job-post/latest-job-post.component';
+import { JobPostSearchListComponent } from './pages/job-post-search-list/job-post-search-list.component';
 
 @NgModule({
   imports: [
@@ -55,7 +59,6 @@ import { InterviewNotificationComponent } from './pages/job-post-details-apply/s
     ExploreUsersComponent,
     JobPostDetailsApplyComponent,
     JobDetailsInterviewComponent,
-    JobPostDetailsAnswerQuestionComponent,
     JobDetailsAnswerInterviewComponent,
     ProfilePreviewComponent,
     ProfileDocumentsComponent,
@@ -67,6 +70,11 @@ import { InterviewNotificationComponent } from './pages/job-post-details-apply/s
     RecordInterviewComponent,
     SettingsModalComponent,
     InterviewNotificationComponent,
+    CompanyDetailsComponent,
+    CompanyBannerComponent,
+    TopJobsComponent,
+    LatestJobPostComponent,
+    JobPostSearchListComponent,
   ]
 })
 export class HomeModule{ }

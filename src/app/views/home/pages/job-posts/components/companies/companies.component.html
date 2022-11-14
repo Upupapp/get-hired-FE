@@ -11,7 +11,8 @@
 			<ng-container *ngFor="let company of companies; let i = index">
 				<div class="col-6 col-md-6 col-lg-2 mb-3" 
 				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 50) + 'ms' }}">
-					<div class="card card-body">
+					<div class="card card-body" 
+					routerLink="/job-post/company/{{company?.title?.toLowerCase()}}">
 						<img src="/assets/images/placeholder/{{company?.image}}.png" 
 						class="img img-fluid hvr-grow company-image">
 
@@ -25,6 +26,14 @@
 						</div>
 					</div>
 				</div>
+			</ng-container>
+
+			<ng-container *ngIf="companies?.length === 0">
+				<app-empty-section
+				[title]="'No Companies Created Yet'"
+				[subTitle]="'No Companies Created Yet'"
+				[detailSize]="'small'"
+				[search]="false"></app-empty-section>
 			</ng-container>
 		</div>
 	</div>

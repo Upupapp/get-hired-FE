@@ -79,12 +79,12 @@ export class CreateJobPostComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Create Job Post"
+      title: "Job Post Details"
     },
 
     {
       id: 2,
-      title: "Job Post Details"
+      title: "Rates and Budget"
     },
 
     {

@@ -1,6 +1,15 @@
 
 @import "src/assets/styles/colors";
 
+.main-logo{
+	background: #FFFFFF;
+	border-radius: 0px 0px 10px 10px;
+	padding: 30px 15px 10px 15px;
+	margin-bottom: 15px;
+	height: 120px;
+	cursor: pointer;
+}
+
 .bg-light{
 	background: #FFFFFF !important;
 	border-radius: 18px;

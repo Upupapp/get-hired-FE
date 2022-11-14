@@ -31,6 +31,7 @@
 				</p>
 			</div>
 
+			<!-- JOB POST LISTS -->
 			<ng-container *ngFor="let data of jobLists; let i = index">
 				<div [ngClass]="listView ? 'col-12 col-md-12 col-lg-6' : 'col-12 col-md-6 col-lg-3'"
 				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
@@ -55,6 +56,14 @@
 						<app-job-card-list-view [data]="data" [i]="i"></app-job-card-list-view>
 					</ng-container>
 				</div>
+			</ng-container>
+
+			<ng-container *ngIf="jobLists?.length === 0">
+				<app-empty-section
+				[title]="'No Jobs Created Yet'"
+				[subTitle]="'There is no activity at the momemnt, but we <br>can totally solve that.'"
+				[detailSize]="'large'"
+				[search]="false"></app-empty-section>
 			</ng-container>
 		</div>
 	</div>
