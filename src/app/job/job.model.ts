@@ -39,7 +39,7 @@ export interface InitialDetails {
 }
 
 export interface Options {
-  id: string;
+  id: number;
   name: string;
   icon?: string;
 }
