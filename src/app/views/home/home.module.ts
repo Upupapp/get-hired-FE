@@ -35,6 +35,7 @@ import { CompanyBannerComponent } from './pages/company-details/components/compa
 import { TopJobsComponent } from './pages/company-details/components/top-jobs/top-jobs.component';
 import { LatestJobPostComponent } from './pages/company-details/components/latest-job-post/latest-job-post.component';
 import { JobPostSearchListComponent } from './pages/job-post-search-list/job-post-search-list.component';
+import { JobPostSearchBannerComponent } from './pages/job-post-search-list/components/job-post-search-banner/job-post-search-banner.component';
 
 @NgModule({
   imports: [
@@ -75,6 +76,7 @@ import { JobPostSearchListComponent } from './pages/job-post-search-list/job-pos
     TopJobsComponent,
     LatestJobPostComponent,
     JobPostSearchListComponent,
+    JobPostSearchBannerComponent,
   ]
 })
 export class HomeModule{ }

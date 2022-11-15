@@ -105,7 +105,7 @@ const jobLists: Job[] = [
     date_posted: new Date(),  
     expiration_date: new Date(), 
     interview_questions: [
-      "How long have you been using angular?",
+      "How long have you been using this software?",
       "Are You Available For Part-time or Full-time?"
     ],
     status: 'Active'
@@ -152,7 +152,7 @@ const jobLists: Job[] = [
     expiration_date: new Date(), 
     interview_questions: [
       "How long have you been using angular?",
-      "Are You Available For Part-time or Full-time?"
+      "Why should we hire you? What are your top skills?"
     ],
     status: 'Active'
   },
@@ -176,7 +176,7 @@ const jobLists: Job[] = [
       },
     ],  
     job_level: "Intermediate: 2-3 Years Experience",
-    job_type: "Part-Time",
+    job_type: "Full-Time",
     job_role: "Business Development",
     work_setup: "Remote",  
     salary_min: 36000,
@@ -197,8 +197,8 @@ const jobLists: Job[] = [
     date_posted: new Date(),  
     expiration_date: new Date(), 
     interview_questions: [
-      "How long have you been using angular?",
-      "Are You Available For Part-time or Full-time?"
+      "How long have you been using sql database?",
+      "Are You Available For Full-time?"
     ],
     status: 'Active'
   },
@@ -248,7 +248,7 @@ const jobLists: Job[] = [
     date_posted: new Date(),  
     expiration_date: new Date(),  
     interview_questions: [
-      "How long have you been using angular?",
+      "How long have you been using this software?",
       "Are You Available For Part-time or Full-time?"
     ],
     status: 'Active'
