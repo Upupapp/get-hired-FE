@@ -6,6 +6,20 @@
   cursor: pointer;
 }
 
+.main-logo{
+	background: #FFFFFF;
+	border-radius: 0px 0px 10px 10px;
+	padding: 30px 15px 10px 15px;
+	margin-bottom: 15px;
+	height: 120px;
+	cursor: pointer;
+}
+
+.bg-light{
+	background: #FFFFFF !important;
+	border-radius: 18px;
+}
+
 .bg-auth{
 	background: linear-gradient(178.76deg, #6160DC -47.98%, #54C5EB 163.51%);
 }

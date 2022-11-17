@@ -2,38 +2,6 @@
  -->
 
 <div class="">
-	<!-- <div class="d-flex" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-		<button class="btn btn-stepper-active flex-wrap" (click)="changeStep(1)">
-			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
-			style="height: 25px; margin-top: -3px;">Create Job Post
-		</button>
-
-		<button class="btn flex-wrap d-flex" (click)="changeStep(2)"
-		style="border-radius: 1px !important;"
-		[ngClass]="stepper >= 2 ? 'btn-stepper-active' : 'btn-stepper-next'">
-			<div class="badge-step" *ngIf="stepper < 2">2</div>
-			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
-			style="height: 25px; margin-top: 3px;" *ngIf="stepper >= 2">
-			Job Post Details
-		</button>
-
-		<button class="btn flex-wrap d-flex" (click)="changeStep(3)"
-		style="border-radius: 1px !important;"
-		[ngClass]="stepper >= 3 ? 'btn-stepper-active' : 'btn-stepper-next'">
-			<div class="badge-step" *ngIf="stepper < 3">3</div>
-			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
-			style="height: 25px; margin-top: 3px;" *ngIf="stepper >= 3">
-			Create Interview
-		</button>
-
-		<button class="btn flex-wrap d-flex btn-stepper-next" 
-		(click)="changeStep(4)"
-		style="border-radius: 1px !important;">
-			<div class="badge-step">4</div>
-			Preview Job Post
-		</button>
-	</div> -->
-
 	<div class="bg-upper-gray">
 		<app-main-stepper
 		[stepper]="stepper"
@@ -44,15 +12,15 @@
 	<!-- SECTION CREATE JOB POST -->
 	<div class="p-4" style="margin-top: 50px;">
 		<ng-container *ngIf="stepper === 1">
-			<app-create-job-post-step
-			(jobPostIndustryEvent)="updateObject($event, 'jobPostIndustry')"
-			[jobPostIndustry]="jobPostData?.jobPostIndustry"></app-create-job-post-step>
-		</ng-container>
-
-		<ng-container *ngIf="stepper === 2">
 			<app-job-post-detail-step
 			(jobPostDetailsEvent)="updateObject($event, 'jobPostDetails')"
 			[jobPostDetails]="jobPostData?.jobPostDetails"></app-job-post-detail-step>
+		</ng-container>
+
+		<ng-container *ngIf="stepper === 2">
+			<app-create-job-post-step
+			(jobPostIndustryEvent)="updateObject($event, 'jobPostIndustry')"
+			[jobPostIndustry]="jobPostData?.jobPostIndustry"></app-create-job-post-step>
 		</ng-container>
 
 		<ng-container *ngIf="stepper === 3">
@@ -71,7 +39,7 @@
 				<button class="btn btn-save-draft me-2"  (click)="saveAsDraft()">Save as Draft</button>
 
 				<button class="btn btn-preview-job-post" (click)="changeStep(2)" *ngIf="stepper === 1">
-					Job Post Details
+					Add Rates and Budget
 				</button>
 
 				<button class="btn btn-preview-job-post" (click)="changeStep(3)" *ngIf="stepper === 2">

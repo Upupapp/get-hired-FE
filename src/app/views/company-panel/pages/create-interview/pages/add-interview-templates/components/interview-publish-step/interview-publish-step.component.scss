@@ -1,3 +1,54 @@
+.accordion-header{
+	background: #FFEFED !important;
+	.collapse{
+		background: #FFEFED !important;
+	}
+}
+
+.accordion-button:focus {
+   z-index: 3;
+   border-color: #FF7062;
+   outline: 0!important;
+   /* I changed the color on this line */
+   /* If you do not want any color, just delete */
+   box-shadow: 0 0 0 0.25rem rgba(#FF7062, 0.15);
+}
+
+.show{
+	border-radius: 8px !important;
+}
+
+.accordion-item{
+	border: none;
+	margin-bottom: 10px;
+}
+
+.accordion-button::after {
+  display: none;
+}
+
+.accordion-button:not(.collapsed) {
+    color: #424242 !important;
+    background-color: #FFEFED;
+    background: #FFEFED !important;
+    border-radius: 8px !important;
+    border: none !important;
+}
+
+.accordion-button{
+	font-family: 'Manrope'!important;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 15px;
+	line-height: 15px;
+	/* identical to box height, or 75% */
+
+	border: 1px solid #D7D7D7;
+	border-radius: 8px !important;
+
+	color: #424242 !important;
+}
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -41,47 +92,6 @@
 	border-radius: 10px;
 	border: none;
 	padding: 30px 30px !important;
-}
-
-.form-control{
-	background: #FFFFFF;
-	min-height: 50px;
-	border: 1px solid #AFBCC6 !important;
-}
-
-.form-select-multiple{
-	margin-bottom: 20px;
-	min-height: 170px !important;
-
-	option{
-		border-radius: 4px;
-		padding: 6px 10px;
-		margin-bottom: 5px;
-		
-	}
-
-
-	option select {
-	    margin: 40px;
-	    background: red !important;
-	    color: #fff;
-	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-	}
-}
-
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-}
-
-
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
 }
 
 
@@ -189,69 +199,9 @@ label{
 	}
 }
 
-.btn-record{
-	background: #FF7062;
-	box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
-	border-radius: 566.808px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 12px;
-	line-height: 10px;
-
-	color: #FFFFFF;
-	padding: 15px 20px
-}
-
-.btn-upload{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 12px;
-	line-height: 17px;
-	/* identical to box height */
-	border-radius: 566.808px;
-
-	color: #959595;
-	padding: 10px 25px
-}
-
-.logo-thumbnail{
-	background: #F3F3F3;
-	border-radius: 14px;
-	height: 80px;
-	width: 80px;
-	
-	img{
-		width: auto;
-		height: 34px;
-	}
-}
-
-
-.btn-create-interview{
-	border: solid 1px #c9c9c9;
-	margin-right: 20px;
-	margin-top: -15px !important;
-
-	&:hover{
-		border-color: #FE6F61;
-		color: #FE6F61; 
-	}
-}
-
-.time-zone{
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 21px;
-	/* identical to box height */
-
-
-	color: #838383;
-}
 
 .table{
+	font-family: 'Manrope' !important;
 	thead{
 		th{
 			background: #F7F7F7;

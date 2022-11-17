@@ -71,6 +71,11 @@
 	font-size: 18px;
 	line-height: 18px;
 	color: #121212;
+
+	&:hover{
+		cursor: pointer;
+		text-decoration: underline;
+	}
 }
 
 .title-company-category{

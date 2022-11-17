@@ -18,11 +18,11 @@ import { jobLists, Job } from '../../utils/job-list-model-interface';
   styleUrls: ['./job-posts-list.component.scss']
 })
 export class JobPostsListComponent implements OnInit {
+  @Input() jobLists: Job[] = jobLists;
+  @Input() fromSearch: boolean = false;
 
   public loading: boolean = true;
   public screenSize: number = 1600;
-
-  public jobLists: Job[] = jobLists;
   public listView: boolean = false;
   constructor() { }
 

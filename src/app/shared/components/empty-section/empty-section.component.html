@@ -1,0 +1,26 @@
+<div class="text-center" *ngIf="!search"
+[@animate]="{value:'*', params:{ scale:'0.7', delay: (250) + 'ms' }}">
+	<div [ngClass]="detailSize === 'large' ? '' : 'small'">
+		<div class="empty-image w-100 d-flex justify-content-center align-self-center">
+			<div class="main">
+				<img src="/assets/images/placeholder/empty.png" class="img-fluid">
+			</div>
+		</div>
+	</div>
+
+	<h5 class="main-title" *ngIf="detailSize === 'large'">{{title}}</h5>
+	<p class="title-sub" [innerHtml]="subTitle"></p>
+</div>
+
+
+<div class="text-center" *ngIf="search"
+[@animate]="{value:'*', params:{ scale:'0.7', delay: (250) + 'ms' }}">
+	<div class="empty-image-search w-100 d-flex justify-content-center align-self-center">
+		<div class="main">
+			<img src="/assets/images/placeholder/empty-search.png" class="img-fluid">
+		</div>
+	</div>
+
+	<h5 class="main-title">{{title}}</h5>
+	<p class="title-sub" [innerHtml]="subTitle"></p>
+</div>

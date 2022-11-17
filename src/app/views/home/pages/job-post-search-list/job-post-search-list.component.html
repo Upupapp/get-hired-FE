@@ -1,0 +1,21 @@
+<app-job-post-search-banner
+[keyword]="keyword"
+[work_setup]="work_setup"
+[job_type]="job_type"></app-job-post-search-banner>
+
+<div class="p-4" style="min-height: 100vh">
+	<ng-container>
+		<app-job-posts-list
+		[jobLists]="jobLists"
+		[fromSearch]="true"></app-job-posts-list>
+	</ng-container>
+
+
+	<ng-container *ngIf="jobLists?.length === 0">
+		<app-empty-section
+		[title]="'No results found'"
+		[subTitle]="searchJobPost"
+		[detailSize]="'small'"
+		[search]="true"></app-empty-section>
+	</ng-container>
+</div>
