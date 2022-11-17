@@ -14,6 +14,20 @@ export class JobService {
     private baseService: BaseService
   ) { }
 
+  saveJob(job: Model.Job) {
+    if(job.jobId || job.jobId != '') {
+      // update
+      return this.baseService.put<Model.Job>(`${this.jobUrl}/updateJobs`, job);
+    } else {
+      // create
+      return this.baseService.post<Model.Job>(`${this.jobUrl}/create`, job);
+    }
+  }
+
+  getJobBasicList(companyId: string) {
+    return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
+  }
+
   getIndustryList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/industries`);
   }

@@ -14,10 +14,14 @@ import { JobEffects } from './state/job.effects';
 import { JobFacade } from './state/job.facade';
 import { jobReducer } from './state/job.reducer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { JobListComponent } from './job-list/job-list.component';
+import { JobExpiredComponent } from './job-expired/job-expired.component';
 
 const routes: Routes = [
+  { path: 'expired', component: JobExpiredComponent },
+  { path: 'list', component: JobListComponent },
   { path: 'create', component: JobCreateComponent },
-  { path: '', redirectTo: 'create', pathMatch: 'full' }
+  { path: '', redirectTo: 'list', pathMatch: 'full' }
 ]
 
 const exportedComponents = [
@@ -26,12 +30,15 @@ const exportedComponents = [
   PreviewJobPostStepComponent,
   JobPostDetailStepComponent,
   CreateJobPostStepComponent,
-  CreateInterviewComponent
+  CreateInterviewComponent,
+  JobListComponent,
+  JobExpiredComponent
 ]
 
 @NgModule({
   declarations: [
-    ...exportedComponents
+    ...exportedComponents,
+    JobExpiredComponent,
   ],
   imports: [
     CommonModule,

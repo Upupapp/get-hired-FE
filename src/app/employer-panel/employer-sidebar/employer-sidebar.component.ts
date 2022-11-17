@@ -44,20 +44,20 @@ export class EmployerSidebarComponent implements OnInit {
       route: 'recruiter/jobs',
       sub_routes: [
         {
-          title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs',
+          title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'recruiter/jobs/list',
         },
 
         {
-          title: 'Expired Jobs',  icon: 'expired-jobs.png', class: 'expired', route: 'expired-jobs'
+          title: 'Expired Jobs',  icon: 'expired-jobs.png', class: 'expired', route: 'recruiter/jobs/expired'
         },
       ]
     },
 
     {
-      title: 'Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+      title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'applicants',
       sub_routes: [
         {
-          title: 'Job Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'applicants',
         },
 
         {
@@ -67,11 +67,12 @@ export class EmployerSidebarComponent implements OnInit {
     },
 
     {
-      title: 'Interview Settings', icon: 'create-interview.png', class: 'interviews', route: 'interview-settings'
+      title: 'Create Interview', icon: 'create-interview.png', class: 'interviews', route: 'interview-settings'
     },
 
     {
-      title: 'My Subscription', icon: 'subscribe.png', class: 'subscription', route: 'my-subscription'
+      title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+      route: 'recruiter/subscription'
     },
 
     {

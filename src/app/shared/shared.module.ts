@@ -22,6 +22,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import { NgxOrgChartModule } from 'ngx-org-chart';
 
 import { EmptySectionComponent } from './components/empty-section/empty-section.component';
+import { UnderConstructionComponent } from './components/under-construction/under-construction.component';
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -37,7 +38,8 @@ const classesToInclude: any[] = [
   TabSelectorsComponent,
   AddAccessModalComponent,
   TabSelectorsComponent,
-  EmptySectionComponent
+  EmptySectionComponent,
+  UnderConstructionComponent
 ];
 
 @NgModule({

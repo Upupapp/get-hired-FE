@@ -78,6 +78,42 @@ export class JobEffects {
   //   );
   // });
 
+  job$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.saveJob),
+      mergeMap((action) => this.jobService.saveJob(action.job)
+        .pipe(
+          map((res: any) => {
+            const job: Model.Job = res.data;
+            return JobActions.saveJobSuccess({ job });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.saveJobFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  basicList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getBasicJobList),
+      mergeMap((action) => this.jobService.getJobBasicList(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const basicList: Model.BasicList[] = res.data;
+            return JobActions.getBasicJobListSuccess({ basicList });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getBasicJobListFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   categoryList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.getCategoryList),

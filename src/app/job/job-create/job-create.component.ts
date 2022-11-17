@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import * as Model from '../job.model';
 
@@ -105,10 +107,17 @@ export class JobCreateComponent implements OnInit {
 
   initial$ = this.jobFacade.initial$
     .pipe().subscribe(this.setInitialForm.bind(this));
+  info$ = this.jobFacade.info$
+    .pipe().subscribe(this.setJobInfo.bind(this));
+  success$ = this.jobFacade.success$
+    .pipe().subscribe(this.afterSubmit.bind(this));
 
   constructor(
     private fb: FormBuilder,
-    private jobFacade: JobFacade
+    private jobFacade: JobFacade,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -168,22 +177,57 @@ export class JobCreateComponent implements OnInit {
     }
   }
 
-  saveAsDraft() {
+  setJobInfo(raw: Model.JobInfo) {
+    if (raw) {
+      this.jobForm.controls.initialData.get('industryId').setValue(raw.industryId);
+      this.jobForm.controls.initialData.get('jobRole').setValue(raw.jobRole);
+      this.jobForm.controls.initialData.get('jobSkills').setValue(raw.jobSkills);
+      this.jobForm.controls.initialData.get('jobTags').setValue(raw.jobTags);
+      this.jobForm.controls.initialData.get('jobRate').setValue(raw.jobRate);
+      this.jobForm.controls.initialData.get('salaryMinimum').setValue(raw.salaryMinimum);
+      this.jobForm.controls.initialData.get('salaryMaximum').setValue(raw.salaryMaximum);
+    }
+  }
 
+  saveAsDraft() {
+    const job: Model.Job = {
+      ...this.jobForm.controls.initialData.value,
+      ...this.jobForm.controls.jobInfo.value,
+      jobStatusId: 1 // As Draft
+    };
+
+    this.jobFacade.saveJob(job);
+  }
+
+  afterSubmit(event) {
+    if (event == 'asDraft') {
+      this.snackBar.open(`Job successfully save as Draft.`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
+    } else if (event == 'published') {
+      this.snackBar.open(`Job successfully published`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
+    }
   }
 
   cancel() {
-
+    this.router.navigate(['../'], { relativeTo: this.route})
   }
 
   changeStep(number: number, formName?: string) {
     this.stepper = number;
-    // formName.ngSubmit.emit();
 
     switch (formName) {
       case 'initialData':
-        const body = this.jobForm.controls[formName].value;
-        this.jobFacade.saveInitialForm(body);
+        const bodyInitial = this.jobForm.controls[formName].value;
+        this.jobFacade.saveInitialForm(bodyInitial);
+        break;
+      case 'jobInfo':
+        const bodyInfo = this.jobForm.controls[formName].value;
+        this.jobFacade.saveJobInfo(bodyInfo);
         break;
     }
   }

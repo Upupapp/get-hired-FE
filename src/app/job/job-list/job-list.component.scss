@@ -1,0 +1,55 @@
+@import "src/assets/styles/colors";
+
+.breadcrumbs{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 14px;
+	/* identical to box height, or 121% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #8D8D8D;
+}
+
+.main-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 21px;
+	line-height: 39px;
+	color: #121F3F;
+}
+
+
+.card{
+	background: #FFFFFF;
+	//box-shadow: 0px 3.5px 5.5px rgba(0, 0, 0, 0.02);
+	border-radius: 15px;
+	border: none;
+	padding: 25px;
+}
+
+.btn-add-service{
+	background: #FF7062;
+	border-radius: 6px;
+	padding: 7px 10px 6px 20px;
+	color: white;
+	font-size: 13px;
+	//position: absolute;
+	//right: 0px;
+
+	&:hover{
+		background: rgba(#FF7062, 0.7);
+	}
+}
+
+.btn-menu{
+	background: #F0F1F5 !important;
+	//border: 1px solid rgba(93, 93, 93, 0.2) !important;
+	box-sizing: border-box !important;
+	border-radius: 8px !important;
+	//padding: 11px 15px !important;
+	box-shadow: 0px 3.5px 5.5px rgba(0, 0, 0, 0.02);
+}

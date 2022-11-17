@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { JobCreateComponent } from '@app-job/job-create/job-create.component';
 
 const routes: Routes = [
-  { path: 'create', component: JobCreateComponent }
+  // { path: 'create', component: JobCreateComponent }
 ];
 
 @NgModule({

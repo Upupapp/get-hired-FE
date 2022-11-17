@@ -13,6 +13,11 @@ export const getJobList = createSelector (
   state => state.list
 );
 
+export const success = createSelector (
+  getJobInitState,
+  state => state.succesMsg
+);
+
 export const getJobDetails = createSelector (
   getJobInitState,
   state => state.selected
@@ -58,5 +63,9 @@ export const getIntialDetails = createSelector (
   state => state.initialDetails
 );
 
+export const getJobInfo = createSelector (
+  getJobInitState,
+  state => state.jobInfo
+);
 
 

@@ -20,6 +20,7 @@ export class AccountSettingComponent implements OnInit {
 
   success$ = this.authFacade.success$
     .pipe().subscribe(this.afterChange.bind(this));
+
   constructor(
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,

@@ -33,12 +33,42 @@ enum AllFeatureActionTypes {
   GetLevelListSuccess = '[job] - Get Level List Success',
   GetLevelListFail = '[job] - Get Level List Fail',
 
-  SetJobInitialDetails = '[job] - Set Job Initial Details'
+  GetBasicJobList = '[job] - Get Basic Job List',
+  GetBasicJobListSuccess = '[job] - Get Basic Job List Success',
+  GetBasicJobListFail = '[job] - Get Basic Job List Fail',
+
+  SaveJob = '[job] - Save Job',
+  SaveJobSuccess = '[job] - Save Job Success',
+  SaveJobFail = '[job] - Save Job Fail',
+
+  SetJobInitialDetails = '[job] - Set Job Initial Details',
+  SetJobInfo = '[job] - Set Job Initial Details'
+
 };
 
 export const setJobInitialDetails = createAction(
   AllFeatureActionTypes.SetJobInitialDetails,
   props<{ initialDetails: Model.InitialDetails }>()
+);
+
+export const setJobInfo = createAction(
+  AllFeatureActionTypes.SetJobInfo,
+  props<{ jobInfo: Model.JobInfo }>()
+);
+
+export const saveJob = createAction(
+  AllFeatureActionTypes.SaveJob,
+  props<{ job: Model.Job }>()
+);
+
+export const saveJobSuccess = createAction(
+  AllFeatureActionTypes.SaveJobSuccess,
+  props<{ job: Model.Job }>()
+);
+
+export const saveJobFail = createAction(
+  AllFeatureActionTypes.SaveJobFail,
+  props<{ payload: any }>()
 );
 
 export const getCategoryList = createAction(
@@ -136,5 +166,20 @@ export const getLevelListSuccess = createAction(
 
 export const getLevelListFail = createAction(
   AllFeatureActionTypes.GetLevelListFail,
+  props<{ payload: any }>()
+);
+
+export const getBasicJobList = createAction(
+  AllFeatureActionTypes.GetBasicJobList,
+  props<{ companyId: string }>()
+);
+
+export const getBasicJobListSuccess = createAction(
+  AllFeatureActionTypes.GetBasicJobListSuccess,
+  props<{ basicList: Model.BasicList[] }>()
+);
+
+export const getBasicJobListFail = createAction(
+  AllFeatureActionTypes.GetBasicJobListFail,
   props<{ payload: any }>()
 );

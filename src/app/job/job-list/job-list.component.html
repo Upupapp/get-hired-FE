@@ -13,15 +13,20 @@
       </div>
     </div>
     <br>
-    <div class="card card-body" *ngIf="listView && !loading">
+    <div class="card card-body" *ngIf="!loading && list$ | async as list; else noList">
       <app-reusable-table [loading]="loading" [statusArray]="status" [statusFilter]="true" statusName="Status"
         (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)" [componentTitle]="'Company Jobs'"
         [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
         [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10"
-        [listDataSource]="jobLists">
+        [listDataSource]="list">
       </app-reusable-table>
     </div>
-
+    <ng-template #noList>
+      <div class="w-100 text-center">
+        <img src="assets/images/empty-result.gif" class="w-50 mb-2 rounded" />
+        <h2 class="color-blue-dark">No Result <span class="text-primary-red">Found</span></h2>
+      </div>
+    </ng-template>
 
     <!-- LOADING ANIMATION SCREEN -->
     <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">

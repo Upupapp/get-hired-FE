@@ -19,6 +19,7 @@ export interface Job {
   expirationDate?: Date;
   jobStatusId?: number;
   jobCity?: string;
+  bannerFile?: File;
 }
 
 export interface InitialDetails {
@@ -61,4 +62,19 @@ export interface Options {
   id: number;
   name: string;
   icon?: string;
+}
+
+export interface BasicList {
+  jobId: string;
+  jobTitle: string;
+  companyId: string;
+  jobTypeId: number;
+  jobTypeName: string;
+  workSetupId: number;
+  workSetupName: string;
+  salaryMinimum: number;
+  salaryMaximum: number;
+  createdAt: Date;
+  jobStatusId: number;
+  jobCity: string;
 }

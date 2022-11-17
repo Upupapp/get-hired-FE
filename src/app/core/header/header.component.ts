@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.coreService.logout().subscribe(isLogout => {
+    this.coreService.logout().pipe().subscribe(isLogout => {
       console.log(isLogout);
       if(isLogout.success) {
         localStorage.clear();

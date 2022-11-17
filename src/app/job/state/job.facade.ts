@@ -10,7 +10,7 @@ export class JobFacade {
   loading$ = this.store.pipe(select(fromfeature.loading));
   jobDetails$ = this.store.pipe(select(fromfeature.getJobDetails));
   jobList$ = this.store.pipe(select(fromfeature.getJobList));
-
+  success$ = this.store.pipe(select(fromfeature.success));
   industry$ = this.store.pipe(select(fromfeature.getIndustryList));
   badge$ = this.store.pipe(select(fromfeature.getBadgeList));
   jobRole$ = this.store.pipe(select(fromfeature.getJobRoleList));
@@ -20,7 +20,7 @@ export class JobFacade {
   category$ = this.store.pipe(select(fromfeature.getCategoryList));
 
   initial$ = this.store.pipe(select(fromfeature.getIntialDetails));
-
+  info$ = this.store.pipe(select(fromfeature.getJobInfo));
 
   error$: any;
 
@@ -40,8 +40,20 @@ export class JobFacade {
   //   this.store.dispatch(JobAction.updateProfile({ userProfile }));
   // }
 
+  saveJob(job: Model.Job) {
+    this.store.dispatch(JobAction.saveJob({ job }));
+  }
+
+  saveJobInfo(jobInfo: Model.JobInfo) {
+    this.store.dispatch(JobAction.setJobInfo({ jobInfo }));
+  }
+
   saveInitialForm(initialDetails: Model.InitialDetails) {
     this.store.dispatch(JobAction.setJobInitialDetails({ initialDetails }));
+  }
+
+  getBasicList(companyId: string) {
+    this.store.dispatch(JobAction.getBasicJobList({ companyId }));
   }
 
   getCategory() {

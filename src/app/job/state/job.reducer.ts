@@ -9,7 +9,7 @@ export interface State extends AppState.State {
 
 export interface JobState {
   selected: Model.Job | null;
-  list: Model.Job[];
+  list: Model.Job[] | Model.BasicList[];
   error: any;
   succesMsg: string;
   loading: boolean;
@@ -21,6 +21,7 @@ export interface JobState {
   level: Model.Options[];
   category: Model.Options[];
   initialDetails: Model.InitialDetails;
+  jobInfo: Model.JobInfo;
 }
 
 const initialState: JobState  = {
@@ -36,11 +37,35 @@ const initialState: JobState  = {
   typeList: [],
   level: [],
   category: [],
-  initialDetails: null
+  initialDetails: null,
+  jobInfo: null
 }
 
 export const jobReducer = createReducer<JobState>(
   initialState,
+  on(JobActions.saveJob, (state): JobState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null
+    };
+  }),
+  on(JobActions.saveJobSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      selected: action.job,
+      loading: false,
+      succesMsg: action.job.jobStatusId == 1 ? 'asDraft': 'published'
+    };
+  }),
+  on(JobActions.saveJobFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      succesMsg: null
+    };
+  }),
   on(JobActions.setJobInitialDetails, (state, action): JobState => {
     return {
       ...state,
@@ -51,6 +76,33 @@ export const jobReducer = createReducer<JobState>(
         jobCategoryId: action.initialDetails.jobCategoryId as number,
         workSetupId: action.initialDetails.workSetupId as number
       }
+    };
+  }),
+  on(JobActions.setJobInfo, (state, action): JobState => {
+    return {
+      ...state,
+      jobInfo: action.jobInfo
+    };
+  }),
+  on(JobActions.getBasicJobList, (state): JobState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(JobActions.getBasicJobListSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      list: action.basicList,
+      error: null,
+    };
+  }),
+  on(JobActions.getBasicJobListFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
     };
   }),
   on(JobActions.getCategoryList, (state): JobState => {
