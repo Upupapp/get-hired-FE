@@ -1,0 +1,43 @@
+<form [formGroup]="questionsForm">
+
+  <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+
+    <div class="col-12 col-lg-12">
+      <h5 class="title-label mt-3">Question {{ questionIndex }}
+        <button class="btn btn-create-interview float-end" [disabled]="!questionsForm.valid"
+          (click)="add()">Add</button>
+      </h5>
+    </div>
+
+    <div class="col-12 col-md-8 mb-3">
+      <p class="title-label-sub mb-3">Add interview questions that can be save as template</p>
+
+      <div class="form-group d-flex">
+        <textarea type="text" name="search" class="form-control" rows="6" formControlName="question"
+          placeholder="i.e. What have been your key as a web designer?">
+    </textarea>
+      </div>
+    </div>
+
+    <div class="row col-4">
+      <div class="mb-3">
+        <div class="title-container mb-3">
+          <label>Answer Duration <i>(In minutes)</i></label>
+          <div class="form-group">
+            <input type="number" min="3" class="form-control" placeholder="Duration in minutes"
+              formControlName="answerDuration">
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="title-container mb-3">
+          <label>Number of Retakes</label>
+          <div class="form-group">
+            <input type="number" min="3" class="form-control" placeholder="Number of retakes" formControlName="retakes">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

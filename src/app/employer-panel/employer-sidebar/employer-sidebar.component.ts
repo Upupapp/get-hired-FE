@@ -54,7 +54,7 @@ export class EmployerSidebarComponent implements OnInit {
     },
 
     {
-      title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+      title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'recruiter/contacts',
       sub_routes: [
         {
           title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'applicants',
@@ -67,7 +67,7 @@ export class EmployerSidebarComponent implements OnInit {
     },
 
     {
-      title: 'Create Interview', icon: 'create-interview.png', class: 'interviews', route: 'interview-settings'
+      title: 'Create Interview', icon: 'create-interview.png', class: 'interviews', route: 'recruiter/interview'
     },
 
     {

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployerInterviewComponent } from './employer-interview.component';
+import { SharedModule } from '@app-shared/shared.module';
 
 
 
@@ -9,7 +10,8 @@ import { EmployerInterviewComponent } from './employer-interview.component';
     EmployerInterviewComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule
   ]
 })
 export class EmployerInterviewModule { }

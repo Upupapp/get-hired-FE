@@ -33,6 +33,14 @@ const routes: Routes = [
         loadChildren: () => import('./employer-settings/employer-settings.module').then(m => m.EmployerSettingsModule)
       },
       {
+        path: 'contacts',
+        loadChildren: () => import('./employer-contacts/employer-contacts.module').then(m => m.EmployerContactsModule)
+      },
+      {
+        path: 'interview',
+        loadChildren: () => import('./employer-interview/employer-interview.module').then(m => m.EmployerInterviewModule)
+      },
+      {
         path: 'subscription',
         loadChildren: () => import('./employer-subscription/employer-subscription.module').then(m => m.EmployerSubscriptionModule)
       },

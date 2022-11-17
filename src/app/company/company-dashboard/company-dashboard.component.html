@@ -1,5 +1,6 @@
 <section *ngIf="dashboard$ | async as dashboard">
-  <app-dashboard-banner [details]="dashboard.company"></app-dashboard-banner>
+  <app-dashboard-banner
+  [details]="dashboard.company" [charts]="dashboard.charts"></app-dashboard-banner>
   <app-dashboard-charts [details]="dashboard.charts"></app-dashboard-charts>
   <app-dashboard-statistics [details]="dashboard.statistic"></app-dashboard-statistics>
 </section>

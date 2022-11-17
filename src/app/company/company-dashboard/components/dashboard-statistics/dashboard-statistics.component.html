@@ -4,8 +4,8 @@
 			<div class="mb-2 card-application-hired"  style="position: relative;"
 			[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
 				<h5 class="title-card-hired">Total Hired</h5>
-				<h3 class="title-stat-hired">55</h3>
-				<h5 class="title-stat-sub-hired">80% Total Increase</h5>
+				<h3 class="title-stat">{{ details.totalHired || 0}}</h3>
+				<h5 class="title-stat-sub-hired">{{ details.totalIncrease || 0}}% Total Increase</h5>
 			</div>
 		</div>
 
@@ -15,7 +15,7 @@
 				<h5 class="title-card">Interview Appointments
 					<img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img me-4" style="width: 30px; margin-top: 15px;">
 				</h5>
-				<h3 class="title-stat">74</h3>
+				<h3 class="title-stat">{{ details.interviewAppointments || 0}}</h3>
 				<h5 class="title-stat-sub">Total Interview</h5>
 			</div>
 		</div>

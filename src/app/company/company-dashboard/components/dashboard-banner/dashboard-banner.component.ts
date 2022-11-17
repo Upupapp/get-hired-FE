@@ -10,6 +10,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 })
 export class DashboardBannerComponent implements OnInit {
   @Input() details: any;
+  @Input() charts: any;
 
   constructor(
     private router: Router

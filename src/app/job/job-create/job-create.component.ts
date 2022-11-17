@@ -153,6 +153,9 @@ export class JobCreateComponent implements OnInit {
         salaryMaximum: ['']
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
+      }),
+      interview: this.fb.group({
+        interviewQuestions: new FormArray([])
       })
     });
   }
@@ -193,6 +196,7 @@ export class JobCreateComponent implements OnInit {
     const job: Model.Job = {
       ...this.jobForm.controls.initialData.value,
       ...this.jobForm.controls.jobInfo.value,
+      interviewQuestions: this.jobForm.controls.interviewQuestions.value,
       jobStatusId: 1 // As Draft
     };
 
@@ -214,7 +218,7 @@ export class JobCreateComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['../'], { relativeTo: this.route})
+    this.router.navigate(['../'], { relativeTo: this.route })
   }
 
   changeStep(number: number, formName?: string) {

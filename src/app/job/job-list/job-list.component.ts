@@ -79,7 +79,7 @@ export class JobListComponent implements OnInit {
       status: el.status,
     };
   };
-  public status: string[] = ["Active", "Inactive", "Archived"];
+  public status: string[] = ["All","Draft", "Published"];
 
   constructor(
     private router: Router,

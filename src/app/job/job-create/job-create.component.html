@@ -63,14 +63,11 @@
     </ng-container>
 
     <ng-container *ngIf="stepper === 2">
-      <app-create-job-post-step (jobPostIndustryEvent)="updateObject($event, 'jobPostIndustry')"
-        [jobPostIndustry]="jobPostData?.jobPostIndustry"></app-create-job-post-step>
+      <app-create-job-post-step formGroupName="jobInfo"></app-create-job-post-step>
     </ng-container>
 
     <ng-container *ngIf="stepper === 3">
-      <app-create-interview-questions
-        (jobPostInterviewQuestionsEvent)="updateObject($event, 'jobPostInterviewQuestions')"
-        [jobPostInterviewQuestions]="jobPostData?.jobPostInterviewQuestions"></app-create-interview-questions>
+      <app-create-interview-questions formGroupName="interview"></app-create-interview-questions>
     </ng-container>
 
     <ng-container *ngIf="stepper === 4">

@@ -16,6 +16,7 @@ import { jobReducer } from './state/job.reducer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JobListComponent } from './job-list/job-list.component';
 import { JobExpiredComponent } from './job-expired/job-expired.component';
+import { InterviewModule } from '@main/interview/interview.module';
 
 const routes: Routes = [
   { path: 'expired', component: JobExpiredComponent },
@@ -45,6 +46,7 @@ const exportedComponents = [
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
+    InterviewModule,
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),
     RouterModule.forChild(routes)

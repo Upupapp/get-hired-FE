@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { industries, job_role } from '@app-job/jobs-model-interface';
 import { JobFacade } from '@app-job/state/job.facade';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -12,8 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./create-job-post-step.component.scss']
 })
 export class CreateJobPostStepComponent implements OnInit {
-  @Input() jobPostIndustry: any;
-  @Output() jobPostIndustryEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Input() formGroupName: any;
 
   industry$ = this.jobFacade.industry$;
   jobRoles$ = this.jobFacade.jobRole$;
@@ -75,12 +74,15 @@ export class CreateJobPostStepComponent implements OnInit {
 
   constructor(
     private jobFacade: JobFacade,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private rootFormGroup: FormGroupDirective
   ) { }
 
   ngOnInit(): void {
     this.jobFacade.getIndustry();
     this.jobFacade.getJobRole();
+    this.jobInfoForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
+
     this.jobSkills = this.jobInfoForm.get('jobSkills') as FormArray;
     this.jobTags = this.jobInfoForm.get('jobTags') as FormArray;
 
