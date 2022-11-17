@@ -20,7 +20,7 @@ export class DashboardBannerComponent implements OnInit {
   }
 
   redirectToEdit() {
-    this.router.navigateByUrl('/company/settings');
+    this.router.navigateByUrl('/recruiter/company/settings');
   }
 
 }

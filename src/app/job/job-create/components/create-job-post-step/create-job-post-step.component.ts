@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { industries, job_role } from '@app-job/jobs-model-interface';
+import { JobFacade } from '@app-job/state/job.facade';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-job-post-step',
@@ -12,33 +15,35 @@ export class CreateJobPostStepComponent implements OnInit {
   @Input() jobPostIndustry: any;
   @Output() jobPostIndustryEvent: EventEmitter<any> = new EventEmitter<any>();
 
+  industry$ = this.jobFacade.industry$;
+  jobRoles$ = this.jobFacade.jobRole$;
+
+  jobSkills: FormArray;
+  jobTags: FormArray;
+  jobInfoForm: FormGroup;
+
   public search: string = "";
-  public industries: any[] = industries;
-  public job_role: any[] = job_role;
   public rates: any[] = [
     {
+      id:1,
       title: "Monthly",
       rate: "month",
       icon: '/rate-monthly'
     },
-
     {
+      id: 2,
       title: "Daily",
       rate: "day",
       icon: '/rate-daily'
     },
-
     {
+      id: 3,
       title: "Hourly",
       rate: "hour",
       icon: '/rate-24'
     },
   ];
-  public industriesFiltered: any[] = [...this.industries];
-  public skill_requirements: string[] = [];
-  public tags: string[] = [];
-  public selectedIndustry: any = "";
-  public selectedJobRole: any = "";
+
   public selectedRates: any = "";
   public budget: any = {
     min: 0,
@@ -68,57 +73,61 @@ export class CreateJobPostStepComponent implements OnInit {
 
   public days: number[] = new Array(31).fill(1).map((el,i) => i + 1);
 
-  constructor() { }
+  constructor(
+    private jobFacade: JobFacade,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
+    this.jobFacade.getIndustry();
+    this.jobFacade.getJobRole();
+    this.jobSkills = this.jobInfoForm.get('jobSkills') as FormArray;
+    this.jobTags = this.jobInfoForm.get('jobTags') as FormArray;
+
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth'
     });
-    console.log(this.jobPostIndustry)
   }
 
-  generateProjectDuration(date){
 
-  }
+  addItem(control, controlArray: FormArray) {
+    let value = this.jobInfoForm.get(control).value;
 
-  addItem(event, arrayItem, field){
-    let value = event?.target?.value;
-    let index = arrayItem.findIndex(el => el === value);
+    console.log(controlArray);
 
-    if(index === -1){
-      arrayItem.push(value);
+    if (value && value != '') {
+      if (controlArray.controls.length != 5) {
+        controlArray.push(new FormControl(value));
+        this.jobInfoForm.controls[control].setValue(null);
+      } else {
+        this.snackBar.open(`You are only allowed to add up to 5 items to this category`,
+          '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      }
+    } else {
+      this.snackBar.open(`Empty string not allowed`,
+        '', { duration: 4000, panelClass: ['danger-snackbar'] });
     }
-
-    // rebuild request body
-    this.rebuildObject(`${field}`, arrayItem);
   }
 
-  removeItem(item, arrayItem, field){
-    let index = arrayItem?.findIndex(el => el?.id === item?.id);
-    arrayItem.splice(index, 1);
-
-    // rebuild request body
-    this.rebuildObject(`${field}`, arrayItem);
+  removeItem(index: number, controlArray: FormArray) {
+    controlArray.removeAt(index);
   }
 
-
-  rebuildObject(field, data){
-    this.jobPostIndustry[`${field}`] = data;
-    this.jobPostIndustryEvent.emit(this.jobPostIndustry);
-    this.skillModel = undefined;
-    this.tagModel = undefined;
+  selectRate(chosen) {
+    this.selectedRates = chosen;
+    this.jobInfoForm.controls.jobRate.setValue(chosen);
   }
 
-  searchIndustry(){
-    const listDataSource = [...this.industries]
-    .filter(el => {
-      return JSON.stringify(el).toLowerCase().includes(this.search.toLowerCase());
-    });
+  // searchIndustry(){
+  //   const listDataSource = [...this.industries]
+  //   .filter(el => {
+  //     return JSON.stringify(el).toLowerCase().includes(this.search.toLowerCase());
+  //   });
 
-    this.industriesFiltered = listDataSource;
+  //   this.industriesFiltered = listDataSource;
 
-  }
+  // }
 
 }

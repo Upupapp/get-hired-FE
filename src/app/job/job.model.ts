@@ -39,6 +39,24 @@ export interface InitialDetails {
   jobCategoryId?: number;
 }
 
+export interface JobInfo {
+  industryId?: string;
+  jobRole?: string;
+  jobSkills?: string[];
+  jobTags?: string[];
+  jobRate?: string;
+  salaryMinimum?: number;
+  salaryMaximum?: number;
+  contractStart: DetailedDate;
+  contractEnd: DetailedDate;
+}
+
+export interface DetailedDate {
+  month: string;
+  day: number;
+  year: number;
+}
+
 export interface Options {
   id: number;
   name: string;

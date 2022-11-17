@@ -89,7 +89,7 @@ export class JobCreateComponent implements OnInit {
 
     {
       id: 2,
-      title: "Job Requirements"
+      title: "Rates and Roles"
     },
 
     {
@@ -131,12 +131,25 @@ export class JobCreateComponent implements OnInit {
         requirementsTxt: [''],
         goodToHaveTxt: [''],
         educationalBackgroundTxt: ['']
+      }),
+      jobInfo: this.fb.group({
+        industryId: [''],
+        jobRole: [''],
+        jobSkills: new FormArray([]),
+        jobSKillsTxt: [''],
+        jobTags: new FormArray([]),
+        jobTagsTxt: [''],
+        jobRate: [''],
+        salaryMinimum: [''],
+        salaryMaximum: ['']
+        // contractStart: DetailedDate;
+        // contractEnd: DetailedDate;
       })
     });
   }
 
   setInitialForm(raw: Model.InitialDetails) {
-    if(raw) {
+    if (raw) {
       this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
       this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
       this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
@@ -166,10 +179,10 @@ export class JobCreateComponent implements OnInit {
   changeStep(number: number, formName?: string) {
     this.stepper = number;
     // formName.ngSubmit.emit();
-    const body = this.jobForm.controls[formName].value;
 
-    switch(formName) {
+    switch (formName) {
       case 'initialData':
+        const body = this.jobForm.controls[formName].value;
         this.jobFacade.saveInitialForm(body);
         break;
     }
