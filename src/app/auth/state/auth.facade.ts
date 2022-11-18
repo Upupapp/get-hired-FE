@@ -11,6 +11,7 @@ import * as Model from '../auth.model';
 export class AuthFacade {
 
   loading$ = this.store.pipe(select(fromAuth.getLoading));
+  getSuccess$ = this.store.pipe(select(fromAuth.success));
   success$ = this.store.pipe(select(fromAuth.successMsg));
   error$ = this.store.pipe(select(fromAuth.errorMsg));
   credentials$ = this.store.pipe(select(fromAuth.getAuthCredentials));

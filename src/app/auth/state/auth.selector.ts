@@ -30,3 +30,8 @@ export const errorMsg = createSelector(
   getAuthFeatureState,
   state => state.error
 );
+
+export const success = createSelector(
+  getAuthFeatureState,
+  state => state.success
+);

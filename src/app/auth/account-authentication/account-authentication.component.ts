@@ -61,6 +61,10 @@ export class AccountAuthenticationComponent implements OnInit {
       case 'verifyEmail':
         setTimeout(() => this.verifyEmail(), 3000);
         break;
+      case 'registered':
+        this.loading = false;
+        this.isResent = true;
+        break;
       default:
         console.log('mode missing');
         break;

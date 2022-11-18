@@ -6,7 +6,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { AuthService } from '../auth.service';
 import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
-import { combineLatest, map, Subject, Subscription, takeUntil } from 'rxjs';
+import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
@@ -27,7 +27,7 @@ export class SignupComponent implements OnInit {
   email: string;
   isResent: boolean;
 
-  success$ = this.authFacade.success$;
+  success$ = this.authFacade.getSuccess$;
   loading$ = this.authFacade.loading$;
   error$ = this.authFacade.error$
     .pipe().subscribe(this.showError.bind(this));
@@ -57,14 +57,21 @@ export class SignupComponent implements OnInit {
       map(([success, loading]) => {
         if (success && !loading) {
           this.submitting = false;
+          console.log('here meeee')
           this.openVerification(this.email);
         }
-      })).subscribe();
+      }),
+      catchError(err => {
+        this.submitting = false;
+        return of(err)
+      })
+    ).subscribe();
   }
 
   register(event) {
-    this.submitting = true;
     if (this.registerForm.valid) {
+      this.submitting = true;
+
       this.email = this.registerForm.get('email').value;
       let credentials: Model.Credentials = {
         email: this.registerForm.get('email').value,
@@ -75,14 +82,17 @@ export class SignupComponent implements OnInit {
       };
 
       this.authFacade.signUp(credentials);
+    } else {
+      this.submitting = false;
     }
   }
 
   openVerification(email: string) {
-    if (email) {
-      this.isResent = true;
-      setTimeout(() => this.router.navigate(['../signin'], { relativeTo: this.activatedRoute }), 3000);
-    }
+    this.router.navigate(['../verify'], { queryParams: { mode: 'registered'}})
+    // if (email) {
+    //   this.isResent = true;
+    //   setTimeout(() => this.router.navigate(['../signin'], { relativeTo: this.activatedRoute }), 3000);
+    // }
   }
 
   showError(err: any) {
