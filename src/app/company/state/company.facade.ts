@@ -17,6 +17,10 @@ export class CompanyFacade {
       private store: Store<State>,
       ) { }
 
+    resetStateNotif() {
+      this.store.dispatch(CompanyAction.resetState());
+    }
+
     getAllCompany() {
       this.store.dispatch(CompanyAction.getAllcompany());
     }

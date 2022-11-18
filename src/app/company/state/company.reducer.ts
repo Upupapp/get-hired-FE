@@ -27,6 +27,14 @@ const initialState: CompanyState = {
 
 export const companyReducer = createReducer<CompanyState>(
   initialState,
+  on(CompanyActions.resetState, (state): CompanyState => {
+    return {
+      ...state,
+      succesMsg: '',
+      error: null,
+      loading: false
+    };
+  }),
   on(CompanyActions.getAllcompany, (state): CompanyState => {
     return {
       ...state,

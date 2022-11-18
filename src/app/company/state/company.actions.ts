@@ -25,7 +25,13 @@ enum AllCompanyActionTypes {
   CompanyDashboardSuccess = '[company] - Company Dashboard Success',
   CompanyDashboardFail = '[company] - Company Dashboard Fail',
 
+  ResetState = '[company] - Reset State'
+
 }
+
+export const resetState = createAction(
+  AllCompanyActionTypes.ResetState,
+);
 
 export const getAllcompany = createAction(
   AllCompanyActionTypes.GetAllCompany,

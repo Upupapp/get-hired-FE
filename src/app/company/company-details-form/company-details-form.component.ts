@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./company-details-form.component.scss'],
   animations: [mainAnimations]
 })
-export class CompanyDetailsFormComponent implements OnInit {
+export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   private req: Subscription;
   public companyDetailsForm!: FormGroup;
@@ -139,12 +139,13 @@ export class CompanyDetailsFormComponent implements OnInit {
   }
 
   afterSubmit(event) {
+    console.log(event);
     if (event == 'created') {
       this.snackBar.open(`Company successfully setup. You can now access other features`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
-    }else if (event == 'updated') {
+    } else if (event == 'updated') {
       this.snackBar.open(`Company successfully Updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
@@ -164,5 +165,9 @@ export class CompanyDetailsFormComponent implements OnInit {
     } else{
       setTimeout(() => this.loadingDialog.closeAll(), 2000);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.companyFacade.resetStateNotif();
   }
 }
