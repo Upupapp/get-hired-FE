@@ -37,6 +37,10 @@ enum AllFeatureActionTypes {
   GetBasicJobListSuccess = '[job] - Get Basic Job List Success',
   GetBasicJobListFail = '[job] - Get Basic Job List Fail',
 
+  GetExpiredJobList = '[job] - Get Expired Job List',
+  GetExpiredJobListSuccess = '[job] - Get Expired Job List Success',
+  GetExpiredJobListFail = '[job] - Get Expired Job List Fail',
+
   SaveJob = '[job] - Save Job',
   SaveJobSuccess = '[job] - Save Job Success',
   SaveJobFail = '[job] - Save Job Fail',
@@ -181,5 +185,20 @@ export const getBasicJobListSuccess = createAction(
 
 export const getBasicJobListFail = createAction(
   AllFeatureActionTypes.GetBasicJobListFail,
+  props<{ payload: any }>()
+);
+
+export const getExpiredJobList = createAction(
+  AllFeatureActionTypes.GetExpiredJobList,
+  props<{ companyId: string }>()
+);
+
+export const getExpiredJobListSuccess = createAction(
+  AllFeatureActionTypes.GetExpiredJobListSuccess,
+  props<{ expiredList: Model.BasicList[] }>()
+);
+
+export const getExpiredJobListFail = createAction(
+  AllFeatureActionTypes.GetExpiredJobListFail,
   props<{ payload: any }>()
 );

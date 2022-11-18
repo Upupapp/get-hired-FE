@@ -56,6 +56,10 @@ export class JobFacade {
     this.store.dispatch(JobAction.getBasicJobList({ companyId }));
   }
 
+  getExpiredList(companyId: string) {
+    this.store.dispatch(JobAction.getExpiredJobList({ companyId }));
+  }
+
   getCategory() {
     this.store.dispatch(JobAction.getCategoryList());
   }

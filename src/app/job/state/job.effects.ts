@@ -114,6 +114,24 @@ export class JobEffects {
     );
   });
 
+  expiredList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getExpiredJobList),
+      mergeMap((action) => this.jobService.getJobExpiredList(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const expiredList: Model.BasicList[] = res.data;
+            return JobActions.getExpiredJobListSuccess({ expiredList });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getExpiredJobListFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   categoryList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.getCategoryList),

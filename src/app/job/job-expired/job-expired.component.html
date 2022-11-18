@@ -1,1 +1,29 @@
-<p>job-expired works!</p>
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+  <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+    <div class="card card-body py-3">
+      <div class="w-100">
+        <span class="main-title mt-3">Expired Job</span>
+
+        <div class="float-end">
+          <button class="btn btn-add-service" (click)="addJobs()">
+            New Job
+            <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1">
+          </button>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="card card-body" *ngIf="!loading && list$ | async as list">
+      <app-reusable-table [loading]="loading" [statusFilter]="false" statusName="Status"
+        (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)" [componentTitle]="'Expired Jobs'"
+        [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
+        [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10"
+        [listDataSource]="list">
+      </app-reusable-table>
+    </div>
+
+    <!-- LOADING ANIMATION SCREEN -->
+    <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
+    </custom-profile-loader>
+  </div>
+</div>

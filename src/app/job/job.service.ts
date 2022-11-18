@@ -28,6 +28,10 @@ export class JobService {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
   }
 
+  getJobExpiredList(companyId: string) {
+    return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/expiredlist?id=${companyId}`);
+  }
+
   getIndustryList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/industries`);
   }

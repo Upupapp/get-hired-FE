@@ -105,6 +105,27 @@ export const jobReducer = createReducer<JobState>(
       error: action.payload
     };
   }),
+  on(JobActions.getExpiredJobList, (state): JobState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(JobActions.getExpiredJobListSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      list: action.expiredList,
+      error: null,
+    };
+  }),
+  on(JobActions.getExpiredJobListFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
   on(JobActions.getCategoryList, (state): JobState => {
     return {
       ...state,

@@ -12,7 +12,7 @@
 				<div class="w-100 d-flex mb-3"
 				[ngClass]="location?.match(item?.route)
 				? 'sidebar-title-active'
-				: location?.match('expired') && item?.route === 'expired-jobs'
+				: location?.match('expired') && item?.route === 'recruiter/jobs/expired'
 				? 'sidebar-title-active'
 				: ''"
 
