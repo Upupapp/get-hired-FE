@@ -13,6 +13,16 @@ import * as Model from '../job.model';
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
   subscriptions = new Subscription()
+  asyncLocalStorage = {
+    setItem: async function (key, value) {
+      await Promise.resolve();
+      localStorage.setItem(key, value);
+    },
+    getItem: async function (key) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
+    }
+  };
 
   public jobPostData: any = {
     jobPostIndustry: {
@@ -220,11 +230,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveAsDraft() {
+  async saveAsDraft() {
+    const user = await this.asyncLocalStorage.getItem('user');
+
+    const { initialData, jobInfo, interview } = this.jobForm.controls;
     const job: Model.Job = {
-      ...this.jobForm.controls.initialData.value,
-      ...this.jobForm.controls.jobInfo.value,
-      interviewQuestions: this.jobForm.controls.interviewQuestions.value,
+      ...initialData.value,
+      ...jobInfo.value,
+      interviewQuestions: interview.value.controls.interviewQuestions.value,
+      companyId: JSON.parse(user).companyId,
       jobStatusId: 1 // As Draft
     };
 
