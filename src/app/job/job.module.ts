@@ -17,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JobListComponent } from './job-list/job-list.component';
 import { JobExpiredComponent } from './job-expired/job-expired.component';
 import { InterviewModule } from '@main/interview/interview.module';
+import { JobListActionsComponent } from './job-list-actions/job-list-actions.component';
 
 const routes: Routes = [
   { path: 'expired', component: JobExpiredComponent },
@@ -40,6 +41,7 @@ const exportedComponents = [
   declarations: [
     ...exportedComponents,
     JobExpiredComponent,
+    JobListActionsComponent,
   ],
   imports: [
     CommonModule,
