@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
+import { distinctUntilChanged, Subscription } from 'rxjs';
 import * as Model from '../job.model';
 
 @Component({
@@ -10,7 +11,9 @@ import * as Model from '../job.model';
   templateUrl: './job-create.component.html',
   styleUrls: ['./job-create.component.scss']
 })
-export class JobCreateComponent implements OnInit {
+export class JobCreateComponent implements OnInit, OnDestroy {
+  subscriptions = new Subscription()
+
   public jobPostData: any = {
     jobPostIndustry: {
       "industry": "Technology",
@@ -80,28 +83,32 @@ export class JobCreateComponent implements OnInit {
   }
 
   jobForm: FormGroup
-
   stepper: number = 1;
+  initialFormValid: boolean = false;
+  jobInfoValid: boolean = false;
+  interviewValid: boolean = false;
 
   stepperItems: any[] = [
     {
       id: 1,
       title: "Job Details"
     },
-
     {
       id: 2,
-      title: "Rates and Roles"
+      title: "Rates and Roles",
+      disabled: !this.initialFormValid
     },
 
     {
       id: 3,
-      title: "Create Interview"
+      title: "Create Interview",
+      disabled: !this.jobInfoValid
     },
 
     {
       id: 4,
-      title: "Preview Job Post"
+      title: "Preview Job Post",
+      disabled: !this.interviewValid
     },
   ];
 
@@ -120,6 +127,7 @@ export class JobCreateComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
 
+
   ngOnInit(): void {
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
@@ -132,7 +140,7 @@ export class JobCreateComponent implements OnInit {
         jobDuties: [''],
         jobCategoryId: [''],
         workSetupId: [''],
-        bannerFile: [''],
+        bannerFile: new FormArray([]),
         badges: new FormArray([]),
         requirements: new FormArray([]),
         goodToHave: new FormArray([]),
@@ -143,9 +151,9 @@ export class JobCreateComponent implements OnInit {
       }),
       jobInfo: this.fb.group({
         industryId: [''],
-        jobRole: [''],
+        jobRoleId: [''],
         jobSkills: new FormArray([]),
-        jobSKillsTxt: [''],
+        jobSkillsTxt: [''],
         jobTags: new FormArray([]),
         jobTagsTxt: [''],
         jobRate: [''],
@@ -158,6 +166,26 @@ export class JobCreateComponent implements OnInit {
         interviewQuestions: new FormArray([])
       })
     });
+
+    this.subscriptions.add(
+      this.jobForm.controls.initialData.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
+        this.initialFormValid = status === 'VALID'
+        this.stepperItems[1].disabled = status != 'VALID'
+      }));
+
+    this.subscriptions.add(
+      this.jobForm.controls.jobInfo.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
+        this.jobInfoValid = status === 'VALID'
+        this.stepperItems[2].disabled = status != 'VALID'
+
+      }));
+
+    this.subscriptions.add(
+      this.jobForm.controls.interview.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
+        this.interviewValid = status === 'VALID'
+        this.stepperItems[3].disabled = status != 'VALID'
+      }));
+
   }
 
   setInitialForm(raw: Model.InitialDetails) {
@@ -182,13 +210,13 @@ export class JobCreateComponent implements OnInit {
 
   setJobInfo(raw: Model.JobInfo) {
     if (raw) {
-      this.jobForm.controls.initialData.get('industryId').setValue(raw.industryId);
-      this.jobForm.controls.initialData.get('jobRole').setValue(raw.jobRole);
-      this.jobForm.controls.initialData.get('jobSkills').setValue(raw.jobSkills);
-      this.jobForm.controls.initialData.get('jobTags').setValue(raw.jobTags);
-      this.jobForm.controls.initialData.get('jobRate').setValue(raw.jobRate);
-      this.jobForm.controls.initialData.get('salaryMinimum').setValue(raw.salaryMinimum);
-      this.jobForm.controls.initialData.get('salaryMaximum').setValue(raw.salaryMaximum);
+      this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
+      this.jobForm.controls.jobInfo.get('jobRole').setValue(raw.jobRoleId);
+      this.jobForm.controls.jobInfo.get('jobSkills').setValue(raw.jobSkills);
+      this.jobForm.controls.jobInfo.get('jobTags').setValue(raw.jobTags);
+      this.jobForm.controls.jobInfo.get('jobRate').setValue(raw.jobRate);
+      this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
+      this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
     }
   }
 
@@ -222,6 +250,7 @@ export class JobCreateComponent implements OnInit {
   }
 
   changeStep(number: number, formName?: string) {
+
     this.stepper = number;
 
     switch (formName) {
@@ -243,5 +272,9 @@ export class JobCreateComponent implements OnInit {
 
   publishJobPost() {
     console.log(this.jobPostData)
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

@@ -2,6 +2,7 @@ import * as AppState from '@main/app.state';
 import { createReducer, on } from '@ngrx/store';
 import * as Model from '../job.model';
 import * as JobActions from './job.actions';
+import * as InterviewModel from '@main/interview/interview.model';
 
 export interface State extends AppState.State {
   job: JobState;
@@ -22,6 +23,7 @@ export interface JobState {
   category: Model.Options[];
   initialDetails: Model.InitialDetails;
   jobInfo: Model.JobInfo;
+  interview: InterviewModel.InterviewQuestion[]
 }
 
 const initialState: JobState  = {
@@ -38,7 +40,8 @@ const initialState: JobState  = {
   level: [],
   category: [],
   initialDetails: null,
-  jobInfo: null
+  jobInfo: null,
+  interview: []
 }
 
 export const jobReducer = createReducer<JobState>(

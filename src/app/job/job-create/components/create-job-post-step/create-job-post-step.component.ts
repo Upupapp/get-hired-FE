@@ -82,7 +82,7 @@ export class CreateJobPostStepComponent implements OnInit {
     this.jobFacade.getIndustry();
     this.jobFacade.getJobRole();
     this.jobInfoForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-
+    console.log(this.jobInfoForm);
     this.jobSkills = this.jobInfoForm.get('jobSkills') as FormArray;
     this.jobTags = this.jobInfoForm.get('jobTags') as FormArray;
 
@@ -95,6 +95,7 @@ export class CreateJobPostStepComponent implements OnInit {
 
 
   addItem(control, controlArray: FormArray) {
+    console.log(this.jobInfoForm);
     let value = this.jobInfoForm.get(control).value;
 
     console.log(controlArray);

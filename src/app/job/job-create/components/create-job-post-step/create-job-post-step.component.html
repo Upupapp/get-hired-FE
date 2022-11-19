@@ -16,7 +16,7 @@
       <div class="col-12 col-md-6 mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}"
         *ngIf="jobRoles$ | async as roles">
         <label style="margin-top: 36px;">Job Role</label>
-        <select class="form-select" formControlName="jobRole">
+        <select class="form-select" formControlName="jobRoleId">
           <option selected disabled value="">Select Job Role</option>
           <ng-container *ngFor="let item of roles; let i = index">
             <option [value]="item.id">{{item.name}}</option>
@@ -33,7 +33,7 @@
 
         <div class="form-group search-group d-flex">
           <input type="text" name="search" class="form-control" placeholder="ex. Data Encoding, Ruby, JavaScript"
-            formControlName="jobSkills">
+            formControlName="jobSkillsTxt">
           <button class="btn btn-primary" (click)="addItem('jobSkillsTxt', this.jobSkills)">
             Add
           </button>
@@ -43,7 +43,7 @@
           <ng-container *ngFor="let item of jobSkills.controls; let i =index">
             <div class="flex-wrap me-3 talent-badge">{{item.value}}
               <img src="/assets/images/placeholder/icons/remove-white.png" style="height: 10px; margin-top: -3px"
-                class="ms-2" (click)="removeItem(i, this.jobSkills)">">
+                class="ms-2" (click)="removeItem(i, this.jobSkills)">
             </div>
           </ng-container>
         </div>
@@ -57,7 +57,7 @@
 
         <div class="form-group search-group d-flex">
           <input type="text" name="search" class="form-control" placeholder="ex. Software, Angular Project, JavaScript"
-            formControlName="jobTags">
+            formControlName="jobTagsTxt">
           <button class="btn btn-primary" (click)="addItem('jobTagsTxt', this.jobTags)">
             Add
           </button>

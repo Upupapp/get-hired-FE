@@ -70,7 +70,7 @@ export class DragAndDropComponent {
   @Input() supported: string = "";
   @Input() subtitle: string = '';
   @Input() fileArray:any[] = [];
-  @Input() isMultiple:boolean = true;
+  @Input() isMultiple:boolean;
   @Input() row: string = 'col-sm-6';
   @Input() file: any;
   @Input() maxSize: number = 200000;
@@ -143,6 +143,10 @@ export class DragAndDropComponent {
   uploadMultiple(event: any, dropped = false) {
     const uploaded = dropped ? event : event.target.files;
 
+    if(!this.isMultiple) {
+      this.fileArray = [];
+    }
+
     if (uploaded.length !== 0) {
       for (let i = 0; i < uploaded.length; i++) {
 
@@ -157,10 +161,11 @@ export class DragAndDropComponent {
         fileObject.type = uploaded[i].type;
         fileObject.size = uploaded[i].size
 
-        if(uploaded[i].size > this.maxSize) {
-          this.upload.emit([])
-          break;
-        }
+        // if(uploaded[uploaded.length -1].size > this.maxSize) {
+        //   console.log(uploaded[i].size)
+        //   this.upload.emit([])
+        //   break;
+        // }
 
         const reader = new FileReader();
         reader.readAsDataURL(uploaded[i]);

@@ -10,7 +10,7 @@
 	            (whenFileDropped)="uploadMultiple($event, true)"
 	            (click)="uploadFile.click()">
 	                <input #uploadFile hidden type="file" (change)="uploadMultiple($event)"
-	                [accept]="acceptType" multiple/>
+	                [accept]="acceptType" [multiple]="isMultiple" />
 
 	                <ng-container  *ngIf="!viewingOnly">
 	                	<div class="mt-3 text-center">
@@ -87,7 +87,7 @@
 	            (whenFileDropped)="uploadMultiple($event, true)"
 	            (click)="uploadFile.click()">
 	                <input #uploadFile hidden type="file" (change)="uploadMultiple($event)"
-	                [accept]="acceptType" multiple/>
+	                [accept]="acceptType" [multiple]="isMultiple"/>
 
 	                <ng-container  *ngIf="!viewingOnly">
 	                	<div class=" text-center">

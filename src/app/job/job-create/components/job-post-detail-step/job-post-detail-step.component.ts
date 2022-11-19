@@ -14,17 +14,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class JobPostDetailStepComponent implements OnInit {
   @Input() formGroupName: string;
 
-  @Input() jobPostDetails: any;
-  @Output() jobPostDetailsEvent: EventEmitter<any> = new EventEmitter<any>();
-
   initialDetailsForm: FormGroup;
+  workSetupSelected: number;
+  badges: FormArray;
+  badgeSelected = [];
+  requirements: FormArray;
+  goodToHave: FormArray;
+  educationalBackground: FormArray;
+  bannerSelected: FormArray;
 
   workSetup$ = this.jobFacade.setup$;
   typeList$ = this.jobFacade.typeList$;
   level$ = this.jobFacade.level$;
   badge$ = this.jobFacade.badge$;
   category$ = this.jobFacade.category$;
-  workSetupSelected: number;
 
   // public categories: any[] = [
   //   {
@@ -91,19 +94,9 @@ export class JobPostDetailStepComponent implements OnInit {
   //   },
   // ];
 
-  badges: FormArray;
-  badgeSelected = [];
-  requirements: FormArray;
-  goodToHave: FormArray;
-  educationalBackground: FormArray;
-  // requirementsRaw = [];
-  // goodToHaveRaw = [];
-  // educationalBackgroundRaw = [];
-
   constructor(
     private rootFormGroup: FormGroupDirective,
     private jobFacade: JobFacade,
-    private fb: FormBuilder,
     private snackBar: MatSnackBar
   ) { }
 
@@ -121,6 +114,8 @@ export class JobPostDetailStepComponent implements OnInit {
     this.requirements = this.initialDetailsForm.get('requirements') as FormArray;
     this.goodToHave = this.initialDetailsForm.get('goodToHave') as FormArray;
     this.educationalBackground = this.initialDetailsForm.get('educationalBackground') as FormArray;
+    this.bannerSelected = this.initialDetailsForm.get('bannerFile') as FormArray;
+    this.workSetupSelected = this.initialDetailsForm.get('workSetupId').value;
   }
 
   populateOptions() {
@@ -134,7 +129,12 @@ export class JobPostDetailStepComponent implements OnInit {
   getBanner(event) {
     if(event && event.length == 1) {
       if(event[0].size < 200000) {
-        this.initialDetailsForm.controls.bannerFile.setValue(event[0].file);
+        this.bannerSelected.push(new FormGroup({
+          file: new FormControl(event[0].file),
+          filename: new FormControl(event[0].filename),
+          size: new FormControl(event[0].size),
+          type: new FormControl(event[0].type)
+        }));
       } else {
         this.snackBar.open(`Banner size too large`,
         '', { duration: 4000, panelClass: ['danger-snackbar'] });

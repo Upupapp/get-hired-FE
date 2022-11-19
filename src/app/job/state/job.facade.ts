@@ -21,6 +21,7 @@ export class JobFacade {
 
   initial$ = this.store.pipe(select(fromfeature.getIntialDetails));
   info$ = this.store.pipe(select(fromfeature.getJobInfo));
+  interview$ = this.store.pipe(select(fromfeature.getJobInterview));
 
   error$: any;
 

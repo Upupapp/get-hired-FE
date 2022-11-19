@@ -8,7 +8,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./main-stepper.component.scss']
 })
 export class MainStepperComponent implements OnInit {
-  @Input() stepper: any = 1;  
+  @Input() stepper: any = 1;
   @Input() stepperItems: any[] = [];
   @Output() changeStepper: EventEmitter<any> = new EventEmitter<any>();
 

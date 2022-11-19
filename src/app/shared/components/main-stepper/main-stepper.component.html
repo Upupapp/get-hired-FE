@@ -1,11 +1,12 @@
 <div class="d-flex">
 	<ng-container *ngFor="let item of stepperItems; let i = index">
 		<button class="btn d-flex" (click)="changeStep(item?.id)"
-		[ngClass]="stepper >= item?.id && item?.id !== stepperItems?.length ? 'btn-stepper-active' 
-		: stepper === item?.id && item?.id === stepperItems?.length ? 'btn-stepper-active-2' 
+    [disabled]="item.disabled"
+		[ngClass]="stepper >= item?.id && item?.id !== stepperItems?.length ? 'btn-stepper-active'
+		: stepper === item?.id && item?.id === stepperItems?.length ? 'btn-stepper-active-2'
 		: 'btn-stepper-next'">
 			<div class="badge-step" *ngIf="stepper < item?.id && item?.id !== 1">{{item?.id}}</div>
-			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2" 
+			<img src="/assets/images/placeholder/icons/check-green.png" class="me-2"
 			style="height: 25px; margin-top: 3px;" *ngIf="stepper >= item?.id">
 			<div class="text-start">
 				{{item?.title}}

@@ -23,7 +23,7 @@
     </div>
 
     <div class="text-end mt-3 col-12 col-md-4">
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2, 'initialData')" *ngIf="stepper == 1"
+      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2, 'initialData')" *ngIf="stepper == 1" [disabled]="!initialFormValid"
         type="submit">
         Next: Job Requirements
       </button>
@@ -32,7 +32,7 @@
         Prev: Job Details
       </button>
 
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(3, 'jobInfo')" *ngIf="stepper == 2">
+      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(3, 'jobInfo')" *ngIf="stepper == 2" [disabled]="!jobInfoValid">
         Next: Create Interview
       </button>
 
@@ -40,7 +40,7 @@
         Prev: Job Requirements
       </button>
 
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(4)" *ngIf="stepper == 3">
+      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(4)" *ngIf="stepper == 3" [disabled]="!interviewValid">
         Next: Preview Job Post
       </button>
 
@@ -57,8 +57,7 @@
 
   <div class="p-3">
     <ng-container *ngIf="stepper === 1">
-      <app-job-post-detail-step (jobPostDetailsEvent)="updateObject($event, 'jobPostDetails')"
-        [jobPostDetails]="jobPostData?.jobPostDetails" formGroupName="initialData"></app-job-post-detail-step>
+      <app-job-post-detail-step formGroupName="initialData"></app-job-post-detail-step>
 
     </ng-container>
 

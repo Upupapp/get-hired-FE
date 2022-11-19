@@ -1,3 +1,5 @@
+import * as InterviewModel from '@main/interview/interview.model';
+
 export interface Job {
   jobId?: string;
   jobBanner?: string;
@@ -12,7 +14,6 @@ export interface Job {
   workSetupId?: number;
   salaryMinimum?: number;
   salaryMaximum?: number;
-  rate?: string;
   jobAddress?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -20,6 +21,14 @@ export interface Job {
   jobStatusId?: number;
   jobCity?: string;
   bannerFile?: File;
+  interviews?: InterviewModel.InterviewQuestion[];
+  requirements?: string[];
+  goodToHave?: string[];
+  educationalBackground?: string[];
+  badges?: Options[];
+  jobSkills?: string[];
+  jobTags?: string[];
+  jobRate?: string;
 }
 
 export interface InitialDetails {
@@ -41,8 +50,8 @@ export interface InitialDetails {
 }
 
 export interface JobInfo {
-  industryId?: string;
-  jobRole?: string;
+  industryId?: number;
+  jobRoleId?: number;
   jobSkills?: string[];
   jobTags?: string[];
   jobRate?: string;

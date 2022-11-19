@@ -68,4 +68,8 @@ export const getJobInfo = createSelector (
   state => state.jobInfo
 );
 
+export const getJobInterview = createSelector (
+  getJobInitState,
+  state => state.interview
+);
 

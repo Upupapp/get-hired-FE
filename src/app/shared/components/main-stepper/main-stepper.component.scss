@@ -14,12 +14,11 @@
 	line-height: 18px;
 	position: relative !important;
 	//z-index: 999 !important;
-  	
 
 	&:after {
 	  content: " ";
 	  position:absolute;
-	  top:28%; 
+	  top:28%;
 	  right: -1%;
 	  //z-index: 999 !important;
 	  width: 0;
@@ -69,6 +68,10 @@
 	&:hover{
 		border: solid 2px #FE6F61;
 	}
+
+  &:disabled {
+    border: none!important;
+  }
 }
 
 
