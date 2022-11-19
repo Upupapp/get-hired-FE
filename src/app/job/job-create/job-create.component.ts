@@ -132,14 +132,14 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
         jobTitle: ['', Validators.required],
-        jobTypeId: [''],
-        jobLevelId: [''],
+        jobTypeId: [null],
+        jobLevelId: [null],
         jobAddress: [''],
         jobCity: [''],
         jobDescription: [''],
         jobDuties: [''],
-        jobCategoryId: [''],
-        workSetupId: [''],
+        jobCategoryId: [null],
+        workSetupId: [null],
         bannerFile: new FormArray([]),
         badges: new FormArray([]),
         requirements: new FormArray([]),
@@ -150,15 +150,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         educationalBackgroundTxt: ['']
       }),
       jobInfo: this.fb.group({
-        industryId: [''],
-        jobRoleId: [''],
+        industryId: [null],
+        jobRoleId: [null],
         jobSkills: new FormArray([]),
         jobSkillsTxt: [''],
         jobTags: new FormArray([]),
         jobTagsTxt: [''],
-        jobRate: [''],
-        salaryMinimum: [''],
-        salaryMaximum: ['']
+        rate: [''],
+        salaryMinimum: [null],
+        salaryMaximum: [null]
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }),
@@ -211,10 +211,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   setJobInfo(raw: Model.JobInfo) {
     if (raw) {
       this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
-      this.jobForm.controls.jobInfo.get('jobRole').setValue(raw.jobRoleId);
+      this.jobForm.controls.jobInfo.get('jobRoleId').setValue(raw.jobRoleId);
       this.jobForm.controls.jobInfo.get('jobSkills').setValue(raw.jobSkills);
       this.jobForm.controls.jobInfo.get('jobTags').setValue(raw.jobTags);
-      this.jobForm.controls.jobInfo.get('jobRate').setValue(raw.jobRate);
+      this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
       this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
       this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
     }
@@ -246,6 +246,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   cancel() {
+    this.jobFacade.resetFormState();
     this.router.navigate(['../'], { relativeTo: this.route })
   }
 
@@ -261,6 +262,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       case 'jobInfo':
         const bodyInfo = this.jobForm.controls[formName].value;
         this.jobFacade.saveJobInfo(bodyInfo);
+        break;
+      case 'interview':
+        const bodyInterview = this.jobForm.controls[formName].value;
+        this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
         break;
     }
   }

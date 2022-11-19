@@ -40,7 +40,7 @@
         Prev: Job Requirements
       </button>
 
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(4)" *ngIf="stepper == 3" [disabled]="!interviewValid">
+      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(4, 'interview')" *ngIf="stepper == 3" [disabled]="!interviewValid">
         Next: Preview Job Post
       </button>
 

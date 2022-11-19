@@ -69,6 +69,14 @@ export const jobReducer = createReducer<JobState>(
       succesMsg: null
     };
   }),
+  on(JobActions.resetJobForm, (state, action): JobState => {
+    return {
+      ...state,
+      initialDetails: null,
+      jobInfo: null,
+      interview: null
+    };
+  }),
   on(JobActions.setJobInitialDetails, (state, action): JobState => {
     return {
       ...state,
@@ -85,6 +93,12 @@ export const jobReducer = createReducer<JobState>(
     return {
       ...state,
       jobInfo: action.jobInfo
+    };
+  }),
+  on(JobActions.setInterview, (state, action): JobState => {
+    return {
+      ...state,
+      interview: action.interview
     };
   }),
   on(JobActions.getBasicJobList, (state): JobState => {

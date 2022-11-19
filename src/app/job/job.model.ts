@@ -21,14 +21,14 @@ export interface Job {
   jobStatusId?: number;
   jobCity?: string;
   bannerFile?: File;
-  interviews?: InterviewModel.InterviewQuestion[];
+  interviewQuestions?: InterviewModel.InterviewQuestion[];
   requirements?: string[];
   goodToHave?: string[];
   educationalBackground?: string[];
   badges?: Options[];
   jobSkills?: string[];
   jobTags?: string[];
-  jobRate?: string;
+  rate?: string;
 }
 
 export interface InitialDetails {
@@ -54,7 +54,7 @@ export interface JobInfo {
   jobRoleId?: number;
   jobSkills?: string[];
   jobTags?: string[];
-  jobRate?: string;
+  rate?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
   contractStart: DetailedDate;

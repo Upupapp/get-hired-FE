@@ -3,6 +3,7 @@ import {
   props
 } from "@ngrx/store";
 import * as Model from '../job.model';
+import * as InterviewModel from '@main/interview/interview.model';
 
 enum AllFeatureActionTypes {
   GetIndustryList = '[job] - Get Industry List',
@@ -46,9 +47,14 @@ enum AllFeatureActionTypes {
   SaveJobFail = '[job] - Save Job Fail',
 
   SetJobInitialDetails = '[job] - Set Job Initial Details',
-  SetJobInfo = '[job] - Set Job Initial Details'
-
+  SetJobInfo = '[job] - Set Job Info',
+  SetInterview = '[job] - Set Job Interview',
+  ResetJobForm = '[job] - Reset Job Form'
 };
+
+export const resetJobForm = createAction(
+  AllFeatureActionTypes.ResetJobForm
+);
 
 export const setJobInitialDetails = createAction(
   AllFeatureActionTypes.SetJobInitialDetails,
@@ -58,6 +64,11 @@ export const setJobInitialDetails = createAction(
 export const setJobInfo = createAction(
   AllFeatureActionTypes.SetJobInfo,
   props<{ jobInfo: Model.JobInfo }>()
+);
+
+export const setInterview = createAction(
+  AllFeatureActionTypes.SetInterview,
+  props<{ interview: InterviewModel.InterviewQuestion[] }>()
 );
 
 export const saveJob = createAction(

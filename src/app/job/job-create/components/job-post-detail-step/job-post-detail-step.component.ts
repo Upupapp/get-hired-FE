@@ -130,7 +130,7 @@ export class JobPostDetailStepComponent implements OnInit {
     if(event && event.length == 1) {
       if(event[0].size < 200000) {
         this.bannerSelected.push(new FormGroup({
-          file: new FormControl(event[0].file),
+          file: new FormControl(event[0].file, Validators.required),
           filename: new FormControl(event[0].filename),
           size: new FormControl(event[0].size),
           type: new FormControl(event[0].type)

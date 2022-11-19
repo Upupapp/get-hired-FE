@@ -20,9 +20,9 @@
             *ngIf="typeList$ | async as jobType">
             <label>Job Type</label>
             <select class="form-select" formControlName="jobTypeId">
-              <option selected disabled value="">Select Job Type</option>
+              <option selected disabled [ngValue]="null">Select Job Type</option>
               <ng-container *ngFor="let item of jobType; let i = index">
-                <option [value]="item.id">{{item.name}}</option>
+                <option [ngValue]="item.id">{{item.name}}</option>
               </ng-container>
             </select>
           </div>
@@ -31,9 +31,9 @@
             *ngIf="level$ | async as jobLevel">
             <label>Job Level</label>
             <select class="form-select" formControlName="jobLevelId">
-              <option selected disabled value="">Select Job Level</option>
+              <option selected disabled [ngValue]="null">Select Job Level</option>
               <ng-container *ngFor="let item of jobLevel; let i = index">
-                <option [value]="item.id">{{item.name}}</option>
+                <option [ngValue]="item.id">{{item.name}}</option>
               </ng-container>
             </select>
           </div>
@@ -42,9 +42,9 @@
             *ngIf="category$ | async as jobCategory">
             <label>Job Category</label>
             <select class="form-select" formControlName="jobCategoryId">
-              <option selected disabled value="">Select Job Category</option>
+              <option selected disabled [ngValue]="null">Select Job Category</option>
               <ng-container *ngFor="let item of jobCategory; let i = index">
-                <option [value]="item.id">{{item.name}}</option>
+                <option [ngValue]="item.id">{{item.name}}</option>
               </ng-container>
             </select>
           </div>
@@ -102,7 +102,7 @@
         <div class="col-12 col-lg-5" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
           <h5 class="title-label">Add Badges</h5>
           <select class="form-select form-select-multiple" size="3" multiple>
-            <option *ngFor="let item of badge; let i = index" [value]="item.id" (click)="addBadge(item);">
+            <option *ngFor="let item of badge; let i = index" [ngValue]="item.id" (click)="addBadge(item);">
               {{item?.name}}</option>
           </select>
         </div>

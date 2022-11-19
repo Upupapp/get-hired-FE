@@ -6,9 +6,9 @@
         <h5 class="main-title">Industry</h5>
         <label>Describe what industry or field this job post is part of </label>
         <select class="form-select" formControlName="industryId">
-          <option selected disabled value="">Select Industry</option>
+          <option selected disabled [ngValue]="null">Select Industry</option>
           <ng-container *ngFor="let item of industries; let i = index">
-            <option [value]="item.id">{{item.name}}</option>
+            <option [ngValue]="item.id">{{item.name}}</option>
           </ng-container>
         </select>
       </div>
@@ -17,9 +17,9 @@
         *ngIf="jobRoles$ | async as roles">
         <label style="margin-top: 36px;">Job Role</label>
         <select class="form-select" formControlName="jobRoleId">
-          <option selected disabled value="">Select Job Role</option>
+          <option selected disabled [ngValue]="null">Select Job Role</option>
           <ng-container *ngFor="let item of roles; let i = index">
-            <option [value]="item.id">{{item.name}}</option>
+            <option [ngValue]="item.id">{{item.name}}</option>
           </ng-container>
         </select>
       </div>
@@ -84,16 +84,16 @@
           <div class="row">
             <ng-container *ngFor="let item of rates">
               <div class="col-12 col-md-6 col-lg-4 hvr-hang" (click)="selectRate(item)">
-                <div [ngClass]="selectedRates === item ? 'rate-card-active' : 'rate-card'">
+                <div [ngClass]="selectedRates === item.title ? 'rate-card-active' : 'rate-card'">
                   <img
-                    [src]="'/assets/images/placeholder/icons/' + (selectedRates === item ? 'check-white.png' : 'check-blank.png')"
+                    [src]="'/assets/images/placeholder/icons/' + (selectedRates === item.title ? 'check-white.png' : 'check-blank.png')"
                     class="check">
 
                   <img [src]="'/assets/images/placeholder/icons'
-								+ (selectedRates === item ? item?.icon + '-white' : item?.icon) + '.png'" style="height: 45px"
+								+ (selectedRates === item.title ? item?.icon + '-white' : item?.icon) + '.png'" style="height: 45px"
                     class="img-fluid mt-2">
 
-                  <h6 class="title-rate mt-3" [ngClass]="selectedRates === item ? 'title-rate-active' : 'title-rate'">
+                  <h6 class="title-rate mt-3" [ngClass]="selectedRates === item.title ? 'title-rate-active' : 'title-rate'">
                     {{item?.title}}</h6>
                 </div>
               </div>
@@ -122,7 +122,7 @@
                 </div>
 
                 <div class="col-2 text-center">
-                  <label class="label-rate mt-2">/ {{selectedRates?.rate}}</label>
+                  <label class="label-rate mt-2">/ {{selectedRates?.title}}</label>
                 </div>
               </div>
             </div>

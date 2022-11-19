@@ -1,189 +1,195 @@
-<section style="transition: all 0.4s ease !important;">
-	<!-- TITLE -->
-	<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-		<h5 class="main-title">Job Post Preview</h5>
-	</div>
+<section style="transition: all 0.4s ease !important;" *ngIf="!loading && preview">
+  <!-- TITLE -->
+  <div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+    <h5 class="main-title">Job Post Preview</h5>
+  </div>
 
-	<section class="card card-body mb-3"
-	 [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-		<div class="banner-container">
-			<img [src]="preview.bannerFile" class="banner-image">
+  <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+    <div class="banner-container">
+      <img [src]="preview.bannerFile[0].file" class="banner-image" *ngIf="preview.bannerFile">
 
-			<div class="floating-card">
-				<div class="d-flex">
-					<ng-container *ngFor="let item of preview.badges">
-						<img [src]="'/assets/images/placeholder/icons/' + item?.icon" class="badge-logo">
-					</ng-container>
-				</div>
+      <div class="floating-card" *ngIf="preview.badges">
+        <div class="d-flex">
+          <ng-container *ngFor="let item of preview.badges">
+            <img [src]="'/assets/images/placeholder/icons/' + item?.icon" class="badge-logo">
+          </ng-container>
+        </div>
 
-				<div class="tags ms-0 mt-3">
-					<div class="title-tags me-2 mb-2" *ngFor="let tag of preview.jobTags">{{tag}}</div>
-				</div>
-			</div>
-		</div>
+        <div class="tags ms-0 mt-3" *ngIf="preview.jobTags">
+          <div class="title-tags me-2 mb-2" *ngFor="let tag of preview.jobTags">{{tag}}</div>
+        </div>
+      </div>
+    </div>
 
-		<div class="job-details-container p-5">
-			<h5 class="job-title text-capitalize">
-				{{ preview.jobTitle }}
-			</h5>
-			<h5 class="title-label">{{ jobPostData?.jobPostIndustry?.industry }}
-				<span class="mx-2">|</span> {{ jobPostData?.jobPostIndustry?.job_role }}
-			</h5>
+    <div class="job-details-container p-5">
+      <h5 class="job-title text-capitalize">
+        {{ preview.jobTitle }}
+      </h5>
+      <h5 class="title-label" *ngIf="preview.industryId">
+        {{ getFilteredArray(this.industries, preview.industryId) }}
+        <span class="mx-2" *ngIf="preview.jobRoleId">| {{ getFilteredArray(this.industries, preview.jobRoleId) }}
+        </span>
+      </h5>
 
-			<div class="mt-3">
-				<div class="d-flex">
-					<h5 class="d-flex title-details me-3 ms-1">
-						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-						{{ preview.jobTypeId }}
-					</h5>
+      <div class="mt-3">
+        <div class="d-flex">
+          <h5 class="d-flex title-details me-3 ms-1" *ngIf="preview.jobTypeId">
+            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2"
+              style="width: 15px; height: 15px; margin-top: 4px;">
+            {{ getFilteredArray(this.types, preview.jobTypeId) }}
+          </h5>
 
-					<h5 class="d-flex title-details me-3">
-						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-						{{ preview.workSetupId }}
-					</h5>
+          <h5 class="d-flex title-details me-3" *ngIf="preview.workSetupId">
+            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2"
+              style="width: 15px; height: 15px; margin-top: 4px;">
+            {{ getFilteredArray(this.setups, preview.workSetupId) }}
+          </h5>
 
-					<h5 class="d-flex title-details me-2">
-						<img src="/assets/images/placeholder/icons/certification.png" class="me-1" style="width: 15px; height: 15px; margin-top: 2px;"> {{ preview.jobLevelId }}
-					</h5>
-				</div>
+          <h5 class="d-flex title-details me-2" *ngIf="preview.jobLevelId">
+            <img src="/assets/images/placeholder/icons/certification.png" class="me-1"
+              style="width: 15px; height: 15px; margin-top: 2px;">
+            {{ getFilteredArray(this.levels, preview.jobLevelId)}}
+          </h5>
+        </div>
 
-				<div class="d-flex mt-1">
-					<h5 class="d-flex title-details me-3 ms-1">
-						<img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;">
-						{{ preview.jobAddress }}
-					</h5>
+        <div class="d-flex mt-1" *ngIf="preview.jobAddress && preview.jobAddress != ''">
+          <h5 class="d-flex title-details me-3 ms-1">
+            <img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1"
+              style="width: 17px; height: 17px; margin-top: 3px;">
+            {{ preview.jobAddress }} {{ preview.jobCity }}
+          </h5>
 
-				</div>
+        </div>
 
-				<div class="d-flex mt-1">
-					<h5 class="d-flex title-details me-3 ms-1">
-						<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-						PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} -
-						PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
-					</h5>
-				</div>
-			</div>
+        <div class="d-flex mt-1" *ngIf="preview.salaryMinimum">
+          <h5 class="d-flex title-details me-3 ms-1">
+            <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2"
+              style="width: 15px; height: 15px; margin-top: 4px;">
+            PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} -
+            PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
+            <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
+          </h5>
+        </div>
+      </div>
 
-			<div class="col-12 mb-2 mt-2 pe-5">
-				<div class="job-description mb-3">
-					<h5 class="title-job-description">
-						<strong>Job Description</strong><br>
+      <div class="col-12 mb-2 mt-2 pe-5">
+        <div class="job-description mb-3">
+          <h5 class="title-job-description">
+            <strong>Job Description</strong><br>
+            {{ preview.jobDescription == '' ? "None": preview.jobDescription }}
+          </h5>
+        </div>
 
-						{{ preview.jobDescription }}
-					</h5>
-				</div>
+        <div class="job-description mb-3">
+          <h5 class="title-job-description">
+            <strong>Duties and Responsibilities</strong><br>
+            {{ preview.jobDuties == '' ? "None": preview.jobDuties }}
+          </h5>
+        </div>
 
-				<div class="job-description mb-3">
-					<h5 class="title-job-description">
-						<strong>Duties and Responsibilities</strong><br>
+        <!-- REQUIRED EXPERIENCE -->
+        <div class="job-requirements mb-3">
+          <h5 class="title-job-description">
+            <strong>Requirements</strong>
+          </h5>
 
-						{{ preview.jobDuties }}
-					</h5>
-				</div>
+          <ul *ngIf="preview.requirements && preview.requirements.length > 0; else emptyList">
+            <li *ngFor="let item of preview.requirements">
+              <h5 class="title-requirements">
+                {{item}}
+              </h5>
+            </li>
+          </ul>
+        </div>
 
-				<!-- REQUIRED EXPERIENCE -->
-				<div class="job-requirements mb-3">
-					<h5 class="title-job-description">
-						<strong>Requirements</strong>
-					</h5>
+        <!-- REQUIRED SKILLS -->
+        <div class="job-requirements mb-4">
+          <h5 class="title-job-description">
+            <strong>Skills & Experience</strong>
+          </h5>
 
-					<ul>
-						<li *ngFor="let item of preview.requirements">
-							<h5 class="title-requirements">
-								{{item}}
-							</h5>
-						</li>
-					</ul>
-				</div>
+          <ul *ngIf="preview.jobSkills && preview.jobSkills.length > 0; else emptyList">
+            <li *ngFor="let item of preview.jobSkills">
+              <h5 class="title-requirements">
+                {{item}}
+              </h5>
+            </li>
+          </ul>
+        </div>
 
-				<!-- REQUIRED SKILLS -->
-				<div class="job-requirements mb-4">
-					<h5 class="title-job-description">
-						<strong>Skills & Experience</strong>
-					</h5>
+        <hr>
 
-					<ul>
-						<li *ngFor="let item of preview.jobSkills">
-							<h5 class="title-requirements">
-								{{item}}
-							</h5>
-						</li>
-					</ul>
-				</div>
+        <!-- EDUCATIONAL BACKGROUND -->
+        <div class="job-requirements mb-3">
+          <h5 class="title-job-description">
+            <strong>Educational Background</strong>
+          </h5>
 
-				<hr>
+          <ul *ngIf="preview.educationalBackground && preview.educationalBackground.length > 0; else emptyList">
+            <li *ngFor="let item of preview.educationalBackground">
+              <h5 class="title-requirements">
+                {{item}}
+              </h5>
+            </li>
+          </ul>
+        </div>
 
-				<!-- EDUCATIONAL BACKGROUND -->
-				<div class="job-requirements mb-3">
-					<h5 class="title-job-description">
-						<strong>Educational Background</strong>
-					</h5>
+        <!-- OTHER REQUIREMENTS -->
+        <div class="job-requirements mb-3">
+          <h5 class="title-job-description">
+            <strong>Good to Have</strong>
+          </h5>
 
-					<ul>
-						<li *ngFor="let item of preview.educationalBackground">
-							<h5 class="title-requirements">
-								{{item}}
-							</h5>
-						</li>
-					</ul>
-				</div>
+          <ul *ngIf="preview.goodToHave && preview.goodToHave.length > 0; else emptyList">
+            <li *ngFor="let item of preview.goodToHave">
+              <h5 class="title-requirements">
+                {{item}}
+              </h5>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
-				<!-- OTHER REQUIREMENTS -->
-				<div class="job-requirements mb-3">
-					<h5 class="title-job-description">
-						<strong>Good to Have</strong>
-					</h5>
+  <section class="card card-body mb-3">
+    <div class="p-4">
+      <label class="title-job-interview text-capitalize mb-3">Interview Questions</label>
 
-					<ul>
-						<li *ngFor="let item of preview.requirements">
-							<h5 class="title-requirements">
-								{{item}}
-							</h5>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</section>
+      <section class="interview-card card-body mt-3 p-4" id="interview-list"
+        *ngFor="let item of preview.interviewQuestions; let i = index"
+        [@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
+        <!-- INTERVIEWS -->
+        <div class="mt-2 row">
+          <div class="col-12">
+            <div class="float-end">
+              <div class="mt-3">
+                <button class="btn btn-upload me-2">Upload</button>
 
-	<section class="card card-body mb-3">
-		<div class="p-4">
-			<label class="title-job-interview text-capitalize mb-3">Interview Questions</label>
+                <button class="btn btn-record"><img src="/assets/images/placeholder/icons/make-video.png"
+                    style="height: 10px" class="me-2">Record Interview</button>
+              </div>
+            </div>
 
-			<section class="interview-card card-body mt-3 p-4"
-			id="interview-list"
-			*ngFor="let item of jobPostData?.jobPostInterviewQuestions?.interview_questions; let i = index"
-			[@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
-				<!-- INTERVIEWS -->
-				<div class="mt-2 row">
-					<div class="col-12">
-						<div class="float-end">
-							<div class="mt-3">
-								<button class="btn btn-upload me-2">Upload</button>
+            <div class="d-flex">
+              <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+                <img src="/assets/images/placeholder/icons/interview-logo-4.png">
+              </div>
 
-								<button class="btn btn-record"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record Interview</button>
-							</div>
-						</div>
+              <div class="mt-2">
+                <p class="title-label-sub">
+                  <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+                  Question {{i + 1}}
+                </p>
+                <h5 class="title-label">{{item.question}}</h5>
+                <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{item.answerDuration}} minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-						<div class="d-flex">
-							<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
-								<img src="/assets/images/placeholder/icons/interview-logo-4.png">
-							</div>
-
-							<div class="mt-2">
-								<p class="title-label-sub">
-									<img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
-									Question {{i + 1}}
-								</p>
-								<h5 class="title-label">{{item}}</h5>
-								<p class="title-label-sub-duration"><span>Estimated Duration:</span> 3 minutes</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- <div class="row">
+      <!-- <div class="row">
 				<ng-container
 				*ngFor="let item of jobPostData?.jobPostInterviewQuestions?.interview_questions;
 				let i = index">
@@ -206,6 +212,12 @@
 					</div>
 				</ng-container>
 			</div> -->
-		</div>
-	</section>
+    </div>
+  </section>
 </section>
+
+<app-loading *ngIf="loading"></app-loading>
+
+<ng-template #emptyList>
+  None
+</ng-template>

@@ -4,6 +4,7 @@ import { State } from './job.reducer';
 import { select, Store } from "@ngrx/store";
 import * as JobAction from './job.actions';
 import * as fromfeature from './job.selector';
+import * as InterviewModel from '@main/interview/interview.model';
 
 @Injectable()
 export class JobFacade {
@@ -41,8 +42,16 @@ export class JobFacade {
   //   this.store.dispatch(JobAction.updateProfile({ userProfile }));
   // }
 
+  resetFormState() {
+    this.store.dispatch(JobAction.resetJobForm());
+  }
+
   saveJob(job: Model.Job) {
     this.store.dispatch(JobAction.saveJob({ job }));
+  }
+
+  saveInterview(interview: InterviewModel.InterviewQuestion[] ) {
+    this.store.dispatch(JobAction.setInterview({ interview }));
   }
 
   saveJobInfo(jobInfo: Model.JobInfo) {
