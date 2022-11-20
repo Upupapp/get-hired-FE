@@ -51,7 +51,7 @@ export class JobListComponent implements OnInit {
           return {
             ...job,
             status: this.getJobStatusName(job.jobStatusId),
-            salary: this.formatSalary(job.salaryMinimum, job.salaryMaximum)
+            salary: this.formatSalary(job.salaryMinimum, job.salaryMaximum, job.rate)
           }
         }) : []
       })
@@ -101,16 +101,21 @@ export class JobListComponent implements OnInit {
     setTimeout(() => this.loading = false, 1500);
   }
 
-  formatSalary(salaryMin, salaryMax) {
-    return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+  formatSalary(salaryMin, salaryMax, rate) {
+    if(salaryMin && salaryMax) {
+      return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} (${rate})`
+    } else {
+      return '-';
+    }
+
   }
 
   getJobStatusName(statusId: number) {
     switch (statusId) {
       case 1:
-        return 'Published';
-      case 2:
         return 'Draft';
+      case 2:
+        return 'Published';
       case 3:
         return 'Expired';
       default:

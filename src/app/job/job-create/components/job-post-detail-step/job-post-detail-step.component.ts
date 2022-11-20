@@ -156,6 +156,7 @@ export class JobPostDetailStepComponent implements OnInit {
       this.badges.push(new FormGroup({
         icon: new FormControl(item.icon),
         name: new FormControl(item.name),
+        id: new FormControl(item.id)
       }));
 
       console.log(this.badges);

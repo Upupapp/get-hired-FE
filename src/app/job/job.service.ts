@@ -15,9 +15,9 @@ export class JobService {
   ) { }
 
   saveJob(job: Model.Job) {
-    if(job.jobId || job.jobId != '') {
+    if(job.jobId && job.jobId != '') {
       // update
-      return this.baseService.put<Model.Job>(`${this.jobUrl}/updateJobs`, job);
+      return this.baseService.put<Model.Job>(`${this.jobUrl}/updatejobs`, job);
     } else {
       // create
       return this.baseService.post<Model.Job>(`${this.jobUrl}/create`, job);

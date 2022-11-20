@@ -24,79 +24,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   };
 
-  public jobPostData: any = {
-    jobPostIndustry: {
-      "industry": "Technology",
-      "job_role": "Business Development",
-      "skill_requirements": [
-        "Web Development",
-        "Angular 8/10/12",
-        "Mongo",
-        "TypeScript",
-        "Advance JavaScript",
-        "ES6 - Functional Programming"
-      ],
-      "tags": [
-        "Web Development",
-        "Angular Project",
-        "Frontend"
-      ],
-      "rates": "Monthly",
-      "salary_min": 45000,
-      "salary_max": 55000
-    },
-    jobPostDetails: {
-      "title": "Angular Developer Full-time",
-      "job_type": "Full-time",
-      "job_level": "Intermediate: 2-3 Years Experience",
-      "work_setup": "Remote",
-      "address": "Block 33, 123 Street Sampaloc Manila",
-      "badge": [
-        {
-          "id": "career-growth",
-          "title": "Career Growth",
-          "logo": "badge-1.png"
-        },
-        {
-          "id": "benefit-package",
-          "title": "Benefit Package",
-          "logo": "badge-2.png"
-        },
-        {
-          "id": "performance-incentive",
-          "title": "Performance Incentive",
-          "logo": "badge-1.png"
-        }
-      ],
-      "job_description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi u",
-      "job_duties": "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent.",
-      "skill_experience": [
-        "Looking to add a pricing calculator",
-        "Website Search no more",
-        "User-based pricing calculator for you",
-        "Is your business operating in multiple countries"
-      ],
-      "other_requirements": [
-        "Graduated from a top university",
-        "Proven success in school or at work"
-      ],
-      "education_requirements": [
-        "Computer Science Graduate or related discipline is highly desired."
-      ]
-    },
-    jobPostInterviewQuestions: {
-      interview_questions: [
-        "How long have you been using angular?",
-        "Are You Available For Part-time or Full-time?"
-      ]
-    }
-  }
-
   jobForm: FormGroup
   stepper: number = 1;
   initialFormValid: boolean = false;
   jobInfoValid: boolean = false;
   interviewValid: boolean = false;
+  isReadyToPublish: boolean;
 
   stepperItems: any[] = [
     {
@@ -231,18 +164,51 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   async saveAsDraft() {
+    const job: Model.Job = await this.formatJob(1);
+    console.log(job);
+
+    this.jobFacade.saveJob(job);
+  }
+
+  async publishJobPost() {
+    const job: Model.Job = await this.formatJob(2);
+
+    this.isReadyToPublish = job.jobTypeId &&
+      job.jobLevelId &&
+      job.jobCity != "" &&
+      job.jobDescription != "" &&
+      job.workSetupId &&
+      job.bannerFile[0] &&
+      job.badges.length != 0 &&
+      job.requirements.length != 0 &&
+      job.jobSkills.length != 0 &&
+      job.interviewQuestions.length != 0
+
+    if(this.isReadyToPublish) {
+      this.jobFacade.saveJob(job);
+    } else {
+      this.snackBar.open(`Job not ready to be Published`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
+    }
+
+  }
+
+  async formatJob(status) {
     const user = await this.asyncLocalStorage.getItem('user');
 
     const { initialData, jobInfo, interview } = this.jobForm.controls;
-    const job: Model.Job = {
+    const { interviewQuestions } = interview.value;
+
+    return {
       ...initialData.value,
       ...jobInfo.value,
-      interviewQuestions: interview.value.controls.interviewQuestions.value,
+      badges: initialData.value ? this.formatBadgesGetId(initialData.value.badges) : [],
+      interviewQuestions,
       companyId: JSON.parse(user).companyId,
-      jobStatusId: 1 // As Draft
+      jobStatusId: status
     };
-
-    this.jobFacade.saveJob(job);
   }
 
   afterSubmit(event) {
@@ -251,11 +217,20 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
+      this.router.navigate(['../list'], { relativeTo: this.route });
     } else if (event == 'published') {
       this.snackBar.open(`Job successfully published`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
+    }
+  }
+
+  formatBadgesGetId(rawBadges) {
+    if (rawBadges && rawBadges.length != 0) {
+      return rawBadges.map(badge => badge.id);
+    } else {
+      return [];
     }
   }
 
@@ -265,9 +240,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   changeStep(number: number, formName?: string) {
-
     this.stepper = number;
-
     switch (formName) {
       case 'initialData':
         const bodyInitial = this.jobForm.controls[formName].value;
@@ -284,16 +257,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateObject(data: any, field: string) {
-    this.jobPostData[`${field}`] = data;
-    console.log(data, field, this.jobPostData)
-  }
-
-  publishJobPost() {
-    console.log(this.jobPostData)
-  }
-
   ngOnDestroy() {
+    this.jobFacade.resetFormState();
     this.subscriptions.unsubscribe();
   }
 }

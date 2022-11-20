@@ -86,4 +86,5 @@ export interface BasicList {
   createdAt: Date;
   jobStatusId: number;
   jobCity: string;
+  rate: string;
 }
