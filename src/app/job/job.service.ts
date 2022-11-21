@@ -14,6 +14,10 @@ export class JobService {
     private baseService: BaseService
   ) { }
 
+  changeJobStatus(status, jobId) {
+    return this.baseService.put<Model.Job>(`${this.jobUrl}/changestatus`, { status, jobId});
+  }
+
   saveJob(job: Model.Job) {
     if(job.jobId && job.jobId != '') {
       // update

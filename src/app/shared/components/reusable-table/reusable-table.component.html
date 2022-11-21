@@ -125,7 +125,7 @@
                 (click)="openDialog('menu', data)">
 
               <img src="/assets/images/placeholder/icons/delete-circle-red.png" class="hvr-grow delete-image"
-                (click)="openDialog('delete', data)">
+                (click)="openDialog('delete', data)" *ngIf="data.status != 'Archived'">
             </span>
           </span>
 

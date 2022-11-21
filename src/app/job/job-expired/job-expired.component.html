@@ -14,7 +14,8 @@
     </div>
     <br>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">
-      <app-reusable-table [loading]="loading" [statusFilter]="false" statusName="Status"
+      <app-reusable-table [loading]="loading" [statusArray]="status"
+        [statusFilter]="true" statusName="Status"
         (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)" [componentTitle]="'Expired Jobs'"
         [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
         [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10"

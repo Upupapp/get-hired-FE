@@ -213,6 +213,7 @@ export class ReusableTableComponent implements OnInit {
       this.statusName = data;
     } else {
       this.dataSource.data = this.listDataSource;
+      this.statusName = data;
     }
 
   }

@@ -46,6 +46,29 @@ const initialState: JobState  = {
 
 export const jobReducer = createReducer<JobState>(
   initialState,
+  on(JobActions.changeJobStatus, (state): JobState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null
+    };
+  }),
+  on(JobActions.changeJobStatusSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      selected: action.job,
+      loading: false,
+      succesMsg: action.job.jobStatusId == 4 ? 'archived': 'expired'
+    };
+  }),
+  on(JobActions.changeJobStatusFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      succesMsg: null
+    };
+  }),
   on(JobActions.saveJob, (state): JobState => {
     return {
       ...state,

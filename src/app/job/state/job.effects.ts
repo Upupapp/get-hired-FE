@@ -132,6 +132,24 @@ export class JobEffects {
     );
   });
 
+  changeJobStatus$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.changeJobStatus),
+      mergeMap((action) => this.jobService.changeJobStatus(action.status, action.jobId)
+        .pipe(
+          map((res: any) => {
+            const job: Model.Job = res.data;
+            return JobActions.changeJobStatusSuccess({ job });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.changeJobStatusFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   categoryList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.getCategoryList),

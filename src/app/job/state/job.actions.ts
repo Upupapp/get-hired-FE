@@ -46,6 +46,10 @@ enum AllFeatureActionTypes {
   SaveJobSuccess = '[job] - Save Job Success',
   SaveJobFail = '[job] - Save Job Fail',
 
+  ChangeJobStatus = '[job] - Change Job status',
+  ChangeJobStatusSuccess = '[job] - Change Job status Success',
+  ChangeJobStatusFail = '[job] - Change Job status Fail',
+
   SetJobInitialDetails = '[job] - Set Job Initial Details',
   SetJobInfo = '[job] - Set Job Info',
   SetInterview = '[job] - Set Job Interview',
@@ -85,6 +89,23 @@ export const saveJobFail = createAction(
   AllFeatureActionTypes.SaveJobFail,
   props<{ payload: any }>()
 );
+
+export const changeJobStatus = createAction(
+  AllFeatureActionTypes.ChangeJobStatus,
+  props<{ status: number, jobId: string  }>()
+);
+
+export const changeJobStatusSuccess = createAction(
+  AllFeatureActionTypes.ChangeJobStatusSuccess,
+  props<{ job: Model.Job }>()
+);
+
+export const changeJobStatusFail = createAction(
+  AllFeatureActionTypes.ChangeJobStatusFail,
+  props<{ payload: any }>()
+);
+
+// OPTIONS
 
 export const getCategoryList = createAction(
   AllFeatureActionTypes.GetCategoryList

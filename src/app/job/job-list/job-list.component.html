@@ -15,10 +15,10 @@
     <br>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">
       <app-reusable-table [loading]="loading" [statusArray]="status" [statusFilter]="true" statusName="Status"
-        (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)" [componentTitle]="'Company Jobs'"
-        [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
-        [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10"
-        [listDataSource]="list">
+        (deleteSelectedRow)="deleteRow($event)" (updateSelectedRowDialog)="viewMenu($event)"
+        (viewDetails)="viewMenu($event)" [componentTitle]="'Company Jobs'" [displayedColumns]="displayedColumns"
+        [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
+        [maxRows]="10" [listDataSource]="list">
       </app-reusable-table>
     </div>
 

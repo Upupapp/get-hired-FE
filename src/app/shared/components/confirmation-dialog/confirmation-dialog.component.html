@@ -1,0 +1,20 @@
+<div class="p-2 text-center">
+  <h5>{{ data.action }} Confirmation</h5>
+  <p>
+    <i class="bi bi-info-circle"></i>
+    Are you sure you want to {{ data.action }} this?
+  </p>
+  <div class="w-100 mt-2">
+    <button type="button" (click)="submit(1)"
+    class="btn btn-primary px-2 me-2">
+      <i class="bi bi-check me-2"></i>
+      Yes
+    </button>
+    <button type="button" (click)="submit(2)"
+    class="btn btn-primary px-2">
+      <i class="bi bi-x me-2"></i>
+      No
+    </button>
+  </div>
+
+</div>

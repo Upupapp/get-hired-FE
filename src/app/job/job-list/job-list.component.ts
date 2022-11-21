@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JobFacade } from '@app-job/state/job.facade';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-job-list',
@@ -43,6 +44,7 @@ export class JobListComponent implements OnInit {
     }
   };
 
+  user: any;
   user$: Subscription;
   list$ = this.jobFacade.jobList$
     .pipe(
@@ -56,6 +58,12 @@ export class JobListComponent implements OnInit {
         }) : []
       })
     );
+
+  success$ = this.jobFacade.success$
+    .pipe().subscribe(this.afterChange.bind(this));
+
+  loading$ = this.jobFacade.loading$
+    .pipe().subscribe(this.onLoad.bind(this));
 
   private req: Subscription;
 
@@ -79,22 +87,23 @@ export class JobListComponent implements OnInit {
       status: el.status,
     };
   };
-  public status: string[] = ["All","Draft", "Published"];
+
+  status: string[] = ["All", "Draft", "Published"];
 
   constructor(
     private router: Router,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private jobFacade: JobFacade
+    private jobFacade: JobFacade,
   ) { }
 
   ngOnInit(): void {
     this.asyncLocalStorage.getItem('user')
       .then(res => {
         if (res) {
-          const user = JSON.parse(res);
-          this.jobFacade.getBasicList(user.companyId);
+          this.user = JSON.parse(res);
+          this.jobFacade.getBasicList(this.user.companyId);
         }
       });
 
@@ -102,12 +111,11 @@ export class JobListComponent implements OnInit {
   }
 
   formatSalary(salaryMin, salaryMax, rate) {
-    if(salaryMin && salaryMax) {
+    if (salaryMin && salaryMax) {
       return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} (${rate})`
     } else {
       return '-';
     }
-
   }
 
   getJobStatusName(statusId: number) {
@@ -118,6 +126,8 @@ export class JobListComponent implements OnInit {
         return 'Published';
       case 3:
         return 'Expired';
+      case 4:
+        return 'Archived';
       default:
         return 'Draft';
     }
@@ -146,6 +156,39 @@ export class JobListComponent implements OnInit {
     // });
   }
 
+  deleteRow(event) {
+
+    const ref = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: true,
+      data: {
+        action: 'Delete'
+      }
+    });
+
+    ref
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        if (result == 1) {
+          // TODO delete
+          this.jobFacade.changeJobStatus(4, event.data.jobId);
+        }
+      });
+  }
+
+  afterChange(event) {
+    if (event == 'archived') {
+      this.jobFacade.getBasicList(this.user.companyId);
+      this.snackBar.open(`Job has been Archived`, '', {
+        duration: 4000,
+        panelClass: 'success-snackbar'
+      });
+    }
+  }
+
+  onLoad(isLoading) {
+    this.loading = isLoading;
+  }
 
   addJobs() {
     this.router.navigate(['../create'], { relativeTo: this.route })

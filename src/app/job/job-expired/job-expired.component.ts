@@ -34,7 +34,7 @@ export class JobExpiredComponent implements OnInit {
           return {
             ...job,
             status: this.getJobStatusName(job.jobStatusId),
-            salary: this.formatSalary(job.salaryMinimum, job.salaryMaximum)
+            salary: this.formatSalary(job.salaryMinimum, job.salaryMaximum, job.rate)
           }
         }) : []
       })
@@ -62,6 +62,8 @@ export class JobExpiredComponent implements OnInit {
     };
   };
 
+  status: string[] = ["All", "Expired", "Archived"];
+
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -82,8 +84,12 @@ export class JobExpiredComponent implements OnInit {
     setTimeout(() => this.loading = false, 1500);
   }
 
-  formatSalary(salaryMin, salaryMax) {
-    return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+  formatSalary(salaryMin, salaryMax, rate) {
+    if (salaryMin && salaryMax) {
+      return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} (${rate})`
+    } else {
+      return '-';
+    }
   }
 
   getJobStatusName(statusId: number) {
@@ -94,6 +100,8 @@ export class JobExpiredComponent implements OnInit {
         return 'Draft';
       case 3:
         return 'Expired';
+      case 4:
+          return 'Archived';
       default:
         return 'Draft';
     }

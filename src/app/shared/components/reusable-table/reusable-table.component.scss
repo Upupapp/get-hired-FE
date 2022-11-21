@@ -214,7 +214,7 @@
 	border-radius: 5px !important;
 	font-size: 12px !important;
 	line-height: 15px;
-	font-family: 'Poppins';  
+	font-family: 'Poppins';
 	font-weight: 500;
 	font-style: normal;
 	min-width: 125px;
@@ -231,7 +231,7 @@
 	color: #625D5D
 }
 
-.draft{
+.draft, .archived{
 	background: rgba(#868686, 0.2);
 	color: #625D5D
 }
@@ -570,13 +570,13 @@ tr:last-child{
 	.table, .mat-table{//border-top: solid 1px #C9C9C9 !important;
 		//border-top: solid 1px transparent !important;
 		border-top: none !important;
-		overflow-x: auto !important; 
+		overflow-x: auto !important;
 		width: 100%;
 
 		@media (max-width: 1200px){
 			width: 600px !important;
 		}
-	
+
 	}
 
 	.mat-header-row {
@@ -682,7 +682,7 @@ tr:last-child{
 	  &:last-child{
 	  	border-bottom: none;
 	  }
-	  
+
 
 	  &:hover {
 	    background-color: rgba($color-blue-dark, 0.1);
@@ -693,9 +693,9 @@ tr:last-child{
 	    padding-left: 10px;
 	    padding-top: 15px;
 	    height: 65px !important;
-	    
+
 	  }
-	} 
+	}
 }
 
 #table-container-mobile{
@@ -735,7 +735,7 @@ tr:last-child{
 			}
 		}
 
-		
+
 		tr{
 			border: none;
 			color: #404040;
@@ -821,7 +821,7 @@ tr:last-child{
 	    padding-left: 10px;
 	    padding-top: 15px;
 	  }
-	} 
+	}
 
 	.math-row:nth-child(odd) {
 	  background: red;
@@ -878,8 +878,8 @@ tr:last-child{
 }
 
 
-.dropdown-toggle::after { 
-	border: none; 
+.dropdown-toggle::after {
+	border: none;
 }
 
 .dropdown-menu{

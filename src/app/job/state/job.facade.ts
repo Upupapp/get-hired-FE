@@ -50,6 +50,10 @@ export class JobFacade {
     this.store.dispatch(JobAction.saveJob({ job }));
   }
 
+  changeJobStatus(status:number, jobId: string) {
+    this.store.dispatch(JobAction.changeJobStatus({ status, jobId }));
+  }
+
   saveInterview(interview: InterviewModel.InterviewQuestion[] ) {
     this.store.dispatch(JobAction.setInterview({ interview }));
   }
