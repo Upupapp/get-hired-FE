@@ -5,7 +5,8 @@
                 <div>
                     <div *ngIf="!uploadedFile">
                         <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
-                        <button  (click)="uploadFile.click()" class="btn btn-primary float-end">Choose File</button>
+                        <button  (click)="uploadFile.click()" class="btn btn-primary float-end"
+                        id="btn-uploader">Choose File</button>
                     </div>
 
                 </div>

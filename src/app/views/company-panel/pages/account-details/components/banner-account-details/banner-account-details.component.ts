@@ -8,10 +8,27 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./banner-account-details.component.scss']
 })
 export class BannerAccountDetailsComponent implements OnInit {
-
+  public bannerImage: any = undefined;
+  public bannerEdit: boolean = false;
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  onUpload(file: any) {
+    this.bannerImage = file;
+  }
+
+  clickInputBanner(){
+    let doc_id = document.getElementById('btn-uploader');   
+
+    if(doc_id) 
+      doc_id.click();
+
+    this.bannerEdit = !this.bannerEdit;
+
+    console.log("SAVEE FUNCTION HERE");  
+    
   }
 
 }

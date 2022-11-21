@@ -7,19 +7,21 @@
 	padding: 8px;
 }
 
+.banner-image-main{
+	position: absolute;
+	width: 100%;
+	height: 435px;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 16px;
+	//top: 5px
+}
+
 .main-banner{
-	padding-left: 20px;
-	padding-right: 20px;
+	//padding-left: 20px;
+	//padding-right: 20px;
 	position: relative;
 	//background: #c9c9c9;
-	.banner-image{
-		width: 100%;
-		height: 400px;
-		object-fit: cover;
-		object-position: center;
-		border-radius: 16px;
-	}
-
 	.company-logo{
 		height: 100px;
 		margin-bottom: 15px;
@@ -27,8 +29,8 @@
 	}
 
 	.bg-details{
-		padding: 10px 5px;
-		background: url(~/src/assets/images/placeholder/job-post-banner.png);
+		padding: 15px 15px;
+		//background: url(~/src/assets/images/placeholder/job-post-banner.png);
 		background-repeat: no-repeat;
 		//background-attachment: fixed;
 		background-position: 5% 10%;
@@ -42,10 +44,10 @@
 	.card-transparent{
 		padding: 20px;
 		border-radius: 16px;
-		background: rgba(255, 255, 255, 0.55);
+		background: rgba(255, 255, 255, 0.7);
 		backdrop-filter: blur(2px);
 		/* Note: backdrop-filter has minimal browser support */
-		min-height: 300px;
+		min-height: 380px;
 		border-radius: 25px;
 	}
 
