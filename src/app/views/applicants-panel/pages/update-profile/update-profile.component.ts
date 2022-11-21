@@ -11,17 +11,20 @@ export class UpdateProfileComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Profile Details"
+      title: "Profile Details",
+      valid: true
     },
 
     {
       id: 2,
-      title: "Skills and Experience"
+      title: "Skills and Experience",
+      valid: true
     },
 
     {
       id: 3,
-      title: "Documents"
+      title: "Documents",
+      valid: true
     },
   ];
 

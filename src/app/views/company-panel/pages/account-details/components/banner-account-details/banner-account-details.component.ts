@@ -10,9 +10,15 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 export class BannerAccountDetailsComponent implements OnInit {
   public bannerImage: any = undefined;
   public bannerEdit: boolean = false;
+  public bannerHeight: number = 400;
+
   constructor() { }
 
   ngOnInit(): void {
+    let banner_sub_id = document.getElementById('bg-details'); 
+    let bannerHeight = banner_sub_id?.offsetHeight;
+    this.bannerHeight = bannerHeight;
+    
   }
 
   onUpload(file: any) {

@@ -80,25 +80,25 @@ export class CreateJobPostComponent implements OnInit {
     {
       id: 1,
       title: "Job Post Details",
-      valid: false
+      valid: true
     },
 
     {
       id: 2,
       title: "Rates and Budget",
-      valid: false
+      valid: true
     },
 
     {
       id: 3,
       title: "Create Interview",
-      valid: false
+      valid: true
     },
 
     {
       id: 4,
       title: "Preview Job Post",
-      valid: false
+      valid: true
     },
   ];
 

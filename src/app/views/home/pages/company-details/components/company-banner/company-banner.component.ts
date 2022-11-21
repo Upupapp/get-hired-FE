@@ -11,11 +11,17 @@ export class CompanyBannerComponent implements OnInit {
   @Input() companyData: any;  
 
   public firstSentence: string;  
+  public bannerImage: any = undefined;
+  public bannerEdit: boolean = false;
+  public bannerHeight: number;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.firstSentence = this.companyData?.description?.split('.')[0];  
+    this.firstSentence = this.companyData?.description  
+    let banner_sub_id = document.getElementById('bg-details'); 
+    let bannerHeight = banner_sub_id?.offsetHeight + 65;
+    this.bannerHeight = bannerHeight;
   }
 
 }
