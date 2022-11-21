@@ -160,7 +160,7 @@ export class JobPostDetailStepComponent implements OnInit {
   }
 
   addItem(event, arrayItem, field){
-    let value = event?.target?.value;
+    let value = event?.target?.value || event;
     let index = arrayItem.findIndex(el => el === value);
 
     if(index === -1){

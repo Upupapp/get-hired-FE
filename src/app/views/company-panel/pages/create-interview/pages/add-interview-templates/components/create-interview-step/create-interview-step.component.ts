@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -29,15 +29,33 @@ export class CreateInterviewStepComponent implements OnInit {
   }];
 
   public jobLists: Job[] = jobLists;
+  public filterControl = new FormControl();
+  public filteredJobList: any[] = [];
 
   constructor(private formBuilder: FormBuilder,
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.filteredJobList = [...this.jobLists];
     this.interviewQuestions = this.formBuilder.group({
       template_title: ['',/* [Validators.required]*/],
       created_by: [''],
       job_id: ['']
+    });
+
+    // dropdown filter
+    this.filterControl.valueChanges
+    .subscribe((value) => {
+      this.filteredJobList = [...this.jobLists].filter((el: any) => {
+        let querySearch = {
+          id: el?.id,  
+          title: el?.title,  
+          work_setup: el?.work_setup, 
+          job_type: el?.job_type
+        }
+
+        return (JSON.stringify(querySearch))?.toLowerCase()?.includes(value?.toLowerCase());
+      });
     });
   }
 

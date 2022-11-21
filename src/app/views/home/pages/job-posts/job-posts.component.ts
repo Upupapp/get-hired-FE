@@ -29,7 +29,7 @@ export class JobPostsComponent implements OnInit {
   public loading: boolean = true;
   public screenSize: number = 1600;
 
-  public jobLists: Job[] = jobLists;
+  public jobLists: Job[] = []//jobLists;
   public listView: boolean = false;
 
   public loggedUser: any;
