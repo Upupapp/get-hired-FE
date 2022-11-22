@@ -35,6 +35,8 @@ export class CreateJobPostComponent implements OnInit {
       "job_level": "Intermediate: 2-3 Years Experience",
       "work_setup": "Remote",
       "address": "Block 33, 123 Street Sampaloc Manila",
+      "banner_thumb_url": "/assets/images/placeholder/category-1.png",
+      //"banner_position": {x: 0, y: 0},
       "badge": [
           {
               "id": "career-growth",
@@ -102,7 +104,7 @@ export class CreateJobPostComponent implements OnInit {
     },
   ];
 
-  public stepper: number = 1;
+  public stepper: number = 4;
   
   constructor() { }
 

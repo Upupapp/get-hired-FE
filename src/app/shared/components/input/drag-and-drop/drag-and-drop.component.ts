@@ -167,8 +167,6 @@ export class DragAndDropComponent {
         }
       }
     }
-
-
   }
 
   removeImage(){
@@ -189,6 +187,37 @@ export class DragAndDropComponent {
       this.uploadedFile = this.file[0];
       this.uploadedFile.name = this.file[0].filename;
     }
+
+    console.log(this.dragPosition)
+  }
+
+  public dragPosition = JSON.parse(sessionStorage.getItem('job-post-banner-position')) || {
+    x: 0, y: 0
+  }
+
+  // Update Drag position
+  onDragEnded(event) {
+    let element = event.source.getRootElement();
+    let imageSourceFile = document.getElementById('image-source-file');
+    let boundingClientRect = element.getBoundingClientRect();
+    let parentPosition = this.getPosition(element);
+    let dragPosition = {x: 0, y: ((imageSourceFile?.offsetHeight) - boundingClientRect?.y) + ((boundingClientRect.y) - (parentPosition.top))};
+
+    // temporary save to local storage
+    sessionStorage.setItem('job-post-banner-position', JSON.stringify(dragPosition))
+    console.log(dragPosition, imageSourceFile?.scrollHeight)
+    //console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
+  }
+
+  getPosition(el) {
+    let x = 0;
+    let y = 0;
+    while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      x += el.offsetLeft - el.scrollLeft;
+      y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
+    }
+    return { top: y, left: x };
   }
 
   viewImageVideo(data: any){

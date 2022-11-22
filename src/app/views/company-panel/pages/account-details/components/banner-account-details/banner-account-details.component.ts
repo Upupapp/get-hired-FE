@@ -18,7 +18,6 @@ export class BannerAccountDetailsComponent implements OnInit {
     let banner_sub_id = document.getElementById('bg-details'); 
     let bannerHeight = banner_sub_id?.offsetHeight;
     this.bannerHeight = bannerHeight;
-    
   }
 
   onUpload(file: any) {
