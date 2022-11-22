@@ -12,11 +12,11 @@
 				<div class="w-100 d-flex mb-3"
 				[ngClass]="location?.match(item?.route)
 				? 'sidebar-title-active'
-				: location?.match('expired') && item?.route === 'recruiter/jobs/expired'
+				: location?.match('expired') && item?.route === 'jobs/expired'
 				? 'sidebar-title-active'
 				: ''"
 
-				(click)="changeRoute('/' + item?.route)">
+				(click)="changeRoute('/recruiter/' + item?.route)">
 					<div class="sidebar-icon ms-lg-3" style="width: 20px">
 						<img [src]="'assets/images/placeholder/icons/company-panel-' + item?.icon"
 						[ngClass]="item?.class">
@@ -27,10 +27,10 @@
 				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
 					<ng-container *ngFor="let sub_route of item?.sub_routes">
 						<div [@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
-						[ngClass]="location === ('/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'"
+						[ngClass]="location === ('/recruiter/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'"
 						style="margin-top: -10px; margin-bottom: 19px;">
 							<button class="btn btn-sub-route"
-							(click)="changeRoute('/' + sub_route?.route)">
+							(click)="changeRoute('/recruiter/' + sub_route?.route)">
 								{{sub_route?.title}}
 							</button>
 						</div>

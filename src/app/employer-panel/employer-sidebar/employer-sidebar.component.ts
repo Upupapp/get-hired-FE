@@ -24,6 +24,7 @@ export class EmployerSidebarComponent implements OnInit {
     private route: ActivatedRoute,
     private employeeFacade: EmployeeFacade) {
     this.req = this.router.events.subscribe((event: any) => {
+      console.log(this.router.url);
       this.location = this.router.url;
       this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
       window.scrollTo({
@@ -36,52 +37,53 @@ export class EmployerSidebarComponent implements OnInit {
 
   public sidebarItems: any[] = [
     {
-      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'recruiter/dashboard'
+      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
     },
 
     {
       title: 'Jobs', icon: 'jobs.png', class: 'jobs',
-      route: 'recruiter/jobs',
+      route: 'jobs',
       sub_routes: [
         {
-          title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'recruiter/jobs/list',
+          title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
         },
 
         {
-          title: 'Expired Jobs',  icon: 'expired-jobs.png', class: 'expired', route: 'recruiter/jobs/expired'
+          title: 'Expired Jobs',  icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
         },
       ]
     },
 
     {
-      title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'recruiter/contacts',
+      title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
       sub_routes: [
         {
           title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'applicants',
         },
 
         {
-          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'applicants/contact-list'
+          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'contact-list'
         },
       ]
     },
 
     {
-      title: 'Create Interview', icon: 'create-interview.png', class: 'interviews', route: 'recruiter/interview'
+      title: 'Create Interview', icon: 'create-interview.png', class: 'interviews', route: 'interview'
     },
 
     {
       title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-      route: 'recruiter/subscription'
+      route: 'subscription'
     },
 
     {
-      title: 'Company Details', icon: 'account.png', class: 'accounts',
-      route: 'recruiter/company/details'
+      title: 'Employer Branding', icon: 'account.png', class: 'accounts',
+      route: 'company/details'
     },
   ]
 
   ngOnInit(): void {
+    this.location = this.router.url;
   }
 
   ngOnDestroy(): void {
@@ -89,6 +91,7 @@ export class EmployerSidebarComponent implements OnInit {
   }
 
   changeRoute(route){
+    console.log(route);
     this.router.navigate([route]);
   }
 }
