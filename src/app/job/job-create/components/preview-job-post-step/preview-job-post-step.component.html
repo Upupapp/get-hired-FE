@@ -6,7 +6,7 @@
 
   <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <div class="banner-container">
-      <img [src]="preview.bannerFile[0].file" class="banner-image" *ngIf="preview.bannerFile">
+      <img [src]="preview.bannerFile[0]?.file ? preview.bannerFile[0].file: 'assets/images/placeholder/job-post-banner.png'" class="banner-image" *ngIf="preview.bannerFile">
 
       <div class="floating-card" *ngIf="preview.badges">
         <div class="d-flex">

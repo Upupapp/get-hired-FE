@@ -3,9 +3,9 @@
   <div class="card card-body py-3">
     <div class="w-100">
       <span class="main-title mt-3">Create a Job</span>
-
       <div class="float-end">
-        <button class="btn btn-save-draft" (click)="saveAsDraft()">
+        <button class="btn btn-save-draft" (click)="saveAsDraft()"
+          [disabled]="!initialFormValid">
           Save as Draft
         </button>
 

@@ -74,7 +74,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
-        jobTitle: ['', Validators.required],
+        jobTitle: [null, Validators.required],
         jobTypeId: [null],
         jobLevelId: [null],
         jobAddress: [''],

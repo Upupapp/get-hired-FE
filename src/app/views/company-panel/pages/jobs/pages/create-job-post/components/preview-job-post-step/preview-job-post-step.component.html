@@ -1,4 +1,4 @@
-<section style="transition: all 0.4s ease !important;">	
+<section style="transition: all 0.4s ease !important;">
 	<!-- TITLE -->
 	<div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
 		<h5 class="main-title">Job Post Preview</h5>
@@ -26,19 +26,19 @@
 			<h5 class="job-title text-capitalize">
 				{{ jobPostData?.jobPostDetails?.title }}
 			</h5>
-			<h5 class="title-label">{{ jobPostData?.jobPostIndustry?.industry }} 
+			<h5 class="title-label">{{ jobPostData?.jobPostIndustry?.industry }}
 				<span class="mx-2">|</span> {{ jobPostData?.jobPostIndustry?.job_role }}
 			</h5>
 
 			<div class="mt-3">
 				<div class="d-flex">
 					<h5 class="d-flex title-details me-3 ms-1">
-						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;"> 
+						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
 						{{ jobPostData?.jobPostDetails?.job_type }}
 					</h5>
 
 					<h5 class="d-flex title-details me-3">
-						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;"> 
+						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
 						{{ jobPostData?.jobPostDetails?.work_setup }}
 					</h5>
 
@@ -49,7 +49,7 @@
 
 				<div class="d-flex mt-1">
 					<h5 class="d-flex title-details me-3 ms-1">
-						<img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;"> 
+						<img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;">
 						{{ jobPostData?.jobPostDetails?.address }}
 					</h5>
 
@@ -57,8 +57,8 @@
 
 				<div class="d-flex mt-1">
 					<h5 class="d-flex title-details me-3 ms-1">
-						<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;"> 
-						PHP {{ jobPostData?.jobPostIndustry?.salary_min | number:'1.0':'en-US' }} - 
+						<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+						PHP {{ jobPostData?.jobPostIndustry?.salary_min | number:'1.0':'en-US' }} -
 						PHP {{ jobPostData?.jobPostIndustry?.salary_max | number:'1.0':'en-US' }}
 					</h5>
 				</div>
@@ -68,7 +68,7 @@
 				<div class="job-description mb-3">
 					<h5 class="title-job-description">
 						<strong>Job Description</strong><br>
-						
+
 						{{ jobPostData?.jobPostDetails?.job_description }}
 					</h5>
 				</div>
@@ -76,7 +76,7 @@
 				<div class="job-description mb-3">
 					<h5 class="title-job-description">
 						<strong>Duties and Responsibilities</strong><br>
-						
+
 						{{ jobPostData?.jobPostDetails?.job_duties }}
 					</h5>
 				</div>
@@ -108,7 +108,7 @@
 								{{item}}
 							</h5>
 						</li>
-					</ul> 
+					</ul>
 				</div>
 
 				<hr>
@@ -150,8 +150,7 @@
 		<div class="p-4">
 			<label class="title-job-interview text-capitalize mb-3">Interview Questions</label>
 
-			<section class="interview-card card-body mt-3 p-4" 
-			id="interview-list"
+			<section class="interview-card card-body mt-3 p-4"
 			*ngFor="let item of jobPostData?.jobPostInterviewQuestions?.interview_questions; let i = index"
 			[@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
 				<!-- INTERVIEWS -->
@@ -184,8 +183,8 @@
 			</section>
 
 			<!-- <div class="row">
-				<ng-container 
-				*ngFor="let item of jobPostData?.jobPostInterviewQuestions?.interview_questions; 
+				<ng-container
+				*ngFor="let item of jobPostData?.jobPostInterviewQuestions?.interview_questions;
 				let i = index">
 					<div class="col-12 col-md-6 mb-4">
 						<div class="d-flex">
@@ -195,7 +194,7 @@
 
 							<div class="mt-3">
 								<p class="title-question-number">
-									<img src="/assets/images/placeholder/icons/interview-logo-2.png" 
+									<img src="/assets/images/placeholder/icons/interview-logo-2.png"
 									style="height: 14px" class="me-1">
 									Question {{i + 1}}
 								</p>

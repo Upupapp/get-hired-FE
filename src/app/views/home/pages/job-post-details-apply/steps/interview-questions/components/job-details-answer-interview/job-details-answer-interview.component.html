@@ -2,7 +2,7 @@
 <section class="card card-body my-3">
 	<div class="p-4">
 		<div class="d-flex">
-			<label class="title-job-interview text-capitalize me-3" 
+			<label class="title-job-interview text-capitalize me-3"
 			[ngClass]="interviewTab === 'questions' ? 'active' : ''"
 			(click)="interviewTab = 'questions'">Interview Questions</label>
 
@@ -14,8 +14,8 @@
 		<hr style="color: #6e6e6e">
 
 		<ng-container *ngIf="interviewTab === 'questions'">
-			<section class="interview-card card-body p-2 px-1 mb-1" 
-				id="interview-list"
+			<section class="interview-card card-body p-2 px-1 mb-1"
+				id="interview-list2"
 				*ngFor="let item of interview_questions; let i = index">
 				<!-- INTERVIEWS -->
 				<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}">
@@ -53,8 +53,8 @@
 		</ng-container>
 
 		<ng-container *ngIf="interviewTab === 'answers'">
-			<section class="interview-card card-body p-2 px-1 mb-1" 
-				id="interview-list"
+			<section class="interview-card card-body p-2 px-1 mb-1"
+				id="interview-list2"
 				*ngFor="let item of interview_answers; let i = index">
 				<!-- INTERVIEWS -->
 				<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}">

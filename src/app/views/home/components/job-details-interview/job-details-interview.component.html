@@ -2,8 +2,7 @@
 	<div class="p-4">
 		<label class="title-job-interview text-capitalize mb-3">Interview Questions</label>
 
-		<section class="interview-card card-body p-2 px-1 mb-1" 
-			id="interview-list"
+		<section class="interview-card card-body p-2 px-1 mb-1"
 			*ngFor="let item of interview_questions; let i = index">
 				<!-- INTERVIEWS -->
 				<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}">
