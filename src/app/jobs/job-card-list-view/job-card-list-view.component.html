@@ -1,0 +1,65 @@
+<div class="card card-body mb-3 "
+[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+	<div class="d-flex">
+		<div class="banner-thumbnail flex-wrap me-2">
+			<img [src]="data?.jobBanner" class="img img-fluid img-banner">
+		</div>
+
+		<div class="p-3 py-3 flex-wrap d-flex w-100">
+			<div class="w-100 flex-wrap">
+				<div class="d-flex float-end">
+					<img src="/assets/images/placeholder/icons/{{badge?.icon}}"
+					[title]="badge?.name"
+					*ngFor="let badge of data?.badges"
+					style="width: 30px; " class="me-2">
+				</div>
+
+				<div>
+					<h5 class="title-job-title">{{data?.jobTitle}}</h5>
+					<p class="title-company">{{data?.companyName}}</p>
+				</div>
+
+				<div class="tags ms-0">
+					<div class="title-tags me-2 mb-2" *ngFor="let tag of data?.tags">{{tag}}</div>
+				</div>
+			</div>
+
+			<div class="w-100 flex-wrap ms-2 mt-2">
+				<div class="d-flex">
+					<h5 class="d-flex title-details me-3 ms-1">
+						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+						{{data?.jobTypeName}}
+					</h5>
+
+					<h5 class="d-flex title-details me-2">
+						<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+						{{data?.workSetupName}}
+					</h5>
+				</div>
+
+				<div class="d-flex mt-1">
+					<h5 class="d-flex title-details me-3 ms-1">
+						<img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;">
+						{{data?.jobCity}}, {{data.jobCountry}}
+					</h5>
+
+				</div>
+
+				<div class="d-flex mt-1">
+					<h5 class="d-flex title-details me-3 ms-1">
+						<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+						PHP {{data?.salaryMaximum | number:'1.0':'en-US' }} - PHP {{data?.salaryMinimum | number:'1.0':'en-US' }}
+					</h5>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<div class="w-100 mt-1">
+		<button class="btn btn-primary d-block w-100 hvr-bob"
+		(click)="applyNow(data)">Apply Now</button>
+	</div>
+
+</div>
