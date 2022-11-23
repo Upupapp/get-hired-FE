@@ -45,7 +45,7 @@ export const getAllcompany = createAction(
 
 export const getAllcompanySuccess = createAction(
   AllCompaniesActionTypes.GetAllCompanySuccess,
-  props<{ company: Model.Company[] }>()
+  props<{ company: Model.BasicInfo[] }>()
 );
 
 export const getAllcompanyFail = createAction(

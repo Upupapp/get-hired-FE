@@ -19,8 +19,8 @@ export class CompaniesService {
     return this.baseService.get<Model.BasicInfo[]>(`${this.companyUrl}/featured`);
   }
 
-  getAllCompany() {
-
+  getCompanyById(companyId: string = ''){
+    return this.baseService.get<Model.Company>(`${this.companyUrl}/details?id=${companyId}`);
   }
 
 }

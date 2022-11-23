@@ -9,7 +9,8 @@ export interface State extends AppState.State {
 
 export interface CompaniesState {
   selected: Model.Company;
-  list: Model.BasicInfo[] | Model.Company[];
+  all: Model.Company[];
+  list: Model.BasicInfo[];
   error: any;
   succesMsg: string;
   loading: boolean;
@@ -17,6 +18,7 @@ export interface CompaniesState {
 
 const initialState: CompaniesState = {
   selected: null,
+  all: [],
   list: [],
   succesMsg: '',
   error: null,

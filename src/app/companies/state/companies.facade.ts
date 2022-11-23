@@ -7,47 +7,49 @@ import * as fromfeature from './companies.selector';
 
 @Injectable()
 export class CompaniesFacade {
-    loading$ = this.store.pipe(select(fromfeature.loading));
-    companyDetails$ = this.store.pipe(select(fromfeature.getCompanyDetails));
-    companyList$ = this.store.pipe(select(fromfeature.getCompanyList));
-    success$ = this.store.pipe(select(fromfeature.getSuccessMsg));
+  loading$ = this.store.pipe(select(fromfeature.loading));
+  companyDetails$ = this.store.pipe(select(fromfeature.getCompanyDetails));
+  companyList$ = this.store.pipe(select(fromfeature.getCompanyList));
+  success$ = this.store.pipe(select(fromfeature.getSuccessMsg));
 
-    constructor(
-      private store: Store<State>,
-      ) { }
+  constructor(
+    private store: Store<State>,
+  ) { }
 
-    getAllFeaturedCompanies() {
-      this.store.dispatch(CompanyAction.getAllFeaturedCompany());
-    }
+  getAllFeaturedCompanies() {
+    this.store.dispatch(CompanyAction.getAllFeaturedCompany());
+  }
 
-    // resetStateNotif() {
-    //   this.store.dispatch(CompanyAction.resetState());
-    // }
+  getCompany(companyId?: string) {
+    this.store.dispatch(CompanyAction.getCompany({ companyId }));
+  }
 
-    // getAllCompany() {
-    //   this.store.dispatch(CompanyAction.getAllcompany());
-    // }
+  // resetStateNotif() {
+  //   this.store.dispatch(CompanyAction.resetState());
+  // }
 
-    // createCompany(company: Model.Company) {
-    //   this.store.dispatch(CompanyAction.createCompany({ company }));
-    // }
+  // getAllCompany() {
+  //   this.store.dispatch(CompanyAction.getAllcompany());
+  // }
 
-    // updateCompany(company: Model.Company) {
-    //   this.store.dispatch(CompanyAction.updateCompany({ company }));
-    // }
+  // createCompany(company: Model.Company) {
+  //   this.store.dispatch(CompanyAction.createCompany({ company }));
+  // }
 
-    // getCompany(companyId?: string) {
-    //   this.store.dispatch(CompanyAction.getCompany({ companyId }));
-    // }
+  // updateCompany(company: Model.Company) {
+  //   this.store.dispatch(CompanyAction.updateCompany({ company }));
+  // }
 
-    // getCompanyDashboard() {
-    //   this.store.dispatch(CompanyAction.companyDashboard());
-    // }
-    // getfeatureList() {
 
-    // }
 
-    // getfeatureDetails(featureId: string) {
+  // getCompanyDashboard() {
+  //   this.store.dispatch(CompanyAction.companyDashboard());
+  // }
+  // getfeatureList() {
 
-    // }
+  // }
+
+  // getfeatureDetails(featureId: string) {
+
+  // }
 }

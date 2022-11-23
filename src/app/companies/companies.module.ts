@@ -11,9 +11,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { companiesReducer } from './state/companies.reducer';
 import { CompaniesEffects } from './state/companies.effects';
+import { JobsModule } from '@main/jobs/jobs.module';
 
 const routes: Routes = [
-  { path: 'details', component: PublicCompanyDetailsComponent }
+  {
+    path: '',
+    children: [
+      { path: 'details', component: PublicCompanyDetailsComponent }
+    ]
+  }
 ];
 
 const exportedComponents = [
@@ -29,6 +35,7 @@ const exportedComponents = [
   ],
   imports: [
     CommonModule,
+    JobsModule,
     StoreModule.forFeature('companies', companiesReducer),
     EffectsModule.forFeature([CompaniesEffects]),
     RouterModule.forChild(routes)

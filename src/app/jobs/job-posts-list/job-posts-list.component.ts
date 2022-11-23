@@ -20,6 +20,7 @@ import { JobsFacade } from '../state/jobs.facade';
 })
 export class JobPostsListComponent implements OnInit {
   @Input() fromSearch: boolean = false;
+  @Input() label: string;
 
   public loading: boolean = true;
   public screenSize: number = 1600;

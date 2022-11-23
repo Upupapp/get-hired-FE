@@ -9,14 +9,6 @@ import { AdminGuard } from './shared/guard/admin.guard';
 
 export const routes: Routes = [
   {
-    path: 'jobs',
-    loadChildren: () => import('@main/public/public.module').then(m => m.PublicModule),
-  },
-  {
-    path: 'companies',
-    loadChildren: () => import('@main/companies/companies.module').then(m => m.CompaniesModule),
-  },
-  {
     path: 'admin',
     loadChildren: () => import('@main/admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
     canActivate: [AuthGuard],
@@ -38,6 +30,10 @@ export const routes: Routes = [
       import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
     canActivate: [AuthGuard],
     data: { role: '3' }
+  },
+  {
+    path: '',
+    loadChildren: () => import('@main/public/public.module').then(m => m.PublicModule),
   },
   {
     path: '',
