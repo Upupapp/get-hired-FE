@@ -30,6 +30,7 @@ export interface Job {
   jobSkills?: string[];
   jobTags?: string[];
   rate?: string;
+  bannerPosition?: any;
 }
 
 export interface InitialDetails {

@@ -6,9 +6,23 @@
 
   <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <div class="banner-container">
-      <img [src]="preview.bannerFile[0]?.file ? preview.bannerFile[0].file: 'assets/images/placeholder/job-post-banner.png'" class="banner-image" *ngIf="preview.bannerFile">
+      <div class="bg-opacity" style="height:360px; overflow: hidden;
+			background: #c9c9c9; border-radius: 7px; position: relative;">
 
-      <div class="floating-card" *ngIf="preview.badges">
+
+				<img [src]="preview?.bannerFile[0]?.file ? preview?.bannerFile[0].file: 'assets/images/placeholder/job-post-banner.png'"
+				id="banner-source-file"
+				cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)"
+				cdkDrag [cdkDragFreeDragPosition]="dragPosition"
+				class="banner-image">
+
+				<div class="drag-position-container">
+					<h5>Drag to Reposition</h5>
+				</div>
+
+			</div>
+
+      <div class="floating-card" *ngIf="preview?.badges && preview?.badges.length != 0">
         <div class="d-flex">
           <ng-container *ngFor="let item of preview.badges">
             <img [src]="'/assets/images/placeholder/icons/' + item?.icon" class="badge-logo">
