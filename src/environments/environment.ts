@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
-  api_url: 'http://localhost:3000/api'
+  //api_url: 'http://localhost:3000/api'
+  api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api'
 };
 
 /*
