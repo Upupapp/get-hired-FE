@@ -34,12 +34,11 @@ export class PreviewJobPostStepComponent implements OnInit {
     let imageSourceFile = document.getElementById('banner-source-file');
     let boundingClientRect = element.getBoundingClientRect();
     let parentPosition = this.getPosition(element);
-    let dragPosition = {x: 0, y: /*((imageSourceFile?.offsetHeight)/2) +*/ ((boundingClientRect.y) - (parentPosition.top))};
+    let dragPosition = {x: 0, y: ((boundingClientRect.y) - (parentPosition.top))};
 
     // temporary save to local storage
     sessionStorage.setItem('job-post-banner-position', JSON.stringify(dragPosition))
     console.log(dragPosition, imageSourceFile?.scrollHeight)
-    //console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
   }
 
   getPosition(el) {
