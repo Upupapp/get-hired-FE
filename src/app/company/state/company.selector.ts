@@ -27,3 +27,13 @@ export const companyDashboard = createSelector (
   getCompanyInitState,
   state => state.dashboard
 );
+
+export const getSetupList = createSelector(
+  getCompanyInitState,
+  state => state.setup
+);
+
+export const getIndustryList = createSelector(
+  getCompanyInitState,
+  state => state.industry
+);

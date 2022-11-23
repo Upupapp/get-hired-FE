@@ -18,6 +18,16 @@ import { ActivatedRoute, Router } from '@angular/router';
   animations: [mainAnimations]
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
+  asyncLocalStorage = {
+    setItem: async function (key, value) {
+      await Promise.resolve();
+      localStorage.setItem(key, value);
+    },
+    getItem: async function (key) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
+    }
+  };
 
   private req: Subscription;
   public companyDetailsForm!: FormGroup;
@@ -141,6 +151,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   afterSubmit(event) {
     console.log(event);
     if (event == 'created') {
+      this.updateLocalStorage();
       this.snackBar.open(`Company successfully setup. You can now access other features`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
@@ -151,6 +162,14 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     }
+  }
+
+  async updateLocalStorage() {
+    const user  = await this.asyncLocalStorage.getItem('user');
+    this.asyncLocalStorage.setItem('user', JSON.stringify({
+      ...JSON.parse(user),
+      companyName: this.companyDetailsForm.get('companyName').value
+    }));
   }
 
   formLoading(loading: boolean) {

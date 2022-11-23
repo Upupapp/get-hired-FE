@@ -32,7 +32,10 @@
 				<h5 class="title-card">Active Jobs
 					<img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
 				</h5>
-				<h3 class="title-stat">2</h3>
+        <div class="d-flex" style="margin-top: 20px">
+          <h3 class="title-stat mt-0 pe-1">{{ charts.activeJobs || 0}}</h3>
+          <label class="subheading align-items-end">this month</label>
+        </div>
 				<img src="/assets/images/placeholder/icons/arrow-right-white.png"
 				style="height: 16px; margin-top: -25px" class="float-end me-2">
 			</div>
@@ -44,7 +47,10 @@
 				<h5 class="title-card">Applicants
 					<img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
 				</h5>
-				<h3 class="title-stat">{{ charts.applicants || 0}}</h3>
+				<div class="d-flex" style="margin-top: 20px">
+          <h3 class="title-stat mt-0 pe-1">{{ charts.applicants || 0}}</h3>
+          <label class="subheading align-items-end">on active Jobs</label>
+        </div>
 				<img src="/assets/images/placeholder/icons/arrow-right-white.png"
 				style="height: 16px; margin-top: -25px" class="float-end me-2">
 			</div>
@@ -53,10 +59,13 @@
 		<div class="col-12 col-md-6 col-lg-4 mb-3">
 			<div class="card-application yellow mb-2"
 			[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-				<h5 class="title-card">Video Interview
+				<h5 class="title-card">Video Interviews
 					<img src="/assets/images/placeholder/icons/card-video-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
 				</h5>
-				<h3 class="title-stat">{{ charts.interviews || 0}}</h3>
+        <div class="d-flex" style="margin-top: 20px">
+          <h3 class="title-stat mt-0 pe-1">{{ charts.interviews || 0}}</h3>
+          <label class="subheading align-items-end">this month</label>
+        </div>
 				<img src="/assets/images/placeholder/icons/arrow-right-white.png"
 				style="height: 16px; margin-top: -25px" class="float-end me-2">
 			</div>

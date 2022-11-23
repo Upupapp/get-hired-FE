@@ -78,7 +78,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         jobTypeId: [null],
         jobLevelId: [null],
         jobAddress: [''],
-        jobCity: [''],
+        jobCity: [null, Validators.required],
+        jobCountry: [null, Validators.required],
         jobDescription: [''],
         jobDuties: [''],
         jobCategoryId: [null],
@@ -140,6 +141,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.jobForm.controls.initialData.get('workSetupId').setValue(raw.workSetupId);
       this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
       this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
+      this.jobForm.controls.initialData.get('jobCountry').setValue(raw.jobCountry);
       this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
       this.jobForm.controls.initialData.get('jobDuties').setValue(raw.jobDuties);
       this.jobForm.controls.initialData.get('jobCategoryId').setValue(raw.jobCategoryId);
@@ -176,6 +178,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.isReadyToPublish = job.jobTypeId &&
       job.jobLevelId &&
       job.jobCity != "" &&
+      job.jobCountry != "" &&
       job.jobDescription != "" &&
       job.workSetupId &&
       job.bannerFile[0] &&

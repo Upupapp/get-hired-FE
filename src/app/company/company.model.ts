@@ -36,3 +36,9 @@ export interface Dashboard {
     interviewAppointments: number;
   }
 }
+
+export interface Options {
+  id: number;
+  name: string;
+  icon?: string;
+}

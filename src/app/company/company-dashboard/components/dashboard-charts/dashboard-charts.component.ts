@@ -161,7 +161,7 @@ export class DashboardChartsComponent implements OnInit {
     },
 
   ];
-  public doughnutChartLabels: string[] = ['Interviewed', 'Hired', 'Archived'];
+  public doughnutChartLabels: string[] = ['Contacts', 'Applicants'];
 
 
 

@@ -4,8 +4,7 @@
     <div class="w-100">
       <span class="main-title mt-3">Create a Job</span>
       <div class="float-end">
-        <button class="btn btn-save-draft" (click)="saveAsDraft()"
-          [disabled]="!initialFormValid">
+        <button class="btn btn-save-draft" (click)="saveAsDraft()" [disabled]="!initialFormValid">
           Save as Draft
         </button>
 
@@ -23,36 +22,8 @@
     </div>
 
     <div class="text-end mt-3 col-12 col-md-4">
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2, 'initialData')" *ngIf="stepper == 1" [disabled]="!initialFormValid"
-        type="submit">
-        Next: Job Requirements
-      </button>
-
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(1)" *ngIf="stepper == 2">
-        Prev: Job Details
-      </button>
-
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(3, 'jobInfo')" *ngIf="stepper == 2" [disabled]="!jobInfoValid">
-        Next: Create Interview
-      </button>
-
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2)" *ngIf="stepper == 3">
-        Prev: Job Requirements
-      </button>
-
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(4, 'interview')" *ngIf="stepper == 3" [disabled]="!interviewValid">
-        Next: Preview Job Post
-      </button>
-
-      <button class="btn btn-preview-job-post mx-2" (click)="changeStep(3)" *ngIf="stepper == 4">
-        Prev: Create Interview
-      </button>
-
-      <button class="btn btn-preview-job-post mx-2" (click)="publishJobPost()" *ngIf="stepper == 4">
-        Publish Job Post
-      </button>
+      <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
     </div>
-
   </div>
 
   <div class="p-3">
@@ -72,6 +43,55 @@
     <ng-container *ngIf="stepper === 4">
       <app-preview-job-post-step></app-preview-job-post-step>
     </ng-container>
+  </div>
 
+  <div class="card card-body py-3">
+    <div class="w-100">
+      <div class="text-end">
+        <button class="btn btn-add-service mx-2" (click)="cancel()">
+          Cancel
+        </button>
+
+        <button class="btn btn-save-draft" (click)="saveAsDraft()" [disabled]="!initialFormValid">
+          Save as Draft
+        </button>
+
+        <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
+
+      </div>
+    </div>
   </div>
 </form>
+
+<ng-template #stepperButtons>
+  <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2, 'initialData')" *ngIf="stepper == 1"
+    [disabled]="!initialFormValid" type="submit">
+    Next: Job Requirements
+  </button>
+
+  <button class="btn btn-preview-job-post mx-2" (click)="changeStep(1)" *ngIf="stepper == 2">
+    Prev: Job Details
+  </button>
+
+  <button class="btn btn-preview-job-post mx-2" (click)="changeStep(3, 'jobInfo')" *ngIf="stepper == 2"
+    [disabled]="!jobInfoValid">
+    Next: Create Interview
+  </button>
+
+  <button class="btn btn-preview-job-post mx-2" (click)="changeStep(2)" *ngIf="stepper == 3">
+    Prev: Job Requirements
+  </button>
+
+  <button class="btn btn-preview-job-post mx-2" (click)="changeStep(4, 'interview')" *ngIf="stepper == 3"
+    [disabled]="!interviewValid">
+    Next: Preview Job Post
+  </button>
+
+  <button class="btn btn-preview-job-post mx-2" (click)="changeStep(3)" *ngIf="stepper == 4">
+    Prev: Create Interview
+  </button>
+
+  <button class="btn btn-preview-job-post mx-2" (click)="publishJobPost()" *ngIf="stepper == 4">
+    Publish Job Post
+  </button>
+</ng-template>

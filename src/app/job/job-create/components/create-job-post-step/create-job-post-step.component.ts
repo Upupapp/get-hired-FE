@@ -95,10 +95,7 @@ export class CreateJobPostStepComponent implements OnInit {
 
 
   addItem(control, controlArray: FormArray) {
-    console.log(this.jobInfoForm);
     let value = this.jobInfoForm.get(control).value;
-
-    console.log(controlArray);
 
     if (value && value != '') {
       if (controlArray.controls.length != 5) {
@@ -108,9 +105,6 @@ export class CreateJobPostStepComponent implements OnInit {
         this.snackBar.open(`You are only allowed to add up to 5 items to this category`,
           '', { duration: 4000, panelClass: ['danger-snackbar'] });
       }
-    } else {
-      this.snackBar.open(`Empty string not allowed`,
-        '', { duration: 4000, panelClass: ['danger-snackbar'] });
     }
   }
 

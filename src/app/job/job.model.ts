@@ -20,6 +20,7 @@ export interface Job {
   expirationDate?: Date;
   jobStatusId?: number;
   jobCity?: string;
+  jobCountry?: string;
   bannerFile?: File;
   interviewQuestions?: InterviewModel.InterviewQuestion[];
   requirements?: string[];
@@ -38,6 +39,7 @@ export interface InitialDetails {
   workSetupId?: number;
   jobAddress?: string;
   jobCity?: string;
+  jobCountry?: string;
   jobBanner?: string;
   bannerFile?: File;
   badges: Options[];

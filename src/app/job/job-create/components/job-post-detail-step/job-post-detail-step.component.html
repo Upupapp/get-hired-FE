@@ -72,7 +72,7 @@
 
       <!-- Location -->
       <div class="mt-2 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-        <div class="col-12 col-md-8 mb-3">
+        <div class="col-12 col-md-6 mb-3">
           <label>Address</label>
           <p class="title-label-sub mb-3">This is your main office location/address.</p>
 
@@ -80,12 +80,20 @@
             <input type="text" name="address" class="form-control" placeholder="Address" formControlName="jobAddress">
           </div>
         </div>
-        <div class="col-12 col-md-4 mb-3">
+        <div class="col-12 col-md-3 mb-3">
           <label>City</label>
-          <p class="title-label-sub mb-3">Enter the city where the job will take place</p>
+          <p class="title-label-sub mb-3">Where the job will take place</p>
 
           <div class="form-group d-flex">
-            <input type="text" name="address" class="form-control" placeholder="City" formControlName="jobCity">
+            <input type="text" name="city" class="form-control" placeholder="City" formControlName="jobCity">
+          </div>
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+          <label>Country</label>
+          <p class="title-label-sub mb-3">Where the job will take place</p>
+
+          <div class="form-group d-flex">
+            <input type="text" name="country" class="form-control" placeholder="Country" formControlName="jobCountry">
           </div>
         </div>
       </div>
@@ -142,9 +150,6 @@
 
         <div class="title-container mb-3" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
           <h5 class="title-label">Duties & Responsibilities</h5>
-          <p class="title-label-sub mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            <br>tempor incididunt ut labore et dolore magna aliqua.
-          </p>
           <div class="form-group">
             <textarea name="job-title" class="form-control" rows="6"
               placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. "
@@ -212,7 +217,8 @@
               <h5 class="title-label">Good to Have</h5>
             </div>
 
-            <p class="title-label-sub mb-3">Add good to have skills but not a deal breaker (You can add up to 5 items)
+            <p class="title-label-sub mb-3">
+              Add good to have skills but not a deal breaker (You can add up to 5 items)
             </p>
 
             <div class="form-group input-group">

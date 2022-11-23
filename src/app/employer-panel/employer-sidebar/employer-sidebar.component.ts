@@ -24,7 +24,6 @@ export class EmployerSidebarComponent implements OnInit {
     private route: ActivatedRoute,
     private employeeFacade: EmployeeFacade) {
     this.req = this.router.events.subscribe((event: any) => {
-      console.log(this.router.url);
       this.location = this.router.url;
       this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
       window.scrollTo({

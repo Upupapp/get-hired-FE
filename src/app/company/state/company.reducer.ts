@@ -13,7 +13,9 @@ export interface CompanyState {
   error: any;
   succesMsg: string;
   loading: boolean;
-  dashboard: Model.Dashboard
+  dashboard: Model.Dashboard;
+  setup: Model.Options[];
+  industry: Model.Options[];
 }
 
 const initialState: CompanyState = {
@@ -22,7 +24,9 @@ const initialState: CompanyState = {
   succesMsg: '',
   error: null,
   loading: false,
-  dashboard: null
+  dashboard: null,
+  setup: [],
+  industry: []
 };
 
 export const companyReducer = createReducer<CompanyState>(

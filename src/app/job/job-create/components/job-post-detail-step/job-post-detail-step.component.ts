@@ -127,6 +127,7 @@ export class JobPostDetailStepComponent implements OnInit {
   }
 
   getBanner(event) {
+    this.bannerSelected.removeAt(0);
     if(event && event.length == 1) {
       if(event[0].size < 200000) {
         this.bannerSelected.push(new FormGroup({

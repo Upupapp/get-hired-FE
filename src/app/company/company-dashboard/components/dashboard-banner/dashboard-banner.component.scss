@@ -111,11 +111,7 @@
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
-		.title-card{
-			color: #EFA20D;
-		}
-
-		.title-stat{
+		.title-card, .title-stat, .subheading{
 			color: #EFA20D;
 		}
 	}
@@ -143,6 +139,19 @@
 			margin-top: 3px !important;
 		}
 	}
+}
+
+.subheading {
+  font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 10px;
+	line-height: 21px;
+	/* identical to box height, or 131% */
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #FFFFFF;
+	position: relative;
 }
 
 .title-card{

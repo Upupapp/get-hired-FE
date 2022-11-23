@@ -31,4 +31,12 @@ export class CompanyService {
     return this.baseService.get<Model.Dashboard>(`${this.companyUrl}/dashboard`);
   }
 
+  getSetupList() {
+    return this.baseService.get<Model.Options>(`${this.companyUrl}/setuplist`);
+  }
+
+  getIndustryList() {
+    return this.baseService.get<Model.Options>(`${this.companyUrl}/industries`);
+  }
+
 }
