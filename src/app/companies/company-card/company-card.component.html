@@ -1,0 +1,16 @@
+<div class="card card-body" (click)="gotToDetails()">
+  <img [src]="company.companyLogo" class="img img-fluid hvr-grow company-image">
+
+  <div class="company-details text-center">
+    <h5 class="title-company text-capitalize mt-3">{{company?.companyName}}</h5>
+    <p class="title-company-category text-capitalize">{{company?.companyIndustry}}</p>
+
+    <button class="btn btn-job-opening" *ngIf="company.companyJobsOpening != 0">
+      {{company?.companyJobsOpening}} Job Openings
+    </button>
+
+    <button class="btn btn-job-opening" *ngIf="company.companyJobsOpening == 0">
+      View details
+    </button>
+  </div>
+</div>

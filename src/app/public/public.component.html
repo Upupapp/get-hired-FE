@@ -1,0 +1,19 @@
+<div class="mb-5">
+  <app-header [isPublic]="true"></app-header>
+</div>
+
+<div style="margin-top: 80px;">
+
+  <!-- Banner section -->
+  <app-public-banner [screenSize]="screenSize"></app-public-banner>
+
+  <!-- Companies -->
+  <app-public-companies-recommended></app-public-companies-recommended>
+
+  <!-- JOB POSTS -->
+  <app-job-posts-list></app-job-posts-list>
+
+  <app-public-explore-users [userRole]="userRole"></app-public-explore-users>
+</div>
+
+<app-footer></app-footer>
