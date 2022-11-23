@@ -1,6 +1,6 @@
+
 <div class="main-banner"
-[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}"
-style="min-height: 400px;">
+[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
 	<div class="float-end" style="margin-top: -40px;">
 		<div class="d-flex">
 			<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
@@ -12,14 +12,18 @@ style="min-height: 400px;">
 			(4.5) Rating
 		</div>
 	</div>
+
+	<img [src]="bannerImage ? bannerImage?.file : '/assets/images/placeholder/job-post-banner.png'" class="banner-image-main" [ngStyle]="{
+		'height': bannerHeight + 'px'
+	}">
 	
-	<div class="row bg-details">
+	<div class="row bg-details" id="bg-details">
 		<div class="col-12 col-lg-12">
 			<div class="card-transparent text-center">
 				
 				<img [src]="companyData?.logo" class="company-logo">
 				<div class="row">
-					<div class="col-12 col-lg-8 offset-lg-2">
+					<div class="col-12 col-lg-10 offset-lg-1">
 						<h5 class="title-company">{{companyData?.name}} ({{companyData?.type}})</h5>
 						<p class="title-verified">Verified employer 
 							<img src="/assets/images/placeholder/icons/verified-employer.png" 

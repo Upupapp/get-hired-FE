@@ -2,6 +2,114 @@ i{
 	font-style: italic !important;
 }
 
+.filter-control{
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    padding-left: 10px !important;
+    overflow-x: hidden;
+    width: 93% !important;
+}
+
+.search{
+    width: 14px !important;
+    height: 14px !important;
+    margin-left: 15px !important;
+    margin-top: 13px;
+}
+
+.bg-light-gray{
+    background: #f9f9f9;
+}
+
+/* MAT SELECT SEARCH DROPDOWN */
+:host ::ng-deep { 
+    .text-input {
+      	font-family: 'Manrope' !important;
+
+        .disabled{
+            background: #F3F3F3 !important;
+            //background: red !important;
+            color: #BDBDBD !important;
+        }
+
+        .mat-select-disabled {
+            ::ng-deep .mat-select-value {
+              color: #4d4d4d; /*!important*/;
+            }
+        }
+    
+        .mat-form-field {
+            width: 100%;
+            font-family: 'Manrope' !important;
+            padding-top: 0px !important;
+
+            .mat-form-field-wrapper {
+                border-radius: 6px !important;
+                margin: 0px !important;
+                padding-bottom: 0px;
+
+                
+                .mat-form-field-infix {
+                    padding: 21px 25px 22px 0px !important;
+                    position: relative !important;
+                }
+            }
+
+            .mat-select{
+                position: absolute !important;                 
+                margin-top: -10px !important;
+                font-family: 'Manrope' !important;
+                font-size: 15px !important;
+            }
+        }
+
+        .mat-select-arrow{
+            margin-top: 8px;
+        }
+
+        /* ARROW DOWN IMAGE CHANGE */
+        .mat-select-arrow-wrapper{
+          display: table-cell;
+          vertical-align: bottom;
+          background: none;
+          background-repeat: no-repeat;
+        }
+
+        .mat-select-arrow {
+          border-left: 11px solid transparent !important;
+          border-right: none !important;
+          border-top: 6px solid transparent !important;
+          border-image-source: url('/assets/images/placeholder/caret-down.png') !important;
+          border-image-repeat: stretch !important;
+        } 
+
+        .mat-form-field-outline{
+            //border: none;
+            border-radius: 6px;
+            color: #AFBCC6;
+        }
+
+        .mat-option{
+            overflow-x: hidden !important;
+        }
+
+        .error {
+            .mat-form-field-outline{
+                border: none;
+                border-radius: 5px;
+                border: 1px solid #E01515;
+            }
+        }
+
+        /* OUTLINE HOVER */
+        .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+            color:  #494949 !important;
+        }
+
+    }
+}
+
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;

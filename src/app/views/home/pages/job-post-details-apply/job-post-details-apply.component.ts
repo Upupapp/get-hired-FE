@@ -43,22 +43,26 @@ export class JobPostDetailsApplyComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "My Details"
+      title: "My Details",
+      valid: true
     },
 
     {
       id: 2,
-      title: "Additional Documents"
+      title: "Additional Documents",
+      valid: true
     },
 
     {
       id: 3,
-      title: "Interview"
+      title: "Interview",
+      valid: true
     },
 
     {
       id: 4,
-      title: "Summary"
+      title: "Summary",
+      valid: true
     },
   ];
 

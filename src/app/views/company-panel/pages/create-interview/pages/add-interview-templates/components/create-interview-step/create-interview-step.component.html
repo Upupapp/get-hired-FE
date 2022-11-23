@@ -33,18 +33,34 @@
 		</div>
 
 		<div class="col-12 col-lg-6 mb-2">
-			<div class="title-container" >
+			<div class="title-container text-input" >
 				<label>Job Post</label>
-				<div class="form-group">
-					<select class="form-select">
-						<option selected disabled value="">Select Job Post</option>
-						<ng-container *ngFor="let item of jobLists; let i = index">
-							<option [value]="item?.id">
-								[{{item?.id}}] {{item?.title}} - {{item?.work_setup}}, {{item?.job_type}}
-							</option>
-						</ng-container>
-					</select>
+
+				<!-- SEARCH DROPDOWN FILTER -->
+				<div class="container-input flex-wrap">
+				    <mat-form-field class="text-capitalize" appearance="outline">
+				        <mat-select class="text-capitalize" placeholder=" Select Job Post"
+				        >
+				            <div class="d-flex bg-light-gray">
+				                <img src="/assets/images/placeholder/icons/search.png" class="search">
+				                
+				                <input matInput class="filter-control" 
+				                    [formControl]="filterControl" 
+				                    type="text" 
+				                    name="filter-options" 
+				                    id="filter-options" 
+				                    placeholder="Search">
+				            </div>
+
+				            <mat-option *ngFor="let item of filteredJobList" [value]="item?.id"
+				            class="text-capitalize">
+				               [{{item?.id}}] {{item?.title}} - {{item?.work_setup}}, {{item?.job_type}}
+				            </mat-option>
+				        </mat-select> 
+
+				    </mat-form-field>
 				</div>
+				<!-- // SEARCH DROPDOWN FILTER -->
 			</div>
 		</div>
 

@@ -87,9 +87,12 @@
 			<!-- <h5 class="main-title">Add Tags</h5> -->
 			<label >Add tags for others to identify your job post easily</label>
 
-			<div class="form-group search-group d-flex">
+			<div class="form-group search-group d-flex with-add">
 				<input type="text" name="search" class="form-control" placeholder="ex. Software, Angular Project, JavaScript" [(ngModel)]="tagModel"
 				(keyup.enter)="this.tags?.length < 7 ? addItem($event, this.tags, 'tags') : ''">
+
+				<button class="btn btn-add-now" [disabled]="!tagModel" 
+				(click)="addItem(tagModel, this.tags, 'tags')">Add</button>
 			</div>
 
 			<div class="d-flex flex-wrap">

@@ -1,12 +1,14 @@
 @import "src/assets/styles/colors";
 
 .attachment-card-view{
-	background: #FFFFFF;
 	border-radius: 7px;
 	padding-top: 0px;
 	padding-left: 20px;
 	padding-bottom: 0px;
 	height: 260px;
+	overflow: hidden;
+	cursor: move;
+
 
 	h6{
 		font-family: 'Poppins';
@@ -36,9 +38,13 @@
 
 	.uploaded-container{
 		position: relative;
+		overflow: hidden !important;
+		border-radius: 7px !important;
+		background: #c9c9c9;
 
 		img{
-			height: 260px;
+			overflow: hidden;
+			//height: 260px;
 			width: 100%;
 			object-fit: cover;
 			object-position: center;

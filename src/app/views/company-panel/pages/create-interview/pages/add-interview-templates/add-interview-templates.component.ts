@@ -11,12 +11,14 @@ export class AddInterviewTemplatesComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Interview Questions"
+      title: "Interview Questions",
+      valid: true
     },
 
     {
       id: 2,
-      title: "Publish"
+      title: "Publish",
+      valid: true
     },
   ];
 

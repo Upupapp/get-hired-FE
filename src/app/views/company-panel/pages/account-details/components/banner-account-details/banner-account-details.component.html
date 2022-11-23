@@ -10,17 +10,33 @@
 	</div>
 </div>
 
+
+<div class="px-3" [hidden]="!bannerEdit">
+	<app-file-upload id="upload-banner"
+	(upload)="onUpload($event)"
+	label="Select Banner Image"
+	[labelTop]="false"></app-file-upload>
+</div>
+
+
 <div class="main-banner"
 [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}"
-style="min-height: 400px;">
-	<div class="row bg-details">
-		<div class="col-12 col-lg-12">
+style="min-height: 450px;">
+	<!-- <img [src]="bannerImage?.file" class="banner-image-main">
+ -->
+	<img [src]="bannerImage ? bannerImage?.file : '/assets/images/placeholder/job-post-banner.png'" class="banner-image-main" [ngStyle]="{
+		'height': bannerHeight + 'px'
+	}">
 
+	<div class="row bg-details" id="bg-details">
+		<div class="col-12 col-lg-12">
 			<div class="card-transparent text-center">
 				<img src="/assets/images/placeholder/company-4.png" class="company-logo">
 
-				<button class="float-end btn edit-details" routerLink="/company/settings">
-					<img src="/assets/images/placeholder/icons/company-edit-2.png" style="height: 12px; margin-top: -3px;" class="me-2">Edit
+				<button class="float-end btn edit-details" (click)="clickInputBanner()"
+				*ngIf="!bannerEdit">
+					<img src="/assets/images/placeholder/icons/company-edit-2.png" 
+					style="height: 12px; margin-top: -3px;" class="me-2">Edit
 				</button>
 
 				<div class="row">
@@ -32,7 +48,7 @@ style="min-height: 400px;">
 						</p>
 
 						<h5 class="title-company-description">
-							GetHired is the #1 job site in the world1 with over 250M unique visitors every month.
+							A company description is defined as a general overview of your company as well as who you are as a business owner.
 						</h5>
 						<p>
 							Lorem ipsum strives to put job seekers first, giving them free access to search for jobs, post resumes, and research companies.
@@ -48,5 +64,6 @@ style="min-height: 400px;">
 			</div>
 		</div>
 	</div>
+
 
 </div>

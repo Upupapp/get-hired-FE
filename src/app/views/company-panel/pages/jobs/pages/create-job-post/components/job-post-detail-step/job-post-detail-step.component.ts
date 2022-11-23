@@ -127,12 +127,9 @@ export class JobPostDetailStepComponent implements OnInit {
   public skill_experience: any[] = [];
   public education_requirements: any[] = [];
   public other_requirements: string[] =  [];
-
   public skillExperienceModel: string = ""
   public educationRequirementsModel: string = ""
   public otherRequirementsModel: string = ""
-
-
   public job_level: string = "";
   
   constructor() { }
@@ -160,7 +157,7 @@ export class JobPostDetailStepComponent implements OnInit {
   }
 
   addItem(event, arrayItem, field){
-    let value = event?.target?.value;
+    let value = event?.target?.value || event;
     let index = arrayItem.findIndex(el => el === value);
 
     if(index === -1){
@@ -188,5 +185,12 @@ export class JobPostDetailStepComponent implements OnInit {
     this.educationRequirementsModel = undefined;
     this.otherRequirementsModel = undefined;
     console.log(this.jobPostDetails)
+  }
+
+  updateBanner(file){
+    console.log(file)
+    if(file[0]?.file){
+      this.jobPostDetails['banner_thumb_url'] = file[0]?.file;
+    }
   }
 }

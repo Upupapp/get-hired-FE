@@ -35,6 +35,8 @@ export class CreateJobPostComponent implements OnInit {
       "job_level": "Intermediate: 2-3 Years Experience",
       "work_setup": "Remote",
       "address": "Block 33, 123 Street Sampaloc Manila",
+      "banner_thumb_url": "/assets/images/placeholder/category-1.png",
+      //"banner_position": {x: 0, y: 0},
       "badge": [
           {
               "id": "career-growth",
@@ -79,26 +81,30 @@ export class CreateJobPostComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Job Post Details"
+      title: "Job Post Details",
+      valid: true
     },
 
     {
       id: 2,
-      title: "Rates and Budget"
+      title: "Rates and Budget",
+      valid: true
     },
 
     {
       id: 3,
-      title: "Create Interview"
+      title: "Create Interview",
+      valid: true
     },
 
     {
       id: 4,
-      title: "Preview Job Post"
+      title: "Preview Job Post",
+      valid: true
     },
   ];
 
-  public stepper: number = 1;
+  public stepper: number = 4;
   
   constructor() { }
 
