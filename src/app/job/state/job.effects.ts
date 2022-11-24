@@ -275,4 +275,22 @@ export class JobEffects {
       )
     );
   });
+
+  getJob$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getJob),
+      mergeMap((action) => this.jobService.getJobById(action.jobId)
+        .pipe(
+          map((res: any) => {
+            const job: Model.Job = res.data;
+            return JobActions.getJobSuccess({ job });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getJobFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
 }

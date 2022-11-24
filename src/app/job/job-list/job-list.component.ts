@@ -25,6 +25,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JobFacade } from '@app-job/state/job.facade';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 
 @Component({
   selector: 'app-job-list',
@@ -140,21 +141,21 @@ export class JobListComponent implements OnInit {
   }
 
 
-  viewMenu(event): void {
-    // let openDialog = this.dialog.open(
-    //   TableControlModalComponent,
-    //   {
-    //     width: '34vw',
-    //     data: event,
-    //   }
-    // );
+  viewMenu(event: any): void {
+    let openDialog = this.dialog.open(
+      TableControlModalComponent,
+      {
+        width: '34vw',
+        data: event?.data,
+      }
+    );
 
-    // openDialog
-    // .afterClosed()
-    // .pipe(takeUntil(this.unsubscribe$))
-    // .subscribe(result => {
+    openDialog
+    .afterClosed()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(result => {
 
-    // });
+    });
   }
 
   deleteRow(event) {

@@ -43,7 +43,7 @@ import { StorePublicModule } from './shared/store/store.module';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    AppFacade,
+    AppFacade, 
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
       provide: HTTP_INTERCEPTORS,

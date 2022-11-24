@@ -23,7 +23,8 @@ export class JobFacade {
   initial$ = this.store.pipe(select(fromfeature.getIntialDetails));
   info$ = this.store.pipe(select(fromfeature.getJobInfo));
   interview$ = this.store.pipe(select(fromfeature.getJobInterview));
-
+  getJobById$ = this.store.pipe(select(fromfeature.getJobById));
+  getJobLoading$ = this.store.pipe(select(fromfeature.jobLoading));
   error$: any;
 
   constructor(
@@ -100,6 +101,10 @@ export class JobFacade {
 
   getType() {
     this.store.dispatch(JobAction.getTypeList());
+  }
+
+  getJobById(jobId) {
+    this.store.dispatch(JobAction.getJob({jobId}));
   }
 
   // getfeatureList() {

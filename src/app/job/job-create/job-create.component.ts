@@ -6,6 +6,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 import * as Model from '../job.model';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { map, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-job-create',
@@ -15,6 +16,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
   delayControl: boolean = true;
+  public jobId:any =  null;
   subscriptions = new Subscription()
   asyncLocalStorage = {
     setItem: async function (key, value) {
@@ -33,6 +35,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   jobInfoValid: boolean = false;
   interviewValid: boolean = false;
   isReadyToPublish: boolean;
+  loading: boolean = true;
+  initial$: any;
+  info$: any;
 
   stepperItems: any[] = [
     {
@@ -58,12 +63,16 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     },
   ];
 
-  initial$ = this.jobFacade.initial$
-    .pipe().subscribe(this.setInitialForm.bind(this));
-  info$ = this.jobFacade.info$
-    .pipe().subscribe(this.setJobInfo.bind(this));
   success$ = this.jobFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this));
+  editJob$ = this.jobFacade.getJobById$
+    .pipe(
+      map(job => {
+        return (job)
+      })
+    );
+  loading$ = this.jobFacade.getJobLoading$
+    .pipe().subscribe(this.onLoad.bind(this));
 
   constructor(
     private fb: FormBuilder,
@@ -71,48 +80,68 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute
-  ) { }
+  ) {
+    this.jobId = route.snapshot.params['id'];
+  }
 
 
   ngOnInit(): void {
     setTimeout(() => this.delayControl = false,900);
 
+    this.editJob$.subscribe((data: any) => {
+      if(data){
+        this.setFormGroup(data);
+      }
+    })
+
+    if(this.jobId){
+      this.getJobById()
+    } else {
+      this.setFormGroup();
+    }
+  }
+
+  onLoad(isLoading) {
+    this.loading = isLoading;
+  }
+
+  setFormGroup(data?: any){
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
-        jobTitle: [null, Validators.required],
-        jobTypeId: [null],
-        jobLevelId: [null],
-        jobAddress: [''],
-        jobCity: [null, Validators.required],
-        jobCountry: [null, Validators.required],
-        jobDescription: [''],
-        jobDuties: [''],
-        jobCategoryId: [null],
-        workSetupId: [null],
-        bannerFile: new FormArray([]),
+        jobTitle: [data ? data.jobTitle : null, Validators.required],
+        jobTypeId: [data ? data.jobTypeId : null],
+        jobLevelId: [data ? data.jobLevelId : null],
+        jobAddress: [data ? data.jobAddress : null],
+        jobCity: [data ? data.jobCity : null, Validators.required],
+        jobCountry: [data ? data.jobCountry : null, Validators.required],
+        jobDescription: [data ? data.jobDescription : null],
+        jobDuties: [data ? data.jobDuties : null],
+        jobCategoryId: [data ? data.jobCategoryId : null],
+        workSetupId: [data ? data.workSetupId : null],
+        bannerFile:  new FormArray([]),
         badges: new FormArray([]),
         requirements: new FormArray([]),
         goodToHave: new FormArray([]),
         educationalBackground: new FormArray([]),
-        requirementsTxt: [''],
-        goodToHaveTxt: [''],
-        educationalBackgroundTxt: ['']
+        requirementsTxt: [data ? data.requirementsTxt : null],
+        goodToHaveTxt: [data ? data.goodToHaveTxt : null],
+        educationalBackgroundTxt: [data ? data.educationalBackgroundTxt : null]
       }),
       jobInfo: this.fb.group({
-        industryId: [null],
-        jobRoleId: [null],
+        industryId: [data ? data.industryId : null],
+        jobRoleId: [data ? data.jobRoleId : null],
         jobSkills: new FormArray([]),
-        jobSkillsTxt: [''],
+        jobSkillsTxt: [data ? data.jobSkillsTxt : null],
         jobTags: new FormArray([]),
-        jobTagsTxt: [''],
-        rate: [''],
-        salaryMinimum: [null],
-        salaryMaximum: [null]
+        jobTagsTxt: [data ? data.jobTagsTxt : null],
+        rate: [data ? data.rate : null],
+        salaryMinimum: [data ? data.salaryMinimum : null],
+        salaryMaximum: [data ? data.salaryMaximum : null]
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }),
       interview: this.fb.group({
-        interviewQuestions: new FormArray([])
+        interviewQuestions: data ? data.interviewQuestions : new FormArray([])
       })
     });
 
@@ -134,6 +163,42 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.interviewValid = status === 'VALID'
         this.stepperItems[3].disabled = status != 'VALID'
       }));
+
+    //set form array
+    // if(data.hasOwnProperty('bannerFile') &&  data?.bannerFile.length > 0){
+    //   this.jobForm.controls.initialData.get('bannerFile').setValue(data.bannerFile);
+    // }
+
+    // if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
+    //   this.jobForm.controls.initialData.get('requirements').setValue(data.requirements);
+    // }
+
+    // if(data.hasOwnProperty('goodToHave') &&  data?.goodToHave.length > 0){
+    //   this.jobForm.controls.initialData.get('goodToHave').setValue(data.goodToHave);
+    // }
+
+    // if(data.hasOwnProperty('educationalBackground') &&  data?.educationalBackground.length > 0){
+    //   this.jobForm.controls.initialData.get('educationalBackground').setValue(data.educationalBackground);
+    // }
+
+    // if(data.hasOwnProperty('jobSkills') &&  data?.jobSkills.length > 0){
+    //   this.jobForm.controls.jobInfo.get('jobSkills').setValue(data.jobSkills);
+    // }
+
+    // if(data.hasOwnProperty('jobTags') &&  data?.jobTags.length > 0){
+    //   this.jobForm.controls.jobInfo.get('jobTags').setValue(data.jobTags);
+    // }
+
+    // if(data.hasOwnProperty('interviewQuestions') &&  data?.interviewQuestions.length > 0){
+    //   this.jobForm.controls.interview.get('interviewQuestions').setValue(data.goodToHave);
+    // }
+
+    this.initial$ = this.jobFacade.initial$
+    .pipe().subscribe(this.setInitialForm.bind(this));
+
+    this.info$ = this.jobFacade.info$
+    .pipe().subscribe(this.setJobInfo.bind(this));
+
 
   }
 
@@ -168,6 +233,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
       this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
     }
+  }
+
+  async getJobById() {
+    await this.jobFacade.getJobById(this.jobId);
   }
 
   async saveAsDraft() {
