@@ -58,10 +58,10 @@ export class EmployerSidebarComponent implements OnInit {
       title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
       sub_routes: [
         {
-          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'list'
+          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
         },
         {
-          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
         },
       ]
     },

@@ -8,7 +8,8 @@ import { CandidateListComponent } from './candidate-list/candidate-list.componen
 
 const routes: Routes = [
   { path: 'list', component: ContactListComponent },
-  { path: 'candidates', component: CandidateListComponent }
+  { path: 'candidates', component: CandidateListComponent },
+  { path: '', redirectTo: 'list', pathMatch: 'full' }
 ]
 
 @NgModule({
