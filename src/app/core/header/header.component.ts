@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthFacade } from '@main/auth/state/auth.facade';
+import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
 
 @Component({
@@ -18,12 +18,13 @@ export class HeaderComponent implements OnInit {
   constructor(
     private coreService: CoreService,
     private router: Router,
+    private appFacade: AppFacade
   ) {
   }
 
   ngOnInit(): void {
     console.log(this.isUserLoggedIn);
-    if(this.user) {
+    if (this.user) {
       this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
     }
   }
@@ -33,12 +34,14 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.coreService.logout().pipe().subscribe(isLogout => {
-      console.log(isLogout);
-      if(isLogout.success) {
-        localStorage.clear();
-        this.router.navigateByUrl('/signin');
-      }
-    });
+    localStorage.clear();
+    this.appFacade.resetCredentials();
+    this.router.navigateByUrl('/signin');
+    // this.coreService.logout().pipe().subscribe(isLogout => {
+    //   console.log(isLogout);
+    //   if(isLogout.success) {
+
+    //   }
+    // });
   }
 }

@@ -1,8 +1,8 @@
-<section id="body-main-container" *ngIf="applicant$ | async as applicant">
+<section id="body-main-container">
 	<div class="d-flex" id="body-row">
 		<!-- SIDEBAR  -->
 		<div class="d-none d-md-block" id="sidebar-container">
-      <app-applicant-sidebar [fullName]="fullName"></app-applicant-sidebar>
+      <app-applicant-sidebar [user]="user"></app-applicant-sidebar>
 
 			<!-- <app-applicants-panel-sidebar
 			[sidebarWidth]="sidebarWidth"
@@ -13,7 +13,7 @@
 			<!-- COMPANY/EMPLOYER HEADER -->
 			<div style="margin-bottom: 80px; ">
 				<app-header [isPublic]="false"
-        [isUserLoggedIn]="isUserLoggedIn" [user]="applicant"></app-header>
+        [isUserLoggedIn]="isUserLoggedIn" [user]="user"></app-header>
 			</div>
 
 			<div id="sub-applicant-component">

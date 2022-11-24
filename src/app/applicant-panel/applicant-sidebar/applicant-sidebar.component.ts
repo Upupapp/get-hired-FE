@@ -11,14 +11,14 @@ import { Subscription } from 'rxjs';
 })
 export class ApplicantSidebarComponent implements OnInit {
   @Input() sidebarWidth;
-  @Input() fullName;
+  @Input() user;
 
   private req: Subscription;
 
 
   public location: any = '';
-  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public screenHeight: number = 300;
+  initials: string;
 
   constructor(
     private router: Router,
@@ -26,7 +26,6 @@ export class ApplicantSidebarComponent implements OnInit {
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
-      this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
       window.scrollTo({
         top: 0,
         left: 0,
@@ -65,6 +64,9 @@ export class ApplicantSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.location = this.router.url;
     this.screenHeight = window.innerHeight;
+    if(this.user) {
+      this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
+    }
   }
 
   ngOnDestroy(): void {

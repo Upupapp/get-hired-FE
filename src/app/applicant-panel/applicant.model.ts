@@ -54,3 +54,29 @@ export interface Certifications {
   endYear: number;
   details: string;
 }
+
+export interface Applicant {
+  applicantId: string;
+  firstName: string;
+  lastName: string;
+  photoUrl: string;
+  videoCVUrl: string;
+  jobTitle: string;
+  rating: number;
+  workSetupName: string; // Full time etc.
+  email: string;
+  address: string;
+  contactNumber: string;
+  shortBio: string;
+  servicesProvided: string;
+  workExperience: [];
+  educationalBackground: [];
+  certifications: [];
+  skills: [];
+  documents: [];
+  jobTypeId: number;
+  jobLevelId: number;
+  jobSetupId: number;
+  salaryMinimum: number;
+  salaryMaximum: number;
+}

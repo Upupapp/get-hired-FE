@@ -7,6 +7,12 @@ export interface State extends AppState.State {
   status: AuthState
 }
 
+const initAuth = {
+  firstName: '',
+  lastName: '',
+  email: '',
+}
+
 export interface AuthState {
   success: boolean;
   successMsg: string;
@@ -29,7 +35,10 @@ export const authReducer = createReducer<AuthState>(
   initialState,
   on(AuthActions.resetCredentials, (state): AuthState => {
     return {
-      ...initialState
+      ...state,
+      loading: true,
+      credentials: { ...initAuth },
+      successMsg: null
     };
   }),
   on(AuthActions.getAuthCredentials, (state): AuthState => {

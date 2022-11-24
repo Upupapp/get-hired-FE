@@ -46,6 +46,7 @@ export class SigninComponent implements OnInit {
 
   loggedIn(user) {
     if (user && user.id) {
+      console.log('dapat di na');
       this.submitting = false;
 
       let data = user;
@@ -57,12 +58,6 @@ export class SigninComponent implements OnInit {
       localStorage.setItem('token', 'Bearer ' + data.token);
       localStorage.setItem('token_authorization', data.token.replace('Bearer ', ''));
       localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user', JSON.stringify({
-        _id: data.id,
-        email: data.email,
-        companyId: data.companyId,
-        companyName: data.companyName
-      }));
 
       if (this.loginForm) {
         this.loginForm.reset();
@@ -72,9 +67,24 @@ export class SigninComponent implements OnInit {
       console.log(user);
       switch(user.role) {
         case 1:
+          localStorage.setItem('user', JSON.stringify({
+            _id: data.id,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName
+          }));
           this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
           break;
         case 2:
+          localStorage.setItem('user', JSON.stringify({
+            _id: data.id,
+            email: data.email,
+            companyId: data.companyId,
+            companyName: data.companyName,
+            firstName: data.firstName,
+            lastName: data.lastName
+          }));
+
           if(user.withCompany) {
             this.router.navigate(['../recruiter/dashboard'], { relativeTo: this.activatedRoute });
           } else {
@@ -82,6 +92,12 @@ export class SigninComponent implements OnInit {
           }
           break;
         case 3:
+          localStorage.setItem('user', JSON.stringify({
+            _id: data.id,
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName
+          }));
           this.router.navigate(['../user'], { relativeTo: this.activatedRoute });
           break;
         default:

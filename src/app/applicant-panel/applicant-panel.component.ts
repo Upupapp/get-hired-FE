@@ -11,14 +11,9 @@ import { tap } from 'rxjs';
 export class ApplicantPanelComponent implements OnInit {
   fullName = 'Aryhan Coyco';
   isUserLoggedIn: boolean;
-
-  applicant$ = this.authFacade.credentials$
-    .pipe(
-      tap(user => console.log(user))
-    );
+  user = JSON.parse(localStorage.getItem('user'));
 
   constructor(
-    private authFacade: AuthFacade,
     private coreService: CoreService
   ) { }
 

@@ -8,12 +8,12 @@ import { CoreModule } from '@app-core/core.module';
 import { ApplicantSidebarComponent } from './applicant-sidebar/applicant-sidebar.component';
 import { ApplicantSettingsComponent } from './applicant-settings/applicant-settings.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
+import { AuthModule } from '@main/auth/auth.module';
 
 const routes: Routes = [
   {
     path: '',
     component: ApplicantPanelComponent,
-    canActivate: [ApplicantGuard],
     children: [
       {
         path: 'dashboard',
@@ -27,7 +27,7 @@ const routes: Routes = [
       {
         path: 'settings', component: ApplicantSettingsComponent
       },
-      { path: '', redirectTo: 'dashboard' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
 ]
@@ -41,6 +41,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CoreModule,
+    // AuthModule,
     RouterModule.forChild(routes)
   ],
   providers: [AuthFacade]
