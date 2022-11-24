@@ -217,7 +217,7 @@
 	font-family: 'Manrope';
 	font-weight: 500;
 	font-style: normal;
-	min-width: 125px;
+	min-width: 110px;
 }
 
 .completed{
@@ -604,7 +604,7 @@ tr:last-child{
 	  min-height: 35px !important;
 	  font-weight: 500;
 	  color: #404040;
-	  vertical-align: bottom !important;
+	  vertical-align: center !important;
 	  //border: 1px solid white !important;
 	  //color: $color-blue-primary;
 	}
@@ -631,6 +631,10 @@ tr:last-child{
 	  //border-bottom: 1px solid #030229 !important;
 	  font-family: "Manrope", sans-serif !important;
 	  //text-align: left !important;
+
+	  &:first-child{
+	  	min-width: 130px !important;
+	  }
 	}
 
 	.mat-cell{

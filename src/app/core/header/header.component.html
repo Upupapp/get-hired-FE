@@ -1,7 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-transparent py-4 fixed-top"
+
   [ngClass]="isPublic ? 'shadow': ''">
   <div class="container-fluid d-flex px-0 px-lg-5">
-    <a class="navbar-brand me-3 me-lg-5 d-flex" routerLink="/">
+    <a class="navbar-brand me-3 me-lg-5 d-flex" routerLink="/"
+    *ngIf="isPublic">
       <img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-fluid">
     </a>
 
@@ -31,7 +33,7 @@
           <div class="dropdown d-lg-flex ms-4" *ngIf="!isUserLoggedIn">
             <button class="btn btn-nav-gradient" type="button"
             (click)="redirectToRegister()" >
-              Register
+              Login
             </button>
           </div>
 
