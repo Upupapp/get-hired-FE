@@ -1,25 +1,23 @@
 <div class="bg-gray">
-	<div style="position: relative;">
-		<!-- STEPPER CONTAINER changeStepper-->
-		<div class="bg-upper-gray">
-			<app-tab-selectors
-			[stepper]="stepper"
-			[stepperItems]="stepperItems"
-			(changeStepper)="changeStep($event)"></app-tab-selectors>
-		</div>
+  <div style="position: relative;">
+    <!-- STEPPER CONTAINER changeStepper-->
+    <div class="bg-upper-gray">
+      <app-tab-selectors [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+      </app-tab-selectors>
+    </div>
 
-		<div class="p-4" style="margin-top: 45px;">
-			<ng-container *ngIf="stepper === 1">
-				<app-employer-company-details></app-employer-company-details>
-			</ng-container>
+    <div class="p-4" style="margin-top: 45px;">
+      <ng-container *ngIf="stepper === 1">
+        <app-employer-company-details></app-employer-company-details>
+      </ng-container>
 
-			<ng-container *ngIf="stepper === 2">
-				<app-employer-company-users [companyId]="companyId"></app-employer-company-users>
-			</ng-container>
+      <ng-container *ngIf="stepper === 2">
+        <app-employer-company-users [companyId]="companyId"></app-employer-company-users>
+      </ng-container>
 
-			<ng-container *ngIf="stepper === 3">
-				<!--				<app-account-setting></app-account-setting>-->
-			</ng-container>
-		</div>
-	</div>
+      <ng-container *ngIf="stepper === 3">
+        <app-account-setting></app-account-setting>
+      </ng-container>
+    </div>
+  </div>
 </div>

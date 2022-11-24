@@ -10,6 +10,7 @@ import { JobsEffects } from './state/jobs.effects';
 import { SharedModule } from '@app-shared/shared.module';
 import { JobPostsListComponent } from './job-posts-list/job-posts-list.component';
 import { JobCardListViewComponent } from './job-card-list-view/job-card-list-view.component';
+import { JobPostsDetailsComponent } from './job-posts-details/job-posts-details.component';
 
 const exportedComponents = [
   JobsComponent,
@@ -20,7 +21,8 @@ const exportedComponents = [
 
 @NgModule({
   declarations: [
-    ...exportedComponents
+    ...exportedComponents,
+    JobPostsDetailsComponent
   ],
   imports: [
     CommonModule,

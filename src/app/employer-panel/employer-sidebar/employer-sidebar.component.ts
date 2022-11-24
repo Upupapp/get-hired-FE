@@ -18,7 +18,7 @@ export class EmployerSidebarComponent implements OnInit {
 
   public location: any = '';
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
-  public screenHeight: number = 300; 
+  public screenHeight: number = 300;
 
   constructor(
     private router: Router,
@@ -58,17 +58,16 @@ export class EmployerSidebarComponent implements OnInit {
       title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
       sub_routes: [
         {
-          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'applicants',
+          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'list'
         },
-
         {
-          title: 'Contact List',  icon: 'contact-list.png', class: 'contact-list', route: 'contact-list'
+          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'applicants',
         },
       ]
     },
 
     {
-      title: 'Create Interview', icon: 'create-interview.png', class: 'interviews', route: 'interview'
+      title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
     },
 
     {
