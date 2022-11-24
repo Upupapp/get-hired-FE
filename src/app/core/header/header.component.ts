@@ -10,9 +10,10 @@ import { CoreService } from '../services/core.service';
 })
 export class HeaderComponent implements OnInit {
   @Input() user: any;
-  initials: string;
   @Input() isUserLoggedIn: boolean;
   @Input() isPublic: boolean;
+
+  initials: string;
 
   constructor(
     private coreService: CoreService,

@@ -71,7 +71,7 @@ export class DashboardChartsComponent implements OnInit {
       label: 'Hired Applicants',
       barThickness: 25,
       borderRadius: 5,
-      data: [],
+      data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
       hoverBackgroundColor: 'rgba(239,162,13, 1)',
       backgroundColor: 'rgba(239,162,13, 0.2)',
       borderColor: 'rgba(239,162,13, 0.7)',
@@ -83,7 +83,7 @@ export class DashboardChartsComponent implements OnInit {
       label: 'Job View',
       barThickness: 25,
       borderRadius: 5,
-      data: [],
+      data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
       hoverBackgroundColor: 'rgba(53, 199, 104, 0.8)',
       backgroundColor: 'rgba(53, 199, 104, 1)',
       borderColor: 'rgba(53, 199, 104, 1)',
@@ -93,7 +93,7 @@ export class DashboardChartsComponent implements OnInit {
       label: 'Job Applicants',
       barThickness: 25,
       borderRadius: 5,
-      data: [],
+      data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
       hoverBackgroundColor: 'rgba(254, 111, 97, 0.8)',
       backgroundColor: 'rgba(254, 111, 97, 1)',
       borderColor: 'rgba(254, 111, 97, 1)',
@@ -132,16 +132,16 @@ export class DashboardChartsComponent implements OnInit {
   public doughnutChartData: any[] = [
     {
       label: 'Invites',
-      data: [],
+      data: [0,0, 0.00000000001],
       backgroundColor: [
         'rgba(9,201,134, 1)',
         'rgba(254,116,43, 1)',
-        'rgba(239,162,13, 1)'
+        '#e9e9e9'
       ],
       hoverBackgroundColor: [
         'rgba(9,201,134, 0.5)',
         'rgba(254,116,43, 0.5)',
-        'rgba(239,162,13, 0.5)'
+        '#e9e9e9'
 
       ],
       borderWidth: [0, 0],
