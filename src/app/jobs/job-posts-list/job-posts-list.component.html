@@ -1,14 +1,14 @@
 <div class="row" *ngIf="list$ | async as jobLists" style="min-height: 30vh">
   <div class="col-12 mb-3 ps-4">
     <h5 class="title-latest-job" [@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">{{ label }}
-      <span class="float-end d-flex">
+      <!-- <span class="float-end d-flex">
         <span class="me-3 filter-by">View All</span>
         <span class="me-3 filter-by">Development</span>
         <span class="me-3 filter-by">Data Science</span>
         <span class="me-3 filter-by">Business</span>
         <span class="me-2 filter-by">Marketing</span>
         <img src="/assets/images/placeholder/icons/arrow-down.png" class="mt-1" style="width: 12px; height: 12px;">
-      </span>
+      </span> -->
     </h5>
     <p class="title-latest-job-description" [@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">
       <button class="btn btn-menu me-3 float-end" (click)="listView ? listView = false : listView = true">

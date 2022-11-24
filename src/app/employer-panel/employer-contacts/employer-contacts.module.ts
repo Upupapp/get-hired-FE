@@ -8,9 +8,16 @@ import { ImportAddContactComponent } from './contact-list/dialogs/import-add-con
 import { SharedModule } from '@app-shared/shared.module';
 
 const routes: Routes = [
-  { path: 'list', component: ContactListComponent },
-  { path: 'candidates', component: CandidateListComponent },
-  { path: '', redirectTo: 'list', pathMatch: 'full' }
+  {
+    path: '',
+    component: EmployerContactsComponent,
+    children: [
+      { path: 'list', component: ContactListComponent },
+      { path: 'candidates', component: CandidateListComponent },
+      { path: '', redirectTo: 'list', pathMatch: 'full' }
+    ]
+  }
+
 ]
 
 @NgModule({

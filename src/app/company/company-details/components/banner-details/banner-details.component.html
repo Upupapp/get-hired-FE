@@ -1,33 +1,32 @@
-<div class="main-banner"
-[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}"
-style="min-height: 400px;">
-	<div class="row bg-details">
-		<div class="col-12 col-lg-12">
-			<div class="card-transparent text-center">
-				<img [src]="details.companyLogoUrl" class="company-logo">
+<div class="main-banner" [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}" style="min-height: 400px;">
+  <div class="row bg-details">
+    <div class="col-12 col-lg-12">
+      <div class="card-transparent text-center">
+        <img [src]="details.companyLogoUrl" class="company-logo">
 
-				<button class="float-end btn edit-details" *ngIf="userRole != '3'"
-        (click)="redirectToEdit()" type="button">
-					<img src="/assets/images/placeholder/icons/company-edit-2.png" style="height: 12px; margin-top: -3px;" class="me-2">Edit
-				</button>
+        <button class="float-end btn edit-details" *ngIf="userRole != '3'" (click)="redirectToEdit()" type="button">
+          <img src="/assets/images/placeholder/icons/company-edit-2.png" style="height: 12px; margin-top: -3px;"
+            class="me-2">Edit
+        </button>
 
-				<div class="row">
-					<div class="col-12 col-lg-8 offset-lg-2">
-						<h5 class="title-company">{{ details.companyName }} (I.T Solution)</h5>
-						<p class="title-verified">Verified employer
-							<img src="/assets/images/placeholder/icons/verified-employer.png"
-							style="height: 40px">
-						</p>
+        <div class="row">
+          <div class="col-12 col-lg-8 offset-lg-2">
+            <h5 class="title-company-description">{{ details.companyName }} (I.T Solution)</h5>
+            <p class="title-verified">Verified employer
+              <img src="/assets/images/placeholder/icons/verified-employer.png" style="height: 40px">
+            </p>
 
-						<p>
-							{{ details.companyDetails }}
-						</p>
+            <div class="px-lg-5">
+              <h5 class="title-company">
+                {{details?.companyDetails}}
+              </h5>
+            </div>
 
-						<button class="btn btn-review" *ngIf="userRole == '3'">Write a review</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <button class="btn btn-review" *ngIf="userRole == '3'">Write a review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>

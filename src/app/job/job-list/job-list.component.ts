@@ -136,6 +136,7 @@ export class JobListComponent implements OnInit {
 
   ngOnDestroy(): void {
     if (this.req) this.req.unsubscribe();
+    this.jobFacade.getBasicList(null);
   }
 
 

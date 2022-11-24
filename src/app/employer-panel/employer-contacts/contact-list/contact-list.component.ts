@@ -1,18 +1,18 @@
-import { 
-  Component, 
-  OnInit, 
+import {
+  Component,
+  OnInit,
   OnDestroy
 } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Router, ActivatedRoute } from '@angular/router';
-import { 
-  Subscription, 
+import {
+  Subscription,
 } from 'rxjs';
-import { 
-  select, 
-  Store 
+import {
+  select,
+  Store
 } from '@ngrx/store';
-import { 
+import {
   displayedColumns,
   selectedColumns,
   TableHeader,
@@ -51,18 +51,15 @@ export class ContactListComponent implements OnInit {
     return {
       //id: el.id,
       full_name: el.full_name,
-      
+
       email: el.email,
       address: el.address,
       contact_number: el.contact_number,
       courses: el.courses,
       company: el.company,
-      status: el.status,
     };
   };
 
-  public status: string[] = ["Declined", "Inquiry", "Diagnostic", "Offer", "Repair", "Payment", "Completed"];
-  
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -80,7 +77,7 @@ export class ContactListComponent implements OnInit {
     this.ContactData$ = this.contactState.pipe(select(state => state.contact));
     this.req =  this.ContactData$.subscribe((contact: any) => {
       this.loading = contact.pending;
-      
+
       if(contact.contactList.length > 0){
         this.contactList = contact.contactList;
         console.log(this.contactList, "contactList");
@@ -117,8 +114,8 @@ export class ContactListComponent implements OnInit {
     this.router.navigate(['/onboarding/contacts/details'], {queryParams: {userId: `${event?.data?.owner_id}`}});
   }
 
-  addEmployee(){
-    let dialog = this.dialog.open(ImportAddContactComponent, { 
+  addContacts(){
+    let dialog = this.dialog.open(ImportAddContactComponent, {
       width: '40vw',
       maxHeight: '90vh',
       //data: this.data,
@@ -140,7 +137,7 @@ export class ContactListComponent implements OnInit {
     this.contactState.dispatch({
       type:ContactActionTypes.GET_CONTACT_LIST,
       payload: this.localData.companyId
-    }); 
+    });
   }
 
 }

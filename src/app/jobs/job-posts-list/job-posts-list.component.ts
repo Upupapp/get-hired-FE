@@ -21,11 +21,11 @@ import { JobsFacade } from '../state/jobs.facade';
 export class JobPostsListComponent implements OnInit {
   @Input() fromSearch: boolean = false;
   @Input() label: string;
+  @Input() companyId?: string;
 
   public loading: boolean = true;
   public screenSize: number = 1600;
   public listView: boolean = false;
-  companyId: string;
 
   list$ = this.jobsFacade.jobList$;
 

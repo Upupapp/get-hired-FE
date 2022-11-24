@@ -19,6 +19,7 @@ import { DashboardBannerComponent } from './company-dashboard/components/dashboa
 import { DashboardChartsComponent } from './company-dashboard/components/dashboard-charts/dashboard-charts.component';
 import { DashboardStatisticsComponent } from './company-dashboard/components/dashboard-statistics/dashboard-statistics.component';
 import { NgChartsModule } from 'ng2-charts';
+import { JobsModule } from '@main/jobs/jobs.module';
 
 const exportedComponents = [
   CompanyComponent,
@@ -43,6 +44,7 @@ const exportedComponents = [
     SharedModule,
     MatDialogModule,
     NgChartsModule,
+    JobsModule,
     StoreModule.forFeature('company', companyReducer),
     EffectsModule.forFeature([CompanyEffects])
   ],

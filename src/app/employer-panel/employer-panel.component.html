@@ -2,16 +2,16 @@
   <div class="d-flex" id="body-row">
 
     <div class="d-none d-md-block" id="sidebar-container">
-      <app-employer-sidebar></app-employer-sidebar>
+      <app-employer-sidebar [user]="user"></app-employer-sidebar>
     </div>
 
     <div id="main-company-component">
       <div style="height: 80px; ">
-        <app-header [isPublic]="false" 
+        <app-header [isPublic]="false"
         [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
       </div>
 
-      <div id="sub-company-component" 
+      <div id="sub-company-component"
       *ngIf="withCompany && path != '/recruiter'"
       [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
         <router-outlet></router-outlet>

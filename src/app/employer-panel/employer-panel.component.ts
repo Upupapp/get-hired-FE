@@ -14,7 +14,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 })
 export class EmployerPanelComponent implements OnInit {
   isUserLoggedIn: boolean;
-  userId = JSON.parse(localStorage.getItem('user'))._id;
+  user = JSON.parse(localStorage.getItem('user'));
   employee$ = this.employeeFacade.employeeDetails$;
   loading$ = this.employeeFacade.loading$;
   withCompany: boolean = true;
@@ -34,8 +34,7 @@ export class EmployerPanelComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.path);
     this.isUserLoggedIn = this.coreService.isLoggedIn();
-    this.employeeFacade.getEmployeeProfile(this.userId);
-    // this.employeeFacade.getEmployeeCompany(this.userId);
+    this.employeeFacade.getEmployeeProfile(this.user._id);
   }
 
 }
