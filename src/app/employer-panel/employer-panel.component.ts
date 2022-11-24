@@ -35,7 +35,7 @@ export class EmployerPanelComponent implements OnInit {
     console.log(this.path);
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.userId);
-    this.employeeFacade.getEmployeeCompany(this.userId);
+    // this.employeeFacade.getEmployeeCompany(this.userId);
   }
 
 }

@@ -9,6 +9,11 @@ html,
 body {
   height: 100%;
 }
+
+* {
+  font-family: "Manrope", sans-serif;
+}
+
 body {
   font-family: "Manrope", sans-serif;
   font-size: 14px;
@@ -49,9 +54,9 @@ body {
   }
 }
 
-.container-fluid {
-  height: 100vh;
-}
+// .container-fluid {
+//   height: 100vh;
+// }
 
 .hvr-underline-from-left {
   &::before {

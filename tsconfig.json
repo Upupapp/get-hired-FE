@@ -23,6 +23,7 @@
       "@environments/*": ["environments/*"],
       "@app-shared/*": ["app/shared/*"],
       "@app-job/*": ["app/job/*"],
+      "@app-company/*": ["app/company/*"],
       "@main/*": ["app/*"]
     },
     "allowSyntheticDefaultImports": true

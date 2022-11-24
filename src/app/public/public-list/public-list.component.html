@@ -1,0 +1,14 @@
+<!-- Banner section -->
+<app-public-banner [screenSize]="screenSize"></app-public-banner>
+
+<!-- Companies -->
+<app-public-companies-recommended></app-public-companies-recommended>
+
+<!-- JOB POSTS -->
+<div class="container-fluid mb-2">
+  <div class="mt-5 px-lg-5">
+    <app-job-posts-list [label]="'Start your career now'"></app-job-posts-list>
+  </div>
+</div>
+
+<app-public-explore-users [userRole]="userRole"></app-public-explore-users>
