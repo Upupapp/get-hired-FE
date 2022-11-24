@@ -31,10 +31,10 @@
         <h5 class="main-title">Relevant Skills</h5>
         <label>Add Skill for your job to see relavant talent</label>
 
-        <div class="form-group search-group d-flex">
-          <input type="text" name="skills" class="form-control" placeholder="ex. Data Encoding, Ruby, JavaScript" (keyup.enter)="addItem('jobSkillsTxt', this.jobSkills)"
+        <div class="form-group d-flex with-add search-group">
+          <input type="text" name="skills" class="form-control form-control-main" placeholder="ex. Data Encoding, Ruby, JavaScript" (keyup.enter)="addItem('jobSkillsTxt', this.jobSkills)"
             formControlName="jobSkillsTxt">
-          <button class="btn btn-primary" (click)="addItem('jobSkillsTxt', this.jobSkills)">
+          <button class="btn btn-add-now" (click)="addItem('jobSkillsTxt', this.jobSkills)">
             Add
           </button>
         </div>
@@ -55,10 +55,10 @@
         <!-- <h5 class="main-title">Add Tags</h5> -->
         <label>Add tags for others to identify your job post easily</label>
 
-        <div class="form-group search-group d-flex">
-          <input type="text" name="tags" class="form-control" placeholder="ex. Software, Angular Project, JavaScript" (keyup.enter)="addItem('jobTagsTxt', this.jobTags)"
+        <div class="form-group d-flex with-add search-group">
+          <input type="text" name="tags" class="form-control form-control-main" placeholder="ex. Software, Angular Project, JavaScript" (keyup.enter)="addItem('jobTagsTxt', this.jobTags)"
             formControlName="jobTagsTxt">
-          <button class="btn btn-primary" (click)="addItem('jobTagsTxt', this.jobTags)">
+          <button class="btn btn-add-now" (click)="addItem('jobTagsTxt', this.jobTags)">
             Add
           </button>
         </div>
