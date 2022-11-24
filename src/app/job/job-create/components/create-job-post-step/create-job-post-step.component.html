@@ -1,5 +1,5 @@
 <form [formGroup]="jobInfoForm">
-  <section class="card card-body mt-4" style="transition: all 0.4s ease !important;">
+  <section class="card card-body" style="transition: all 0.4s ease !important;">
     <div class="row">
       <div class="col-12 col-md-6 mb-3" *ngIf="industry$ | async as industries"
         [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
