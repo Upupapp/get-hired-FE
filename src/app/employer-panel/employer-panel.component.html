@@ -7,11 +7,12 @@
 
     <div id="main-company-component">
       <div style="height: 80px; ">
-        <app-header [isPublic]="false" [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
+        <app-header [isPublic]="false" 
+        [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
       </div>
 
-      <div id="sub-company-component" class="mt-4 ps-4 pe-4"
-      *ngIf="withCompany && path != '/company'"
+      <div id="sub-company-component" 
+      *ngIf="withCompany && path != '/recruiter'"
       [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
         <router-outlet></router-outlet>
       </div>
@@ -20,5 +21,7 @@
 </section>
 
 <div *ngIf="loading$ | async">
-  <app-loading></app-loading>
+  <div style="margin-top: 30vh">
+    <app-loading></app-loading>
+  </div>
 </div>

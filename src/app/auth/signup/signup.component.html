@@ -64,14 +64,9 @@
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <!-- Error Message -->
         <form class="px-3" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
-          <div class="form-group text-start mb-5">
-            <h4 class="main-title m-0">Sign Up
-              <img src="/assets/images/placeholder/logo.png" routerLink="/jobs"
-                [@animate]="{value:'*', params:{ y:'-50px', delay:'400ms' }}" style="width: 100px; cursor: pointer"
-                class="float-end">
-            </h4>
+          <div class="form-group text-start">
+            <h4 class="main-title m-0">Create Account</h4>
           </div>
-
 
           <div class="alert alert-danger alert-dismissible fade show error-message"
             [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
@@ -80,7 +75,7 @@
             <span [innerHtml]="error"></span>
           </div>
 
-          <div class="form-inline row">
+          <div class="form-inline row mt-4">
             <div class="form-group col">
               <input type="text" class="form-control" formControlName="firstName" name="firstName"
                 placeholder="First Name">

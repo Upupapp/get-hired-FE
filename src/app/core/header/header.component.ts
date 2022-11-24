@@ -28,7 +28,7 @@ export class HeaderComponent implements OnInit {
   }
 
   redirectToRegister() {
-    this.router.navigateByUrl('/signup');
+    this.router.navigateByUrl('/signin');
   }
 
   logout() {

@@ -63,18 +63,14 @@
     <div class="col-12 col-md-12 col-lg-6 bg-form">
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
-          <div class="form-group text-start mb-5">
-            <h4 class="main-title m-0">Sign in
-              <img src="/assets/images/placeholder/logo.png" routerLink="/jobs"
-                [@animate]="{value:'*', params:{ y:'-50px', delay:'400ms' }}" style="width: 100px; cursor: pointer;"
-                class="float-end">
-            </h4>
+          <div class="form-group text-start mt-5">
+            <h4 class="main-title m-0">Sign in to your account</h4>
             <br>
           </div>
 
-
-          <div class="alert alert-danger alert-dismissible fade show error-message"
-            [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
+          <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
+            [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" 
+            role="alert">
             <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
               (click)="onAlertClose()"></button>
             <span *ngIf="!verify" [innerHtml]="error"></span>
@@ -84,14 +80,22 @@
               <span class="verify" (click)="resendVerification()">link to verify again</span>.</span>
           </div>
 
-          <div class="form-group mt-3">
+          <div class="form-group mt-2">
             <input type="email" class="form-control" formControlName="email" name="email"
               placeholder="username@mailer.com">
+
+              <label class="d-flex">
+                <div>Email</div>
+              </label>
           </div>
 
-          <div class="form-group mt-3">
+          <div class="form-group mt-4">
             <input [type]="inputType" class="form-control" id="password" placeholder="********************"
               formControlName="password">
+
+            <label class="d-flex">
+              <div>Password</div>
+            </label>
 
             <div>
               <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid me-2 img-plc"
@@ -106,7 +110,7 @@
             <a [routerLink]="'/reset-password'"
               class="mat-primary text-center forget-password hvr-grow float-end">Forgot your password?</a>
 
-            <a class="mat-primary text-center float-start forget-password" style="margin-top: 5px;">
+            <a class="mat-primary text-center float-start forget-password ms-2" style="margin-top: 5px;">
               <mat-checkbox class="remember-me">Remember me</mat-checkbox>
 
             </a>
