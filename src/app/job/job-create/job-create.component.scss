@@ -1,5 +1,22 @@
 @import "src/assets/styles/colors";
 
+.bg-upper-gray{
+	//position: fixed !important;
+	//top: 80px;
+	//width: 83%;
+	//max-width: 1350px;
+	background: #F4F5F9;
+	z-index: 99 !important;
+	padding: 20px 20px 10px 25px;
+	min-height: 170px;
+	transition: all 0.4s ease !important;
+}
+
+.bg-gray{
+	background: #F4F5F9
+}
+
+
 .breadcrumbs{
 	font-family: 'Manrope';
 	font-style: normal;
@@ -64,6 +81,25 @@
 	background: #FF7062;
 	border-radius: 10px;
 	color: white;
+	font-size: 13px;
+	border-radius: 6px;
+	padding: 7px 10px;
+
+  &:hover {
+    color: #FF7062;
+    border: 1px solid #FF7062;
+    background: #fff;
+
+  }
+}
+
+
+.btn-next{
+	
+
+	background: #FFEFED;
+	border-radius: 10px;
+	color: gray;
 	font-size: 13px;
 	border-radius: 6px;
 	padding: 7px 10px;

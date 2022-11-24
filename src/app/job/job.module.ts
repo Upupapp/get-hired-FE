@@ -18,6 +18,7 @@ import { JobListComponent } from './job-list/job-list.component';
 import { JobExpiredComponent } from './job-expired/job-expired.component';
 import { InterviewModule } from '@main/interview/interview.module';
 import { JobListActionsComponent } from './job-list-actions/job-list-actions.component';
+import { MaterialComponentsModule } from '@main/shared/components/material-components/material-components.module';
 
 const routes: Routes = [
   { path: 'expired', component: JobExpiredComponent },
@@ -48,6 +49,7 @@ const exportedComponents = [
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
+    MaterialComponentsModule,
     InterviewModule,
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),

@@ -5,13 +5,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { distinctUntilChanged, Subscription } from 'rxjs';
 import * as Model from '../job.model';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
   selector: 'app-job-create',
+  animations: [mainAnimations],
   templateUrl: './job-create.component.html',
   styleUrls: ['./job-create.component.scss']
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
+  delayControl: boolean = true;
   subscriptions = new Subscription()
   asyncLocalStorage = {
     setItem: async function (key, value) {
@@ -72,6 +75,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    setTimeout(() => this.delayControl = false,900);
+
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
         jobTitle: [null, Validators.required],

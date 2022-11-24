@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
@@ -18,6 +18,7 @@ export class EmployerSidebarComponent implements OnInit {
 
   public location: any = '';
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  public screenHeight: number = 300; 
 
   constructor(
     private router: Router,
@@ -79,10 +80,16 @@ export class EmployerSidebarComponent implements OnInit {
       title: 'Employer Branding', icon: 'account.png', class: 'accounts',
       route: 'company/details'
     },
-  ]
+  ];
+
+  @HostListener('window:resize', ['$event'])
+    onResize(event: any) {
+      this.screenHeight = window.innerHeight;
+  }
 
   ngOnInit(): void {
     this.location = this.router.url;
+    this.screenHeight = window.innerHeight;
   }
 
   ngOnDestroy(): void {
