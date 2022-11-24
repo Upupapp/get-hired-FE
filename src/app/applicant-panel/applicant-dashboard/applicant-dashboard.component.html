@@ -1,7 +1,12 @@
 <section>
-	<app-applicant-panel-banner></app-applicant-panel-banner>
+  <app-applicant-panel-banner></app-applicant-panel-banner>
 
-	<app-applicant-stat-chart></app-applicant-stat-chart>
+  <app-applicant-stat-chart></app-applicant-stat-chart>
 
-	<app-applicant-stat-total></app-applicant-stat-total>
+  <app-applicant-stat-total></app-applicant-stat-total>
 </section>
+
+<div class="alert" [class.visible]="isVisible">
+  <span>“Update your profile to showcase your skills”</span>
+  <button class="btn" (click)="closeSnackbar()"><i class="bi bi-x"></i></button>
+</div>

@@ -1,180 +1,182 @@
-.banner-image{
-	border-radius: 0 !important;
-	object-position: right;
-	height: 270px;
-	width: auto;
-	object-fit: cover;
+.banner-image {
+  border-radius: 0 !important;
+  object-position: right;
+  height: 270px;
+  width: auto;
+  object-fit: cover;
 }
 
-.bg-banner{
-	background: url(~/src/assets/images/placeholder/company-panel-dashboard.png);
-	background-repeat: no-repeat;
-	//background-attachment: fixed;
-	background-position: right;
-	background-size: cover;
-	background-color: linear-gradient(96.52deg, #F85B4B -3.5%, #F85B4B 44.54%, #F85B4B 128.45%) !important;
-	border-radius: 0px;
-	position: right;
-	height: 260px;
+.bg-banner {
+  background: url(~/src/assets/images/placeholder/company-panel-dashboard.png);
+  background-repeat: no-repeat;
+  //background-attachment: fixed;
+  background-position: right;
+  background-size: cover;
+  background-color: linear-gradient(
+    96.52deg,
+    #f85b4b -3.5%,
+    #f85b4b 44.54%,
+    #f85b4b 128.45%
+  ) !important;
+  border-radius: 0px;
+  position: right;
+  height: 260px;
 
-	@media (max-width: 1099px){
-		height: 400px !important;
-	}
+  @media (max-width: 1099px) {
+    height: 400px !important;
+  }
 }
 
-.title-banner{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 26px;
-	line-height: 26px;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+.title-banner {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 26px;
+  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
 
-	color: #FFFFFF;
+  color: #ffffff;
 }
 
+.title-banner-description {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 21px;
+  /* identical to box height, or 150% */
 
-.title-banner-description{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 14px;
-	line-height: 21px;
-	/* identical to box height, or 150% */
+  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
 
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #FFEEEC;
-	margin-bottom: 0;
+  color: #ffeeec;
+  margin-bottom: 0;
 }
 
-.company-logo{
-	&-image{
-		width: 100px;
-		border-radius: 50%;
-		cursor: pointer;
-		border: solid 3px #f8f8f8;
+.company-logo {
+  &-image {
+    width: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: solid 3px #f8f8f8;
 
-		&:hover{
-			border: solid 3px #f8f8f8;
-			transition: all 0.2s !important;
-			transform: scale(1.1);
-		}
-	}
+    &:hover {
+      border: solid 3px #f8f8f8;
+      transition: all 0.2s !important;
+      transform: scale(1.1);
+    }
+  }
 }
 
-.green{
-	background: #09C986;
+.green {
+  background: #09c986;
 
-	transition: all 0.4s ease !important;
+  transition: all 0.4s ease !important;
 
-	&:hover{
-		background: white;
-		border: solid 2px #09C986;
-		padding: 18px 12px 8px 15px;
-		transition: all 0.2s ease !important;
+  &:hover {
+    background: white;
+    border: solid 2px #09c986;
+    padding: 18px 12px 8px 15px;
+    transition: all 0.2s ease !important;
 
-		.title-card{
-			color: #09C986;
-		}
+    .title-card {
+      color: #09c986;
+    }
 
-		.title-stat{
-			color: #09C986;
-		}
-	}
+    .title-stat {
+      color: #09c986;
+    }
+  }
 }
 
-.orange{
-	background: #FE742B;
+.orange {
+  background: #fe742b;
 
-	&:hover{
-		background: white;
-		border: solid 2px #FE742B;
-		padding: 18px 12px 8px 15px;
-		transition: all 0.2s ease !important;
+  &:hover {
+    background: white;
+    border: solid 2px #fe742b;
+    padding: 18px 12px 8px 15px;
+    transition: all 0.2s ease !important;
 
-		.title-card{
-			color: #FE742B;
-		}
+    .title-card {
+      color: #fe742b;
+    }
 
-		.title-stat{
-			color: #FE742B;
-		}
-	}
+    .title-stat {
+      color: #fe742b;
+    }
+  }
 }
 
-.yellow{
-	background: #EFA20D;
+.yellow {
+  background: #efa20d;
 
-	&:hover{
-		background: white;
-		border: solid 2px #EFA20D;
-		padding: 18px 12px 8px 15px;
-		transition: all 0.2s ease !important;
+  &:hover {
+    background: white;
+    border: solid 2px #efa20d;
+    padding: 18px 12px 8px 15px;
+    transition: all 0.2s ease !important;
 
-		.title-card{
-			color: #EFA20D;
-		}
+    .title-card {
+      color: #efa20d;
+    }
 
-		.title-stat{
-			color: #EFA20D;
-		}
-	}
-
+    .title-stat {
+      color: #efa20d;
+    }
+  }
 }
 
-
-.card-application{
-	border-radius: 15px;
-	padding: 18px 12px 5px 15px;
-	cursor: pointer;
-	height: 110px;
+.card-application {
+  border-radius: 15px;
+  padding: 18px 12px 5px 15px;
+  cursor: pointer;
+  height: 110px;
 }
 
-.card-application-interview{
-	border-radius: 15px;
-	padding: 20px 12px 10px 15px;
-	cursor: pointer;
-	height: 110px;
-	@media(min-width: 990px){
-		height: 125px !important;
-		padding-top: 12px !important;
+.card-application-interview {
+  border-radius: 15px;
+  padding: 20px 12px 10px 15px;
+  cursor: pointer;
+  height: 110px;
+  @media (min-width: 990px) {
+    height: 125px !important;
+    padding-top: 12px !important;
 
-		.card-img{
-			margin-top: 3px !important;
-		}
-	}
+    .card-img {
+      margin-top: 3px !important;
+    }
+  }
 }
 
-.title-card{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15.5px;
-	line-height: 21px;
-	/* identical to box height, or 131% */
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+.title-card {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15.5px;
+  line-height: 21px;
+  /* identical to box height, or 131% */
+  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
 
-	color: #FFFFFF;
-	position: relative;
+  color: #ffffff;
+  position: relative;
 
-	.card-img{
-		position: absolute;
-		right: 0;
-		top: 0
-	}
+  .card-img {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 
-.title-stat{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 600;
-	font-size: 35px;
-	line-height: 36px;
-	/* or 166% */
-	margin-top: 20px;
-	display: flex;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+.title-stat {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 35px;
+  line-height: 36px;
+  /* or 166% */
+  margin-top: 20px;
+  display: flex;
+  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
 
-	color: #FFFFFF;
+  color: #ffffff;
 }
