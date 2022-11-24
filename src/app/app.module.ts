@@ -16,12 +16,16 @@ import { appReducer } from '@main/app.state';
 import { AuthInterceptor } from './core/interceptor/authentication.interceptor';
 import { UnAuthorizedInterceptor } from './core/interceptor/unauthorize.interceptor';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { StorePublicModule } from './shared/store/store.module';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     NgxSpinnerModule,
     BrowserAnimationsModule,
@@ -29,7 +33,13 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     AppRoutingModule,
     StoreModule.forRoot(appReducer),
     EffectsModule.forRoot([AppEffects]),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
+    StorePublicModule.forRoot(),
+    // StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
+    StoreDevtoolsModule.instrument({
+      name: environment.NgRxName,
+      maxAge: environment.NgRxMaxAge,
+      logOnly: environment.isDebug
+  }),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

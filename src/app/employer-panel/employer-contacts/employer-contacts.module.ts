@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EmployerContactsComponent } from './employer-contacts.component';
-import { SharedModule } from '@app-shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 import { ContactListComponent } from './contact-list/contact-list.component';
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
+import { ImportAddContactComponent } from './contact-list/dialogs/import-add-contact/import-add-contact.component';
+import { SharedModule } from '@app-shared/shared.module';
 
 const routes: Routes = [
   { path: 'list', component: ContactListComponent },
@@ -16,7 +17,8 @@ const routes: Routes = [
   declarations: [
     EmployerContactsComponent,
     ContactListComponent,
-    CandidateListComponent
+    CandidateListComponent,
+    ImportAddContactComponent
   ],
   imports: [
     CommonModule,

@@ -19,6 +19,7 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
 import { AddAccessModalComponent } from './components/add-access-modal/add-access-modal.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 // import { NgxOrgChartModule } from 'ngx-org-chart';
 
 import { EmptySectionComponent } from './components/empty-section/empty-section.component';
@@ -45,8 +46,8 @@ const classesToInclude: any[] = [
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     HttpClientModule,
+    FormsModule,
     ReactiveFormsModule,
     MaterialComponentsModule
   ],
@@ -57,7 +58,9 @@ const classesToInclude: any[] = [
   declarations: classesToInclude,
   exports: [
     ...classesToInclude,
-    MaterialComponentsModule
+    MaterialComponentsModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule { }
