@@ -12,7 +12,7 @@ export class HeaderComponent implements OnInit {
   @Input() user: any;
   @Input() isUserLoggedIn: boolean;
   @Input() isPublic: boolean;
-
+  userRole = localStorage.getItem('role');
   initials: string;
 
   constructor(
@@ -33,15 +33,23 @@ export class HeaderComponent implements OnInit {
     this.router.navigateByUrl('/signin');
   }
 
+  goToDashboard() {
+    switch (this.userRole) {
+      case '1':
+        this.router.navigateByUrl('/admin/dashboard');
+        break;
+      case '2':
+        this.router.navigateByUrl('/recruiter/dashboard');
+        break;
+      case '3':
+        this.router.navigateByUrl('/user/dashboard');
+        break;
+    }
+  }
+
   logout() {
     localStorage.clear();
     this.appFacade.resetCredentials();
     this.router.navigateByUrl('/signin');
-    // this.coreService.logout().pipe().subscribe(isLogout => {
-    //   console.log(isLogout);
-    //   if(isLogout.success) {
-
-    //   }
-    // });
   }
 }
