@@ -40,11 +40,14 @@
 			</ng-container>
 		</div>
 
-		<div class="px-2">
+		<div class="px-2" style="background: #7A637F;">
 			<div class="card card-body py-4 bg-user" *ngIf="employee$ | async as employee"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex" *ngIf="screenHeight > 685">
-					<img src="assets/images/face-6.jpg" class="img-avatar me-2">
+					<!-- <img src="assets/images/face-6.jpg" class="img-avatar me-2">-->
+					<div class="initial-thumbnail-inner text-uppercase">
+						{{ employee.firstName.substr(0,1) }}{{ employee.lastName.substr(0,1) }}
+					</div>
 
 					<div class="mt-1">
 						<h5 class="img-avatar-full-name text-capitalize">{{ employee.firstName + ' ' + employee.lastName }}</h5>

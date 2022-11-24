@@ -26,7 +26,7 @@ export class CompanyUsersComponent implements OnInit {
     { col_name: 'employeeId', title: 'Employee ID' },
     { col_name: 'fullName', title: 'Full Name' },
     { col_name: 'email', title: 'Email Address' },
-    { col_name: 'assignedAt', title: 'Date added' },
+    { col_name: 'assignedAt', title: 'Date added', type: 'date' },
   ];
 
   selectedColumns: string[] = [

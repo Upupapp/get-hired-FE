@@ -27,6 +27,7 @@ const routes: Routes = [
     CommonModule,
     CompanyModule,
     MatDialogModule,
+    AuthModule,
     SharedModule,
     AuthModule,
     RouterModule.forChild(routes)
