@@ -1,3 +1,31 @@
+
+.initial-thumbnail {
+  font-size: 14px;
+  // line-height: 2;
+  color: #FF7062;
+  padding: 5px;
+  text-align: center;
+  border: 2px solid #FF7062;
+  line-height: 25px;
+}
+
+.initial-thumbnail-inner {
+  font-size: 14px;
+  height: 38px;
+  width: 41px;
+  margin-top: 5px;
+  margin-right: 10px !important;
+  border-radius: 50%;
+  // line-height: 2;
+  background: rgba(255,255,255,0.8);
+  color: #FF7062;
+  padding: 4px 3px !important;
+  text-align: center;
+  border: 2px solid #FF7062 !important;
+  line-height: 25px;
+}
+
+
 .sidebar-details{
 	position: sticky !important;
 	top: 0px !important;
