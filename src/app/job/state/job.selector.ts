@@ -87,3 +87,12 @@ export const getJobPreview = createSelector(
   })
 );
 
+export const getJobById = createSelector(
+  getJobInitState,
+  state => state.job
+);
+
+export const jobLoading = createSelector(
+  getJobInitState,
+  state => state.jobLoading
+);

@@ -32,6 +32,10 @@ export class JobService {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
   }
 
+  getJobById(jobId: string) {
+    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}`);
+  }
+
   getJobExpiredList(companyId: string) {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/expiredlist?id=${companyId}`);
   }

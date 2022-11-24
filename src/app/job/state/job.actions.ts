@@ -53,7 +53,11 @@ enum AllFeatureActionTypes {
   SetJobInitialDetails = '[job] - Set Job Initial Details',
   SetJobInfo = '[job] - Set Job Info',
   SetInterview = '[job] - Set Job Interview',
-  ResetJobForm = '[job] - Reset Job Form'
+  ResetJobForm = '[job] - Reset Job Form',
+
+  GetJob = '[job] - Get Job status',
+  GetJobSuccess = '[job] -Get Job Success',
+  GetJobFail = '[job] - Get Job Fail',
 };
 
 export const resetJobForm = createAction(
@@ -232,5 +236,20 @@ export const getExpiredJobListSuccess = createAction(
 
 export const getExpiredJobListFail = createAction(
   AllFeatureActionTypes.GetExpiredJobListFail,
+  props<{ payload: any }>()
+);
+
+export const getJob = createAction(
+  AllFeatureActionTypes.GetJob,
+  props<{ jobId: any }>()
+);
+
+export const getJobSuccess = createAction(
+  AllFeatureActionTypes.ChangeJobStatusSuccess,
+  props<{ job: Model.Job }>()
+);
+
+export const getJobFail = createAction(
+  AllFeatureActionTypes.ChangeJobStatusFail,
   props<{ payload: any }>()
 );

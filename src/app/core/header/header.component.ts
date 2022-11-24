@@ -17,6 +17,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private coreService: CoreService,
     private router: Router,
+    private authFacade: AuthFacade
   ) {
   }
 
@@ -35,6 +36,7 @@ export class HeaderComponent implements OnInit {
     this.coreService.logout().pipe().subscribe(isLogout => {
       console.log(isLogout);
       if(isLogout.success) {
+        this.authFacade.logout();
         localStorage.clear();
         this.router.navigateByUrl('/signin');
       }

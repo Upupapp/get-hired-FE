@@ -86,11 +86,11 @@ export class TableControlModalComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) { 
-    console.log(data)
+    
   }
 
   ngOnInit(): void {
-    console.log(this.tableControls)
+    console.log(this.data)
   }
 
   close() {
@@ -109,12 +109,12 @@ export class TableControlModalComponent implements OnInit {
 
     if(menu?.id === 'view-job'){
       this.dialogRef.close();
-      this.router.navigate([`/company/jobs/details/${this.data?.data?.id}`])
+      this.router.navigate([`/recruiter/jobs/view/${this.data?.jobId}`])
     }
 
     else if(menu?.id === 'edit-job'){
       this.dialogRef.close();
-      this.router.navigate([`/company/jobs/edit/${this.data?.data?.id}`])
+      this.router.navigate([`recruiter/jobs/edit/${this.data?.jobId}`])
     }
 
     else if(menu?.id === 'view-applicants'){

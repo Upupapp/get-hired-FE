@@ -19,7 +19,6 @@ import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat
 import { JobsComponent } from './pages/jobs/jobs.component';
 import { CreateJobPostComponent } from './pages/jobs/pages/create-job-post/create-job-post.component';
 import { TableControlModalComponent as JobsControl } from './pages/jobs/dialogs/table-control-modal/table-control-modal.component';
-
 import { ApplicantsComponent } from './pages/applicants/applicants.component';
 import { AccountDetailsComponent } from './pages/account-details/account-details.component';
 import { ExpiredJobsComponent } from './pages/expired-jobs/expired-jobs.component';
@@ -51,10 +50,12 @@ import { InterviewTemplateStepComponent } from './pages/create-interview/pages/a
 import { InterviewPublishStepComponent } from './pages/create-interview/pages/add-interview-templates/components/interview-publish-step/interview-publish-step.component';
 import { CandidatesComponent } from './pages/candidates/candidates.component';
 import { ViewJobPostComponent } from './pages/jobs/pages/view-job-post/view-job-post.component';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   imports: [
     CommonModule,
+    BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     MaterialComponentsModule,
