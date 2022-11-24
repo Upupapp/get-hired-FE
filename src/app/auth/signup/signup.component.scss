@@ -412,12 +412,12 @@ select::placeholder{
 .form-group{
   label {
   	font-family: 'Manrope';
-	font-style: normal;
+		font-style: normal;
     position: absolute;
     margin-top: -66px;/*climbs under the input */
     transition: all 0.3s ease-in-out;
     z-index: 9999 !important;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,1);
     margin-left: 15px;
     font-size: 14px;
     border-radius: 5px;
@@ -456,6 +456,7 @@ input.ng-invalid.ng-dirty.ng-touched {
   //opacity: 0.1;
   border: solid 1px #FF7062 !important
 }
+
 
 .error-message{
 	border-radius: 15px !important;
