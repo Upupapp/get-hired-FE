@@ -1,0 +1,156 @@
+<div class="card card-body" style="min-height: 400px;">
+	<div class="row">
+		<div class="col-12  text-center">
+			<div class="mb-2">
+
+				<div class="w-100">
+					<img [src]="company?.companyLogoUrl" class="img-fluid" style="height:130px">
+				</div>
+
+				<div class="company-details mb-4 mt-3">
+					<h5 class="title-company">{{company?.comapnyName}}</h5>
+					<!-- <p class="title-company-type">{{company?.type}}</p> -->
+				</div>
+
+				<div class="row px-lg-3">
+					<div class="col-12 col-md-6 mt-2">
+						<div class="d-flex">
+							<img src="/assets/images/placeholder/icons/company-employee.png" style="height: 50px;">
+
+							<div class="ms-2 ps-1 text-start">
+								<h5 class="title-company-employee">{{company?.numberOfEmployee}}</h5>
+								<p class="title-company-employee-description">Employee</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 col-md-6 mt-2">
+						<div class="d-flex">
+							<img src="/assets/images/placeholder/icons/company-rating.png" style="height: 50px;">
+
+							<!-- <div class="ms-2 ps-1 text-start">
+								<h5 class="title-company-employee">{{company?.rating}}</h5>
+								<p class="title-company-employee-description">Rating</p>
+							</div> -->
+						</div>
+					</div>
+
+					<div class="col-12 col-md-12 mt-3">
+						<div class="d-flex">
+							<div class="location-card">
+								<img src="/assets/images/placeholder/icons/company-location.png" style="height: 21px;">
+							</div>
+
+							<div class="ms-2 ps-1 text-start">
+								<h5 class="title-company-employee">
+                  {{company?.companyCity}},  {{company?.companyCountry}}
+                </h5>
+								<p class="title-company-employee-description">Location</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="company-description text-start mt-2">
+						<img src="/assets/images/placeholder/map.png" style="height: 200px; border-radius: 7px;" class="img-fluid">
+					</div> -->
+
+					<div class="company-description text-start mt-4">
+						<h5 class="title-company-description">
+							<strong>About Company</strong><br>
+							{{company?.companyDetails}}
+						</h5>
+					</div>
+				</div>
+
+				<!--
+				<hr>
+				<div class="d-flex align-items-start justify-content-start ms-2" >
+					<h5 class="d-flex title-details me-3 ms-1">
+						<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+						Salary: PHP {{data?.salary_min | number:'1.0':'en-US' }} - PHP {{data?.salary_max | number:'1.0':'en-US' }}
+					</h5>
+				</div> -->
+
+				<div class="bg-bluish mt-4">
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/experience.png"
+						style="height: 20px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Job Level</h5>
+							<p class="title-job-details-description">{{data?.jobLevelName}}</p>
+						</div>
+					</div>
+
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/company-job-title.png"
+						class="mt-1"
+						style="height: 17px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Rate</h5>
+							<p class="title-job-details-description">{{data?.jobTypeName}}</p>
+						</div>
+					</div>
+
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/company-salary.png"
+						class="mt-1"
+						style="height: 18px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Salary</h5>
+							<p class="title-job-details-description">PHP {{data?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{data?.salaryMaximum | number:'1.0':'en-US' }}</p>
+						</div>
+					</div>
+
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/company-date-posted.png"
+						class="mt-1"
+						style="height: 20px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Date Posted</h5>
+							<p class="title-job-details-description">{{data?.updatedAt | date: 'MMM dd, yyyy'}}</p>
+						</div>
+					</div>
+
+					<!-- <div class="d-flex mb-3" style="margin-left: -4px">
+						<img src="/assets/images/placeholder/icons/company-expiration.png"
+						class="mt-1"
+						style="height: 22px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Expiration Date</h5>
+							<p class="title-job-details-description">{{data?.expiration_date | date: 'MMM dd, yyyy'}}</p>
+						</div>
+					</div> -->
+
+					<div class="d-flex mb-3">
+						<img src="/assets/images/placeholder/icons/company-location-2.png"
+						class="mt-1"
+						style="height: 20px; margin-right: 2px;">
+
+						<div class="ms-4 ps-1 text-start">
+							<h5 class="title-job-details">Location</h5>
+							<p class="title-job-details-description">
+                {{data?.jobCity}}, {{data?.jobCountry}}</p>
+						</div>
+					</div>
+
+
+
+
+
+
+				</div>
+
+				<div class="d-flex my-3" *ngIf="location?.match('job-post/details')">
+					<button class="btn btn-apply-now w-100" (click)="navigateToInterview()">Apply now</button>
+
+					<img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2" style="height: 45px; cursor: pointer;">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

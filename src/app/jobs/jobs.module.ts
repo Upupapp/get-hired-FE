@@ -11,22 +11,26 @@ import { SharedModule } from '@app-shared/shared.module';
 import { JobPostsListComponent } from './job-posts-list/job-posts-list.component';
 import { JobCardListViewComponent } from './job-card-list-view/job-card-list-view.component';
 import { JobPostsDetailsComponent } from './job-posts-details/job-posts-details.component';
+import { JobModule } from '@app-job/job.module';
+import { JobDetailsSidecardComponent } from './job-details-sidecard/job-details-sidecard.component';
 
 const exportedComponents = [
   JobsComponent,
   JobCardComponent,
   JobPostsListComponent,
-  JobCardListViewComponent
+  JobCardListViewComponent,
+  JobPostsDetailsComponent,
+  JobDetailsSidecardComponent
 ];
 
 @NgModule({
   declarations: [
     ...exportedComponents,
-    JobPostsDetailsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    JobModule,
     StoreModule.forFeature('jobs', jobsReducer),
     EffectsModule.forFeature([JobsEffects]),
   ],

@@ -20,7 +20,7 @@ export class JobCardComponent implements OnInit {
 
   applyNow(route){
     // TODO apply button
-    // this.router.navigate(['/']).then(el => this.router.navigate([`/job-post/details/${this.data?.id}`]));
+    this.router.navigate(['/']).then(el => this.router.navigate([`/jobs/details/${this.data?.jobId}`]));
   }
 
 }

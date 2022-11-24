@@ -1,17 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
-import { Location } from '@angular/common';
-import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
-  selector: 'app-job-posts-details',
-  templateUrl: './job-posts-details.component.html',
-  styleUrls: ['./job-posts-details.component.scss'],
-  animations: [mainAnimations]
+  selector: 'app-public-details',
+  templateUrl: './public-details.component.html',
+  styleUrls: ['./public-details.component.scss']
 })
-export class JobPostsDetailsComponent implements OnInit {
-
+export class PublicDetailsComponent implements OnInit {
   details$ = this.jobFacade.getJobById$;
   jobId: string;
   public screenSize: number = 1600;
@@ -19,7 +15,6 @@ export class JobPostsDetailsComponent implements OnInit {
   constructor(
     private jobFacade: JobFacade,
     private route: ActivatedRoute,
-    public location: Location
   ) {
     this.jobId = this.route.snapshot.params['id']
   }
@@ -31,11 +26,6 @@ export class JobPostsDetailsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenSize = window.innerWidth;
-  }
-
-
-  goBack(){
-    this.location.back();
   }
 
 }

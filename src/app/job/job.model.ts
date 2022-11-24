@@ -6,12 +6,15 @@ export interface Job {
   jobTitle: string;
   companyId: string;
   industryId?: number;
+  industryName?: string;
   jobRoleId?: number;
   jobTypeId?: number;
+  jobTypeName?: string;
   jobLevelId?: number;
   jobDescription?: string;
   jobDuties?: string;
   workSetupId?: number;
+  workSetupName?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
   jobAddress?: string;
@@ -28,9 +31,14 @@ export interface Job {
   educationalBackground?: string[];
   badges?: Options[];
   jobSkills?: string[];
-  jobTags?: string[];
+  tags?: string[];
   rate?: string;
   bannerPosition?: any;
+  companyCity?: string;
+  companyCountry?: string;
+  companyLogoUrl?: string;
+  companyDetails?: string;
+  numberOfEmployee?: string;
 }
 
 export interface InitialDetails {

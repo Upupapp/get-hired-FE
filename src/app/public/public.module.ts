@@ -9,12 +9,15 @@ import { BannerComponent } from './components/banner/banner.component';
 import { ExploreUsersComponent } from './components/explore-users/explore-users.component';
 import { JobsModule } from '@main/jobs/jobs.module';
 import { PublicListComponent } from './public-list/public-list.component';
+import { PublicDetailsComponent } from './public-details/public-details.component';
+import { JobFacade } from '@app-job/state/job.facade';
 
 const routes: Routes = [
   {
     path: '',
     component: PublicComponent,
     children: [
+      { path: 'jobs/details/:id', component: PublicDetailsComponent },
       { path: 'jobs', component: PublicListComponent },
       {
         path: 'companies',
@@ -30,7 +33,8 @@ const routes: Routes = [
     PublicComponent,
     BannerComponent,
     ExploreUsersComponent,
-    PublicListComponent
+    PublicListComponent,
+    PublicDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -39,6 +43,6 @@ const routes: Routes = [
     CoreModule,
     SharedModule,
     RouterModule.forChild(routes)
-  ]
+  ], providers: [JobFacade]
 })
 export class PublicModule { }
