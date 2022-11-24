@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
 })
 export class EmployerSidebarComponent implements OnInit {
   private req: Subscription;
-
   @Input() sidebarWidth;
   employee$ = this.employeeFacade.employeeDetails$;
 
