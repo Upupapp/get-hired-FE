@@ -33,12 +33,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    loadChildren: () => import('@main/public/public.module').then(m => m.PublicModule),
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
+    canActivate: [UnauthGuard],
   },
   {
     path: '',
-    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
-    canActivate: [UnauthGuard],
+    loadChildren: () => import('@main/public/public.module').then(m => m.PublicModule),
   }
 ];
 

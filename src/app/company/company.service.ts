@@ -23,8 +23,19 @@ export class CompanyService {
     return this.baseService.put<Model.Company>(`${this.companyUrl}/update`, company);
   }
 
-  getCompanyById(companyId: string = ''){
-    return this.baseService.get<Model.Company>(`${this.companyUrl}/details?id=${companyId}`);
+  getUserCompany(){
+    return this.baseService.get<Model.Company>(`${this.companyUrl}/usercompany`);
+  }
+
+  addUserToCompany(email: string, companyId){
+    const newUser = {
+      email, companyId
+    }
+    return this.baseService.post(`${this.companyUrl}/addCompanyUser`, newUser);
+  }
+
+  getCompanyUsers(companyId: string) {
+    return this.baseService.get<Model.CompanyUser[]>(`${this.companyUrl}/getallcompanyuser?id=${companyId}`);
   }
 
   getDashboardDetails() {

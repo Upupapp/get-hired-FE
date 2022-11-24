@@ -13,7 +13,7 @@
         <div class="carousel-inner pb-5" id="admin-welcome-screens">
           <div class="carousel-item active text-center">
             <div class="text-center">
-              <img src="/assets/images/placeholder/logo.png" class="main-logo" routerLink="/">
+              <img src="/assets/images/placeholder/logo.png" class="main-logo" routerLink="/jobs">
               <h5 class="title-left-main">
                 Bring all your applicants in</h5>
               <h4 class="title-left-gradient">ONE PLATFORM</h4>
@@ -28,7 +28,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="/assets/images/placeholder/logo.png" class="main-logo" routerLink="/">
+                <img src="/assets/images/placeholder/logo.png" class="main-logo" routerLink="/jobs">
                 <h5 class="title-left-main">
                   Interview
                   <span class="title-left-gradient">ALL </span> your applicants
@@ -44,7 +44,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="/assets/images/placeholder/logo.png" class="main-logo" routerLink="/">
+                <img src="/assets/images/placeholder/logo.png" class="main-logo" routerLink="/jobs">
                 <h5 class="title-left-main">
                   Choose the
                   <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
@@ -65,10 +65,8 @@
         <!-- Error Message -->
         <form class="px-3" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
           <div class="form-group text-start">
-            <h4 class="main-title m-0">Create Account
-            </h4>
+            <h4 class="main-title m-0">Create Account</h4>
           </div>
-
 
           <div class="alert alert-danger alert-dismissible fade show error-message"
             [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">

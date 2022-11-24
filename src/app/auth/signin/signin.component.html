@@ -13,7 +13,7 @@
         <div class="carousel-inner pb-5" id="admin-welcome-screens">
           <div class="carousel-item active text-center">
             <div class="text-center">
-              <img src="/assets/images/placeholder/logo.png" routerLink="/" class="main-logo">
+              <img src="/assets/images/placeholder/logo.png" routerLink="/jobs" class="main-logo">
               <h5 class="title-left-main">
                 Bring all your applicants in</h5>
               <h4 class="title-left-gradient">ONE PLATFORM</h4>
@@ -28,7 +28,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="/assets/images/placeholder/logo.png" routerLink="/" class="main-logo">
+                <img src="/assets/images/placeholder/logo.png" routerLink="/jobs" class="main-logo">
                 <h5 class="title-left-main">
                   Interview
                   <span class="title-left-gradient">ALL </span> your applicants
@@ -44,7 +44,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="/assets/images/placeholder/logo.png" routerLink="/" class="main-logo">
+                <img src="/assets/images/placeholder/logo.png" routerLink="/jobs" class="main-logo">
                 <h5 class="title-left-main">
                   Choose the
                   <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
@@ -64,14 +64,9 @@
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
           <div class="form-group text-start mt-5">
-            <h4 class="main-title m-0">Sign in to your account
-              <!-- <img src="/assets/images/placeholder/logo.png" routerLink="/"
-                [@animate]="{value:'*', params:{ y:'-50px', delay:'400ms' }}" style="width: 100px; cursor: pointer;"
-                class="float-end"> -->
-            </h4>
+            <h4 class="main-title m-0">Sign in to your account</h4>
             <br>
           </div>
-
 
           <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
             [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" 

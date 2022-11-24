@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 
 @Component({
@@ -8,7 +8,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
   animations: [mainAnimations]
 })
 export class EmployerCompanyUsersComponent implements OnInit {
-
+  @Input() companyId: string;
   constructor() { }
 
   ngOnInit(): void {
