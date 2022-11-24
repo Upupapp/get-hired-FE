@@ -12,6 +12,7 @@ export class CompanyFacade {
     companyList$ = this.store.pipe(select(fromfeature.getCompanyList));
     success$ = this.store.pipe(select(fromfeature.getSuccessMsg));
     dashboard$ = this.store.pipe(select(fromfeature.companyDashboard));
+    users$ = this.store.pipe(select(fromfeature.getCompanyUsers));
 
     constructor(
       private store: Store<State>,
@@ -40,11 +41,9 @@ export class CompanyFacade {
     getCompanyDashboard() {
       this.store.dispatch(CompanyAction.companyDashboard());
     }
-    // getfeatureList() {
 
-    // }
+    getCompanyUsers(companyId: string) {
+      this.store.dispatch(CompanyAction.getCompanyUsers({ companyId }));
+    }
 
-    // getfeatureDetails(featureId: string) {
-
-    // }
 }

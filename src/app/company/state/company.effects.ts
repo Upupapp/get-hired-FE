@@ -81,7 +81,7 @@ export class CompanyEffects {
   getCompany$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CompanyActions.getCompany),
-      mergeMap((action) => this.companyService.getCompanyById(action.companyId)
+      mergeMap(() => this.companyService.getUserCompany()
         .pipe(
           map((res: any) => {
             const company: Model.Company = res.data;
@@ -90,6 +90,24 @@ export class CompanyEffects {
           catchError((err) => {
             const { error } = err.error;
             return of(CompanyActions.getCompanyFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  getCompanyUsers$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getCompanyUsers),
+      mergeMap((action) => this.companyService.getCompanyUsers(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const users: Model.CompanyUser[] = res.data;
+            return CompanyActions.getCompanyUsersSuccess({ users });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.getCompanyUsersFail({ payload: error }))
           })
         )
       )

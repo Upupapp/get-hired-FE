@@ -42,3 +42,11 @@ export interface Options {
   name: string;
   icon?: string;
 }
+
+export interface CompanyUser {
+  employeeId: string;
+  companyId: string;
+  assignedAt: Date;
+  email: string;
+  fullName: string;
+}

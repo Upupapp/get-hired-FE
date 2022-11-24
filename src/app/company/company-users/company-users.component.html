@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="users$ | async as companyUserLists">
 	<div class="card card-body" *ngIf="listView && !loading">
 		<h5 class="title-label mt-2">Company Users
 			<span class="float-end">

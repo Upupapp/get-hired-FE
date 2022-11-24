@@ -37,3 +37,8 @@ export const getIndustryList = createSelector(
   getCompanyInitState,
   state => state.industry
 );
+
+export const getCompanyUsers = createSelector(
+  getCompanyInitState,
+  state => state.users
+);

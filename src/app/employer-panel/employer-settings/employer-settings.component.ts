@@ -10,24 +10,38 @@ import { EmployeeFacade } from '@main/employee/state/employee.facade';
   styleUrls: ['./employer-settings.component.scss']
 })
 export class EmployerSettingsComponent implements OnInit {
+  asyncLocalStorage = {
+    setItem: async function (key, value) {
+      await Promise.resolve();
+      localStorage.setItem(key, value);
+    },
+    getItem: async function (key) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
+    }
+  };
+
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Company Details"
+      title: "Company Details",
+      disabled: false
     },
     {
       id: 2,
-      title: "Company Users"
+      title: "Company Users",
+      disabled: false
     },
     {
       id: 3,
-      title: "Account Settings"
+      title: "Account Settings",
+      disabled: false
     },
 
   ];
 
   public stepper: number = 1;
-
+  companyId: string;
 
 
   constructor(
@@ -38,10 +52,18 @@ export class EmployerSettingsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('on settings');
+    this.getUser();
   }
 
   changeStep(step: number): void {
     console.log(step);
     this.stepper = step;
+  }
+
+  getUser() {
+    this.asyncLocalStorage.getItem('user')
+      .then(details => {
+        this.companyId = JSON.parse(details).companyId;
+      });
   }
 }
