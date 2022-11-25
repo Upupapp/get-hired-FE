@@ -29,6 +29,10 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  navigateToLink(){
+    this.router.navigate(['/jobs'])
+  }
+
   redirectToRegister() {
     this.router.navigateByUrl('/signin');
   }

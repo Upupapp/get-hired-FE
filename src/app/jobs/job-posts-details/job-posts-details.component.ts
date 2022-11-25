@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
@@ -11,9 +11,11 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   animations: [mainAnimations]
 })
 export class JobPostsDetailsComponent implements OnInit {
-
+  @Input() withBanner: boolean = true;
   details$ = this.jobFacade.getJobById$;
   jobId: string;
+
+  
   public screenSize: number = 1600;
 
   constructor(

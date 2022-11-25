@@ -1,4 +1,5 @@
 <div class="card card-body mb-3"
+[ngStyle]="{ 'min-height' : data.badges.length > 0 ? '500px' : '400px'}"
 [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
 	<div class="banner-thumbnail">
 		<img [src]="data.jobBanner" class="img img-fluid img-banner">
