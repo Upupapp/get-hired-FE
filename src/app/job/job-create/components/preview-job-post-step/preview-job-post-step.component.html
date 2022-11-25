@@ -23,9 +23,15 @@
 			</div>
 
       <div class="floating-card" *ngIf="preview?.badges && preview?.badges.length != 0">
-        <div class="d-flex">
-          <ng-container *ngFor="let item of preview.badges">
-            <img [src]="'/assets/images/placeholder/icons/' + item?.icon" class="badge-logo">
+        <div>
+          <ng-container *ngFor="let item of preview.badges; let i = index">
+            <div class="d-flex align-items-center justify-content-center badge-card my-2" [ngClass]="'badge-' + i">
+							<img src="/assets/images/placeholder/icons/{{item?.icon}}"
+							[title]="item?.name"
+							style="height:20px" class="me-2">
+
+							<h5 class="title-badge">{{item?.name}}</h5>
+						</div>
           </ng-container>
         </div>
 

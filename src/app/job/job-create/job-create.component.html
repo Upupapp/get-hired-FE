@@ -35,8 +35,7 @@
       <app-main-stepper
         [stepper]="stepper"
         [stepperItems]="stepperItems"
-        (changeStepper)="changeStep($event)"
-      >
+        (changeStepper)="changeStep($event)">
       </app-main-stepper>
     </div>
   </section>
@@ -94,7 +93,7 @@
     <ng-template #stepperButtons>
       <button
         class="btn btn-next me-2"
-        (click)="changeStep(2, 'initialData')"
+        (click)="changeStep(2)"
         *ngIf="stepper == 1"
         [disabled]="!initialFormValid"
         type="submit"
@@ -112,7 +111,7 @@
 
       <button
         class="btn btn-next me-2"
-        (click)="changeStep(3, 'jobInfo')"
+        (click)="changeStep(3)"
         *ngIf="stepper == 2"
         [disabled]="!jobInfoValid"
       >
@@ -129,7 +128,7 @@
 
       <button
         class="btn btn-next me-2"
-        (click)="changeStep(4, 'interview')"
+        (click)="changeStep(4)"
         *ngIf="stepper == 3"
         [disabled]="!interviewValid"
       >

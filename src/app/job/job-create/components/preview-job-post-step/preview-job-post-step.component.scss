@@ -108,14 +108,14 @@
 .floating-card{
 	position: absolute;
 	width: 359px;
-	height: 206px;
+	min-height: 206px;
 	top: 170px;
 	right: 50px;
 
 	background: #FFFFFF;
 	border: 1px solid rgba(231, 231, 231, 0.65);
 	border-radius: 10px;
-	padding: 30px;
+	padding: 20px;
 }
 
 
@@ -398,4 +398,34 @@
 			color: #9C9C9C;
 		}
 	}
+}
+
+.badge-card{
+	border-radius: 5px;
+	padding: 10px 10px 7px 15px;
+
+  .title-badge {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+}
+
+.badge-0{
+	@extend .badge-card;
+	background: #E1E7FF;
+}
+
+.badge-1{
+	@extend .badge-card;
+	background: #CCFBF1;
+}
+
+.badge-2{
+	@extend .badge-card;
+	background: #FFF1CC;
+}
+
+.badge-3{
+	@extend .badge-card;
+	background: #FFCCE4;
 }

@@ -42,18 +42,21 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   stepperItems: any[] = [
     {
       id: 1,
-      title: "Job Details"
+      title: "Job Details",
+      formName: 'initialData'
     },
     {
       id: 2,
       title: "Rates and Roles",
-      disabled: !this.initialFormValid
+      disabled: !this.initialFormValid,
+      formName: 'jobInfo'
     },
 
     {
       id: 3,
       title: "Create Interview",
-      disabled: !this.jobInfoValid
+      disabled: !this.jobInfoValid,
+      formName: 'interview'
     },
 
     {
@@ -248,7 +251,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
       this.jobForm.controls.jobInfo.get('jobRoleId').setValue(raw.jobRoleId);
       this.jobForm.controls.jobInfo.get('jobSkills').setValue(raw.jobSkills);
-      this.jobForm.controls.jobInfo.get('jobTags').setValue(raw.jobTags);
+      this.jobForm.controls.jobInfo.get('tags').setValue(raw.jobTags);
       this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
       this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
       this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
@@ -268,6 +271,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   async publishJobPost() {
     const job: Model.Job = await this.formatJob(2);
+    console.log('YOUR JOB')
+    console.log(job);
 
     this.isReadyToPublish = job.jobTypeId &&
       job.jobLevelId &&
@@ -276,9 +281,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       job.jobDescription != "" &&
       job.workSetupId &&
       job.bannerFile[0] &&
-      job.badges.length != 0 &&
-      job.requirements.length != 0 &&
-      job.jobSkills.length != 0 &&
       job.interviewQuestions.length != 0
 
     if(this.isReadyToPublish) {
@@ -337,19 +339,22 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.router.navigate(['../'], { relativeTo: this.route })
   }
 
-  changeStep(number: number, formName?: string) {
-    this.stepper = number;
-    switch (formName) {
+  changeStep(event) {
+    this.stepper = event;
+    const formCtrl = this.stepperItems[event - 2]?.formName;
+
+    switch(formCtrl){
       case 'initialData':
-        const bodyInitial = this.jobForm.controls[formName].value;
+        const bodyInitial = this.jobForm.controls[formCtrl].value;
+        console.log(bodyInitial);
         this.jobFacade.saveInitialForm(bodyInitial);
         break;
       case 'jobInfo':
-        const bodyInfo = this.jobForm.controls[formName].value;
+        const bodyInfo = this.jobForm.controls[formCtrl].value;
         this.jobFacade.saveJobInfo(bodyInfo);
         break;
       case 'interview':
-        const bodyInterview = this.jobForm.controls[formName].value;
+        const bodyInterview = this.jobForm.controls[formCtrl].value;
         this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
         break;
     }
