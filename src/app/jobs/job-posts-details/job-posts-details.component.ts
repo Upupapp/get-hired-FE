@@ -15,7 +15,6 @@ export class JobPostsDetailsComponent implements OnInit {
   details$ = this.jobFacade.getJobById$;
   jobId: string;
 
-  
   public screenSize: number = 1600;
 
   constructor(

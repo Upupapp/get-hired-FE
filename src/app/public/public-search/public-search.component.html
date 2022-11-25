@@ -1,0 +1,57 @@
+<div class="container-fluid p-0" [ngClass]="loggedUser ? '' : ''">
+	<div class="row">
+		<div class="row text-white bg-banner col-12 col-lg-12">
+			<div class="col-12" style="z-index: 9; max-width: 1050px;"
+			[ngClass]="screenSize > 1500 ? ' col-lg-11' : 'col-lg-11'"
+			[@animate]="{value:'*', params:{ y:'10px', delay:'300ms' }}">
+				<div class="d-flex mt-3 py-3 px-3 bg-transparent">
+					<div class="me-3 " [ngClass]="loggedUser ? 'search-key-2' : 'search-key'">
+						<input type="text" class="form-control" placeholder="Enter keyword"
+						[(ngModel)]="keyword">
+					</div>
+
+					<div class="w-50 me-3" style="max-width: 150px">
+						<div >
+						    <select class="form-select" aria-label="Default select example"
+						    [(ngModel)]="work_setup">
+						      <option selected>Work Setup</option>
+						      <option value="remote">Remote</option>
+						      <option value="onsite">Onsite</option>
+						      <option value="hybrid">Hybrid</option>
+						    </select>
+						</div>
+					</div>
+
+					<div class="w-50 me-3" style="max-width: 150px">
+						<div >
+						    <select class="form-select" aria-label="Default select example"
+						    [(ngModel)]="job_type">
+						      <option selected>Job Type</option>
+						      <option value="part-time">Part-Time</option>
+						      <option value="full-time">Full-Time</option>
+						      <option value="freelance">Freelance</option>
+						    </select>
+						</div>
+					</div>
+
+					<div class="w-50" style="max-width: 480px">
+						<div >
+						    <button class="btn btn-find-jobs"
+						    (click)="findJobs()">Find Jobs</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<!-- JOB POSTS -->
+<div class="container-fluid mb-2">
+  <div class="mt-5 px-lg-5">
+    <app-job-posts-list [label]="'Jobs Search Result'"
+    [searchData]="jobSearch"
+    [subLabel]="'List of available jobs based on current search keywords'"></app-job-posts-list>
+  </div>
+</div>

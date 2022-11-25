@@ -11,10 +11,10 @@
 					<img src="/assets/images/placeholder/icons/{{badge?.icon}}"
 					[title]="badge?.name"
 					*ngFor="let badge of data?.badges"
-					style="width: 30px; " class="me-2">
+					style="width: 30px; cursor: ponter;" class="me-2">
 				</div>
 
-				<div>
+				<div style="margin-top: -6px">
 					<h5 class="title-job-title">{{data?.jobTitle}}</h5>
 					<p class="title-company">{{data?.companyName}}</p>
 				</div>
@@ -58,7 +58,7 @@
 	</div>
 
 	<div class="w-100 mt-1">
-		<button class="btn btn-primary d-block w-100 hvr-bob"
+		<button class="btn btn-primary d-block w-100"
 		(click)="applyNow(data)">Apply Now</button>
 	</div>
 
