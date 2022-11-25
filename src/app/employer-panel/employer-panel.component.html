@@ -12,8 +12,7 @@
       </div>
 
       <div id="sub-company-component"
-      *ngIf="withCompany && path != '/recruiter'"
-      [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+      *ngIf="withCompany && path != '/recruiter'">
         <router-outlet></router-outlet>
       </div>
     </div>
