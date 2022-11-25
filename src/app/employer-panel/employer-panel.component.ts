@@ -29,12 +29,11 @@ export class EmployerPanelComponent implements OnInit {
     private router: Router
   ) {
     this.path = this.router.url;
-   }
+  }
 
   ngOnInit(): void {
     console.log(this.path);
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
   }
-
 }

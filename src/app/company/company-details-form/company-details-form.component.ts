@@ -157,6 +157,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     } else if (event == 'updated') {
+      this.updateLocalStorage();
+
       this.snackBar.open(`Company successfully Updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
@@ -164,9 +166,10 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  async updateLocalStorage() {
-    const user  = await this.asyncLocalStorage.getItem('user');
-    this.asyncLocalStorage.setItem('user', JSON.stringify({
+  updateLocalStorage() {
+    const user  = localStorage.getItem('user');
+    localStorage.removeItem('user');
+    localStorage.setItem('user', JSON.stringify({
       ...JSON.parse(user),
       companyName: this.companyDetailsForm.get('companyName').value
     }));
