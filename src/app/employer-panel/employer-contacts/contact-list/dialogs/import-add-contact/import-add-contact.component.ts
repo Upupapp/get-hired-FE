@@ -182,6 +182,8 @@ export class ImportAddContactComponent implements OnInit {
     return headerArray;
   }
 
+  public fileData: any;
+
   //Upload listener
   uploadListener($event: any): void {
     let text = [];
@@ -189,6 +191,7 @@ export class ImportAddContactComponent implements OnInit {
 
     if (this.isValidCSVFile(files[0])) {
       this.document= files[0].name;
+      this.fileData = files[0];
 
       let input = $event.target;
       let reader = new FileReader();

@@ -1,13 +1,31 @@
 <div class="employee-container ">
 	<div class="card"
 	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
-		<div class="employee-details w-100">
+		<!-- <div class="employee-details w-100">
 			<h4 class="employee-title">
 				Add New Contact
 
 				<button class="btn btn-import-csv"
 				(click)="importContact = true">CSV <img src="/assets/images/placeholder/icons/import-csv.png" style="width: 20px" class="ms-2"></button>
 			</h4>
+		</div> -->
+
+		<div class="employee-details row">
+			<div class="col-12 col-md-6 px-0">
+				<button class="btn btn-add w-100" 
+				[ngClass]="importContact ? 'inactive' : ''"
+				(click)="importContact = false">
+					New Contact
+				</button>
+			</div>
+
+			<div class="col-12 col-md-6 px-0">
+				<button class="btn btn-add w-100"
+				[ngClass]="!importContact ? 'inactive' : ''"
+				(click)="importContact = true">
+					Import Contact
+				</button>
+			</div>
 		</div>
 
 		<ng-container *ngIf="!submitting">
@@ -15,26 +33,31 @@
 			style="position: relative;" 
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 				<div class="row pt-4" *ngIf="importContact">
-					<div class="col-12 col-md-10 offset-md-1 col-lg-10 offset-lg-1 mb-4">
+					<div class="col-12 col-md-12 text-start mb-2">
 						<h4 class="title-add">Uploading CSV file</h4>
-						<h5 class="title-description">Add new team member by uploading .csv file</h5>
+						<h5 class="title-description">Add new contact by uploading .csv file. You can <a href="../../../../../../../assets/files/import-contact.csv" download="import-contact.csv">download the Ttemplate</a> here for reference</h5>
 					</div>
 				</div>
 
 				<ng-container *ngIf="!importContact && !importing">
 					<!-- Error Message -->
-					<form class="px-3"
+					<form class="px-3" 
+					[@animate]="{value:'*', params:{ x:'-10px', delay:'200ms' }}"
 					[formGroup]="contactForm">
-						<div class="form-group mt-3">
-							<label class="mb-2">First Name *</label>
-							<input type="text" class="form-control" formControlName="firstName" name="firstName">
+						<h5 class="title-add text-start">Contact Details</h5>
+						<h5 class="title-description text-start">Provide the contact details necessary for the person you want to invite</h5>
+						<div class="row">
+							<div class="col-12 col-md-6 form-group mt-3">
+								<label class="mb-2">First Name <i class="text-danger">*</i></label>
+								<input type="text" class="form-control" formControlName="firstName" name="firstName">
+							</div>
+							<div class="col-12 col-md-6 form-group mt-3">
+								<label class="mb-2">Last Name <i class="text-danger">*</i></label>
+								<input type="text" class="form-control" formControlName="lastName" name="lastName">
+							</div>
 						</div>
 						<div class="form-group mt-3">
-							<label class="mb-2">Last Name *</label>
-							<input type="text" class="form-control" formControlName="lastName" name="lastName">
-						</div>
-						<div class="form-group mt-3">
-							<label class="mb-2">Email address *</label>
+							<label class="mb-2">Email address <i class="text-danger">*</i></label>
 							<input type="email" class="form-control" formControlName="email" name="email">
 						</div>
 
@@ -48,26 +71,29 @@
 							<input type="email" class="form-control" formControlName="address" name="email">
 						</div>
 
-						<select class="form-select mt-3" formControlName="jobId">
-							<option selected disabled hidden value="">Job ID *</option>
-							<ng-container *ngFor="let item of jobList; let i = index">
-								<option [value]="item.jobId">{{item.jobId}}</option>
-							</ng-container>
-						</select>
-
 						<div class="form-group mt-3">
-							<label class="mb-2">Group *</label>
+							<label class="mb-2">Job Id <i class="text-danger">*</i></label>
+							<select class="form-select" formControlName="jobId">
+								<option selected disabled hidden value="">Select Job Id </option>
+								<ng-container *ngFor="let item of jobList; let i = index">
+									<option [value]="item.jobId">{{item.jobId}}</option>
+								</ng-container>
+							</select>
+						</div>
+
+						<div class="form-group mt-4">
+							<label class="mb-2">Group <i class="text-danger">*</i></label>
 							<input type="email" class="form-control" formControlName="group" name="email">
 						</div>
 
 						<div class="mt-4">
-							<div style="position: relative;" class="mt-2 d-flex">
+							<div style="position: relative;" class="mt-2 text-center">
 								<button type="button" 
-								class="btn w-50 me-3 btn-default invite-other hvr-grow" 
+								class="btn me-3 btn-default " 
 								(click)="dialogRef.close()">Close </button>
 
 								<button type="button" 
-								class="btn w-50 me-1 btn-alert invite-other hvr-grow" 
+								class="btn me-1 btn-primary" 
 								(click)="submitForm()" [disabled]="!contactForm.valid">Add 
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
@@ -81,13 +107,72 @@
 					style="min-height:50px" 
 					>
 					<div>
-						<a href="../../../../../../../assets/files/import-contact.csv" download="import-contact.csv">Download Template</a>
 						<div class="card-body" *ngIf="!uploadedFile">
 							<input type="file" #csvReader hidden name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
-							<button  (click)="csvReader.click()" class="btn upload">Choose File</button>
-							<div class="upload">
-								<div class="upload--name"  *ngIf="document">{{document}}</div>
-								<button class="btn upload" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading">Upload
+
+							<!-- <app-file-upload-document
+							(upload)="uploadListener($event)"
+							label="Upload CSV"
+							[singleLine]="true"></app-file-upload-document> -->
+
+							<!-- <button (click)="csvReader.click()" class="btn upload btn-primary">Choose File</button> -->
+
+							<div class="uploader-container">
+								<div class="row">
+								    <div class="col-8 text-start">
+								        <h6>Choose File</h6>
+								        <span>We accept: <span class="text-document">CSV File Only</span></span> 
+								    </div>
+
+								    <div class="col-4">
+								        <button type="button" class="btn btn-uploader"
+								        [disabled]="document"
+								        (click)="csvReader.click()">Browse Files</button>
+								    </div>
+								</div>
+							</div>
+
+							<div class="upload mt-2">
+								<!-- <div class="upload--name" *ngIf="document">
+									{{document}}
+								</div> -->
+
+								<div class="preview-file mt-4">
+								    <h5 class="title-preview">Preview File</h5>
+								    <div class="mb-3 p-3">
+								        <div class="d-flex file">
+								            <div class="img-circle me-3">
+								                <img src="/assets/images/placeholder/icons/document-upload.png" width="40px">
+								            </div>
+
+								            <div class="w-100 mt-2">
+								                <div>
+								                    <div class="document-uploaded truncate">{{fileData?.name}}
+
+								                    </div>
+								                    
+
+								                    <img src="/assets/images/placeholder/icons/remove-gray.png" height="15px" *ngIf="fileData"
+								                    class="float-end" (click)="removeDocument()">
+
+								                    <div class="float-end me-2" 
+								                    *ngIf="fileData"
+								                    style="margin-top: -21px;">
+								                        {{(fileData?.size * 0.000001)?.toFixed(1) }} 
+								                        MB/50 MB
+								                    </div>
+								                </div>
+								                <div class="progress mt-2">
+								                    <div class="progress-bar" role="progressbar" 
+								                    [ngStyle]="{ width: (((uploadedFile?.size * 0.000001) / 50) * 100) + '%' }"
+								                    style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								                </div>
+								            </div>
+								        </div>
+								    </div>
+								</div>
+
+								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading">Upload
 									<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>
