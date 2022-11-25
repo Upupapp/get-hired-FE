@@ -1,9 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileDetailsComponent } from './profile-details/profile-details.component';
+
 import { DetailsComponent } from './profile-details/components/details/details.component';
 import { AvatarComponent } from './profile-details/components/avatar/avatar.component';
 import { ProfileFormComponent } from './profile-form/profile-form.component';
+import { SharedModule } from '@app-shared/shared.module';
+import { ProfileDetailsComponent } from './profile-details/profile-details.component';
+import { ProfileDetailsFormComponent } from './profile-form/components/profile-details-form/profile-details-form.component';
+import { FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
+
 
 
 
@@ -12,11 +17,15 @@ import { ProfileFormComponent } from './profile-form/profile-form.component';
     ProfileDetailsComponent,
     DetailsComponent,
     AvatarComponent,
-    ProfileFormComponent
+    ProfileFormComponent,
+    ProfileDetailsFormComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule
   ],
-  exports:[ProfileDetailsComponent]
+  exports:[ProfileDetailsComponent, ProfileFormComponent],
+  providers:[FormGroupDirective]
 })
 export class ApplicantModule { }

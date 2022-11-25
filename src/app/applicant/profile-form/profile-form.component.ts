@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApplicantFacade } from '../state/applicant.facade';
 
 @Component({
   selector: 'app-profile-form',
@@ -32,7 +33,8 @@ export class ProfileFormComponent implements OnInit {
   profileForm: FormGroup;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private applicantFacade: ApplicantFacade
   ) { }
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class ProfileFormComponent implements OnInit {
   initializedForm() {
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
-        profilePhotoFile: [null],
+        profilePhoto: [null],
         jobTitle: [null],
         shortBio: [null],
         servicesProvided: [null],
@@ -57,7 +59,7 @@ export class ProfileFormComponent implements OnInit {
         address: [null],
         contactNumber: [null, Validators.required],
         city: [null, Validators.required],
-        country: [null, Validators.required],
+        country: [null, Validators.required]
       }),
       profileArraysForm: this.fb.group({
 
@@ -68,8 +70,24 @@ export class ProfileFormComponent implements OnInit {
     });
   }
 
-  changeStep(step: number): void {
+  changeStep(step: number, formName?: string): void {
     this.stepper = step;
+
+    switch (formName) {
+      case 'profileDetailsForm':
+        const bodyInitial = this.profileForm.controls[formName].value;
+        this.applicantFacade.setInitialForm(bodyInitial);
+        // this.jobFacade.saveInitialForm(bodyInitial);
+        break;
+      case 'profileArraysForm':
+        const bodyInfo = this.profileForm.controls[formName].value;
+        // this.jobFacade.saveJobInfo(bodyInfo);
+        break;
+      case 'profileDocuments':
+        const bodyInterview = this.profileForm.controls[formName].value;
+        // this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
+        break;
+    }
   }
 
 }

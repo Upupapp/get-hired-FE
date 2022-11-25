@@ -1,26 +1,26 @@
-<!-- <div class="p-4"></div>
+<div class="p-4"></div>
 <div class="bg-gray">
-	<div style="position: relative;">
-		<div class="bg-upper-gray">
-			<app-main-stepper
-			[stepper]="stepper"
-			[stepperItems]="stepperItems"
-			(changeStepper)="changeStep($event)"></app-main-stepper>
+  <div style="position: relative;">
+    <div class="bg-upper-gray">
+      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+      </app-main-stepper>
+    </div>
 
-		</div>
+    <form [formGroup]="profileForm">
+    <div class="p-4" style="margin-top: 10px;">
+      <ng-container *ngIf="stepper === 1">
+        <app-profile-details-form
+        formGroupName="profileDetailsForm"></app-profile-details-form>
+      </ng-container>
 
-		<div class="p-4" style="margin-top: 10px;">
-			<ng-container *ngIf="stepper === 1">
-				<app-profile-details></app-profile-details>
-			</ng-container>
+      <ng-container *ngIf="stepper === 2">
+        <!-- <app-experience-qualification></app-experience-qualification> -->
+      </ng-container>
 
-			<ng-container *ngIf="stepper === 2">
-				<app-experience-qualification></app-experience-qualification>
-			</ng-container>
-
-			<ng-container *ngIf="stepper === 3">
-				<app-documents></app-documents>
-			</ng-container>
-		</div>
-	</div>
-</div> -->
+      <ng-container *ngIf="stepper === 3">
+        <!-- <app-documents></app-documents> -->
+      </ng-container>
+    </div>
+    </form>
+  </div>
+</div>

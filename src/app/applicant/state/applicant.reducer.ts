@@ -14,6 +14,8 @@ export interface ApplicantState {
   error: any;
   succesMsg: '';
   loading: boolean;
+  initialDetails: Model.InitialDetails;
+
   // industry: Model.Options[];
   // badge: Model.Options[];
   // applicantRole: Model.Options[];
@@ -29,33 +31,12 @@ export interface ApplicantState {
 }
 
 const initialState: ApplicantState = {
-  selected: {
-    applicantId: '',
-    firstName: '',
-    lastName: '',
-    photoUrl: '',
-    videoCVUrl: '',
-    jobTitle: '',
-    rating: 0,
-    workSetupName: '', // Full time etc.
-    email: '',
-    address: '',
-    contactNumber: '',
-
-    shortBio: '',
-    servicesProvided: '',
-    skills: [],
-    documents: [],
-    jobTypeId: 0,
-    jobLevelId: 0,
-    jobSetupId: 0,
-    salaryMinimum: 0,
-    salaryMaximum: 0,
-  },
+  selected: null,
   list: [],
   error: null,
   succesMsg: null,
   loading: false,
+  initialDetails: null
   // industry: [],
   // badge: [],
   // applicantRole: [],
@@ -92,6 +73,12 @@ export const applicantReducer = createReducer<ApplicantState>(
       loading: false,
       error: action.payload,
       succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.setInitialDetails, (state, action): ApplicantState => {
+    return {
+      ...state,
+      initialDetails: action.initialDetails
     };
   })
 );

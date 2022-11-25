@@ -6,11 +6,10 @@ export interface Applicant {
   videoCVUrl: string;
   jobTitle: string;
   rating: number;
-  workSetupName: string; // Full time etc.
+  workSetupName: string;
   email: string;
   address: string;
   contactNumber: string;
-
   shortBio: string;
   servicesProvided: string;
   workExperience?: WorkExperience;
@@ -67,4 +66,23 @@ export interface Certifications {
   endMonth: string;
   endYear: number;
   details: string;
+}
+
+export interface InitialDetails {
+  profilePhoto: string;
+  profilePhotoFile: File;
+  jobTitle: string;
+  shortBio: string;
+  servicesProvided: string;
+  jobTypeId: number;
+  jobLevelId: number;
+  workSetupId: number;
+  salaryMinimum: number;
+  salaryMaximum: number;
+  firstName: string;
+  lastName: string;
+  address: string;
+  contactNumber: string;
+  city: string;
+  country: string;
 }

@@ -7,6 +7,10 @@ enum AllFeatureActionTypes {
   GetApplicantSuccess = '[applicant] -Get Applicant Success',
   GetApplicantFail = '[applicant] - Get Applicant Fail',
 
+  SetInitialDetails = '[applicant] - Set Initial Details',
+  SetProfileArrays = '[applicant] - Set Initial Details',
+  SetProfileDocuments = '[applicant] - Set Profile Documents'
+
   // GetIndustryList = '[applicant] - Get Industry List',
   // GetIndustryListSuccess = '[applicant] - Get Industry List Success',
   // GetIndustryListFail = '[applicant] - Get Industry List Fail',
@@ -70,6 +74,11 @@ export const getApplicantSuccess = createAction(
 export const getApplicantFail = createAction(
   AllFeatureActionTypes.GetApplicantFail,
   props<{ payload: any }>()
+);
+
+export const setInitialDetails = createAction(
+  AllFeatureActionTypes.GetApplicant,
+  props<{ initialDetails: Model.InitialDetails}>()
 );
 
 // export const resetApplicantForm = createAction(

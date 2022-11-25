@@ -10,6 +10,7 @@ import * as InterviewModel from '@main/interview/interview.model';
 export class ApplicantFacade {
   loading$ = this.store.pipe(select(fromfeature.loading));
   applicantDetails$ = this.store.pipe(select(fromfeature.getApplicantById));
+
   // applicantList$ = this.store.pipe(select(fromfeature.getApplicantList));
   // success$ = this.store.pipe(select(fromfeature.success));
   // industry$ = this.store.pipe(select(fromfeature.getIndustryList));
@@ -20,7 +21,7 @@ export class ApplicantFacade {
   // level$ = this.store.pipe(select(fromfeature.getLevelList));
   // category$ = this.store.pipe(select(fromfeature.getCategoryList));
 
-  // initial$ = this.store.pipe(select(fromfeature.getIntialDetails));
+  initial$ = this.store.pipe(select(fromfeature.getInitialDetails));
   // info$ = this.store.pipe(select(fromfeature.getApplicantInfo));
   // interview$ = this.store.pipe(select(fromfeature.getApplicantInterview));
   // getApplicantById$ = this.store.pipe(select(fromfeature.getApplicantById));
@@ -33,6 +34,9 @@ export class ApplicantFacade {
     this.store.dispatch(ApplicantAction.getApplicant({ applicantId }));
   }
 
+  setInitialForm(initialDetails: Model.InitialDetails) {
+    this.store.dispatch(ApplicantAction.setInitialDetails({ initialDetails }));
+  }
   // getAllApplicant() {
   //   this.store.dispatch(ApplicantAction.getAllapplicant());
   // }

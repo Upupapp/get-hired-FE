@@ -10,7 +10,10 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 export class ProfileDetailsComponent implements OnInit {
   @Input() userId: string;
 
-  constructor() { }
+
+  constructor(
+
+  ) { }
 
   ngOnInit(): void {
     if(this.userId) {

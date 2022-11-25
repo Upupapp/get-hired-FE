@@ -6,7 +6,8 @@ import { ApplicantModule } from '@main/applicant/applicant.module';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'details', component: ApplicantProfileDetailsComponent }
+  { path: 'details', component: ApplicantProfileDetailsComponent },
+  { path: 'edit', component: ApplicantProfileFormComponent }
 ]
 
 const exportedComponents = [
