@@ -11,6 +11,7 @@ import { JobsModule } from '@main/jobs/jobs.module';
 import { PublicListComponent } from './public-list/public-list.component';
 import { PublicDetailsComponent } from './public-details/public-details.component';
 import { JobFacade } from '@app-job/state/job.facade';
+import { PublicSearchComponent } from './public-search/public-search.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
     children: [
       { path: 'jobs/details/:id', component: PublicDetailsComponent },
       { path: 'jobs', component: PublicListComponent },
+      { path: 'jobs/search/:keyword', component: PublicSearchComponent },
       {
         path: 'companies',
         loadChildren: () => import('@main/companies/companies.module').then(m => m.CompaniesModule),
@@ -34,7 +36,8 @@ const routes: Routes = [
     BannerComponent,
     ExploreUsersComponent,
     PublicListComponent,
-    PublicDetailsComponent
+    PublicDetailsComponent,
+    PublicSearchComponent
   ],
   imports: [
     CommonModule,

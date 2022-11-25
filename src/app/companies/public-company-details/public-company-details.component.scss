@@ -23,10 +23,12 @@
 	position: relative;
 	//background: #c9c9c9;
 	.company-logo{
+		//padding: 10px;
+		background: gray;
+		border-radius: 5px;
 		height: 100px;
 		margin-bottom: 15px;
-		border-radius: 8px;
-		//margin-left: 15px !important;
+		margin-left: 20px !important;
 	}
 
 	.bg-details{
@@ -39,16 +41,16 @@
 		background-color: linear-gradient(96.52deg, #F85B4B -3.5%, #F85B4B 44.54%, #F85B4B 128.45%) !important;
 		border-radius: 16px;
 		position: relative;
-		min-height: 360px;
+		min-height: 340px;
 	}
 
 	.card-transparent{
 		padding: 20px;
 		border-radius: 16px;
-		background: rgba(255, 255, 255, 0.7);
+		background: rgba(255, 255, 255, 0.8);
 		backdrop-filter: blur(2px);
 		/* Note: backdrop-filter has minimal browser support */
-		min-height: 380px;
+		min-height: 340px;
 		border-radius: 25px;
 	}
 
@@ -75,8 +77,8 @@
 
 	.title-company-description{
 		font-style: normal;
-		font-weight: 600;
-		font-size: 32px;
+		font-weight: 500;
+		font-size: 29px;
 		line-height: 32px;
 		/* or 111% */
 
@@ -88,7 +90,7 @@
 	.btn-review{
 		background: #FF7062;
 		border-radius: 10px;
-		color: white;
+		color: white; 
 		border-radius: 6px;
 		padding: 10px 25px;
 		margin-top: 10px;
@@ -106,4 +108,8 @@
 
 		color: #A9A9A9;
 	}
+}
+
+.dropdown-item{
+	cursor: pointer !important;
 }

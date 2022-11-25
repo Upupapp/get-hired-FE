@@ -18,7 +18,7 @@ export class PublicCompanyDetailsComponent implements OnInit {
   public firstSentence: string;
   public bannerImage: any = undefined;
   public bannerEdit: boolean = false;
-  public bannerHeight: number;
+  public bannerHeight: number = 0;
 
   details$ = this.companiesFacade.companyDetails$;
 
@@ -36,9 +36,29 @@ export class PublicCompanyDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.companiesFacade.getCompany(this.companyId);
-    let banner_sub_id = document.getElementById('bg-details');
-    let bannerHeight = banner_sub_id?.offsetHeight + 65;
-    this.bannerHeight = bannerHeight;
+    
+    if(this.companyId){
+      
+    }
+  }
+
+  getDetails(){
+    this.details$.subscribe((result) => {
+      if(result){
+        let banner_sub_id = document.getElementById('banner-details');
+        
+        if(banner_sub_id){
+          let bannerHeight = banner_sub_id?.offsetHeight;
+          this.bannerHeight = bannerHeight;
+        }
+      }
+    })
+  }
+
+  ngAfterViewInit(){
+    setTimeout(() => {
+      this.getDetails()
+    }, 1000)
   }
 
   getShareableLink() {
@@ -47,7 +67,6 @@ export class PublicCompanyDetailsComponent implements OnInit {
       duration: 4000,
       panelClass: 'success-snackbar'
     });
-
   }
 
 }

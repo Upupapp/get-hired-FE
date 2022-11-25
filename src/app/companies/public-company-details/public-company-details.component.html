@@ -1,10 +1,12 @@
 <div class="p-4 px-lg-5">
   <h5 class="title-main ms-4 mt-3">Company Details</h5>
-
+  
   <div class="p-lg-3" *ngIf="details$ | async as details">
     <section class="mb-4">
 
-      <div class="main-banner" [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+      <div class="main-banner" 
+      [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}"
+      style="min-height: 350px;">
         <div class="float-end" style="margin-top: -40px;">
           <div class="d-flex">
             <img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
@@ -17,16 +19,15 @@
           </div>
         </div>
 
-        <img [src]="details.companyBanner  ? details.companyBanner : '/assets/images/placeholder/job-post-banner.png'"
-          class="banner-image-main" [ngStyle]="{ 'height': bannerHeight + 'px' }" />
+        <img [src]="details.companyBanner ? details.companyBanner : '/assets/images/placeholder/job-post-banner.png'" class="banner-image-main" [ngStyle]="{ 'height': bannerHeight ? bannerHeight + 'px' : '370px' }" />
 
-        <div class="row bg-details" id="bg-details">
+        <div class="row bg-details" [id]="details ? 'banner-details' : ''">
           <div class="col-12 col-lg-12">
             <div class="card-transparent align-items-center justify-content-center d-flex flex-column text-center">
 
-              <img [src]="details.companyLogoUrl" class="company-logo">
+              <img [src]="details.companyLogoUrl" class="company-logo mt-3">
               <div class="row">
-                <div class="col-12 col-lg-10 offset-lg-1">
+                <div class="col-12 col-lg-12 offset-lg-1">
                   <h5 class="title-company">
                     {{details?.companyName}} ({{details?.companyIndustry}})
                   </h5>
@@ -37,7 +38,7 @@
                     {{ details?.numberOfEmployee}} Employees
                   </p>
 
-                  <div class="px-lg-5">
+                  <div class="px-lg-2">
                     <h5 class="title-company-description">
                       {{details?.companyDetails}}
                     </h5>

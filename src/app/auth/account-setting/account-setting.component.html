@@ -1,6 +1,6 @@
 <form [formGroup]="profileDetailsForm" (ngSubmit)="onSubmit()">
   <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-    <button class="btn btn-save me-2">Submit Changes</button>
+    <button class="btn btn-save me-2" (click)="changePw()">Submit Changes</button>
   </div>
 
   <div class="card card-body mt-3">
@@ -44,7 +44,7 @@
 
           <div class="container-input flex-wrap">
             <input type="password" class="form-control" placeholder="***********">
-            <button  (click)="changePw()" type="button" class="btn btn-primary float-end">Change</button>
+            <!-- <button  (click)="changePw()" type="button" class="btn btn-primary float-end">Change</button> -->
           </div>
         </div>
       </div>

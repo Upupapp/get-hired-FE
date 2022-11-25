@@ -21,7 +21,7 @@ import { StorePublicModule } from './shared/store/store.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     FormsModule,
