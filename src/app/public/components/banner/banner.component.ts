@@ -47,7 +47,7 @@ export class BannerComponent implements OnInit, OnDestroy {
     let work_setup = this.work_setup !== 'Work Setup' ? init_route.concat(`/${this.work_setup?.toLowerCase()}`) : init_route;
     let job_type = this.job_type !== 'Job Type' ? work_setup.concat(`/${this.job_type?.toLowerCase()}`) : work_setup;
 
-    if(this.keyword){
+    /*if(this.keyword){
       console.log(job_type)
       this.router.navigate([job_type]);
     }
@@ -58,7 +58,17 @@ export class BannerComponent implements OnInit, OnDestroy {
       job_type = this.job_type !== 'Job Type' ? work_setup.concat(`/${this.job_type?.toLowerCase()}`) : work_setup;
 
       this.router.navigate([job_type]);
-    }
+    }*/
+
+    let job_search_data = {
+      keyword: this.keyword,  
+      work_setup: this.work_setup,  
+      job_type: this.job_type
+    };
+
+    sessionStorage.setItem('job-search', JSON.stringify(job_search_data));
+
+    console.log(job_search_data)
 
   }
 }
