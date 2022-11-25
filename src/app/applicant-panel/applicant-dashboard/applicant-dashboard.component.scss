@@ -1,0 +1,25 @@
+.alert {
+  position: fixed;
+  top: 0;
+  right: 0.5rem;
+  border: 2px solid #ff7062;
+  border-radius: 0.3rem;
+  padding: 2rem;
+  background: #fff;
+  color: #ff7062;
+  box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+  opacity: 0;
+  z-index: 999;
+  button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
+    border: none;
+  }
+}
+.visible {
+  opacity: 0.85;
+  transform: translateY(1.25rem);
+}

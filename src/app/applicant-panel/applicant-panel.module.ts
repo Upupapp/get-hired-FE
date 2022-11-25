@@ -9,6 +9,11 @@ import { ApplicantSidebarComponent } from './applicant-sidebar/applicant-sidebar
 import { ApplicantSettingsComponent } from './applicant-settings/applicant-settings.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { AuthModule } from '@main/auth/auth.module';
+import { StoreModule } from '@ngrx/store';
+import { applicantReducer } from '@main/applicant/state/applicant.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { ApplicantEffects } from '@main/applicant/state/applicant.effects';
+import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 
 const routes: Routes = [
   {
@@ -17,33 +22,41 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./applicant-dashboard/applicant-dashboard.module')
-          .then(m => m.ApplicantDashboardModule)
+        loadChildren: () =>
+          import('./applicant-dashboard/applicant-dashboard.module').then(
+            (m) => m.ApplicantDashboardModule
+          ),
       },
       {
         path: 'profile',
-        loadChildren: () => import('./applicant-profile/applicant-profile.module').then(m => m.ApplicantProfileModule),
+        loadChildren: () =>
+          import('./applicant-profile/applicant-profile.module').then(
+            (m) => m.ApplicantProfileModule
+          ),
       },
       {
-        path: 'settings', component: ApplicantSettingsComponent
+        path: 'settings',
+        component: ApplicantSettingsComponent,
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
-  }
-]
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
+];
 
 @NgModule({
   declarations: [
     ApplicantPanelComponent,
     ApplicantSidebarComponent,
-    ApplicantSettingsComponent
+    ApplicantSettingsComponent,
   ],
   imports: [
     CommonModule,
     CoreModule,
-    // AuthModule,
-    RouterModule.forChild(routes)
+    AuthModule,
+    RouterModule.forChild(routes),
+    StoreModule.forFeature('Applicant', applicantReducer),
+    EffectsModule.forFeature([ApplicantEffects]),
   ],
-  providers: [AuthFacade]
+  providers: [AuthFacade, ApplicantFacade, ApplicantEffects],
 })
-export class ApplicantPanelModule { }
+export class ApplicantPanelModule {}
