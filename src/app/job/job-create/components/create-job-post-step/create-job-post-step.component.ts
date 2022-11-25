@@ -17,8 +17,8 @@ export class CreateJobPostStepComponent implements OnInit {
   industry$ = this.jobFacade.industry$;
   jobRoles$ = this.jobFacade.jobRole$;
 
-  jobSkills: FormArray;
-  jobTags: FormArray;
+  skills: FormArray;
+  tags: FormArray;
   jobInfoForm: FormGroup;
 
   public search: string = "";
@@ -82,8 +82,8 @@ export class CreateJobPostStepComponent implements OnInit {
     this.jobFacade.getIndustry();
     this.jobFacade.getJobRole();
     this.jobInfoForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-    this.jobSkills = this.jobInfoForm.get('jobSkills') as FormArray;
-    this.jobTags = this.jobInfoForm.get('jobTags') as FormArray;
+    this.skills = this.jobInfoForm.get('skills') as FormArray;
+    this.tags = this.jobInfoForm.get('tags') as FormArray;
     this.selectedRates = this.jobInfoForm.get('rate').value;
 
     window.scrollTo({

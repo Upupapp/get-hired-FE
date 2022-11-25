@@ -32,18 +32,18 @@
         <label>Add Skill for your job to see relavant talent</label>
 
         <div class="form-group d-flex with-add search-group">
-          <input type="text" name="skills" class="form-control form-control-main" placeholder="ex. Data Encoding, Ruby, JavaScript" (keyup.enter)="addItem('jobSkillsTxt', this.jobSkills)"
+          <input type="text" name="skills" class="form-control form-control-main" placeholder="ex. Data Encoding, Ruby, JavaScript" (keyup.enter)="addItem('jobSkillsTxt', this.skills)"
             formControlName="jobSkillsTxt">
-          <button class="btn btn-add-now" (click)="addItem('jobSkillsTxt', this.jobSkills)">
+          <button class="btn btn-add-now" (click)="addItem('jobSkillsTxt', this.skills)">
             Add
           </button>
         </div>
 
-        <div class="d-flex flex-wrap" *ngIf="jobSkills && jobSkills.controls.length > 0">
-          <ng-container *ngFor="let item of jobSkills.controls; let i =index">
+        <div class="d-flex flex-wrap" *ngIf="skills && skills.controls.length > 0">
+          <ng-container *ngFor="let item of skills.controls; let i =index">
             <div class="flex-wrap me-3 talent-badge">{{item.value}}
               <img src="/assets/images/placeholder/icons/remove-white.png" style="height: 10px; margin-top: -3px"
-                class="ms-2" (click)="removeItem(i, this.jobSkills)">
+                class="ms-2" (click)="removeItem(i, this.skills)">
             </div>
           </ng-container>
         </div>
@@ -56,18 +56,18 @@
         <label>Add tags for others to identify your job post easily</label>
 
         <div class="form-group d-flex with-add search-group">
-          <input type="text" name="tags" class="form-control form-control-main" placeholder="ex. Software, Angular Project, JavaScript" (keyup.enter)="addItem('jobTagsTxt', this.jobTags)"
+          <input type="text" name="tags" class="form-control form-control-main" placeholder="ex. Software, Angular Project, JavaScript" (keyup.enter)="addItem('jobTagsTxt', this.tags)"
             formControlName="jobTagsTxt">
-          <button class="btn btn-add-now" (click)="addItem('jobTagsTxt', this.jobTags)">
+          <button class="btn btn-add-now" (click)="addItem('jobTagsTxt', this.tags)">
             Add
           </button>
         </div>
 
-        <div class="d-flex flex-wrap" *ngIf="jobTags && jobTags.controls.length > 0">
-          <ng-container *ngFor="let item of jobTags.controls; let i = index">
+        <div class="d-flex flex-wrap" *ngIf="tags && tags.controls.length > 0">
+          <ng-container *ngFor="let item of tags.controls; let i = index">
             <div class="flex-wrap me-3 talent-badge">{{item.value}}
               <img src="/assets/images/placeholder/icons/remove-white.png" style="height: 10px; margin-top: -3px"
-                class="ms-2" (click)="removeItem(i, this.jobTags)">
+                class="ms-2" (click)="removeItem(i, this.tags)">
             </div>
           </ng-container>
         </div>

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
@@ -130,9 +130,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       jobInfo: this.fb.group({
         industryId: [data ? data.industryId : null],
         jobRoleId: [data ? data.jobRoleId : null],
-        jobSkills: new FormArray([]),
+        skills: new FormArray([]),
         jobSkillsTxt: [data ? data.jobSkillsTxt : null],
-        jobTags: new FormArray([]),
+        tags: new FormArray([]),
         jobTagsTxt: [data ? data.jobTagsTxt : null],
         rate: [data ? data.rate : null],
         salaryMinimum: [data ? data.salaryMinimum : null],
@@ -141,7 +141,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         // contractEnd: DetailedDate;
       }),
       interview: this.fb.group({
-        interviewQuestions: data ? data.interviewQuestions : new FormArray([])
+        interviewQuestions: new FormArray([])
       })
     });
 
@@ -165,9 +165,29 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       }));
 
     //set form array
-    // if(data.hasOwnProperty('bannerFile') &&  data?.bannerFile.length > 0){
-    //   this.jobForm.controls.initialData.get('bannerFile').setValue(data.bannerFile);
-    // }
+    let badges = this.jobForm.controls.initialData.get('badges') as FormArray;
+    if(data.hasOwnProperty('badges') &&  data?.badges.length > 0){
+      data?.badges.forEach(element => {
+        badges.push(
+          new FormGroup({
+            icon: new FormControl(element.icon),
+            name: new FormControl(element.name),
+            id: new FormControl(element.id)
+          }));
+      });
+    }
+
+    let goodToHave = this.jobForm.controls.initialData.get('goodToHave') as FormArray;
+    if(data.hasOwnProperty('goodToHave') &&  data?.goodToHave.length > 0){
+      data?.goodToHave.forEach(element => {
+        goodToHave.push(
+          new FormGroup({
+            icon: new FormControl(element.icon),
+            name: new FormControl(element.name),
+            id: new FormControl(element.id)
+          }));
+      });
+    }
 
     // if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
     //   this.jobForm.controls.initialData.get('requirements').setValue(data.requirements);
@@ -284,7 +304,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       badges: initialData.value ? this.formatBadgesGetId(initialData.value.badges) : [],
       interviewQuestions,
       companyId: JSON.parse(user).companyId,
-      jobStatusId: status
+      jobStatusId: status,
+      jobId: this.jobId
     };
   }
 
@@ -294,7 +315,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
-      this.router.navigate(['../list'], { relativeTo: this.route });
+      this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'published') {
       this.snackBar.open(`Job successfully published`, '', {
         duration: 4000,
