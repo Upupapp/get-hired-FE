@@ -1,7 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { 
+  Component,
+  OnInit,
+  Output,
+  Input,
+  EventEmitter,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy 
+} from '@angular/core';
+import { 
+  Router, 
+  ActivatedRoute 
+} from '@angular/router';
 import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -15,11 +28,24 @@ export class HeaderComponent implements OnInit {
   userRole = localStorage.getItem('role');
   initials: string;
 
+  public req: Subscription;
+  public location: any;
+
   constructor(
     private coreService: CoreService,
     private router: Router,
     private appFacade: AppFacade
   ) {
+    this.req = this.router.events.subscribe((event: any) => {
+      this.location = this.router.url;
+
+      // scroll to top every page change
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    });
   }
 
   ngOnInit(): void {
