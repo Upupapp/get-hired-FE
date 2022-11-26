@@ -302,22 +302,28 @@ export class JobEffects {
 
   getInitialDetailsOfJob(job: Model.Job): Model.InitialDetails {
     return {
-      // jobTitle: job.jobTitle,
-      // jobTypeId?: job.jobTypeId,
-      // jobLevelId?: job.jobLevelId
-      // workSetupId?: job.workSetupId
-      // jobAddress?: string;
-      // jobCity?: string;
-      // jobCountry?: string;
-      // jobBanner?: string;
-      // bannerFile?: File;
-      // badges: Options[];
-      // jobDescription?: string;
-      // jobDuties?: string;
-      // requirements?: string[];
-      // goodToHave?: string[];
-      // educationalBackground?: string[];
-      // jobCategoryId?: number;
+       jobTitle: job.jobTitle,
+       jobTypeId: job.jobTypeId,
+       jobLevelId: job.jobLevelId,
+       workSetupId: job.workSetupId,
+       jobAddress: job.jobAddress,
+       jobCity: job.jobCity,
+       jobCountry: job.jobCountry,
+       jobBanner: job.jobBanner,
+       bannerFile: job.bannerFile,
+       badges: job.badges,
+       jobDescription: job.jobDescription,
+       jobDuties: job.jobDuties,
+       requirements: job.requirements,
+       goodToHave: job.goodToHave,
+       educationalBackground: job.educationalBackground,
+       jobCategorjobyId: job.jobCategorjobyId
     }
   }
+
+//getJobInfo(job:Model.Job):Model.JobInfo {
+   // industryId: job.industryId,
+   // jobRoleId: job.jobRoleId,
+
+ // }
 }
