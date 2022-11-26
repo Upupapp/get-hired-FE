@@ -17,19 +17,19 @@ export class CreateJobPostStepComponent implements OnInit {
   public job_role: any[] = job_role;
   public rates: any[] = [
     {
-      title: "Monthly",  
+      title: "Monthly",
       rate: "month",
       icon: '/rate-monthly'
     },
 
     {
-      title: "Daily",  
+      title: "Daily",
       rate: "day",
       icon: '/rate-daily'
     },
 
     {
-      title: "Hourly",  
+      title: "Hourly",
       rate: "hour",
       icon: '/rate-24'
     },
@@ -41,7 +41,7 @@ export class CreateJobPostStepComponent implements OnInit {
   public selectedJobRole: any = "";
   public selectedRates: any = "";
   public budget: any = {
-    min: 0,  
+    min: 0,
     max: 0
   }
   public project_duration = {
@@ -49,16 +49,16 @@ export class CreateJobPostStepComponent implements OnInit {
     end_date: new Date()
   }
 
-  public skillModel: string = "";  
+  public skillModel: string = "";
   public tagModel: string = "";
   public months: string[] = [
-    "January",  
-    "February",  
+    "January",
+    "February",
     "March",
     "April",
     "May",
-    "June",  
-    "July",  
+    "June",
+    "July",
     "August",
     "September",
     "October",
@@ -76,7 +76,6 @@ export class CreateJobPostStepComponent implements OnInit {
       left: 0,
       behavior: 'smooth'
     });
-    console.log(this.jobPostIndustry)
   }
 
   generateProjectDuration(date){
@@ -98,7 +97,7 @@ export class CreateJobPostStepComponent implements OnInit {
   removeItem(item, arrayItem, field){
     let index = arrayItem?.findIndex(el => el?.id === item?.id);
     arrayItem.splice(index, 1);
-    
+
     // rebuild request body
     this.rebuildObject(`${field}`, arrayItem);
   }

@@ -1,4 +1,4 @@
-import { 
+import {
   Component,
   OnInit,
   Output,
@@ -6,11 +6,11 @@ import {
   EventEmitter,
   ViewChild,
   AfterViewInit,
-  OnDestroy 
+  OnDestroy
 } from '@angular/core';
-import { 
-  Router, 
-  ActivatedRoute 
+import {
+  Router,
+  ActivatedRoute
 } from '@angular/router';
 import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
@@ -49,7 +49,6 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.isUserLoggedIn);
     if (this.user) {
       this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
     }

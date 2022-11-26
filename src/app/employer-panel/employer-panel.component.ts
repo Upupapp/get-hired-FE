@@ -32,7 +32,6 @@ export class EmployerPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.path);
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
   }

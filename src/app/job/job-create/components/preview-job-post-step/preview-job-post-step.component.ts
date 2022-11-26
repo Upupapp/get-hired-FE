@@ -53,6 +53,7 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
         bannerPosition: this.dragPosition
       }
 
+      console.log('PREVIEW: ');
       console.log(this.preview)
 
     });

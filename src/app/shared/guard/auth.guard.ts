@@ -53,7 +53,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
 
   async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
     const logged = await this.asyncLocalStorage.getItem('state');
-    console.log(logged);
 
     if (logged == 'true') {
       const userRole = await this.coreService.getRole();
@@ -62,7 +61,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
       }
       return true;
     } else {
-      console.log('wala ako');
       this.snackBar.open(`You are not Authorized to access that page. Please Login first`,
         '', { duration: 4000, panelClass: ['danger-snackbar'] });
       this.router.navigateByUrl('/signin');

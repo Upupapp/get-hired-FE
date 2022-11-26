@@ -5,7 +5,8 @@ import {
 import {
   catchError,
   map,
-  mergeMap
+  mergeMap,
+  switchMap
 } from 'rxjs/operators';
 import {
   Actions,
@@ -281,9 +282,14 @@ export class JobEffects {
       ofType(JobActions.getJob),
       mergeMap((action) => this.jobService.getJobById(action.jobId)
         .pipe(
-          map((res: any) => {
+          switchMap((res: any) => {
             const job: Model.Job = res.data;
-            return JobActions.getJobSuccess({ job });
+            return [
+              JobActions.getJobSuccess({ job }),
+              JobActions.setJobInitialDetails({
+                initialDetails: this.getInitialDetailsOfJob(job)
+              })
+            ];
           }),
           catchError((err) => {
             const { error } = err.error;
@@ -293,4 +299,25 @@ export class JobEffects {
       )
     );
   });
+
+  getInitialDetailsOfJob(job: Model.Job): Model.InitialDetails {
+    return {
+      // jobTitle: job.jobTitle,
+      // jobTypeId?: job.jobTypeId,
+      // jobLevelId?: job.jobLevelId
+      // workSetupId?: job.workSetupId
+      // jobAddress?: string;
+      // jobCity?: string;
+      // jobCountry?: string;
+      // jobBanner?: string;
+      // bannerFile?: File;
+      // badges: Options[];
+      // jobDescription?: string;
+      // jobDuties?: string;
+      // requirements?: string[];
+      // goodToHave?: string[];
+      // educationalBackground?: string[];
+      // jobCategoryId?: number;
+    }
+  }
 }

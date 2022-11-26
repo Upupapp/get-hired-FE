@@ -105,8 +105,6 @@ export class TableControlModalComponent implements OnInit {
   }
 
   openControlMenu(menu: any){
-    console.log(menu, this.data)
-
     if(menu?.id === 'view-job'){
       this.dialogRef.close();
       this.router.navigate([`/recruiter/jobs/view`], {

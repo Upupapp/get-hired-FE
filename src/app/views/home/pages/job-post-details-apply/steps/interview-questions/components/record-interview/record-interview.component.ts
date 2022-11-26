@@ -25,7 +25,7 @@ export class RecordInterviewComponent implements OnInit {
 
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   public interview_questions: any[] = [
-    "How long have you been using Angular?", 
+    "How long have you been using Angular?",
     "Have you use ngRx/ngsx and rxJS before?",
     "Are you available for short term or long term?",
     "Describe your previous project and experience",
@@ -45,15 +45,13 @@ export class RecordInterviewComponent implements OnInit {
   public display: any = '00:00';
   public timer_value: number = 0;
 
-  constructor(public router: Router,  
+  constructor(public router: Router,
     private dialog: MatDialog,
-    public route: ActivatedRoute) { 
-    console.log(this.data)
-  }
+    public route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.interview_questions = [...this.interview_questions].filter(el => el !== this.question);
-    
+
   }
 
   getQuestionIndex(question){
@@ -61,22 +59,21 @@ export class RecordInterviewComponent implements OnInit {
   }
 
   startRecorder(){
-    this.startRecording = true; 
+    this.startRecording = true;
     this.startTimer();
   }
 
   stopRecorder(){
     this.pauseTimer();
     this.startRecording = false;
-    this.timer_value = 0;  
+    this.timer_value = 0;
     this.display = '00:00';
     this.recordedData = 'TEST';
     clearInterval(this.timer_value);
   }
 
-  
+
   startTimer() {
-    console.log("=====>");
     this.interval = setInterval(() => {
       if (this.time === 0) {
         this.time++;

@@ -18,32 +18,32 @@ export class JobPostDetailStepComponent implements OnInit {
   public badges: any[] = [
     {
       id: "career-growth",
-      title: "Career Growth",  
-      logo: "badge-1.png"
-    }, 
-    {
-      id: "performance-incentive",
-      title: "Performance Incentive",  
+      title: "Career Growth",
       logo: "badge-1.png"
     },
     {
-      id: "benefit-package", 
-      title: "Benefit Package", 
+      id: "performance-incentive",
+      title: "Performance Incentive",
+      logo: "badge-1.png"
+    },
+    {
+      id: "benefit-package",
+      title: "Benefit Package",
       logo: "badge-2.png"
     },
     {
-      id: "gender-equality", 
-      title: "Gender Equality", 
+      id: "gender-equality",
+      title: "Gender Equality",
       logo: "badge-3.png"
     },
     {
-      id:"work-life-balance", 
-      title: "Work-life Balance", 
+      id:"work-life-balance",
+      title: "Work-life Balance",
       logo: "badge-2.png"
     },
     {
-      id:"friendly-environment", 
-      title: "Friendly Environment", 
+      id:"friendly-environment",
+      title: "Friendly Environment",
       logo: "badge-3.png"
     },
     {
@@ -56,63 +56,63 @@ export class JobPostDetailStepComponent implements OnInit {
   public categories: any[] = [
     {
       id: 1,
-      title: 'Technology',  
-      skills: 100,  
+      title: 'Technology',
+      skills: 100,
       rating: 4.2,
       banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
     {
       id: 2,
-      title: 'Sales & Marketing',  
-      skills: 154,  
+      title: 'Sales & Marketing',
+      skills: 154,
       rating: 4.6,
       banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
       id: 3,
-      title: 'Development & Marketing',  
-      skills: 98,  
+      title: 'Development & Marketing',
+      skills: 98,
       rating: 4.1,
       banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
       id: 4,
-      title: 'Architecture',  
-      skills: 144,  
+      title: 'Architecture',
+      skills: 144,
       rating: 4.7,
       banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
       id: 5,
-      title: 'Software Engineering',  
-      skills: 255,  
+      title: 'Software Engineering',
+      skills: 255,
       rating: 4.7,
       banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
       id: 6,
-      title: 'Database Architecture',  
-      skills: 117,  
+      title: 'Database Architecture',
+      skills: 117,
       rating: 4.4,
       banner_thumbnail: '/assets/images/placeholder/industry-1.png'
     },
 
     {
       id: 7,
-      title: 'Civil Engineering',  
-      skills: 224,  
+      title: 'Civil Engineering',
+      skills: 224,
       rating: 4.5,
       banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
 
     {
       id: 8,
-      title: 'Virtual Assistant',  
-      skills: 89,  
+      title: 'Virtual Assistant',
+      skills: 89,
       rating: 4.1,
       banner_thumbnail: '/assets/images/placeholder/industry-2.png'
     },
@@ -131,7 +131,7 @@ export class JobPostDetailStepComponent implements OnInit {
   public educationRequirementsModel: string = ""
   public otherRequirementsModel: string = ""
   public job_level: string = "";
-  
+
   constructor() { }
 
   ngOnInit(): void {
@@ -144,8 +144,6 @@ export class JobPostDetailStepComponent implements OnInit {
 
   addBadge(item){
     let index = this.badgeSelected?.findIndex(el => el?.id === item?.id);
-
-    console.log(index)
 
     if(index === -1){
       this.badgeSelected.push(item);
