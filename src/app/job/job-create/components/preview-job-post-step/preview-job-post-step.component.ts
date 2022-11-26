@@ -118,10 +118,7 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
   }
 
   getFilteredArray(array, id: number) {
-    console.log(array);
-    console.log(id);
     const filteredArray = array.filter(option => option.id == id);
-    console.log(filteredArray);
     const name = filteredArray[0].name;
     return name;
   }

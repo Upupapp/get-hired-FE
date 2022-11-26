@@ -286,8 +286,46 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if(this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
     } else {
-      this.snackBar.open(`Job not ready to be Published`, '', {
-        duration: 4000,
+      let missingJob = '';
+
+      if(!job.jobTypeId) {
+        missingJob += 'job type ';
+      }
+
+      if(!job.jobLevelId) {
+        missingJob += 'job level ';
+      }
+
+      if(job.jobCity == "") {
+        missingJob += 'job city ';
+      }
+
+      if(job.jobCountry == "") {
+        missingJob += 'job jobCountry ';
+      }
+
+      if(job.jobDescription == "") {
+        missingJob += 'job Description ';
+      }
+
+      if(!job.workSetupId) {
+        missingJob += 'Work Setup Id ';
+      }
+
+      if(job.interviewQuestions.length == 0) {
+        missingJob += 'Interview Questions ';
+      }
+
+      if(!job.bannerFile[0]) {
+        missingJob += 'Job Banner ';
+      }
+
+      if(job.companyId == '') {
+        missingJob += 'Company Id ';
+      }
+
+      this.snackBar.open(`Job not ready to be Published. Missing: ${missingJob}`, '', {
+        duration: 5000,
         panelClass: ['success-snackbar'],
       });
     }
