@@ -38,6 +38,7 @@ export interface Job {
   companyCountry?: string;
   companyLogoUrl?: string;
   companyDetails?: string;
+  companyRating?: number;
   numberOfEmployee?: string;
   jobCategoryId?: number;
 }

@@ -3,6 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { environment } from "@environments/environment";
+import { catchError, of, Subscription, tap } from 'rxjs';
+import { JobsService } from '../jobs.service';
 
 @Component({
   selector: 'app-job-posts-details',
@@ -13,6 +18,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 export class JobPostsDetailsComponent implements OnInit {
   @Input() withBanner: boolean = true;
   details$ = this.jobFacade.getJobById$;
+  link$: Subscription;
   jobId: string;
 
   public screenSize: number = 1600;
@@ -20,7 +26,10 @@ export class JobPostsDetailsComponent implements OnInit {
   constructor(
     private jobFacade: JobFacade,
     private route: ActivatedRoute,
-    public location: Location
+    public location: Location,
+    private clipboard: Clipboard,
+    private snackBar: MatSnackBar,
+    private jobsService: JobsService
   ) {
     this.jobId = this.route.snapshot.params['id']
   }
@@ -34,9 +43,33 @@ export class JobPostsDetailsComponent implements OnInit {
     this.screenSize = window.innerWidth;
   }
 
-
-  goBack(){
+  goBack() {
     this.location.back();
+  }
+
+  getShareableLink(jobId: string) {
+    this.link$ = this.jobsService.getShareableLink(jobId)
+      .pipe(
+        tap(res => {
+          if(res.data) {
+            console.log(res.data);
+            this.clipboard.copy(res.data)
+            this.snackBar.open(`Link copied to your clipboard`, '', {
+              duration: 4000,
+              panelClass: 'success-snackbar'
+            });
+          }
+        }),
+        catchError(err => of(err))
+      ).subscribe();
+
+  }
+
+  ngOnDestroy(): void {
+    if(this.link$) {
+      this.link$.unsubscribe();
+    }
+
   }
 
 }

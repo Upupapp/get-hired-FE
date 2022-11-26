@@ -31,9 +31,12 @@
           </div>
         </div>
 
-        <div class="col-3 text-end">
-          <div class="mb-3">
-            <button class="btn btn-save-draft" (click)="goBack()">Back</button>
+        <div class="col-3">
+          <div class="d-flex mb-3">
+            <!-- <button class="btn btn-apply-now w-100">Apply now</button> -->
+
+            <img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2" style="height: 45px; cursor: pointer;"
+            (click)="getShareableLink(selectedJobPost.jobId)">
           </div>
         </div>
 

@@ -19,4 +19,8 @@ export class JobsService {
     return this.baseService.get<Model.BasicJob[]>(`${this.jobUrl}/published${params}`);
   }
 
+  getShareableLink(jobId: string) {
+    return this.baseService.get<any>(`${this.jobUrl}/sharelink?id=${jobId}`);
+  }
+
 }
