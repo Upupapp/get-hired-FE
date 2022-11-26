@@ -96,9 +96,7 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
         .pipe().subscribe(this.assignToArray.bind(this, 'levels')));
   }
 
-  assignToArray(arrayName, options) {
-    console.log(arrayName);
-    console.log(options);
+  assignToArray(arrayName: string, options) {
     switch (arrayName) {
       case 'industries':
         this.industries = options;
@@ -140,8 +138,6 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     }
 
     const filteredArray = chosenArray.filter(option => option.id == id);
-    console.log(filteredArray);
-
     const name = filteredArray[0].name;
     return name;
 

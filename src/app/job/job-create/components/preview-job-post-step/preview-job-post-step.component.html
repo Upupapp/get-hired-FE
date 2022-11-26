@@ -8,11 +8,11 @@
     <div class="banner-container">
       <div class="bg-opacity" style="height:360px; overflow: hidden;
 			background: #c9c9c9; border-radius: 7px; position: relative;">
-        <img *ngIf="!(preview?.bannerFile[0]?.file || preview.jobBanner)"
+        <img *ngIf="!(preview.jobBanner || preview?.bannerFile[0]?.file)"
           src="assets/images/placeholder/job-post-banner.png" class="banner-image">
 
-        <img *ngIf="(preview?.bannerFile[0]?.file || preview.jobBanner)"
-          [src]="preview?.bannerFile[0]?.file ? preview?.bannerFile[0]?.file: preview.jobBanner" id="banner-source-file"
+        <img *ngIf="(preview.jobBanner || preview?.bannerFile[0]?.file)"
+          [src]="preview?.bannerFile ? preview?.bannerFile[0]?.file: preview.jobBanner" id="banner-source-file"
           cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
           class="banner-image">
 

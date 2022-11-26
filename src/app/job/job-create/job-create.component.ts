@@ -398,6 +398,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.stepper = event;
     const formCtrl = this.stepperItems[event - 2]?.formName;
 
+    if(event == 4) {
+      this.jobFacade.getIndustry();
+      this.jobFacade.getJobRole();
+    }
+
     switch (formCtrl) {
       case 'initialData':
         const bodyInitial = this.jobForm.controls[formCtrl].value;
