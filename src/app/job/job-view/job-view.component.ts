@@ -27,16 +27,12 @@ export class JobViewComponent implements OnInit {
   public screenSize: number = 1600;
   public companyLists: Company[] = companyLists;
   public listView: boolean = false;
-  public selectedJobPost: any;
+  // public selectedJobPost: any;
   public selectedCompany: Company;
   public jobId: any;
 
-  editJob$ = this.jobFacade.getJobById$
-  .pipe(
-    map(job => {
-      return (job)
-    })
-  );
+  job$ = this.jobFacade.getJobById$;
+
   loading$ = this.jobFacade.getJobLoading$
   .pipe().subscribe(this.onLoad.bind(this));
 
@@ -54,12 +50,6 @@ export class JobViewComponent implements OnInit {
     if(this.jobId){
       this.getJobById();
     }
-
-    this.editJob$.subscribe((data: any) => {
-      if(data){
-        this.selectedJobPost = data;
-      }
-    })
 
     window.scrollTo({
       top: 0,
