@@ -1,4 +1,4 @@
-<!-- <section class="mt-4 px-4">
+<section class="mt-4 px-4" *ngIf="profile$ | async as profile; else noProfile">
 	<div class="ps-2 mb-3"
 	[@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
 
@@ -26,11 +26,13 @@
 			</div>
 		</div>
 	</div>
-</section> -->
-
-<section class="text-center p-5">
-  <h5>Update your profile to show case your skills</h5>
-  <button class="btn btn-save-later me-3 hvr-grow">
-    Update Profile</button>
 </section>
 
+<ng-template #noProfile>
+  <section class="text-center p-5 w-100">
+    <img src="assets/images/showcase.png" class="w-25" />
+    <h5 class="my-2">Update your profile to showcase your skills</h5>
+    <button class="btn btn-primary me-3 hvr-grow" (click)="redirectToEdit()">
+      Update Profile</button>
+  </section>
+</ng-template>

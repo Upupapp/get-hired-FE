@@ -86,3 +86,9 @@ export interface InitialDetails {
   city: string;
   country: string;
 }
+
+export interface Options {
+  id: number;
+  name: string;
+  icon?: string;
+}

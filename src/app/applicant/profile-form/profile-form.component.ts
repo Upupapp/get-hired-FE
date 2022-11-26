@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { distinctUntilChanged, Subscription } from 'rxjs';
 import { ApplicantFacade } from '../state/applicant.facade';
 
 @Component({
@@ -8,29 +9,32 @@ import { ApplicantFacade } from '../state/applicant.facade';
   styleUrls: ['./profile-form.component.scss']
 })
 export class ProfileFormComponent implements OnInit {
+  profileForm: FormGroup;
+  subscriptions$ = new Subscription();
+
   public stepperItems: any[] = [
     {
       id: 1,
       title: "Profile Details",
-      valid: true
-    },
+      formName: 'profileDetailsForm'
 
+    },
     {
       id: 2,
       title: "Skills and Experience",
-      valid: true
-    },
+      disabled: true,
+      formName: 'initialData'
 
+    },
     {
       id: 3,
       title: "Documents",
-      valid: true
+      disabled: true,
+      formName: ''
     },
   ];
 
   public stepper: number = 1;
-
-  profileForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -42,9 +46,12 @@ export class ProfileFormComponent implements OnInit {
   }
 
   initializedForm() {
+    const user = JSON.parse(localStorage.getItem('user'));
+
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
         profilePhoto: [null],
+        profilePhotoFile: new FormArray([]),
         jobTitle: [null],
         shortBio: [null],
         servicesProvided: [null],
@@ -53,9 +60,8 @@ export class ProfileFormComponent implements OnInit {
         workSetupId: [null],
         salaryMinimum: [null],
         salaryMaximum: [null],
-        firstName: [null, Validators.required],
-        lastName: [null, Validators.required],
-        // email: [{ value: '', disabled: true }, Validators.required],
+        firstName: [user.firstName, Validators.required],
+        lastName: [user.lastName, Validators.required],
         address: [null],
         contactNumber: [null, Validators.required],
         city: [null, Validators.required],
@@ -68,6 +74,12 @@ export class ProfileFormComponent implements OnInit {
 
       })
     });
+
+    this.subscriptions$.add(
+      this.profileForm.controls.profileDetailsForm.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
+        this.stepperItems[1].disabled = status != 'VALID'
+
+      }));
   }
 
   changeStep(step: number, formName?: string): void {
@@ -77,7 +89,6 @@ export class ProfileFormComponent implements OnInit {
       case 'profileDetailsForm':
         const bodyInitial = this.profileForm.controls[formName].value;
         this.applicantFacade.setInitialForm(bodyInitial);
-        // this.jobFacade.saveInitialForm(bodyInitial);
         break;
       case 'profileArraysForm':
         const bodyInfo = this.profileForm.controls[formName].value;
@@ -88,6 +99,12 @@ export class ProfileFormComponent implements OnInit {
         // this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
         break;
     }
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.subscriptions$.unsubscribe();
   }
 
 }

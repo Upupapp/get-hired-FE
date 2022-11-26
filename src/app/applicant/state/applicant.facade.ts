@@ -16,9 +16,9 @@ export class ApplicantFacade {
   // industry$ = this.store.pipe(select(fromfeature.getIndustryList));
   // badge$ = this.store.pipe(select(fromfeature.getBadgeList));
   // applicantRole$ = this.store.pipe(select(fromfeature.getApplicantRoleList));
-  // setup$ = this.store.pipe(select(fromfeature.getSetupList));
-  // typeList$ = this.store.pipe(select(fromfeature.getTypeList));
-  // level$ = this.store.pipe(select(fromfeature.getLevelList));
+  setup$ = this.store.pipe(select(fromfeature.getSetupList));
+  typeList$ = this.store.pipe(select(fromfeature.getTypeList));
+  level$ = this.store.pipe(select(fromfeature.getLevelList));
   // category$ = this.store.pipe(select(fromfeature.getCategoryList));
 
   initial$ = this.store.pipe(select(fromfeature.getInitialDetails));
@@ -30,7 +30,7 @@ export class ApplicantFacade {
 
   constructor(private store: Store<State>) {}
 
-  getApplicantById(applicantId) {
+  getApplicantById(applicantId: string) {
     this.store.dispatch(ApplicantAction.getApplicant({ applicantId }));
   }
 
@@ -97,17 +97,17 @@ export class ApplicantFacade {
   //     this.store.dispatch(ApplicantAction.getApplicantRoleList());
   //   }
 
-  //   getLevel() {
-  //     this.store.dispatch(ApplicantAction.getLevelList());
-  //   }
+    getLevel() {
+      this.store.dispatch(ApplicantAction.getLevelList());
+    }
 
-  //   getSetup() {
-  //     this.store.dispatch(ApplicantAction.getSetupList());
-  //   }
+    getSetup() {
+      this.store.dispatch(ApplicantAction.getSetupList());
+    }
 
-  //   getType() {
-  //     this.store.dispatch(ApplicantAction.getTypeList());
-  //   }
+    getType() {
+      this.store.dispatch(ApplicantAction.getTypeList());
+    }
 
   //   // getfeatureList() {
 

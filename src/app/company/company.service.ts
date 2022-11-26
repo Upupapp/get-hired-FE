@@ -10,6 +10,7 @@ import * as Model from "./company.model";
 export class CompanyService {
 
   companyUrl = `${environment.api_url}/company`;
+  optionUrl = `${environment.api_url}/options`;
 
   constructor(
     private baseService: BaseService
@@ -43,7 +44,7 @@ export class CompanyService {
   }
 
   getSetupList() {
-    return this.baseService.get<Model.Options>(`${this.companyUrl}/setuplist`);
+    return this.baseService.get<Model.Options>(`${this.optionUrl}/setuplist`);
   }
 
   getIndustryList() {

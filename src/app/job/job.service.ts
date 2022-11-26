@@ -9,6 +9,7 @@ import * as Model from "./job.model";
 export class JobService {
 
   jobUrl = `${environment.api_url}/job`;
+  optionUrl = `${environment.api_url}/options`;
 
   constructor(
     private baseService: BaseService
@@ -53,15 +54,15 @@ export class JobService {
   }
 
   getSetupList() {
-    return this.baseService.get<Model.Options>(`${this.jobUrl}/setuplist`);
+    return this.baseService.get<Model.Options>(`${this.optionUrl}/setuplist`);
   }
 
   getTypeList() {
-    return this.baseService.get<Model.Options>(`${this.jobUrl}/type`);
+    return this.baseService.get<Model.Options>(`${this.optionUrl}/type`);
   }
 
   getLevelList(){
-    return this.baseService.get<Model.Options>(`${this.jobUrl}/levels`);
+    return this.baseService.get<Model.Options>(`${this.optionUrl}/levels`);
   }
 
   getCategoryList(){

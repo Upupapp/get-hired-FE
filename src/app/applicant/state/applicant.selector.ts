@@ -55,20 +55,20 @@ export const getInitialDetails = createSelector(
 //   state => state.applicantRole
 // );
 
-// export const getSetupList = createSelector(
-//   getApplicantInitState,
-//   state => state.setup
-// );
+export const getSetupList = createSelector(
+  getApplicantInitState,
+  state => state.setup
+);
 
-// export const getTypeList = createSelector(
-//   getApplicantInitState,
-//   state => state.typeList
-// );
+export const getTypeList = createSelector(
+  getApplicantInitState,
+  state => state.typeList
+);
 
-// export const getLevelList = createSelector(
-//   getApplicantInitState,
-//   state => state.level
-// );
+export const getLevelList = createSelector(
+  getApplicantInitState,
+  state => state.level
+);
 
 // export const getCategoryList = createSelector(
 //   getApplicantInitState,

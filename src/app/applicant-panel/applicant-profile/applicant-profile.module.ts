@@ -7,7 +7,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   { path: 'details', component: ApplicantProfileDetailsComponent },
-  { path: 'edit', component: ApplicantProfileFormComponent }
+  { path: 'edit', component: ApplicantProfileFormComponent },
+  { path: '', redirectTo: 'details', pathMatch: 'full' }
 ]
 
 const exportedComponents = [

@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -15,12 +16,12 @@ export class ProfileDetailsFormComponent implements OnInit {
 
   private req: Subscription;
 
-  profileDetailsForm!: FormGroup;
+  profileDetailsForm: FormGroup;
+  profileSelected: FormControl;
 
-  public workSetup: string[] = ["Hybrid", "Remote", "Onsite"];
-  public workSetupSelected: string = "";
-  public jobType: string[] = ["Full-time", "Part-time"];
-  public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
+  workSetup$ = this.applicantFacade.setup$;
+  typeList$ = this.applicantFacade.typeList$;
+  level$ = this.applicantFacade.level$;
 
   public title: string = '';
   public job_type: string = '';
@@ -31,33 +32,19 @@ export class ProfileDetailsFormComponent implements OnInit {
   constructor(
     private snackBar: MatSnackBar,
     private rootFormGroup: FormGroupDirective,
+    private applicantFacade: ApplicantFacade
   ) { }
 
   ngOnInit(): void {
-    // this.profileDetailsForm = this.formBuilder.group({
-    //   first_name: [''],
-    //   last_name: [''],
-    //   email: ['',/* [Validators.required]*/],
-    //   phone: [''],
-    //   address: [''],
-    //   city: [''],
-    //   country: [''],
-    //   profile_photo: [''],
-
-    //   current_job_title: [''],
-    //   job_type: [''],
-    //   work_setup: [''],
-    //   short_bio: [''],
-    //   level_of_experience: [''],
-    //   expected_salary_min: [0],
-    //   expected_salary_max: [0],
-    // });
+    this.applicantFacade.getType();
+    this.applicantFacade.getLevel();
+    this.applicantFacade.getSetup();
 
     this.profileDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
   }
 
   onUpload(file: any) {
     this.profileImage = file.file;
-    this.profileDetailsForm.controls['profile_photo'].setValue(file)
+    this.profileDetailsForm.controls['profilePhotoFile'].setValue(this.profileImage)
   }
 }

@@ -8,8 +8,11 @@ import { SharedModule } from '@app-shared/shared.module';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileDetailsFormComponent } from './profile-form/components/profile-details-form/profile-details-form.component';
 import { FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
-
-
+import { ApplicantFacade } from './state/applicant.facade';
+import { applicantReducer } from './state/applicant.reducer';
+import { ApplicantEffects } from './state/applicant.effects';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 
 
 @NgModule({
@@ -23,9 +26,11 @@ import { FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature('applicant', applicantReducer),
+    EffectsModule.forFeature([ApplicantEffects])
   ],
   exports:[ProfileDetailsComponent, ProfileFormComponent],
-  providers:[FormGroupDirective]
+  providers:[FormGroupDirective, ApplicantFacade]
 })
 export class ApplicantModule { }

@@ -11,7 +11,7 @@ export class ApplicantEffects {
   constructor(
     private applicantService: ApplicantService,
     private actions$: Actions
-  ) {}
+  ) { }
 
   // getAllApplicant$ = createEffect(() => {
   //   return this.actions$.pipe(
@@ -34,8 +34,8 @@ export class ApplicantEffects {
   getApplicantDetails$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ApplicantActions.getApplicant),
-      mergeMap((action) =>
-        this.applicantService.getApplicant(action.applicantId).pipe(
+      mergeMap((action) => this.applicantService.getApplicant(action.applicantId)
+        .pipe(
           map((res: any) => {
             const applicant: Model.Applicant = res.data;
             return ApplicantActions.getApplicantSuccess({ applicant });
@@ -211,59 +211,59 @@ export class ApplicantEffects {
   //     );
   //   });
 
-  //   setupList$ = createEffect(() => {
-  //     return this.actions$.pipe(
-  //       ofType(ApplicantActions.getSetupList),
-  //       mergeMap(() => this.applicantService.getSetupList()
-  //         .pipe(
-  //           map((res: any) => {
-  //             const setup: Model.Options[] = res.data;
-  //             return ApplicantActions.getSetupListSuccess({ setup });
-  //           }),
-  //           catchError((err) => {
-  //             const { error } = err.error;
-  //             return of(ApplicantActions.getSetupListFail({ payload: error }))
-  //           })
-  //         )
-  //       )
-  //     );
-  //   });
+    setupList$ = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(ApplicantActions.getSetupList),
+        mergeMap(() => this.applicantService.getSetupList()
+          .pipe(
+            map((res: any) => {
+              const setup: Model.Options[] = res.data;
+              return ApplicantActions.getSetupListSuccess({ setup });
+            }),
+            catchError((err) => {
+              const { error } = err.error;
+              return of(ApplicantActions.getSetupListFail({ payload: error }))
+            })
+          )
+        )
+      );
+    });
 
-  //   typeList$ = createEffect(() => {
-  //     return this.actions$.pipe(
-  //       ofType(ApplicantActions.getTypeList),
-  //       mergeMap(() => this.applicantService.getTypeList()
-  //         .pipe(
-  //           map((res: any) => {
-  //             const typeList: Model.Options[] = res.data;
-  //             return ApplicantActions.getTypeListSuccess({ typeList });
-  //           }),
-  //           catchError((err) => {
-  //             const { error } = err.error;
-  //             return of(ApplicantActions.getTypeListFail({ payload: error }))
-  //           })
-  //         )
-  //       )
-  //     );
-  //   });
+    typeList$ = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(ApplicantActions.getTypeList),
+        mergeMap(() => this.applicantService.getTypeList()
+          .pipe(
+            map((res: any) => {
+              const typeList: Model.Options[] = res.data;
+              return ApplicantActions.getTypeListSuccess({ typeList });
+            }),
+            catchError((err) => {
+              const { error } = err.error;
+              return of(ApplicantActions.getTypeListFail({ payload: error }))
+            })
+          )
+        )
+      );
+    });
 
-  //   levelList$ = createEffect(() => {
-  //     return this.actions$.pipe(
-  //       ofType(ApplicantActions.getLevelList),
-  //       mergeMap(() => this.applicantService.getLevelList()
-  //         .pipe(
-  //           map((res: any) => {
-  //             const level: Model.Options[] = res.data;
-  //             return ApplicantActions.getLevelListSuccess({ level });
-  //           }),
-  //           catchError((err) => {
-  //             const { error } = err.error;
-  //             return of(ApplicantActions.getLevelListFail({ payload: error }))
-  //           })
-  //         )
-  //       )
-  //     );
-  //   });
+    levelList$ = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(ApplicantActions.getLevelList),
+        mergeMap(() => this.applicantService.getLevelList()
+          .pipe(
+            map((res: any) => {
+              const level: Model.Options[] = res.data;
+              return ApplicantActions.getLevelListSuccess({ level });
+            }),
+            catchError((err) => {
+              const { error } = err.error;
+              return of(ApplicantActions.getLevelListFail({ payload: error }))
+            })
+          )
+        )
+      );
+    });
 
   //   getApplicant$ = createEffect(() => {
   //     return this.actions$.pipe(

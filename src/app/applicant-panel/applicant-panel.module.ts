@@ -52,7 +52,6 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CoreModule,
-    AuthModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature('Applicant', applicantReducer),
     EffectsModule.forFeature([ApplicantEffects]),

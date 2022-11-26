@@ -9,7 +9,7 @@ enum AllFeatureActionTypes {
 
   SetInitialDetails = '[applicant] - Set Initial Details',
   SetProfileArrays = '[applicant] - Set Initial Details',
-  SetProfileDocuments = '[applicant] - Set Profile Documents'
+  SetProfileDocuments = '[applicant] - Set Profile Documents',
 
   // GetIndustryList = '[applicant] - Get Industry List',
   // GetIndustryListSuccess = '[applicant] - Get Industry List Success',
@@ -27,17 +27,17 @@ enum AllFeatureActionTypes {
   // GetApplicantRoleListSuccess = '[applicant] - Get Applicant Role List Success',
   // GetApplicantRoleListFail = '[applicant] - Get Applicant Role List Fail',
 
-  // GetSetupList = '[applicant] - Get Setup List',
-  // GetSetupListSuccess = '[applicant] - Get Setup List Success',
-  // GetSetupListFail = '[applicant] - Get Setup List Fail',
+  GetSetupList = '[applicant] - Get Setup List',
+  GetSetupListSuccess = '[applicant] - Get Setup List Success',
+  GetSetupListFail = '[applicant] - Get Setup List Fail',
 
-  // GetTypeList = '[applicant] - Get Type List',
-  // GetTypeListSuccess = '[applicant] - Get Type List Success',
-  // GetTypeListFail = '[applicant] - Get Type List Fail',
+  GetTypeList = '[applicant] - Get Type List',
+  GetTypeListSuccess = '[applicant] - Get Type List Success',
+  GetTypeListFail = '[applicant] - Get Type List Fail',
 
-  // GetLevelList = '[applicant] - Get Level List',
-  // GetLevelListSuccess = '[applicant] - Get Level List Success',
-  // GetLevelListFail = '[applicant] - Get Level List Fail',
+  GetLevelList = '[applicant] - Get Level List',
+  GetLevelListSuccess = '[applicant] - Get Level List Success',
+  GetLevelListFail = '[applicant] - Get Level List Fail',
 
   // GetBasicApplicantList = '[applicant] - Get Basic Applicant List',
   // GetBasicApplicantListSuccess = '[applicant] - Get Basic Applicant List Success',
@@ -188,47 +188,47 @@ export const setInitialDetails = createAction(
 //   props<{ payload: any }>()
 // );
 
-// export const getSetupList = createAction(
-//   AllFeatureActionTypes.GetSetupList
-// );
+export const getSetupList = createAction(
+  AllFeatureActionTypes.GetSetupList
+);
 
-// export const getSetupListSuccess = createAction(
-//   AllFeatureActionTypes.GetSetupListSuccess,
-//   props<{ setup: Model.Options[] }>()
-// );
+export const getSetupListSuccess = createAction(
+  AllFeatureActionTypes.GetSetupListSuccess,
+  props<{ setup: Model.Options[] }>()
+);
 
-// export const getSetupListFail = createAction(
-//   AllFeatureActionTypes.GetSetupListFail,
-//   props<{ payload: any }>()
-// );
+export const getSetupListFail = createAction(
+  AllFeatureActionTypes.GetSetupListFail,
+  props<{ payload: any }>()
+);
 
-// export const getTypeList = createAction(
-//   AllFeatureActionTypes.GetTypeList
-// );
+export const getTypeList = createAction(
+  AllFeatureActionTypes.GetTypeList
+);
 
-// export const getTypeListSuccess = createAction(
-//   AllFeatureActionTypes.GetTypeListSuccess,
-//   props<{ typeList: Model.Options[] }>()
-// );
+export const getTypeListSuccess = createAction(
+  AllFeatureActionTypes.GetTypeListSuccess,
+  props<{ typeList: Model.Options[] }>()
+);
 
-// export const getTypeListFail = createAction(
-//   AllFeatureActionTypes.GetTypeListFail,
-//   props<{ payload: any }>()
-// );
+export const getTypeListFail = createAction(
+  AllFeatureActionTypes.GetTypeListFail,
+  props<{ payload: any }>()
+);
 
-// export const getLevelList = createAction(
-//   AllFeatureActionTypes.GetLevelList
-// );
+export const getLevelList = createAction(
+  AllFeatureActionTypes.GetLevelList
+);
 
-// export const getLevelListSuccess = createAction(
-//   AllFeatureActionTypes.GetLevelListSuccess,
-//   props<{ level: Model.Options[] }>()
-// );
+export const getLevelListSuccess = createAction(
+  AllFeatureActionTypes.GetLevelListSuccess,
+  props<{ level: Model.Options[] }>()
+);
 
-// export const getLevelListFail = createAction(
-//   AllFeatureActionTypes.GetLevelListFail,
-//   props<{ payload: any }>()
-// );
+export const getLevelListFail = createAction(
+  AllFeatureActionTypes.GetLevelListFail,
+  props<{ payload: any }>()
+);
 
 // export const getBasicApplicantList = createAction(
 //   AllFeatureActionTypes.GetBasicApplicantList,
