@@ -170,12 +170,13 @@
 
             <div class="form-group d-flex with-add search-group">
               <input type="text" name="search" class="form-control form-control-main" formControlName="requirementsTxt"
-                placeholder="ex, create custom material table, google sheet script">
+                placeholder="ex, create custom material table, google sheet script"
+                (keyup.enter)="addItem('requirementsTxt', this.requirements)">>
                 <button class="btn btn-add-now" (click)="addItem('requirementsTxt', this.requirements)">
                 Add
               </button>
 
-              <!-- <button class="btn btn-add-now" [disabled]="!requirementsTxt" 
+              <!-- <button class="btn btn-add-now" [disabled]="!requirementsTxt"
                 (click)="addItem(requirementsTxt, this.requirements)">Add
               </button> -->
             </div>
@@ -200,7 +201,8 @@
             <div class="form-group d-flex with-add search-group">
               <input type="text" name="search" class="form-control form-control-main"
                 placeholder="ex, computer science graduate, have atleast 2.5 GPA"
-                formControlName="educationalBackgroundTxt">
+                formControlName="educationalBackgroundTxt"
+                (keyup.enter)="addItem('educationalBackgroundTxt', this.educationalBackground)">
               <button class="btn btn-add-now" (click)="addItem('educationalBackgroundTxt', this.educationalBackground)">
                 Add
               </button>
@@ -227,7 +229,8 @@
 
             <div class="form-group d-flex with-add search-group">
               <input type="text" name="search" class="form-control form-control-main"
-                placeholder="ex, with driver's license, covid vaccine certification" formControlName="goodToHaveTxt">
+                placeholder="ex, with driver's license, covid vaccine certification" formControlName="goodToHaveTxt"
+                (keyup.enter)="addItem('goodToHaveTxt', this.goodToHave)">
               <button class="btn btn-add-now" (click)="addItem('goodToHaveTxt', this.goodToHave)">
                 Add
               </button>

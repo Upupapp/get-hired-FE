@@ -16,6 +16,7 @@ import {
 import * as JobActions from './job.actions';
 import * as Model from '../job.model';
 import { JobService } from '../job.service';
+import * as InterviewModel from '@main/interview/interview.model';
 
 @Injectable()
 export class JobEffects {
@@ -288,7 +289,9 @@ export class JobEffects {
               JobActions.getJobSuccess({ job }),
               JobActions.setJobInitialDetails({
                 initialDetails: this.getInitialDetailsOfJob(job)
-              })
+              }),
+              JobActions.setJobInfo({ jobInfo: this.getJobInfo(job) }),
+              JobActions.setInterview({ interview: job.interviewQuestions })
             ];
           }),
           catchError((err) => {
@@ -317,13 +320,21 @@ export class JobEffects {
        requirements: job.requirements,
        goodToHave: job.goodToHave,
        educationalBackground: job.educationalBackground,
-       jobCategorjobyId: job.jobCategorjobyId
+       jobCategoryId: job.jobCategoryId
     }
   }
 
-//getJobInfo(job:Model.Job):Model.JobInfo {
-   // industryId: job.industryId,
-   // jobRoleId: job.jobRoleId,
-
- // }
+getJobInfo(job:Model.Job):Model.JobInfo {
+  return {
+    industryId: job.industryId,
+    jobRoleId: job.jobRoleId,
+    skills: job.skills,
+    tags: job.tags,
+    rate: job.rate,
+    salaryMinimum: job.salaryMinimum,
+    salaryMaximum: job.salaryMaximum,
+    // contractStart
+    // contractEnd: DetailedDate;
+  }
+ }
 }

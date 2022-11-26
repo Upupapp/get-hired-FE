@@ -130,17 +130,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         requirements: new FormArray([]),
         goodToHave: new FormArray([]),
         educationalBackground: new FormArray([]),
-        requirementsTxt: [data ? data.requirementsTxt : null],
-        goodToHaveTxt: [data ? data.goodToHaveTxt : null],
-        educationalBackgroundTxt: [data ? data.educationalBackgroundTxt : null]
+        requirementsTxt: [null],
+        goodToHaveTxt: [null],
+        educationalBackgroundTxt: [null]
       }),
       jobInfo: this.fb.group({
         industryId: [data ? data.industryId : null],
         jobRoleId: [data ? data.jobRoleId : null],
         skills: new FormArray([]),
-        jobSkillsTxt: [data ? data.jobSkillsTxt : null],
+        jobSkillsTxt: [null],
         tags: new FormArray([]),
-        jobTagsTxt: [data ? data.jobTagsTxt : null],
+        jobTagsTxt: [null],
         rate: [data ? data.rate : null],
         salaryMinimum: [data ? data.salaryMinimum : null],
         salaryMaximum: [data ? data.salaryMaximum : null]
@@ -188,38 +188,49 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       let goodToHave = this.jobForm.controls.initialData.get('goodToHave') as FormArray;
       if (data.hasOwnProperty('goodToHave') && data?.goodToHave.length > 0) {
         data?.goodToHave.forEach(element => {
-          goodToHave.push(
-            new FormGroup({
-              icon: new FormControl(element.icon),
-              name: new FormControl(element.name),
-              id: new FormControl(element.id)
-            }));
+          goodToHave.push(new FormControl(element));
         });
       }
 
-      // if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
-      //   this.jobForm.controls.initialData.get('requirements').setValue(data.requirements);
-      // }
+      let requirements = this.jobForm.controls.initialData.get('requirements') as FormArray;
+      if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
+        data.requirements.forEach(element => {
+          requirements.push(new FormControl(element));
+        })
+      }
 
-      // if(data.hasOwnProperty('goodToHave') &&  data?.goodToHave.length > 0){
-      //   this.jobForm.controls.initialData.get('goodToHave').setValue(data.goodToHave);
-      // }
+      let educationalBackground = this.jobForm.controls.initialData.get('educationalBackground') as FormArray;
+      if(data.hasOwnProperty('educationalBackground') &&  data?.educationalBackground.length > 0){
+        data.educationalBackground.forEach(element => {
+          educationalBackground.push(new FormControl(element));
+        })
+      }
 
-      // if(data.hasOwnProperty('educationalBackground') &&  data?.educationalBackground.length > 0){
-      //   this.jobForm.controls.initialData.get('educationalBackground').setValue(data.educationalBackground);
-      // }
+      let skills = this.jobForm.controls.jobInfo.get('skills') as FormArray;
+      if(data.hasOwnProperty('skills') &&  data?.skills.length > 0){
+        data.skills.forEach(element => {
+          skills.push(new FormControl(element));
+        })
+      }
 
-      // if(data.hasOwnProperty('jobSkills') &&  data?.jobSkills.length > 0){
-      //   this.jobForm.controls.jobInfo.get('jobSkills').setValue(data.jobSkills);
-      // }
+      let tags = this.jobForm.controls.jobInfo.get('tags') as FormArray;
+      if(data.hasOwnProperty('tags') &&  data?.tags.length > 0){
+        data.tags.forEach(element => {
+          tags.push(new FormControl(element));
+        })
+      }
 
-      // if(data.hasOwnProperty('jobTags') &&  data?.jobTags.length > 0){
-      //   this.jobForm.controls.jobInfo.get('jobTags').setValue(data.jobTags);
-      // }
+      let interviewQuestions = this.jobForm.controls.interview.get('interviewQuestions') as FormArray;
+      if(data.hasOwnProperty('interviewQuestions') &&  data?.interviewQuestions.length > 0){
+        data.interviewQuestions.forEach(element => {
+          interviewQuestions.push(new FormGroup({
+            question: new FormControl(element.question),
+            answerDuration: new FormControl(element.answerDuration),
+            retakes: new FormControl(element?.retakes)
+          }));
+        })
+      }
 
-      // if(data.hasOwnProperty('interviewQuestions') &&  data?.interviewQuestions.length > 0){
-      //   this.jobForm.controls.interview.get('interviewQuestions').setValue(data.goodToHave);
-      // }
     }
 
     this.initial$ = this.jobFacade.initial$
@@ -248,7 +259,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
       this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
       this.jobForm.controls.initialData.get('bannerFile').setValue(raw.bannerFile);
-
     }
   }
 
@@ -256,8 +266,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (raw) {
       this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
       this.jobForm.controls.jobInfo.get('jobRoleId').setValue(raw.jobRoleId);
-      this.jobForm.controls.jobInfo.get('jobSkills').setValue(raw.jobSkills);
-      this.jobForm.controls.jobInfo.get('tags').setValue(raw.jobTags);
+      this.jobForm.controls.jobInfo.get('skills').setValue(raw.skills);
+      this.jobForm.controls.jobInfo.get('tags').setValue(raw.tags);
       this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
       this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
       this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);

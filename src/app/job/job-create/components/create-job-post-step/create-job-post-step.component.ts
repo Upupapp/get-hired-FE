@@ -82,7 +82,7 @@ export class CreateJobPostStepComponent implements OnInit {
     this.jobFacade.getIndustry();
     this.jobFacade.getJobRole();
     this.jobInfoForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-    this.skills = this.jobInfoForm.get('jobSkills') as FormArray;
+    this.skills = this.jobInfoForm.get('skills') as FormArray;
     this.tags = this.jobInfoForm.get('tags') as FormArray;
     this.selectedRates = this.jobInfoForm.get('rate').value;
 

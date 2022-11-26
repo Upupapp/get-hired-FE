@@ -46,8 +46,8 @@
         {{ preview.jobTitle }}
       </h5>
       <h5 class="title-label" *ngIf="preview.industryId">
-        {{ getFilteredArray(this.industries, preview.industryId) }}
-        <span class="mx-2" *ngIf="preview.jobRoleId">| {{ getFilteredArray(this.industries, preview.jobRoleId) }}
+        {{ getFilteredArray('industries', preview.industryId) }}
+        <span class="mx-2" *ngIf="preview.jobRoleId">| {{ getFilteredArray('roles', preview.jobRoleId) }}
         </span>
       </h5>
 
@@ -56,19 +56,19 @@
           <h5 class="d-flex title-details me-3 ms-1" *ngIf="preview.jobTypeId">
             <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2"
               style="width: 15px; height: 15px; margin-top: 4px;">
-            {{ getFilteredArray(this.types, preview.jobTypeId) }}
+            {{ getFilteredArray('types', preview.jobTypeId) }}
           </h5>
 
           <h5 class="d-flex title-details me-3" *ngIf="preview.workSetupId">
             <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2"
               style="width: 15px; height: 15px; margin-top: 4px;">
-            {{ getFilteredArray(this.setups, preview.workSetupId) }}
+            {{ getFilteredArray('setups', preview.workSetupId) }}
           </h5>
 
           <h5 class="d-flex title-details me-2" *ngIf="preview.jobLevelId">
             <img src="/assets/images/placeholder/icons/certification.png" class="me-1"
               style="width: 15px; height: 15px; margin-top: 2px;">
-            {{ getFilteredArray(this.levels, preview.jobLevelId)}}
+            {{ getFilteredArray('levels', preview.jobLevelId)}}
           </h5>
         </div>
 
@@ -128,8 +128,8 @@
             <strong>Skills & Experience</strong>
           </h5>
 
-          <ul *ngIf="preview.jobSkills && preview.jobSkills.length > 0; else emptyList">
-            <li *ngFor="let item of preview.jobSkills">
+          <ul *ngIf="preview.skills && preview.skills.length > 0; else emptyList">
+            <li *ngFor="let item of preview.skills">
               <h5 class="title-requirements">
                 {{item}}
               </h5>

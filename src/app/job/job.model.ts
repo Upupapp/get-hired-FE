@@ -30,7 +30,7 @@ export interface Job {
   goodToHave?: string[];
   educationalBackground?: string[];
   badges?: Options[];
-  jobSkills?: string[];
+  skills?: string[];
   tags?: string[];
   rate?: string;
   bannerPosition?: any;
@@ -39,6 +39,7 @@ export interface Job {
   companyLogoUrl?: string;
   companyDetails?: string;
   numberOfEmployee?: string;
+  jobCategoryId?: number;
 }
 
 export interface InitialDetails {
@@ -63,13 +64,13 @@ export interface InitialDetails {
 export interface JobInfo {
   industryId?: number;
   jobRoleId?: number;
-  jobSkills?: string[];
-  jobTags?: string[];
+  skills?: string[];
+  tags?: string[];
   rate?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
-  contractStart: DetailedDate;
-  contractEnd: DetailedDate;
+  contractStart?: DetailedDate;
+  contractEnd?: DetailedDate;
 }
 
 export interface DetailedDate {

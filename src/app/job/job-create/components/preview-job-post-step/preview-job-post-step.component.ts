@@ -118,10 +118,33 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     }
   }
 
-  getFilteredArray(array, id: number) {
-    const filteredArray = array.filter(option => option.id == id);
+  getFilteredArray(arrayName, id: number) {
+    let chosenArray = [];
+
+    switch(arrayName) {
+      case 'industries':
+        chosenArray = this.industries;
+        break;
+      case 'roles':
+        chosenArray = this.roles;
+        break;
+      case 'setups':
+        chosenArray = this.setups;
+        break;
+      case 'types':
+        chosenArray = this.types;
+        break;
+      case 'levels':
+        chosenArray = this.levels;
+        break;
+    }
+
+    const filteredArray = chosenArray.filter(option => option.id == id);
+    console.log(filteredArray);
+
     const name = filteredArray[0].name;
     return name;
+
   }
 
   // Update Drag position
