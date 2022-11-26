@@ -125,6 +125,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         jobDuties: [data ? data.jobDuties : null],
         jobCategoryId: [data ? data.jobCategoryId : null],
         workSetupId: [data ? data.workSetupId : null],
+        jobBanner: [data ? data.jobBanner : null],
         bannerFile: new FormArray([]),
         badges: new FormArray([]),
         requirements: new FormArray([]),
@@ -233,46 +234,46 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
     }
 
-    this.initial$ = this.jobFacade.initial$
-      .pipe().subscribe(this.setInitialForm.bind(this));
+    // this.initial$ = this.jobFacade.initial$
+    //   .pipe().subscribe(this.setInitialForm.bind(this));
 
-    this.info$ = this.jobFacade.info$
-      .pipe().subscribe(this.setJobInfo.bind(this));
+    // this.info$ = this.jobFacade.info$
+    //   .pipe().subscribe(this.setJobInfo.bind(this));
 
 
   }
 
-  setInitialForm(raw: Model.InitialDetails) {
-    if (raw) {
-      this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
-      this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
-      this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
-      this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
-      this.jobForm.controls.initialData.get('workSetupId').setValue(raw.workSetupId);
-      this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
-      this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
-      this.jobForm.controls.initialData.get('jobCountry').setValue(raw.jobCountry);
-      this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
-      this.jobForm.controls.initialData.get('jobDuties').setValue(raw.jobDuties);
-      this.jobForm.controls.initialData.get('jobCategoryId').setValue(raw.jobCategoryId);
-      this.jobForm.controls.initialData.get('badges').setValue(raw.badges);
-      this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
-      this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
-      this.jobForm.controls.initialData.get('bannerFile').setValue(raw.bannerFile);
-    }
-  }
+  // setInitialForm(raw: Model.InitialDetails) {
+  //   if (raw) {
+  //     this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
+  //     this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
+  //     this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
+  //     this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
+  //     this.jobForm.controls.initialData.get('workSetupId').setValue(raw.workSetupId);
+  //     this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
+  //     this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
+  //     this.jobForm.controls.initialData.get('jobCountry').setValue(raw.jobCountry);
+  //     this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
+  //     this.jobForm.controls.initialData.get('jobDuties').setValue(raw.jobDuties);
+  //     this.jobForm.controls.initialData.get('jobCategoryId').setValue(raw.jobCategoryId);
+  //     this.jobForm.controls.initialData.get('badges').setValue(raw.badges);
+  //     this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
+  //     this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
+  //     this.jobForm.controls.initialData.get('bannerFile').setValue(raw.bannerFile);
+  //   }
+  // }
 
-  setJobInfo(raw: Model.JobInfo) {
-    if (raw) {
-      this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
-      this.jobForm.controls.jobInfo.get('jobRoleId').setValue(raw.jobRoleId);
-      this.jobForm.controls.jobInfo.get('skills').setValue(raw.skills);
-      this.jobForm.controls.jobInfo.get('tags').setValue(raw.tags);
-      this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
-      this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
-      this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
-    }
-  }
+  // setJobInfo(raw: Model.JobInfo) {
+  //   if (raw) {
+  //     this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
+  //     this.jobForm.controls.jobInfo.get('jobRoleId').setValue(raw.jobRoleId);
+  //     this.jobForm.controls.jobInfo.get('skills').setValue(raw.skills);
+  //     this.jobForm.controls.jobInfo.get('tags').setValue(raw.tags);
+  //     this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
+  //     this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
+  //     this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
+  //   }
+  // }
 
   async getJobById() {
     await this.jobFacade.getJobById(this.jobId);
@@ -296,7 +297,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       job.jobCountry != "" &&
       job.jobDescription != "" &&
       job.workSetupId &&
-      job.bannerFile[0] &&
+      (job.bannerFile[0] || job.jobBanner != "") &&
       job.interviewQuestions.length != 0
 
     if (this.isReadyToPublish) {
@@ -332,7 +333,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         missingJob += 'Interview Questions ';
       }
 
-      if (!job.bannerFile[0]) {
+      if (!job.bannerFile[0] && job.jobBanner == "") {
         missingJob += 'Job Banner ';
       }
 

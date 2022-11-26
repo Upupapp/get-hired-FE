@@ -100,7 +100,7 @@
 
       <!-- BANNER UPLOADER -->
       <div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay: '500ms' }}">
-        <app-drag-and-drop [maxSize]="150000" (upload)="getBanner($event)" multipleAttachmentTitle="Upload Banner" [isMultiple]="false" [fileArray]="bannerSelected.value">
+        <app-drag-and-drop [maxSize]="150000" (upload)="getBanner($event)" multipleAttachmentTitle="Upload Banner" [isMultiple]="false" [fileArray]="bannerSelected.value" [defaultImage]="bannerUrl">
         </app-drag-and-drop>
       </div>
 

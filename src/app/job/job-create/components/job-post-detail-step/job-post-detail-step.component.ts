@@ -22,77 +22,13 @@ export class JobPostDetailStepComponent implements OnInit {
   goodToHave: FormArray;
   educationalBackground: FormArray;
   bannerSelected: FormArray;
+  bannerUrl: string;
 
   workSetup$ = this.jobFacade.setup$;
   typeList$ = this.jobFacade.typeList$;
   level$ = this.jobFacade.level$;
   badge$ = this.jobFacade.badge$;
   category$ = this.jobFacade.category$;
-
-  // public categories: any[] = [
-  //   {
-  //     id: 1,
-  //     title: 'Technology',
-  //     skills: 100,
-  //     rating: 4.2,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-1.png'
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Sales & Marketing',
-  //     skills: 154,
-  //     rating: 4.6,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-2.png'
-  //   },
-
-  //   {
-  //     id: 3,
-  //     title: 'Development & Marketing',
-  //     skills: 98,
-  //     rating: 4.1,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-1.png'
-  //   },
-
-  //   {
-  //     id: 4,
-  //     title: 'Architecture',
-  //     skills: 144,
-  //     rating: 4.7,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-1.png'
-  //   },
-
-  //   {
-  //     id: 5,
-  //     title: 'Software Engineering',
-  //     skills: 255,
-  //     rating: 4.7,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-2.png'
-  //   },
-
-  //   {
-  //     id: 6,
-  //     title: 'Database Architecture',
-  //     skills: 117,
-  //     rating: 4.4,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-1.png'
-  //   },
-
-  //   {
-  //     id: 7,
-  //     title: 'Civil Engineering',
-  //     skills: 224,
-  //     rating: 4.5,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-2.png'
-  //   },
-
-  //   {
-  //     id: 8,
-  //     title: 'Virtual Assistant',
-  //     skills: 89,
-  //     rating: 4.1,
-  //     banner_thumbnail: '/assets/images/placeholder/industry-2.png'
-  //   },
-  // ];
 
   constructor(
     private rootFormGroup: FormGroupDirective,
@@ -116,6 +52,7 @@ export class JobPostDetailStepComponent implements OnInit {
     this.educationalBackground = this.initialDetailsForm.get('educationalBackground') as FormArray;
     this.bannerSelected = this.initialDetailsForm.get('bannerFile') as FormArray;
     this.workSetupSelected = this.initialDetailsForm.get('workSetupId').value;
+    this.bannerUrl = this.initialDetailsForm.get('jobBanner').value;
   }
 
   populateOptions() {

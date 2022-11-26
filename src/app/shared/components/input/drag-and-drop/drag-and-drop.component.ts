@@ -63,18 +63,18 @@ export class DragAndDropComponent {
   @Input() initialVal: string = '';
   @Input() labelTop: boolean = false;
   @Input() info: boolean = false;
-  @Input() chips:boolean = true;
+  @Input() chips: boolean = true;
   @Input() infoTitle: string = 'Your title here';
   @Input() isDocument: boolean = false;
   @Input() acceptType: string = "image/*, video/mp4, video/x-m4v, video/*";
   @Input() supported: string = "";
   @Input() subtitle: string = '';
-  @Input() fileArray:any[] = [];
-  @Input() isMultiple:boolean;
+  @Input() fileArray: any[] = [];
+  @Input() isMultiple: boolean;
   @Input() row: string = 'col-sm-6';
   @Input() file: any;
   @Input() maxSize: number = 200000;
-
+  @Input() defaultImage: string = "/assets/images/placeholder/banner-uploader-sample.png";
   fileObject: any = {
     filename: '',
     size: '',
@@ -95,7 +95,6 @@ export class DragAndDropComponent {
 
   @Output() keyevents: EventEmitter<any> = new EventEmitter<any>();
   protected _onChangeCallback: (_: any) => void = noop;
-  public defaultImage: string = "/assets/images/placeholder/banner-uploader-sample.png";
 
   constructor(
     private dialog: MatDialog,) { }
@@ -108,8 +107,8 @@ export class DragAndDropComponent {
     this._onChangeCallback = fn;
   }
 
-  onTouch(event){
-    if(this.required && !event.target.value){
+  onTouch(event) {
+    if (this.required && !event.target.value) {
       this.isTouched = true;
     } else {
       this.isTouched = false;
@@ -123,7 +122,7 @@ export class DragAndDropComponent {
   onFileChangeEvent(event: any, dropped = false): void {
     const uploaded = dropped ? event : event.target.files;
     if (uploaded.length !== 0) {
-      this.uploadedFile =  uploaded[0];
+      this.uploadedFile = uploaded[0];
       this.fileObject.filename = uploaded[0].name;
       this.fileObject.type = uploaded[0].type;
       this.fileObject.size = uploaded[0].size
@@ -143,7 +142,7 @@ export class DragAndDropComponent {
   uploadMultiple(event: any, dropped = false) {
     const uploaded = dropped ? event : event.target.files;
 
-    if(!this.isMultiple) {
+    if (!this.isMultiple) {
       this.fileArray = [];
     }
 
@@ -181,7 +180,7 @@ export class DragAndDropComponent {
     }
   }
 
-  removeImage(){
+  removeImage() {
     this.uploadedFile = "";
     this.fileType = "";
     this.uploadedFileBase64 = "";
@@ -189,13 +188,13 @@ export class DragAndDropComponent {
     this.upload.emit("");
   }
 
-  removeImageInArray(i){
+  removeImageInArray(i) {
     this.fileArray.splice(i, 1)
     this.upload.emit(this.fileArray);
   }
 
   ngOnInit(): void {
-    if(this.file){
+    if (this.file) {
       this.uploadedFile = this.file[0];
       this.uploadedFile.name = this.file[0].filename;
     }
@@ -213,18 +212,18 @@ export class DragAndDropComponent {
     let imageSourceFile = document.getElementById('image-source-file');
     let boundingClientRect = element.getBoundingClientRect();
     let parentPosition = this.getPosition(element);
-    let dragPosition = {x: 0, y: ((imageSourceFile?.offsetHeight) - boundingClientRect?.y) + ((boundingClientRect.y) - (parentPosition.top))};
+    let dragPosition = { x: 0, y: ((imageSourceFile?.offsetHeight) - boundingClientRect?.y) + ((boundingClientRect.y) - (parentPosition.top)) };
 
     // temporary save to local storage
     sessionStorage.setItem('job-post-banner-position', JSON.stringify(dragPosition))
     console.log(dragPosition, imageSourceFile?.scrollHeight)
-    //console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));        
+    //console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));
   }
 
   getPosition(el) {
     let x = 0;
     let y = 0;
-    while(el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
       x += el.offsetLeft - el.scrollLeft;
       y += el.offsetTop - el.scrollTop;
       el = el.offsetParent;
@@ -232,7 +231,7 @@ export class DragAndDropComponent {
     return { top: y, left: x };
   }
 
-  viewImageVideo(data: any){
+  viewImageVideo(data: any) {
     /*let viewImageDialog = this.dialog.open(
       ViewImageVideoComponent,
       {

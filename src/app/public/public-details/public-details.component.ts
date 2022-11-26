@@ -1,11 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
   selector: 'app-public-details',
   templateUrl: './public-details.component.html',
-  styleUrls: ['./public-details.component.scss']
+  styleUrls: ['./public-details.component.scss'],
+  animations: [mainAnimations]
 })
 export class PublicDetailsComponent implements OnInit {
   details$ = this.jobFacade.getJobById$;

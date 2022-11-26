@@ -8,30 +8,29 @@
     <div class="banner-container">
       <div class="bg-opacity" style="height:360px; overflow: hidden;
 			background: #c9c9c9; border-radius: 7px; position: relative;">
+        <img *ngIf="!(preview?.bannerFile[0]?.file || preview.jobBanner)"
+          src="assets/images/placeholder/job-post-banner.png" class="banner-image">
 
+        <img *ngIf="(preview?.bannerFile[0]?.file || preview.jobBanner)"
+          [src]="preview?.bannerFile[0]?.file ? preview?.bannerFile[0]?.file: preview.jobBanner" id="banner-source-file"
+          cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
+          class="banner-image">
 
-				<img [src]="preview?.bannerFile[0]?.file ? preview?.bannerFile[0].file: 'assets/images/placeholder/job-post-banner.png'"
-				id="banner-source-file"
-				cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)"
-				cdkDrag [cdkDragFreeDragPosition]="dragPosition"
-				class="banner-image">
+        <div class="drag-position-container">
+          <h5>Drag to Reposition</h5>
+        </div>
 
-				<div class="drag-position-container">
-					<h5>Drag to Reposition</h5>
-				</div>
-
-			</div>
+      </div>
 
       <div class="floating-card" *ngIf="preview?.badges && preview?.badges.length != 0">
         <div>
           <ng-container *ngFor="let item of preview.badges; let i = index">
             <div class="d-flex align-items-center justify-content-center badge-card my-2" [ngClass]="'badge-' + i">
-							<img src="/assets/images/placeholder/icons/{{item?.icon}}"
-							[title]="item?.name"
-							style="height:20px" class="me-2">
+              <img src="/assets/images/placeholder/icons/{{item?.icon}}" [title]="item?.name" style="height:20px"
+                class="me-2">
 
-							<h5 class="title-badge">{{item?.name}}</h5>
-						</div>
+              <h5 class="title-badge">{{item?.name}}</h5>
+            </div>
           </ng-container>
         </div>
 
