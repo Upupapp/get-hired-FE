@@ -40,11 +40,13 @@ export class JobViewComponent implements OnInit {
   loading$ = this.jobFacade.getJobLoading$
   .pipe().subscribe(this.onLoad.bind(this));
 
-  constructor(public router: Router,  
+  constructor(public router: Router,
     public location: Location,
     private jobFacade: JobFacade,
-    public route: ActivatedRoute) { 
-      this.jobId = route.snapshot.params['id'];
+    public route: ActivatedRoute) {
+      this.route.queryParams.subscribe(params => {
+        this.jobId = params.id
+      });
     }
 
   ngOnInit(): void {

@@ -4,14 +4,27 @@ import { JobModule } from '@app-job/job.module';
 import { EmployerJobsComponent } from './employer-jobs.component';
 import { RouterModule, Routes } from '@angular/router';
 import { JobCreateComponent } from '@app-job/job-create/job-create.component';
+import { EmployerJoblistComponent } from './employer-joblist/employer-joblist.component';
+import { EmployerJobexpiredComponent } from './employer-jobexpired/employer-jobexpired.component';
+import { EmployerJobcreateComponent } from './employer-jobcreate/employer-jobcreate.component';
+import { EmployerJobviewComponent } from './employer-jobview/employer-jobview.component';
 
 const routes: Routes = [
-  // { path: 'create', component: JobCreateComponent }
+  { path: 'list', component: EmployerJoblistComponent },
+  { path: 'expired', component: EmployerJobexpiredComponent },
+  { path: 'create', component: EmployerJobcreateComponent },
+  { path: 'edit', component: EmployerJobcreateComponent },
+  { path: 'view', component: EmployerJobviewComponent },
+  { path: '', redirectTo: 'list', pathMatch: 'full' },
 ];
 
 @NgModule({
   declarations: [
-    EmployerJobsComponent
+    EmployerJobsComponent,
+    EmployerJoblistComponent,
+    EmployerJobexpiredComponent,
+    EmployerJobcreateComponent,
+    EmployerJobviewComponent
   ],
   imports: [
     CommonModule,

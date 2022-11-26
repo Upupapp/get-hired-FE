@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobComponent } from './job.component';
 import { JobCreateComponent } from './job-create/job-create.component';
-import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '@main/shared/shared.module';
 import { CreateInterviewComponent } from './job-create/components/create-interview/create-interview.component';
 import { PreviewJobPostStepComponent } from './job-create/components/preview-job-post-step/preview-job-post-step.component';
@@ -22,17 +20,15 @@ import { MaterialComponentsModule } from '@main/shared/components/material-compo
 import { TableControlModalComponent } from './job-list/dialogs/table-control-modal/table-control-modal.component';
 import { JobViewComponent } from './job-view/job-view.component';
 
-const routes: Routes = [
-  { path: 'expired', component: JobExpiredComponent },
-  { path: 'list', component: JobListComponent },
-  { path: 'create', component: JobCreateComponent },
-  { path: '', redirectTo: 'list', pathMatch: 'full' },
-  { path: 'edit/:id', component: JobCreateComponent },
-  { path: 'view/:id', component: JobViewComponent },
-]
+// const routes: Routes = [
+  // { path: 'expired', component: JobExpiredComponent },
+  // { path: 'list', component: JobListComponent },
+  // { path: 'create', component: JobCreateComponent },
+  // { path: 'edit', component: JobCreateComponent },
+  // { path: 'view/:id', component: JobViewComponent },
+// ]
 
 const exportedComponents = [
-  JobComponent,
   JobCreateComponent,
   PreviewJobPostStepComponent,
   JobPostDetailStepComponent,
@@ -59,7 +55,6 @@ const exportedComponents = [
     InterviewModule,
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),
-    RouterModule.forChild(routes)
   ],
   providers: [JobFacade],
   exports: [

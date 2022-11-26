@@ -15,9 +15,11 @@ import { map, takeUntil, tap } from 'rxjs/operators';
   styleUrls: ['./job-create.component.scss']
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
+  mode: string;
   delayControl: boolean = true;
-  public jobId:any =  null;
-  subscriptions = new Subscription()
+  public jobId: any = null;
+  subscriptions = new Subscription();
+
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -84,20 +86,22 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.jobId = route.snapshot.params['id'];
+    this.route.queryParams.subscribe(params => {
+      this.jobId = params.id;
+    });
   }
 
 
   ngOnInit(): void {
-    setTimeout(() => this.delayControl = false,900);
+    setTimeout(() => this.delayControl = false, 900);
 
     this.editJob$.subscribe((data: any) => {
-      if(data){
+      if (data) {
         this.setFormGroup(data);
       }
     })
 
-    if(this.jobId){
+    if (this.jobId) {
       this.getJobById()
     } else {
       this.setFormGroup();
@@ -108,7 +112,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.loading = isLoading;
   }
 
-  setFormGroup(data?: any){
+  setFormGroup(data?: any) {
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
         jobTitle: [data ? data.jobTitle : null, Validators.required],
@@ -121,7 +125,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         jobDuties: [data ? data.jobDuties : null],
         jobCategoryId: [data ? data.jobCategoryId : null],
         workSetupId: [data ? data.workSetupId : null],
-        bannerFile:  new FormArray([]),
+        bannerFile: new FormArray([]),
         badges: new FormArray([]),
         requirements: new FormArray([]),
         goodToHave: new FormArray([]),
@@ -167,60 +171,62 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.stepperItems[3].disabled = status != 'VALID'
       }));
 
-    //set form array
-    let badges = this.jobForm.controls.initialData.get('badges') as FormArray;
-    if(data.hasOwnProperty('badges') &&  data?.badges.length > 0){
-      data?.badges.forEach(element => {
-        badges.push(
-          new FormGroup({
-            icon: new FormControl(element.icon),
-            name: new FormControl(element.name),
-            id: new FormControl(element.id)
-          }));
-      });
+    if (data) {
+      //set form array
+      let badges = this.jobForm.controls.initialData.get('badges') as FormArray;
+      if (data.hasOwnProperty('badges') && data?.badges.length > 0) {
+        data?.badges.forEach(element => {
+          badges.push(
+            new FormGroup({
+              icon: new FormControl(element.icon),
+              name: new FormControl(element.name),
+              id: new FormControl(element.id)
+            }));
+        });
+      }
+
+      let goodToHave = this.jobForm.controls.initialData.get('goodToHave') as FormArray;
+      if (data.hasOwnProperty('goodToHave') && data?.goodToHave.length > 0) {
+        data?.goodToHave.forEach(element => {
+          goodToHave.push(
+            new FormGroup({
+              icon: new FormControl(element.icon),
+              name: new FormControl(element.name),
+              id: new FormControl(element.id)
+            }));
+        });
+      }
+
+      // if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
+      //   this.jobForm.controls.initialData.get('requirements').setValue(data.requirements);
+      // }
+
+      // if(data.hasOwnProperty('goodToHave') &&  data?.goodToHave.length > 0){
+      //   this.jobForm.controls.initialData.get('goodToHave').setValue(data.goodToHave);
+      // }
+
+      // if(data.hasOwnProperty('educationalBackground') &&  data?.educationalBackground.length > 0){
+      //   this.jobForm.controls.initialData.get('educationalBackground').setValue(data.educationalBackground);
+      // }
+
+      // if(data.hasOwnProperty('jobSkills') &&  data?.jobSkills.length > 0){
+      //   this.jobForm.controls.jobInfo.get('jobSkills').setValue(data.jobSkills);
+      // }
+
+      // if(data.hasOwnProperty('jobTags') &&  data?.jobTags.length > 0){
+      //   this.jobForm.controls.jobInfo.get('jobTags').setValue(data.jobTags);
+      // }
+
+      // if(data.hasOwnProperty('interviewQuestions') &&  data?.interviewQuestions.length > 0){
+      //   this.jobForm.controls.interview.get('interviewQuestions').setValue(data.goodToHave);
+      // }
     }
-
-    let goodToHave = this.jobForm.controls.initialData.get('goodToHave') as FormArray;
-    if(data.hasOwnProperty('goodToHave') &&  data?.goodToHave.length > 0){
-      data?.goodToHave.forEach(element => {
-        goodToHave.push(
-          new FormGroup({
-            icon: new FormControl(element.icon),
-            name: new FormControl(element.name),
-            id: new FormControl(element.id)
-          }));
-      });
-    }
-
-    // if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
-    //   this.jobForm.controls.initialData.get('requirements').setValue(data.requirements);
-    // }
-
-    // if(data.hasOwnProperty('goodToHave') &&  data?.goodToHave.length > 0){
-    //   this.jobForm.controls.initialData.get('goodToHave').setValue(data.goodToHave);
-    // }
-
-    // if(data.hasOwnProperty('educationalBackground') &&  data?.educationalBackground.length > 0){
-    //   this.jobForm.controls.initialData.get('educationalBackground').setValue(data.educationalBackground);
-    // }
-
-    // if(data.hasOwnProperty('jobSkills') &&  data?.jobSkills.length > 0){
-    //   this.jobForm.controls.jobInfo.get('jobSkills').setValue(data.jobSkills);
-    // }
-
-    // if(data.hasOwnProperty('jobTags') &&  data?.jobTags.length > 0){
-    //   this.jobForm.controls.jobInfo.get('jobTags').setValue(data.jobTags);
-    // }
-
-    // if(data.hasOwnProperty('interviewQuestions') &&  data?.interviewQuestions.length > 0){
-    //   this.jobForm.controls.interview.get('interviewQuestions').setValue(data.goodToHave);
-    // }
 
     this.initial$ = this.jobFacade.initial$
-    .pipe().subscribe(this.setInitialForm.bind(this));
+      .pipe().subscribe(this.setInitialForm.bind(this));
 
     this.info$ = this.jobFacade.info$
-    .pipe().subscribe(this.setJobInfo.bind(this));
+      .pipe().subscribe(this.setJobInfo.bind(this));
 
 
   }
@@ -283,44 +289,44 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       job.bannerFile[0] &&
       job.interviewQuestions.length != 0
 
-    if(this.isReadyToPublish) {
+    if (this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
     } else {
       let missingJob = '';
 
-      if(!job.jobTypeId) {
+      if (!job.jobTypeId) {
         missingJob += 'job type ';
       }
 
-      if(!job.jobLevelId) {
+      if (!job.jobLevelId) {
         missingJob += 'job level ';
       }
 
-      if(job.jobCity == "") {
+      if (job.jobCity == "") {
         missingJob += 'job city ';
       }
 
-      if(job.jobCountry == "") {
+      if (job.jobCountry == "") {
         missingJob += 'job jobCountry ';
       }
 
-      if(job.jobDescription == "") {
+      if (job.jobDescription == "") {
         missingJob += 'job Description ';
       }
 
-      if(!job.workSetupId) {
+      if (!job.workSetupId) {
         missingJob += 'Work Setup Id ';
       }
 
-      if(job.interviewQuestions.length == 0) {
+      if (job.interviewQuestions.length == 0) {
         missingJob += 'Interview Questions ';
       }
 
-      if(!job.bannerFile[0]) {
+      if (!job.bannerFile[0]) {
         missingJob += 'Job Banner ';
       }
 
-      if(job.companyId == '') {
+      if (job.companyId == '') {
         missingJob += 'Company Id ';
       }
 
@@ -381,7 +387,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.stepper = event;
     const formCtrl = this.stepperItems[event - 2]?.formName;
 
-    switch(formCtrl){
+    switch (formCtrl) {
       case 'initialData':
         const bodyInitial = this.jobForm.controls[formCtrl].value;
         console.log(bodyInitial);

@@ -10,7 +10,7 @@
   >
     <div class="card card-body py-3">
       <div>
-        <span class="main-title">Create a Job</span>
+        <span class="main-title">{{ jobId ? 'Update':'Create' }} a Job</span>
         <span [ngClass]="delayControl ? 'd-none' : 'float-end'">
           <button
             class="btn btn-save-draft me-2"
