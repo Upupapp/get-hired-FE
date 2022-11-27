@@ -98,7 +98,7 @@ export class SigninComponent implements OnInit {
             firstName: data.firstName,
             lastName: data.lastName
           }));
-          this.router.navigate(['../user'], { relativeTo: this.activatedRoute });
+          this.router.navigate(['/user/dashboard'], { relativeTo: this.activatedRoute });
           break;
         default:
           break;

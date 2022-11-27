@@ -6,7 +6,7 @@
   <app-applicant-stat-total></app-applicant-stat-total>
 </section>
 
-<div class="alert" [class.visible]="isVisible">
+<div class="alert" [class.visible]="isVisible" *ngIf="isVisible">
   <span>“Update your profile to showcase your skills”</span>
   <button class="btn" (click)="closeSnackbar()"><i class="bi bi-x"></i></button>
 </div>
