@@ -1,17 +1,19 @@
 export interface Applicant {
-  applicantId: string;
+  applicantProfileId?: string;
+  userId: string;
   firstName: string;
   lastName: string;
-  photoUrl: string;
-  videoCVUrl: string;
+  photoUrl?: string;
+  videoCVUrl?: string;
   jobTitle: string;
-  rating: number;
+  rating?: number;
+  workSetUpId: number;
   workSetupName: string;
   email: string;
-  address: string;
+  address?: string;
   contactNumber: string;
   shortBio: string;
-  servicesProvided: string;
+  servicesProvided?: string;
   workExperience?: WorkExperience;
   educationalBackground?: EducationalBackground;
   certifications?: Certifications;
@@ -19,9 +21,11 @@ export interface Applicant {
   documents: [];
   jobTypeId: number;
   jobLevelId: number;
-  jobSetupId: number;
   salaryMinimum: number;
   salaryMaximum: number;
+  videoCVFile? : File;
+  profileImage?: File;
+  isProfileReady: boolean;
 }
 
 export interface WorkExperience {
@@ -85,6 +89,13 @@ export interface InitialDetails {
   contactNumber: string;
   city: string;
   country: string;
+}
+
+export interface AdditionalInfo {
+  workExperience: WorkExperience[];
+  educationalBackground: EducationalBackground[];
+  professionalSkills: Certifications[];
+  certifications: InitialDetails[];
 }
 
 export interface Options {

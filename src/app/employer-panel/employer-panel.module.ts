@@ -21,12 +21,12 @@ const routes: Routes = [
       {
         path: 'dashboard',
         component: EmployerDashboardComponent,
-        canActivate: [InternalEmployerGuard]
+        // canActivate: [InternalEmployerGuard]
       },
       {
         path: 'jobs',
         loadChildren: () => import('./employer-jobs/employer-jobs.module').then(m => m.EmployerJobsModule),
-        canActivate: [InternalEmployerGuard]
+        // canActivate: [InternalEmployerGuard]
       },
       {
         path: 'company',

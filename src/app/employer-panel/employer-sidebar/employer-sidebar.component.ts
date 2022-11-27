@@ -14,9 +14,11 @@ export class EmployerSidebarComponent implements OnInit {
   private req: Subscription;
   @Input() sidebarWidth;
   @Input() user;
+  companyName: string;
 
   public location: any = '';
   public screenHeight: number = 300;
+  sidebarItems: any[];
 
   constructor(
     private router: Router
@@ -31,52 +33,6 @@ export class EmployerSidebarComponent implements OnInit {
     });
   }
 
-  public sidebarItems: any[] = [
-    {
-      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
-    },
-
-    {
-      title: 'Jobs', icon: 'jobs.png', class: 'jobs',
-      route: 'jobs',
-      sub_routes: [
-        {
-          title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
-        },
-
-        {
-          title: 'Expired Jobs', icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
-        },
-      ]
-    },
-
-    {
-      title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
-      sub_routes: [
-        {
-          title: 'Contact List', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
-        },
-        {
-          title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
-        },
-      ]
-    },
-
-    {
-      title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
-    },
-
-    {
-      title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-      route: 'subscription'
-    },
-
-    {
-      title: 'Employer Branding', icon: 'account.png', class: 'accounts',
-      route: 'company/details'
-    },
-  ];
-
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenHeight = window.innerHeight;
@@ -85,6 +41,64 @@ export class EmployerSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.location = this.router.url;
     this.screenHeight = window.innerHeight;
+    console.log('Secret')
+    console.log(this.user);
+
+
+  }
+
+  ngOnChanges(changes) {
+    if (changes.user) {
+      if(this.user.companyName && this.user.companyName != "") {
+        this.sidebarItems = [
+          {
+            title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+          },
+          {
+            title: 'Jobs', icon: 'jobs.png', class: 'jobs',
+            route: 'jobs',
+            sub_routes: [
+              {
+                title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
+              },
+
+              {
+                title: 'Expired Jobs', icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
+              },
+            ]
+          },
+          {
+            title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
+            sub_routes: [
+              {
+                title: 'Contact List', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
+              },
+              {
+                title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
+              },
+            ]
+          },
+          {
+            title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
+          },
+          {
+            title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+            route: 'subscription'
+          },
+          {
+            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
+            route: 'company/details'
+          }
+        ];
+      } else {
+        this.sidebarItems = [
+          {
+            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
+            route: 'company/details'
+          }
+        ];
+      }
+    }
   }
 
   ngOnDestroy(): void {

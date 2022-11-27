@@ -34,9 +34,18 @@ export class ApplicantFacade {
     this.store.dispatch(ApplicantAction.getApplicant({ applicantId }));
   }
 
+  createApplicant(applicant: Model.Applicant) {
+    this.store.dispatch(ApplicantAction.createApplicant({ applicant }));
+  }
+
   setInitialForm(initialDetails: Model.InitialDetails) {
     this.store.dispatch(ApplicantAction.setInitialDetails({ initialDetails }));
   }
+
+  setAdditionalInfo(additionalInfo: Model.AdditionalInfo) {
+    this.store.dispatch(ApplicantAction.setAdditionalInfo({ additionalInfo }));
+  }
+
   // getAllApplicant() {
   //   this.store.dispatch(ApplicantAction.getAllapplicant());
   // }

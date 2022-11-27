@@ -12,9 +12,10 @@ export interface ApplicantState {
   selected: Model.Applicant;
   list: Model.Applicant[];
   error: any;
-  succesMsg: '';
+  succesMsg: string;
   loading: boolean;
   initialDetails: Model.InitialDetails;
+  additionalInfo: Model.AdditionalInfo;
 
   // industry: Model.Options[];
   // badge: Model.Options[];
@@ -23,8 +24,6 @@ export interface ApplicantState {
   typeList: Model.Options[];
   level: Model.Options[];
   // category: Model.Options[];
-  // initialDetails: Model.InitialDetails;
-  // applicantInfo: Model.ApplicantInfo;
   // interview: InterviewModel.InterviewQuestion[],
   // applicant: Model.Applicant | null;
   // applicantLoading: boolean
@@ -37,6 +36,7 @@ const initialState: ApplicantState = {
   succesMsg: null,
   loading: false,
   initialDetails: null,
+  additionalInfo: null,
   // industry: [],
   // badge: [],
   // applicantRole: [],
@@ -47,7 +47,6 @@ const initialState: ApplicantState = {
   // initialDetails: null,
   // applicantInfo: null,
   // interview: [],
-  // applicant: null,
   // applicantLoading: false
 };
 
@@ -75,10 +74,39 @@ export const applicantReducer = createReducer<ApplicantState>(
       succesMsg: null,
     };
   }),
+  on(ApplicantActions.createApplicant, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.createApplicantSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      selected: action.applicant,
+      loading: false,
+      succesMsg: 'created'
+    };
+  }),
+  on(ApplicantActions.createApplicantFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.setInitialDetails, (state, action): ApplicantState => {
     return {
       ...state,
       initialDetails: action.initialDetails
+    };
+  }),
+  on(ApplicantActions.setAdditionalInfo, (state, action): ApplicantState => {
+    return {
+      ...state,
+      additionalInfo: action.additionalInfo
     };
   }),
   on(ApplicantActions.getSetupList, (state): ApplicantState => {

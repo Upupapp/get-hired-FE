@@ -17,9 +17,6 @@ export class EmployerPanelComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user'));
   employee$ = this.employeeFacade.employeeDetails$;
   loading$ = this.employeeFacade.loading$;
-  withCompany: boolean = true;
-  path: string;
-
 
   constructor(
     private coreService: CoreService,
@@ -27,9 +24,7 @@ export class EmployerPanelComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router
-  ) {
-    this.path = this.router.url;
-  }
+  ) {  }
 
   ngOnInit(): void {
     this.isUserLoggedIn = this.coreService.isLoggedIn();

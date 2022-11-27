@@ -8,8 +8,12 @@ enum AllFeatureActionTypes {
   GetApplicantFail = '[applicant] - Get Applicant Fail',
 
   SetInitialDetails = '[applicant] - Set Initial Details',
-  SetProfileArrays = '[applicant] - Set Initial Details',
+  SetAdditionalInfo = '[applicant] - Set Additional Info',
   SetProfileDocuments = '[applicant] - Set Profile Documents',
+
+  CreateApplicant = '[applicant] - Create Applicant status',
+  CreateApplicantSuccess = '[applicant] -Create Applicant Success',
+  CreateApplicantFail = '[applicant] - Create Applicant Fail',
 
   // GetIndustryList = '[applicant] - Get Industry List',
   // GetIndustryListSuccess = '[applicant] - Get Industry List Success',
@@ -77,9 +81,30 @@ export const getApplicantFail = createAction(
 );
 
 export const setInitialDetails = createAction(
-  AllFeatureActionTypes.GetApplicant,
-  props<{ initialDetails: Model.InitialDetails}>()
+  AllFeatureActionTypes.SetInitialDetails,
+  props<{ initialDetails: Model.InitialDetails }>()
 );
+
+export const setAdditionalInfo = createAction(
+  AllFeatureActionTypes.SetAdditionalInfo,
+  props<{ additionalInfo: Model.AdditionalInfo }>()
+);
+
+export const createApplicant = createAction(
+  AllFeatureActionTypes.CreateApplicant,
+  props<{ applicant: Model.Applicant }>()
+);
+
+export const createApplicantSuccess = createAction(
+  AllFeatureActionTypes.CreateApplicantSuccess,
+  props<{ applicant: Model.Applicant }>()
+);
+
+export const createApplicantFail = createAction(
+  AllFeatureActionTypes.CreateApplicantFail,
+  props<{ payload: any }>()
+);
+
 
 // export const resetApplicantForm = createAction(
 //   AllFeatureActionTypes.ResetApplicantForm

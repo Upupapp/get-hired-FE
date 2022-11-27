@@ -43,8 +43,8 @@ export class ProfileDetailsFormComponent implements OnInit {
     this.profileDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
   }
 
-  onUpload(file: any) {
-    this.profileImage = file.file;
-    this.profileDetailsForm.controls['profilePhotoFile'].setValue(this.profileImage)
+  onUpload(item: any) {
+    this.profileImage = item;
+    this.profileDetailsForm.controls['profileImage'].setValue(this.profileImage)
   }
 }

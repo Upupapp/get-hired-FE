@@ -1,16 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { distinctUntilChanged, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { mainAnimations } from '@app-shared/animations/main-animations';
+import { distinctUntilChanged, of, Subscription } from 'rxjs';
 import { ApplicantFacade } from '../state/applicant.facade';
+import * as Model from '../applicant.model';
 
 @Component({
   selector: 'app-profile-form',
   templateUrl: './profile-form.component.html',
-  styleUrls: ['./profile-form.component.scss']
+  styleUrls: ['./profile-form.component.scss'],
+  animations: [mainAnimations]
 })
 export class ProfileFormComponent implements OnInit {
   profileForm: FormGroup;
   subscriptions$ = new Subscription();
+  applicantId: string;
+
+  asyncLocalStorage = {
+    setItem: async function (key, value) {
+      await Promise.resolve();
+      localStorage.setItem(key, value);
+    },
+    getItem: async function (key) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
+    }
+  };
 
   public stepperItems: any[] = [
     {
@@ -38,8 +54,14 @@ export class ProfileFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private applicantFacade: ApplicantFacade
-  ) { }
+    private applicantFacade: ApplicantFacade,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    // this.route.queryParams.subscribe(params => {
+    //   this.applicantId = params.id;
+    // });
+  }
 
   ngOnInit(): void {
     this.initializedForm();
@@ -50,8 +72,8 @@ export class ProfileFormComponent implements OnInit {
 
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
-        profilePhoto: [null],
-        profilePhotoFile: new FormArray([]),
+        photoUrl: [null],
+        profileImage: new FormArray([]),
         jobTitle: [null],
         shortBio: [null],
         servicesProvided: [null],
@@ -68,10 +90,15 @@ export class ProfileFormComponent implements OnInit {
         country: [null, Validators.required]
       }),
       profileArraysForm: this.fb.group({
-
+        workExperience: this.fb.array([]),
+        educationalBackground: this.fb.array([]),
+        professionalSkills: this.fb.array([]),
+        certifications: this.fb.array([])
       }),
       profileDocuments: this.fb.group({
-
+        documents: this.fb.array([]),
+        videoCVFile: [null],
+        videoCVUrl: [null]
       })
     });
 
@@ -82,28 +109,63 @@ export class ProfileFormComponent implements OnInit {
       }));
   }
 
-  changeStep(step: number, formName?: string): void {
-    this.stepper = step;
+  async submitProfile() {
+    // TODO save profile
+    const applicant = await this.formatProfile();
 
-    switch (formName) {
+    const isProfileReady = applicant.firstName != ""
+      && applicant.lastName != ""
+      && applicant.profileImage[0]
+      && applicant.jobTitle != ""
+      && applicant.email != ""
+      && applicant.contactNumber != ""
+      && applicant.shortBio != ""
+      && applicant.salaryMinimum != 0
+      && applicant.salaryMaximum != 0;
+
+      console.log(applicant);
+      console.log(isProfileReady);
+
+      // this.applicantFacade.createApplicant({
+      //   ...applicant,
+      //   isProfileReady
+      // })
+  }
+
+  async formatProfile(): Promise<Model.Applicant> {
+    const user = await this.asyncLocalStorage.getItem('user');
+    const { profileDetailsForm, profileArraysForm, profileDocuments } = this.profileForm.controls;
+
+    return {
+      ...profileDetailsForm.value,
+      ...profileArraysForm.value,
+      ...profileDocuments.value,
+      userId: JSON.parse(user)._id,
+      email: JSON.parse(user).email
+    }
+  }
+
+  changeStep(event: number) {
+    this.stepper = event;
+    const formCtrl = this.stepperItems[event - 2]?.formName;
+
+    switch (formCtrl) {
       case 'profileDetailsForm':
-        const bodyInitial = this.profileForm.controls[formName].value;
+        const bodyInitial = this.profileForm.controls[formCtrl].value;
         this.applicantFacade.setInitialForm(bodyInitial);
         break;
       case 'profileArraysForm':
-        const bodyInfo = this.profileForm.controls[formName].value;
-        // this.jobFacade.saveJobInfo(bodyInfo);
+        const bodyInfo = this.profileForm.controls[formCtrl].value;
+        this.applicantFacade.setAdditionalInfo(bodyInitial);
         break;
       case 'profileDocuments':
-        const bodyInterview = this.profileForm.controls[formName].value;
+        const bodyInterview =  this.profileForm.controls[formCtrl].value;
         // this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
         break;
     }
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.subscriptions$.unsubscribe();
   }
 

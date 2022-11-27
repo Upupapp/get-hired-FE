@@ -49,6 +49,24 @@ export class ApplicantEffects {
     );
   });
 
+  createApplicantDetails$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.createApplicant),
+      mergeMap((action) => this.applicantService.createApplicant(action.applicant)
+        .pipe(
+          map((res: any) => {
+            const applicant: Model.Applicant = res.data;
+            return ApplicantActions.createApplicantSuccess({ applicant });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.createApplicantFail({ payload: error }));
+          })
+        )
+      )
+    );
+  });
+
   // updateApplicantProfile$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.updateProfile),

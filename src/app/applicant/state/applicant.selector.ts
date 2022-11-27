@@ -19,6 +19,10 @@ export const getInitialDetails = createSelector(
   (state) => state.initialDetails
 );
 
+export const getAdditionalInfo = createSelector(
+  getApplicantInitState,
+  (state) => state.additionalInfo
+);
 
 // export const applicantLoading = createSelector(
 //   getApplicantInitState,

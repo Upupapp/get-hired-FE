@@ -13,6 +13,8 @@ import { applicantReducer } from './state/applicant.reducer';
 import { ApplicantEffects } from './state/applicant.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { WorkExperienceComponent } from './profile-form/components/work-experience/work-experience.component';
+import { ExperienceQualificationComponent } from './profile-form/components/experience-qualification/experience-qualification.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { StoreModule } from '@ngrx/store';
     DetailsComponent,
     AvatarComponent,
     ProfileFormComponent,
-    ProfileDetailsFormComponent
+    ProfileDetailsFormComponent,
+    WorkExperienceComponent,
+    ExperienceQualificationComponent
   ],
   imports: [
     CommonModule,

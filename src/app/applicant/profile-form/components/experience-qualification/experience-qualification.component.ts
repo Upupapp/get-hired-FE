@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormGroup, FormGroupDirective } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
@@ -8,9 +9,16 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./experience-qualification.component.scss']
 })
 export class ExperienceQualificationComponent implements OnInit {
+  @Input() formGroupName: string;
+  arrayForm: FormGroup
+  workExperience: FormArray;
+  educationalBackground: FormArray;
+  professionalSkills: FormArray;
+  certifications: FormArray;
+
   public skill_requirements: string[] = [];
-  public skillModel: string = "";  
-  
+  public skillModel: string = "";
+
   public month: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
   public year: number[] = new Array(18).fill(0).map((el, i) => 2005 + i)
   public jobType: string[] = ["Full-time", "Part-time"];
@@ -18,7 +26,7 @@ export class ExperienceQualificationComponent implements OnInit {
 
   // work experience form
   public workExperienceArr: {
-    title: string,  
+    title: string,
     job_type: string,
     details: string,
     location: string,
@@ -28,7 +36,7 @@ export class ExperienceQualificationComponent implements OnInit {
     currently_work_here: boolean
   }[] = [
     {
-      title: "Angular Developer",  
+      title: "Angular Developer",
       job_type: "Full-time",
       details: "Lorem Ipsum Sample Details",
       location: "123 Street Sampaloc Manila",
@@ -42,15 +50,15 @@ export class ExperienceQualificationComponent implements OnInit {
   // educational background
   public educationBackgroundArr: {
     level_of_education: string,
-    field_of_study: string, 
-    school_address: string, 
-    school: string, 
+    field_of_study: string,
+    school_address: string,
+    school: string,
     start_date: any,
     end_date: any,
   }[] = [
     {
       level_of_education: "Bachelor’s or equivalent level",
-      field_of_study: "Computer Science",  
+      field_of_study: "Computer Science",
       school_address: "Manila, Philippines",
       school: "De La Salle-College of Saint Benilde",
       start_date: new Date("June 11, 2021"),
@@ -59,17 +67,17 @@ export class ExperienceQualificationComponent implements OnInit {
   ];
 
   public awardsArr: {
-      title: string,  
-      job_type: string, 
-      company: string, 
-      location: string, 
-      details: string, 
-      start_date: any, 
-      end_date: any, 
+      title: string,
+      job_type: string,
+      company: string,
+      location: string,
+      details: string,
+      start_date: any,
+      end_date: any,
       does_not_expire: boolean
     }[] = [
-    { 
-      title: "Team Leader",  
+    {
+      title: "Team Leader",
       job_type: "Full-Time",
       company: "Microsoft LTD",
       location: "Ateneo de Naga University",
@@ -78,11 +86,19 @@ export class ExperienceQualificationComponent implements OnInit {
       end_date: new Date("April 12, 2022"),
       does_not_expire: true
     },
-  ];  
+  ];
 
-  constructor() { }
+  constructor(
+    private rootFormGroup: FormGroupDirective
+  ) { }
 
   ngOnInit(): void {
+    this.arrayForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
+
+    this.workExperience = this.arrayForm.get('workExperience') as FormArray;
+    this.educationalBackground = this.arrayForm.get('educationalBackground') as FormArray;
+    this.professionalSkills = this.arrayForm.get('professionalSkills') as FormArray;
+    this.certifications = this.arrayForm.get('certifications') as FormArray;
   }
 
   addItem(event, arrayItem, field){
@@ -104,7 +120,7 @@ export class ExperienceQualificationComponent implements OnInit {
   // experience
   addMoreExperience(event){
     if(event && !event?.index) this.workExperienceArr.push({
-      title: "",  
+      title: "",
       job_type: "",
       details: "",
       location: "",
@@ -123,7 +139,7 @@ export class ExperienceQualificationComponent implements OnInit {
   addMoreEducation(event){
     if(event && !event?.index) this.educationBackgroundArr.push({
       level_of_education: "",
-      field_of_study: "",  
+      field_of_study: "",
       school_address: "",
       school: "",
       start_date: null,
@@ -138,13 +154,13 @@ export class ExperienceQualificationComponent implements OnInit {
   // awards
   addMoreAwards(event){
     if(event && !event?.index) this.awardsArr.push({
-      title: "",  
-      job_type: "", 
-      company: "", 
-      location: "", 
-      details: "", 
-      start_date: null, 
-      end_date: null, 
+      title: "",
+      job_type: "",
+      company: "",
+      location: "",
+      details: "",
+      start_date: null,
+      end_date: null,
       does_not_expire: false
     });
 

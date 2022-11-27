@@ -8,7 +8,6 @@ import { CoreModule } from '@app-core/core.module';
 import { ApplicantSidebarComponent } from './applicant-sidebar/applicant-sidebar.component';
 import { ApplicantSettingsComponent } from './applicant-settings/applicant-settings.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
-import { AuthModule } from '@main/auth/auth.module';
 import { StoreModule } from '@ngrx/store';
 import { applicantReducer } from '@main/applicant/state/applicant.reducer';
 import { EffectsModule } from '@ngrx/effects';

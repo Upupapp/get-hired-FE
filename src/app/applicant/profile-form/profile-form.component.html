@@ -4,23 +4,29 @@
     <div class="bg-upper-gray">
       <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
       </app-main-stepper>
+
+      <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+        <!-- TODO view profile
+          <button class="btn btn-save-draft me-3" routerLink="/applicant/profile">Profile Preview</button> -->
+        <button class="btn btn-save me-2" type="button" (click)="submitProfile()">
+          Submit Changes</button>
+      </div>
     </div>
 
     <form [formGroup]="profileForm">
-    <div class="p-4" style="margin-top: 10px;">
-      <ng-container *ngIf="stepper === 1">
-        <app-profile-details-form
-        formGroupName="profileDetailsForm"></app-profile-details-form>
-      </ng-container>
+      <div class="p-4" style="margin-top: 10px;">
+        <ng-container *ngIf="stepper === 1">
+          <app-profile-details-form formGroupName="profileDetailsForm"></app-profile-details-form>
+        </ng-container>
 
-      <ng-container *ngIf="stepper === 2">
-        <!-- <app-experience-qualification></app-experience-qualification> -->
-      </ng-container>
+        <ng-container *ngIf="stepper === 2">
+          <app-experience-qualification formGroupName="profileArraysForm"></app-experience-qualification>
+        </ng-container>
 
-      <ng-container *ngIf="stepper === 3">
-        <!-- <app-documents></app-documents> -->
-      </ng-container>
-    </div>
+        <ng-container *ngIf="stepper === 3">
+          <!-- <app-documents></app-documents> -->
+        </ng-container>
+      </div>
     </form>
   </div>
 </div>

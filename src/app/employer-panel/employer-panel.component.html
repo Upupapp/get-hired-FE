@@ -2,7 +2,7 @@
   <div class="d-flex" id="body-row">
 
     <div class="d-none d-md-block" id="sidebar-container">
-      <app-employer-sidebar [user]="user"></app-employer-sidebar>
+      <app-employer-sidebar [user]="employee"></app-employer-sidebar>
     </div>
 
     <div id="main-company-component">
@@ -11,8 +11,7 @@
         [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
       </div>
 
-      <div id="sub-company-component"
-      *ngIf="withCompany && path != '/recruiter'">
+      <div id="sub-company-component">
         <router-outlet></router-outlet>
       </div>
     </div>

@@ -57,6 +57,8 @@ export class InternalEmployerGuard implements CanActivate, CanActivateChild, Can
     const user = await this.asyncLocalStorage.getItem('user');
     const company = JSON.parse(user).companyName;
 
+    console.log(company);
+
     if (!company || company == '') {
       this.router.navigateByUrl('/recruiter/company');
       return false

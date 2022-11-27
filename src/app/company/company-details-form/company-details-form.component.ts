@@ -38,6 +38,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   // public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
 
   company: Model.Company;
+  companyId: string;
 
   public title: string = '';
   public job_type: string = '';
@@ -116,6 +117,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
       this.profileImage = companyLogoUrl;
       this.canView = true;
+
+      this.updateLocalStorage();
     }
   }
 
@@ -151,14 +154,11 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   afterSubmit(event) {
     console.log(event);
     if (event == 'created') {
-      this.updateLocalStorage();
       this.snackBar.open(`Company successfully setup. You can now access other features`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
     } else if (event == 'updated') {
-      this.updateLocalStorage();
-
       this.snackBar.open(`Company successfully Updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
@@ -171,7 +171,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify({
       ...JSON.parse(user),
-      companyName: this.companyDetailsForm.get('companyName').value
+      companyName: this.company.companyName,
+      companyId: this.company.companyId
     }));
   }
 

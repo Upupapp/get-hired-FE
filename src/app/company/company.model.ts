@@ -15,6 +15,7 @@ export interface Company {
   createdBy: string;
   updatedAt: Date;
   companyLogoFile?: File;
+  companyIndustryName? : string;
 }
 
 export interface Dashboard {

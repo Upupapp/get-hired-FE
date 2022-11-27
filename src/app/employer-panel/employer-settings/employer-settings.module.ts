@@ -8,7 +8,7 @@ import { EmployerCompanyDetailsComponent } from './employer-company-details/empl
 import { EmployerCompanyUsersComponent } from './employer-company-users/employer-company-users.component';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EmployerCompanyComponent } from '../employer-company/employer-company.component';
-import { AuthModule } from '@main/auth/auth.module';
+// import { AuthModule } from '@main/auth/auth.module';
 
 const routes: Routes = [
   { path: 'details', component: EmployerCompanyComponent },
@@ -27,9 +27,8 @@ const routes: Routes = [
     CommonModule,
     CompanyModule,
     MatDialogModule,
-    AuthModule,
     SharedModule,
-    AuthModule,
+    // AuthModule,
     RouterModule.forChild(routes)
   ],
   providers:[]
