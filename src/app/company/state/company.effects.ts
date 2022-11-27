@@ -131,4 +131,40 @@ export class CompanyEffects {
       )
     );
   });
+
+  setupList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getSetupList),
+      mergeMap(() => this.companyService.getSetupList()
+        .pipe(
+          map((res: any) => {
+            const setup: Model.Options[] = res.data;
+            return CompanyActions.getSetupListSuccess({ setup });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.getSetupListFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  industryList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getIndustryList),
+      mergeMap(() => this.companyService.getIndustryList()
+        .pipe(
+          map((res: any) => {
+            const industry: Model.Options[] = res.data;
+            return CompanyActions.getIndustryListSuccess({ industry });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.getIndustryListFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
 }

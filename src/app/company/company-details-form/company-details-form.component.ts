@@ -1,12 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmployeeCompany } from '@main/employee/employee.model';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { LoadingComponent } from '@main/shared/components/loading/loading.component';
-import { industries } from '@main/views/company-panel/pages/jobs/utils/jobs-model-interface';
-import { Subscription } from 'rxjs';
 import { CompanyFacade } from '../state/company.facade';
 import * as Model from '../company.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +16,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   animations: [mainAnimations]
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
+  @Output() updateCompany: EventEmitter<any> = new EventEmitter();
+
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -29,22 +29,14 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     }
   };
 
-  private req: Subscription;
-  public companyDetailsForm!: FormGroup;
+  workSetup$ = this.companyFacade.setup$;
+  industry$ = this.companyFacade.industry$;
 
-  workSetup: string[] = ["Hybrid", "Remote", "Onsite"];
-  public workSetupSelected: string = "";
-  public industries: string[] = industries;
-  // public jobLevel: string[] = ["Intern/Student", "Fresher/Entry Level", "Intermediate: 2-3 Years Experience", "Advance: 5 Years+ Experience", "C-Level"]
+  public companyDetailsForm!: FormGroup;
 
   company: Model.Company;
   companyId: string;
-
-  public title: string = '';
-  public job_type: string = '';
-  public job_description: string = '';
-  public job_duties: string = '';
-  public profileImage: any;
+  profileImage: any;
   canView: boolean;
 
   success$ = this.companyFacade.success$
@@ -68,6 +60,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.companyFacade.getCompany();
+    this.companyFacade.getIndustry();
+    this.companyFacade.getSetup();
 
     this.companyDetailsForm = this.formBuilder.group({
       companyEmail: ['', [Validators.required, Validators.email]],
@@ -78,8 +72,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       companyLogoUrl: [''],
       companyName: ['', [Validators.required]],
       companyDetails: [''],
-      industryId: [''],
-      workSetupId: ['', [Validators.required]],
+      industryId: [null],
+      workSetupId: [null, [Validators.required]],
       numberOfEmployee: [0],
       companyLogoFile: []
     });
@@ -134,7 +128,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.companyDetailsForm.valid) {
-      if(this.company && this.company.companyId) {
+      console.log(this.company);
+      if (this.company && this.company.companyId) {
         this.companyFacade.updateCompany({
           ...this.companyDetailsForm.value,
           companyId: this.company.companyId,
@@ -167,25 +162,29 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   updateLocalStorage() {
-    const user  = localStorage.getItem('user');
+    const user = localStorage.getItem('user');
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify({
       ...JSON.parse(user),
       companyName: this.company.companyName,
       companyId: this.company.companyId
     }));
+
+    this.updateCompany.emit({
+      status: true,
+      userId: JSON.parse(user)._id
+    });
   }
 
   formLoading(loading: boolean) {
     if (loading) {
-
       const ref = this.loadingDialog.open(LoadingComponent, {
         disableClose: true,
         data: {
           selfClose: false
         }
       });
-    } else{
+    } else {
       setTimeout(() => this.loadingDialog.closeAll(), 2000);
     }
   }

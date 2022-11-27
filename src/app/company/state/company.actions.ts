@@ -29,6 +29,14 @@ enum AllCompanyActionTypes {
   CompanyDashboardSuccess = '[company] - Company Dashboard Success',
   CompanyDashboardFail = '[company] - Company Dashboard Fail',
 
+  GetSetupList = '[company] - Get Setup List',
+  GetSetupListSuccess = '[company] - Get Setup List Success',
+  GetSetupListFail = '[company] - Get Setup List Fail',
+
+  GetIndustryList = '[company] - Get Industry List',
+  GetIndustryListSuccess = '[company] - Get Industry List Success',
+  GetIndustryListFail = '[company] - Get Industry List Fail',
+
   ResetState = '[company] - Reset State'
 
 }
@@ -122,5 +130,33 @@ export const companyDashboardSuccess = createAction(
 
 export const companyDashboardFail = createAction(
   AllCompanyActionTypes.CompanyDashboardFail,
+  props<{ payload: any }>()
+);
+
+export const getIndustryList = createAction(
+  AllCompanyActionTypes.GetIndustryList
+);
+
+export const getIndustryListSuccess = createAction(
+  AllCompanyActionTypes.GetIndustryListSuccess,
+  props<{ industry: Model.Options[] }>()
+);
+
+export const getIndustryListFail = createAction(
+  AllCompanyActionTypes.GetIndustryListFail,
+  props<{ payload: any }>()
+);
+
+export const getSetupList = createAction(
+  AllCompanyActionTypes.GetSetupList
+);
+
+export const getSetupListSuccess = createAction(
+  AllCompanyActionTypes.GetSetupListSuccess,
+  props<{ setup: Model.Options[] }>()
+);
+
+export const getSetupListFail = createAction(
+  AllCompanyActionTypes.GetSetupListFail,
   props<{ payload: any }>()
 );

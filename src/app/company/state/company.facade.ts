@@ -13,6 +13,8 @@ export class CompanyFacade {
     success$ = this.store.pipe(select(fromfeature.getSuccessMsg));
     dashboard$ = this.store.pipe(select(fromfeature.companyDashboard));
     users$ = this.store.pipe(select(fromfeature.getCompanyUsers));
+    setup$ = this.store.pipe(select(fromfeature.getSetupList));
+    industry$ = this.store.pipe(select(fromfeature.getIndustryList));
 
     constructor(
       private store: Store<State>,
@@ -46,4 +48,11 @@ export class CompanyFacade {
       this.store.dispatch(CompanyAction.getCompanyUsers({ companyId }));
     }
 
+    getIndustry() {
+      this.store.dispatch(CompanyAction.getIndustryList());
+    }
+
+    getSetup() {
+      this.store.dispatch(CompanyAction.getSetupList());
+    }
 }

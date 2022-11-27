@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 
 @Component({
@@ -9,9 +10,17 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 })
 export class EmployerCompanyDetailsComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private employeeFacade: EmployeeFacade
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  onUpdate(event) {
+    if(event.status) {
+      this.employeeFacade.getEmployeeProfile(event.userId)
+    }
   }
 
 }

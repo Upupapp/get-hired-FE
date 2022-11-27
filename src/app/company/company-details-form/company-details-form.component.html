@@ -73,13 +73,13 @@
 			</div>
 		</div>
 
-		<div class="col-12 col-lg-6 mb-3">
+		<div class="col-12 col-lg-6 mb-3" *ngIf="industry$ | async as industries">
 			<div class="title-container mb-3">
 				<label>Type of Industry</label>
 				<select class="form-select" formControlName="industryId">
-					<option selected disabled value="">Select Industry</option>
+					<option selected disabled [ngValue]="null">Select Industry</option>
 					<ng-container *ngFor="let item of industries; let i = index">
-						<option [value]="i">{{item}}</option>
+						<option [value]="item.id">{{item.name}}</option>
 					</ng-container>
 				</select>
 			</div>
@@ -93,13 +93,13 @@
 			</div>
 		</div>
 
-		<div class="col-12 col-lg-6 mb-3">
+		<div class="col-12 col-lg-6 mb-3" *ngIf="workSetup$ | async as workSetup">
 			<div class="title-container mb-3">
 				<label>Work Setup</label>
 				<select class="form-select" formControlName="workSetupId">
-					<option selected disabled value="">Select Work Setup</option>
+					<option selected disabled [ngValue]="null">Select Work Setup</option>
 					<ng-container *ngFor="let item of workSetup; let i = index">
-						<option [value]="i">{{item}}</option>
+						<option [value]="item.id">{{item.name}}</option>
 					</ng-container>
 				</select>
 			</div>

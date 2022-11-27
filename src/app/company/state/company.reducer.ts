@@ -174,4 +174,46 @@ export const companyReducer = createReducer<CompanyState>(
       error: action.payload
     };
   }),
+  on(CompanyActions.getIndustryList, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(CompanyActions.getIndustryListSuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      industry: action.industry,
+      error: null,
+    };
+  }),
+  on(CompanyActions.getIndustryListFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(CompanyActions.getSetupList, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(CompanyActions.getSetupListSuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      setup: action.setup,
+      error: null,
+    };
+  }),
+  on(CompanyActions.getSetupListFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
 );

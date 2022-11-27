@@ -49,7 +49,9 @@ export class EmployerSidebarComponent implements OnInit {
 
   ngOnChanges(changes) {
     if (changes.user) {
+      console.log('Nagchange');
       if(this.user.companyName && this.user.companyName != "") {
+        console.log('Meron na dapat');
         this.sidebarItems = [
           {
             title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
@@ -91,6 +93,7 @@ export class EmployerSidebarComponent implements OnInit {
           }
         ];
       } else {
+        console.log('wala padin');
         this.sidebarItems = [
           {
             title: 'Employer Branding', icon: 'account.png', class: 'accounts',

@@ -64,6 +64,6 @@ const routes: Routes = [
     CompanyModule,
     RouterModule.forChild(routes)
   ],
-  providers: [InternalEmployerGuard]
+  providers: [EmployeeFacade]
 })
 export class EmployerPanelModule { }
