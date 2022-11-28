@@ -22,6 +22,9 @@ export class ExperienceQualificationComponent implements OnInit {
 
   public skill_requirements: string[] = [];
   public skillModel: string = "";
+  public workRendering:boolean = false;
+  public awardRendering:boolean = false;
+  public educRendering:boolean = false;
 
   public month: string[] = month;
   public year: number[] = new Array(18).fill(0).map((el, i) => 2005 + i);
@@ -76,19 +79,59 @@ export class ExperienceQualificationComponent implements OnInit {
   addMeToArray(event: { formArrayName: string; fg: FormGroup, index:number }) {
     switch (event.formArrayName) {
       case 'workExperience':
-        this.workExperience.controls.unshift(event.fg);
+
+        this.workRendering = true;
+        this.workExperience.push(event.fg);
+        setTimeout(() => { 
+          this.workRendering = false 
+        }, 300);
+
         break;
       case 'educBg':
-        this.educationalBackground.controls.unshift(event.fg);
+
+        this.educRendering = true;
+        this.educationalBackground.push(event.fg);
+        setTimeout(() => { 
+          this.educRendering = false 
+        }, 300);
+
         break;
       case 'cert':
-        this.certifications.controls.unshift(event.fg);
+
+        this.awardRendering = true;
+        this.certifications.push(event.fg);
+        setTimeout(() => { 
+          this.awardRendering = false 
+        }, 300);
+
         break;
     }
   }
 
-  removeMeToArray(event: number) {
-    this.workExperience.removeAt(event);
+  removeMeToArray(event: { formArrayName: string, index:number }) {
+    switch (event.formArrayName) {
+      case 'workExperience':
+
+        this.workRendering = true;
+        this.workExperience.removeAt(event.index);
+        setTimeout(() => { 
+          this.workRendering = false 
+        }, 300);
+
+        break;
+      case 'educBg':
+
+        this.educRendering = true;
+        this.educationalBackground.removeAt(event.index);
+        setTimeout(() => { 
+          this.educRendering = false 
+        }, 300);
+
+        break;
+      case 'cert':
+        this.certifications.removeAt(event.index);
+        break;
+    }
   }
 
   newWorkExperience(): FormGroup {

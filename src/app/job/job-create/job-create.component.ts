@@ -40,6 +40,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   initial$: any;
   info$: any;
+  status: any = 1;
 
   stepperItems: any[] = [
     {
@@ -98,6 +99,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.editJob$.subscribe((data: any) => {
       if (data) {
         this.setFormGroup(data);
+        this.status = data.jobStatusId;
       }
     })
 

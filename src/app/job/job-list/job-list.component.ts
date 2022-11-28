@@ -154,7 +154,7 @@ export class JobListComponent implements OnInit {
     .afterClosed()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
-
+      this.deleteRow(result)
     });
   }
 
@@ -173,7 +173,7 @@ export class JobListComponent implements OnInit {
       .subscribe(result => {
         if (result == 1) {
           // TODO delete
-          this.jobFacade.changeJobStatus(4, event.data.jobId);
+          this.jobFacade.changeJobStatus(4, event.hasOwnProperty('data') ? event.data.jobId : event.jobId);
         }
       });
   }

@@ -12,7 +12,7 @@ import { month } from '@app-shared/mock.data';
 })
 export class EducationalBackgroundComponent implements OnInit {
   @Input() controlIndex: number;
-  @Input() bindFG: AbstractControl;
+  @Input() data: any;
   @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
   @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
 
@@ -30,14 +30,14 @@ export class EducationalBackgroundComponent implements OnInit {
   ngOnInit(): void {
     this.applicantFacade.getLevel();
     this.educBgForm = this.fb.group({
-      levelOfEducation: new FormControl(null),
-      fieldOfStudy: new FormControl(null),
-      school: new FormControl(null, Validators.required),
-      startMonth: new FormControl(null),
-      startYear: new FormControl(null),
-      endMonth: new FormControl(null),
-      endYear: new FormControl(null),
-      schoolAddress: new FormControl(null)
+      levelOfEducation: new FormControl(this.data?.levelOfEducation),
+      fieldOfStudy: new FormControl(this.data?.fieldOfStudy),
+      school: new FormControl(this.data?.school, Validators.required),
+      startMonth: new FormControl(this.data?.startMonth),
+      startYear: new FormControl(this.data?.startYear),
+      endMonth: new FormControl(this.data?.endMonth),
+      endYear: new FormControl(this.data?.endYear),
+      schoolAddress: new FormControl(this.data?.schoolAddress)
     });
   }
 
@@ -48,6 +48,6 @@ export class EducationalBackgroundComponent implements OnInit {
   }
 
   removeEducationBackground(index){
-    this.removeArrayFormArray.emit(index);
+    this.removeArrayFormArray.emit({ formArrayName: 'educBg', index:index });
   }
 }
