@@ -34,7 +34,7 @@ export class ApplicantFacade {
     this.store.dispatch(ApplicantAction.getApplicant({ applicantId }));
   }
 
-  createApplicant(applicant: Model.Applicant) {
+  saveApplicant(applicant: Model.Applicant) {
     this.store.dispatch(ApplicantAction.saveApplicant({ applicant }));
   }
 

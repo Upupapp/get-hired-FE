@@ -52,6 +52,9 @@ export class ProfileFormComponent implements OnInit {
 
   public stepper: number = 1;
 
+  applicant$ = this.applicantFacade.applicantDetails$
+    .pipe().subscribe(this.mappedApplicant.bind(this));
+
   constructor(
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
@@ -129,10 +132,16 @@ export class ProfileFormComponent implements OnInit {
       console.log(applicant);
       console.log(isProfileReady);
 
-      // this.applicantFacade.createApplicant({
-      //   ...applicant,
-      //   isProfileReady
-      // })
+      this.applicantFacade.saveApplicant({
+        ...applicant,
+        isProfileReady
+      })
+  }
+
+  mappedApplicant(data) {
+    if(data) {
+      this.applicantId = data.applicantProfileId;
+    }
   }
 
   async formatProfile(): Promise<Model.Applicant> {
@@ -144,7 +153,8 @@ export class ProfileFormComponent implements OnInit {
       ...profileArraysForm.value,
       ...profileDocuments.value,
       userId: JSON.parse(user)._id,
-      email: JSON.parse(user).email
+      email: JSON.parse(user).email,
+      applicantProfileId: this.applicantId
     }
   }
 
