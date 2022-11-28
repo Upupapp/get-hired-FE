@@ -136,7 +136,8 @@
 						 && header?.col_name !== 'action'
 						 && header?.type !== 'date'
 						 && header?.type !== 'action_button'
-						 && header?.col_name !== 'status'" [ngClass]="header?.type === 'hash_code' ? 'text-primary' : ''">
+						 && header?.col_name !== 'status'
+             && header?.col_name !== 'groups'" [ngClass]="header?.type === 'hash_code' ? 'text-primary' : ''">
               <!-- TRUE | FALSE VALUE CONVERT TO YES OR NO -->
               <span *ngIf="header?.type === 'currency'">$</span>
               {{
@@ -154,6 +155,12 @@
                 <img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
                 {{ header?.button_title }}
               </button>
+            </span>
+
+            <span *ngIf="header?.col_name === 'groups'">
+              <p class="group--label" *ngFor="let header of data[header?.col_name];">
+                <span>{{header.group_name}}</span>
+              </p>
             </span>
 
             <span *ngIf="header?.type === 'date'">

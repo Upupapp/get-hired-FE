@@ -7,7 +7,7 @@ export const environment = {
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
   api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
-  //api_url: 'http://localhost:3000/api',
+  // api_url: 'http://localhost:3000/api',
   app_url: 'http://localhost:4200',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
