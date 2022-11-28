@@ -1,29 +1,20 @@
 <div class="employee-container ">
 	<div class="card"
 	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
-		<!-- <div class="employee-details w-100">
-			<h4 class="employee-title">
-				Add New Contact
-
-				<button class="btn btn-import-csv"
-				(click)="importContact = true">CSV <img src="/assets/images/placeholder/icons/import-csv.png" style="width: 20px" class="ms-2"></button>
-			</h4>
-		</div> -->
-
 		<div class="employee-details row">
 			<div class="col-12 col-md-6 px-0">
 				<button class="btn btn-add w-100" 
-				[ngClass]="importContact ? 'inactive' : ''"
-				(click)="importContact = false">
-					New Contact
+				[ngClass]="importCandidate ? 'inactive' : ''"
+				(click)="importCandidate = false">
+					New Candidate
 				</button>
 			</div>
 
 			<div class="col-12 col-md-6 px-0">
 				<button class="btn btn-add w-100"
-				[ngClass]="!importContact ? 'inactive' : ''"
-				(click)="importContact = true">
-					Import Contact
+				[ngClass]="!importCandidate ? 'inactive' : ''"
+				(click)="importCandidate = true">
+					Import Candidate
 				</button>
 			</div>
 		</div>
@@ -32,20 +23,20 @@
 			<div class="share-container text-center"
 			style="position: relative;" 
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
-				<div class="row pt-4" *ngIf="importContact">
+				<div class="row pt-4" *ngIf="importCandidate">
 					<div class="col-12 col-md-12 text-start mb-2">
 						<h4 class="title-add">Uploading CSV file</h4>
-						<h5 class="title-description">Add new contact by uploading .csv file. You can <a href="../../../../../../../assets/files/import-contact.csv" download="import-contact.csv">download the Ttemplate</a> here for reference</h5>
+						<h5 class="title-description">Add new candidate by uploading .csv file. You can <a href="../../../../../../../assets/files/import-contact.csv" download="import-candidate.csv">download the Ttemplate</a> here for reference</h5>
 					</div>
 				</div>
 
-				<ng-container *ngIf="!importContact && !importing">
+				<ng-container *ngIf="!importCandidate && !importing">
 					<!-- Error Message -->
 					<form class="px-3" 
 					[@animate]="{value:'*', params:{ x:'-10px', delay:'200ms' }}"
-					[formGroup]="contactForm">
-						<h5 class="title-add text-start">Contact Details</h5>
-						<h5 class="title-description text-start">Provide the contact details necessary for the person you want to invite</h5>
+					[formGroup]="candidateForm">
+						<h5 class="title-add text-start">Candidate Details</h5>
+						<h5 class="title-description text-start">Provide the candidate details necessary for the person you want to invite</h5>
 						<div class="row">
 							<div class="col-12 col-md-6 form-group mt-3">
 								<label class="mb-2">First Name <i class="text-danger">*</i></label>
@@ -101,14 +92,14 @@
 
 								<button type="button" 
 								class="btn me-1 btn-primary" 
-								(click)="submitForm()" [disabled]="!contactForm.valid">Add 
+								(click)="submitForm()" [disabled]="!candidateForm.valid">Add 
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>
 					</form> 
 				</ng-container>
 
-				<ng-container *ngIf="importContact">
+				<ng-container *ngIf="importCandidate">
 					<div class="text-center"
 					[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}"
 					style="min-height:50px" 
@@ -179,7 +170,7 @@
 								    </div>
 								</div>
 
-								<form [formGroup]="importContactForm" *ngIf="document">
+								<form [formGroup]="importCandidateForm" *ngIf="document">
 									<div class="form-group mt-4">
 										<mat-form-field style="width: 100%">
 											<input type="text" placeholder="Group Name" aria-label="Text" matInput formControlName="groupName" [matAutocomplete]="auto">
@@ -192,7 +183,7 @@
 									</div>
 								</form>
 
-								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading || !importContactForm.valid">Upload
+								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading || !importCandidateForm.valid">Upload
 									<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>
@@ -214,17 +205,17 @@
 				<div class="text-center" 
 				[@animate]="{value:'*', params:{ y:'-20px', delay:'300ms' }}">
 					<h5 class="title-congrats">Congratulations! </h5>
-					<p class="title-congrats-description">Congratulation for adding a new contact to onboard. <br>You can still add more contact.</p>
+					<p class="title-congrats-description">Congratulation for adding a new candidate to onboard. <br>You can still add more candidate.</p>
 
-					<div *ngIf="!importContact; else multiple">
-						<div *ngIf="contactList">
+					<div *ngIf="!importCandidate; else multiple">
+						<div *ngIf="candidateList">
 							<div class="invites">
 								<div class="invites--content">
 									<div class="invites--status">
-										<p><b>Email Address: </b>{{contactList?.email}}</p>
-										<p><b>Status: </b>{{contactList?.message}}</p>
+										<p><b>Email Address: </b>{{candidateList?.email}}</p>
+										<p><b>Status: </b>{{candidateList?.message}}</p>
 									</div>
-									<div class="action-button" *ngIf="contactList?.type === 1 || contactList?.type === 4">
+									<div class="action-button" *ngIf="candidateList?.type === 1 || candidateList?.type === 4">
 										<button class="btn btn-status">Claim Ownership</button>
 										<button class="btn btn-status">Cancel</button>
 									</div>
@@ -233,8 +224,8 @@
 						</div>
 					</div>
 					<ng-template #multiple>
-						<div *ngIf="contactList?.length > 0">
-							<div class="invites" *ngFor="let item of contactList">
+						<div *ngIf="candidateList?.length > 0">
+							<div class="invites" *ngFor="let item of candidateList">
 								<div class="invites--content">
 									<div class="invites--status">
 										<p><b>Email Address: </b>{{item.email}}</p>
@@ -252,7 +243,7 @@
 					<div class="mt-4">
 						<div style="position: relative;" class="mt-2 w-100 text-center">
 							<button class="btn me-3 btn-primary invite-other hvr-grow" 
-							(click)="addMoreContact()" style="padding: 10px 20px !important;">Add more contact</button>
+							(click)="addMoreContact()" style="padding: 10px 20px !important;">Add more candidate</button>
 						</div>
 					</div>
 				</div>

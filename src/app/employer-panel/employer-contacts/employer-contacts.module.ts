@@ -6,6 +6,7 @@ import { ContactListComponent } from './contact-list/contact-list.component';
 import { CandidateListComponent } from './candidate-list/candidate-list.component';
 import { ImportAddContactComponent } from './contact-list/dialogs/import-add-contact/import-add-contact.component';
 import { SharedModule } from '@app-shared/shared.module';
+import { ImportAddCandidateComponent } from './candidate-list/dialogs/import-add-candidate/import-add-candidate.component';
 
 const routes: Routes = [
   {
@@ -25,7 +26,8 @@ const routes: Routes = [
     EmployerContactsComponent,
     ContactListComponent,
     CandidateListComponent,
-    ImportAddContactComponent
+    ImportAddContactComponent,
+    ImportAddCandidateComponent
   ],
   imports: [
     CommonModule,
