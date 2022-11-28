@@ -75,7 +75,6 @@ export class ImportAddContactComponent implements OnInit {
     this.groupData$ = this.groupState.pipe(select(state => state.group));
     this.req =  this.contactData$.subscribe((onboard: ContactState) => {
       this.loading = onboard.pending;
-      console.log(onboard, "onboard");
       if(onboard.contactRes){
         this.contactList = onboard.contactRes;
         this.isLoading = false;
@@ -86,14 +85,14 @@ export class ImportAddContactComponent implements OnInit {
           panelClass:'success-snackbar'
         });
 
-        if(this.importContact){
+        if(!this.importContact){
           this.contactState.dispatch({
-            type:ContactActionTypes.SAVE_CONTACT_MULTIPLE_SUCCESS,
+            type:ContactActionTypes.SAVE_CONTACT_SUCCESS,
             payload: null
           });
         } else {
           this.contactState.dispatch({
-            type:ContactActionTypes.SAVE_CONTACT_MULTIPLE,
+            type:ContactActionTypes.SAVE_CONTACT_MULTIPLE_SUCCESS,
             payload: null
           });
         }
@@ -256,11 +255,11 @@ export class ImportAddContactComponent implements OnInit {
         let headersRow = this.getHeaderArray(csvRecordsArray);
 
         this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-        console.log(this.records, "records")
+        // console.log(this.records, "records")
       };
 
       reader.onerror = function () {
-        console.log('error is occured while reading file!');
+        // console.log('error is occured while reading file!');
       };
 
     } else {
@@ -314,8 +313,7 @@ export class ImportAddContactComponent implements OnInit {
       let data = {
         contacts: [...this.records]
       }
-      console.log(data, "contact multiple data")
-      if(this.importing) {
+      if(this.importContact) {
         this.contactState.dispatch({
           type: ContactActionTypes.SAVE_CONTACT_MULTIPLE,
           payload: data
@@ -350,7 +348,6 @@ export class ImportAddContactComponent implements OnInit {
   }
 
   getJobList(){
-    console.log(this.localData.companyId);
     this.contactState.dispatch({
       type:ContactActionTypes.GET_CONTACT_JOB,
       payload: this.localData.companyId
