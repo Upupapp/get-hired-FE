@@ -24,6 +24,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { EmptySectionComponent } from './components/empty-section/empty-section.component';
 import { UnderConstructionComponent } from './components/under-construction/under-construction.component';
+import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component';
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -40,7 +41,8 @@ const classesToInclude: any[] = [
   AddAccessModalComponent,
   TabSelectorsComponent,
   EmptySectionComponent,
-  UnderConstructionComponent
+  UnderConstructionComponent,
+  SuccessDialogComponent
 ];
 
 @NgModule({
