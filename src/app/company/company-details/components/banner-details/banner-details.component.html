@@ -1,18 +1,33 @@
 <div class="px-3" [hidden]="!bannerEdit">
-  <app-file-upload id="upload-banner" (upload)="onUpload($event)" label="Select Banner Image" [labelTop]="false">
+  <app-file-upload
+    id="upload-banner"
+    (upload)="onUpload($event)"
+    label="Select Banner Image"
+    [labelTop]="false"
+  >
   </app-file-upload>
 </div>
 
-<div class="main-banner" [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}" style="min-height: 350px;">
-  <img [src]="bannerImage ? bannerImage?.file : '/assets/images/placeholder/job-post-banner.png'"
-    class="banner-image-main" [ngStyle]="{
-    'height': bannerHeight + 'px'
-  }">
+<div
+  class="main-banner"
+  [@animate]="{ value: '*', params: { y: '-10px', delay: 150 + 'ms' } }"
+  style="min-height: 350px"
+>
+  <img
+    [src]="
+      bannerImage
+        ? bannerImage?.file
+        : '/assets/images/placeholder/job-post-banner.png'
+    "
+    class="banner-image-main"
+    [ngStyle]="{
+      height: bannerHeight + 'px'
+    }"
+  />
 
   <div class="row bg-details" id="bg-details">
     <div class="col-12 col-lg-12">
       <div class="card-transparent text-center">
-
         <!-- <button class="float-end btn edit-details" *ngIf="userRole != '3'"
         (click)="redirectToEdit()" type="button">
           <img src="/assets/images/placeholder/icons/company-edit-2.png" style="height: 12px; margin-top: -3px;"
@@ -20,38 +35,70 @@
         </button> -->
 
         <div class="dropdown float-end">
-          <button class=" btn edit-details" type="button" id="editCompany" data-bs-toggle="dropdown">
-            <img src="/assets/images/placeholder/icons/company-edit-2.png" style="height: 12px; margin-top: -3px;"
-              class="me-2">Edit
+          <button
+            class="btn edit-details"
+            type="button"
+            id="editCompany"
+            data-bs-toggle="dropdown"
+          >
+            <img
+              src="/assets/images/placeholder/icons/company-edit-2.png"
+              style="height: 12px; margin-top: -3px"
+              class="me-2"
+            />Edit
           </button>
 
           <div class="dropdown-menu" aria-labelledby="editCompany">
-            <div class="dropdown-item" (click)="redirectToEdit('banner')">Update Banner</div>
-            <div class="dropdown-item" (click)="redirectToEdit('edit')">Edit Details</div>
+            <div class="dropdown-item" (click)="redirectToEdit('banner')">
+              Update Banner
+            </div>
+            <div class="dropdown-item" (click)="redirectToEdit('edit')">
+              Edit Details
+            </div>
           </div>
         </div>
 
-        <img [src]="details.companyLogoUrl" class="company-logo mt-3">
-
+        <img [src]="details.companyLogoUrl" class="company-logo mt-3" />
 
         <div class="row">
           <div class="col-12 col-lg-8 offset-lg-2">
             <h5 class="title-company-description">
-              {{ details.companyName }} ({{ details.companyIndustryName}})</h5>
-            <p class="title-verified">Verified employer
-              <img src="/assets/images/placeholder/icons/verified-employer.png" style="height: 40px">
+              {{ details.companyName }} ({{ details.companyIndustryName }})
+            </h5>
+            <p class="title-verified">
+              Verified employer
+              <img
+                src="/assets/images/placeholder/icons/verified-employer.png"
+                style="height: 40px"
+              />
             </p>
 
-            <div class="px-lg-5">
+            <div class="px-lg-5 details" *ngIf="seeMore == 2">
               <h5 class="title-company">
-                {{details?.companyDetails}}
+                {{ details?.companyDetails | slice: 0:50 }}
+                <span
+                  *ngIf="details?.companyDetails.length > 50"
+                  (click)="showMore(1)"
+                  >...Show More</span
+                >
               </h5>
             </div>
-            <button class="btn btn-review" *ngIf="userRole == '3'">Write a review</button>
+            <div class="px-lg-5 details" *ngIf="seeMore == 1">
+              <h5 class="title-company">
+                {{ details?.companyDetails }}
+                <span
+                  *ngIf="details?.companyDetails.length > 50"
+                  (click)="showMore(2)"
+                  >Show Less</span
+                >
+              </h5>
+            </div>
+            <button class="btn btn-review" *ngIf="userRole == '3'">
+              Write a review
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 </div>

@@ -17,6 +17,8 @@ export class BannerDetailsComponent implements OnInit {
   public bannerEdit: boolean = false;
   public bannerHeight: number = 400;
 
+  seeMore = 2;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute
@@ -51,5 +53,9 @@ export class BannerDetailsComponent implements OnInit {
     else if(type === 'edit') 
       this.router.navigate(['../settings'], { relativeTo: this.route });
   }
+
+  showMore(event: any) {
+    this.seeMore = event;
+   }
 
 }
