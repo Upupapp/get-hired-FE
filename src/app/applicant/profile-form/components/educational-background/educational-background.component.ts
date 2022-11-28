@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { month } from '@app-shared/mock.data';
@@ -30,14 +30,14 @@ export class EducationalBackgroundComponent implements OnInit {
   ngOnInit(): void {
     this.applicantFacade.getLevel();
     this.educBgForm = this.fb.group({
-      levelOfEducation: this.bindFG.get('levelOfEducation'),
-      fieldOfStudy: this.bindFG.get('fieldOfStudy'),
-      school: this.bindFG.get('school'),
-      startMonth: this.bindFG.get('startMonth'),
-      startYear: this.bindFG.get('startYear'),
-      endMonth: this.bindFG.get('endMonth'),
-      endYear: this.bindFG.get('endYear'),
-      schoolAddress: this.bindFG.get('schoolAddress')
+      levelOfEducation: new FormControl(null),
+      fieldOfStudy: new FormControl(null),
+      school: new FormControl(null, Validators.required),
+      startMonth: new FormControl(null),
+      startYear: new FormControl(null),
+      endMonth: new FormControl(null),
+      endYear: new FormControl(null),
+      schoolAddress: new FormControl(null)
     });
   }
 

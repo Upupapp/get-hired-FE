@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AbstractControl, FormGroup, FormBuilder } from '@angular/forms';
+import { AbstractControl, FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { month } from '@app-shared/mock.data';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
@@ -28,13 +28,13 @@ export class AwardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.certForm = this.fb.group({
-      certTitle: this.bindFG.get('certTitle'),
-      noExpiry: this.bindFG.get('noExpiry'),
-      startMonth: this.bindFG.get('startMonth'),
-      startYear: this.bindFG.get('startYear'),
-      endMonth: this.bindFG.get('endMonth'),
-      endYear: this.bindFG.get('endYear'),
-      details: this.bindFG.get('details')
+      certTitle: new FormControl(null, Validators.required),
+      noExpiry: new FormControl(null),
+      startMonth: new FormControl(null),
+      startYear: new FormControl(null),
+      endMonth: new FormControl(null),
+      endYear: new FormControl(null),
+      details: new FormControl(null),
     });
   }
 

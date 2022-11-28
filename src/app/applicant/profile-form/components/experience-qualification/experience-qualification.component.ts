@@ -73,13 +73,16 @@ export class ExperienceQualificationComponent implements OnInit {
     controlArray.removeAt(index);
   }
 
-  addMeToArray(event: { formArrayName: string; fg: FormGroup }) {
+  addMeToArray(event: { formArrayName: string; fg: FormGroup, index:number }) {
     switch (event.formArrayName) {
       case 'workExperience':
         this.workExperience.controls.unshift(event.fg);
         break;
       case 'educBg':
         this.educationalBackground.controls.unshift(event.fg);
+        break;
+      case 'cert':
+        this.certifications.controls.unshift(event.fg);
         break;
     }
   }

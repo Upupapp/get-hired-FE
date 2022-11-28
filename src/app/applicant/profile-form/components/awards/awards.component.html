@@ -15,7 +15,8 @@
               <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px"
                 (click)="removeAward(controlIndex)">
             </span>
-            <button class="float-end btn btn-save-draft" type="button" (click)="addAward()" *ngIf="controlIndex == 0">
+            <button class="float-end btn btn-save-draft" type="button" [disabled]="!certForm.valid"
+            (click)="addAward()" *ngIf="controlIndex == 0">
               Add Item</button>
           </div>
         </div>

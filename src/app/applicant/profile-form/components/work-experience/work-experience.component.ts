@@ -30,23 +30,36 @@ export class WorkExperienceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.bindFG);
+    // this.workForm = this.fb.group({
+    //   jobTitle: this.bindFG.get('jobTitle'),
+    //   location: this.bindFG.get('location'),
+    //   isCurrentJob: this.bindFG.get('isCurrentJob'),
+    //   companyName: this.bindFG.get('companyName'),
+    //   jobTypeId: this.bindFG.get('jobTypeId'),
+    //   startMonth: this.bindFG.get('startMonth'),
+    //   startYear: this.bindFG.get('startYear'),
+    //   endMonth: this.bindFG.get('endMonth'),
+    //   endYear: this.bindFG.get('endYear'),
+    //   details: this.bindFG.get('details')
+    // });
     this.workForm = this.fb.group({
-      jobTitle: this.bindFG.get('jobTitle'),
-      location: this.bindFG.get('location'),
-      isCurrentJob: this.bindFG.get('isCurrentJob'),
-      companyName: this.bindFG.get('companyName'),
-      jobTypeId: this.bindFG.get('jobTypeId'),
-      startMonth: this.bindFG.get('startMonth'),
-      startYear: this.bindFG.get('startYear'),
-      endMonth: this.bindFG.get('endMonth'),
-      endYear: this.bindFG.get('endYear'),
-      details: this.bindFG.get('details')
+      jobTitle: new FormControl(null, Validators.required),
+      location: new FormControl(null),
+      isCurrentJob: new FormControl(null),
+      companyName: new FormControl(null, Validators.required),
+      jobTypeId: new FormControl(null),
+      startMonth: new FormControl(null),
+      startYear: new FormControl(null),
+      endMonth: new FormControl(null),
+      endYear: new FormControl(null),
+      details: new FormControl(null)
     });
   }
 
   addWorkExp() {
     this.arrayFormArray.emit({
-      formArrayName: 'workExperience', fg: this.workForm
+      formArrayName: 'workExperience', fg: this.workForm, index: this.controlIndex
     });
   }
 

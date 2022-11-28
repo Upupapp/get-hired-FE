@@ -11,9 +11,9 @@ enum AllFeatureActionTypes {
   SetAdditionalInfo = '[applicant] - Set Additional Info',
   SetProfileDocuments = '[applicant] - Set Profile Documents',
 
-  CreateApplicant = '[applicant] - Create Applicant status',
-  CreateApplicantSuccess = '[applicant] -Create Applicant Success',
-  CreateApplicantFail = '[applicant] - Create Applicant Fail',
+  SaveApplicant = '[applicant] - Save Applicant status',
+  SaveApplicantSuccess = '[applicant] -Save Applicant Success',
+  SaveApplicantFail = '[applicant] - Save Applicant Fail',
 
   // GetIndustryList = '[applicant] - Get Industry List',
   // GetIndustryListSuccess = '[applicant] - Get Industry List Success',
@@ -90,18 +90,18 @@ export const setAdditionalInfo = createAction(
   props<{ additionalInfo: Model.AdditionalInfo }>()
 );
 
-export const createApplicant = createAction(
-  AllFeatureActionTypes.CreateApplicant,
+export const saveApplicant = createAction(
+  AllFeatureActionTypes.SaveApplicant,
   props<{ applicant: Model.Applicant }>()
 );
 
-export const createApplicantSuccess = createAction(
-  AllFeatureActionTypes.CreateApplicantSuccess,
+export const saveApplicantSuccess = createAction(
+  AllFeatureActionTypes.SaveApplicantSuccess,
   props<{ applicant: Model.Applicant }>()
 );
 
-export const createApplicantFail = createAction(
-  AllFeatureActionTypes.CreateApplicantFail,
+export const saveApplicantFail = createAction(
+  AllFeatureActionTypes.SaveApplicantFail,
   props<{ payload: any }>()
 );
 

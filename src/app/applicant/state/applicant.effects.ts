@@ -51,16 +51,16 @@ export class ApplicantEffects {
 
   createApplicantDetails$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ApplicantActions.createApplicant),
-      mergeMap((action) => this.applicantService.createApplicant(action.applicant)
+      ofType(ApplicantActions.saveApplicant),
+      mergeMap((action) => this.applicantService.saveApplicant(action.applicant)
         .pipe(
           map((res: any) => {
             const applicant: Model.Applicant = res.data;
-            return ApplicantActions.createApplicantSuccess({ applicant });
+            return ApplicantActions.saveApplicantSuccess({ applicant });
           }),
           catchError((err) => {
             const { error } = err.error;
-            return of(ApplicantActions.createApplicantFail({ payload: error }));
+            return of(ApplicantActions.saveApplicantFail({ payload: error }));
           })
         )
       )

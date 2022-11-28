@@ -35,7 +35,7 @@ export class ApplicantFacade {
   }
 
   createApplicant(applicant: Model.Applicant) {
-    this.store.dispatch(ApplicantAction.createApplicant({ applicant }));
+    this.store.dispatch(ApplicantAction.saveApplicant({ applicant }));
   }
 
   setInitialForm(initialDetails: Model.InitialDetails) {

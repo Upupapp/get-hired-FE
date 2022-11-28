@@ -19,8 +19,12 @@ export class ApplicantService {
     );
   }
 
-  createApplicant(profile: Model.Applicant) {
-    return this.baseService.post<Model.Applicant>(`${this.applicantUrl}/createprofile`, profile);
+  saveApplicant(profile: Model.Applicant) {
+    if(profile.applicantProfileId) {
+      return this.baseService.put<Model.Applicant>(`${this.applicantUrl}/updateprofile`, profile);
+    } else {
+      return this.baseService.post<Model.Applicant>(`${this.applicantUrl}/createprofile`, profile);
+    }
   }
 
   getSetupList() {

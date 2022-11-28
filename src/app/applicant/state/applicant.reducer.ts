@@ -74,14 +74,14 @@ export const applicantReducer = createReducer<ApplicantState>(
       succesMsg: null,
     };
   }),
-  on(ApplicantActions.createApplicant, (state): ApplicantState => {
+  on(ApplicantActions.saveApplicant, (state): ApplicantState => {
     return {
       ...state,
       loading: true,
       succesMsg: null,
     };
   }),
-  on(ApplicantActions.createApplicantSuccess, (state, action): ApplicantState => {
+  on(ApplicantActions.saveApplicantSuccess, (state, action): ApplicantState => {
     return {
       ...state,
       selected: action.applicant,
@@ -89,7 +89,7 @@ export const applicantReducer = createReducer<ApplicantState>(
       succesMsg: 'created'
     };
   }),
-  on(ApplicantActions.createApplicantFail, (state, action): ApplicantState => {
+  on(ApplicantActions.saveApplicantFail, (state, action): ApplicantState => {
     return {
       ...state,
       loading: false,
