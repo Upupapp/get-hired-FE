@@ -22,6 +22,7 @@ import { CSVDataRecord } from './import-contact-model';
 export class ImportAddContactComponent implements OnInit {
 
   public contactForm: FormGroup;
+  public importContactForm: FormGroup;
   public submitting: boolean = false;
   public importContact: boolean = false;
   public importing: boolean = false;
@@ -68,6 +69,10 @@ export class ImportAddContactComponent implements OnInit {
       mobileNumber: [''],
       address: [''],
       jobId: ['', [Validators.required]],
+      groupName: ['', [Validators.required]],
+      groupId: ['']
+    });
+    this.importContactForm = this.formBuilder.group({
       groupName: ['', [Validators.required]],
       groupId: ['']
     });
@@ -310,7 +315,10 @@ export class ImportAddContactComponent implements OnInit {
   }
 
   saveOnboardMultiple(){
+    this.importContactForm.get("groupName")?.patchValue(this.setGroupName(this.importContactForm.controls['groupName'].value));
+    this.importContactForm.get("groupId")?.patchValue(this.setGroupId(this.importContactForm.controls['groupName'].value));
       let data = {
+        ...this.importContactForm.value,
         contacts: [...this.records]
       }
       if(this.importContact) {

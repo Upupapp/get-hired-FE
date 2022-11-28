@@ -82,7 +82,6 @@
 						</div>
 
 						<div class="form-group mt-4">
-							<!-- <label class="mb-2">Group <i class="text-danger">*</i></label> -->
 							<mat-form-field style="width: 100%">
 								<input type="text" placeholder="Group Name" aria-label="Text" matInput formControlName="groupName" [matAutocomplete]="auto">
 								<mat-autocomplete #auto="matAutocomplete">
@@ -91,7 +90,6 @@
 								  </mat-option>
 								</mat-autocomplete>
 							</mat-form-field>
-	
 						</div>
 
 						
@@ -180,6 +178,19 @@
 								        </div>
 								    </div>
 								</div>
+
+								<form [formGroup]="importContactForm" *ngIf="document">
+									<div class="form-group mt-4">
+										<mat-form-field style="width: 100%">
+											<input type="text" placeholder="Group Name" aria-label="Text" matInput formControlName="groupName" [matAutocomplete]="auto">
+											<mat-autocomplete #auto="matAutocomplete">
+											  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+												{{ option }}
+											  </mat-option>
+											</mat-autocomplete>
+										</mat-form-field>
+									</div>
+								</form>
 
 								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading">Upload
 									<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
