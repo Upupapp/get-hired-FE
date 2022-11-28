@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { AbstractControl, FormGroup, FormBuilder } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { month } from '@app-shared/mock.data';
+import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 
 @Component({
   selector: 'app-awards-details',
@@ -8,55 +11,41 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./awards.component.scss']
 })
 export class AwardsComponent implements OnInit {
-  @Input() awards: {
-    title: string,  
-    job_type: string, 
-    company: string, 
-    location: string, 
-    details: string, 
-    start_date: any, 
-    end_date: any, 
-    does_not_expire: boolean
-  };
+  @Input() controlIndex: number;
+  @Input() bindFG: AbstractControl;
+  @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
+  @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
 
-  @Input() index : number = 1;
-  @Input() length: number = 1;
+  certForm: FormGroup;
 
-  @Output() addAwardEvent: EventEmitter<any> = new EventEmitter();
-
-  public month: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  public month: string[] = month;
   public year: number[] = new Array(30).fill(0).map((el, i) => 1995 + i);
-  public start_date: {
-    month: string,
-    year: number
-  }
-  public end_date: {
-    month: string,
-    year: number
-  }
 
-  constructor() { }
+  constructor(
+    private fb: FormBuilder,
+    private applicantFacade: ApplicantFacade,
+  ) { }
 
   ngOnInit(): void {
-    this.start_date  = {
-      month: this.month[this.awards?.start_date?.getMonth()],  
-      year: this.awards?.start_date?.getFullYear()
-    }
-
-    this.end_date  = {
-      month: this.month[this.awards?.end_date?.getMonth()],  
-      year: this.awards?.end_date?.getFullYear()
-    }
+    this.certForm = this.fb.group({
+      certTitle: this.bindFG.get('certTitle'),
+      noExpiry: this.bindFG.get('noExpiry'),
+      startMonth: this.bindFG.get('startMonth'),
+      startYear: this.bindFG.get('startYear'),
+      endMonth: this.bindFG.get('endMonth'),
+      endYear: this.bindFG.get('endYear'),
+      details: this.bindFG.get('details')
+    });
   }
 
   addAward(){
-    this.addAwardEvent.emit(true);
+    this.arrayFormArray.emit({
+      formArrayName: 'cert', fg: this.certForm
+    });
   }
 
   removeAward(index){
-    this.addAwardEvent.emit({
-      index: index
-    });
+    this.removeArrayFormArray.emit(index);
   }
 
 }

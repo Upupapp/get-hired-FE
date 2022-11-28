@@ -29,9 +29,9 @@ export interface Applicant {
 }
 
 export interface WorkExperience {
-  applicantId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  applicantId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   jobTitle: string;
   companyName: string;
   location: string;
@@ -45,9 +45,9 @@ export interface WorkExperience {
 }
 
 export interface EducationalBackground {
-  applicantId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  applicantId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   educLevelId: number;
   educLevelName: string;
   fieldOfStudy: string;
@@ -60,9 +60,9 @@ export interface EducationalBackground {
 }
 
 export interface Certifications {
-  applicantId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  applicantId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   certTitle: number;
   noExpiry: boolean;
   startMonth: string;

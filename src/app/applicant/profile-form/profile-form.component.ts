@@ -38,7 +38,7 @@ export class ProfileFormComponent implements OnInit {
     {
       id: 2,
       title: "Skills and Experience",
-      disabled: true,
+      disabled: false,
       formName: 'initialData'
 
     },
@@ -57,11 +57,7 @@ export class ProfileFormComponent implements OnInit {
     private applicantFacade: ApplicantFacade,
     private router: Router,
     private route: ActivatedRoute
-  ) {
-    // this.route.queryParams.subscribe(params => {
-    //   this.applicantId = params.id;
-    // });
-  }
+  ) { }
 
   ngOnInit(): void {
     this.initializedForm();
@@ -93,7 +89,8 @@ export class ProfileFormComponent implements OnInit {
         workExperience: this.fb.array([]),
         educationalBackground: this.fb.array([]),
         professionalSkills: this.fb.array([]),
-        certifications: this.fb.array([])
+        certifications: this.fb.array([]),
+        skillsTxt: [null]
       }),
       profileDocuments: this.fb.group({
         documents: this.fb.array([]),
@@ -107,6 +104,12 @@ export class ProfileFormComponent implements OnInit {
         this.stepperItems[1].disabled = status != 'VALID'
 
       }));
+
+      this.subscriptions$.add(
+        this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
+          console.log(value);
+
+        }));
   }
 
   async submitProfile() {

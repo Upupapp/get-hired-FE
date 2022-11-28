@@ -15,6 +15,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { WorkExperienceComponent } from './profile-form/components/work-experience/work-experience.component';
 import { ExperienceQualificationComponent } from './profile-form/components/experience-qualification/experience-qualification.component';
+import { EducationalBackgroundComponent } from './profile-form/components/educational-background/educational-background.component';
+import { AwardsComponent } from './profile-form/components/awards/awards.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { ExperienceQualificationComponent } from './profile-form/components/expe
     ProfileFormComponent,
     ProfileDetailsFormComponent,
     WorkExperienceComponent,
-    ExperienceQualificationComponent
+    ExperienceQualificationComponent,
+    EducationalBackgroundComponent,
+    AwardsComponent
   ],
   imports: [
     CommonModule,

@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from '@main/applicant/applicant.model';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
+import { month } from '@app-shared/mock.data';
 
 @Component({
   selector: 'app-work-experience',
@@ -11,75 +12,45 @@ import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
   styleUrls: ['./work-experience.component.scss']
 })
 export class WorkExperienceComponent implements OnInit {
-  @Input() arrayFormArray: FormArray
+  @Input() controlIndex: number;
+  @Input() bindFG: AbstractControl;
+  @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
+  @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
+
   workForm: FormGroup;
 
   jobType$ = this.applicantFacade.typeList$;
 
-  public month: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  public month: string[] = month;
   public year: number[] = new Array(30).fill(0).map((el, i) => 1995 + i);
-  public jobType: string[] = ["Full-time", "Part-time"];
-  public levelOfEducation: string[] = ["Primary education", "Upper Secondary Education", "Bachelor’s or equivalent level", "Master’s or equivalent level", "Doctoral or equivalent level"]
-
-  // @Input() work_experience: {
-  //   title: string,
-  //   job_type: string,
-  //   details: string,
-  //   location: string,
-  //   company: string,
-  //   start_date: any,
-  //   end_date: any,
-  //   currently_work_here: boolean
-  // };
-
-  // @Input() index : number = 1;
-  // @Input() length: number = 1;
-
-  // @Output() addExperienceEvent: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private fb: FormBuilder,
-    private applicantFacade: ApplicantFacade
+    private applicantFacade: ApplicantFacade,
   ) { }
 
   ngOnInit(): void {
     this.workForm = this.fb.group({
-      jobTitle: [null, Validators.required],
-      location: [null, Validators.required],
-      isCurrentJob: [null, Validators.required],
-      companyName: [null, Validators.required],
-      jobTypeId: [null, Validators.required],
-      startMonth: [null, Validators.required],
-      startYear: [null, Validators.required],
-      endMonth: [null, Validators.required],
-      endYear: [null, Validators.required],
-      details: [null, Validators.required],
+      jobTitle: this.bindFG.get('jobTitle'),
+      location: this.bindFG.get('location'),
+      isCurrentJob: this.bindFG.get('isCurrentJob'),
+      companyName: this.bindFG.get('companyName'),
+      jobTypeId: this.bindFG.get('jobTypeId'),
+      startMonth: this.bindFG.get('startMonth'),
+      startYear: this.bindFG.get('startYear'),
+      endMonth: this.bindFG.get('endMonth'),
+      endYear: this.bindFG.get('endYear'),
+      details: this.bindFG.get('details')
     });
-
-
-    // this.start_date  = {
-    //   month: this.month[this.work_experience?.start_date?.getMonth()],
-    //   year: this.work_experience?.start_date?.getFullYear()
-    // }
-
-    // this.end_date  = {
-    //   month: this.month[this.work_experience?.end_date?.getMonth()],
-    //   year: this.work_experience?.end_date?.getFullYear()
-    // }
   }
 
   addWorkExp() {
-    this.arrayFormArray.push(this.workForm);
-    this.workForm.reset();
+    this.arrayFormArray.emit({
+      formArrayName: 'workExperience', fg: this.workForm
+    });
   }
 
-  // addExperience(){
-  //   this.addExperienceEvent.emit(true);
-  // }
-
-  // removeExperience(index){
-  //   this.addExperienceEvent.emit({
-  //     index: index
-  //   });
-  // }
+  removeWorkExp(index) {
+    this.removeArrayFormArray.emit(index);
+  }
 }

@@ -2,23 +2,28 @@
   <div class="card card-body mt-2" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
     <div class="row">
       <div class="col-12">
-        <!-- <h5 class="title-label">
-          <span *ngIf="length !== 1">
-          </span>
-          {{work_experience?.title || '-'}}
+        <div class="row">
+          <div class="col-12 col-md-9 align-self-center">
+            <h5 class="title-label">
+              <span *ngIf="workForm.controls.jobTitle.value">
+                {{workForm.controls.jobTitle.value|| '-'}}
+              </span>
 
-          <ng-container *ngIf="work_experience?.company">
-            <span class="mx-2">|</span>
-            <i>{{work_experience?.company || '-'}}</i>
-          </ng-container>
-
-          <span class="float-end btn btn-add" *ngIf="length !== 1" (click)="removeExperience(index)">
-            <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">
-          </span>
-
-          <span class="float-end btn btn-add" (click)="addExperience()">Add Item</span>
-        </h5> -->
-
+              <ng-container *ngIf="workForm.controls.companyName.value">
+                <span class="mx-2">|</span>
+                <i>{{workForm.controls.companyName.value || '-'}}</i>
+              </ng-container>
+            </h5>
+          </div>
+          <div class="col-12 col-md-3">
+            <span class="float-end btn btn-add" *ngIf="controlIndex !=0">
+              <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px"
+              (click)="removeWorkExp(controlIndex)">
+            </span>
+            <button class="float-end btn btn-save-draft" type="button" (click)="addWorkExp()" *ngIf="controlIndex == 0">
+              Add Item</button>
+          </div>
+        </div>
         <hr style="border: dashed 1px #868686">
       </div>
 
@@ -52,7 +57,7 @@
             <div class="title-container mb-3">
               <label>Start Date</label>
               <select class="form-select" formControlName="startMonth">
-                <option selected disabled value="">Select Month</option>
+                <option selected disabled [ngValue]="null">Select Month</option>
                 <ng-container *ngFor="let item of month; let i = index">
                   <option [value]="item">{{item}}</option>
                 </ng-container>
@@ -64,7 +69,7 @@
             <div class="title-container mb-3">
               <label> </label>
               <select class="form-select" formControlName="startYear">
-                <option selected disabled value="">Select Year</option>
+                <option selected disabled [ngValue]=null>Select Year</option>
                 <ng-container *ngFor="let item of year; let i = index">
                   <option [value]="item">{{item}}</option>
                 </ng-container>
@@ -78,7 +83,7 @@
             <div class="title-container mb-3">
               <label>End Date</label>
               <select class="form-select" formControlName="endMonth">
-                <option selected disabled value="">Select Month</option>
+                <option selected disabled [ngValue]=null>Select Month</option>
                 <ng-container *ngFor="let item of month; let i = index">
                   <option [value]="item">{{item}}</option>
                 </ng-container>
@@ -90,7 +95,7 @@
             <div class="title-container mb-3">
               <label> </label>
               <select class="form-select" formControlName="endYear">
-                <option selected disabled value="">Select Year</option>
+                <option selected disabled [ngValue]=null>Select Year</option>
                 <ng-container *ngFor="let item of year; let i = index">
                   <option [value]="item">{{item}}</option>
                 </ng-container>
@@ -128,122 +133,6 @@
           </div>
         </div>
       </div>
-
-      <!--
-		<div class="col-12 col-lg-6">
-			<div class="title-container mb-3">
-				<label>Job title</label>
-				<div class="form-group">
-					<input type="text" class="form-control"
-					placeholder="i.e. Full Stack Developer"
-					[(ngModel)]="work_experience.title">
-				</div>
-			</div>
-
-			<div class="title-container mb-3">
-				<label>Location</label>
-				<div class="form-group">
-					<input type="text" class="form-control"
-					[(ngModel)]="work_experience.location"
-					placeholder="Office Full Address">
-				</div>
-			</div>
-
-			<div class="title-container mb-3">
-				<label>Duration</label>
-				<div class="form-check">
-				  <input class="form-check-input" type="checkbox" value=""
-				  [(ngModel)]="work_experience.currently_work_here"
-				  [id]="work_experience.title">
-				  <label class="form-check-label">
-				    I currently work here
-				  </label>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-12 col-lg-6">
-					<div class="title-container mb-3">
-						<label>Start Date</label>
-						<select class="form-select" [(ngModel)]="start_date.month">
-							<option selected disabled value="">Select Month</option>
-							<ng-container *ngFor="let item of month; let i = index">
-								<option [value]="item">{{item}}</option>
-							</ng-container>
-						</select>
-					</div>
-				</div>
-
-				<div class="col-12 col-lg-6">
-					<div class="title-container mb-3">
-						<label> </label>
-						<select class="form-select" [(ngModel)]="start_date.year">
-							<option selected disabled value="">Select Year</option>
-							<ng-container *ngFor="let item of year; let i = index">
-								<option [value]="item">{{item}}</option>
-							</ng-container>
-						</select>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-12 col-lg-6">
-					<div class="title-container mb-3">
-						<label>End Date</label>
-						<select class="form-select" [(ngModel)]="end_date.month">
-							<option selected disabled value="">Select Month</option>
-							<ng-container *ngFor="let item of month; let i = index">
-								<option [value]="item">{{item}}</option>
-							</ng-container>
-						</select>
-					</div>
-				</div>
-
-				<div class="col-12 col-lg-6">
-					<div class="title-container mb-3">
-						<label> </label>
-						<select class="form-select" [(ngModel)]="end_date.year">
-							<option selected disabled value="">Select Year</option>
-							<ng-container *ngFor="let item of year; let i = index">
-								<option [value]="item">{{item}}</option>
-							</ng-container>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-12 col-lg-6">
-			<div class="title-container mb-3">
-				<label>Company</label>
-				<div class="form-group">
-					<input type="text" class="form-control"
-					[(ngModel)]="work_experience.company"
-					placeholder="i.e. Microsoft, Google, Apple">
-				</div>
-			</div>
-
-			<div class="title-container mb-3">
-				<label>Job Type</label>
-				<select class="form-select" [(ngModel)]="work_experience.job_type">
-					<option selected disabled value="">Select Job Type</option>
-					<ng-container *ngFor="let item of jobType; let i = index">
-						<option [value]="item">{{item}}</option>
-					</ng-container>
-				</select>
-			</div>
-
-			<div class="title-container mb-3">
-				<label>Details</label>
-				<div class="form-group">
-					<textarea type="text"  class="form-control"
-					[(ngModel)]="work_experience.details"
-					placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. " rows="9"></textarea>
-				</div>
-			</div>
-		</div>
-  -->
     </div>
   </div>
 </form>

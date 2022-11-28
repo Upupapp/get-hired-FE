@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
+import { month } from '@app-shared/mock.data';
 
 @Component({
   selector: 'app-educational-background',
@@ -8,56 +11,43 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./educational-background.component.scss']
 })
 export class EducationalBackgroundComponent implements OnInit {
-  public month: string[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  @Input() controlIndex: number;
+  @Input() bindFG: AbstractControl;
+  @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
+  @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
+
+  public month: string[] = month;
   public year: number[] = new Array(30).fill(0).map((el, i) => 1995 + i);
-  public levelOfEducation: string[] = ["Primary education", "Upper Secondary Education", "Bachelor’s or equivalent level", "Master’s or equivalent level", "Doctoral or equivalent level"]
+  educBgForm: FormGroup;
 
-  // educational background
-  @Input() education_background: {
-    level_of_education: string,
-    field_of_study: string, 
-    school_address: string, 
-    school: string, 
-    start_date: any,
-    end_date: any,
-  }
+  level$ = this.applicantFacade.level$;
 
-  @Input() index : number = 1;
-  @Input() length: number = 1;
-
-  @Output() addEducationBackgroundEvent: EventEmitter<any> = new EventEmitter();
-
-  public start_date: {
-    month: string,
-    year: number
-  }
-
-  public end_date: {
-    month: string,
-    year: number
-  }
-
-  constructor() { }
+  constructor(
+    private fb: FormBuilder,
+    private applicantFacade: ApplicantFacade,
+  ) { }
 
   ngOnInit(): void {
-    this.start_date  = {
-      month: this.month[this.education_background?.start_date?.getMonth()],  
-      year: this.education_background?.start_date?.getFullYear()
-    }
-
-    this.end_date  = {
-      month: this.month[this.education_background?.end_date?.getMonth()],  
-      year: this.education_background?.end_date?.getFullYear()
-    }
+    this.applicantFacade.getLevel();
+    this.educBgForm = this.fb.group({
+      levelOfEducation: this.bindFG.get('levelOfEducation'),
+      fieldOfStudy: this.bindFG.get('fieldOfStudy'),
+      school: this.bindFG.get('school'),
+      startMonth: this.bindFG.get('startMonth'),
+      startYear: this.bindFG.get('startYear'),
+      endMonth: this.bindFG.get('endMonth'),
+      endYear: this.bindFG.get('endYear'),
+      schoolAddress: this.bindFG.get('schoolAddress')
+    });
   }
 
   addEducationBackground(){
-    this.addEducationBackgroundEvent.emit(true);
+    this.arrayFormArray.emit({
+      formArrayName: 'educBg', fg: this.educBgForm
+    });
   }
 
   removeEducationBackground(index){
-    this.addEducationBackgroundEvent.emit({
-      index: index
-    });
+    this.removeArrayFormArray.emit(index);
   }
 }
