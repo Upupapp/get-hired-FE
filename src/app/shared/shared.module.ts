@@ -32,6 +32,8 @@ import { RecordLoadingComponent } from './components/record-loading/record-loadi
 import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { LanguageSelectionComponent } from './components/language-selection/language-selection.component';
+import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
+
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -54,7 +56,8 @@ const classesToInclude: any[] = [
   VideoPreviewComponent,
   RecordLoadingComponent,
   ConfirmationDialogComponent,
-  LanguageSelectionComponent
+  LanguageSelectionComponent,
+  DropdownSearchComponent
 ];
 
 @NgModule({
