@@ -193,11 +193,27 @@ export class ProfileFormComponent implements OnInit {
 
   async formatProfile(): Promise<Model.Applicant> {
     const user = await this.asyncLocalStorage.getItem('user');
-    const { profileDetailsForm, profileArraysForm, profileDocuments } = this.profileForm.controls;
+    let { profileDetailsForm, profileArraysForm, profileDocuments } = this.profileForm.controls;
+
+    let data = {
+      ...profileArraysForm.value
+    }
+
+    let filteredWork = data?.workExperience.filter(item => item.jobTitle)
+    let filteredCert = data?.certifications.filter(item => item.certTitle)
+    let filteredEduc = data?.educationalBackground.filter(item => item.school)
+
+    let fileteredProfileArray = {
+      workExperience : filteredWork,
+      certifications: filteredCert,
+      educationalBackground: filteredEduc,
+      skillsTxt: data.skillsTxt,
+      professionalSkills: data.professionalSkills
+    }
 
     return {
       ...profileDetailsForm.value,
-      ...profileArraysForm.value,
+      ...fileteredProfileArray,
       ...profileDocuments.value,
       userId: JSON.parse(user)._id,
       email: JSON.parse(user).email,

@@ -29,19 +29,19 @@ export class TableControlModalComponent implements OnInit {
       background: "#dce8fa"
     },
 
-    {
-      id: "change-status",
-      title: "Change Status",
-      icon: "/assets/images/icons/client-menu/individual-intake.png",
-      background: "#D7F4F8"
-    },
+    // {
+    //   id: "change-status",
+    //   title: "Change Status",
+    //   icon: "/assets/images/icons/client-menu/individual-intake.png",
+    //   background: "#D7F4F8"
+    // },
 
-    {
-      id: "view-applicants",
-      title: "View Applicants",
-      icon: "/assets/images/icons/client-menu/service-templates.png",
-      background: "#f7f2e4"
-    },
+    // {
+    //   id: "view-applicants",
+    //   title: "View Applicants",
+    //   icon: "/assets/images/icons/client-menu/service-templates.png",
+    //   background: "#f7f2e4"
+    // },
 
     {
       id: "create-interview",
@@ -128,7 +128,16 @@ export class TableControlModalComponent implements OnInit {
       this.router.navigate([`/company/jobs/${this.data?.data?.id}/applicants`])
     }
 
+    else if(menu?.id === 'create-interview'){
+      this.dialogRef.close();
+      this.router.navigate([`/recruiter/interview`])
+    }
 
+    else if(menu?.id === 'delete'){
+      this.dialogRef.close(this.data);
+    }
+
+    
   }
 
 

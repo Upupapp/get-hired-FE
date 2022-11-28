@@ -13,6 +13,7 @@
         <span class="main-title">{{ jobId ? 'Update':'Create' }} a Job</span>
         <span [ngClass]="delayControl ? 'd-none' : 'float-end'">
           <button
+            *ngIf="status === 1"
             class="btn btn-save-draft me-2"
             (click)="saveAsDraft()"
             [disabled]="!initialFormValid"

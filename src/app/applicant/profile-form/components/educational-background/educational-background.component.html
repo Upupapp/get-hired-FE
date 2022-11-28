@@ -16,9 +16,8 @@
             </h5>
           </div>
           <div class="col-12 col-md-3">
-            <span class="float-end btn btn-add" *ngIf="controlIndex !=0">
-              <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px"
-              (click)="removeEducationBackground(controlIndex)">
+            <span (click)="removeEducationBackground(controlIndex)" class="float-end btn btn-add" *ngIf="controlIndex !=0">
+              <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">
             </span>
             <button class="float-end btn btn-save-draft" type="button"
             [disabled]="!educBgForm.valid"

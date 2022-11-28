@@ -12,7 +12,7 @@ import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 })
 export class AwardsComponent implements OnInit {
   @Input() controlIndex: number;
-  @Input() bindFG: AbstractControl;
+  @Input() data: any;
   @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
   @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
 
@@ -28,13 +28,13 @@ export class AwardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.certForm = this.fb.group({
-      certTitle: new FormControl(null, Validators.required),
-      noExpiry: new FormControl(null),
-      startMonth: new FormControl(null),
-      startYear: new FormControl(null),
-      endMonth: new FormControl(null),
-      endYear: new FormControl(null),
-      details: new FormControl(null),
+      certTitle: new FormControl(this.data?.certTitle, Validators.required),
+      noExpiry: new FormControl(this.data?.noExpiry),
+      startMonth: new FormControl(this.data?.startMonth),
+      startYear: new FormControl(this.data?.startYear),
+      endMonth: new FormControl(this.data?.endMonth),
+      endYear: new FormControl(this.data?.endYear),
+      details: new FormControl(this.data?.details),
     });
   }
 
@@ -45,7 +45,7 @@ export class AwardsComponent implements OnInit {
   }
 
   removeAward(index){
-    this.removeArrayFormArray.emit(index);
+    this.removeArrayFormArray.emit({ formArrayName: 'cert', index:index });
   }
 
 }

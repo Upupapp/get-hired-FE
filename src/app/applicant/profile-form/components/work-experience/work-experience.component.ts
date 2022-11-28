@@ -13,7 +13,7 @@ import { month } from '@app-shared/mock.data';
 })
 export class WorkExperienceComponent implements OnInit {
   @Input() controlIndex: number;
-  @Input() bindFG: AbstractControl;
+  @Input() data: any;
   @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
   @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
 
@@ -30,7 +30,6 @@ export class WorkExperienceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.bindFG);
     // this.workForm = this.fb.group({
     //   jobTitle: this.bindFG.get('jobTitle'),
     //   location: this.bindFG.get('location'),
@@ -44,16 +43,16 @@ export class WorkExperienceComponent implements OnInit {
     //   details: this.bindFG.get('details')
     // });
     this.workForm = this.fb.group({
-      jobTitle: new FormControl(null, Validators.required),
-      location: new FormControl(null),
-      isCurrentJob: new FormControl(null),
-      companyName: new FormControl(null, Validators.required),
-      jobTypeId: new FormControl(null),
-      startMonth: new FormControl(null),
-      startYear: new FormControl(null),
-      endMonth: new FormControl(null),
-      endYear: new FormControl(null),
-      details: new FormControl(null)
+      jobTitle: new FormControl(this.data?.jobTitle, Validators.required),
+      location: new FormControl(this.data?.location),
+      isCurrentJob: new FormControl(this.data?.isCurrentJob),
+      companyName: new FormControl(this.data?.companyName, Validators.required),
+      jobTypeId: new FormControl(this.data?.jobTypeId),
+      startMonth: new FormControl(this.data?.startMonth),
+      startYear: new FormControl(this.data?.startYear),
+      endMonth: new FormControl(this.data?.endMonth),
+      endYear: new FormControl(this.data?.endYear),
+      details: new FormControl(this.data?.details)
     });
   }
 
@@ -64,6 +63,6 @@ export class WorkExperienceComponent implements OnInit {
   }
 
   removeWorkExp(index) {
-    this.removeArrayFormArray.emit(index);
+    this.removeArrayFormArray.emit({ formArrayName: 'workExperience', index:index });
   }
 }

@@ -3,19 +3,25 @@
     <h5 class="mt-3 main-title">Work Experience</h5>
   </div>
 
-  <ng-container *ngFor="let workFormGroup of workExperience.controls; let i = index">
-    <app-work-experience [bindFG]="workFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
-      (removeArrayFormArray)="removeMeToArray($event)"></app-work-experience>
-  </ng-container>
+  <div *ngIf="!workRendering">
+    <ng-container *ngFor="let workFormGroup of workExperience?.value; let i = index;">
+      <app-work-experience [data]="workFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
+        (removeArrayFormArray)="removeMeToArray($event)"></app-work-experience>
+    </ng-container>
+  </div>
 
   <div class="mb-3 mt-5 ms-2">
     <h5 class="mt-3 main-title">Educational Background</h5>
   </div>
-  <ng-container *ngFor="let educFormGroup of educationalBackground.controls; let i = index">
-    <app-educational-background [bindFG]="educFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
-      (removeArrayFormArray)="removeMeToArray($event)">
-    </app-educational-background>
-  </ng-container>
+
+  <div *ngIf="!educRendering">
+    <ng-container *ngFor="let educFormGroup of educationalBackground.value let i = index">
+      <app-educational-background [data]="educFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
+        (removeArrayFormArray)="removeMeToArray($event)">
+      </app-educational-background>
+    </ng-container>
+  </div>
+
 
   <div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
     <div class="row mt-3">
@@ -49,9 +55,14 @@
   <div class="mb-3 mt-5 ms-2">
     <h5 class="mt-3 main-title">Certification / Awards</h5>
   </div>
-  <ng-container *ngFor="let certFormGroup of certifications.controls; let i = index">
-    <app-awards-details [bindFG]="certFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
-      (removeArrayFormArray)="removeMeToArray($event)">
-    </app-awards-details>
-  </ng-container>
+  
+  <div *ngIf="!awardRendering">
+    <ng-container *ngFor="let certFormGroup of certifications.value let i = index">
+      <app-awards-details [data]="certFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
+        (removeArrayFormArray)="removeMeToArray($event)">
+      </app-awards-details>
+    </ng-container>
+  </div>
+
+
 </form>
