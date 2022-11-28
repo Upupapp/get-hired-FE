@@ -12,12 +12,14 @@ export interface Applicant {
   email: string;
   address?: string;
   contactNumber: string;
+  city: string;
+  country: string;
   shortBio: string;
   servicesProvided?: string;
-  workExperience?: WorkExperience;
-  educationalBackground?: EducationalBackground;
-  certifications?: Certifications;
-  skills: [];
+  workExperience?: WorkExperience[];
+  educationalBackground?: EducationalBackground[];
+  certifications?: Certifications[];
+  skills: string[];
   documents: [];
   jobTypeId: number;
   jobLevelId: number;

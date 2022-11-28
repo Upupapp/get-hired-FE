@@ -5,6 +5,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { distinctUntilChanged, of, Subscription } from 'rxjs';
 import { ApplicantFacade } from '../state/applicant.facade';
 import * as Model from '../applicant.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile-form',
@@ -59,7 +60,8 @@ export class ProfileFormComponent implements OnInit {
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -175,6 +177,21 @@ export class ProfileFormComponent implements OnInit {
         const bodyInterview =  this.profileForm.controls[formCtrl].value;
         // this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
         break;
+    }
+  }
+
+  afterSubmit(event) {
+    if (event == 'created') {
+      this.snackBar.open(`Your public profile has been created`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
+      this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
+    } else if (event == 'updated') {
+      this.snackBar.open(`Profile successfully updated`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
     }
   }
 

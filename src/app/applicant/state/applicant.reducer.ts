@@ -86,7 +86,7 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       selected: action.applicant,
       loading: false,
-      succesMsg: 'created'
+      succesMsg: action.applicant.applicantProfileId ? 'updated':'created'
     };
   }),
   on(ApplicantActions.saveApplicantFail, (state, action): ApplicantState => {
