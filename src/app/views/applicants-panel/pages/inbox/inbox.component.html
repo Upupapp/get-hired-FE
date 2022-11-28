@@ -1,1 +1,81 @@
-<p>inbox works!</p>
+<div class="p-4">
+	<div class="card">
+		<div class="card-title">
+			<span class="float-end">
+				<div class="d-flex">
+					<div class="dropdown me-2">
+					  <button class="btn btn-dropdown dropdown-toggle mt-1" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"></button>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+					    <li><a class="dropdown-item" href="#">All</a></li>
+					    <li><a class="dropdown-item" href="#">Unread</a></li>
+					    <li><a class="dropdown-item" href="#">Archive</a></li>
+					  </ul>
+					</div>
+
+					<div class="search-div me-1">
+						<div class="input-group">
+						  <img src="/assets/images/placeholder/icons/search.png">
+						  
+						  <input type="text" class="form-control" placeholder="Search" aria-label="Search" >
+						</div>
+					</div>
+				</div>
+			</span>
+			<h5 class="title-header mt-3">Inbox ({{inboxItems?.length}}) </h5>
+		</div>
+
+		<div class="card-body">
+			<ng-container *ngFor="let item of inboxItems; let i = index">
+				<section class="bg-email hvr-underline-from-center w-100"
+				[@animate]="{value:'*', params:{ y:'-10px', delay: i * 150 + 'ms' }}"
+				(click)="email_content = { id: item?.id, content: item?.email_content }">
+					<div class="d-flex px-1 ps-3">
+						<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+							<img src="/assets/images/placeholder/icons/interview-logo-4.png" 
+							*ngIf="item?.read">
+
+							<img src="/assets/images/placeholder/icons/interview-logo-4-active.png" 
+							*ngIf="!item?.read">
+						</div>
+
+						<div class="mt-2 me-5">
+							<h5 class="title-label">{{item?.from}}</h5>
+							<p class="title-label-sub">{{item?.job_title_summary}}</p>
+						</div>
+
+						<div class="me-4 mt-4 text-center" style="width: 200px">
+							<img src="/assets/images/placeholder/icons/mail-merge.png" 
+							style="height: 13px; margin-right: 3px"> {{item?.number_of_response}}
+						</div>
+
+						<div class="me-4 mt-4 text-center" style="width: 200px">
+							{{item?.date_sent | date: 'MMM dd, yyyy'}}
+						</div>
+
+						<div class="me-4 d-flex justify-content-end align-items-center " style="width: 250px;">
+							<button class="btn btn-archive me-2">
+								<img src="/assets/images/placeholder/icons/archive-white.png" style="height: 13px; margin-right: 3px; margin-top: -3px;">
+								Archive
+							</button>
+
+							<button class="btn btn-archive me-2"  
+							[@animate]="{value:'*', params:{ y:'-10px', delay: 150 + 'ms' }}"
+							*ngIf="email_content?.id === item?.id">
+								<img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 13px; margin-right: 3px; margin-top: -3px;">
+								Reply
+							</button>
+						</div>
+					</div>
+
+					<div class="px-5 pb-2 bg-white" *ngIf="email_content?.id === item?.id"
+					[@animate]="{value:'*', params:{ y:'-10px', delay: 150 + 'ms' }}">
+						<hr style="border: dashed 1px #898989">
+						<div [innerHtml]="item?.email_content"></div>
+					</div>
+				</section>
+
+				
+			</ng-container>
+		</div>
+	</div>
+</div>
