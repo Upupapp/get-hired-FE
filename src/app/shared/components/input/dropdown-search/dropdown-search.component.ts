@@ -100,8 +100,8 @@ export class DropdownSearchComponent implements OnInit {
     // check subscription
     this.filteredOptions = this.filterControl.valueChanges
     .subscribe((value) => {
-      this.optionSearch = [...this.options].filter(el => el?.toLocaleLowerCase().includes(value?.toLowerCase()));
-    })
+      this.optionSearch = [...this.options].filter(el => JSON.stringify(el)?.toLocaleLowerCase().includes(value?.toLowerCase()));
+    });
   }
 
   ngOnDestroy(): void {
