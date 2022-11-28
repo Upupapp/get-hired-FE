@@ -6,9 +6,11 @@ import { select, Store } from '@ngrx/store';
 import { mainAnimations } from '@app-shared/animations/main-animations'; 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
+import { GroupActionTypes } from '@main/shared/store/actions/group.action';
 import { StoreState } from '@main/shared/store/index';
 import { ContactState } from '@main/shared/store/reducers/contact.reducer';
-import { Subject } from 'rxjs';
+import { GroupState } from '@main/shared/store/reducers/group.reducer';
+import { Subject, Observable, startWith, map } from 'rxjs';
 import { CSVDataRecord } from './import-contact-model';
 
 @Component({
@@ -24,9 +26,12 @@ export class ImportAddContactComponent implements OnInit {
   public importContact: boolean = false;
   public importing: boolean = false;
   private contactData$: any;
+  private groupData$: any;
   private req: Subscription = new Subscription;
+  private groupReq: Subscription = new Subscription;
   private unsubscribe$ = new Subject<void>();
   public contactList: any = {};
+  public groupList: any = {};
   public jobList: any = [];
   public localData: any = localStorage.getItem('user');
   public loading: boolean = true;
@@ -37,6 +42,11 @@ export class ImportAddContactComponent implements OnInit {
   jsondatadisplay:any;
   public records: any;
 
+  public options = [];
+
+  filteredOptions: Observable<any>;
+  groupOptions:any = [];
+
   constructor(
     public dialogRef: MatDialogRef<ImportAddContactComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
@@ -44,11 +54,13 @@ export class ImportAddContactComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     public snackBar: MatSnackBar,
     private contactState: Store<StoreState>,
+    private groupState: Store<StoreState>,
   ) {}
 
   ngOnInit(): void {
     this.localData = JSON.parse(this.localData);
     this.getJobList();
+    this.getGroupList();
     this.contactForm = this.formBuilder.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -56,9 +68,11 @@ export class ImportAddContactComponent implements OnInit {
       mobileNumber: [''],
       address: [''],
       jobId: ['', [Validators.required]],
-      group: ['', [Validators.required]]
+      groupName: ['', [Validators.required]],
+      groupId: ['']
     });
     this.contactData$ = this.contactState.pipe(select(state => state.contact));
+    this.groupData$ = this.groupState.pipe(select(state => state.group));
     this.req =  this.contactData$.subscribe((onboard: ContactState) => {
       this.loading = onboard.pending;
       console.log(onboard, "onboard");
@@ -83,8 +97,6 @@ export class ImportAddContactComponent implements OnInit {
             payload: null
           });
         }
-
-
         this.close();
       }
 
@@ -113,8 +125,31 @@ export class ImportAddContactComponent implements OnInit {
       }
     });
 
+    this.groupReq = this.groupData$.subscribe((group: GroupState) => {
+      this.loading = group.pending;
+      if(group.groupList){
+        this.groupList = group.groupList;
+        this.groupList.forEach(element => {
+          this.groupOptions.push(element.group_name);
+        });
+        this.groupState.dispatch({
+          type:GroupActionTypes.GET_GROUP_LIST_SUCCESS,
+          payload: null
+        });
+      }
+    });
+
+    this.filteredOptions = this.contactForm.get("groupName").valueChanges.pipe(
+      startWith(''),
+      map(val => this.filter(val))
+    );
+    
   }
 
+  filter(val: string): string[] {
+    return this.groupOptions.filter(option =>
+      option?.toLowerCase().indexOf(val?.toLowerCase()) === 0);
+  }
 
   close() {
     this.dialogRef.close(null);
@@ -156,6 +191,8 @@ export class ImportAddContactComponent implements OnInit {
   }
   
   saveOnboard(){
+    this.contactForm.get("groupName")?.patchValue(this.setGroupName(this.contactForm.controls['groupName'].value));
+    this.contactForm.get("groupId")?.patchValue(this.setGroupId(this.contactForm.controls['groupName'].value));
     let data = {
       ...this.contactForm.value,
       userId: this.localData._id,
@@ -166,6 +203,21 @@ export class ImportAddContactComponent implements OnInit {
       payload: data
     }); 
   }
+
+  setGroupName(value) {
+    const groupDetail = this.groupList.filter(function (element) {
+     return element.group_name?.toLowerCase() === value?.toLowerCase();
+    });
+    return groupDetail.length > 0 ? groupDetail[0].group_name : value;
+  }
+
+  setGroupId(value) {
+    const groupDetail = this.groupList.filter(function (element) {
+     return element.group_name?.toLowerCase() === value?.toLowerCase();
+    });
+    return groupDetail.length > 0 ? groupDetail[0].group_id : "";
+  }
+
 
   //Restrict file upload to csv
   isValidCSVFile(file: any) {
@@ -231,7 +283,7 @@ export class ImportAddContactComponent implements OnInit {
         csvRecord.mobileNumber = curruntRecord[3].trim();
         csvRecord.address = curruntRecord[4].trim();
         csvRecord.jobId = curruntRecord[5].trim();
-        csvRecord.group = curruntRecord[6].trim();
+        // csvRecord.group = curruntRecord[6].trim();
         csvArr.push(csvRecord);
       }
     }
@@ -254,8 +306,8 @@ export class ImportAddContactComponent implements OnInit {
       element.userId = this.localData._id;
       element.companyId = this.localData.companyId;
     });
-    console.log(this.records, "added userId")
-     this.saveOnboardMultiple();
+    // console.log(this.records, "added userId")
+    this.saveOnboardMultiple();
   }
 
   saveOnboardMultiple(){
@@ -263,10 +315,13 @@ export class ImportAddContactComponent implements OnInit {
         contacts: [...this.records]
       }
       console.log(data, "contact multiple data")
-      this.contactState.dispatch({
-        type: ContactActionTypes.SAVE_CONTACT_MULTIPLE,
-        payload: data
-      });
+      if(this.importing) {
+        this.contactState.dispatch({
+          type: ContactActionTypes.SAVE_CONTACT_MULTIPLE,
+          payload: data
+        });
+      }
+   
   }
 
   uploadLogo(event: any, dropped = false) {
@@ -300,6 +355,13 @@ export class ImportAddContactComponent implements OnInit {
       type:ContactActionTypes.GET_CONTACT_JOB,
       payload: this.localData.companyId
     }); 
+  }
+
+  getGroupList(){
+    this.groupState.dispatch({
+      type:GroupActionTypes.GET_GROUP_LIST,
+      payload: this.localData.companyId
+    });
   }
 
 }

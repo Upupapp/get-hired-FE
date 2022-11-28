@@ -82,10 +82,19 @@
 						</div>
 
 						<div class="form-group mt-4">
-							<label class="mb-2">Group <i class="text-danger">*</i></label>
-							<input type="email" class="form-control" formControlName="group" name="email">
+							<!-- <label class="mb-2">Group <i class="text-danger">*</i></label> -->
+							<mat-form-field style="width: 100%">
+								<input type="text" placeholder="Group Name" aria-label="Text" matInput formControlName="groupName" [matAutocomplete]="auto">
+								<mat-autocomplete #auto="matAutocomplete">
+								  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+									{{ option }}
+								  </mat-option>
+								</mat-autocomplete>
+							</mat-form-field>
+	
 						</div>
 
+						
 						<div class="mt-4">
 							<div style="position: relative;" class="mt-2 text-center">
 								<button type="button" 

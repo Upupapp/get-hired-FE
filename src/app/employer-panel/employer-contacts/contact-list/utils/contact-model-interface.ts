@@ -1,12 +1,13 @@
 export interface Contact {
-  id: any;
+  id: any,
   full_name?: string,
   email?: string;
   mobile_number?: string;
   address?: string;
   job_id?: any
   job_title?: string
-  created_at?: string
+  created_at?: string,
+  groups?: any
   // id: any;
   // first_name: string;
   // last_name: string;
@@ -48,6 +49,7 @@ const displayedColumns: TableHeader[] = [
   { col_name: 'job_id', title: 'Job ID' },
   { col_name: 'job_title', title: 'Job Title' },
   { col_name: 'created_at', title: 'Date Created', type: 'date' },
+  { col_name: 'groups', title: 'Group Name' },
 ];
 
 const selectedColumns: string[] =  [
@@ -57,7 +59,8 @@ const selectedColumns: string[] =  [
   'address',
   'job_id',
   'job_title',
-  'created_at'
+  'created_at',
+  'groups'
 ];
 
 
