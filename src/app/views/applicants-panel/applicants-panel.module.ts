@@ -30,6 +30,7 @@ import { AwardsComponent } from './pages/update-profile/components/awards/awards
 import { BannerComponent } from './pages/dashboard/components/banner/banner.component';
 import { StatChartComponent } from './pages/dashboard/components/stat-chart/stat-chart.component';
 import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
+import { JobsOpeningDetailsComponent } from './pages/jobs-opening/pages/jobs-opening-details/jobs-opening-details.component';
 
 @NgModule({
   imports: [
@@ -64,6 +65,7 @@ import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat
     BannerComponent,
     StatChartComponent,
     StatTotalComponent,
+    JobsOpeningDetailsComponent,
   ]
 })
 export class ApplicantsPanelModule{ }
