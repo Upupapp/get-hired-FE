@@ -5,11 +5,11 @@
 		<div class="col-12 col-lg-6 mb-3 pe-lg-5">
 			<h5 class="title-main mb-2">Short Bio</h5>
 			<p class="title-description">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.
+				{{ user.shortBio }}
 			</p>
 		</div>
 
-		<div class="col-12 col-lg-6">
+		<div class="col-12 col-lg-6" *ngIf="user.videoCVUrl && user.videoCVUrl != ''">
 
 			<!-- <h5 class="title-main">Video Introduction </h5> -->
 			<div style="position: relative;">
@@ -23,14 +23,14 @@
 		<div class="col-12 col-lg-12 mb-3 pe-lg-5">
 			<h5 class="title-main mb-2">Provided Services</h5>
 			<p class="title-description">
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+				{{ user.servicesProvided }}
 			</p>
 		</div>
 	</div>
 
 	<div>
 		<h5 class="title-main mb-3">Work Experience</h5>
-		
+
 		<ng-container *ngFor="let item of work_experience; let i = index">
 			<hr style="border-color: #909090" *ngIf="i > 0">
 			<h5 class="title-experience">{{item?.title}}
@@ -40,8 +40,8 @@
 						{{item?.start_date | date: 'MMM d, yyyy'}} - {{item?.start_date | date: 'MMM d, yyyy'}}
 					</div>
 					<span class="title-job-type">{{item?.job_type}}</span>
-					
-				</div>	
+
+				</div>
 			</h5>
 
 			<div class="d-flex">
@@ -53,10 +53,10 @@
 					<img src="/assets/images/placeholder/icons/applicant-location.png" style="height: 14px" class="me-1">{{item?.location}}
 				</p>
 			</div>
-			
+
 			<p class="title-details mt-3 w-75">{{item?.details}}</p>
 
-			
+
 		</ng-container>
 
 	</div>

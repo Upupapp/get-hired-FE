@@ -3,13 +3,13 @@
 		<div class="col-12 col-md-6 col-lg-4 mb-3">
 			<div class="d-flex mt-3">
 				<div class="avatar-main me-4">
-					<img src="/assets/images/face-3.jpg" class="img-fluid">
+					<img [src]="user.photoUrl" class="img-fluid">
 				</div>
 
 				<div class="flex-wrap">
 					<div class="details">
-						<h5 class="title-main">Jordan Clark</h5>
-						<p class="title-job">Frontend Developer</p>
+						<h5 class="title-main">{{user.firstName + ' ' + user.lastName}}</h5>
+						<p class="title-job">{{ user.jobTitle}}</p>
 					</div>
 
 					<div class="d-flex">
@@ -24,7 +24,7 @@
 
 					<div class="d-flex mt-2">
 						<button class="btn btn-message me-2 hvr-grow">
-						<img src="/assets/images/placeholder/icons/message.png" 
+						<img src="/assets/images/placeholder/icons/message.png"
 						style="height: 16px; margin-top: -3px;" class="me-1">
 						Message</button>
 
@@ -43,26 +43,27 @@
 				<tbody>
 					<tr>
 						<td class="title-label">Available</td>
-						<td class="title-details text-end pe-lg-5">Full Time</td>
+						<td class="title-details text-end pe-lg-5">{{ user.workSetupName }}</td>
 					</tr>
 					<tr>
 						<td class="title-label">Email Address</td>
-						<td class="title-details text-end pe-lg-5">usertest@gmail.com</td>
+						<td class="title-details text-end pe-lg-5">{{ user.email }}</td>
 					</tr>
 					<tr>
 						<td class="title-label">Address</td>
-						<td class="title-details text-end pe-lg-5">San Antonio MI 47096</td>
+						<td class="title-details text-end pe-lg-5">{{ user.city + ', ' + user.country }}</td>
 					</tr>
 					<tr>
 						<td class="title-label">Mobile Phone</td>
-						<td class="title-details text-end pe-lg-5">(+63) 934 3432</td>
+						<td class="title-details text-end pe-lg-5">{{ user.contactNumber }}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 
 
-		<div class="mt-4 col-12 col-md-6 col-lg-4" >
+		<div class="mt-4 col-12 col-md-6 col-lg-4"
+    *ngIf="user.documents && user.documents.length > 0">
 			<h5 class="title-contact">Documents</h5>
 
 			<table class="w-100 document-table">

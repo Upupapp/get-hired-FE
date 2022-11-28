@@ -45,27 +45,12 @@ export class ProfileDetailsFormComponent implements OnInit {
 
     this.profileDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
     console.log(this.profileDetailsForm);
-    this.photo = this.profileDetailsForm.get('profileImage') as FormControl;
-    this.photoUrl = this.profileDetailsForm.get('photoUrl').value;
+    this.photo = this.profileDetailsForm.controls['photoUrl'] as FormControl;
   }
 
   onUpload(item: any) {
     this.profileImage = item;
-    console.log(item);
-      // this.profileDetailsForm.controls.profileImage.setValue(new FormGroup({
-      //     file: new FormControl(item.file),
-      //     filename: new FormControl(item.filename),
-      //     size: new FormControl(item.size),
-      //     type: new FormControl(item.type)
-      //   }))
-      // this.profileDetailsForm.controls.profileImage.setValue([{
-      //   file: new FormControl(item.file),
-      //   filename: new FormControl(item.filename),
-      //   size: new FormControl(item.size),
-      //   type: new FormControl(item.type)
-      // }])
-
-      this.profileDetailsForm.controls['profileImage'].setValue(item.file)
+    this.profileDetailsForm.controls['profileImage'].setValue(item.file)
 
   }
 }

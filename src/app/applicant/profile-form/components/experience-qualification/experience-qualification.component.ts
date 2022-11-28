@@ -15,6 +15,7 @@ export class ExperienceQualificationComponent implements OnInit {
 
   arrayForm: FormGroup
   workExperience: FormArray;
+  draftWorkExperience: FormArray;
   educationalBackground: FormArray;
   professionalSkills: FormArray;
   certifications: FormArray;
@@ -42,7 +43,7 @@ export class ExperienceQualificationComponent implements OnInit {
     this.arrayForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
 
     this.workExperience = this.arrayForm.get('workExperience') as FormArray;
-    this.workExperience.push(this.newWorkExperience());
+    this.workExperience.controls.unshift(this.newWorkExperience());
 
     this.educationalBackground = this.arrayForm.get('educationalBackground') as FormArray;
     this.educationalBackground.push(this.newEducationalBackground());
@@ -77,13 +78,14 @@ export class ExperienceQualificationComponent implements OnInit {
   }
 
   addMeToArray(event: { formArrayName: string; fg: FormGroup, index:number }) {
+    console.log(event.fg);
     switch (event.formArrayName) {
       case 'workExperience':
 
         this.workRendering = true;
         this.workExperience.push(event.fg);
-        setTimeout(() => { 
-          this.workRendering = false 
+        setTimeout(() => {
+          this.workRendering = false
         }, 300);
 
         break;
@@ -91,8 +93,8 @@ export class ExperienceQualificationComponent implements OnInit {
 
         this.educRendering = true;
         this.educationalBackground.push(event.fg);
-        setTimeout(() => { 
-          this.educRendering = false 
+        setTimeout(() => {
+          this.educRendering = false
         }, 300);
 
         break;
@@ -100,8 +102,8 @@ export class ExperienceQualificationComponent implements OnInit {
 
         this.awardRendering = true;
         this.certifications.push(event.fg);
-        setTimeout(() => { 
-          this.awardRendering = false 
+        setTimeout(() => {
+          this.awardRendering = false
         }, 300);
 
         break;
@@ -114,8 +116,8 @@ export class ExperienceQualificationComponent implements OnInit {
 
         this.workRendering = true;
         this.workExperience.removeAt(event.index);
-        setTimeout(() => { 
-          this.workRendering = false 
+        setTimeout(() => {
+          this.workRendering = false
         }, 300);
 
         break;
@@ -123,8 +125,8 @@ export class ExperienceQualificationComponent implements OnInit {
 
         this.educRendering = true;
         this.educationalBackground.removeAt(event.index);
-        setTimeout(() => { 
-          this.educRendering = false 
+        setTimeout(() => {
+          this.educRendering = false
         }, 300);
 
         break;

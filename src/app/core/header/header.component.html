@@ -39,7 +39,7 @@
             <button class="btn" id="dropdownMenuButton1"
             style="outline: none !important; border: none !important"
             data-bs-toggle="dropdown" aria-expanded="false">
-              <div *ngIf="!user.photoURL" class="img-avatar initial-thumbnail" >
+              <div *ngIf="!user.photoUrl" class="img-avatar initial-thumbnail" >
                 {{ initials }}
               </div>
               <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="img-avatar">
@@ -51,7 +51,7 @@
                 <span class="dropdown-item d-flex" >
                   <img [src]="user.photoUrl"
                   *ngIf="user.photoUrl" class="img-avatar me-3">
-                  <div *ngIf="!user.photoURL" class="initial-thumbnail-inner" >
+                  <div *ngIf="!user.photoUrl" class="initial-thumbnail-inner" >
                     {{ initials }}
                   </div>
                   <div routerLink="/company">

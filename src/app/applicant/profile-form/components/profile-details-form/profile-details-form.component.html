@@ -6,17 +6,23 @@
       <hr style="border: dashed 1px #868686">
     </div>
 
-    <div class="col-12 col-lg-3" *ngIf="profileImage || photoUrl">
+    <div class="col-12 col-lg-3" *ngIf="!profileImage && photo.value !=''">
       <div>
-        <div class="text-center mb-3 bg-gray" *ngIf="profileImage || photoUrl">
-          <img [src]="profileImage.file || photoUrl" class="avatar-image">
+        <div class="text-center mb-3 bg-gray">
+          <img [src]="photo.value" class="avatar-image">
         </div>
       </div>
     </div>
+    <div class="col-12 col-lg-3" *ngIf="profileImage">
+      <div>
+        <div class="text-center mb-3 bg-gray" *ngIf="profileImage">
+          <img [src]="profileImage.file" class="avatar-image">
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-9" *ngIf="!(profileImage || photo.value)"></div>
 
-    <div class="col-12 col-lg-9" *ngIf="!profileImage"></div>
-
-    <div class="col-12 col-lg-6" [ngClass]="profileImage ? 'mt-3' : ''">
+    <div class="col-12 col-lg-6" [ngClass]="(profileImage || photo.value != '' ) ? 'mt-3' :''">
       <div class="title-container mb-3">
         <label>Profile Photo</label>
 
@@ -24,7 +30,7 @@
           [labelTop]="false" formControlName="photoUrl"></app-file-upload>
       </div>
 
-      <div class="title-container mb-3" *ngIf="profileImage">
+      <div class="title-container mb-3" *ngIf="profileImage || photo.value">
         <label>Current Job title</label>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle">
@@ -34,7 +40,7 @@
 
     <div class="col-12 col-lg-6">
 
-      <div class="title-container mb-3" *ngIf="!profileImage">
+      <div class="title-container mb-3" *ngIf="!profileImage && !photo.value">
         <label>Current Job title</label>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle">

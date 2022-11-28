@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import * as Model from '@main/applicant/applicant.model';
 
 @Component({
   selector: 'app-applicant-details',
@@ -8,10 +9,12 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./details.component.scss']
 })
 export class DetailsComponent implements OnInit {
+  @Input() user: Model.Applicant;
+
   public work_experience: any[] = [
     {
-      id: 1,  
-      title: "Website Design Senior Level",  
+      id: 1,
+      title: "Website Design Senior Level",
       job_type: "Full-Time",
       details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
       location: "Los Angeles, USA",
@@ -20,8 +23,8 @@ export class DetailsComponent implements OnInit {
       end_date: new Date("April 12, 2022")
     },
     {
-      id: 2,  
-      title: "Frontend Engineer",  
+      id: 2,
+      title: "Frontend Engineer",
       job_type: "Full-Time",
       details: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni am, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
       location: "Los Angeles, USA",
@@ -33,16 +36,16 @@ export class DetailsComponent implements OnInit {
 
   public education_background: any[] = [
     {
-      id: 1,  
-      field_of_study: "Master Degree",  
+      id: 1,
+      field_of_study: "Master Degree",
       school_address: "Manila, Philippines",
       school: "De La Salle-College of Saint Benilde",
       start_date: new Date("June 11, 2021"),
       end_date: new Date("April 12, 2022")
     },
     {
-      id: 2,  
-      field_of_study: "BS Computer Science",  
+      id: 2,
+      field_of_study: "BS Computer Science",
       school_address: "Manila, Philippines",
       school: "Ateneo de Naga University",
       start_date: new Date("April 09, 2009"),
@@ -52,8 +55,8 @@ export class DetailsComponent implements OnInit {
 
   public awards: any[] = [
     {
-      id: 1,  
-      title: "Team Leader",  
+      id: 1,
+      title: "Team Leader",
       job_type: "Full-Time",
       company: "Microsoft LTD",
       location: "Ateneo de Naga University",
@@ -61,7 +64,7 @@ export class DetailsComponent implements OnInit {
       start_date: new Date("June 11, 2021"),
       end_date: new Date("April 12, 2022")
     },
-  ];  
+  ];
 
   public skills: string[] = ["Marketing", "Angular", "JavaScript", "TypeScript", "HTML", "CSS", "Bootstrap", "MongoDB", "Node", "Web Development", "Frontend"];
 
