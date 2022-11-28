@@ -52,7 +52,7 @@ export class ProfileFormComponent implements OnInit {
     {
       id: 3,
       title: "Documents",
-      disabled: true,
+      disabled: false,
       formName: ''
     },
   ];

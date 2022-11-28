@@ -6,8 +6,7 @@
       </app-main-stepper>
 
       <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-        <!-- TODO view profile
-          <button class="btn btn-save-draft me-3" routerLink="/applicant/profile">Profile Preview</button> -->
+          <button class="btn btn-save-draft me-3" *ngIf="applicantId" routerLink="/applicant/profile">Profile Preview</button>
         <button class="btn btn-save me-2" type="button" (click)="submitProfile()">
           Submit Changes</button>
       </div>
@@ -24,7 +23,7 @@
         </ng-container>
 
         <ng-container *ngIf="stepper === 3">
-          <!-- <app-documents></app-documents> -->
+          <app-documents formGroupName="profileDocuments"></app-documents>
         </ng-container>
       </div>
     </form>

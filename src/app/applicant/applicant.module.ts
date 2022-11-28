@@ -17,6 +17,8 @@ import { WorkExperienceComponent } from './profile-form/components/work-experien
 import { ExperienceQualificationComponent } from './profile-form/components/experience-qualification/experience-qualification.component';
 import { EducationalBackgroundComponent } from './profile-form/components/educational-background/educational-background.component';
 import { AwardsComponent } from './profile-form/components/awards/awards.component';
+import { DocumentsComponent } from './profile-form/components/documents/documents.component';
+import { RecorderModule } from '@main/recorder/recorder.module';
 
 
 @NgModule({
@@ -29,12 +31,14 @@ import { AwardsComponent } from './profile-form/components/awards/awards.compone
     WorkExperienceComponent,
     ExperienceQualificationComponent,
     EducationalBackgroundComponent,
-    AwardsComponent
+    AwardsComponent,
+    DocumentsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
+    RecorderModule,
     StoreModule.forFeature('applicant', applicantReducer),
     EffectsModule.forFeature([ApplicantEffects])
   ],

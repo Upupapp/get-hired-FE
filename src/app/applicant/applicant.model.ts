@@ -113,3 +113,10 @@ export interface Options {
   name: string;
   icon?: string;
 }
+
+export interface Documents {
+  file: File;
+  filename: string;
+  size: number;
+  type: string;
+}

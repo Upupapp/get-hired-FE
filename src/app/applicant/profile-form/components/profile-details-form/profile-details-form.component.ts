@@ -51,6 +51,5 @@ export class ProfileDetailsFormComponent implements OnInit {
   onUpload(item: any) {
     this.profileImage = item;
     this.profileDetailsForm.controls['profileImage'].setValue(item.file)
-
   }
 }

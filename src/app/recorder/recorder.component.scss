@@ -1,0 +1,99 @@
+.btn-take-interview {
+  background: #fb0242;
+  backdrop-filter: blur(75px);
+  border-radius: 10px;
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 21px;
+  // width: 160px;
+  /* identical to box height */
+  height: 40px;
+  margin-right: 10px;
+  color: #fff;
+
+  &:hover {
+    background: #fe6f61;
+    color: white;
+  }
+}
+
+.bg-timer {
+  margin-top: 5px;
+  background: #ffffff;
+  box-shadow: 0px 10px 15px rgba(109, 109, 109, 0.19);
+  border-radius: 16px;
+  padding: 5px 20px 0px 20px;
+}
+
+.title-timer {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 21.8182px;
+  line-height: 16px;
+  /* identical to box height, or 75% */
+
+  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
+
+  color: #121212;
+}
+
+.title-duration {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 14.2727px;
+  line-height: 16px;
+  /* identical to box height, or 133% */
+
+  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
+
+  color: #8a8a8a;
+}
+
+.get-hired-logo {
+  background: #ffffff;
+  border-radius: 0px 0px 70px 70px;
+  padding: 10px 15px 18px 15px;
+  position: absolute;
+  left: 30px;
+
+  img {
+    height: 40px;
+  }
+}
+
+.record-container {
+  background: #c9c9c9 !important;
+  min-height: 380px;
+  //height: 416px;
+  position: relative;
+  border-radius: 16px;
+}
+
+.title-main {
+  font-size: 14px;
+}
+
+.btn-primary {
+  backdrop-filter: blur(75px);
+  border-radius: 10px;
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 21px;
+  height: 40px;
+  margin-right: 10px;
+  color: #fff;
+
+  &:hover {
+    color: #fe6f61;
+    background-color: white;
+  }
+}
+
+.btn-outline-primary {
+  padding: 5px 10px;
+  margin-top:5px;
+}

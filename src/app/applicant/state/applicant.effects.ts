@@ -49,7 +49,7 @@ export class ApplicantEffects {
             ];
           }),
           catchError((err) => {
-            const { error } = err.error;
+            const { error } = err;
             return of(ApplicantActions.getApplicantFail({ payload: error }));
           })
         )
