@@ -38,4 +38,8 @@ export class ApplicantService {
   getLevelList(){
     return this.baseService.get<Model.Options>(`${this.optionUrl}/levels`);
   }
+
+  userProfile(userId: string) {
+    return this.baseService.get<any>(`${this.applicantUrl}/userprofile?id=${userId}`);
+  }
 }

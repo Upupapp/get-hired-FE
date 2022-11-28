@@ -6,10 +6,10 @@
       <hr style="border: dashed 1px #868686">
     </div>
 
-    <div class="col-12 col-lg-3" *ngIf="profileImage">
+    <div class="col-12 col-lg-3" *ngIf="profileImage || photoUrl">
       <div>
-        <div class="text-center mb-3 bg-gray" *ngIf="profileImage">
-          <img [src]="profileImage.file" class="avatar-image">
+        <div class="text-center mb-3 bg-gray" *ngIf="profileImage || photoUrl">
+          <img [src]="profileImage.file || photoUrl" class="avatar-image">
         </div>
       </div>
     </div>
@@ -21,7 +21,7 @@
         <label>Profile Photo</label>
 
         <app-file-upload (upload)="onUpload($event)" label="Select Profile Photo"
-          [labelTop]="false"></app-file-upload>
+          [labelTop]="false" formControlName="photoUrl"></app-file-upload>
       </div>
 
       <div class="title-container mb-3" *ngIf="profileImage">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -6,6 +6,8 @@ import { distinctUntilChanged, of, Subscription } from 'rxjs';
 import { ApplicantFacade } from '../state/applicant.facade';
 import * as Model from '../applicant.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoadingComponent } from '@app-shared/components/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile-form',
@@ -14,9 +16,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   animations: [mainAnimations]
 })
 export class ProfileFormComponent implements OnInit {
+  @Input() user: any;
+
   profileForm: FormGroup;
   subscriptions$ = new Subscription();
   applicantId: string;
+  applicant: Model.Applicant;
+  loading: boolean = true;
 
   asyncLocalStorage = {
     setItem: async function (key, value) {
@@ -56,39 +62,50 @@ export class ProfileFormComponent implements OnInit {
   applicant$ = this.applicantFacade.applicantDetails$
     .pipe().subscribe(this.mappedApplicant.bind(this));
 
+  loading$ = this.applicantFacade.loading$
+    .pipe().subscribe(this.formLoading.bind(this));
+
+  success$ = this.applicantFacade.success$
+    .pipe().subscribe(this.afterSubmit.bind(this));
+
   constructor(
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private loadingDialog: MatDialog
   ) { }
 
   ngOnInit(): void {
+    console.log(this.user);
+    if (this.user) {
+      this.applicantFacade.getApplicantById(this.user._id);
+    }
+
     this.initializedForm();
   }
 
-  initializedForm() {
-    const user = JSON.parse(localStorage.getItem('user'));
-
+  initializedForm(data?: Model.Applicant) {
+    console.log(data);
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
-        photoUrl: [null],
-        profileImage: new FormArray([]),
-        jobTitle: [null],
-        shortBio: [null],
-        servicesProvided: [null],
-        jobTypeId: [null],
-        jobLevelId: [null],
-        workSetupId: [null],
-        salaryMinimum: [null],
-        salaryMaximum: [null],
-        firstName: [user.firstName, Validators.required],
-        lastName: [user.lastName, Validators.required],
-        address: [null],
-        contactNumber: [null, Validators.required],
-        city: [null, Validators.required],
-        country: [null, Validators.required]
+        photoUrl: [data ? data.photoUrl : null],
+        profileImage: [],
+        jobTitle: [data ? data.jobTitle : null],
+        shortBio: [data ? data.shortBio : null],
+        servicesProvided: [data ? data.servicesProvided : null],
+        jobTypeId: [data ? data.jobTypeId : null],
+        jobLevelId: [data ? data.jobLevelId : null],
+        workSetupId: [data ? data.workSetUpId : null],
+        salaryMinimum: [data ? data.salaryMinimum : null],
+        salaryMaximum: [data ? data.salaryMaximum : null],
+        firstName: [data ? data.firstName : this.user.firstName, Validators.required],
+        lastName: [data ? data.lastName : this.user.lastName, Validators.required],
+        address: [data ? data.address : null],
+        contactNumber: [data ? data.contactNumber : null, Validators.required],
+        city: [data ? data.city : null, Validators.required],
+        country: [data ? data.country : null, Validators.required]
       }),
       profileArraysForm: this.fb.group({
         workExperience: this.fb.array([]),
@@ -110,11 +127,11 @@ export class ProfileFormComponent implements OnInit {
 
       }));
 
-      this.subscriptions$.add(
-        this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
-          console.log(value);
+    this.subscriptions$.add(
+      this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
+        console.log(value);
 
-        }));
+      }));
   }
 
   async submitProfile() {
@@ -123,7 +140,7 @@ export class ProfileFormComponent implements OnInit {
 
     const isProfileReady = applicant.firstName != ""
       && applicant.lastName != ""
-      && applicant.profileImage[0]
+      && applicant.profileImage
       && applicant.jobTitle != ""
       && applicant.email != ""
       && applicant.contactNumber != ""
@@ -131,19 +148,47 @@ export class ProfileFormComponent implements OnInit {
       && applicant.salaryMinimum != 0
       && applicant.salaryMaximum != 0;
 
-      console.log(applicant);
-      console.log(isProfileReady);
+    console.log(applicant);
+    console.log(isProfileReady);
 
-      this.applicantFacade.saveApplicant({
-        ...applicant,
-        isProfileReady
-      })
+    this.applicantFacade.saveApplicant({
+      ...applicant,
+      isProfileReady: isProfileReady
+    })
   }
 
   mappedApplicant(data) {
-    if(data) {
+    if (data) {
+      console.log(data);
+      this.applicant = data;
       this.applicantId = data.applicantProfileId;
+
+      const user = localStorage.getItem('user');
+      localStorage.removeItem('user');
+      localStorage.setItem('user', JSON.stringify({
+        ...JSON.parse(user),
+        firstName: data.firstName,
+        lastName: data.lastName,
+        photoUrl: data.photoUrl
+      }));
+
+      this.profileForm.controls.profileDetailsForm.get('photoUrl').setValue(data.photoUrl);
+      this.profileForm.controls.profileDetailsForm.get('jobTitle').setValue(data.jobTitle);
+      this.profileForm.controls.profileDetailsForm.get('shortBio').setValue(data.shortBio);
+      this.profileForm.controls.profileDetailsForm.get('servicesProvided').setValue(data.servicesProvided);
+      this.profileForm.controls.profileDetailsForm.get('jobTypeId').setValue(data.jobTypeId);
+      this.profileForm.controls.profileDetailsForm.get('jobLevelId').setValue(data.jobLevelId);
+      this.profileForm.controls.profileDetailsForm.get('workSetupId').setValue(data.workSetupId);
+      this.profileForm.controls.profileDetailsForm.get('salaryMinimum').setValue(data.salaryMinimum);
+      this.profileForm.controls.profileDetailsForm.get('salaryMaximum').setValue(data.salaryMaximum);
+      this.profileForm.controls.profileDetailsForm.get('firstName').setValue(data.firstName);
+      this.profileForm.controls.profileDetailsForm.get('lastName').setValue(data.lastName);
+      this.profileForm.controls.profileDetailsForm.get('address').setValue(data.address);
+      this.profileForm.controls.profileDetailsForm.get('contactNumber').setValue(data.contactNumber);
+      this.profileForm.controls.profileDetailsForm.get('city').setValue(data.city);
+      this.profileForm.controls.profileDetailsForm.get('country').setValue(data.country);
     }
+
   }
 
   async formatProfile(): Promise<Model.Applicant> {
@@ -174,7 +219,7 @@ export class ProfileFormComponent implements OnInit {
         this.applicantFacade.setAdditionalInfo(bodyInitial);
         break;
       case 'profileDocuments':
-        const bodyInterview =  this.profileForm.controls[formCtrl].value;
+        const bodyInterview = this.profileForm.controls[formCtrl].value;
         // this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
         break;
     }
@@ -192,6 +237,21 @@ export class ProfileFormComponent implements OnInit {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
+    }
+  }
+
+  formLoading(loading: boolean) {
+    if (loading) {
+      const ref = this.loadingDialog.open(LoadingComponent, {
+        disableClose: true,
+        data: {
+          selfClose: false
+        }
+      });
+    } else {
+      this.loading = loading;
+
+      setTimeout(() => this.loadingDialog.closeAll(), 2000);
     }
   }
 

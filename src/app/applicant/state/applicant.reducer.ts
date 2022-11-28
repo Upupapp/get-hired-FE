@@ -16,7 +16,7 @@ export interface ApplicantState {
   loading: boolean;
   initialDetails: Model.InitialDetails;
   additionalInfo: Model.AdditionalInfo;
-
+  user: Model.User;
   // industry: Model.Options[];
   // badge: Model.Options[];
   // applicantRole: Model.Options[];
@@ -37,6 +37,7 @@ const initialState: ApplicantState = {
   loading: false,
   initialDetails: null,
   additionalInfo: null,
+  user: null,
   // industry: [],
   // badge: [],
   // applicantRole: [],
@@ -52,6 +53,28 @@ const initialState: ApplicantState = {
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.getUserProfile, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.getUserProfileSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      user: action.user,
+      loading: false,
+    };
+  }),
+  on(ApplicantActions.getUserProfileFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.getApplicant, (state): ApplicantState => {
     return {
       ...state,

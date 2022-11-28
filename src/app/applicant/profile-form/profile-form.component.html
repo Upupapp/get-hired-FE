@@ -1,5 +1,5 @@
 <div class="p-4"></div>
-<div class="bg-gray">
+<div class="bg-gray" *ngIf="!loading">
   <div style="position: relative;">
     <div class="bg-upper-gray">
       <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">

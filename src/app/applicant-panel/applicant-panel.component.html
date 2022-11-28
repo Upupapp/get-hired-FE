@@ -1,4 +1,4 @@
-<section id="body-main-container">
+<section id="body-main-container" *ngIf="user$ | async as user">
 	<div class="d-flex" id="body-row">
 		<!-- SIDEBAR  -->
 		<div class="d-none d-md-block" id="sidebar-container">

@@ -7,7 +7,9 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./applicant-profile-form.component.scss']
 })
 export class ApplicantProfileFormComponent implements OnInit {
-  ngOnInit(): void {
+  user =  JSON.parse(localStorage.getItem('user'));
 
+  ngOnInit(): void {
+    console.log(this.user);
   }
 }

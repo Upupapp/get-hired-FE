@@ -10,9 +10,9 @@ import * as InterviewModel from '@main/interview/interview.model';
 export class ApplicantFacade {
   loading$ = this.store.pipe(select(fromfeature.loading));
   applicantDetails$ = this.store.pipe(select(fromfeature.getApplicantById));
-
+  user$ = this.store.pipe(select(fromfeature.getUser));
   // applicantList$ = this.store.pipe(select(fromfeature.getApplicantList));
-  // success$ = this.store.pipe(select(fromfeature.success));
+  success$ = this.store.pipe(select(fromfeature.success));
   // industry$ = this.store.pipe(select(fromfeature.getIndustryList));
   // badge$ = this.store.pipe(select(fromfeature.getBadgeList));
   // applicantRole$ = this.store.pipe(select(fromfeature.getApplicantRoleList));
@@ -29,6 +29,10 @@ export class ApplicantFacade {
   error$: any;
 
   constructor(private store: Store<State>) {}
+
+  getUser(userId: string) {
+    this.store.dispatch(ApplicantAction.getUserProfile({ userId }));
+  }
 
   getApplicantById(applicantId: string) {
     this.store.dispatch(ApplicantAction.getApplicant({ applicantId }));

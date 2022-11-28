@@ -55,10 +55,14 @@ export class CoreService {
 
   async getState() {
     const state = await this.asyncLocalStorage.getItem('state');
-    return state == 'true' ? true: false;
+    return state == 'true' ? true : false;
   }
 
   getRole() {
     return this.asyncLocalStorage.getItem('role');
+  }
+
+  resetLocalStorage(user) {
+    // TODO
   }
 }

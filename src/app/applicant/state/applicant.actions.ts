@@ -3,9 +3,13 @@ import * as Model from '../applicant.model';
 import * as InterviewModel from '@main/interview/interview.model';
 
 enum AllFeatureActionTypes {
-  GetApplicant = '[applicant] - Get Applicant status',
-  GetApplicantSuccess = '[applicant] -Get Applicant Success',
-  GetApplicantFail = '[applicant] - Get Applicant Fail',
+  GetUserProfile = '[applicant] - Get User Profile status',
+  GetUserProfileSuccess = '[applicant] -Get User Profile Success',
+  GetUserProfileFail = '[applicant] - Get User Profile Fail',
+
+  GetApplicant = '[applicant] - Get applicant status',
+  GetApplicantSuccess = '[applicant] -Get applicant Success',
+  GetApplicantFail = '[applicant] - Get applicant Fail',
 
   SetInitialDetails = '[applicant] - Set Initial Details',
   SetAdditionalInfo = '[applicant] - Set Additional Info',
@@ -64,6 +68,21 @@ enum AllFeatureActionTypes {
   // SetInterview = '[applicant] - Set Applicant Interview',
   // ResetApplicantForm = '[applicant] - Reset Applicant Form',
 }
+
+export const getUserProfile = createAction(
+  AllFeatureActionTypes.GetUserProfile,
+  props<{ userId: string }>()
+);
+
+export const getUserProfileSuccess = createAction(
+  AllFeatureActionTypes.GetUserProfileSuccess,
+  props<{ user: Model.User }>()
+);
+
+export const getUserProfileFail = createAction(
+  AllFeatureActionTypes.GetUserProfileFail,
+  props<{ payload: any }>()
+);
 
 export const getApplicant = createAction(
   AllFeatureActionTypes.GetApplicant,

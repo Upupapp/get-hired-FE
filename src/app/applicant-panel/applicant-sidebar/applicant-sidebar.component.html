@@ -30,7 +30,7 @@
 			<div class="card card-body py-4 bg-user"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex">
-					<img src="/assets/images/face-3.jpg" class="img-avatar me-2">
+					<img [src]="user.photoUrl" class="img-avatar me-2">
 
 					<div class="mt-1">
 						<h5 class="img-avatar-full-name text-capitalize">

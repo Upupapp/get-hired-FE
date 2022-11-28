@@ -1,3 +1,11 @@
+export interface User {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  photoUrl: string;
+  email: string;
+}
+
 export interface Applicant {
   applicantProfileId?: string;
   userId: string;
@@ -76,7 +84,7 @@ export interface Certifications {
 
 export interface InitialDetails {
   profilePhoto: string;
-  profilePhotoFile: File;
+  profilePhotoFile?: File;
   jobTitle: string;
   shortBio: string;
   servicesProvided: string;
@@ -96,8 +104,8 @@ export interface InitialDetails {
 export interface AdditionalInfo {
   workExperience: WorkExperience[];
   educationalBackground: EducationalBackground[];
-  professionalSkills: Certifications[];
-  certifications: InitialDetails[];
+  professionalSkills: string[];
+  certifications: Certifications[];
 }
 
 export interface Options {

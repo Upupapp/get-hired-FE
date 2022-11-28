@@ -1,3 +1,4 @@
+import { sanitizeIdentifier } from '@angular/compiler';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,6 +14,8 @@ import { Subscription } from 'rxjs';
 })
 export class ProfileDetailsFormComponent implements OnInit {
   @Input() formGroupName: string;
+  photoUrl: string;
+  photo: FormControl;
 
   private req: Subscription;
 
@@ -41,10 +44,28 @@ export class ProfileDetailsFormComponent implements OnInit {
     this.applicantFacade.getSetup();
 
     this.profileDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
+    console.log(this.profileDetailsForm);
+    this.photo = this.profileDetailsForm.get('profileImage') as FormControl;
+    this.photoUrl = this.profileDetailsForm.get('photoUrl').value;
   }
 
   onUpload(item: any) {
     this.profileImage = item;
-    this.profileDetailsForm.controls['profileImage'].setValue(this.profileImage)
+    console.log(item);
+      // this.profileDetailsForm.controls.profileImage.setValue(new FormGroup({
+      //     file: new FormControl(item.file),
+      //     filename: new FormControl(item.filename),
+      //     size: new FormControl(item.size),
+      //     type: new FormControl(item.type)
+      //   }))
+      // this.profileDetailsForm.controls.profileImage.setValue([{
+      //   file: new FormControl(item.file),
+      //   filename: new FormControl(item.filename),
+      //   size: new FormControl(item.size),
+      //   type: new FormControl(item.type)
+      // }])
+
+      this.profileDetailsForm.controls['profileImage'].setValue(item.file)
+
   }
 }

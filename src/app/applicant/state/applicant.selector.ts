@@ -9,6 +9,11 @@ export const loading = createSelector(
   (state) => state.loading
 );
 
+export const getUser = createSelector(
+  getApplicantInitState,
+  (state) => state.user
+);
+
 export const getApplicantById = createSelector(
   getApplicantInitState,
   (state) => state.selected
@@ -34,10 +39,10 @@ export const getAdditionalInfo = createSelector(
 //   state => state.list
 // );
 
-// export const success = createSelector(
-//   getApplicantInitState,
-//   state => state.succesMsg
-// );
+export const success = createSelector(
+  getApplicantInitState,
+  state => state.succesMsg
+);
 
 // export const getApplicantDetails = createSelector(
 //   getApplicantInitState,

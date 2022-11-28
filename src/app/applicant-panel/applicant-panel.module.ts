@@ -14,6 +14,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { ApplicantEffects } from '@main/applicant/state/applicant.effects';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { AuthModule } from '@main/auth/auth.module';
+import { ApplicantModule } from '@main/applicant/applicant.module';
 
 const routes: Routes = [
   {
@@ -53,9 +54,10 @@ const routes: Routes = [
     CommonModule,
     CoreModule,
     RouterModule.forChild(routes),
-    StoreModule.forFeature('Applicant', applicantReducer),
-    EffectsModule.forFeature([ApplicantEffects]),
-    AuthModule
+    ApplicantModule
+    // StoreModule.forFeature('applicant', applicantReducer),
+    // EffectsModule.forFeature([ApplicantEffects]),
+    // AuthModule
   ],
   providers: [AuthFacade, ApplicantFacade, ApplicantEffects],
 })

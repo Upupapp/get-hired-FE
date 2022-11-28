@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as ApplicantActions from './applicant.actions';
 import * as Model from '../applicant.model';
@@ -36,9 +36,17 @@ export class ApplicantEffects {
       ofType(ApplicantActions.getApplicant),
       mergeMap((action) => this.applicantService.getApplicant(action.applicantId)
         .pipe(
-          map((res: any) => {
+          switchMap((res: any) => {
             const applicant: Model.Applicant = res.data;
-            return ApplicantActions.getApplicantSuccess({ applicant });
+            return [
+              ApplicantActions.getApplicantSuccess({ applicant }),
+              ApplicantActions.setInitialDetails({
+                initialDetails: this.getInitialDetailsOfApplicant(applicant)
+              }),
+              ApplicantActions.setAdditionalInfo({
+                additionalInfo: this.getJobInfo(applicant)
+              })
+            ];
           }),
           catchError((err) => {
             const { error } = err.error;
@@ -67,6 +75,35 @@ export class ApplicantEffects {
     );
   });
 
+  getInitialDetailsOfApplicant(applicant: Model.Applicant): Model.InitialDetails {
+    return {
+      profilePhoto: applicant.photoUrl,
+      jobTitle: applicant.jobTitle,
+      shortBio: applicant.shortBio,
+      servicesProvided: applicant.servicesProvided,
+      jobTypeId: applicant.jobTypeId,
+      jobLevelId: applicant.jobLevelId,
+      workSetupId: applicant.workSetUpId,
+      salaryMinimum: applicant.salaryMinimum,
+      salaryMaximum: applicant.salaryMaximum,
+      firstName: applicant.firstName,
+      lastName: applicant.lastName,
+      address: applicant.address,
+      contactNumber: applicant.contactNumber,
+      city: applicant.city,
+      country: applicant.country
+    }
+  }
+
+  getJobInfo(applicant: Model.Applicant): Model.AdditionalInfo {
+    return {
+      workExperience: applicant.workExperience,
+      educationalBackground: applicant.educationalBackground,
+      professionalSkills: applicant.skills,
+      certifications: applicant.certifications
+    }
+  }
+
   // updateApplicantProfile$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.updateProfile),
@@ -85,23 +122,23 @@ export class ApplicantEffects {
   //   );
   // });
 
-  //   applicant$ = createEffect(() => {
-  //     return this.actions$.pipe(
-  //       ofType(ApplicantActions.saveApplicant),
-  //       mergeMap((action) => this.applicantService.saveApplicant(action.applicant)
-  //         .pipe(
-  //           map((res: any) => {
-  //             const applicant: Model.Applicant = res.data;
-  //             return ApplicantActions.saveApplicantSuccess({ applicant });
-  //           }),
-  //           catchError((err) => {
-  //             const { error } = err.error;
-  //             return of(ApplicantActions.saveApplicantFail({ payload: error }))
-  //           })
-  //         )
-  //       )
-  //     );
-  //   });
+    user$ = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(ApplicantActions.getUserProfile),
+        mergeMap((action) => this.applicantService.userProfile(action.userId)
+          .pipe(
+            map((res: any) => {
+              const user: Model.User = res.data;
+              return ApplicantActions.getUserProfileSuccess({ user });
+            }),
+            catchError((err) => {
+              const { error } = err.error;
+              return of(ApplicantActions.getUserProfileFail({ payload: error }))
+            })
+          )
+        )
+      );
+    });
 
   //   basicList$ = createEffect(() => {
   //     return this.actions$.pipe(
@@ -229,59 +266,59 @@ export class ApplicantEffects {
   //     );
   //   });
 
-    setupList$ = createEffect(() => {
-      return this.actions$.pipe(
-        ofType(ApplicantActions.getSetupList),
-        mergeMap(() => this.applicantService.getSetupList()
-          .pipe(
-            map((res: any) => {
-              const setup: Model.Options[] = res.data;
-              return ApplicantActions.getSetupListSuccess({ setup });
-            }),
-            catchError((err) => {
-              const { error } = err.error;
-              return of(ApplicantActions.getSetupListFail({ payload: error }))
-            })
-          )
+  setupList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.getSetupList),
+      mergeMap(() => this.applicantService.getSetupList()
+        .pipe(
+          map((res: any) => {
+            const setup: Model.Options[] = res.data;
+            return ApplicantActions.getSetupListSuccess({ setup });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.getSetupListFail({ payload: error }))
+          })
         )
-      );
-    });
+      )
+    );
+  });
 
-    typeList$ = createEffect(() => {
-      return this.actions$.pipe(
-        ofType(ApplicantActions.getTypeList),
-        mergeMap(() => this.applicantService.getTypeList()
-          .pipe(
-            map((res: any) => {
-              const typeList: Model.Options[] = res.data;
-              return ApplicantActions.getTypeListSuccess({ typeList });
-            }),
-            catchError((err) => {
-              const { error } = err.error;
-              return of(ApplicantActions.getTypeListFail({ payload: error }))
-            })
-          )
+  typeList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.getTypeList),
+      mergeMap(() => this.applicantService.getTypeList()
+        .pipe(
+          map((res: any) => {
+            const typeList: Model.Options[] = res.data;
+            return ApplicantActions.getTypeListSuccess({ typeList });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.getTypeListFail({ payload: error }))
+          })
         )
-      );
-    });
+      )
+    );
+  });
 
-    levelList$ = createEffect(() => {
-      return this.actions$.pipe(
-        ofType(ApplicantActions.getLevelList),
-        mergeMap(() => this.applicantService.getLevelList()
-          .pipe(
-            map((res: any) => {
-              const level: Model.Options[] = res.data;
-              return ApplicantActions.getLevelListSuccess({ level });
-            }),
-            catchError((err) => {
-              const { error } = err.error;
-              return of(ApplicantActions.getLevelListFail({ payload: error }))
-            })
-          )
+  levelList$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.getLevelList),
+      mergeMap(() => this.applicantService.getLevelList()
+        .pipe(
+          map((res: any) => {
+            const level: Model.Options[] = res.data;
+            return ApplicantActions.getLevelListSuccess({ level });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.getLevelListFail({ payload: error }))
+          })
         )
-      );
-    });
+      )
+    );
+  });
 
   //   getApplicant$ = createEffect(() => {
   //     return this.actions$.pipe(
