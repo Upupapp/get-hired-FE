@@ -6,6 +6,10 @@
     height: 10px;
     cursor: move; /* fallback if grab cursor is unsupported */
   }
+
+  .cdk-overlay-pane{
+  	padding: 0 !important;
+  }
 }
 
 .uploader-container{

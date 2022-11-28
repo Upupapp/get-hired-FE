@@ -1,20 +1,27 @@
-<div class="p-2 text-center">
-  <h5>{{ data.action }} Confirmation</h5>
-  <p>
-    <i class="bi bi-info-circle"></i>
-    Are you sure you want to {{ data.action }} this?
-  </p>
-  <div class="w-100 mt-2">
-    <button type="button" (click)="submit(1)"
-    class="btn btn-primary px-2 me-2">
-      <i class="bi bi-check me-2"></i>
-      Yes
-    </button>
-    <button type="button" (click)="submit(2)"
-    class="btn btn-primary px-2">
-      <i class="bi bi-x me-2"></i>
-      No
-    </button>
-  </div>
+<div class="card card-body">
+  <div class="border-solid">
+    <div class="d-flex p-1">
+      <img src="/assets/images/placeholder/icons/info-red.png" class="mt-1"
+      style="height: 34px">
 
+      <div class="ms-3">
+        <h5 class="title-label">{{ data.action }} Confirmation</h5>
+        <p>
+          Are you sure you want to {{ data.action }} this data?
+        </p>
+      </div>
+    </div>
+
+    <div class="w-100 mt-1 text-end">
+      <button type="button" (click)="submit(2)"
+      class="btn btn-default px-2 me-2">
+        Cancel
+      </button>
+
+      <button type="button" (click)="submit(1)"
+      class="btn btn-primary px-2 me-2">
+        Continue
+      </button>
+    </div>
+  </div>
 </div>

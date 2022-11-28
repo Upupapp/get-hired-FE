@@ -1,17 +1,19 @@
 <div class="card card-body mb-3"
 [ngStyle]="{ 'min-height' : data.badges.length > 0 ? '500px' : '400px'}"
 [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
-	<div class="banner-thumbnail">
+	<div class="banner-thumbnail" style="position: relative;">
 		<img [src]="data.jobBanner" class="img img-fluid img-banner">
+
+		<div class="d-flex p-2 justify-content-center align-items-center bg-white" *ngIf="data.badges.length > 0" style="position: absolute; bottom: -20px; right: 5px; border-radius: 6px; box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.05); cursor: pointer">
+			<img src="/assets/images/placeholder/icons/{{badge?.icon}}"
+			[title]="badge?.name" class="mx-2"
+			*ngFor="let badge of data?.badges; let i = index"
+			style="width: 30px">
+		</div>
 	</div>
 
-	<div class="p-3 py-3">
-		<div class="d-flex mb-3" *ngIf="data.badges.length > 0">
-			<img src="/assets/images/placeholder/icons/{{badge?.icon}}"
-			[title]="badge?.name"
-			*ngFor="let badge of data?.badges"
-			style="width: 30px" class="me-3">
-		</div>
+	<div class="p-3 py-3 mt-3">
+		
 
 
 		<h5 class="title-job-title">{{data?.jobTitle}}</h5>

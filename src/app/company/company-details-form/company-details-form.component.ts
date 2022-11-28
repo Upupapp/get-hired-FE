@@ -8,6 +8,8 @@ import { LoadingComponent } from '@main/shared/components/loading/loading.compon
 import { CompanyFacade } from '../state/company.facade';
 import * as Model from '../company.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
+import { Subscription, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-company-details-form',
@@ -16,6 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   animations: [mainAnimations]
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
+  public unsubscribe$ = new Subject<void>();
   @Output() updateCompany: EventEmitter<any> = new EventEmitter();
 
   asyncLocalStorage = {
@@ -38,6 +41,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   companyId: string;
   profileImage: any;
   canView: boolean;
+  updateSuccess: boolean = false;
 
   success$ = this.companyFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this));
@@ -54,6 +58,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private companyFacade: CompanyFacade,
     private loadingDialog: MatDialog,
+    private successDialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -77,6 +82,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       numberOfEmployee: [0],
       companyLogoFile: []
     });
+
+    //this.showSuccessDialog()
   }
 
   setCompany(company: EmployeeCompany) {
@@ -127,6 +134,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.updateSuccess = true;
+    
     if (this.companyDetailsForm.valid) {
       console.log(this.company);
       if (this.company && this.company.companyId) {
@@ -154,10 +163,13 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     } else if (event == 'updated') {
-      this.snackBar.open(`Company successfully Updated`, '', {
+      /*this.snackBar.open(`Company successfully Updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
-      });
+      });*/
+      //this.updateSuccess = false;
+      this.loadingDialog.closeAll();
+      this.showSuccessDialog();
     }
   }
 
@@ -185,8 +197,32 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      setTimeout(() => this.loadingDialog.closeAll(), 2000);
+      // dont close automatically all modal
+      if(!this.updateSuccess){
+        setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      }
     }
+  }
+
+  showSuccessDialog(){
+    let openDialog = this.successDialog.open(
+      SuccessDialogComponent,
+      {
+        width: '29vw',
+        data: {
+          title: 'Update Details',  
+          subtitle: 'Successfully updated company details'
+        },
+      }
+    );  
+
+
+    openDialog
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        this.updateSuccess = false
+      });
   }
 
   ngOnDestroy(): void {
