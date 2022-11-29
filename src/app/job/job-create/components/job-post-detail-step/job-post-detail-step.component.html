@@ -110,7 +110,9 @@
         <div class="col-12 col-lg-5" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
           <h5 class="title-label">Add Badges</h5>
           <select class="form-select form-select-multiple" size="3" multiple>
-            <option *ngFor="let item of badge; let i = index" [ngValue]="item.id" (click)="addBadge(item);">
+            <option *ngFor="let item of badge; let i = index" 
+            style="cursor: pointer" 
+            [ngValue]="item.id" (click)="addBadge(item);">
               {{item?.name}}</option>
           </select>
         </div>

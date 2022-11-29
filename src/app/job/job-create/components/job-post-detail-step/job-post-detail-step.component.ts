@@ -91,13 +91,17 @@ export class JobPostDetailStepComponent implements OnInit {
 
   addBadge(item) {
     if (this.badges.controls.length != 3) {
-      this.badges.push(new FormGroup({
-        icon: new FormControl(item.icon),
-        name: new FormControl(item.name),
-        id: new FormControl(item.id)
-      }));
+      let index = this.badges?.value?.findIndex(el => el?.id === item?.id);
 
-      console.log(this.badges);
+      if(index === -1){
+        this.badges.push(new FormGroup({
+          icon: new FormControl(item.icon),
+          name: new FormControl(item.name),
+          id: new FormControl(item.id)
+        }));
+      }
+
+      console.log(this.badges?.value);
     } else {
       this.snackBar.open(`You are only allowed to add up to 3 badges`,
         '', { duration: 4000, panelClass: ['danger-snackbar'] });
