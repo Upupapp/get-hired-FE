@@ -30,7 +30,8 @@ import { StoreState } from '@main/shared/store/index';
 @Component({
   selector: 'app-candidate-list',
   templateUrl: './candidate-list.component.html',
-  styleUrls: ['./candidate-list.component.scss']
+  styleUrls: ['./candidate-list.component.scss'],
+  animations: [mainAnimations]
 })
 export class CandidateListComponent implements OnInit {
   private req: Subscription;
@@ -116,10 +117,10 @@ export class CandidateListComponent implements OnInit {
     .afterClosed()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
-      console.log("test if parent function will be called affter closing modal");
+      // console.log("test if parent function will be called affter closing modal");
       this.getCandidateList();
       if(result){
-        console.log(result, "test")
+        // console.log(result, "test")
       }
     });
   }

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { mainAnimations } from '@app-shared/animations/main-animations'; 
+import { mainAnimations } from '@app-shared/animations/main-animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CandidateActionTypes } from '@main/shared/store/actions/candidate.action';
 import { GroupActionTypes } from '@main/shared/store/actions/group.action';
@@ -16,7 +16,8 @@ import { CSVDataRecord } from './import-candidate-model';
 @Component({
   selector: 'app-import-add-candidate',
   templateUrl: './import-add-candidate.component.html',
-  styleUrls: ['./import-add-candidate.component.scss']
+  styleUrls: ['./import-add-candidate.component.scss'],
+  animations: [mainAnimations]
 })
 export class ImportAddCandidateComponent implements OnInit {
   public candidateForm: FormGroup;
@@ -67,13 +68,13 @@ export class ImportAddCandidateComponent implements OnInit {
       mobileNumber: [''],
       address: [''],
       jobId: ['', [Validators.required]],
-      groupName: ['', [Validators.required]],
-      groupId: ['']
+      // groupName: ['', [Validators.required]],
+      // groupId: ['']
     });
-    this.importCandidateForm = this.formBuilder.group({
-      groupName: ['', [Validators.required]],
-      groupId: ['']
-    });
+    // this.importCandidateForm = this.formBuilder.group({
+    //   groupName: ['', [Validators.required]],
+    //   groupId: ['']
+    // });
     this.candidateData$ = this.candidateState.pipe(select(state => state.candidate));
     this.groupData$ = this.groupState.pipe(select(state => state.group));
     this.req =  this.candidateData$.subscribe((onboard: CandidateState) => {
@@ -118,12 +119,12 @@ export class ImportAddCandidateComponent implements OnInit {
         this.candidateState.dispatch({
           type:CandidateActionTypes.SAVE_CANDIDATE_FAIL,
           payload: null
-        }); 
+        });
 
         this.candidateState.dispatch({
           type:CandidateActionTypes.SAVE_CANDIDATE_MULTIPLE_FAIL,
           payload: null
-        }); 
+        });
       }
     });
 
@@ -141,11 +142,11 @@ export class ImportAddCandidateComponent implements OnInit {
       }
     });
 
-    this.filteredOptions = this.candidateForm.get("groupName").valueChanges.pipe(
-      startWith(''),
-      map(val => this.filter(val))
-    );
-    
+    // this.filteredOptions = this.candidateForm.get("groupName").valueChanges.pipe(
+    //   startWith(''),
+    //   map(val => this.filter(val))
+    // );
+
   }
 
   filter(val: string): string[] {
@@ -191,10 +192,10 @@ export class ImportAddCandidateComponent implements OnInit {
     this.removeDocument();
     this.importCandidate = false;
   }
-  
+
   saveOnboard(){
-    this.candidateForm.get("groupName")?.patchValue(this.setGroupName(this.candidateForm.controls['groupName'].value));
-    this.candidateForm.get("groupId")?.patchValue(this.setGroupId(this.candidateForm.controls['groupName'].value));
+    // this.candidateForm.get("groupName")?.patchValue(this.setGroupName(this.candidateForm.controls['groupName'].value));
+    // this.candidateForm.get("groupId")?.patchValue(this.setGroupId(this.candidateForm.controls['groupName'].value));
     let data = {
       ...this.candidateForm.value,
       userId: this.localData._id,
@@ -203,7 +204,7 @@ export class ImportAddCandidateComponent implements OnInit {
     this.candidateState.dispatch({
       type: CandidateActionTypes.SAVE_CANDIDATE,
       payload: data
-    }); 
+    });
   }
 
   setGroupName(value) {
@@ -313,8 +314,8 @@ export class ImportAddCandidateComponent implements OnInit {
   }
 
   saveOnboardMultiple(){
-    this.importCandidateForm.get("groupName")?.patchValue(this.setGroupName(this.importCandidateForm.controls['groupName'].value));
-    this.importCandidateForm.get("groupId")?.patchValue(this.setGroupId(this.importCandidateForm.controls['groupName'].value));
+    // this.importCandidateForm.get("groupName")?.patchValue(this.setGroupName(this.importCandidateForm.controls['groupName'].value));
+    // this.importCandidateForm.get("groupId")?.patchValue(this.setGroupId(this.importCandidateForm.controls['groupName'].value));
       let data = {
         ...this.importCandidateForm.value,
         candidate: [...this.records]
@@ -325,7 +326,7 @@ export class ImportAddCandidateComponent implements OnInit {
           payload: data
         });
       }
-   
+
   }
 
   uploadLogo(event: any, dropped = false) {
@@ -357,7 +358,7 @@ export class ImportAddCandidateComponent implements OnInit {
     this.candidateState.dispatch({
       type:CandidateActionTypes.GET_CANDIDATE_JOB,
       payload: this.localData.companyId
-    }); 
+    });
   }
 
   getGroupList(){

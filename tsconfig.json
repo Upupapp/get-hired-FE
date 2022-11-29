@@ -19,7 +19,7 @@
       "esnext"
     ],
     "paths": {
-      "@app-applicant/*": ["app/applicant"],
+      "@app-applicant/*": ["app/applicant/*"],
       "@app-core/*": ["app/core/*"],
       "@environments/*": ["environments/*"],
       "@app-shared/*": ["app/shared/*"],

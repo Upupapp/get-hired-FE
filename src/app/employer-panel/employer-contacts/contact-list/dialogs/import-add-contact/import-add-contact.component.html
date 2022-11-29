@@ -12,7 +12,7 @@
 
 		<div class="employee-details row">
 			<div class="col-12 col-md-6 px-0">
-				<button class="btn btn-add w-100" 
+				<button class="btn btn-add w-100"
 				[ngClass]="importContact ? 'inactive' : ''"
 				(click)="importContact = false">
 					New Contact
@@ -30,7 +30,7 @@
 
 		<ng-container *ngIf="!submitting">
 			<div class="share-container text-center"
-			style="position: relative;" 
+			style="position: relative;"
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 				<div class="row pt-4" *ngIf="importContact">
 					<div class="col-12 col-md-12 text-start mb-2">
@@ -41,7 +41,7 @@
 
 				<ng-container *ngIf="!importContact && !importing">
 					<!-- Error Message -->
-					<form class="px-3" 
+					<form class="px-3"
 					[@animate]="{value:'*', params:{ x:'-10px', delay:'200ms' }}"
 					[formGroup]="contactForm">
 						<h5 class="title-add text-start">Contact Details</h5>
@@ -71,7 +71,7 @@
 							<input type="email" class="form-control" formControlName="address" name="email">
 						</div>
 
-						<div class="form-group mt-3">
+						<!-- <div class="form-group mt-3">
 							<label class="mb-2">Job Id <i class="text-danger">*</i></label>
 							<select class="form-select" formControlName="jobId">
 								<option selected disabled hidden value="">Select Job Id </option>
@@ -79,7 +79,7 @@
 									<option [value]="item.jobId">{{item.jobId}}</option>
 								</ng-container>
 							</select>
-						</div>
+						</div> -->
 
 						<div class="form-group mt-4">
 							<mat-form-field style="width: 100%">
@@ -92,26 +92,26 @@
 							</mat-form-field>
 						</div>
 
-						
+
 						<div class="mt-4">
 							<div style="position: relative;" class="mt-2 text-center">
-								<button type="button" 
-								class="btn me-3 btn-default " 
+								<button type="button"
+								class="btn me-3 btn-default "
 								(click)="dialogRef.close()">Close </button>
 
-								<button type="button" 
-								class="btn me-1 btn-primary" 
-								(click)="submitForm()" [disabled]="!contactForm.valid">Add 
+								<button type="button"
+								class="btn me-1 btn-primary"
+								(click)="submitForm()" [disabled]="!contactForm.valid">Add
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>
-					</form> 
+					</form>
 				</ng-container>
 
 				<ng-container *ngIf="importContact">
 					<div class="text-center"
 					[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}"
-					style="min-height:50px" 
+					style="min-height:50px"
 					>
 					<div>
 						<div class="card-body" *ngIf="!uploadedFile">
@@ -128,7 +128,7 @@
 								<div class="row">
 								    <div class="col-8 text-start">
 								        <h6>Choose File</h6>
-								        <span>We accept: <span class="text-document">CSV File Only</span></span> 
+								        <span>We accept: <span class="text-document">CSV File Only</span></span>
 								    </div>
 
 								    <div class="col-4">
@@ -157,20 +157,20 @@
 								                    <div class="document-uploaded truncate">{{fileData?.name}}
 
 								                    </div>
-								                    
+
 
 								                    <img src="/assets/images/placeholder/icons/remove-gray.png" height="15px" *ngIf="fileData"
 								                    class="float-end" (click)="removeDocument()">
 
-								                    <div class="float-end me-2" 
+								                    <div class="float-end me-2"
 								                    *ngIf="fileData"
 								                    style="margin-top: -21px;">
-								                        {{(fileData?.size * 0.000001)?.toFixed(1) }} 
+								                        {{(fileData?.size * 0.000001)?.toFixed(1) }}
 								                        MB/50 MB
 								                    </div>
 								                </div>
 								                <div class="progress mt-2">
-								                    <div class="progress-bar" role="progressbar" 
+								                    <div class="progress-bar" role="progressbar"
 								                    [ngStyle]="{ width: (((uploadedFile?.size * 0.000001) / 50) * 100) + '%' }"
 								                    style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 								                </div>
@@ -211,7 +211,7 @@
 					</div>
 				</div>
 
-				<div class="text-center" 
+				<div class="text-center"
 				[@animate]="{value:'*', params:{ y:'-20px', delay:'300ms' }}">
 					<h5 class="title-congrats">Congratulations! </h5>
 					<p class="title-congrats-description">Congratulation for adding a new contact to onboard. <br>You can still add more contact.</p>
@@ -248,10 +248,10 @@
 							</div>
 						</div>
 					</ng-template>
-					
+
 					<div class="mt-4">
 						<div style="position: relative;" class="mt-2 w-100 text-center">
-							<button class="btn me-3 btn-primary invite-other hvr-grow" 
+							<button class="btn me-3 btn-primary invite-other hvr-grow"
 							(click)="addMoreContact()" style="padding: 10px 20px !important;">Add more contact</button>
 						</div>
 					</div>

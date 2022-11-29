@@ -80,7 +80,7 @@ export class ContactListComponent implements OnInit {
 
       if(contact.contactList.length > 0){
         this.contactList = contact.contactList;
-        console.log(this.contactList, "contactList");
+        // console.log(this.contactList, "contactList");
       } else {
         this.contactList = [];
       }
@@ -110,7 +110,7 @@ export class ContactListComponent implements OnInit {
 
 
   viewContact(event): void {
-    console.log(event)
+    // console.log(event)
     this.router.navigate(['/onboarding/contacts/details'], {queryParams: {userId: `${event?.data?.owner_id}`}});
   }
 
@@ -125,10 +125,10 @@ export class ContactListComponent implements OnInit {
     .afterClosed()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
-      console.log("test if parent function will be called affter closing modal");
+      // console.log("test if parent function will be called affter closing modal");
       this.getContactList();
       if(result){
-        console.log(result, "test")
+        // console.log(result, "test")
       }
     });
   }

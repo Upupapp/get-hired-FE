@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { mainAnimations } from '@app-shared/animations/main-animations'; 
+import { mainAnimations } from '@app-shared/animations/main-animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
 import { GroupActionTypes } from '@main/shared/store/actions/group.action';
@@ -68,7 +68,7 @@ export class ImportAddContactComponent implements OnInit {
       email: ['', [Validators.email, Validators.required]],
       mobileNumber: [''],
       address: [''],
-      jobId: ['', [Validators.required]],
+      // jobId: ['', [Validators.required]],
       groupName: ['', [Validators.required]],
       groupId: ['']
     });
@@ -104,11 +104,11 @@ export class ImportAddContactComponent implements OnInit {
         this.close();
       }
 
-      if(onboard.jobId){
-        this.jobList = onboard.jobId;
-        this.isLoading = false;
-        this.submitting = false;
-      }
+      // if(onboard.jobId){
+      //   this.jobList = onboard.jobId;
+      //   this.isLoading = false;
+      //   this.submitting = false;
+      // }
 
       if(onboard.error){
         this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
@@ -120,12 +120,12 @@ export class ImportAddContactComponent implements OnInit {
         this.contactState.dispatch({
           type:ContactActionTypes.SAVE_CONTACT_FAIL,
           payload: null
-        }); 
+        });
 
         this.contactState.dispatch({
           type:ContactActionTypes.SAVE_CONTACT_MULTIPLE_FAIL,
           payload: null
-        }); 
+        });
       }
     });
 
@@ -147,7 +147,7 @@ export class ImportAddContactComponent implements OnInit {
       startWith(''),
       map(val => this.filter(val))
     );
-    
+
   }
 
   filter(val: string): string[] {
@@ -193,7 +193,7 @@ export class ImportAddContactComponent implements OnInit {
     this.removeDocument();
     this.importContact = false;
   }
-  
+
   saveOnboard(){
     this.contactForm.get("groupName")?.patchValue(this.setGroupName(this.contactForm.controls['groupName'].value));
     this.contactForm.get("groupId")?.patchValue(this.setGroupId(this.contactForm.controls['groupName'].value));
@@ -205,7 +205,7 @@ export class ImportAddContactComponent implements OnInit {
     this.contactState.dispatch({
       type: ContactActionTypes.SAVE_CONTACT,
       payload: data
-    }); 
+    });
   }
 
   setGroupName(value) {
@@ -286,7 +286,7 @@ export class ImportAddContactComponent implements OnInit {
         csvRecord.email = curruntRecord[2].trim();
         csvRecord.mobileNumber = curruntRecord[3].trim();
         csvRecord.address = curruntRecord[4].trim();
-        csvRecord.jobId = curruntRecord[5].trim();
+        // csvRecord.jobId = curruntRecord[5].trim();
         // csvRecord.group = curruntRecord[6].trim();
         csvArr.push(csvRecord);
       }
@@ -327,7 +327,7 @@ export class ImportAddContactComponent implements OnInit {
           payload: data
         });
       }
-   
+
   }
 
   uploadLogo(event: any, dropped = false) {
@@ -359,7 +359,7 @@ export class ImportAddContactComponent implements OnInit {
     this.contactState.dispatch({
       type:ContactActionTypes.GET_CONTACT_JOB,
       payload: this.localData.companyId
-    }); 
+    });
   }
 
   getGroupList(){

@@ -1,173 +1,138 @@
-import { AfterViewInit, Component, ElementRef, OnInit, Input, ViewChild, Inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Input, ViewChild, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RecordService } from './recorder.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+// import RecordRTC from "recordrtc";
+import { Observable, Subject } from 'rxjs';
+
+interface RecordedVideoOutput {
+  blob: Blob;
+  url: string;
+  title: string;
+}
 
 @Component({
   selector: 'app-recorder',
   templateUrl: './recorder.component.html',
-  styleUrls: ['./recorder.component.scss']
+  styleUrls: ['./recorder.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class RecorderComponent implements OnInit, AfterViewInit {
-  isRecording: boolean = false;
-  audioInputDevices = [];
-  videoDevices = [];
-  audioOutputDevices = [];
-  blob: Blob;
-  url: string;
+  @ViewChild('videoElement') videoElement: any;
+  video: any;
+  isPlaying = false;
+  displayControls = true;
+  isVideoRecording = false;
+  videoRecordedTime;
+  videoBlobUrl;
+  videoBlob;
+  videoName;
+  videoStream: MediaStream;
+  audioConf = { audio: true }
+  videoConf = { video: { facingMode: "user", width: 320 }, audio: true }
 
   public timer_value: number = 0;
   public time: number = 0;
   public interval;
   public display: any = '00:00';
 
-  @ViewChild('myVideo') myVideo: any;
-  @ViewChild('preview') preview: any;
-  @ViewChild('record') record: any;
-  @ViewChild('stopRecord') stopRecord: any;
-  mediaRecorder: any;
-  videoChunks: any[] = [];
-  myRecording: any;
-  video: any;
-
-  types = [
-    "video/webm",
-    "audio/webm",
-    "video/webm;codecs=vp8",
-    "video/webm;codecs=daala",
-    "video/webm;codecs=h264",
-    "audio/webm;codecs=opus",
-    "video/mpeg",
-    "video/mp4"
-  ];
-
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<RecorderComponent>,
-    private sanitizer: DomSanitizer,
-    private recordService: RecordService
-  ) { }
+    private ref: ChangeDetectorRef,
+    private recordService: RecordService,
+    private sanitizer: DomSanitizer
+  ) {
+    this.recordService.recordingFailed().subscribe(() => {
+      this.isVideoRecording = false;
+      this.ref.detectChanges();
+    });
 
+    this.recordService.getRecordedTime().subscribe((time) => {
+      this.videoRecordedTime = time;
+      this.ref.detectChanges();
+    });
 
-  ngOnInit(): void {
-    this.userMedia();
-    this.isRecording = false;
+    this.recordService.getStream().subscribe((stream) => {
+      this.videoStream = stream;
+      this.ref.detectChanges();
+    });
+
+    this.recordService.getRecordedBlob().subscribe((data) => {
+      this.videoBlob = data.blob;
+      this.videoName = data.title;
+      this.videoBlobUrl = this.sanitizer.bypassSecurityTrustUrl(data.url);
+      this.ref.detectChanges();
+    });
+  }
+  ngAfterViewInit() {
+    this.video = this.videoElement.nativeElement;
   }
 
-  ngAfterViewInit(): void {
-    this.video = this.myVideo.nativeElement;
+  ngOnInit() {
   }
 
-  userMedia() {
-    let constrainObj = {
-      audio: true,
-      video: {
-        facingMode: "user",
-        width: { min: 640, ideal: 1200, max: 1920 },
-        height: { min: 720, ideal: 720, max: 1080 }
-      }
-    };
-
-    if (navigator.mediaDevices === undefined) {
-      console.log('Are you here?');
-    } else {
-      navigator.mediaDevices.enumerateDevices()
-        .then(devices => {
-          devices.map(device => {
-            if(device.kind == 'audioinput') {
-              this.audioInputDevices.push(device);
-            } else if(device.kind == 'videoinput') {
-              this.videoDevices.push(device);
-            } else if(device.kind == 'audiooutput') {
-              this.audioOutputDevices.push(device);
-            }
-          })
-        }).catch(err => {
-          console.log(err.name, err.message);
+  startVideoRecording() {
+    if (!this.isVideoRecording) {
+      this.video.controls = false;
+      this.video.muted = true;
+      this.video.volume = 0;
+      this.isVideoRecording = true;
+      this.recordService.startRecording(this.videoConf)
+        .then(stream => {
+          // this.video.src = window.URL.createObjectURL(stream);
+          this.video.srcObject = stream;
+          this.video.play();
         })
-    }
-
-    navigator.mediaDevices.getUserMedia(constrainObj)
-      .then((mediaStreamObj) => {
-        if ("srcObject" in this.video) {
-          this.video.srcObject = mediaStreamObj;
-        }
-
-        this.video.onloadedmetadata = () => {
-          // video.play();
-        };
-
-        const options = {
-          audioBitsPerSecond: 128000,
-          videoBitsPerSecond: 2500000,
-          mimeType: 'video/webm;codecs=h264'
-        }
-
-        this.mediaRecorder = new MediaRecorder(mediaStreamObj);
-        for (const type of this.types) {
-          console.log(`Is ${type} supported? ${MediaRecorder.isTypeSupported(type) ? "Maybe!" : "Nope :("}`);
-        }
-        this.initiateListener();
-      }).catch(err => console.log(err.name, err.message))
-  }
-
-  initiateListener() {
-    this.mediaRecorder.ondataavailable = (e: any) => {
-      console.log(e);
-      this.videoChunks.push(e.data);
+        .catch(function (err) {
+          console.log(err.name + ": " + err.message);
+        });
     }
   }
 
-  recordVideo() {
-    this.isRecording = true;
-    this.video.play();
-    this.startTimer();
-    this.mediaRecorder.start();
-    console.log(this.mediaRecorder.state);
-  }
-
-  stopRecording() {
-    this.isRecording = false;
-    this.mediaRecorder.stop();
-    this.stopRecorderTimer();
-
-    console.log(this.mediaRecorder);
-    console.log(this.mediaRecorder.state);
-
-    this.mediaRecorder.onstop = () => {
-      console.log(this.videoChunks);
-
-      this.blob = new Blob(this.videoChunks, { 'type': "video/x-matroska;codecs=avc1,opus" });
-      this.recordService.videoBlobRaw = this.blob;
-
-      // const rawBlob = window.URL.createObjectURL(this.blob);
-      // this.sanitizer.bypassSecurityTrustHtml(rawBlob);
-      // console.log(this.url);
-      // this.videoChunks = [];
-      // this.myVideo.nativeElement.src =  this.sanitizer.bypassSecurityTrustHtml(url);
-      // this.preview.nativeElement.src =  this.url
-
+  abortVideoRecording() {
+    if (this.isVideoRecording) {
+      this.isVideoRecording = false;
+      this.recordService.abortRecording();
+      this.video.controls = false;
     }
   }
 
-  stopRecorderTimer(){
-    this.pauseTimer();
-    this.timer_value = 0;
-    this.display = '00:00';
-    this.time = 0;
-    clearInterval(this.timer_value);
+  stopVideoRecording() {
+    if (this.isVideoRecording) {
+      this.recordService.stopRecording();
+      this.video.srcObject = this.videoBlobUrl;
+      this.isVideoRecording = false;
+      this.video.controls = true;
+    }
   }
 
-  pauseTimer() {
-    clearInterval(this.interval);
+  previewVideoRecording() {
+    this.dialogRef.close(this.videoBlobUrl);
   }
 
-  saveRecording() {
-    this.dialogRef.close(this.blob);
+  clearVideoRecordedData() {
+    this.videoBlobUrl = null;
+    this.video.srcObject = null;
+    this.video.controls = false;
+    this.ref.detectChanges();
   }
 
-  cancel() {
-    this.dialogRef.close();
+  downloadVideoRecordedData() {
+    this._downloadFile(this.videoBlob, 'video/mp4', this.videoName);
+  }
+
+  _downloadFile(data: any, type: string, filename: string): any {
+    const blob = new Blob([data], { type: type });
+    const url = window.URL.createObjectURL(blob);
+    //this.video.srcObject = stream;
+    //const url = data;
+    const anchor = document.createElement('a');
+    anchor.download = filename;
+    anchor.href = url;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   }
 
   startTimer() {
@@ -185,5 +150,14 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return ('00' + minutes).slice(-2) + ':' + ('00' + Math.floor(value - minutes * 60)).slice(-2);
+  }
+
+  cancel() {
+    this.abortVideoRecording();
+    this.dialogRef.close(null);
+  }
+
+  ngOnDestroy(): void {
+
   }
 }
