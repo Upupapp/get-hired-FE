@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { Router } from '@angular/router';
 import * as Model from '@main/applicant/applicant.model';
 
 @Component({
@@ -68,9 +69,15 @@ export class DetailsComponent implements OnInit {
 
   public skills: string[] = ["Marketing", "Angular", "JavaScript", "TypeScript", "HTML", "CSS", "Bootstrap", "MongoDB", "Node", "Web Development", "Frontend"];
 
-  constructor() { }
+  constructor(public router: Router) { }
 
   ngOnInit(): void {
+  }
+
+
+  navigateToEdit(){
+    sessionStorage.setItem('profile-update', '3');
+    this.router.navigate(['/user/profile/edit'])
   }
 
 }

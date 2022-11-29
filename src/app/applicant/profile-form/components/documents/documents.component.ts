@@ -45,7 +45,10 @@ export class DocumentsComponent implements OnInit {
 
   showVideoRecorder() {
     let recorderDialog = this.dialog.open(RecorderComponent, {
-      width: '70vw'
+      width: '70vw',
+      data: {
+        title: "Record Video Introduction"
+      }
     });
 
     recorderDialog
