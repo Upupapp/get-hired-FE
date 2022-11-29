@@ -57,8 +57,8 @@ const selectedColumns: string[] =  [
   'email',
   'mobile_number',
   'address',
-  'job_id',
-  'job_title',
+  //'job_id',
+  //'job_title',
   'created_at',
   'groups'
 ];

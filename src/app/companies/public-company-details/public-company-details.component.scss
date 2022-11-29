@@ -24,8 +24,11 @@
 	//background: #c9c9c9;
 	.company-logo{
 		//padding: 10px;
-		background: gray;
+		background: transparent;
 		border-radius: 5px;
+		width: auto;
+		object-fit: cover;
+		object-position: center;
 		height: 100px;
 		margin-bottom: 15px;
 		margin-left: 20px !important;
