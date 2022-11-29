@@ -58,7 +58,7 @@ export class DocumentsComponent implements OnInit {
         this.videoPreview = window.URL.createObjectURL(result);
         console.log(this.videoPreview);
         // this.videoChunks = [];
-        this.preview.nativeElement.src =  this.sanitizer.bypassSecurityTrustHtml(this.videoPreview);
+        this.preview.nativeElement.src = this.sanitizer.bypassSecurityTrustHtml(this.videoPreview);
       });
   }
 

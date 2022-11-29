@@ -57,7 +57,7 @@ export class ProfileFormComponent implements OnInit {
     },
   ];
 
-  public stepper: number = 1;
+  public stepper: number = 3;
 
   applicant$ = this.applicantFacade.applicantDetails$
     .pipe().subscribe(this.mappedApplicant.bind(this));

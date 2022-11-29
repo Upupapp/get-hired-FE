@@ -130,18 +130,16 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   stopRecording() {
     this.isRecording = false;
-
     this.mediaRecorder.stop();
+    this.stopRecorderTimer();
+
     console.log(this.mediaRecorder);
     console.log(this.mediaRecorder.state);
-
-
 
     this.mediaRecorder.onstop = () => {
       console.log(this.videoChunks);
 
       this.blob = new Blob(this.videoChunks, { 'type': "video/x-matroska;codecs=avc1,opus" });
-
       this.recordService.videoBlobRaw = this.blob;
 
       // const rawBlob = window.URL.createObjectURL(this.blob);
@@ -152,6 +150,17 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       // this.preview.nativeElement.src =  this.url
 
     }
+  }
+
+  stopRecorderTimer(){
+    this.pauseTimer();
+    this.timer_value = 0;
+    this.display = '00:00';
+    clearInterval(this.timer_value);
+  }
+
+  pauseTimer() {
+    clearInterval(this.interval);
   }
 
   saveRecording() {
@@ -171,7 +180,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       }
       this.timer_value += 1;
       this.display = this.transform(this.time)
-    }, 150);
+    }, 1000);
   }
 
   transform(value: number): string {
