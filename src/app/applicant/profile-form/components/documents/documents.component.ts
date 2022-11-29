@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from "@main/applicant/applicant.model";
 import { RecorderComponent } from '@main/recorder/recorder.component';
@@ -19,27 +19,17 @@ export class DocumentsComponent implements OnInit {
   @Input() formGroupName: string;
   @ViewChild('preview') preview: any;
   private unsubscribe$ = new Subject<void>();
-  videoPreview: string;
-  previewSubs$ = this.recordService.getRecordedBlob()
-    .pipe().subscribe(this.previewRecord.bind(this));
+  previewBlob;
 
   constructor(
     private rootFormGroup: FormGroupDirective,
     private dialog: MatDialog,
-    private sanitizer: DomSanitizer,
+    public sanitizer: DomSanitizer,
     private recordService: RecordService,
     private ref: ChangeDetectorRef,
   ) { }
 
-  ngOnInit(): void {
-
-   }
-
-   previewRecord(item) {
-    console.log(item);
-    this.videoPreview = item.url;
-    this.ref.detectChanges();
-   }
+  ngOnInit(): void { }
 
   getDocArray() {
     return (this.rootFormGroup.control.get([this.formGroupName, 'documents']) as FormArray).controls;
@@ -67,26 +57,13 @@ export class DocumentsComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
-        console.log(result);
-        // console.log(this.recordService.videoBlobRaw);
-
-        // this.videoPreview = window.URL.createObjectURL(result);
-        // console.log(this.videoPreview);
-        // // this.videoChunks = [];
-
         if(result) {
-          // this.preview.srcObject = this.sanitizer.bypassSecurityTrustUrl(this.videoPreview);
+          this.previewBlob = result;
           this.ref.detectChanges();
         }
       });
   }
 
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    if(this.previewSubs$) {
-      this.previewSubs$.unsubscribe();
-    }
-  }
+  ngOnDestroy(): void { }
 
 }
