@@ -45,7 +45,10 @@ export class DocumentsComponent implements OnInit {
 
   showVideoRecorder() {
     let recorderDialog = this.dialog.open(RecorderComponent, {
-      width: '70vw'
+      width: '70vw',
+      data: {
+        title: "Record Video Introduction"
+      }
     });
 
     recorderDialog
@@ -58,7 +61,7 @@ export class DocumentsComponent implements OnInit {
         this.videoPreview = window.URL.createObjectURL(result);
         console.log(this.videoPreview);
         // this.videoChunks = [];
-        this.preview.nativeElement.src =  this.sanitizer.bypassSecurityTrustHtml(this.videoPreview);
+        this.preview.nativeElement.src = this.sanitizer.bypassSecurityTrustHtml(this.videoPreview);
       });
   }
 

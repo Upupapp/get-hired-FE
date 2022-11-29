@@ -3,6 +3,12 @@
 	border: none;
 }
 
+.video-cv-link{
+	&:hover{
+		text-decoration: underline;
+		cursor: pointer;
+	}
+}
 
 
 .edit-details{

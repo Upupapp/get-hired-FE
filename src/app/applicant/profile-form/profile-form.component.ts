@@ -2,12 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { distinctUntilChanged, of, Subscription } from 'rxjs';
 import { ApplicantFacade } from '../state/applicant.facade';
 import * as Model from '../applicant.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
+import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs';
 
 @Component({
   selector: 'app-profile-form',
@@ -16,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
   animations: [mainAnimations]
 })
 export class ProfileFormComponent implements OnInit {
+  public unsubscribe$ = new Subject<void>();
   @Input() user: any;
 
   profileForm: FormGroup;
@@ -23,6 +25,7 @@ export class ProfileFormComponent implements OnInit {
   applicantId: string;
   applicant: Model.Applicant;
   loading: boolean = true;
+  updateSuccess: boolean = false;
 
   asyncLocalStorage = {
     setItem: async function (key, value) {
@@ -74,6 +77,7 @@ export class ProfileFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
+    private successDialog: MatDialog,
     private loadingDialog: MatDialog
   ) { }
 
@@ -81,6 +85,10 @@ export class ProfileFormComponent implements OnInit {
     console.log(this.user);
     if (this.user) {
       this.applicantFacade.getApplicantById(this.user._id);
+
+      if(sessionStorage.getItem('profile-update')){
+        this.stepper = parseInt(sessionStorage.getItem('profile-update'));
+      }
     }
 
     this.initializedForm();
@@ -135,6 +143,8 @@ export class ProfileFormComponent implements OnInit {
   }
 
   async submitProfile() {
+    this.updateSuccess = true;
+    
     // TODO save profile
     const applicant = await this.formatProfile();
 
@@ -249,10 +259,13 @@ export class ProfileFormComponent implements OnInit {
       });
       this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'updated') {
-      this.snackBar.open(`Profile successfully updated`, '', {
+      /*this.snackBar.open(`Profile successfully updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
-      });
+      });*/
+
+      this.loadingDialog.closeAll();
+      this.showSuccessDialog();
     }
   }
 
@@ -267,12 +280,36 @@ export class ProfileFormComponent implements OnInit {
     } else {
       this.loading = loading;
 
-      setTimeout(() => this.loadingDialog.closeAll(), 2000);
+      // dont close automatically all modal
+      if(!this.updateSuccess){
+        setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      }
     }
+  }
+
+  showSuccessDialog(){
+    let openDialog = this.successDialog.open(
+      SuccessDialogComponent,
+      {
+        width: '29vw',
+        data: {
+          title: 'Update Details',  
+          subtitle: 'Successfully updated profile details'
+        },
+      }
+    );  
+
+    openDialog
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        this.updateSuccess = false
+      });
   }
 
   ngOnDestroy(): void {
     this.subscriptions$.unsubscribe();
+    sessionStorage.removeItem('profile-update')
   }
 
 }

@@ -1,38 +1,65 @@
+<div class="w-100 mb-3" style="height: 20px;">
+  <span class="float-end">
+    <img src="/assets/images/placeholder/icons/remove-gray.png" 
+    style="height: 15px; width: 15px; cursor: pointer;"
+    (click)="cancel()">
+  </span>
+
+  <h5 class="title-main" *ngIf="data?.title">{{data?.title}}</h5>
+</div>
+
 <div class="row p-2 record-container">
-  <div class="col-12 col-md-9">
-    <div class="get-hired-logo">
-      <img src="/assets/images/placeholder/logo.png">
-    </div>
-    <div class="row">
-      <video #myVideo id="myVideo" controls class="w-100"
-      *ngIf="!url"></video>
-      <video #preview id="preview" [src]="url" controls class="w-100"
-      *ngIf="url"></video>
-    </div>
-    <div class="row">
-      <div class="bg-timer text-center">
-        <div class="mt-2 pb-1">
-          <h5 class="title-timer">
-            <img src="/assets/images/placeholder/icons/record.png" style="height:18px" class="me-1">
-            {{display}}
-          </h5>
-          <p class="title-duration">3 Minutes</p>
+  <div class="col-12 col-md-8">
+
+    <div style="position: relative;">
+      <div class="container-bg"></div>
+
+      
+
+      <div class="get-hired-logo">
+        <img src="/assets/images/placeholder/logo.png">
+      </div>
+
+      <!-- VIDEO CONTAINER -->
+      <section>
+        <video #myVideo id="myVideo" 
+        controls class="w-100 h-100"
+        *ngIf="!url"></video>
+
+        <video #preview id="preview" 
+        [src]="url" controls class="w-100 h-100"
+        *ngIf="url"></video>
+      </section>
+
+      <div style="position: absolute; left: 2%; bottom: 4%;">
+        <div class="bg-timer text-center">
+          <div class="mt-2 d-flex">
+            <h5 class="title-timer me-2">
+              <img src="/assets/images/placeholder/icons/record.png" style="height:18px" class="me-1">
+              {{display}}
+            </h5>
+            <p class="title-duration">3 Minutes</p>
+          </div>
         </div>
+      </div>
+
+      <div style="position: absolute; right: 0; top: 0">
+        <button class="btn btn-take-interview text-truncate my-2" (click)="recordVideo()" *ngIf="!isRecording">
+          <img src="/assets/images/placeholder/icons/record.png" class="h-100 me-1">
+          Start Recording
+        </button>
+        <button class="btn btn-take-interview my-2 text-truncate"
+        (click)="stopRecording()" *ngIf="isRecording">
+          <img src="/assets/images/stop.png" class="h-100 me-1">
+          Stop Recorder
+        </button>
       </div>
     </div>
   </div>
-  <div class="col-12 col-md-3 ">
-    <div class="row">
-      <button class="btn btn-take-interview text-truncate my-2" (click)="recordVideo()" *ngIf="!isRecording">
-        <img src="/assets/images/placeholder/icons/record.png" class="h-100 me-1">
-        Start Recording
-      </button>
-      <button class="btn btn-take-interview my-2 text-truncate"
-      (click)="stopRecording()" *ngIf="isRecording">
-        <img src="/assets/images/stop.png" class="h-100 me-1">
-        Stop Recorder
-      </button>
-    </div>
+
+  <div class="col-12 col-md-4 bg-white p-3">
+    
+
     <div class="card card-body">
       <form class="form">
         <h5 class="title-main">Audio Settings</h5>
@@ -52,7 +79,7 @@
           </select>
         </div>
 
-        <hr style="border: dashed 1px #969696">
+        <!-- <hr style="border: dashed 1px #969696"> -->
 
         <h5 class="title-main">Video Settings</h5>
         <div class="form-group mt-3">
@@ -64,15 +91,16 @@
         </div>
       </form>
     </div>
-    <div class="row p-2">
-      <button class="btn btn-primary mt-1text-truncate col-md-12"
+
+    <div class="mt-2">
+      <button class="btn btn-primary w-100"
       (click)="saveRecording()" [disabled]="!blob">
         View Recording
       </button>
-      <button class="btn btn-outline-primary mt-1 text-truncate col-md-12"
+      <!-- <button class="btn btn-outline-primary mt-1 text-truncate col-md-12"
       (click)="cancel()">
         Cancel
-      </button>
+      </button> -->
     </div>
 
   </div>

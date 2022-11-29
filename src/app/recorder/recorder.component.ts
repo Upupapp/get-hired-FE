@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { AfterViewInit, Component, ElementRef, OnInit, Input, ViewChild, Inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RecordService } from './recorder.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-recorder',
@@ -23,7 +23,6 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   @ViewChild('myVideo') myVideo: any;
   @ViewChild('preview') preview: any;
-
   @ViewChild('record') record: any;
   @ViewChild('stopRecord') stopRecord: any;
   mediaRecorder: any;
@@ -43,6 +42,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   ];
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<RecorderComponent>,
     private sanitizer: DomSanitizer,
     private recordService: RecordService
@@ -64,7 +64,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       video: {
         facingMode: "user",
         width: { min: 640, ideal: 1200, max: 1920 },
-        height: { min: 480, ideal: 720, max: 1080 }
+        height: { min: 720, ideal: 720, max: 1080 }
       }
     };
 
@@ -89,14 +89,12 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
     navigator.mediaDevices.getUserMedia(constrainObj)
       .then((mediaStreamObj) => {
-
         if ("srcObject" in this.video) {
           this.video.srcObject = mediaStreamObj;
         }
 
         this.video.onloadedmetadata = () => {
           // video.play();
-
         };
 
         const options = {
@@ -130,18 +128,16 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   stopRecording() {
     this.isRecording = false;
-
     this.mediaRecorder.stop();
+    this.stopRecorderTimer();
+
     console.log(this.mediaRecorder);
     console.log(this.mediaRecorder.state);
-
-
 
     this.mediaRecorder.onstop = () => {
       console.log(this.videoChunks);
 
       this.blob = new Blob(this.videoChunks, { 'type': "video/x-matroska;codecs=avc1,opus" });
-
       this.recordService.videoBlobRaw = this.blob;
 
       // const rawBlob = window.URL.createObjectURL(this.blob);
@@ -152,6 +148,18 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       // this.preview.nativeElement.src =  this.url
 
     }
+  }
+
+  stopRecorderTimer(){
+    this.pauseTimer();
+    this.timer_value = 0;
+    this.display = '00:00';
+    this.time = 0;
+    clearInterval(this.timer_value);
+  }
+
+  pauseTimer() {
+    clearInterval(this.interval);
   }
 
   saveRecording() {
@@ -171,7 +179,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       }
       this.timer_value += 1;
       this.display = this.transform(this.time)
-    }, 150);
+    }, 1000);
   }
 
   transform(value: number): string {

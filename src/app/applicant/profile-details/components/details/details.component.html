@@ -9,9 +9,22 @@
 			</p>
 		</div>
 
+		<!-- VIDEO CV PREVIEW -->
 		<div class="col-12 col-lg-6" *ngIf="user.videoCVUrl && user.videoCVUrl != ''">
 
 			<!-- <h5 class="title-main">Video Introduction </h5> -->
+			<div style="position: relative;">
+				<img src="/assets/images/placeholder/icons/play-button.png" class="play-button">
+				<img src="/assets/images/placeholder/video-placeholder-2.png" width="100%">
+			</div>
+		</div>
+
+		<!-- VIDEO CV PLACEHOLDER -->
+		<div class="col-12 col-lg-6" *ngIf="!user?.videoCVUrl">
+
+			<h5 class="title-description">You can add your video introduction 
+				<span class="text-danger video-cv-link" (click)="navigateToEdit()">here</span>
+			</h5>
 			<div style="position: relative;">
 				<img src="/assets/images/placeholder/icons/play-button.png" class="play-button">
 				<img src="/assets/images/placeholder/video-placeholder-2.png" width="100%">
