@@ -151,11 +151,14 @@ export class JobListComponent implements OnInit {
     );
 
     openDialog
-    .afterClosed()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe(result => {
-      this.deleteRow(result)
-    });
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        console.log(result);
+        if (result) {
+          this.deleteRow(result)
+        }
+      });
   }
 
   deleteRow(event) {
