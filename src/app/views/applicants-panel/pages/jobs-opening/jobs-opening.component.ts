@@ -79,8 +79,8 @@ export class JobsOpeningComponent implements OnInit {
   }
 
 
-  viewMenu(event): void {
-    
+  viewDetails(id): void {
+    this.router.navigate([`/applicant/jobs/details/${id}`])  
   }
 
 
