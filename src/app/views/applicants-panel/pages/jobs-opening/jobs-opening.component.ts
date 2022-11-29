@@ -55,7 +55,7 @@ export class JobsOpeningComponent implements OnInit {
     };
   };
   public status: string[] = ["Active", "Inactive", "Archived"];
-  
+ 
   constructor(
     private router: Router,
     private dialog: MatDialog,
