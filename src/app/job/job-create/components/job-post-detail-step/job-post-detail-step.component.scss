@@ -1,3 +1,9 @@
+:host ::ng-deep{
+	.uploaded-container{
+		min-height: 260px !important;
+	}
+}
+
 .with-add{
 	background: white !important;
 	//border-top-right-radius: 0 !important;
