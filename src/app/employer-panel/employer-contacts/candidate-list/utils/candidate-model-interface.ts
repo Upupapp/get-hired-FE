@@ -60,7 +60,7 @@ const selectedColumns: string[] =  [
   'job_id',
   'job_title',
   'created_at',
-  'groups'
+  //'groups'
 ];
 
 
