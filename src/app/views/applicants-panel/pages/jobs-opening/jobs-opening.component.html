@@ -27,6 +27,7 @@
 		<div class="card-body">
 			<ng-container *ngFor="let item of jobLists; let i = index">
 				<section class="bg-email hvr-underline-from-center w-100"
+				(click)="viewDetails(item?.id)"
 				[@animate]="{value:'*', params:{ y:'-10px', delay: i * 150 + 'ms' }}">
 					<div class="d-flex px-1 ps-3">
 						<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">

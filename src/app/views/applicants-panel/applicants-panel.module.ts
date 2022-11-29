@@ -31,6 +31,9 @@ import { BannerComponent } from './pages/dashboard/components/banner/banner.comp
 import { StatChartComponent } from './pages/dashboard/components/stat-chart/stat-chart.component';
 import { StatTotalComponent } from './pages/dashboard/components/stat-total/stat-total.component';
 import { JobsOpeningDetailsComponent } from './pages/jobs-opening/pages/jobs-opening-details/jobs-opening-details.component';
+import { DocumentSubmittedComponent } from './pages/jobs-opening/pages/jobs-opening-details/component/document-submitted/document-submitted.component';
+import { AnswerToInterviewComponent } from './pages/jobs-opening/pages/jobs-opening-details/component/answer-to-interview/answer-to-interview.component';
+import { JobDetailsSectionComponent } from './pages/jobs-opening/pages/jobs-opening-details/component/job-details-section/job-details-section.component';
 
 @NgModule({
   imports: [
@@ -66,6 +69,9 @@ import { JobsOpeningDetailsComponent } from './pages/jobs-opening/pages/jobs-ope
     StatChartComponent,
     StatTotalComponent,
     JobsOpeningDetailsComponent,
+    DocumentSubmittedComponent,
+    AnswerToInterviewComponent,
+    JobDetailsSectionComponent,
   ]
 })
 export class ApplicantsPanelModule{ }
