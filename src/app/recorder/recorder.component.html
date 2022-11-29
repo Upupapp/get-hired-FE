@@ -4,7 +4,10 @@
       <img src="/assets/images/placeholder/logo.png">
     </div>
     <div class="row">
-      <video #myVideo id="myVideo" controls class="w-100"></video>
+      <video #myVideo id="myVideo" controls class="w-100"
+      *ngIf="!url"></video>
+      <video #preview id="preview" [src]="url" controls class="w-100"
+      *ngIf="url"></video>
     </div>
     <div class="row">
       <div class="bg-timer text-center">
@@ -24,7 +27,7 @@
         <img src="/assets/images/placeholder/icons/record.png" class="h-100 me-1">
         Start Recording
       </button>
-      <button class="btn btn-take-interview my-2 text-truncate col-md-2"
+      <button class="btn btn-take-interview my-2 text-truncate"
       (click)="stopRecording()" *ngIf="isRecording">
         <img src="/assets/images/stop.png" class="h-100 me-1">
         Stop Recorder

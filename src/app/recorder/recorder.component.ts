@@ -1,17 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { DomSanitizer } from '@angular/platform-browser';
+import { RecordService } from './recorder.service';
 
 @Component({
   selector: 'app-recorder',
   templateUrl: './recorder.component.html',
   styleUrls: ['./recorder.component.scss']
 })
-export class RecorderComponent implements OnInit {
+export class RecorderComponent implements OnInit, AfterViewInit {
   isRecording: boolean = false;
   audioInputDevices = [];
   videoDevices = [];
   audioOutputDevices = [];
   blob: Blob;
+  url: string;
 
   public timer_value: number = 0;
   public time: number = 0;
@@ -40,16 +43,19 @@ export class RecorderComponent implements OnInit {
   ];
 
   constructor(
-    public dialogRef: MatDialogRef<RecorderComponent>
+    public dialogRef: MatDialogRef<RecorderComponent>,
+    private sanitizer: DomSanitizer,
+    private recordService: RecordService
   ) { }
 
 
   ngOnInit(): void {
     this.userMedia();
     this.isRecording = false;
+  }
 
+  ngAfterViewInit(): void {
     this.video = this.myVideo.nativeElement;
-
   }
 
   userMedia() {
@@ -135,6 +141,16 @@ export class RecorderComponent implements OnInit {
       console.log(this.videoChunks);
 
       this.blob = new Blob(this.videoChunks, { 'type': "video/x-matroska;codecs=avc1,opus" });
+
+      this.recordService.videoBlobRaw = this.blob;
+
+      // const rawBlob = window.URL.createObjectURL(this.blob);
+      // this.sanitizer.bypassSecurityTrustHtml(rawBlob);
+      // console.log(this.url);
+      // this.videoChunks = [];
+      // this.myVideo.nativeElement.src =  this.sanitizer.bypassSecurityTrustHtml(url);
+      // this.preview.nativeElement.src =  this.url
+
     }
   }
 
