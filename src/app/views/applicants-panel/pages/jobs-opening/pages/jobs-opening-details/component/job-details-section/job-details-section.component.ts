@@ -1,18 +1,11 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  ViewChild,
-  OnChanges,
-  OnInit,
-  OnDestroy,
-  HostListener
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-//import { jobLists, Job } from '../../utils/jobs-opening-details.component';
-import { companyLists, Company } from '@main/views/home/utils/company-list-model-interface';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { AdminService } from '@app-shared/services/auth/admin/admin.service';
+import { Subscription } from 'rxjs';
+import { 
+  Router, 
+  ActivatedRoute 
+} from '@angular/router';
 
 @Component({
   selector: 'app-job-details-section',
@@ -21,44 +14,37 @@ import { Location } from '@angular/common';
   styleUrls: ['./job-details-section.component.scss']
 })
 export class JobDetailsSectionComponent implements OnInit {
-  ngOnInit(): void{}
-  /*public loading: boolean = true;
-  public screenSize: number = 1600;
-  public jobLists: Job[] = jobLists;
-  public companyLists: Company[] = companyLists;
-  public listView: boolean = false;
-  public selectedJobPost: Job;
-  public selectedCompany: Company;
+  @Input() screenSize: number = 1600;
+  @Input() data: any;
+  @Input() jobLists: any;
 
-  constructor(public router: Router,  
-    public location: Location,
-    public route: ActivatedRoute) { }
+  public loggedInApplicant: any;
+  private req?: Subscription;
 
-  ngOnInit(): void {
-    this.screenSize = window.innerWidth;
-
-    let id = this.route.snapshot.params['job-id'] * 1;
-
-    this.selectedJobPost = this.jobLists.find(el => el.id == id);
-
-    this.selectedCompany = this.companyLists.find(el => el.id === this.selectedJobPost?.company_id);
-    console.log(id, this.selectedJobPost)
-
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
+  constructor(private router:Router, 
+    private activatedRoute: ActivatedRoute,
+    private adminService: AdminService) { 
+    this.req = this.router.events.subscribe((event: any) => {
+      this.adminService.adminStatus$.subscribe((result: any) => {
+        this.loggedInApplicant = result;
+      });
     });
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.screenSize = window.innerWidth;
+  ngOnInit(): void {
   }
 
+  ngOnDestroy(): void {
+    if(this.req) this.req.unsubscribe();
+  }
 
-  goBack(){
-    this.location.back();
-  }*/
+  navigateToInterview(){
+    if(this.loggedInApplicant){
+      this.router.navigate([`/job-post/apply/${this.data?.id}`])
+    }
 
+    else {
+      this.router.navigate(['/signup'])
+    }
+  }
 }
