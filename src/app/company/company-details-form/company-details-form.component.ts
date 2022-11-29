@@ -216,7 +216,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       }
     );  
 
-
     openDialog
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
