@@ -81,7 +81,6 @@ export class ExperienceQualificationComponent implements OnInit {
     console.log(event.fg);
     switch (event.formArrayName) {
       case 'workExperience':
-
         this.workRendering = true;
         this.workExperience.push(event.fg);
         setTimeout(() => {

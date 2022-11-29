@@ -144,7 +144,7 @@ export class ProfileFormComponent implements OnInit {
 
   async submitProfile() {
     this.updateSuccess = true;
-    
+
     // TODO save profile
     const applicant = await this.formatProfile();
 
@@ -245,8 +245,8 @@ export class ProfileFormComponent implements OnInit {
         this.applicantFacade.setAdditionalInfo(bodyInitial);
         break;
       case 'profileDocuments':
-        const bodyInterview = this.profileForm.controls[formCtrl].value;
-        // this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
+        const bodyDocu = this.profileForm.controls[formCtrl].value;
+        this.applicantFacade.setProfileDocu(bodyDocu)
         break;
     }
   }
@@ -293,11 +293,11 @@ export class ProfileFormComponent implements OnInit {
       {
         width: '29vw',
         data: {
-          title: 'Update Details',  
+          title: 'Update Details',
           subtitle: 'Successfully updated profile details'
         },
       }
-    );  
+    );
 
     openDialog
       .afterClosed()
@@ -305,6 +305,10 @@ export class ProfileFormComponent implements OnInit {
       .subscribe(result => {
         this.updateSuccess = false
       });
+  }
+
+  redirectToProfile() {
+    this.router.navigateByUrl('user/profile/details');
   }
 
   ngOnDestroy(): void {

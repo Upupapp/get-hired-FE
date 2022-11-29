@@ -6,7 +6,8 @@
       </app-main-stepper>
 
       <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-          <button class="btn btn-save-draft me-3" *ngIf="applicantId" routerLink="/applicant/profile">Profile Preview</button>
+          <button class="btn btn-save-draft me-3" *ngIf="applicantId"
+          (click)="redirectToProfile()">Profile Preview</button>
         <button class="btn btn-save me-2" type="button" (click)="submitProfile()">
           Submit Changes</button>
       </div>

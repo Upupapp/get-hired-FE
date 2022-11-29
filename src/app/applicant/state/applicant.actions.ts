@@ -109,6 +109,11 @@ export const setAdditionalInfo = createAction(
   props<{ additionalInfo: Model.AdditionalInfo }>()
 );
 
+export const setProfileDocuments = createAction(
+  AllFeatureActionTypes.SetProfileDocuments,
+  props<{ documents: Model.Documents[] }>()
+);
+
 export const saveApplicant = createAction(
   AllFeatureActionTypes.SaveApplicant,
   props<{ applicant: Model.Applicant }>()

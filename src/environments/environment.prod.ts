@@ -7,4 +7,13 @@ export const environment = {
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: false,
+  firebase: {
+    apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
+    authDomain: 'get-hired-363107.firebaseapp.com',
+    projectId: 'get-hired-363107',
+    storageBucket: 'get-hired-363107.appspot.com',
+    messagingSenderId: "818317489154",
+    appId: "1:818317489154:web:d849afade1105af929631b",
+    measurementId: "G-4C797NXLJF"
+  }
 };

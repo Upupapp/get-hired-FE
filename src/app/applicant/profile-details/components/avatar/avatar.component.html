@@ -70,32 +70,12 @@
 
 			<table class="w-100 document-table">
 				<tbody>
-					<tr>
+					<tr *ngFor="let doc of user.documents; let i = index">
 						<td class="title-label"
 						style="width: 30px">
 							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
 						</td>
-						<td class="title-label">Resume.pdf</td>
-						<td class="title-details download text-end pe-lg-5">
-							<img src="/assets/images/placeholder/icons/download.png">
-						</td>
-					</tr>
-					<tr>
-						<td class="title-label"
-						style="width: 30px">
-							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
-						</td>
-						<td class="title-label">CV 2022.pdf</td>
-						<td class="title-details download text-end pe-lg-5">
-							<img src="/assets/images/placeholder/icons/download.png">
-						</td>
-					</tr>
-					<tr>
-						<td class="title-label"
-						style="width: 30px">
-							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
-						</td>
-						<td class="title-label">Cover Letter 2022.pdf</td>
+						<td class="title-label">{{doc.filename}}</td>
 						<td class="title-details download text-end pe-lg-5">
 							<img src="/assets/images/placeholder/icons/download.png">
 						</td>
