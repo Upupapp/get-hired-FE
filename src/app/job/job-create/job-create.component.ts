@@ -7,17 +7,19 @@ import { distinctUntilChanged, Subscription } from 'rxjs';
 import * as Model from '../job.model';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { map, takeUntil, tap } from 'rxjs/operators';
+import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-job-create',
   animations: [mainAnimations],
   templateUrl: './job-create.component.html',
-  styleUrls: ['./job-create.component.scss']
+  styleUrls: ['./job-create.component.scss'],
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
   delayControl: boolean = true;
-  public jobId:any =  null;
-  subscriptions = new Subscription()
+  public jobId: any = null;
+  subscriptions = new Subscription();
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -26,10 +28,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     getItem: async function (key) {
       await Promise.resolve();
       return localStorage.getItem(key);
-    }
+    },
   };
 
-  jobForm: FormGroup
+  jobForm: FormGroup;
   stepper: number = 1;
   initialFormValid: boolean = false;
   jobInfoValid: boolean = false;
@@ -42,60 +44,61 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   stepperItems: any[] = [
     {
       id: 1,
-      title: "Job Details"
+      title: 'Job Details',
     },
     {
       id: 2,
-      title: "Rates and Roles",
-      disabled: !this.initialFormValid
+      title: 'Rates and Roles',
+      disabled: !this.initialFormValid,
     },
 
     {
       id: 3,
-      title: "Create Interview",
-      disabled: !this.jobInfoValid
+      title: 'Create Interview',
+      disabled: !this.jobInfoValid,
     },
 
     {
       id: 4,
-      title: "Preview Job Post",
-      disabled: !this.interviewValid
+      title: 'Preview Job Post',
+      disabled: !this.interviewValid,
     },
   ];
 
   success$ = this.jobFacade.success$
-    .pipe().subscribe(this.afterSubmit.bind(this));
-  editJob$ = this.jobFacade.getJobById$
-    .pipe(
-      map(job => {
-        return (job)
-      })
-    );
+    .pipe()
+    .subscribe(this.afterSubmit.bind(this));
+  editJob$ = this.jobFacade.getJobById$.pipe(
+    map((job) => {
+      return job;
+    })
+  );
   loading$ = this.jobFacade.getJobLoading$
-    .pipe().subscribe(this.onLoad.bind(this));
+    .pipe()
+    .subscribe(this.onLoad.bind(this));
 
   constructor(
     private fb: FormBuilder,
     private jobFacade: JobFacade,
     private snackBar: MatSnackBar,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {
     this.jobId = route.snapshot.params['id'];
   }
 
-
   ngOnInit(): void {
-    setTimeout(() => this.delayControl = false,900);
+    setTimeout(() => (this.delayControl = false), 900);
 
     this.editJob$.subscribe((data: any) => {
-      if(data){
+      if (data) {
         this.setFormGroup(data);
       }
-    })
+    });
 
-    if(this.jobId){
-      this.getJobById()
+    if (this.jobId) {
+      this.getJobById();
     } else {
       this.setFormGroup();
     }
@@ -105,7 +108,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.loading = isLoading;
   }
 
-  setFormGroup(data?: any){
+  setFormGroup(data?: any) {
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
         jobTitle: [data ? data.jobTitle : null, Validators.required],
@@ -118,14 +121,14 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         jobDuties: [data ? data.jobDuties : null],
         jobCategoryId: [data ? data.jobCategoryId : null],
         workSetupId: [data ? data.workSetupId : null],
-        bannerFile:  new FormArray([]),
+        bannerFile: new FormArray([]),
         badges: new FormArray([]),
         requirements: new FormArray([]),
         goodToHave: new FormArray([]),
         educationalBackground: new FormArray([]),
         requirementsTxt: [data ? data.requirementsTxt : null],
         goodToHaveTxt: [data ? data.goodToHaveTxt : null],
-        educationalBackgroundTxt: [data ? data.educationalBackgroundTxt : null]
+        educationalBackgroundTxt: [data ? data.educationalBackgroundTxt : null],
       }),
       jobInfo: this.fb.group({
         industryId: [data ? data.industryId : null],
@@ -136,33 +139,41 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         jobTagsTxt: [data ? data.jobTagsTxt : null],
         rate: [data ? data.rate : null],
         salaryMinimum: [data ? data.salaryMinimum : null],
-        salaryMaximum: [data ? data.salaryMaximum : null]
+        salaryMaximum: [data ? data.salaryMaximum : null],
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }),
       interview: this.fb.group({
-        interviewQuestions: data ? data.interviewQuestions : new FormArray([])
-      })
+        interviewQuestions: data ? data.interviewQuestions : new FormArray([]),
+      }),
     });
 
     this.subscriptions.add(
-      this.jobForm.controls.initialData.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
-        this.initialFormValid = status === 'VALID'
-        this.stepperItems[1].disabled = status != 'VALID'
-      }));
+      this.jobForm.controls.initialData.statusChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((status) => {
+          this.initialFormValid = status === 'VALID';
+          this.stepperItems[1].disabled = status != 'VALID';
+        })
+    );
 
     this.subscriptions.add(
-      this.jobForm.controls.jobInfo.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
-        this.jobInfoValid = status === 'VALID'
-        this.stepperItems[2].disabled = status != 'VALID'
-
-      }));
+      this.jobForm.controls.jobInfo.statusChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((status) => {
+          this.jobInfoValid = status === 'VALID';
+          this.stepperItems[2].disabled = status != 'VALID';
+        })
+    );
 
     this.subscriptions.add(
-      this.jobForm.controls.interview.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
-        this.interviewValid = status === 'VALID'
-        this.stepperItems[3].disabled = status != 'VALID'
-      }));
+      this.jobForm.controls.interview.statusChanges
+        .pipe(distinctUntilChanged())
+        .subscribe((status) => {
+          this.interviewValid = status === 'VALID';
+          this.stepperItems[3].disabled = status != 'VALID';
+        })
+    );
 
     //set form array
     // if(data.hasOwnProperty('bannerFile') &&  data?.bannerFile.length > 0){
@@ -194,32 +205,55 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // }
 
     this.initial$ = this.jobFacade.initial$
-    .pipe().subscribe(this.setInitialForm.bind(this));
+      .pipe()
+      .subscribe(this.setInitialForm.bind(this));
 
     this.info$ = this.jobFacade.info$
-    .pipe().subscribe(this.setJobInfo.bind(this));
-
-
+      .pipe()
+      .subscribe(this.setJobInfo.bind(this));
   }
 
   setInitialForm(raw: Model.InitialDetails) {
     if (raw) {
       this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
-      this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
-      this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
-      this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
-      this.jobForm.controls.initialData.get('workSetupId').setValue(raw.workSetupId);
-      this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
+      this.jobForm.controls.initialData
+        .get('jobTypeId')
+        .setValue(raw.jobTypeId);
+      this.jobForm.controls.initialData
+        .get('jobLevelId')
+        .setValue(raw.jobLevelId);
+      this.jobForm.controls.initialData
+        .get('jobLevelId')
+        .setValue(raw.jobLevelId);
+      this.jobForm.controls.initialData
+        .get('workSetupId')
+        .setValue(raw.workSetupId);
+      this.jobForm.controls.initialData
+        .get('jobAddress')
+        .setValue(raw.jobAddress);
       this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
-      this.jobForm.controls.initialData.get('jobCountry').setValue(raw.jobCountry);
-      this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
-      this.jobForm.controls.initialData.get('jobDuties').setValue(raw.jobDuties);
-      this.jobForm.controls.initialData.get('jobCategoryId').setValue(raw.jobCategoryId);
+      this.jobForm.controls.initialData
+        .get('jobCountry')
+        .setValue(raw.jobCountry);
+      this.jobForm.controls.initialData
+        .get('jobDescription')
+        .setValue(raw.jobDescription);
+      this.jobForm.controls.initialData
+        .get('jobDuties')
+        .setValue(raw.jobDuties);
+      this.jobForm.controls.initialData
+        .get('jobCategoryId')
+        .setValue(raw.jobCategoryId);
       this.jobForm.controls.initialData.get('badges').setValue(raw.badges);
-      this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
-      this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
-      this.jobForm.controls.initialData.get('bannerFile').setValue(raw.bannerFile);
-
+      this.jobForm.controls.initialData
+        .get('requirements')
+        .setValue(raw.requirements);
+      this.jobForm.controls.initialData
+        .get('goodToHave')
+        .setValue(raw.goodToHave);
+      this.jobForm.controls.initialData
+        .get('bannerFile')
+        .setValue(raw.bannerFile);
     }
   }
 
@@ -230,8 +264,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.jobForm.controls.jobInfo.get('jobSkills').setValue(raw.jobSkills);
       this.jobForm.controls.jobInfo.get('jobTags').setValue(raw.jobTags);
       this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
-      this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
-      this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
+      this.jobForm.controls.jobInfo
+        .get('salaryMinimum')
+        .setValue(raw.salaryMinimum);
+      this.jobForm.controls.jobInfo
+        .get('salaryMaximum')
+        .setValue(raw.salaryMaximum);
     }
   }
 
@@ -249,19 +287,20 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   async publishJobPost() {
     const job: Model.Job = await this.formatJob(2);
 
-    this.isReadyToPublish = job.jobTypeId &&
+    this.isReadyToPublish =
+      job.jobTypeId &&
       job.jobLevelId &&
-      job.jobCity != "" &&
-      job.jobCountry != "" &&
-      job.jobDescription != "" &&
+      job.jobCity != '' &&
+      job.jobCountry != '' &&
+      job.jobDescription != '' &&
       job.workSetupId &&
       job.bannerFile[0] &&
       job.badges.length != 0 &&
       job.requirements.length != 0 &&
       job.jobSkills.length != 0 &&
-      job.interviewQuestions.length != 0
+      job.interviewQuestions.length != 0;
 
-    if(this.isReadyToPublish) {
+    if (this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
     } else {
       this.snackBar.open(`Job not ready to be Published`, '', {
@@ -269,7 +308,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     }
-
   }
 
   async formatJob(status) {
@@ -281,31 +319,33 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     return {
       ...initialData.value,
       ...jobInfo.value,
-      badges: initialData.value ? this.formatBadgesGetId(initialData.value.badges) : [],
+      badges: initialData.value
+        ? this.formatBadgesGetId(initialData.value.badges)
+        : [],
       interviewQuestions,
       companyId: JSON.parse(user).companyId,
-      jobStatusId: status
+      jobStatusId: status,
     };
   }
 
   afterSubmit(event) {
     if (event == 'asDraft') {
-      this.snackBar.open(`Job successfully save as Draft.`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
+      this.dialog.open(UpdatedDialogComponent, {
+        disableClose: true,
+        data: 'Job successfully saved as Draft.',
       });
       this.router.navigate(['../list'], { relativeTo: this.route });
     } else if (event == 'published') {
-      this.snackBar.open(`Job successfully published`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
+      this.dialog.open(UpdatedDialogComponent, {
+        disableClose: true,
+        data: 'Job successfully Published.',
       });
     }
   }
 
   formatBadgesGetId(rawBadges) {
     if (rawBadges && rawBadges.length != 0) {
-      return rawBadges.map(badge => badge.id);
+      return rawBadges.map((badge) => badge.id);
     } else {
       return [];
     }
@@ -313,7 +353,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   cancel() {
     this.jobFacade.resetFormState();
-    this.router.navigate(['../'], { relativeTo: this.route })
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   changeStep(number: number, formName?: string) {
@@ -329,7 +369,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         break;
       case 'interview':
         const bodyInterview = this.jobForm.controls[formName].value;
-        this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
+        this.jobFacade.saveInterview(bodyInterview.interviewQuestions);
         break;
     }
   }
