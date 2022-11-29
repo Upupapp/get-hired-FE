@@ -7,6 +7,8 @@ import { CandidateListComponent } from './candidate-list/candidate-list.componen
 import { ImportAddContactComponent } from './contact-list/dialogs/import-add-contact/import-add-contact.component';
 import { SharedModule } from '@app-shared/shared.module';
 import { ImportAddCandidateComponent } from './candidate-list/dialogs/import-add-candidate/import-add-candidate.component';
+import { ContactGroupComponent } from './contact-group/contact-group.component';
+import { AddContactGroupComponent } from './contact-group/dialogs/add-contact-group/add-contact-group.component';
 
 const routes: Routes = [
   {
@@ -15,6 +17,7 @@ const routes: Routes = [
     children: [
       { path: 'list', component: ContactListComponent },
       { path: 'candidates', component: CandidateListComponent },
+      { path: 'groups', component: ContactGroupComponent },
       { path: '', redirectTo: 'list', pathMatch: 'full' }
     ]
   }
@@ -27,7 +30,9 @@ const routes: Routes = [
     ContactListComponent,
     CandidateListComponent,
     ImportAddContactComponent,
-    ImportAddCandidateComponent
+    ImportAddCandidateComponent,
+    ContactGroupComponent,
+    AddContactGroupComponent
   ],
   imports: [
     CommonModule,
