@@ -85,22 +85,7 @@ export class ChangePwComponent implements OnInit {
   }
 
   redirectToLogin() {
-    let url = "";
-
-    switch (this.role) {
-      case '1':
-        url = "/admin/login";
-        break;
-      case '2':
-        url = "/technician/login";
-        break;
-      case '3':
-        url = "/user/login";
-        break;
-      default:
-        url = "/selection";
-        break;
-    }
+    let url = "/signin";
 
     this.onAlertClose();
     this.router.navigateByUrl(url);
