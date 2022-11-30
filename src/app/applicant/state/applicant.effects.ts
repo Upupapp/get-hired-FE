@@ -45,6 +45,12 @@ export class ApplicantEffects {
               }),
               ApplicantActions.setAdditionalInfo({
                 additionalInfo: this.getJobInfo(applicant)
+              }),
+              ApplicantActions.setProfileDocuments({
+                profileDocs: {
+                  documents: applicant.documents,
+                  videoCVUrl: applicant.videoCVUrl
+                }
               })
             ];
           }),

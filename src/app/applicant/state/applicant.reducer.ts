@@ -25,6 +25,7 @@ export interface ApplicantState {
   level: Model.Options[];
   // category: Model.Options[];
   documents: Model.Documents[];
+  profileDocs: Model.ProfileDocuments;
   // applicant: Model.Applicant | null;
   // applicantLoading: boolean
 }
@@ -48,6 +49,7 @@ const initialState: ApplicantState = {
   // initialDetails: null,
   // applicantInfo: null,
   documents: [],
+  profileDocs: null
   // applicantLoading: false
 };
 
@@ -135,7 +137,7 @@ export const applicantReducer = createReducer<ApplicantState>(
   on(ApplicantActions.setProfileDocuments, (state, action): ApplicantState => {
     return {
       ...state,
-      documents: action.documents
+      profileDocs: action.profileDocs
     };
   }),
   on(ApplicantActions.getSetupList, (state): ApplicantState => {

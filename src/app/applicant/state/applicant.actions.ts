@@ -111,7 +111,7 @@ export const setAdditionalInfo = createAction(
 
 export const setProfileDocuments = createAction(
   AllFeatureActionTypes.SetProfileDocuments,
-  props<{ documents: Model.Documents[] }>()
+  props<{ profileDocs: Model.ProfileDocuments }>()
 );
 
 export const saveApplicant = createAction(

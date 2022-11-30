@@ -6,14 +6,14 @@
             appFileDrop
             class="upload-container py-3"
             (whenFileDropped)="uploadMultiple($event, true)"
-            (click)="fileArray.length === 0 ? uploadFile.click() 
-            : multiple ? uploadFile.click() 
+            (click)="fileArray.length === 0 ? uploadFile.click()
+            : multiple ? uploadFile.click()
             : ''">
                 <input #uploadFile hidden type="file" (change)="uploadMultiple($event)" [accept]="acceptType" />
                 <div class="row">
                     <div class="col-8 text-start">
                         <h6>{{label}}</h6>
-                        <span>We accept: <span class="text-document">DOCS. DOCX. TXT. PDF.</span></span> 
+                        <span>We accept: <span class="text-document">DOCS. DOCX. TXT. PDF.</span></span>
                     </div>
 
                     <div class="col-4">
@@ -21,7 +21,7 @@
                         [disabled]="fileArray.length > 0 && !multiple">Browse Files</button>
                     </div>
                 </div>
-            </div>  
+            </div>
         </div>
 
         <div class="col-12" [ngClass]="singleLine ? 'col-12 pt-4' : 'col-12 col-md-6'">
@@ -41,14 +41,19 @@
                                 <mat-icon class="float-end" (click)="removeImageInArray(i)"
                                 style="margin-top: -40px; font-size: 15px; cursor: pointer;">close</mat-icon>
                                 <div class="float-end me-2" style="margin-top: -21px;">
-                                    {{(file.size * 0.000001)?.toFixed(1) }} 
+                                    {{(file.size * 0.000001)?.toFixed(1) }}
                                     MB/50 MB
                                 </div>
                             </div>
                             <div class="progress mt-2">
-                                <div class="progress-bar" role="progressbar" 
+                                <div class="progress-bar" role="progressbar"
                                 [ngStyle]="{ width: (((file.size * 0.000001) / 50) * 100) + '%' }"
                                 style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="row" *ngIf="file.created_at">
+                              <div class="col-md-7">Uploaded at:</div>
+                              <div class="col-md-5 text-end">
+                                {{ file.created_at | date: 'mediumDate' }}</div>
                             </div>
                         </div>
                     </div>

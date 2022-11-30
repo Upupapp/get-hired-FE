@@ -94,9 +94,9 @@ export const getLevelList = createSelector(
 //   state => state.applicantInfo
 // );
 
-export const getDocuments = createSelector(
+export const getProfileDocs = createSelector(
   getApplicantInitState,
-  state => state.documents
+  state => state.profileDocs
 );
 
 // export const getApplicantPreview = createSelector(
