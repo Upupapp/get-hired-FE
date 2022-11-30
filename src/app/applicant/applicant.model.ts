@@ -114,6 +114,12 @@ export interface Options {
   icon?: string;
 }
 
+export interface ProfileDocuments {
+  documents: Documents[],
+  videoCVFile?: File,
+  videoCVUrl?: string
+}
+
 export interface Documents {
   file: File;
   filename: string;
@@ -121,4 +127,5 @@ export interface Documents {
   type: string;
   fileurl?: string;
   applicant_id?: string;
+  created_at: Date;
 }

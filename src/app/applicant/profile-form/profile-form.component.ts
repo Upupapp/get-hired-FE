@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ApplicantFacade } from '../state/applicant.facade';
@@ -86,7 +86,7 @@ export class ProfileFormComponent implements OnInit {
     if (this.user) {
       this.applicantFacade.getApplicantById(this.user._id);
 
-      if(sessionStorage.getItem('profile-update')){
+      if (sessionStorage.getItem('profile-update')) {
         this.stepper = parseInt(sessionStorage.getItem('profile-update'));
       }
     }
@@ -197,6 +197,21 @@ export class ProfileFormComponent implements OnInit {
       this.profileForm.controls.profileDetailsForm.get('contactNumber').setValue(data.contactNumber);
       this.profileForm.controls.profileDetailsForm.get('city').setValue(data.city);
       this.profileForm.controls.profileDetailsForm.get('country').setValue(data.country);
+
+      this.profileForm.controls.profileDocuments.get('videoCVUrl').setValue(data.videoCVUrl);
+
+      const docs = this.profileForm.controls.profileDocuments.get('documents') as FormArray;
+      data.documents.map(item => {
+        const fileGroup = this.fb.group({
+          file: new FormControl(item.file),
+          filename: new FormControl(item.filename),
+          size: new FormControl(item.size),
+          type: new FormControl(item.type),
+          fileurl: new FormControl(item.fileurl),
+          created_at: new FormControl(item.created_at)
+        })
+        docs.push(fileGroup);
+      })
     }
 
   }
@@ -214,7 +229,7 @@ export class ProfileFormComponent implements OnInit {
     let filteredEduc = data?.educationalBackground.filter(item => item.school)
 
     let fileteredProfileArray = {
-      workExperience : filteredWork,
+      workExperience: filteredWork,
       certifications: filteredCert,
       educationalBackground: filteredEduc,
       skillsTxt: data.skillsTxt,
@@ -244,10 +259,18 @@ export class ProfileFormComponent implements OnInit {
         const bodyInfo = this.profileForm.controls[formCtrl].value;
         this.applicantFacade.setAdditionalInfo(bodyInitial);
         break;
-      case 'profileDocuments':
-        const bodyDocu = this.profileForm.controls[formCtrl].value;
-        this.applicantFacade.setProfileDocu(bodyDocu)
-        break;
+      // case 'profileDocuments':
+      //   const bodyDocu = this.profileForm.controls[formCtrl] as FormArray;
+      //   let docs = [];
+      //   console.log()
+      //   bodyDocu.controls['documents'].forEach(ctrl => {
+      //     docs.push(ctrl.value)
+      //   });
+      //   this.applicantFacade.setProfileDocu({
+      //     documents: docs,
+      //     videoCVUrl: bodyDocu.controls['videoCVUrl'].value
+      //   });
+      //   break;
     }
   }
 
@@ -281,13 +304,13 @@ export class ProfileFormComponent implements OnInit {
       this.loading = loading;
 
       // dont close automatically all modal
-      if(!this.updateSuccess){
+      if (!this.updateSuccess) {
         setTimeout(() => this.loadingDialog.closeAll(), 3000);
       }
     }
   }
 
-  showSuccessDialog(){
+  showSuccessDialog() {
     let openDialog = this.successDialog.open(
       SuccessDialogComponent,
       {

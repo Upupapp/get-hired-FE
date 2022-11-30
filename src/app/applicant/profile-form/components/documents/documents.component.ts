@@ -21,6 +21,7 @@ export class DocumentsComponent implements OnInit {
   @ViewChild('preview') preview: any;
   private unsubscribe$ = new Subject<void>();
   previewBlob;
+  docs;
   // docuArray: FormArray;
 
   constructor(
@@ -33,23 +34,43 @@ export class DocumentsComponent implements OnInit {
     private fb: FormBuilder
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.docs = this.docArray.value;
+   }
 
   get docArray() {
     return this.rootFormGroup.control.get([this.formGroupName, 'documents']) as FormArray;
   }
 
   onUpload(docs: any) {
+    this.docArray.reset();
+
     console.log(docs);
-    docs.map(item => {
-      const fileGroup = this.fb.group({
+    const array = docs.map(item => {
+      return this.fb.group({
         file: new FormControl(item.file),
         filename: new FormControl(item.filename),
         size: new FormControl(item.size),
-        type: new FormControl(item.type)
+        type: new FormControl(item.type),
+        fileurl: new FormControl(item.fileurl || ''),
+        created_at: new FormControl(item.created_at || null)
       })
-      this.docArray.push(fileGroup);
+      // this.docArray.push(fileGroup);
     });
+
+    const mappingDoc = docs.map(doc => {
+      return {
+        ...doc,
+        fileurl: doc.fileurl || null,
+        created_at: doc.created_at || null
+      }
+    })
+
+    console.log(array);
+
+    // this.docArray.controls = docs;
+    this.docArray.controls = array;
+    this.docArray.setValue(mappingDoc);
 
     console.log(this.docArray)
 

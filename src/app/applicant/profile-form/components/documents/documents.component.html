@@ -8,7 +8,7 @@
         <p>You can upload your CV, resume and other documents that might help you <br>with your job application.</p>
 
         <div class="px-3">
-          <app-file-upload-document [labelTop]="true" [multiple]="true" (upload)="onUpload($event)"
+          <app-file-upload-document [labelTop]="true" [multiple]="true" (upload)="onUpload($event)" [fileArray]="docs"
             label="Upload documents you want to share"></app-file-upload-document>
         </div>
       </div>
