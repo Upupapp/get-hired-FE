@@ -23,7 +23,7 @@ export class ApplicantFacade {
 
   initial$ = this.store.pipe(select(fromfeature.getInitialDetails));
   // info$ = this.store.pipe(select(fromfeature.getApplicantInfo));
-  // interview$ = this.store.pipe(select(fromfeature.getApplicantInterview));
+  docu$ = this.store.pipe(select(fromfeature.getDocuments));
   // getApplicantById$ = this.store.pipe(select(fromfeature.getApplicantById));
   // getApplicantLoading$ = this.store.pipe(select(fromfeature.applicantLoading));
   error$: any;
@@ -48,6 +48,10 @@ export class ApplicantFacade {
 
   setAdditionalInfo(additionalInfo: Model.AdditionalInfo) {
     this.store.dispatch(ApplicantAction.setAdditionalInfo({ additionalInfo }));
+  }
+
+  setProfileDocu(documents: Model.Documents[]) {
+    this.store.dispatch(ApplicantAction.setProfileDocuments({ documents }));
   }
 
   // getAllApplicant() {

@@ -18,6 +18,9 @@ import { UnAuthorizedInterceptor } from './core/interceptor/unauthorize.intercep
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StorePublicModule } from './shared/store/store.module';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireStorageModule, BUCKET } from '@angular/fire/compat/storage';
+
 
 @NgModule({
   declarations: [
@@ -31,6 +34,8 @@ import { StorePublicModule } from './shared/store/store.module';
     BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireStorageModule,
     StoreModule.forRoot(appReducer),
     EffectsModule.forRoot([AppEffects]),
     StorePublicModule.forRoot(),
@@ -43,13 +48,14 @@ import { StorePublicModule } from './shared/store/store.module';
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    AppFacade, 
+    AppFacade,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: UnAuthorizedInterceptor,
       multi: true
-    }
+    },
+    { provide: BUCKET, useValue: environment.firebase.storageBucket },
   ],
   bootstrap: [AppComponent]
 })

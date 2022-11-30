@@ -28,7 +28,7 @@ export interface Applicant {
   educationalBackground?: EducationalBackground[];
   certifications?: Certifications[];
   skills: string[];
-  documents: [];
+  documents: Documents[];
   jobTypeId: number;
   jobLevelId: number;
   salaryMinimum: number;
@@ -119,4 +119,6 @@ export interface Documents {
   filename: string;
   size: number;
   type: string;
+  fileurl?: string;
+  applicant_id?: string;
 }

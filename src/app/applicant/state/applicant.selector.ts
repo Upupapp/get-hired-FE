@@ -94,10 +94,10 @@ export const getLevelList = createSelector(
 //   state => state.applicantInfo
 // );
 
-// export const getApplicantInterview = createSelector(
-//   getApplicantInitState,
-//   state => state.interview
-// );
+export const getDocuments = createSelector(
+  getApplicantInitState,
+  state => state.documents
+);
 
 // export const getApplicantPreview = createSelector(
 //   getApplicantInitState,
