@@ -142,6 +142,7 @@ export const jobReducer = createReducer<JobState>(
       loading: false,
       list: action.basicList,
       error: null,
+      succesMsg: null
     };
   }),
   on(JobActions.getBasicJobListFail, (state, action): JobState => {
