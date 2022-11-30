@@ -53,10 +53,12 @@ export class JobPostsDetailsComponent implements OnInit {
         tap(res => {
           if(res.data) {
             console.log(res.data);
-            this.clipboard.copy(res.data)
+            this.clipboard.copy(res.data.shortLink)
             this.snackBar.open(`Link copied to your clipboard`, '', {
               duration: 4000,
-              panelClass: 'success-snackbar'
+              panelClass: 'success-snackbar',
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
             });
           }
         }),
