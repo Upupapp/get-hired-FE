@@ -25,7 +25,7 @@ export class AnswerToInterviewComponent implements OnInit {
 
   public question: any = "How long have you been using Angular?"
   public startRecording: boolean = false;
-  public interviewTab: string = 'questions';
+  public interviewTab: string = 'answers';
 
   constructor(public router: Router,  
     public route: ActivatedRoute) { 
