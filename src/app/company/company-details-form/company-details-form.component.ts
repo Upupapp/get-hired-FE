@@ -10,12 +10,13 @@ import * as Model from '../company.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
 import { Subscription, Subject, takeUntil } from 'rxjs';
+import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 
 @Component({
   selector: 'app-company-details-form',
   templateUrl: './company-details-form.component.html',
   styleUrls: ['./company-details-form.component.scss'],
-  animations: [mainAnimations]
+  animations: [mainAnimations],
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
@@ -29,7 +30,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     getItem: async function (key) {
       await Promise.resolve();
       return localStorage.getItem(key);
-    }
+    },
   };
 
   workSetup$ = this.companyFacade.setup$;
@@ -44,10 +45,12 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   updateSuccess: boolean = false;
 
   success$ = this.companyFacade.success$
-    .pipe().subscribe(this.afterSubmit.bind(this));
+    .pipe()
+    .subscribe(this.afterSubmit.bind(this));
 
   company$ = this.companyFacade.companyDetails$
-    .pipe().subscribe(this.setCompany.bind(this));
+    .pipe()
+    .subscribe(this.setCompany.bind(this));
 
   loading$ = this.companyFacade.loading$
     .pipe()
@@ -60,7 +63,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     private loadingDialog: MatDialog,
     private successDialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -80,7 +84,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       industryId: [null],
       workSetupId: [null, [Validators.required]],
       numberOfEmployee: [0],
-      companyLogoFile: []
+      companyLogoFile: [],
     });
 
     //this.showSuccessDialog()
@@ -101,19 +105,23 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         companyDetails,
         industryId,
         workSetupId,
-        numberOfEmployee
+        numberOfEmployee,
       } = company;
 
       this.companyDetailsForm.get('companyName')?.setValue(companyName);
       this.companyDetailsForm.get('companyEmail')?.setValue(companyEmail);
-      this.companyDetailsForm.get('companyContactNumber')?.setValue(companyContactNumber);
+      this.companyDetailsForm
+        .get('companyContactNumber')
+        ?.setValue(companyContactNumber);
       this.companyDetailsForm.get('companyAddress')?.setValue(companyAddress);
       this.companyDetailsForm.get('companyCity')?.setValue(companyCity);
       this.companyDetailsForm.get('companyCountry')?.setValue(companyCountry);
       this.companyDetailsForm.get('companyDetails')?.setValue(companyDetails);
       this.companyDetailsForm.get('industryId')?.setValue(industryId);
       this.companyDetailsForm.get('workSetupId')?.setValue(workSetupId);
-      this.companyDetailsForm.get('numberOfEmployee')?.setValue(numberOfEmployee);
+      this.companyDetailsForm
+        .get('numberOfEmployee')
+        ?.setValue(numberOfEmployee);
       this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
 
       this.profileImage = companyLogoUrl;
@@ -130,26 +138,35 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   onUpload(file: any) {
     this.profileImage = file.file;
-    this.companyDetailsForm.controls['companyLogoFile'].setValue(this.profileImage)
+    this.companyDetailsForm.controls['companyLogoFile'].setValue(
+      this.profileImage
+    );
   }
 
   onSubmit() {
     this.updateSuccess = true;
-    
+
     if (this.companyDetailsForm.valid) {
-      console.log(this.company);
       if (this.company && this.company.companyId) {
         this.companyFacade.updateCompany({
           ...this.companyDetailsForm.value,
           companyId: this.company.companyId,
-          workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
-          industryId: parseInt(this.companyDetailsForm.controls.industryId.value)
+          workSetupId: parseInt(
+            this.companyDetailsForm.controls.workSetupId.value
+          ),
+          industryId: parseInt(
+            this.companyDetailsForm.controls.industryId.value
+          ),
         });
       } else {
         this.companyFacade.createCompany({
           ...this.companyDetailsForm.value,
-          workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
-          industryId: parseInt(this.companyDetailsForm.controls.industryId.value)
+          workSetupId: parseInt(
+            this.companyDetailsForm.controls.workSetupId.value
+          ),
+          industryId: parseInt(
+            this.companyDetailsForm.controls.industryId.value
+          ),
         });
       }
     }
@@ -158,16 +175,15 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   afterSubmit(event) {
     console.log(event);
     if (event == 'created') {
-      this.snackBar.open(`Company successfully setup. You can now access other features`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
+      this.dialog.open(UpdatedDialogComponent, {
+        disableClose: false,
+        data: 'Company successfully setup. You can now access other features',
       });
     } else if (event == 'updated') {
-      /*this.snackBar.open(`Company successfully Updated`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-      });*/
-      //this.updateSuccess = false;
+      this.dialog.open(UpdatedDialogComponent, {
+        disableClose: false,
+        data: 'Company successfully Updated',
+      });
       this.loadingDialog.closeAll();
       this.showSuccessDialog();
     }
@@ -193,28 +209,28 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       const ref = this.loadingDialog.open(LoadingComponent, {
         disableClose: true,
         data: {
-          selfClose: false
-        }
+          selfClose: false,
+        },
       });
     } else {
       // dont close automatically all modal
-      if(!this.updateSuccess){
+      if (!this.updateSuccess) {
         setTimeout(() => this.loadingDialog.closeAll(), 3000);
       }
     }
   }
 
-  showSuccessDialog(){
+  showSuccessDialog() {
     let openDialog = this.successDialog.open(
       SuccessDialogComponent,
       {
         width: '29vw',
         data: {
-          title: 'Update Details',  
+          title: 'Update Details',
           subtitle: 'Successfully updated company details'
         },
       }
-    );  
+    );
 
     openDialog
       .afterClosed()
