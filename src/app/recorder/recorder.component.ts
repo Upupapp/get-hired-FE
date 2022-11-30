@@ -111,7 +111,8 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   startVideoRecording() {
-    this.videoConf = { video: { deviceId: this.videoSrc, facingMode: "user", width: 320 }, audio: {deviceId: this.audioSrc } }
+    this.startTimer();
+    this.videoConf = { video: { deviceId: this.videoSrc, facingMode: "user", width: 320 }, audio: { deviceId: this.audioSrc } }
 
     this.videoConf['video'].deviceId = this.videoSrc;
     if (!this.isVideoRecording) {
@@ -141,6 +142,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   stopVideoRecording() {
     if (this.isVideoRecording) {
+      this.pauseTimer();
       this.recordService.stopRecording();
       this.video.srcObject = this.videoBlobUrl;
       this.isVideoRecording = false;
@@ -188,6 +190,18 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     }, 1000);
   }
 
+  stopRecorderTimer() {
+    this.pauseTimer();
+    this.timer_value = 0;
+    this.display = '00:00';
+    this.time = 0;
+    clearInterval(this.timer_value);
+  }
+
+  pauseTimer() {
+    clearInterval(this.interval);
+  }
+
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return ('00' + minutes).slice(-2) + ':' + ('00' + Math.floor(value - minutes * 60)).slice(-2);
@@ -199,6 +213,6 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-
+    this.stopRecorderTimer();
   }
 }
