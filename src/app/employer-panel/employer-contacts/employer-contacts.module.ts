@@ -9,6 +9,8 @@ import { SharedModule } from '@app-shared/shared.module';
 import { ImportAddCandidateComponent } from './candidate-list/dialogs/import-add-candidate/import-add-candidate.component';
 import { ContactGroupComponent } from './contact-group/contact-group.component';
 import { AddContactGroupComponent } from './contact-group/dialogs/add-contact-group/add-contact-group.component';
+import { CheckboxGroupComponent}  from './contact-group/dialogs/add-contact-group/checkbox-group.component'
+import { CheckboxComponent}  from './contact-group/dialogs/add-contact-group/checkbox.component'
 
 const routes: Routes = [
   {
@@ -32,7 +34,9 @@ const routes: Routes = [
     ImportAddContactComponent,
     ImportAddCandidateComponent,
     ContactGroupComponent,
-    AddContactGroupComponent
+    AddContactGroupComponent,
+    CheckboxComponent,
+    CheckboxGroupComponent
   ],
   imports: [
     CommonModule,

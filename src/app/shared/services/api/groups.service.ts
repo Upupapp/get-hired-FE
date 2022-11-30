@@ -19,6 +19,17 @@ export class GroupService {
         );
     }
 
+    getContactGroupList(data: any): Observable<any> {
+      return this.http.get<any>(`${this.server}/groups/contactlist?companyId=${data.payload.companyId}&groupName=${data.payload.groupName}`).pipe(
+        map((res) => <any[]>res.data),
+        catchError(this.handleError)
+      );
+    }
+
+    addContactGroup(data:any){
+      return this.http.post<any>(`${this.server}/groups/creategroup`, data);
+    }
+
     // error handler
     private handleError(error: any, caught: any): any {
         throw error;

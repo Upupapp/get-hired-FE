@@ -1,7 +1,7 @@
 import {
   Component,
   OnInit,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -30,7 +30,8 @@ import { StoreState } from '@main/shared/store/index';
 @Component({
   selector: 'app-contact-group',
   templateUrl: './contact-group.component.html',
-  styleUrls: ['./contact-group.component.scss']
+  styleUrls: ['./contact-group.component.scss'],
+  animations: [mainAnimations],
 })
 export class ContactGroupComponent implements OnInit {
 
@@ -71,12 +72,11 @@ export class ContactGroupComponent implements OnInit {
 
   ngOnInit(): void {
     this.localData = JSON.parse(this.localData);
-    this.getCandidateList();
+    this.getGroupList();
 
     this.GroupData$ = this.groupState.pipe(select(state => state.group));
     this.req =  this.GroupData$.subscribe((group: any) => {
       this.loading = group.pending;
-
       if(group.groupList.length > 0){
         this.groupList = group.groupList
         ;
@@ -118,15 +118,15 @@ export class ContactGroupComponent implements OnInit {
     .afterClosed()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
-      // console.log("test if parent function will be called affter closing modal");
-      this.getCandidateList();
+      console.log("test if parent function will be called affter closing modal");
+      this.getGroupList();
       if(result){
         // console.log(result, "test")
       }
     });
   }
 
-  getCandidateList(){
+  getGroupList(){
     this.groupState.dispatch({
       type:GroupActionTypes.GET_GROUP_LIST,
       payload: this.localData.companyId

@@ -1,1 +1,64 @@
-<p>add-contact-group works!</p>
+<div class="employee-container ">
+	<div class="card"
+	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+		<div class="employee-details row">
+			<div class="col-12 col-md-12 px-0">
+				<button class="btn btn-add w-100">
+					New Contact Group
+				</button>
+			</div>
+		</div>
+
+		<ng-container *ngIf="true">
+			<div class="share-container text-center"
+			style="position: relative;"
+			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
+
+				<ng-container *ngIf="true">
+					<!-- Error Message -->
+					<form class="px-3"
+					[@animate]="{value:'*', params:{ x:'-10px', delay:'200ms' }}"
+					[formGroup]="contactGroupForm" novalidate>
+						<h5 class="title-add text-start">Group of Contacts</h5>
+						<h5 class="title-description text-start">Provide the contact group details necessary for the person you want to add within that group</h5>
+						<div class="row">
+							<div class="col-12 col-md-12 form-group mt-3">
+								<label class="mb-2">Group Name<i class="text-danger">*</i></label>
+								<input type="text" class="form-control" formControlName="groupName" name="firstName">
+							</div>
+							<div class="col-12 col-md-12 form-group mt-3">
+								<div class="group-email">
+									<label class="mb-2">Lists of contacts <i class="text-danger">*</i></label>
+									<button class="btn btn-add-service" (click)="contactGroupForm.controls['emails'].reset()">Reset</button>
+								</div>
+								<checkbox-group formControlName="emails" class="checkbox-group" *ngIf="groupContactList.length>0; else block">
+									<ng-container *ngFor="let item of groupContactList; let i = index">
+										<checkbox [value]="item.email">{{item.email}}</checkbox>
+									</ng-container>
+								  </checkbox-group>
+								  <ng-template #block>
+									No contact email available
+								</ng-template>
+								<!-- <p>Form - {{contactGroupForm.controls['emails'].value | json}}</p> -->
+							</div>
+						</div>
+					
+						<div class="mt-4">
+							<div style="position: relative;" class="mt-2 text-center">
+								<button type="button"
+								class="btn me-3 btn-default "
+								(click)="dialogRef.close()">Close </button>
+
+								<button type="button"
+								class="btn me-1 btn-primary"
+								(click)="submitForm()" [disabled]="!contactGroupForm.valid">Add
+								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
+							</div>
+						</div>
+					</form>
+				</ng-container>
+			</div>
+		</ng-container>
+
+    </div>
+</div>

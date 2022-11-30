@@ -7,6 +7,7 @@ import {
 // Create new interface for reducer
 export interface GroupState {
     groupList: any;
+	contactGroupList:any;
 	pending: any;
 	error: any;
 	success: any;
@@ -15,6 +16,7 @@ export interface GroupState {
 // Set initial state of the data
 export const GROUP_INITIAL_STATE: GroupState = {
     groupList: [],
+	contactGroupList: [],
 	pending: false,
 	error: null,
 	success: null,
@@ -41,6 +43,24 @@ export const GroupReducer = (
 
             case GroupActionTypes.GET_GROUP_LIST_FAIL:
             return { ...state, pending: false, error: action.payload }
+
+			case GroupActionTypes.GET_CONTACT_GROUP_LIST:
+			return { ...state, pending: true };
+
+			case GroupActionTypes.GET_CONTACT_GROUP_LIST_SUCCESS:
+			return { ...state, contactGroupList: action.payload, pending: false }
+
+			case GroupActionTypes.GET_CONTACT_GROUP_LIST_FAIL:
+			return { ...state, pending: false, error: action.payload }
+
+			case GroupActionTypes.SAVE_GROUP:
+			return { ...state, pending: true };
+
+			case GroupActionTypes.SAVE_GROUP_SUCCESS:
+			return { ...state, success: action.payload.status, pending: false }
+
+			case GroupActionTypes.SAVE_GROUP_FAIL:
+			return { ...state, pending: false, error: action.payload }
 
             default:
 			return state;
