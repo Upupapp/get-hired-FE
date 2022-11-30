@@ -3,10 +3,11 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@main/shared/animations/main-animations';
-import { AddAccessModalComponent } from '@main/shared/components/add-access-modal/add-access-modal.component';
+// import { AddAccessModalComponent } from '@main/shared/components/add-access-modal/add-access-modal.component';
 import { TableHeader } from '@main/views/home/utils/job-list-model-interface';
 import { Subscription, Subject, takeUntil } from 'rxjs';
 import { CompanyFacade } from '@app-company/state/company.facade';
+import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
 
 @Component({
   selector: 'app-company-users',
@@ -79,7 +80,7 @@ export class CompanyUsersComponent implements OnInit {
 
   addAccess() {
     let openDialog = this.dialog.open(
-      AddAccessModalComponent,
+      ImportAddUserComponent,
       {
         width: '34vw',
         data: event,
