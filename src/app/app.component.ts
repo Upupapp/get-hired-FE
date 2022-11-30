@@ -22,26 +22,35 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  public title = 'Life Guide';
-  private req: Subscription;
-  private location: string = '';
-  private screenSize: number = 1600;
+  public title = 'Get Hired';
+  isSmallScreen: boolean = false;
 
   constructor(
     public router: Router,
     public route: ActivatedRoute,
   ) {
-    this.location = this.router.url;
-    this.req = this.router.events.subscribe((event: any) => {
-      if(event){
+    // this.location = this.router.url;
+    // this.req = this.router.events.subscribe((event: any) => {
+    //   if(event){
 
-      }
-    });
+    //   }
+    // });
   }
 
   ngOnInit(): void {
+    this.checkScreenSize();
   }
 
+  checkScreenSize() {
+    const height = window.screen.availHeight;
+    const width = window.screen.availWidth;
+    console.log(width);
+    console.log(height);
+
+    if(width < 1025) {
+      this.isSmallScreen = true;
+    }
+  }
 
 
 
