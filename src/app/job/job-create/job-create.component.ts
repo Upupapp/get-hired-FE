@@ -206,35 +206,35 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       }
 
       let requirements = this.jobForm.controls.initialData.get('requirements') as FormArray;
-      if(data.hasOwnProperty('requirements') &&  data?.requirements.length > 0){
+      if (data.hasOwnProperty('requirements') && data?.requirements.length > 0) {
         data.requirements.forEach(element => {
           requirements.push(new FormControl(element));
         })
       }
 
       let educationalBackground = this.jobForm.controls.initialData.get('educationalBackground') as FormArray;
-      if(data.hasOwnProperty('educationalBackground') &&  data?.educationalBackground.length > 0){
+      if (data.hasOwnProperty('educationalBackground') && data?.educationalBackground.length > 0) {
         data.educationalBackground.forEach(element => {
           educationalBackground.push(new FormControl(element));
         })
       }
 
       let skills = this.jobForm.controls.jobInfo.get('skills') as FormArray;
-      if(data.hasOwnProperty('skills') &&  data?.skills.length > 0){
+      if (data.hasOwnProperty('skills') && data?.skills.length > 0) {
         data.skills.forEach(element => {
           skills.push(new FormControl(element));
         })
       }
 
       let tags = this.jobForm.controls.jobInfo.get('tags') as FormArray;
-      if(data.hasOwnProperty('tags') &&  data?.tags.length > 0){
+      if (data.hasOwnProperty('tags') && data?.tags.length > 0) {
         data.tags.forEach(element => {
           tags.push(new FormControl(element));
         })
       }
 
       let interviewQuestions = this.jobForm.controls.interview.get('interviewQuestions') as FormArray;
-      if(data.hasOwnProperty('interviewQuestions') &&  data?.interviewQuestions.length > 0){
+      if (data.hasOwnProperty('interviewQuestions') && data?.interviewQuestions.length > 0) {
         data.interviewQuestions.forEach(element => {
           interviewQuestions.push(new FormGroup({
             question: new FormControl(element.question),
@@ -382,17 +382,32 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   afterSubmit(event) {
     if (event == 'asDraft') {
-      this.dialog.open(UpdatedDialogComponent, {
+      const draft = this.dialog.open(UpdatedDialogComponent, {
         disableClose: true,
         data: 'Job successfully saved as Draft.',
       });
-      this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
+
+      draft
+        .afterClosed()
+        .pipe()
+        .subscribe(() => this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route }));
+
+
     } else if (event == 'published') {
-      this.dialog.open(UpdatedDialogComponent, {
+      const published = this.dialog.open(UpdatedDialogComponent, {
         disableClose: true,
         data: 'Job successfully Published.',
       });
+
+      published
+        .afterClosed()
+        .pipe()
+        .subscribe(() => this.router.navigateByUrl('recruiter/jobs/list'));
     }
+
+
+
+
   }
 
   formatBadgesGetId(rawBadges) {
@@ -412,7 +427,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.stepper = event;
     const formCtrl = this.stepperItems[event - 2]?.formName;
 
-    if(event == 4) {
+    if (event == 4) {
       this.jobFacade.getIndustry();
       this.jobFacade.getJobRole();
     }
