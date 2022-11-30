@@ -40,7 +40,7 @@ export class JobDetailsSectionComponent implements OnInit {
 
   navigateToInterview(){
     if(this.loggedInApplicant){
-      this.router.navigate([`/job-post/apply/${this.data?.id}`])
+      this.router.navigate([`/job-post/details/${this.data?.id}`])
     }
 
     else {
