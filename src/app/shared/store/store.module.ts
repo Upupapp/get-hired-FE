@@ -5,20 +5,24 @@ import { StoreModule } from '@ngrx/store';
 import { ContactEffect } from './effects/contact.effect';
 import { GroupEffect } from './effects/group.effect';
 import { CandidateEffect } from './effects/candidate.effect';
+import { CompanyEffect } from './effects/company.effect';
 
 import { ContactReducer } from './reducers/contact.reducer';
 import { GroupReducer } from './reducers/group.reducer';
 import { CandidateReducer } from './reducers/candidate.reducer';
+import { CompanyReducer } from './reducers/company.reducer';
 
 @NgModule({
     imports: [
       StoreModule.forFeature('contact', ContactReducer),
       StoreModule.forFeature('group', GroupReducer),
       StoreModule.forFeature('candidate', CandidateReducer),
+      StoreModule.forFeature('company', CompanyReducer),
       EffectsModule.forFeature([
         ContactEffect,
         GroupEffect,
-        CandidateEffect
+        CandidateEffect,
+        CompanyEffect
       ]),
     ],
     providers: [

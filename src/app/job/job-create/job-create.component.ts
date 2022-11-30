@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
-import { distinctUntilChanged, Subscription } from 'rxjs';
+import { distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import * as Model from '../job.model';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { map, takeUntil, tap } from 'rxjs/operators';
@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./job-create.component.scss'],
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
+  public unsubscribe$ = new Subject<void>();
   mode: string;
   delayControl: boolean = true;
   public jobId: any = null;
@@ -70,9 +71,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     },
   ];
 
-  success$ = this.jobFacade.success$
-    .pipe()
-    .subscribe(this.afterSubmit.bind(this));
   editJob$ = this.jobFacade.getJobById$.pipe(
     map((job) => {
       return job;
@@ -156,6 +154,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         interviewQuestions: new FormArray([])
       })
     });
+
+    this.subscriptions.add(
+      this.jobFacade.success$
+        .pipe().subscribe(this.afterSubmit.bind(this))
+    );
 
     this.subscriptions.add(
       this.jobForm.controls.initialData.statusChanges
@@ -406,9 +409,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .subscribe(() => this.router.navigateByUrl('recruiter/jobs/list'));
     }
 
-    setTimeout(() => this.dialog.closeAll(), 2000);
-
-
   }
 
   formatBadgesGetId(rawBadges) {
@@ -453,6 +453,5 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.jobFacade.resetFormState();
     this.subscriptions.unsubscribe();
-    this.dialog.closeAll();
   }
 }

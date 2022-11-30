@@ -21,7 +21,7 @@ export class ProfileFormComponent implements OnInit {
   @Input() user: any;
 
   profileForm: FormGroup;
-  subscriptions$ = new Subscription();
+  subscriptions$: Subscription;
   applicantId: string;
   applicant: Model.Applicant;
   loading: boolean = true;
@@ -68,8 +68,9 @@ export class ProfileFormComponent implements OnInit {
   loading$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));
 
+
   success$ = this.applicantFacade.success$
-    .pipe().subscribe(this.afterSubmit.bind(this));
+  .pipe().subscribe(this.afterSubmit.bind(this))
 
   constructor(
     private fb: FormBuilder,
@@ -282,13 +283,16 @@ export class ProfileFormComponent implements OnInit {
       });
       this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'updated') {
-      /*this.snackBar.open(`Profile successfully updated`, '', {
+      console.log('HALA')
+      this.snackBar.open(`Profile successfully updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
-      });*/
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
 
-      this.loadingDialog.closeAll();
-      this.showSuccessDialog();
+      // this.loadingDialog.closeAll();
+      // this.showSuccessDialog();
     }
   }
 
@@ -302,11 +306,12 @@ export class ProfileFormComponent implements OnInit {
       });
     } else {
       this.loading = loading;
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
 
       // dont close automatically all modal
-      if (!this.updateSuccess) {
-        setTimeout(() => this.loadingDialog.closeAll(), 3000);
-      }
+      // if (!this.updateSuccess) {
+      //   setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      // }
     }
   }
 
@@ -337,6 +342,9 @@ export class ProfileFormComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscriptions$.unsubscribe();
     sessionStorage.removeItem('profile-update')
+    if(this.success$) {
+      this.success$.unsubscribe();
+    }
   }
 
 }

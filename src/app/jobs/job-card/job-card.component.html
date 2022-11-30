@@ -13,11 +13,11 @@
 	</div>
 
 	<div class="p-3 py-3 mt-3">
-		
+
 
 
 		<h5 class="title-job-title">{{data?.jobTitle}}</h5>
-		<p class="title-company">{{data?.companyName}}</p>
+		<p class="title-company cursor-pointer" (click)="companyRedirect()">{{data?.companyName}}</p>
 
 		<div class="d-flex">
 			<h5 class="d-flex title-details me-3 ms-1">

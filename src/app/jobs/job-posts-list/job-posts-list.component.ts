@@ -21,7 +21,7 @@ import { JobsFacade } from '../state/jobs.facade';
 export class JobPostsListComponent implements OnInit {
   @Input() fromSearch: boolean = false;
   @Input() label: string;
-  @Input() subLabel: string = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt <br>ut labore et dolore magna aliqua.`;
+  @Input() subLabel: string = `Apply to these Jobs to kick start your career`;
   @Input() companyId?: string;
   @Input() searchData?: any;
 
@@ -47,8 +47,8 @@ export class JobPostsListComponent implements OnInit {
   }
 
   filterJobList(jobLists: any[]){
-    if(this.searchData) 
-      return jobLists.filter((el: any) => JSON.stringify(el).toLowerCase().match(this.searchData?.keyword.toLowerCase()));  
+    if(this.searchData)
+      return jobLists.filter((el: any) => JSON.stringify(el).toLowerCase().match(this.searchData?.keyword.toLowerCase()));
 
     return jobLists
   }
