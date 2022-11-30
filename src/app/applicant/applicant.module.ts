@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { DetailsComponent } from './profile-details/components/details/details.component';
 import { AvatarComponent } from './profile-details/components/avatar/avatar.component';
@@ -43,6 +43,6 @@ import { RecorderModule } from '@main/recorder/recorder.module';
     EffectsModule.forFeature([ApplicantEffects])
   ],
   exports:[ProfileDetailsComponent, ProfileFormComponent],
-  providers:[FormGroupDirective, ApplicantFacade]
+  providers:[FormGroupDirective, ApplicantFacade, DatePipe]
 })
 export class ApplicantModule { }

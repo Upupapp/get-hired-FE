@@ -17,10 +17,10 @@ interface RecordedVideoOutput {
 export class RecordService {
   videoBlob: Blob;
 
-  get videoBlobRaw():Blob{
+  get videoBlobRaw(): Blob {
     return this.videoBlob;
   }
-  set videoBlobRaw(blob: Blob){
+  set videoBlobRaw(blob: Blob) {
     this.videoBlob = blob;
   }
 
@@ -29,6 +29,7 @@ export class RecordService {
   private recorder;
   private interval;
   private startTime;
+  private _basefile = new Subject<File>();
   private _stream = new Subject<MediaStream>();
   private _recorded = new Subject<RecordedVideoOutput>();
   private _recordedUrl = new Subject<string>();
@@ -44,6 +45,10 @@ export class RecordService {
     return this._recorded.asObservable();
   }
 
+  getBase64(): Observable<any> {
+    return this._basefile.asObservable();
+  }
+
   getRecordedTime(): Observable<string> {
     return this._recordingTime.asObservable();
   }
@@ -56,7 +61,17 @@ export class RecordService {
     return this._stream.asObservable();
   }
 
-  startRecording( conf: any ): Promise<any> {
+  blobToBase64 = blob => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    return new Promise(resolve => {
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+    });
+  };
+
+  startRecording(conf: any): Promise<any> {
     var browser = <any>navigator;
     if (this.recorder) {
       // It means recording is already started or it is already recording something
@@ -83,7 +98,7 @@ export class RecordService {
   private record() {
     this.recorder = new RecordRTC(this.stream, {
       type: 'video',
-      mimeType: 'video/webm',
+      mimeType: 'video/webm; codecs=vp8,opus',
       bitsPerSecond: 44000
     });
     this.recorder.startRecording();
@@ -120,12 +135,15 @@ export class RecordService {
     }
   }
 
-  private processVideo(audioVideoWebMURL) {
+  private async processVideo(audioVideoWebMURL) {
     // console.log(audioVideoWebMURL);
     const recordedBlob = this.recorder.getBlob();
     this.recorder.getDataURL(function (dataURL) { });
     const recordedName = encodeURIComponent('video_' + new Date().getTime() + '.webm');
     this._recorded.next({ blob: recordedBlob, url: audioVideoWebMURL, title: recordedName });
+    this.blobToBase64(recordedBlob).then((res: File) => {
+      this._basefile.next(res)
+    });
     this.stopMedia();
     //this.recorder.save(recordedName);
   }

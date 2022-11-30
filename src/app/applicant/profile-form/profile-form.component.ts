@@ -21,7 +21,7 @@ export class ProfileFormComponent implements OnInit {
   @Input() user: any;
 
   profileForm: FormGroup;
-  subscriptions$: Subscription;
+  subscriptions$ = new Subscription();
   applicantId: string;
   applicant: Model.Applicant;
   loading: boolean = true;
@@ -70,7 +70,7 @@ export class ProfileFormComponent implements OnInit {
 
 
   success$ = this.applicantFacade.success$
-  .pipe().subscribe(this.afterSubmit.bind(this))
+    .pipe().subscribe(this.afterSubmit.bind(this))
 
   constructor(
     private fb: FormBuilder,
@@ -340,9 +340,11 @@ export class ProfileFormComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions$.unsubscribe();
+    if (this.subscriptions$) {
+      this.subscriptions$.unsubscribe();
+    }
     sessionStorage.removeItem('profile-update')
-    if(this.success$) {
+    if (this.success$) {
       this.success$.unsubscribe();
     }
   }

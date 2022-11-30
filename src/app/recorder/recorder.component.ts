@@ -4,6 +4,7 @@ import { RecordService } from './recorder.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import RecordRTC from "recordrtc";
 import { Observable, Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface RecordedVideoOutput {
   blob: Blob;
@@ -19,6 +20,10 @@ interface RecordedVideoOutput {
 })
 export class RecorderComponent implements OnInit, AfterViewInit {
   @ViewChild('videoElement') videoElement: any;
+  audioInputDevices = [];
+  audioOutputDevices = [];
+  videoDevices = [];
+
   video: any;
   isPlaying = false;
   displayControls = true;
@@ -27,10 +32,12 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   videoBlobUrl;
   videoBlob;
   videoName;
+  videoFile;
   videoStream: MediaStream;
-  audioConf = { audio: true }
-  videoConf = { video: { facingMode: "user", width: 320 }, audio: true }
-
+  videoSrc: string;
+  audioSrc: string;
+  audioOut: string;
+  videoConf: any;
   public timer_value: number = 0;
   public time: number = 0;
   public interval;
@@ -41,7 +48,8 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<RecorderComponent>,
     private ref: ChangeDetectorRef,
     private recordService: RecordService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private snackBar: MatSnackBar
   ) {
     this.recordService.recordingFailed().subscribe(() => {
       this.isVideoRecording = false;
@@ -58,6 +66,11 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       this.ref.detectChanges();
     });
 
+    this.recordService.getBase64().subscribe((data) => {
+      this.videoFile = data;
+      this.ref.detectChanges();
+    });
+
     this.recordService.getRecordedBlob().subscribe((data) => {
       this.videoBlob = data.blob;
       this.videoName = data.title;
@@ -70,9 +83,37 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    if (!navigator.mediaDevices?.enumerateDevices) {
+      this.snackBar.open(`No Available Devices to record`, '', {
+        duration: 4000,
+        panelClass: ['error-snackbar'],
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
+    } else {
+      // List cameras and microphones.
+      navigator.mediaDevices.enumerateDevices()
+        .then((devices) => {
+          devices.forEach((device) => {
+            if (device.kind == 'audioinput') {
+              this.audioInputDevices.push(device);
+            } else if (device.kind == 'videoinput') {
+              this.videoDevices.push(device);
+            } else if (device.kind == 'audiooutput') {
+              this.audioOutputDevices.push(device);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error(`${err.name}: ${err.message}`);
+        });
+    }
   }
 
   startVideoRecording() {
+    this.videoConf = { video: { deviceId: this.videoSrc, facingMode: "user", width: 320 }, audio: {deviceId: this.audioSrc } }
+
+    this.videoConf['video'].deviceId = this.videoSrc;
     if (!this.isVideoRecording) {
       this.video.controls = false;
       this.video.muted = true;
@@ -108,7 +149,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   previewVideoRecording() {
-    this.dialogRef.close(this.videoBlobUrl);
+    this.dialogRef.close({ blobUrl: this.videoBlobUrl, file: this.videoFile });
   }
 
   clearVideoRecordedData() {
@@ -119,7 +160,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   downloadVideoRecordedData() {
-    this._downloadFile(this.videoBlob, 'video/mp4', this.videoName);
+    this._downloadFile(this.videoBlob, 'video/webm', this.videoName);
   }
 
   _downloadFile(data: any, type: string, filename: string): any {

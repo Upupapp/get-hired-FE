@@ -22,14 +22,19 @@
 
       <div class="px-5 mt-4">
         <button class="btn btn-create w-100 btn-block mb-3" (click)="showVideoRecorder()">
-          <img src="/assets/images/placeholder/icons/video-create.png" style="height: 17px;" class="me-3">Create Video
+          <img src="/assets/images/placeholder/icons/video-create.png" style="height: 17px;" class="me-3">
+          {{ previewBlob ? 'Re-record' : 'Create' }} Video
         </button>
 
-
-        <button class="btn btn-upload w-100 btn-block mb-3">
+        <button class="btn btn-upload w-100 btn-block mb-3" *ngIf="!previewBlob">
           <img src="/assets/images/placeholder/icons/video-upload.png" style="height: 17px;" class="me-3">Upload Video
         </button>
+
+        <button class="btn btn-upload w-100 btn-block mb-3" (click)="clearVid()" *ngIf="previewBlob">
+          <i class="bi bi-download me-3"></i>Download Video
+        </button>
       </div>
+
     </div>
 
     <div class="col-12 col-lg-6" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
