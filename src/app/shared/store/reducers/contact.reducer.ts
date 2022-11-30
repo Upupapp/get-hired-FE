@@ -8,6 +8,8 @@ import {
 export interface ContactState {
     contactList: any;
     contactRes: any;
+    editContactRes: any;
+    deleteContactRes: any;
 	pending: any;
 	error: any;
 	success: any;
@@ -18,6 +20,8 @@ export interface ContactState {
 export const CONTACT_INITIAL_STATE: ContactState = {
     contactList: [],
     contactRes: null,
+    editContactRes: null,
+    deleteContactRes: null,
 	pending: false,
 	error: null,
 	success: null,
@@ -71,6 +75,24 @@ export const ContactReducer = (
             return { ...state, contactRes: action.payload, pending: false }
 
             case ContactActionTypes.SAVE_CONTACT_MULTIPLE_FAIL:
+            return { ...state, pending: false, error: action.payload }
+
+            case ContactActionTypes.EDIT_CONTACT:
+            return { ...state, pending: true };
+
+            case ContactActionTypes.EDIT_CONTACT_SUCCESS:
+            return { ...state, editContactRes: action.payload, pending: false }
+
+            case ContactActionTypes.EDIT_CONTACT_FAIL:
+            return { ...state, pending: false, error: action.payload }
+
+            case ContactActionTypes.DELETE_CONTACT:
+            return { ...state, pending: true };
+
+            case ContactActionTypes.DELETE_CONTACT_SUCCESS:
+            return { ...state, deleteContactRes: action.payload, pending: false }
+
+            case ContactActionTypes.DELETE_CONTACT_FAIL:
             return { ...state, pending: false, error: action.payload }
 
             default:

@@ -14,6 +14,14 @@ export const enum ContactActionTypes {
 	SAVE_CONTACT_SUCCESS = '[Contacts] Save Contact Success', 
 	SAVE_CONTACT_FAIL = '[Contacts] Save Contact Fail',
 
+	EDIT_CONTACT = '[Contacts] Edit Contact', 
+	EDIT_CONTACT_SUCCESS = '[Contacts] Edit Contact Success', 
+	EDIT_CONTACT_FAIL = '[Contacts] Edit Contact Fail',
+
+	DELETE_CONTACT = '[Contacts] Delete Contact', 
+	DELETE_CONTACT_SUCCESS = '[Contacts] Delete Contact Success', 
+	DELETE_CONTACT_FAIL = '[Contacts] Delete Contact Fail',
+
 	SAVE_CONTACT_MULTIPLE = '[Contacts] Save Contact Multiple', 
 	SAVE_CONTACT_MULTIPLE_SUCCESS = '[Contacts] Save Contact Multiple Success', 
 	SAVE_CONTACT_MULTIPLE_FAIL = '[Contacts] Save Contact Multiple Fail',
@@ -64,6 +72,36 @@ export class SaveContactFail implements Action {
 	constructor(public payload: any) { }
 }
 
+export class EditContact implements Action {
+	public readonly type = ContactActionTypes.EDIT_CONTACT;
+	constructor(public payload: any) { }
+}
+
+export class EditContactSuccess implements Action {
+	public readonly type = ContactActionTypes.EDIT_CONTACT_SUCCESS;
+	constructor(public payload: any) { }
+}
+
+export class EditContactFail implements Action {
+	public readonly type = ContactActionTypes.EDIT_CONTACT_FAIL;
+	constructor(public payload: any) { }
+}
+
+export class DeleteContact implements Action {
+	public readonly type = ContactActionTypes.DELETE_CONTACT;
+	constructor(public payload: any) { }
+}
+
+export class DeleteContactSuccess implements Action {
+	public readonly type = ContactActionTypes.DELETE_CONTACT_SUCCESS;
+	constructor(public payload: any) { }
+}
+
+export class DeleteContactFail implements Action {
+	public readonly type = ContactActionTypes.DELETE_CONTACT_FAIL;
+	constructor(public payload: any) { }
+}
+
 export class SaveContactMultiple implements Action {
 	public readonly type = ContactActionTypes.SAVE_CONTACT_MULTIPLE;
 	constructor(public payload: any) { }
@@ -92,4 +130,10 @@ export type ContactAction =
 |   SaveContactMultipleFail
 |	GetContactJob
 |	GetContactJobSuccess
-|	GetContactJobFail;
+|	GetContactJobFail
+|   EditContact
+|   EditContactSuccess
+|   EditContactFail
+|   DeleteContact
+|   DeleteContactSuccess
+|   DeleteContactFail;

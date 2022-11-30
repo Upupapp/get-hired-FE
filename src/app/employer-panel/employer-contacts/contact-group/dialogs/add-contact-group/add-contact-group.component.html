@@ -4,7 +4,7 @@
 		<div class="employee-details row">
 			<div class="col-12 col-md-12 px-0">
 				<button class="btn btn-add w-100">
-					New Contact Group
+					{{data ? 'Edit' : 'New'}} Contact Group
 				</button>
 			</div>
 		</div>
@@ -51,7 +51,7 @@
 
 								<button type="button"
 								class="btn me-1 btn-primary"
-								(click)="submitForm()" [disabled]="!contactGroupForm.valid">Add
+								(click)="submitForm()" [disabled]="!contactGroupForm.valid">Submit
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>

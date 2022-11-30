@@ -13,7 +13,7 @@ export class GroupService {
     constructor(private http: HttpClient) {}
   
     getGroupList(data: any): Observable<any> {
-        return this.http.get<any>(`${this.server}/contacts/grouplist?companyId=${data.payload}`).pipe(
+        return this.http.get<any>(`${this.server}/groups/list?companyId=${data.payload}`).pipe(
           map((res) => <any[]>res.data),
           catchError(this.handleError)
         );
@@ -28,6 +28,21 @@ export class GroupService {
 
     addContactGroup(data:any){
       return this.http.post<any>(`${this.server}/groups/creategroup`, data);
+    }
+
+    deleteGroup(data: any): Observable<any> {
+      return this.http.delete<any>(`${this.server}/groups/deletegroup?groupId=${data.group_id}`)
+      .pipe(
+        map((res) => <any>res),
+        catchError(this.handleError)
+      );
+    }
+
+    editGroup(data:any): Observable<any> {
+      return this.http.put<any>(`${this.server}/groups/updategroup`, data).pipe(
+        map((res: any) => <any>res.data),
+        catchError(this.handleError)
+      );
     }
 
     // error handler

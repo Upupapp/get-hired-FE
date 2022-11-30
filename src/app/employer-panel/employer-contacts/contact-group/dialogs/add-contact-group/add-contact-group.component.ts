@@ -24,6 +24,7 @@ export class AddContactGroupComponent implements OnInit {
   private req: Subscription = new Subscription;
   public loading: boolean = true;
   public groupContactList: any = {};
+  public emailArray: any[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddContactGroupComponent>,
@@ -34,10 +35,17 @@ export class AddContactGroupComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.data);
     this.localData = JSON.parse(this.localData);
+    if(this.data){
+      this.data.emails.forEach(element => {
+        this.emailArray.push(element.email)
+      });
+    }
+
     this.contactGroupForm = this.formBuilder.group({
-      groupName: ['', [Validators.required]],
-      emails: [[]]
+      groupName: [this.data? this.data.group_name : '', [Validators.required]],
+      emails: [this.data? this.emailArray : []]
     });
     this.getContactGrouptList();
     this.groupData$ = this.groupState.pipe(select(state => state.group));
@@ -48,17 +56,11 @@ export class AddContactGroupComponent implements OnInit {
         this.groupContactList = group.contactGroupList;
       }
       if(group.success) {
-        this.snackBar.open(`Successfully created contact group`,
-        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+        this.contactGroupForm.reset();
+        this.close();
+      }
 
-        this.groupState.dispatch({
-          type:GroupActionTypes.GET_CONTACT_GROUP_LIST_SUCCESS,
-          payload: null
-        });
-        this.groupState.dispatch({
-          type:GroupActionTypes.SAVE_GROUP_SUCCESS,
-          payload: null
-        });
+      if(group.editGroupRes) {
         this.contactGroupForm.reset();
         this.close();
       }
@@ -70,18 +72,34 @@ export class AddContactGroupComponent implements OnInit {
   }
 
   submitForm() {
-    if(this.contactGroupForm.valid){
-      this.isLoading = true;
-      this.contactGroupForm.get("emails")?.patchValue(this.setContactEmail(this.contactGroupForm.controls['emails'].value));
-      let data = {
-        ...this.contactGroupForm.value,
-        companyId:this.localData.companyId
+    if(!this.data){
+      if(this.contactGroupForm.valid){
+        this.isLoading = true;
+        this.contactGroupForm.get("emails")?.patchValue(this.setContactEmail(this.contactGroupForm.controls['emails'].value));
+        let data = {
+          ...this.contactGroupForm.value,
+          companyId:this.localData.companyId
+        }
+  
+        this.groupState.dispatch({
+          type: GroupActionTypes.SAVE_GROUP,
+          payload: data
+        }); 
       }
-
-      this.groupState.dispatch({
-        type: GroupActionTypes.SAVE_GROUP,
-        payload: data
-      }); 
+    } else {
+      if(this.contactGroupForm.valid){
+        this.isLoading = true;
+        this.contactGroupForm.get("emails")?.patchValue(this.setContactEmail(this.contactGroupForm.controls['emails'].value));
+        let data = {
+          ...this.contactGroupForm.value,
+          groupId: this.data?.group_id
+        }
+  
+        this.groupState.dispatch({
+          type: GroupActionTypes.EDIT_GROUP,
+          payload: data
+        }); 
+      }
     }
   }
 
@@ -89,14 +107,14 @@ export class AddContactGroupComponent implements OnInit {
     let emailList: any = [];
     if(emails && emails.length > 0) {
       emails.forEach(element => {
-        emailList.push({emails: element});
+        emailList.push({email: element});
       });
       return emailList;
     }
     return [];
   }
 
-  getContactGrouptList() {
+  getContactGrouptList() {  
     let data = {
       companyId:this.localData.companyId,
       groupName:""
