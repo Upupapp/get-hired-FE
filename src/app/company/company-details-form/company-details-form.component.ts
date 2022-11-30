@@ -175,10 +175,15 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   afterSubmit(event) {
     console.log(event);
     if (event == 'created') {
-      this.dialog.open(UpdatedDialogComponent, {
+      const create = this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
         data: 'Company successfully setup. You can now access other features',
       });
+
+      create
+      .afterClosed()
+      .pipe()
+      .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route }));
     } else if (event == 'updated') {
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
