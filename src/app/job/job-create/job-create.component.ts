@@ -381,6 +381,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   afterSubmit(event) {
+    console.log(event);
     if (event == 'asDraft') {
       const draft = this.dialog.open(UpdatedDialogComponent, {
         disableClose: true,
@@ -405,7 +406,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .subscribe(() => this.router.navigateByUrl('recruiter/jobs/list'));
     }
 
-
+    setTimeout(() => this.dialog.closeAll(), 2000);
 
 
   }
@@ -452,5 +453,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.jobFacade.resetFormState();
     this.subscriptions.unsubscribe();
+    this.dialog.closeAll();
   }
 }

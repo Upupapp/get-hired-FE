@@ -137,6 +137,7 @@ export class JobListComponent implements OnInit {
   ngOnDestroy(): void {
     if (this.req) this.req.unsubscribe();
     this.jobFacade.getBasicList(null);
+    this.dialog.closeAll();
   }
 
   viewMenu(event: any): void {
@@ -184,6 +185,8 @@ export class JobListComponent implements OnInit {
         data: 'Job has been archived',
       });
     }
+
+    setTimeout(() => this.dialog.closeAll(), 2000);
   }
 
   onLoad(isLoading) {
