@@ -80,8 +80,14 @@ export class ContactGroupComponent implements OnInit {
     this.req =  this.GroupData$.subscribe((group: GroupState) => {
       this.loading = group.pending;
       if(group.groupList.length > 0){
-        this.groupList = group.groupList
-        ;
+        group.groupList
+        console.log(group.groupList)
+        this.groupList = [...group.groupList].map(el => {
+          return {
+            'members': el?.emails?.length,
+            ...el
+          }
+        });
       } else {
         this.groupList = [];
       }
