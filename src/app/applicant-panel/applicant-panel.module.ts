@@ -15,6 +15,7 @@ import { ApplicantEffects } from '@main/applicant/state/applicant.effects';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { AuthModule } from '@main/auth/auth.module';
 import { ApplicantModule } from '@main/applicant/applicant.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
     CommonModule,
     CoreModule,
     RouterModule.forChild(routes),
-    ApplicantModule
+    ApplicantModule,
+    ReactiveFormsModule
     // StoreModule.forFeature('applicant', applicantReducer),
     // EffectsModule.forFeature([ApplicantEffects]),
     // AuthModule

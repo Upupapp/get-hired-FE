@@ -1,5 +1,5 @@
-<section>
-  <app-applicant-panel-banner></app-applicant-panel-banner>
+<section *ngIf="profile$ | async as profile">
+  <app-applicant-panel-banner [details]="profile"></app-applicant-panel-banner>
 
   <app-applicant-stat-chart></app-applicant-stat-chart>
 
