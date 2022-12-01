@@ -27,6 +27,10 @@ export class ApplicantService {
     }
   }
 
+  getDashboardDetails() {
+    return of('antok na');
+  }
+
   getSetupList() {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/setuplist`);
   }

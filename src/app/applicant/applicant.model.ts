@@ -129,3 +129,7 @@ export interface Documents {
   applicant_id?: string;
   created_at: Date;
 }
+
+export interface Dashboard {
+
+}
