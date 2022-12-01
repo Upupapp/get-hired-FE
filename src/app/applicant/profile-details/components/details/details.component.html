@@ -45,15 +45,15 @@
   <div>
     <h5 class="title-main mb-3">Work Experience</h5>
 
-    <ng-container *ngFor="let item of work_experience; let i = index">
+    <ng-container *ngFor="let item of user.workExperience; let i = index">
       <hr style="border-color: #909090" *ngIf="i > 0">
-      <h5 class="title-experience">{{item?.title}}
+      <h5 class="title-experience">{{item?.jobTitle}}
         <div class="float-end text-end">
           <div class="title-duration mb-2">
             <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-            {{item?.start_date | date: 'MMM d, yyyy'}} - {{item?.start_date | date: 'MMM d, yyyy'}}
+            {{getMonth(item?.startMonth)}}, {{ item.startYear }} - {{getMonth(item?.endMonth)}}, {{ item.endYear }}
           </div>
-          <span class="title-job-type">{{item?.job_type}}</span>
+          <span class="title-job-type">{{item?.jobTypeName}}</span>
 
         </div>
       </h5>
@@ -61,7 +61,7 @@
       <div class="d-flex">
         <p class="title-other">
           <img src="/assets/images/placeholder/icons/applicant-company.png" style="height: 14px"
-            class="me-2">{{item?.company}}
+            class="me-2">{{item?.companyName}}
         </p>
 
         <p class="title-other">
@@ -80,12 +80,12 @@
   <div class="mt-4">
     <h5 class="title-main mb-3">Education & Qualification</h5>
 
-    <ng-container *ngFor="let item of education_background; let i = index">
+    <ng-container *ngFor="let item of user.educationalBackground; let i = index">
       <hr style="border-color: #909090" *ngIf="i > 0">
-      <h5 class="title-experience">{{item?.field_of_study}}
+      <h5 class="title-experience">{{item?.fieldOfStudy}}
         <span class="float-end title-duration">
           <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-          {{item?.start_date | date: 'MMM d, yyyy'}} - {{item?.start_date | date: 'MMM d, yyyy'}}
+          {{getMonth(item?.startMonth)}}, {{ item.startYear }} - {{getMonth(item?.endMonth)}}, {{ item.endYear }}
         </span>
       </h5>
 
@@ -99,28 +99,28 @@
   </div>
 
   <div class="mt-4">
-    <h5 class="title-main mb-3">Awards</h5>
+    <h5 class="title-main mb-3">Awards & Certifications</h5>
 
-    <ng-container *ngFor="let item of awards; let i = index">
+    <ng-container *ngFor="let item of user.certifications; let i = index">
       <hr style="border-color: #909090" *ngIf="i > 0">
-      <h5 class="title-experience">{{item?.title}}
+      <h5 class="title-experience">{{item?.certTitle}}
         <span class="float-end title-duration">
           <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-          {{item?.start_date | date: 'MMM d, yyyy'}} - {{item?.start_date | date: 'MMM d, yyyy'}}
+          {{getMonth(item?.startMonth)}}, {{ item.startYear }} - {{getMonth(item?.endMonth)}}, {{ item.endYear }}
         </span>
       </h5>
 
-      <div class="d-flex">
+      <!-- <div class="d-flex">
         <p class="title-other">
           <img src="/assets/images/placeholder/icons/applicant-company.png" style="height: 14px"
-            class="me-2">{{item?.company}}
+            class="me-2">{{item?.certTitle}}
         </p>
 
         <p class="title-other">
           <img src="/assets/images/placeholder/icons/applicant-location.png" style="height: 14px"
             class="me-1">{{item?.location}}
         </p>
-      </div>
+      </div> -->
 
       <div class="">
         <p class="title-details mt-2 w-75">{{item?.details}}</p>

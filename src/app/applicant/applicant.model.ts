@@ -46,6 +46,7 @@ export interface WorkExperience {
   companyName: string;
   location: string;
   jobTypeId: string;
+  jobTypeName?: string;
   startMonth: string;
   startYear: number;
   endMonth: string;
