@@ -5,6 +5,11 @@
 	img{
 		filter: drop-shadow(0px 12px 27px rgba(63, 63, 63, 0.17));
 		border-radius: 50%;
+		object-fit: cover;
+		width: 108px;
+		height: 108px;
+		border: solid 2px #c9c9c9;
+		object-position: center;
 		border: 2.68116px solid #FFFFFF;
 		filter: drop-shadow(0px 6.43478px 14.4783px rgba(63, 63, 63, 0.17));
 	}
