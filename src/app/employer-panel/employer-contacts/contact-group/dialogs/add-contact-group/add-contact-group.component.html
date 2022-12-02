@@ -2,7 +2,7 @@
 	<div class="card"
 	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 		<div class="employee-details row">
-			<div class="col-12 col-md-12 px-0">
+			<div class="col-12 col-md-6 px-0">
 				<button class="btn btn-add w-100">
 					{{data ? 'Edit' : 'New'}} Contact Group
 				</button>
@@ -31,11 +31,15 @@
 									<label class="mb-2">Lists of contacts <i class="text-danger">*</i></label>
 									<button class="btn btn-add-service" (click)="contactGroupForm.controls['emails'].reset()">Reset</button>
 								</div>
-								<checkbox-group formControlName="emails" class="checkbox-group" *ngIf="groupContactList.length>0; else block">
+
+								<checkbox-group formControlName="emails" class="checkbox-group" 
+								*ngIf="groupContactList.length>0; else block">
 									<ng-container *ngFor="let item of groupContactList; let i = index">
-										<checkbox [value]="item.email">{{item.email}}</checkbox>
+										<div class="d-flex mb-2">
+											<checkbox class="checkbox" [value]="item.email"></checkbox>{{item.email}}
+										</div>
 									</ng-container>
-								  </checkbox-group>
+								</checkbox-group>
 								  <ng-template #block>
 									No contact email available
 								</ng-template>

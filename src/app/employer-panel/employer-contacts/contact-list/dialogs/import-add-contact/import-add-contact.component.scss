@@ -204,8 +204,9 @@
 	.form-control, .form-select{
 		background: #f8f8f8 !important;
 		border-radius: 5px !important;
-		border: none !important;
+		//border: none !important;
 		min-height: 44px;
+		border-bottom: 1px solid #E4E4E4;
 	}
 
 	.bg-gray{
