@@ -12,6 +12,7 @@ import { of, Subject, Subscription, takeUntil, tap } from 'rxjs';
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FileUploadComponent } from '@app-shared/components/input/file-upload/file-upload.component';
 
 @Component({
   selector: 'app-documents',
@@ -119,36 +120,16 @@ export class DocumentsComponent implements OnInit {
   }
 
   clearVid() {
-    this.preview.srcObject = null;
-    this.previewBlob  = null;
+    // this.preview.srcObject = null;
+    this.previewBlob = null;
     this.ref.detectChanges();
-
   }
 
-  // uploadBlob() {
-  //   const userId = JSON.parse(localStorage.getItem('user'))._id;
-  //   const storage = getStorage();
-  //   const storageRef = ref(storage, `Applicants-VideoCV/${userId}`);
-
-  //   uploadBytes(storageRef, this.previewBlob, { contentType: 'video/webm' }).then((snapshot) => {
-  //     console.log('Uploaded a blob or file!');
-
-  //     getDownloadURL(storageRef).then((url) => {
-  //       if (url) {
-  //         console.log(this.videoUrl);
-  //         this.videoUrl.setValue(url)
-  //       }
-  //     });
-
-  //     this.snackBar.open(`Video CV successfully uploaded to cloud`, '', {
-  //       duration: 4000,
-  //       panelClass: ['success-snackbar'],
-  //       verticalPosition: 'top',
-  //       horizontalPosition: 'right'
-  //     });
-  //   });
-
-  // }
+  upload(item) {
+    const file = item.target.files[0];
+    console.log(file);
+    this.previewBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+  }
 
   downloadBlob() {
     const dlUrl$ = this.recordService.getRecordedUrl()

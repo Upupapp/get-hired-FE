@@ -26,7 +26,8 @@
           {{ previewBlob ? 'Re-record' : 'Create' }} Video
         </button>
 
-        <button class="btn btn-upload w-100 btn-block mb-3" *ngIf="!previewBlob">
+        <input #uploadFile hidden type="file" (change)="upload($event)" accept="video/mp4,video/x-m4v,video/*" />
+        <button class="btn btn-upload w-100 btn-block mb-3" (click)="uploadFile.click()">
           <img src="/assets/images/placeholder/icons/video-upload.png" style="height: 17px;" class="me-3">Upload Video
         </button>
 
@@ -40,10 +41,12 @@
     <div class="col-12 col-lg-6" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
       <div class="card card-body">
         <h5 class="title-preview mb-4">Preview Video File</h5>
-        <video #preview class="w-100" height="340" controls autoplay="autoplay">
+        <!-- <video #preview class="w-100" height="340" controls autoplay="autoplay">
           <source *ngIf="previewBlob" [src]="previewBlob">
+        </video> -->
+        <video #preview class="w-100" height="340" controls autoplay="autoplay"
+          *ngIf="previewBlob" [src]="previewBlob">
         </video>
-        Your browser does not support the video tag.
       </div>
     </div>
   </div>

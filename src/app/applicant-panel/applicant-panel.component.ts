@@ -12,7 +12,7 @@ import { environment } from '@environments/environment';
   styleUrls: ['./applicant-panel.component.scss']
 })
 export class ApplicantPanelComponent implements OnInit {
-  fullName = 'Aryhan Coyco';
+  fullName = 'GetHired Applicant';
   isUserLoggedIn: boolean;
   local = JSON.parse(localStorage.getItem('user'));
   user$ = this.applicantFacade.user$;
