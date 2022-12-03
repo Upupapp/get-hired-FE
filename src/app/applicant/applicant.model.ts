@@ -30,6 +30,7 @@ export interface Applicant {
   skills: string[];
   documents: Documents[];
   jobTypeId: number;
+  jobTypeName?: string;
   jobLevelId: number;
   salaryMinimum: number;
   salaryMaximum: number;

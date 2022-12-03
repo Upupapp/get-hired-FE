@@ -74,7 +74,6 @@ export class DocumentsComponent implements OnInit {
         fileurl: new FormControl(item.fileurl || ''),
         created_at: new FormControl(item.created_at || null)
       })
-      // this.docArray.push(fileGroup);
     });
 
     const mappingDoc = docs.map(doc => {
@@ -86,14 +85,10 @@ export class DocumentsComponent implements OnInit {
     })
 
     console.log(array);
-
-    // this.docArray.controls = docs;
     this.docArray.controls = array;
     this.docArray.setValue(mappingDoc);
 
     console.log(this.docArray)
-
-    // this.applicantFacade.setProfileDocu(this.docuArray.value);
 
   }
 

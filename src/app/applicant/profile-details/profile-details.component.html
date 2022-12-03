@@ -1,4 +1,4 @@
-<section class="mt-4 px-4" *ngIf="profile$ | async as profile; else noProfile">
+<section class="mt-4 px-4">
 	<div class="ps-2 mb-3"
 	[@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
 
@@ -12,7 +12,8 @@
 
 
 	<div class="card card-body">
-		<div class="row">
+    <app-preview></app-preview>
+		<!-- <div class="row">
 			<div class="col-12 col-md-12 col-lg-12">
 				<app-applicant-avatar [user]="profile"></app-applicant-avatar>
 			</div>
@@ -20,15 +21,6 @@
 			<div class="col-12 col-md-12 col-lg-12">
 				<app-applicant-details [user]="profile"></app-applicant-details>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </section>
-
-<ng-template #noProfile>
-  <section class="text-center p-5 w-100">
-    <img src="assets/images/showcase.png" class="w-25" />
-    <h5 class="my-2">Update your profile to showcase your skills</h5>
-    <button class="btn btn-primary me-3 hvr-grow" (click)="redirectToEdit()">
-      Update Profile</button>
-  </section>
-</ng-template>

@@ -41,6 +41,7 @@
     <div class="col-12 col-lg-6" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
       <div class="card card-body">
         <h5 class="title-preview mb-4">Preview Video File</h5>
+        <img scr="assets/images/video_placeholder.png" *ngIf="!previewBlob" />
         <!-- <video #preview class="w-100" height="340" controls autoplay="autoplay">
           <source *ngIf="previewBlob" [src]="previewBlob">
         </video> -->

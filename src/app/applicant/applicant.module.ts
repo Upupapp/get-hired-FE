@@ -19,6 +19,7 @@ import { EducationalBackgroundComponent } from './profile-form/components/educat
 import { AwardsComponent } from './profile-form/components/awards/awards.component';
 import { DocumentsComponent } from './profile-form/components/documents/documents.component';
 import { RecorderModule } from '@main/recorder/recorder.module';
+import { PreviewComponent } from './profile-details/preview/preview.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { RecorderModule } from '@main/recorder/recorder.module';
     ExperienceQualificationComponent,
     EducationalBackgroundComponent,
     AwardsComponent,
-    DocumentsComponent
+    DocumentsComponent,
+    PreviewComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +44,12 @@ import { RecorderModule } from '@main/recorder/recorder.module';
     StoreModule.forFeature('applicant', applicantReducer),
     EffectsModule.forFeature([ApplicantEffects])
   ],
-  exports:[ProfileDetailsComponent, ProfileFormComponent],
-  providers:[FormGroupDirective, ApplicantFacade, DatePipe]
+  exports: [
+    ProfileDetailsComponent,
+    ProfileFormComponent,
+    AvatarComponent,
+    DetailsComponent
+  ],
+  providers: [FormGroupDirective, ApplicantFacade, DatePipe]
 })
 export class ApplicantModule { }

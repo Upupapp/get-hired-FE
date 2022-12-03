@@ -62,6 +62,11 @@ export class CoreService {
     return this.asyncLocalStorage.getItem('role');
   }
 
+  async getUserId() {
+    const user = await this.asyncLocalStorage.getItem('user');
+    return JSON.parse(user)._id;
+  }
+
   resetLocalStorage(user) {
     // TODO
   }
