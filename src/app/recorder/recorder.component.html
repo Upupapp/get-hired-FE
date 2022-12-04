@@ -59,31 +59,7 @@
 
   <div class="col-12 col-md-4 bg-white p-3">
     <div class="card card-body">
-        <h5 class="title-main">Audio Settings</h5>
-        <div class="form-group my-3">
-          <label>Microphone</label>
-          <select class="form-select" [(ngModel)]="audioSrc">
-            <option *ngFor="let item of audioInputDevices; let i = index" value="item.id">
-              {{item?.label}}</option>
-          </select>
-        </div>
-
-        <div class="form-group mb-3">
-          <label>Speaker/Audio Output</label>
-          <select class="form-select" aria-label="Default select example" [(ngModel)]="audioOut">
-            <option *ngFor="let item of audioOutputDevices; let i = index" value="item.id">
-              {{item?.label}}</option>
-          </select>
-        </div>
-
-        <h5 class="title-main">Video Settings</h5>
-        <div class="form-group mt-3">
-          <label>Camera</label>
-          <select class="form-select" aria-label="Default select example" [(ngModel)]="videoSrc">
-            <option *ngFor="let item of videoDevices; let i = index" value="item.id">
-              {{item?.label}}</option>
-          </select>
-        </div>
+      <app-recorder-setting></app-recorder-setting>
     </div>
 
     <div class="mt-2">

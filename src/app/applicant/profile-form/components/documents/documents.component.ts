@@ -25,7 +25,7 @@ export class DocumentsComponent implements OnInit {
   @Input() formGroupName: string;
   @ViewChild('preview') preview: any;
   private unsubscribe$ = new Subject<void>();
-  previewBlob;
+  previewBlob = null;
   docs;
   timer_value = 0;
   upload$: Subscription;

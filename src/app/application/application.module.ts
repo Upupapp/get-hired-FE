@@ -12,6 +12,7 @@ import { JobDetailsAnswerInterviewComponent } from './application-process/steps/
 import { RecordInterviewComponent } from './application-process/steps/interview-questions/components/record-interview/record-interview.component';
 import { SettingsModalComponent } from './application-process/steps/interview-questions/components/settings-modal/settings-modal.component';
 import { InterviewModule } from '@main/interview/interview.module';
+import { RecorderModule } from '@main/recorder/recorder.module';
 
 const exportedComponent = [
   ApplicationProcessComponent,
@@ -33,7 +34,8 @@ const exportedComponent = [
     CommonModule,
     SharedModule,
     ApplicantModule,
-    InterviewModule
+    InterviewModule,
+    RecorderModule
   ],
   exports: [
    ...exportedComponent

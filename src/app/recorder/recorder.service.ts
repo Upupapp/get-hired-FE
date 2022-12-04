@@ -129,7 +129,7 @@ export class RecordService {
   stopRecording() {
     if (this.recorder) {
       this.recorder.stopRecording(this.processVideo.bind(this));
-      //this.processVideo.bind(this.recorder)
+      // this.processVideo.bind(this.recorder)
       //this.processVideo(this.recorder);
       //this.stopMedia();
     }

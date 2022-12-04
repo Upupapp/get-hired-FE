@@ -2,52 +2,13 @@
 	<h5 class="title-main">Interview Settings</h5>
 	<br>
 	<div class="card card-body">
-		<form class="form">
-			<h5 class="title-main">Audio Settings</h5>
-			<div class="form-group my-3">
-				<label>Microphone</label>
-				<select class="form-select" aria-label="Default select example">
-				  	<option selected>Default</option>
-				  	<option value="1">One</option>
-				  	<option value="2">Two</option>
-				</select>
-			</div>
-
-			<div class="form-group mb-3">
-				<label>Speaker/Audio Output</label>
-				<select class="form-select" aria-label="Default select example">
-				  	<option selected>Realtek (R) Audio</option>
-				  	<option value="1">One</option>
-				  	<option value="2">Two</option>
-				</select>
-			</div>
-
-			<hr style="border: dashed 1px #969696">
-
-			<h5 class="title-main">Video Settings</h5>
-			<div class="form-group my-3">
-				<label>Camera</label>
-				<select class="form-select" aria-label="Default select example">
-				  	<option selected>Default</option>
-				  	<option value="1">One</option>
-				  	<option value="2">Two</option>
-				</select>
-			</div>
-
-			<div class="form-group mb-3">
-				<label>Quality</label>
-				<select class="form-select" aria-label="Default select example">
-				  	<option selected>High Definition (1080p)</option>
-				  	<option value="1">Standard (720p)</option>
-				  	<option value="2">Web (480p)</option>
-				</select>
-			</div>
-
+			<app-recorder-setting
+        (chosenAudioIn)="audioIn = $event"
+        (chosenAudioOut)="audioSrc = $event"
+        (chosenVideo)="videoSrc = $event"></app-recorder-setting>
 			<div class="justify-content-center align-self-center d-flex mt-2">
 				<button class="btn btn-cancel me-2" (click)="close()">Cancel</button>
-
 				<button class="btn btn-save" (click)="close()">Save</button>
 			</div>
-		</form>
 	</div>
 </div>

@@ -11,13 +11,16 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./settings-modal.component.scss']
 })
 export class SettingsModalComponent implements OnInit {
+  audioSrc: string;
+  videoSrc: string;
+  audioIn: string;
 
   constructor(
     public dialogRef: MatDialogRef<SettingsModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private formBuilder: FormBuilder,
     private snackBar: MatSnackBar
-  ) { 
+  ) {
      console.log(data)
   }
 
@@ -29,7 +32,11 @@ export class SettingsModalComponent implements OnInit {
   }
 
   save(){
-    this.dialogRef.close({});
+    this.dialogRef.close({
+      audioId: this.audioIn,
+      audioOut: this.audioSrc,
+      videoSrc: this.videoSrc
+    });
   }
 
 }
