@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
@@ -7,6 +7,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { InterviewNotificationComponent } from '@main/views/home/pages/job-post-details-apply/steps/interview-questions/components/interview-notification/interview-notification.component';
 import { Subject, takeUntil } from 'rxjs';
+import * as JobModel from '@main/job/job.model';
 
 @Component({
   selector: 'app-application-process',
@@ -15,6 +16,8 @@ import { Subject, takeUntil } from 'rxjs';
   animations: [mainAnimations]
 })
 export class ApplicationProcessComponent implements OnInit {
+  @Input() job: JobModel.Job;
+
   private unsubscribe$ = new Subject<void>();
   isLoggedIn: boolean = false;
   userId: string;

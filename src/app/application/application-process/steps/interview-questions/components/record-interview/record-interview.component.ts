@@ -11,6 +11,8 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as Model from '@main/interview/interview.model';
+import { CoreService } from '@app-core/services/core.service';
 
 @Component({
   selector: 'app-record-interview',
@@ -19,11 +21,14 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./record-interview.component.scss']
 })
 export class RecordInterviewComponent implements OnInit {
-  @Input() data: any;
+  @Input() interviews: Model.InterviewQuestion[];
+  @Input() index: number;
+
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
 
-  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  fullName: string;
+
   public interview_questions: any[] = [
     "How long have you been using Angular?",
     "Have you use ngRx/ngsx and rxJS before?",
@@ -47,11 +52,12 @@ export class RecordInterviewComponent implements OnInit {
 
   constructor(public router: Router,
     private dialog: MatDialog,
-    public route: ActivatedRoute) { }
+    public route: ActivatedRoute,
+    private coreService: CoreService
+  ) { }
 
   ngOnInit(): void {
-    this.interview_questions = [...this.interview_questions].filter(el => el !== this.question);
-
+    this.coreService.getUserFullName().then(name => this.fullName = name);
   }
 
   getQuestionIndex(question){

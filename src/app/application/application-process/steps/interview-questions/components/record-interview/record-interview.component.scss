@@ -75,7 +75,6 @@
 	}
 
 	.img-avatar{
-		margin-right: 15px;
 		object-position: center;
 		object-fit: cover;
 		height: 55px;
@@ -133,12 +132,12 @@
 .record-container{
 	background: #c9c9c9 !important;
 	min-height: 380px;
-	//height: 416px; 
+	//height: 416px;
 	position: relative;
 	border-radius: 16px;
 
 	.placeholder-img{
-		height: auto; 
+		height: auto;
 		width: 100%;
 		min-height: 380px;
 		object-position: center;
@@ -205,10 +204,9 @@
 		font-weight: 400;
 		font-size: 13px;
 		line-height: 21px;
-		width: 160px;
 		/* identical to box height */
 		height: 40px;
-		
+
 
 		color: #fff;
 
@@ -269,7 +267,7 @@
 	font-weight: 400;
 	font-size: 16px !important;
 	line-height: 34px;
-	
+
 	width: 162px;
 	/* identical to box height, or 170% */
 

@@ -1,162 +1,145 @@
 <section class="card card-body mb-3">
-	<div class="p-4 pb-0">
-		<div class="row">
-			<!-- BANNER LEFT -->
-			<div class="col-12 col-md-12 col-lg-8 mb-4"
-			[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
-				<div class="record-container" *ngIf="!startRecording">
-					<div class="get-hired-logo">
-						<img src="/assets/images/placeholder/logo.png">
-					</div>
+  <div class="p-4 pb-0">
+    <div class="row">
+      <!-- BANNER LEFT -->
+      <div class="col-12 col-md-12 col-lg-8 mb-4" [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+        <div class="record-container">
+          <div class="get-hired-logo">
+            <img src="/assets/images/placeholder/logo.png">
+          </div>
 
-					<img src="/assets/images/placeholder/record-interview-placeholder.png" class="placeholder-img">
+          <img src="/assets/images/placeholder/record-interview-placeholder.png" class="placeholder-img">
 
-					<div class="bg-bottom">
-						<div class="d-flex">
-							<div class="me-3 bg-main-question">
-								<p>Question 1</p>
-								<h5>
-									{{interview_answers}}
-								</h5>
-							</div>
+          <div class="bg-bottom">
+            <div class="d-flex">
+              <div class="me-3 bg-main-question">
+                <p>Question {{index + 1}}</p>
+                <h5>
+                  {{ interviews[index].question }}
+                </h5>
+              </div>
 
-							<button class="btn btn-take-interview mt-5 me-2 text-truncate" (click)="startRecorder()"> 
-								<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+              <div class="d-flex align-items-center">
+                <button class="btn btn-take-interview me-2 text-truncate" (click)="startRecorder()"
+                  *ngIf="!startRecording">
+                  <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+                  Start Recording
+                </button>
+                <button class="btn btn-settings me-2" (click)="openInterviewSettings()" *ngIf="!startRecording">
+                  <img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
+                </button>
+                <button class="btn btn-take-interview text-truncate" (click)="stopRecorder()"
+                  *ngIf="startRecording">
+                  <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+                  Stop Recorder
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-								Start Recording
-								
-							</button>
+        <!-- <div class="record-container" *ngIf="startRecording">
+          <div class="get-hired-logo">
+            <img src="/assets/images/placeholder/logo.png">
+          </div>
 
-							<button class="btn btn-settings mt-5 me-2" (click)="openInterviewSettings()"> 
-								<img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
-							</button>
-						</div>
-					</div>
-				</div>
+          <div class="bg-bottom">
+            <div class="d-flex">
+              <div class="me-3 bg-main-question">
+                <p>Question 1</p>
+                <h5>
+                  {{interview_answers}}
+                </h5>
+              </div>
+              <button class="btn btn-take-interview mt-4 text-truncate" (click)="stopRecorder()">
+                <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+                Stop Recorder
+              </button>
+            </div>
+          </div>
+        </div> -->
+      </div>
 
-				<div class="record-container" *ngIf="startRecording">
-					<div class="get-hired-logo">
-						<img src="/assets/images/placeholder/logo.png">
-					</div>
+      <!-- BANNER RIGHT -->
+      <div class="col-12 col-md-12 col-lg-4 mb-4 text-center question-container"
+        [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+        <div class="row bg-applicant py-2">
+          <div class="col-12 col-lg-6 d-flex align-items-center">
+            <div class="w-100">
+              <div>
+                <img src="/assets/images/face-3.jpg" class="img-avatar">
+              </div>
 
-					<div class="bg-bottom">
-						<div class="d-flex">
-							<div class="me-3 bg-main-question">
-								<p>Question 1</p>
-								<h5>
-									{{interview_answers}}
-								</h5>
-							</div>
-							<button class="btn btn-take-interview mt-4 text-truncate" (click)="stopRecorder()"> 
-								<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+              <div class="mt-2">
+                <h5 class="title-applicant">{{ fullName }}</h5>
+              </div>
+            </div>
+          </div>
 
-								Stop Recorder
-								
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
+          <div class="col-12 col-lg-6">
+            <div class="bg-timer text-center">
+              <div class="mt-2 pb-1">
+                <div class="progress mt-1 mb-3">
+                  <!-- <div class="progress-bar" role="progressbar"
+								    [ngStyle]="{width: timer_value + '%'}" aria-valuemin="0" aria-valuemax="100"></div> -->
+                </div>
 
-			<!-- BANNER RIGHT -->
-			<div class="col-12 col-md-12 col-lg-4 mb-4 text-center question-container"
-			[@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
-				<div class="row bg-applicant">
-					<div class="col-12 col-lg-6 mt-3">
-						<div class="mb-4">
-							<div>
-								<img src="/assets/images/face-3.jpg" class="img-avatar">
-							</div>
+                <h5 class="title-timer">
+                  <img src="/assets/images/placeholder/icons/record.png" style="height:18px" class="me-1">
+                  {{display}}
+                </h5>
 
-							<div class="mt-2">
-								<h5 class="title-applicant">{{ loggedUserData?.name }}</h5>
+                <p class="title-duration">{{ interviews[index].answerDuration }} Minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-								<p class="title-applicant-email">Angular Developer</p>
-							</div>
-						</div>
-					</div>
+        <div class="d-flex align-items-center my-2">
+          <img src="/assets/images/placeholder/icons/interview-type.png" style="height: 35px;" class="me-3">
+          <div>
+            <label for="interview-answer" class="m-0">
+              <strong>Duration:</strong>
+            </label>
+          </div>
+          <div class="px-2">
+            {{ interviews[index].answerDuration }} minutes
+          </div>
+        </div>
 
-					<div class="col-12 col-lg-6 mt-3">
-						<div class="bg-timer text-center">
-							<div class="mt-2 pb-1">
-								<div class="progress mt-1 mb-3">
-								    <div class="progress-bar" role="progressbar" 
-								    [ngStyle]="{width: timer_value + '%'}" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
+        <div class="d-flex bg-question text-start">
+          <div class="mt-1 w-100">
+            <p class="title-question-number">
+              <img src="/assets/images/placeholder/icons/interview-logo-2.png" style="height: 14px" class="me-1">
+              Next Question ({{index + 2}} /
+              {{interviews.length}})
+            </p>
+            <h5 class="title-question-title">{{interviews[index + 1].question}}</h5>
+          </div>
+        </div>
 
-								<h5 class="title-timer">
-									<img src="/assets/images/placeholder/icons/record.png" style="height:18px" class="me-1">
-									{{display}}
-								</h5>
+        <div class="row mt-4">
+          <div class="col-12 col-lg-6">
+            <button class="btn btn-upload w-100  text-truncate">Upload
+              <img src="/assets/images/placeholder/icons/interview-upload.png" style="height: 10px" class="ms-2">
+            </button>
+          </div>
 
-								<p class="title-duration">3 Minutes</p>
-							</div>
-						</div>
-					</div>
-				</div>
+          <div class="col-12 col-lg-6">
+            <button class="btn btn-skip w-100  text-truncate">Skip Interview
+              <img src="/assets/images/placeholder/icons/next-interview.png" style="height: 10px" class="ms-2">
+            </button>
+          </div>
 
-				<!-- <hr style="border-style: dashed;">
-				 -->
-				<div class="d-flex mt-2">
-					<div class="d-flex w-50">
-						<img src="/assets/images/placeholder/icons/interview-type.png" style="height: 35px;" class="me-3">
-						<div class="mb-3  text-truncate">
-							<label for="interview-answer">
-								<strong>Duration:</strong>
-							</label>
-							3 minutes
-						</div>
-					</div>
-
-					<div class="d-flex w-50">
-						<img src="/assets/images/placeholder/icons/interview-type-2.png" style="height: 35px;" class="me-3">
-						<div class="mb-3  text-truncate">
-							<label for="interview-answer">
-								<strong>Type:</strong>
-							</label>
-							Video Interview
-						</div>
-					</div>
-				</div>
-
-				<div class="d-flex bg-question text-start">
-					<div class="mt-1 w-100">
-						<p class="title-question-number">
-							<img src="/assets/images/placeholder/icons/interview-logo-2.png" 
-							style="height: 14px" class="me-1">
-							Next Question ({{this.getQuestionIndex(question) + 1}} / 
-							{{interview_questions?.length + 2}})
-						</p>
-						<h5 class="title-question-title">{{question}}</h5>
-					</div>
-				</div>
-
-				<div class="row mt-4">
-					<div class="col-12 col-lg-6">
-						<button class="btn btn-upload w-100  text-truncate">Upload
-							<img src="/assets/images/placeholder/icons/interview-upload.png" 
-							style="height: 10px" class="ms-2">
-						</button>
-					</div>
-
-					<div class="col-12 col-lg-6">
-						<button class="btn btn-skip w-100  text-truncate">Skip Interview
-							<img src="/assets/images/placeholder/icons/next-interview.png" 
-							style="height: 10px" class="ms-2">
-						</button>
-					</div>
-					
-					<div class="col-12 col-lg-12 mt-3">
-						<button class="btn btn-submit w-100 text-start  text-truncate" 
-						*ngIf="startRecording || recordedData">
-							Submit Recording
-							<img src="/assets/images/placeholder/icons/arrow-right-white.png" 
-							style="height: 12px" class="me-2 float-end">
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+          <div class="col-12 col-lg-12 mt-3">
+            <button class="btn btn-submit w-100 text-start  text-truncate" *ngIf="startRecording || recordedData">
+              Submit Recording
+              <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 12px"
+                class="me-2 float-end">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
-

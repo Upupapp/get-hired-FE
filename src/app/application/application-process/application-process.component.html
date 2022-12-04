@@ -23,7 +23,7 @@
           </ng-container>
 
           <ng-container *ngIf="stepper === 3">
-            <!-- <app-interview-questions></app-interview-questions> -->
+            <app-interview-questions [interviews]="job.interviewQuestions"></app-interview-questions>
           </ng-container>
 
           <ng-container *ngIf="stepper === 4">
