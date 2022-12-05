@@ -1,6 +1,6 @@
 <div class="d-flex">
 	<ng-container *ngFor="let item of stepperItems; let i = index">
-		<button class="btn d-flex" (click)="changeStep(item?.id)"
+		<button class="btn d-flex" (click)="changeStep(item?.id)" type="button"
     	[disabled]="item.disabled"
 		[ngClass]="stepper >= item?.id && item?.id !== stepperItems?.length ? 'btn-stepper-active'
 		: stepper === item?.id && item?.id === stepperItems?.length ? 'btn-stepper-active-2'

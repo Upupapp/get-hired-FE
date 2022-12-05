@@ -26,7 +26,8 @@
 
     <div class="col-12 col-md-12 col-lg-9 px-0">
 
-      <app-application-process *ngIf="isApplying" [job]="selectedJobPost"></app-application-process>
+      <app-application-process *ngIf="isApplying" [job]="selectedJobPost" (apply)="apply($event)">
+      </app-application-process>
 
       <app-job-posts-details [withBanner]="false" *ngIf="!isApplying" (apply)="apply($event)">
       </app-job-posts-details>

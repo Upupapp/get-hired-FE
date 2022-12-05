@@ -1,14 +1,14 @@
 import * as AppState from '@main/app.state';
 import { createReducer, on } from '@ngrx/store';
 import * as Model from '../application.model';
-import * as JobActions from './application.actions';
+import * as ApplicationActions from './application.actions';
 
 export interface State extends AppState.State {
   Applications: ApplicationState;
 }
 
 export interface ApplicationState {
-  selected: null;
+  selected: Model.Application;
   // list: Model.BasicJob[];
   error: any;
   succesMsg: string;
@@ -25,25 +25,26 @@ const initialState: ApplicationState  = {
 
 export const ApplicationsReducer = createReducer<ApplicationState>(
   initialState,
-  // on(JobActions.getPublishedJobList, (state, action): ApplicationState => {
-  //   return {
-  //     ...state,
-  //     loading: false,
-  //     error: null
-  //   };
-  // }),
-  // on(JobActions.getPublishedJobListSuccess, (state, action): ApplicationState => {
-  //   return {
-  //     ...state,
-  //     loading: false,
-  //     list: action.publishedApplication
-  //   };
-  // }),
-  // on(JobActions.getPublishedJobListFail, (state, action): ApplicationState => {
-  //   return {
-  //     ...state,
-  //     loading: false,
-  //     error: action.payload
-  //   };
-  // }),
+  on(ApplicationActions.submitApplication, (state, action): ApplicationState => {
+    return {
+      ...state,
+      loading: false,
+      error: null
+    };
+  }),
+  on(ApplicationActions.submitApplicationSuccess, (state, action): ApplicationState => {
+    return {
+      ...state,
+      loading: false,
+      selected: action.application,
+      succesMsg: 'submitted'
+    };
+  }),
+  on(ApplicationActions.submitApplicationFail, (state, action): ApplicationState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
 );

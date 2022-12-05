@@ -24,22 +24,22 @@ export class ApplicationEffects {
     private actions$: Actions,
   ) { }
 
-  // getPublishedApplication$ = createEffect(() => {
-  //   return this.actions$.pipe(
-  //     ofType(ApplicationActions.getPublishedJobList),
-  //     mergeMap((action) => this.jobsService.getPublishedApplication(action.companyId)
-  //       .pipe(
-  //         map((res: any) => {
-  //           const publishedApplication: Model.BasicJob[] = res.data;
-  //           return ApplicationActions.getPublishedJobListSuccess({ publishedApplication });
-  //         }),
-  //         catchError((err) => {
-  //           const { error } = err.error;
-  //           return of(ApplicationActions.getPublishedJobListFail({ payload: error }))
-  //         })
-  //       )
-  //     )
-  //   );
-  // });
+  submitApplication$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicationActions.submitApplication),
+      mergeMap((action) => this.applicationService.submitApplication(action.application)
+        .pipe(
+          map((res: any) => {
+            const application: Model.Application = res.data;
+            return ApplicationActions.submitApplicationSuccess({ application });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicationActions.submitApplicationFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
 
 }

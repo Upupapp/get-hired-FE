@@ -14,6 +14,10 @@ export class ApplicationService {
     private baseService: BaseService
   ) { }
 
+  submitApplication(application: Model.Application) {
+    return this.baseService.post<Model.Application>(`${this.applicationUrl}/apply`, application);
+  }
+
   // getPublishedApplication(companyId?: string) {
   //   const params = companyId ? `?id=${companyId}`: '';
   //   return this.baseService.get<Model.BasicJob[]>(`${this.applicationUrl}/published${params}`);

@@ -1,11 +1,12 @@
 <div class="card card-body">
-  <!-- STEPPER CONTAINER changeStepper-->
-  <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
-  </app-main-stepper>
+  <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
 
-  <!-- STEPPER STEPS -->
-  <section>
-    <form [formGroup]="applicationForm">
+    <!-- STEPPER CONTAINER changeStepper-->
+    <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+    </app-main-stepper>
+
+    <!-- STEPPER STEPS -->
+    <section>
       <div class="row" *ngIf="profile$ | async as profile; else noProfile">
         <div class="col-12 col-md-12 col-lg-12" *ngIf="stepper != 3">
           <app-applicant-avatar [user]="profile"></app-applicant-avatar>
@@ -23,16 +24,25 @@
           </ng-container>
 
           <ng-container *ngIf="stepper === 3">
-            <app-interview-questions [interviews]="job.interviewQuestions" (nextStep)="changeStep($event)"></app-interview-questions>
+            <app-interview-questions [interviews]="job.interviewQuestions" (nextStep)="changeStep($event)">
+            </app-interview-questions>
           </ng-container>
 
           <ng-container *ngIf="stepper === 4">
-            <!-- <app-application-preview></app-application-preview> -->
+            <app-application-preview [profile]="profile"></app-application-preview>
           </ng-container>
         </div>
       </div>
-    </form>
 
-    <ng-template #noProfile></ng-template>
-  </section>
+      <ng-template #noProfile></ng-template>
+    </section>
+
+    <div class="text-end mt-4" *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+      <!-- <button class="btn btn-save-draft me-3">Save as Draft</button> -->
+
+      <button class="btn btn-save me-2" type="submit">Submit for Evaluation</button>
+
+    </div>
+  </form>
+
 </div>

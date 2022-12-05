@@ -8,7 +8,7 @@ import * as fromfeature from './application.selector';
 @Injectable()
 export class ApplicationFacade {
   loading$ = this.store.pipe(select(fromfeature.loading));
-  // jobDetails$ = this.store.pipe(select(fromfeature.getJobDetails));
+  applicationDetails$ = this.store.pipe(select(fromfeature.getApplicationDetails));
   // jobList$ = this.store.pipe(select(fromfeature.getJobList));
   success$ = this.store.pipe(select(fromfeature.success));
   error$: any;
@@ -17,8 +17,8 @@ export class ApplicationFacade {
     private store: Store<State>,
   ) { }
 
-  // getPublishedList(companyId?: string) {
-  //   this.store.dispatch(JobAction.getPublishedJobList({ companyId }));
-  // }
+  submitApplication(application: Model.Application) {
+    this.store.dispatch(JobAction.submitApplication({ application }));
+  }
 
 }

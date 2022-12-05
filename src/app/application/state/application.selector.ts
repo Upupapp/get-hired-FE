@@ -1,26 +1,26 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { ApplicationState } from './application.reducer';
 
-const getJobsInitState = createFeatureSelector<ApplicationState>('application');
+const getApplicationInitState = createFeatureSelector<ApplicationState>('application');
 
 export const loading = createSelector(
-  getJobsInitState,
+  getApplicationInitState,
   state => state.loading
 );
 
 export const success = createSelector(
-  getJobsInitState,
+  getApplicationInitState,
   state => state.succesMsg
 );
 
 // export const getJobList = createSelector(
-//   getJobsInitState,
+//   getApplicationInitState,
 //   state => state.list
 // );
 
 
 
-// export const getJobDetails = createSelector(
-//   getJobsInitState,
-//   state => state.selected
-// );
+export const getApplicationDetails = createSelector(
+  getApplicationInitState,
+  state => state.selected
+);

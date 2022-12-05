@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
@@ -8,6 +8,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./application-preview.component.scss']
 })
 export class ApplicationPreviewComponent implements OnInit {
+  @Input() profile: any;
   public profileSummary: boolean = true;
 
   constructor() { }

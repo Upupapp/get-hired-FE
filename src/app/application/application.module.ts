@@ -13,6 +13,11 @@ import { RecordInterviewComponent } from './application-process/steps/interview-
 import { SettingsModalComponent } from './application-process/steps/interview-questions/components/settings-modal/settings-modal.component';
 import { InterviewModule } from '@main/interview/interview.module';
 import { RecorderModule } from '@main/recorder/recorder.module';
+import { ApplicationFacade } from './state/application.facade';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { ApplicationEffects } from './state/application.effects';
+import { ApplicationsReducer } from './state/application.reducer';
 
 const exportedComponent = [
   ApplicationProcessComponent,
@@ -35,11 +40,13 @@ const exportedComponent = [
     SharedModule,
     ApplicantModule,
     InterviewModule,
-    RecorderModule
+    RecorderModule,
+    StoreModule.forFeature('application', ApplicationsReducer),
+    EffectsModule.forFeature([ApplicationEffects]),
   ],
   exports: [
    ...exportedComponent
   ],
-  providers: [ApplicantFacade]
+  providers: [ApplicantFacade, ApplicationFacade]
 })
 export class ApplicationModule { }

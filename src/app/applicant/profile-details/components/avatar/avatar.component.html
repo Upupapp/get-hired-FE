@@ -1,28 +1,28 @@
 <div class="card card-body" [@animate]="{value:'*', params:{ x:'-10px', delay:'350ms' }}">
-	<div class="row">
-		<div class="col-12 col-md-6 col-lg-4 mb-3">
-			<div class="d-flex mt-3">
-				<div class="avatar-main me-4">
-					<img [src]="user.photoUrl" class="img-fluid">
-				</div>
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-4 mb-3">
+      <div class="d-flex mt-3">
+        <div class="avatar-main me-4">
+          <img [src]="user.photoUrl" class="img-fluid">
+        </div>
 
-				<div class="flex-wrap">
-					<div class="details">
-						<h5 class="title-main">{{user.firstName + ' ' + user.lastName}}</h5>
-						<p class="title-job">{{ user.jobTitle}}</p>
-					</div>
+        <div class="flex-wrap">
+          <div class="details">
+            <h5 class="title-main">{{user.firstName + ' ' + user.lastName}}</h5>
+            <p class="title-job">{{ user.jobTitle}}</p>
+          </div>
 
-					<div class="d-flex">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
-						<img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-2">
+          <div class="d-flex">
+            <img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
+            <img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
+            <img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
+            <img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-1">
+            <img src="/assets/images/placeholder/icons/star.svg" height="17px" class="me-2">
 
-						(4.5) Rating
-					</div>
-
-					<div class="d-flex mt-2">
+            (4.5) Rating
+          </div>
+          <!-- TODO Message Applicantß -->
+          <!-- <div class="d-flex mt-2">
 						<button class="btn btn-message me-2 hvr-grow">
 						<img src="/assets/images/placeholder/icons/message.png"
 						style="height: 16px; margin-top: -3px;" class="me-1">
@@ -31,57 +31,55 @@
 						<button class="btn btn-invite hvr-grow">
 							<img src="/assets/images/placeholder/icons/invite.png">
 						</button>
-					</div>
-				</div>
-			</div>
-		</div>
+					</div> -->
+        </div>
+      </div>
+    </div>
 
-		<div class="col-12 col-md-6 col-lg-4" *ngIf="user?.documents?.length === 0"></div>
+    <div class="col-12 col-md-6 col-lg-4" *ngIf="user?.documents?.length === 0"></div>
 
-		<div class="col-12 col-md-6 col-lg-4  mb-3 mt-3">
-			<h5 class="title-contact">Contact</h5>
+    <div class="col-12 col-md-6 col-lg-4  mb-3 mt-3">
+      <h5 class="title-contact">Contact</h5>
 
-			<table class="w-100 contact-table">
-				<tbody>
-					<tr>
-						<td class="title-label">Available</td>
-						<td class="title-details text-end pe-lg-5">{{ user.workSetupName }}</td>
-					</tr>
-					<tr>
-						<td class="title-label">Email Address</td>
-						<td class="title-details text-end pe-lg-5">{{ user.email }}</td>
-					</tr>
-					<tr>
-						<td class="title-label">Address</td>
-						<td class="title-details text-end pe-lg-5">{{ user.city + ', ' + user.country }}</td>
-					</tr>
-					<tr>
-						<td class="title-label">Mobile Phone</td>
-						<td class="title-details text-end pe-lg-5">{{ user.contactNumber }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+      <table class="w-100 contact-table">
+        <tbody>
+          <tr>
+            <td class="title-label">Available</td>
+            <td class="title-details text-end pe-lg-5">{{ user.workSetupName }}</td>
+          </tr>
+          <tr>
+            <td class="title-label">Email Address</td>
+            <td class="title-details text-end pe-lg-5">{{ user.email }}</td>
+          </tr>
+          <tr>
+            <td class="title-label">Address</td>
+            <td class="title-details text-end pe-lg-5">{{ user.city + ', ' + user.country }}</td>
+          </tr>
+          <tr>
+            <td class="title-label">Mobile Phone</td>
+            <td class="title-details text-end pe-lg-5">{{ user.contactNumber }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
 
-		<div class="mt-4 col-12 col-md-6 col-lg-4"
-    	*ngIf="user.documents && user.documents.length > 0">
-			<h5 class="title-contact">Documents</h5>
+    <div class="mt-4 col-12 col-md-6 col-lg-4" *ngIf="user.documents && user.documents.length > 0">
+      <h5 class="title-contact">Documents</h5>
 
-			<table class="w-100 document-table">
-				<tbody>
-					<tr *ngFor="let doc of user.documents; let i = index">
-						<td class="title-label"
-						style="width: 30px">
-							<img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
-						</td>
-						<td class="title-label">{{doc.filename}}</td>
-						<td class="title-details download text-end pe-lg-5">
-							<img src="/assets/images/placeholder/icons/download.png">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+      <table class="w-100 document-table">
+        <tbody>
+          <tr *ngFor="let doc of user.documents; let i = index">
+            <td class="title-label" style="width: 30px">
+              <img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
+            </td>
+            <td class="title-label">{{doc.filename}}</td>
+            <td class="title-details download text-end pe-lg-5">
+              <img src="/assets/images/placeholder/icons/download.png">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
