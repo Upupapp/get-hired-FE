@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output,HostListener } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
@@ -86,6 +86,7 @@ export class ApplicationProcessComponent implements OnInit {
   // ]
 
   public stepper: number = 1;
+
 
   profile$ = this.applicantFacade.applicantDetails$
     .pipe(
@@ -204,4 +205,20 @@ export class ApplicationProcessComponent implements OnInit {
     }
   }
 
+
+  public showEvaluateButton: boolean = true;
+  
+  @HostListener('window:scroll', ['$event']) // for window scroll events
+  onScroll(event) {
+    let scrollPosition = window.pageYOffset;
+    let mainHeight = window.innerHeight - 100;
+    if(scrollPosition <= mainHeight){
+      this.showEvaluateButton = false;
+    }
+
+    else {
+      this.showEvaluateButton = true;
+    }
+    console.debug("Scroll Event", window.pageYOffset, window.innerHeight );
+  }
 }

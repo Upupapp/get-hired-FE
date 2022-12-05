@@ -6,7 +6,7 @@
     </app-main-stepper>
 
     <!-- STEPPER STEPS -->
-    <section>
+    <section style="min-height: 100vh; overflow-y: visible;">
       <div class="row" *ngIf="profile$ | async as profile; else noProfile">
         <div class="col-12 col-md-12 col-lg-12" *ngIf="stepper != 3">
           <app-applicant-avatar [user]="profile"></app-applicant-avatar>
@@ -37,11 +37,12 @@
       <ng-template #noProfile></ng-template>
     </section>
 
-    <div class="text-end mt-4" *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+    <div class="text-end mt-4" 
+    [ngClass]="showEvaluateButton ? '' : 'container-evaluate'"
+    *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
       <!-- <button class="btn btn-save-draft me-3">Save as Draft</button> -->
 
       <button class="btn btn-save me-2" type="submit">Submit for Evaluation</button>
-
     </div>
   </form>
 

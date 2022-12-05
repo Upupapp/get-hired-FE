@@ -1,5 +1,6 @@
-<div style="overflow: hidden; position: relative;" [ngStyle]="{
-	'height': profileSummary ? '650px' : '100%'
+<div style="overflow: hidden; position: relative;" 
+[ngStyle]="{
+	'height': profileSummary ? '650px' : ''
 }">
   <app-applicant-details [user]="profile"></app-applicant-details>
 
@@ -18,7 +19,7 @@
   <div class="card card-body mt-3">
     <h5>Documents</h5>
     <hr style="border: dashed 1px #969696">
-
+    
     <!-- <app-profile-documents formGroupName="profileDocs"></app-profile-documents> -->
   </div>
 </div>
