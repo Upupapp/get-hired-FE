@@ -10,6 +10,7 @@ import { Subject, takeUntil, tap } from 'rxjs';
 import * as JobModel from '@main/job/job.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationFacade } from '../state/application.facade';
+import * as ApplicantModel from '@main/applicant/applicant.model';
 
 @Component({
   selector: 'app-application-process',
@@ -25,7 +26,7 @@ export class ApplicationProcessComponent implements OnInit {
   isLoggedIn: boolean = false;
   userId: string;
   applicationForm: FormGroup;
-  user: any;
+  user: ApplicantModel.Applicant;
 
   stepperItems: any[] = [
     {
@@ -137,7 +138,8 @@ export class ApplicationProcessComponent implements OnInit {
     const application = {
       ...this.applicationForm.controls.profileDocs.value,
       jobId: this.job.jobId,
-      candidateId: this.userId
+      candidateId: this.userId,
+      applicantId: this.user.applicantProfileId
     }
 
     this.applicationFacade.submitApplication(application)
