@@ -40,7 +40,7 @@ export class JobPostsDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.jobFacade.getJobById(this.jobId)
+    this.jobFacade.getJobById(this.jobId);
   }
 
   @HostListener('window:resize', ['$event'])
