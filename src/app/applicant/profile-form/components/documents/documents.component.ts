@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -9,10 +8,8 @@ import * as Model from "@main/applicant/applicant.model";
 import { RecorderComponent } from '@main/recorder/recorder.component';
 import { RecordService } from '@main/recorder/recorder.service';
 import { of, Subject, Subscription, takeUntil, tap } from 'rxjs';
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FileUploadComponent } from '@app-shared/components/input/file-upload/file-upload.component';
 
 @Component({
   selector: 'app-documents',

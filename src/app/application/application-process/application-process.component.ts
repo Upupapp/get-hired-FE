@@ -135,6 +135,7 @@ export class ApplicationProcessComponent implements OnInit {
 
   submitApplication() {
     const application = {
+      ...this.applicationForm.controls.profileDocs.value,
       jobId: this.job.jobId,
       candidateId: this.userId
     }
