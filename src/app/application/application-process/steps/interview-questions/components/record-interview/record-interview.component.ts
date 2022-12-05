@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
@@ -23,11 +23,13 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./record-interview.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class RecordInterviewComponent implements OnInit, AfterViewInit {
+export class RecordInterviewComponent implements OnInit {
   @ViewChild('videoElement') videoElement: any;
 
   @Input() interviews: Model.InterviewQuestion[];
   @Input() index: number;
+
+  @Output() next = new EventEmitter();
 
   video: any;
   displayControls = true;
@@ -85,7 +87,7 @@ export class RecordInterviewComponent implements OnInit, AfterViewInit {
 
     this.recordService.getRecordedBlob().subscribe((data) => {
       // this.videoBlob = data.blob;
-      this.videoBlob = URL.createObjectURL(new Blob( [data.blob]));
+      this.videoBlob = URL.createObjectURL(new Blob([data.blob]));
       this.videoName = data.title;
       this.videoBlobUrl = this.sanitizer.bypassSecurityTrustUrl(data.url);
       console.log('dito muna');
@@ -97,8 +99,8 @@ export class RecordInterviewComponent implements OnInit, AfterViewInit {
     this.coreService.getUserFullName().then(name => this.fullName = name);
   }
 
-  ngAfterViewInit() {
-    // this.video = this.videoElement.nativeElement;
+  skipInterview() {
+    this.next.emit(this.index + 1);
   }
 
   startRecorder() {
@@ -150,7 +152,7 @@ export class RecordInterviewComponent implements OnInit, AfterViewInit {
         this.video.load();
         this.ref.detectChanges();
 
-      //   // this.isVideoRecording = false;
+        //   // this.isVideoRecording = false;
         this.video.controls = true;
       }, 3000);
     }

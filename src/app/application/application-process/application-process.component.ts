@@ -122,6 +122,7 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   changeStep(step: number): void {
+    console.log(4);
     this.stepper = step;
 
     if (step === 3) {

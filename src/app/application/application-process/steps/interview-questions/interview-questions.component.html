@@ -1,5 +1,8 @@
 <!-- RECORD INTERVIEW -->
-<app-record-interview [interviews]="interviews" [index]="selectedIndex"></app-record-interview>
+<app-record-interview
+  [interviews]="interviews"
+  [index]="selectedIndex"
+  (next)="changeQuestion($event)"></app-record-interview>
 
 <!-- INTERVIEW QUESTIONS -->
 <section class="card card-body my-3">

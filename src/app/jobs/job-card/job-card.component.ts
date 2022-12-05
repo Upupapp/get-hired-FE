@@ -19,7 +19,7 @@ export class JobCardComponent implements OnInit {
   }
 
   applyNow(route){
-    this.router.navigate([`./details/${this.data?.jobId}`], { relativeTo: this.route})
+    this.router.navigateByUrl(`jobs/details/${this.data?.jobId}`)
   }
 
   companyRedirect(){
