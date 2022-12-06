@@ -76,7 +76,7 @@ export class StatChartComponent implements OnInit {
       barThickness: 25,
       borderRadius: 5,
       // data: [22, 14, 17, 15, 14, 18, 12, 22, 14, 17, 15, 14, 18, 12],
-      data: [],
+      data: [0,0,0,0,0,0,0],
       hoverBackgroundColor: 'rgba(239,162,13, 1)',
       backgroundColor: 'rgba(239,162,13, 0.2)',
       borderColor: 'rgba(239,162,13, 0.7)',
@@ -89,7 +89,7 @@ export class StatChartComponent implements OnInit {
       barThickness: 25,
       borderRadius: 5,
       // data: [25, 15, 13, 22, 7, 11, 20],
-      data: [],
+      data: [0,0,0,0,0,0,0],
       hoverBackgroundColor: 'rgba(53, 199, 104, 0.8)',
       backgroundColor: 'rgba(53, 199, 104, 1)',
       borderColor: 'rgba(53, 199, 104, 1)',
@@ -128,17 +128,17 @@ export class StatChartComponent implements OnInit {
   public doughnutChartData: any[] = [
     {
       label: 'Invites',
-      data: [0,0],
+      data: [0,0, 0.0000001,],
       // data: [75, 84, 45],
       backgroundColor: [
         'rgba(9,201,134, 1)',
         'rgba(254,116,43, 1)',
-        'rgba(239,162,13, 1)'
+        '#f6f6f6'
       ],
       hoverBackgroundColor: [
         'rgba(9,201,134, 0.5)',
         'rgba(254,116,43, 0.5)',
-        'rgba(239,162,13, 0.5)'
+        '#f6f6f6'
 
       ],
       borderWidth: [0, 0],

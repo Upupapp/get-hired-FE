@@ -21,7 +21,7 @@
     "
     class="banner-image-main"
     [ngStyle]="{
-      height: bannerHeight + 'px'
+      height: seeMore == 1 ? bannerHeight + 30 + 'px' : bannerHeight + 'px'
     }"
   />
 
@@ -73,23 +73,26 @@
               />
             </p>
 
-            <div class="px-lg-5 details" *ngIf="seeMore == 2">
+            <div class="px-lg-4 details" *ngIf="seeMore == 2">
               <h5 class="title-company">
                 {{ details?.companyDetails | slice: 0:50 }}
-                <span
+                <ng-container *ngIf="details?.companyDetails.length > 50">...</ng-container>
+                <br>
+                <span class="show-more" style="cursor: pointer" 
                   *ngIf="details?.companyDetails.length > 50"
                   (click)="showMore(1)"
-                  >...Show More</span
+                  >(Show More)</span
                 >
               </h5>
             </div>
-            <div class="px-lg-5 details" *ngIf="seeMore == 1">
+            <div class="px-lg-4 details" *ngIf="seeMore == 1">
               <h5 class="title-company">
                 {{ details?.companyDetails }}
-                <span
+                <br>
+                <span class="show-more" style="cursor: pointer" 
                   *ngIf="details?.companyDetails.length > 50"
                   (click)="showMore(2)"
-                  >Show Less</span
+                  >(Show Less)</span
                 >
               </h5>
             </div>

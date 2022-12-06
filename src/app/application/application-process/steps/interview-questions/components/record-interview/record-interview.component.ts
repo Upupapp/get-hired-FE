@@ -179,7 +179,7 @@ export class RecordInterviewComponent implements OnInit {
       }
       this.timer_value += 1;
       this.display = this.transform(this.time)
-    }, 150);
+    }, 1000);
   }
 
   transform(value: number): string {
