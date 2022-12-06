@@ -1,5 +1,4 @@
-<div style="overflow: hidden; position: relative;" 
-[ngStyle]="{
+<div style="overflow: hidden; position: relative;" [ngStyle]="{
 	'height': profileSummary ? '650px' : ''
 }">
   <app-applicant-details [user]="profile"></app-applicant-details>
@@ -19,7 +18,59 @@
   <div class="card card-body mt-3">
     <h5>Documents</h5>
     <hr style="border: dashed 1px #969696">
-    
+
+    <div class="row w-100">
+      <div class="col-md-4">
+        <h5 class="title-main mb-3">Resume</h5>
+        <ng-container *ngFor="let item of resume; let i = index">
+          <img src="assets/images/file-icon.png" class="col-md-2" />
+
+          <div class="row w-100">
+
+            <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div>
+            <div classs="col-12 col-md-2">
+              {{(item.size * 0.000001)?.toFixed(2) }} MB
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="col-md-4">
+        <h5 class="title-main mb-3">Cover Letter</h5>
+        <ng-container *ngFor="let item of coverLetter; let i = index">
+          <img src="assets/images/file-icon.png" class="col-md-2" />
+
+          <div class="row w-100">
+
+            <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div>
+            <div classs="col-12 col-md-2">
+              {{(item.size * 0.000001)?.toFixed(2) }} MB
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="col-md-4">
+        <h5 class="title-main mb-3">Government Files</h5>
+        <ng-container *ngFor="let item of govFiles; let i = index">
+          <img src="assets/images/file-icon.png" class="col-md-2" />
+
+          <div class="row w-100">
+
+            <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div>
+            <div classs="col-12 col-md-2">
+              {{(item.size * 0.000001)?.toFixed(2) }} MB
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+
     <!-- <app-profile-documents formGroupName="profileDocs"></app-profile-documents> -->
   </div>
 </div>
@@ -27,4 +78,3 @@
 <div>
   <!-- <app-job-details-answer-interview></app-job-details-answer-interview> -->
 </div>
-
