@@ -84,8 +84,4 @@ export class DetailsComponent implements OnInit {
     this.router.navigate(['/user/profile/edit'])
   }
 
-  getMonth(monthNumber) {
-    return this.months[monthNumber + 1];
-  }
-
 }

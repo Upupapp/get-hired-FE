@@ -1,0 +1,189 @@
+@import "src/assets/styles/colors";
+
+:host ::ng-deep{
+  ::-webkit-scrollbar {
+    width: 3px !important;
+    height: 10px;
+    cursor: move; /* fallback if grab cursor is unsupported */
+  }
+}
+
+
+
+.lens-loader {
+  width: 180px!important;
+}
+
+.loading-text{
+	letter-spacing: 5px;
+	font-family: 'Manrope';
+}
+
+.container-fluid {
+  max-width: 400px;
+  max-height: 300px;
+}
+
+.print-invoice{
+	margin-right: 10px;
+	font-size: 15px;
+	cursor: pointer;
+	vertical-align: center;
+
+	.material-icons{
+		color: #c9c9c9;
+		text-decoration: none !important;
+		margin-top: -3px;
+	}
+
+
+}
+
+canvas{
+	display: block !important;
+	width: 100% !important;
+}
+
+.main-title{
+	font-family: 'Proxima Nova';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 26px;
+	line-height: 140%;
+	/* or 36px */
+
+	color: #2D3748;
+	//padding-bottom: 30px;
+	//border-bottom: 1px solid #ECECEC;
+}
+
+.bordered-row{
+	border-top: solid 1px #c9c9c9;
+	border-bottom: solid 1px #c9c9c9;
+}
+
+.title-price{
+	font-weight: 600;
+}
+
+.margin-lg{
+	@media(min-width: 1100px){
+		margin-top: 30px;
+		padding-left: 10px;
+
+	}
+}
+
+.sub-title{
+	font-size: 17px;
+	line-height: 20px;
+	font-weight: 500;
+}
+
+.card{
+	background: #FFFFFF;
+	// box-shadow: 0px 3.5px 5.5px rgba(0, 0, 0, 0.02);
+	border-radius: 15px;
+	border: none;
+	//padding: 25px;
+	&-title{
+		border-bottom: solid 1px #c9c9c9;
+	}
+}
+
+.btn-add-service{
+	background: #187BCD;
+	border-radius: 6px;
+	padding: 7px 10px 7px 20px;
+	color: white;
+	position: absolute;
+	right: 0px;
+
+	&:hover{
+		background: rgba(#187BCD, 0.7);
+	}
+}
+
+.btn-submit{
+	background: #2A9DF4;
+	border: 2px solid #FFFFFF;
+	border-radius: 5px;
+	color: #FFFFFF;
+	padding: 10px 25px !important;
+}
+
+.btn-cancel{
+	background: #FFFFFF;
+	border: 1px solid #2889DC;
+	border-radius: 3px;
+	color: #2889DC;
+	padding: 10px 25px !important;
+}
+
+.btn-success{
+	background: #27E36F;
+	border: 1px solid #27E36F;
+	border-radius: 3px;
+	color: white;
+	padding: 7px 35px !important;
+}
+
+
+.label-schedule{
+	font-family: 'Proxima Nova';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 13px;
+	/* identical to box height */
+	margin-bottom: 10px;
+
+	color: #767676;
+}
+
+.bg-schedule{
+	background: #082253;
+	border-radius: 7px;
+	padding: 15px 20px;
+	position: relative;
+
+	label{
+		color: white;
+	}
+}
+
+.schedule-time{
+	background: #06193E;
+	border-radius: 7px;
+	padding: 6px 15px;
+}
+
+.remove-schedule{
+	padding-top: 0px;
+	cursor: pointer;
+	margin-left: 15px;
+	color: white !important;
+	padding: 3px !important;
+	font-size: 10px !important;
+	border-radius: 50% !important;
+	position: absolute;
+	right: 5px;
+	top: 10px;
+	//background: rgba(244, 42, 42, 0.6) !important;
+
+	.materials-icon{
+
+
+	}
+}
+
+.label-main{
+	margin-bottom: 10px;
+	font-family: 'Proxima Nova';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 20px;
+	color: #191919;
+}
+

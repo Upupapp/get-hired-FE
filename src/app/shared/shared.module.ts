@@ -28,6 +28,7 @@ import { UnderConstructionComponent } from './components/under-construction/unde
 import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component';
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
+import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -47,7 +48,8 @@ const classesToInclude: any[] = [
   UnderConstructionComponent,
   SuccessDialogComponent,
   FileViewerComponent,
-  VideoPreviewComponent
+  VideoPreviewComponent,
+  RecordLoadingComponent
 ];
 
 @NgModule({

@@ -28,7 +28,7 @@ export const ApplicationsReducer = createReducer<ApplicationState>(
   on(ApplicationActions.submitApplication, (state, action): ApplicationState => {
     return {
       ...state,
-      loading: false,
+      loading: true,
       error: null
     };
   }),

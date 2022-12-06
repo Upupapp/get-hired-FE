@@ -72,7 +72,7 @@ export class StatChartComponent implements OnInit {
       pointBackgroundColor: 'rgba(239,162,13, 1)',
       pointStyle: 'crossRot',
       tension: 0.3,
-      label: 'Hired',
+      label: 'Job Application',
       barThickness: 25,
       borderRadius: 5,
       // data: [22, 14, 17, 15, 14, 18, 12, 22, 14, 17, 15, 14, 18, 12],
@@ -83,7 +83,6 @@ export class StatChartComponent implements OnInit {
       fill: true,
       //borderDash: [10,7]
     },
-
     {
       label: 'Profile View',
       barThickness: 25,

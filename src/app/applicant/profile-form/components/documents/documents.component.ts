@@ -44,6 +44,11 @@ export class DocumentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.docs = this.docArray.value;
+
+    const url = this.videoUrl.value;
+    if(url) {
+      this.previewBlob = url;
+    }
   }
 
   get docArray() {
@@ -119,7 +124,10 @@ export class DocumentsComponent implements OnInit {
 
   upload(item) {
     const file = item.target.files[0];
-    console.log(file);
+    this.recordService.blobToBase64(file)
+      .then(vid => this.videoFile.setValue(vid))
+      .catch(err => console.log(err));
+
     this.previewBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
   }
 

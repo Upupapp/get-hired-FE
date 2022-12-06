@@ -11,6 +11,7 @@ import * as JobModel from '@main/job/job.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationFacade } from '../state/application.facade';
 import * as ApplicantModel from '@main/applicant/applicant.model';
+import { RecordLoadingComponent } from '@app-shared/components/record-loading/record-loading.component';
 
 @Component({
   selector: 'app-application-process',
@@ -137,6 +138,12 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   submitApplication() {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+
     const application = {
       ...this.applicationForm.controls.profileDocs.value,
       interviewAnswers: [...this.applicationForm.controls.interviewAnswers.value],
@@ -191,14 +198,14 @@ export class ApplicationProcessComponent implements OnInit {
 
   formLoading(loading: boolean) {
     if (loading) {
-      const ref = this.loadingDialog.open(LoadingComponent, {
+      const ref = this.loadingDialog.open(RecordLoadingComponent, {
         disableClose: true,
         data: {
           selfClose: false
         }
       });
     } else {
-      setTimeout(() => this.loadingDialog.closeAll(), 2000);
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
     }
   }
 

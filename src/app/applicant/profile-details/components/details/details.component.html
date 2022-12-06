@@ -51,7 +51,7 @@
         <div class="float-end text-end">
           <div class="title-duration mb-2">
             <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-            {{getMonth(item?.startMonth)}}, {{ item.startYear }} - {{getMonth(item?.endMonth)}}, {{ item.endYear }}
+            {{item?.startMonth}}, {{ item.startYear }} - {{item?.endMonth}}, {{ item.endYear }}
           </div>
           <span class="title-job-type">{{item?.jobTypeName}}</span>
 
@@ -85,7 +85,7 @@
       <h5 class="title-experience">{{item?.fieldOfStudy}}
         <span class="float-end title-duration">
           <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-          {{getMonth(item?.startMonth)}}, {{ item.startYear }} - {{getMonth(item?.endMonth)}}, {{ item.endYear }}
+          {{item?.startMonth}}, {{ item.startYear }} - {{item?.endMonth}}, {{ item.endYear }}
         </span>
       </h5>
 
@@ -106,7 +106,7 @@
       <h5 class="title-experience">{{item?.certTitle}}
         <span class="float-end title-duration">
           <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-          {{getMonth(item?.startMonth)}}, {{ item.startYear }} - {{getMonth(item?.endMonth)}}, {{ item.endYear }}
+          {{item?.startMonth}}, {{ item.startYear }} - {{item?.endMonth}}, {{ item.endYear }}
         </span>
       </h5>
 

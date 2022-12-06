@@ -143,8 +143,11 @@ export class RecordInterviewComponent implements OnInit {
   }
 
   uploadVideo(item) {
-
     const file = item.target.files[0];
+    this.recordService.blobToBase64(file)
+      .then(vid => this.videoFile = vid)
+      .catch(err => console.log(err));
+
     this.isVideoRecording = false;
     this.videoFile = file;
     this.previewBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
@@ -181,18 +184,9 @@ export class RecordInterviewComponent implements OnInit {
   }
 
   submitRecording(questionId, index) {
-    let videoToSubmit = null;
-
-    if (!this.videoFile) {
-      videoToSubmit = this.recordService.blobToBase64(this.previewBlob);
-    } else {
-      videoToSubmit = this.videoFile;
-    }
-
-    console.log(videoToSubmit);
 
     this.submitRecord.emit({
-      answerFile: videoToSubmit,
+      answerFile: this.videoFile,
       questionId,
       index,
       answerBlob: this.previewBlob

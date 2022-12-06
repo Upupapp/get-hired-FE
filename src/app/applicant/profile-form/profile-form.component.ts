@@ -212,7 +212,7 @@ export class ProfileFormComponent implements OnInit {
           created_at: new FormControl(item.created_at)
         })
         docs.push(fileGroup);
-      })
+      });
     }
 
   }
