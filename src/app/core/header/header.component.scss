@@ -75,6 +75,8 @@
   margin-right: 5px;
   margin-top: -5px;
   outline: none !important;
+  object-fit: cover;
+  object-position: center;
 
   &:hover{
     outline: none;
