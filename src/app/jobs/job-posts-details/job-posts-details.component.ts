@@ -23,6 +23,7 @@ export class JobPostsDetailsComponent implements OnInit {
   link$: Subscription;
   jobId: string;
   isLoggedIn: boolean = false;
+  userRole: string;
 
   public screenSize: number = 1600;
 
@@ -41,6 +42,8 @@ export class JobPostsDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
+    this.coreService.getRole()
+      .then(role => this.userRole = role );
   }
 
   @HostListener('window:resize', ['$event'])

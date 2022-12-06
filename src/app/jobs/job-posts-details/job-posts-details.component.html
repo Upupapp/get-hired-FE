@@ -32,7 +32,9 @@
 
       <div class="col-3">
         <div class="d-flex justify-content-end align-items-end mb-3" title="Share now!">
-          <button class="btn btn-apply-now w-100" (click)="toApply()">Apply now</button>
+          <button class="btn btn-apply-now w-100" (click)="toApply()" *ngIf="userRole == '3'">
+            Apply now
+          </button>
 
           <img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2"
             style="height: 45px; cursor: pointer;" (click)="getShareableLink(selectedJobPost.jobId)">
