@@ -34,7 +34,10 @@ export class JobService {
   }
 
   getJobById(jobId: string) {
-    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}`);
+    const user = localStorage.getItem('user');
+    const uid = user ? JSON.parse(user)._id: null;
+
+    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}&uid=${uid}`);
   }
 
   getJobExpiredList(companyId: string) {

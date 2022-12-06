@@ -41,6 +41,7 @@ export interface Job {
   companyRating?: number;
   numberOfEmployee?: string;
   jobCategoryId?: number;
+  isApplied?: boolean;
 }
 
 export interface InitialDetails {
