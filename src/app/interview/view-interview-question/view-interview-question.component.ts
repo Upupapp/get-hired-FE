@@ -27,7 +27,7 @@ export class ViewInterviewQuestionComponent implements OnInit {
   }
 
   recordItem(index) {
-
+    this.record.emit(index)
   }
 
   uploadItem(index) {

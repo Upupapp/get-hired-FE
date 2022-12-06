@@ -131,13 +131,15 @@ export class ApplicationProcessComponent implements OnInit {
         coverLetter: this.fb.array([]),
         resume: this.fb.array([]),
         governmentFiles: this.fb.array([])
-      })
+      }),
+      interviewAnswers: this.fb.array([])
     })
   }
 
   submitApplication() {
     const application = {
       ...this.applicationForm.controls.profileDocs.value,
+      interviewAnswers: [...this.applicationForm.controls.interviewAnswers.value],
       jobId: this.job.jobId,
       candidateId: this.userId,
       applicantId: this.user.applicantProfileId
@@ -210,7 +212,7 @@ export class ApplicationProcessComponent implements OnInit {
 
 
   public showEvaluateButton: boolean = true;
-  
+
   @HostListener('window:scroll', ['$event']) // for window scroll events
   onScroll(event) {
     let scrollPosition = window.pageYOffset;

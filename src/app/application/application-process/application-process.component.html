@@ -1,5 +1,5 @@
 <div class="card card-body">
-  <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+  <form [formGroup]="applicationForm">
 
     <!-- STEPPER CONTAINER changeStepper-->
     <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
@@ -29,7 +29,7 @@
           </ng-container>
 
           <ng-container *ngIf="stepper === 4">
-            <app-application-preview [profile]="profile"></app-application-preview>
+            <app-application-preview [profile]="profile" [interviews]="job.interviewQuestions"></app-application-preview>
           </ng-container>
         </div>
       </div>
@@ -37,12 +37,12 @@
       <ng-template #noProfile></ng-template>
     </section>
 
-    <div class="text-end mt-4" 
+    <div class="text-end mt-4"
     [ngClass]="showEvaluateButton ? '' : 'container-evaluate'"
     *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
       <!-- <button class="btn btn-save-draft me-3">Save as Draft</button> -->
 
-      <button class="btn btn-save me-2" type="submit">Submit for Evaluation</button>
+      <button class="btn btn-save me-2" type="button" (click)="submitApplication()">Submit for Evaluation</button>
     </div>
   </form>
 

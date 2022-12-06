@@ -1,8 +1,6 @@
 <!-- RECORD INTERVIEW -->
-<app-record-interview
-  [interviews]="interviews"
-  [index]="selectedIndex"
-  (next)="changeQuestion($event)"></app-record-interview>
+<app-record-interview [interviews]="interviews" [index]="selectedIndex" (next)="changeQuestion($event)"
+  (submitRecord)="submitAnswer($event)"></app-record-interview>
 
 <!-- INTERVIEW QUESTIONS -->
 <section class="card card-body my-3">
@@ -21,48 +19,49 @@
       <section class="interview-card card-body p-2 px-1 mb-1">
         <!-- INTERVIEWS -->
         <div *ngFor="let item of interviews; let i = index">
-          <app-view-interview-question [index]="i" [item]="item" *ngIf="i != selectedIndex">
+          <app-view-interview-question [index]="i" [item]="item" *ngIf="i != selectedIndex"
+            (record)="changeQuestion($event)">
           </app-view-interview-question>
         </div>
       </section>
     </ng-container>
 
-    <ng-container *ngIf="interviewTab === 'answers'">
-      <!-- <section class="interview-card card-body p-2 px-1 mb-1"
-				id="interview-list2"
-				*ngFor="let item of interview_answers; let i = index">
-				<div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}">
-					<div class="col-12">
-						<div class="float-end">
+    <ng-container *ngIf="interviewTab === 'answers' && interviewAnswers.controls.length > 0">
+      <section class="interview-card card-body p-2 px-1 mb-1" id="interview-list2"
+        *ngFor="let item of interviewAnswers.controls; let i = index">
+        <div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}"
+          (click)="previewVideo(interviews[item.value.index].question, item.value.answerBlob)">
+          <div class="col-12">
+            <!-- <div class="float-end">
 							<div class="mt-3 me-2">
 								<button class="btn btn-upload me-2">Upload</button>
 
 								<button class="btn btn-record"
 								routerLink="/job-post/answer-interview/{{data?.id}}/{{i + 1}}"><img src="/assets/images/placeholder/icons/retake-interview.png" style="height: 10px" class="me-2">Retake</button>
 							</div>
-						</div>
+						</div> -->
 
-						<div class="d-flex">
-							<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
-								<img src="/assets/images/placeholder/icons/interview-logo-4.png">
-							</div>
-
+            <div class="d-flex">
+              <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+                <img src="/assets/images/check-icon.png">
+              </div>
+              <!--
 							<div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
 								<img src="/assets/images/placeholder/icons/interview-logo-4-active.png">
-							</div>
+							</div> -->
 
-							<div class="mt-3">
-								<p class="title-label-sub">
-									<img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
-									Answer {{i + 1}}
-								</p>
-								<h5 class="title-label">{{item}}</h5>
-								<p class="title-label-sub-duration"><span>Date Recorded:</span> September 21, 2022 4:00pm</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section> -->
+              <div class="mt-3">
+                <p class="title-label-sub">
+                  <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+                  Answer {{item.value.index + 1}}
+                </p>
+                <h5 class="title-label">{{interviews[item.value.index].question}}</h5>
+                <!-- <p class="title-label-sub-duration"><span>Date Recorded:</span> September 21, 2022 4:00pm</p> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </ng-container>
   </div>
 </section>

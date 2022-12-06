@@ -25,13 +25,17 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class RecordInterviewComponent implements OnInit {
   @ViewChild('videoElement') videoElement: any;
+  @ViewChild('previewElement') previewElement: any;
 
   @Input() interviews: Model.InterviewQuestion[];
   @Input() index: number;
 
   @Output() next = new EventEmitter();
+  @Output() submitRecord = new EventEmitter();
+
 
   video: any;
+  preview: any;
   displayControls = true;
   isVideoRecording = false;
   videoRecordedTime;
@@ -138,28 +142,65 @@ export class RecordInterviewComponent implements OnInit {
     }
   }
 
+  uploadVideo(item) {
+
+    const file = item.target.files[0];
+    this.isVideoRecording = false;
+    this.videoFile = file;
+    this.previewBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+    this.ref.detectChanges();
+
+    setTimeout(() => {
+      this.preview = this.previewElement.nativeElement;
+
+      console.log(this.preview);
+      // this.preview.src = this.previewBlob;
+      //   console.log(this.videoBlobUrl);
+      //   console.log(this.previewBlob)
+      //   this.video.load();
+      //   this.ref.detectChanges();
+
+      //   this.video.controls = true;
+    }, 3000);
+  }
+
   stopRecorder() {
     if (this.isVideoRecording) {
       this.pauseTimer();
       this.recordService.stopRecording();
       this.clearVideoRecordedData();
       setTimeout(() => {
-        console.log(this.videoFile);
-        console.log(this.videoBlob);
-        console.log(this.videoBlobUrl);
-        // this.video.src = this.videoFile;
         this.previewBlob = this.videoBlobUrl;
         this.video.load();
         this.ref.detectChanges();
 
-        //   // this.isVideoRecording = false;
+        this.isVideoRecording = false;
         this.video.controls = true;
       }, 3000);
     }
   }
 
-  previewVideoRecording() {
-    // TODO
+  submitRecording(questionId, index) {
+    let videoToSubmit = null;
+
+    if (!this.videoFile) {
+      videoToSubmit = this.recordService.blobToBase64(this.previewBlob);
+    } else {
+      videoToSubmit = this.videoFile;
+    }
+
+    console.log(videoToSubmit);
+
+    this.submitRecord.emit({
+      answerFile: videoToSubmit,
+      questionId,
+      index,
+      answerBlob: this.previewBlob
+    });
+
+    this.isVideoRecording = false;
+    this.previewBlob = null;
+    this.videoBlob = null;
   }
 
   clearVideoRecordedData() {

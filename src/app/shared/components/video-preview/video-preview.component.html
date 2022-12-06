@@ -1,0 +1,12 @@
+<div class="w-100 mb-3" style="height: 20px;">
+  <span class="float-end">
+    <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px; width: 15px; cursor: pointer;"
+      (click)="cancel()">
+  </span>
+
+  <h5 class="title-main" *ngIf="data?.title">{{data?.title}}</h5>
+</div>
+
+<div class="row p-2 record-container">
+  <video #preview class="w-100" height="340" controls autoplay="autoplay" [src]="data?.url"></video>
+</div>
