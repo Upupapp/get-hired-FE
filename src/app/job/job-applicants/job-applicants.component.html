@@ -4,7 +4,7 @@
       <img src="/assets/images/placeholder/icons/home.png" style="height: 14px; margin-top: -3px;" class="me-2">
       <span (click)="redirectTo('recruiter/jobs/list')">Jobs</span> /
       <span>{{job?.jobId}}</span> /
-      Applicants
+      Applicants  <span *ngIf="applicantProfileId"> / {{applicantProfileId}} </span>
     </p>
   </div>
 
@@ -51,13 +51,13 @@
     </custom-profile-loader>
   </div>
 
-  <div *ngIf="showProfile" class="px-4 mt-2">
-    <app-applicant-avatar [user]="profile"></app-applicant-avatar>
+  <div *ngIf="showProfile && details$ | async as details" class="px-4 mt-2">
+    <app-applicant-avatar [user]="details.profile"></app-applicant-avatar>
 
     <app-application-preview
-    [applicantAnswers]="answers"
-    [docs]="profileDocs"
-    [profile]="profile"
-    [interviews]="interviewQuestions"></app-application-preview>
+    [applicantAnswers]="details.answers"
+    [docs]="details.profileDocs"
+    [profile]="details.profile"
+    [interviews]="details.interviewQuestions"></app-application-preview>
   </div>
 </section>

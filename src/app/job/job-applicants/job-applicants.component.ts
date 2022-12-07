@@ -32,13 +32,23 @@ export interface TableHeader {
 export class JobApplicantsComponent implements OnInit {
   jobId: string;
   loading: boolean = true;
-  interviewQuestions: InterviewModel.InterviewQuestion[];
+  // interviewQuestions: InterviewModel.InterviewQuestion[];
   showProfile: boolean = false;
-  profile:ApplicantModel.Applicant;
-  profileDocs = [];
-  answers = [];
+  applicantProfileId: string;
+
+  // profile:ApplicantModel.Applicant;
+  // profileDocs = [];
+  // answers = [];
 
   // profile$ = this.applicantFacade.applicantDetails$;
+  details$ = this.jobFacade.details$
+    .pipe(
+      tap(appl => {
+        if(appl) {
+          this.applicantProfileId = appl.profile.applicantProfileId
+        }
+      })
+    );
 
   job$ = this.jobFacade.getJobById$;
   applicants$ = this.jobFacade.applicants$
@@ -124,7 +134,11 @@ export class JobApplicantsComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back()
+    if(this.showProfile) {
+      this.showProfile = false;
+    } else {
+      this.location.back()
+    }
   }
 
   inviteApplicant() {
@@ -178,24 +192,10 @@ export class JobApplicantsComponent implements OnInit {
       }
 
       if(result && result.profile) {
-        // this.applicantFacade.getApplicantById(result.data.data.userId);
-        this.getApplicant(result.data.data.userId);
+        this.jobFacade.getApplicantsDetails(this.jobId, result.data.data.userId);
+        this.showProfile = true;
       }
     });
-  }
-
-  getApplicant(userId: string) {
-    this.jobService.getJobApplicantDetails(this.jobId, userId)
-      .pipe().subscribe(res => {
-        console.log(res);
-        if(res.data) {
-          this.profile = res.data.profile;
-          this.interviewQuestions = res.data.interviewQuestions;
-          this.profileDocs = res.data.profileDocs;
-          this.showProfile = true;
-          this.answers = res.data.answers;
-        }
-      })
   }
 
   formatSalary(salaryMin, salaryMax, rate) {
