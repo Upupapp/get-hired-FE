@@ -19,23 +19,23 @@
 
 				<div class="chart-container">
 					<canvas
-					baseChart 
-					[datasets]="activityGraphChartData" 
-					[labels]="activityGraphChartLabels" 
+					baseChart
+          [data]="lineChartData"
+					[labels]="activityGraphChartLabels"
 					[options]="activityGraphChartOptions"
-					[legend]="activityGraphChartLegend" 
-					[type]="activityGraphChartType"> 
+					[legend]="activityGraphChartLegend"
+					[type]="activityGraphChartType">
 					</canvas>
 				</div>
 			</div>
 
 			<div class="chart-container-2 col-12 col-lg-4 px-4 py-lg-3 mt-lg-5">
 				<canvas baseChart
-					[datasets]="doughnutChartData" 
+					[data]="doughnutChartData"
 					[legend]="doughnutChartLegend"
-					[labels]="doughnutChartLabels" 
+					[labels]="doughnutChartLabels"
 					[options]="doughnutChartOptions"
-					[type]="doughnutChartType"> 
+					[type]="doughnutChartType">
 				</canvas>
 			</div>
 		</div>

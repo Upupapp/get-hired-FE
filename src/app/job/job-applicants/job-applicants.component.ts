@@ -5,8 +5,13 @@ import { Location, formatDate, DatePipe } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
-import { map } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
+import { ApplicantActionModalComponent } from './applicant-action-modal/applicant-action-modal.component';
+import * as InterviewModel from '@main/interview/interview.model';
+import * as ApplicantModel from '@main/applicant/applicant.model';
+import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
+import { JobService } from '@app-job/job.service';
 
 export interface TableHeader {
   col_name: string;
@@ -27,6 +32,23 @@ export interface TableHeader {
 export class JobApplicantsComponent implements OnInit {
   jobId: string;
   loading: boolean = true;
+  // interviewQuestions: InterviewModel.InterviewQuestion[];
+  showProfile: boolean = false;
+  applicantProfileId: string;
+
+  // profile:ApplicantModel.Applicant;
+  // profileDocs = [];
+  // answers = [];
+
+  // profile$ = this.applicantFacade.applicantDetails$;
+  details$ = this.jobFacade.details$
+    .pipe(
+      tap(appl => {
+        if(appl) {
+          this.applicantProfileId = appl.profile.applicantProfileId
+        }
+      })
+    );
 
   job$ = this.jobFacade.getJobById$;
   applicants$ = this.jobFacade.applicants$
@@ -64,7 +86,7 @@ export class JobApplicantsComponent implements OnInit {
       params: 'videoCVUrl'
     },
     { col_name: 'jobApplicationStatusName', title: 'Status' },
-    // { col_name: 'action', title: 'Action', type: 'menu' },
+    { col_name: 'action', title: 'Action', type: 'menu' },
   ];
 
   selectedColumns: string[] =  [
@@ -75,7 +97,7 @@ export class JobApplicantsComponent implements OnInit {
     'salary',
     'cv_link',
     'jobApplicationStatusName',
-    // 'action'
+    'action'
   ];
 
   searchSource: any = (el) => {
@@ -93,7 +115,9 @@ export class JobApplicantsComponent implements OnInit {
     private location: Location,
     private loadingDialog: MatDialog,
     private datePipe: DatePipe,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private applicantFacade: ApplicantFacade,
+    private jobService: JobService
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id
@@ -110,7 +134,11 @@ export class JobApplicantsComponent implements OnInit {
   }
 
   goBack() {
-    this.location.back()
+    if(this.showProfile) {
+      this.showProfile = false;
+    } else {
+      this.location.back()
+    }
   }
 
   inviteApplicant() {
@@ -143,23 +171,31 @@ export class JobApplicantsComponent implements OnInit {
   }
 
   viewMenu(event): void {
-    // let openDialog = this.dialog.open(
-    //   TableControlModalComponent,
-    //   {
-    //     width: '34vw',
-    //     data: {
-    //       job_id: this.job_id,
-    //       ...event
-    //     },
-    //   }
-    // );
+    console.log(event);
+    let openDialog = this.dialog.open(
+      ApplicantActionModalComponent,
+      {
+        width: '34vw',
+        data: {
+          job_id: this.jobId,
+          ...event
+        },
+      }
+    );
 
-    // openDialog
-    // .afterClosed()
-    // .pipe(takeUntil(this.unsubscribe$))
-    // .subscribe(result => {
+    openDialog
+    .afterClosed()
+    .pipe()
+    .subscribe(result => {
+      if(result && result.view) {
+        this.viewCv(result.data.data.videoCVUrl)
+      }
 
-    // });
+      if(result && result.profile) {
+        this.jobFacade.getApplicantsDetails(this.jobId, result.data.data.userId);
+        this.showProfile = true;
+      }
+    });
   }
 
   formatSalary(salaryMin, salaryMax, rate) {

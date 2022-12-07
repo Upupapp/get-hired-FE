@@ -51,6 +51,7 @@ this.actions$.pipe(
       .pipe(
         // return payload
         map((result: any) => {
+          console.log(result, "result");
           return {
             type: CompanyActionTypes.SAVE_COMPANY_USER_SUCCESS,
             payload: result

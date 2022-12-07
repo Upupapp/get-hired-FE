@@ -34,11 +34,10 @@
         <div class="d-flex justify-content-end align-items-end mb-3" title="Share now!">
           
 
-          <div class="bg-applied d-flex" 
-          *ngIf="userRole == '3' && selectedJobPost.isApplied">
+          <div class="bg-applied d-flex">
             <img src="/assets/images/placeholder/icons/applied.png" 
             class="img-fluid me-2 mt-1" style="height: 30px;">
-            <span>
+            <span *ngIf="userRole == '3' && selectedJobPost.isApplied">
               You already applied<br> to this Job</span>
           </div>
 

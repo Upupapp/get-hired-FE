@@ -28,7 +28,7 @@ export class ApplicantService {
   }
 
   getDashboardDetails() {
-    return of('antok na');
+    return this.baseService.get<any>(`${this.applicantUrl}/dashboard`);
   }
 
   getSetupList() {

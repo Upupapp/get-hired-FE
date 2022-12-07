@@ -63,6 +63,10 @@ enum AllFeatureActionTypes {
   GetJobApplicantsSuccess = '[job] -Get Job Applicants Success',
   GetJobApplicantsFail = '[job] - Get Job Applicants Fail',
 
+  GetJobApplicantDetails = '[job] - Get Job Applicant Details',
+  GetJobApplicantDetailsSuccess = '[job] -Get Job Applicant Details Success',
+  GetJobApplicantDetailsFail = '[job] - Get Job Applicant Details Fail'
+
 };
 
 export const resetJobForm = createAction(
@@ -101,7 +105,7 @@ export const saveJobFail = createAction(
 
 export const changeJobStatus = createAction(
   AllFeatureActionTypes.ChangeJobStatus,
-  props<{ status: number, jobId: string  }>()
+  props<{ status: number, jobId: string }>()
 );
 
 export const changeJobStatusSuccess = createAction(
@@ -271,5 +275,20 @@ export const getJobApplicantsSuccess = createAction(
 
 export const getJobApplicantsFail = createAction(
   AllFeatureActionTypes.GetJobApplicantsFail,
+  props<{ payload: any }>()
+);
+
+export const getJobApplicantDetails = createAction(
+  AllFeatureActionTypes.GetJobApplicantDetails,
+  props<{ jobId: string, userId: string }>()
+);
+
+export const getJobApplicantDetailsSuccess = createAction(
+  AllFeatureActionTypes.GetJobApplicantDetailsSuccess,
+  props<{ applicant: Model.JobApplicantDetails }>()
+);
+
+export const getJobApplicantDetailsFail = createAction(
+  AllFeatureActionTypes.GetJobApplicantDetailsFail,
   props<{ payload: any }>()
 );
