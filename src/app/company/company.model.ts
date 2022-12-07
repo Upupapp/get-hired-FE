@@ -23,6 +23,7 @@ export interface Dashboard {
   company: any;
   charts: any;
   graph: any;
+  jobViews: any,
   stat: {
     contacts: string;
     applicants: string;
