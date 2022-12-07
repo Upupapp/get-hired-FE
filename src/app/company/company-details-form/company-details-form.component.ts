@@ -74,7 +74,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
     this.companyDetailsForm = this.formBuilder.group({
       companyEmail: ['', [Validators.required, Validators.email]],
-      companyContactNumber: [''],
+      companyContactNumber: ['', Validators.required],
       companyAddress: [''],
       companyCity: ['', [Validators.required]],
       companyCountry: ['', [Validators.required]],
