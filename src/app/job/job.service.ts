@@ -29,6 +29,10 @@ export class JobService {
     }
   }
 
+  getJobApplicantDetails(jobId: string, userId: string) {
+    return this.baseService.get<any>(`${this.jobUrl}/applicantdetails?jobId=${jobId}&id=${userId}`);
+  }
+
   getJobApplicantsByJobId(jobId: string) {
     return this.baseService.get<Model.JobApplicants[]>(`${this.jobUrl}/applicants?id=${jobId}`);
   }

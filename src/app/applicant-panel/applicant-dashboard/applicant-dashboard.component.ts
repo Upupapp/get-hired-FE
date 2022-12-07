@@ -4,6 +4,7 @@ import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as Model from '@main/applicant/applicant.model';
+import { ApplicantService } from '@app-applicant/applicant.service';
 
 @Component({
   selector: 'app-applicant-dashboard',
@@ -14,6 +15,8 @@ import * as Model from '@main/applicant/applicant.model';
 export class ApplicantDashboardComponent implements OnInit {
   userId: any;
   applicant: Model.Applicant;
+  cardDetails: any;
+  charts: any;
 
   public isVisible: boolean = false;
 
@@ -26,10 +29,13 @@ export class ApplicantDashboardComponent implements OnInit {
     })
   );
 
+
+
   constructor(
     private applicantFacade: ApplicantFacade,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private applicantService: ApplicantService
     ) {}
 
   ngOnInit(): void {
@@ -39,6 +45,19 @@ export class ApplicantDashboardComponent implements OnInit {
     if (!this.applicant) {
       this.isVisible = true;
     }
+
+    this.applicantService.getDashboardDetails()
+      .pipe().subscribe(dash => {
+        const { data } = dash;
+        console.log(data);
+        this.charts = data.charts;
+
+        this.cardDetails = {
+          videoInterviews: data.user.videoInterviews,
+          activeApplications: data.user.activeApplications
+        }
+      })
+
   }
 
   closeSnackbar(): void {
