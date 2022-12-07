@@ -101,3 +101,8 @@ export const getjobApplicants = createSelector(
   getJobInitState,
   state => state.applicants
 );
+
+export const getApplicantDetails = createSelector(
+  getJobInitState,
+  state => state.applicant
+)

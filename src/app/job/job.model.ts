@@ -122,3 +122,10 @@ export interface JobApplicants {
   jobTypeId: number;
   jobTypeName: string;
 }
+
+export interface JobApplicantDetails {
+  profile: any,
+  interviewQuestions: any[],
+  profileDocs: any[],
+  answers: any[]
+}

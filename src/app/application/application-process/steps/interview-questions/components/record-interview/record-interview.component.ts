@@ -33,7 +33,7 @@ export class RecordInterviewComponent implements OnInit {
   @Output() next = new EventEmitter();
   @Output() submitRecord = new EventEmitter();
 
-
+  photoUrl: string;
   video: any;
   preview: any;
   displayControls = true;
