@@ -28,6 +28,7 @@ export class ApplicationProcessComponent implements OnInit {
   userId: string;
   applicationForm: FormGroup;
   user: ApplicantModel.Applicant;
+  isSubmitting: boolean;
 
   stepperItems: any[] = [
     {
@@ -138,6 +139,7 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   submitApplication() {
+    this.isSubmitting = true;
     window.scrollTo({
       top: 0,
       left: 0,
@@ -157,6 +159,8 @@ export class ApplicationProcessComponent implements OnInit {
 
   afterSubmit(event) {
     if (event == 'submitted') {
+      this.isSubmitting = false;
+
       this.snackBar.open(`You have been successfully Applied to this job`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
@@ -215,6 +219,13 @@ export class ApplicationProcessComponent implements OnInit {
     if(this.success$) {
       this.success$.unsubscribe();
     }
+
+    if(this.pageLoad$) {
+      this.pageLoad$.unsubscribe();
+    }
+
+    this.applicationFacade.resetApplication();
+
   }
 
 

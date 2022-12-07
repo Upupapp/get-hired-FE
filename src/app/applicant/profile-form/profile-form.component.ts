@@ -214,25 +214,74 @@ export class ProfileFormComponent implements OnInit {
         docs.push(fileGroup);
       });
 
+
       const works = this.profileForm.controls.profileArraysForm.get('workExperience') as FormArray;
-      data.workExperience.map((item: Model.WorkExperience) => {
-        const fileGroup = this.fb.group({
-          createdAt: new FormControl(item.createdAt),
-          updatedAt: new FormControl(item.updatedAt),
-          jobTitle: new FormControl(item.jobTitle),
-          companyName: new FormControl(item.companyName),
-          location: new FormControl(item.location),
-          jobTypeId: new FormControl(item.jobTypeId),
-          jobTypeName: new FormControl(item.jobTypeName),
-          startMonth: new FormControl(item.startMonth),
-          startYear: new FormControl(item.startYear),
-          endMonth: new FormControl(item.endMonth),
-          endYear: new FormControl(item.endYear),
-          isCurrentJob: new FormControl(item.isCurrentJob),
-          details: new FormControl(item.details),
-        })
-        works.push(fileGroup);
-      });
+      if (data.workExperience.length > 0) {
+        data.workExperience.map((item: Model.WorkExperience) => {
+          const fileGroup = this.fb.group({
+            createdAt: new FormControl(item.createdAt),
+            updatedAt: new FormControl(item.updatedAt),
+            jobTitle: new FormControl(item.jobTitle),
+            companyName: new FormControl(item.companyName),
+            location: new FormControl(item.location),
+            jobTypeId: new FormControl(item.jobTypeId),
+            jobTypeName: new FormControl(item.jobTypeName),
+            startMonth: new FormControl(item.startMonth),
+            startYear: new FormControl(item.startYear),
+            endMonth: new FormControl(item.endMonth),
+            endYear: new FormControl(item.endYear),
+            isCurrentJob: new FormControl(item.isCurrentJob),
+            details: new FormControl(item.details),
+          })
+          works.push(fileGroup);
+        });
+      }
+
+      const profSkill = this.profileForm.controls.profileArraysForm.get('professionalSkills') as FormArray;
+      if (data.skills.length > 0) {
+        data.skill.map((item: string) => {
+          profSkill.push(new FormControl(item));
+        });
+      }
+
+      const educ = this.profileForm.controls.profileArraysForm.get('educationalBackground') as FormArray;
+      if (data.educationalBackground.length > 0) {
+        data.educationalBackground.map((item: Model.EducationalBackground) => {
+          const fileGroup = this.fb.group({
+            createdAt: new FormControl(item.createdAt),
+            updatedAt: new FormControl(item.updatedAt),
+            educLevelId: new FormControl(item.educLevelId),
+            educLevelName: new FormControl(item.educLevelName),
+            fieldOfStudy: new FormControl(item.fieldOfStudy),
+            school: new FormControl(item.school),
+            schoolAddress: new FormControl(item.schoolAddress),
+            startMonth: new FormControl(item.startMonth),
+            startYear: new FormControl(item.startYear),
+            endMonth: new FormControl(item.endMonth),
+            endYear: new FormControl(item.endYear)
+          })
+          educ.push(fileGroup);
+        });
+      }
+
+      const cert = this.profileForm.controls.profileArraysForm.get('certifications') as FormArray;
+      if (data.certifications.length > 0) {
+        data.certifications.map((item: Model.Certifications) => {
+          const fileGroup = this.fb.group({
+            createdAt: new FormControl(item.createdAt),
+            updatedAt: new FormControl(item.updatedAt),
+            certTitle: new FormControl(item.certTitle),
+            noExpiry: new FormControl(item.noExpiry),
+            startMonth: new FormControl(item.startMonth),
+            startYear: new FormControl(item.startYear),
+            endMonth: new FormControl(item.endMonth),
+            endYear: new FormControl(item.endYear),
+            details: new FormControl(item.details),
+
+          })
+          cert.push(fileGroup);
+        });
+      }
     }
 
   }

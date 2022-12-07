@@ -8,11 +8,15 @@ enum AllFeatureActionTypes {
   SubmitApplication = '[application] - Submit Application',
   SubmitApplicationSuccess = '[application] - Submit Application Submit',
   SubmitApplicationFail = '[application] - Submit Application Fail',
-
+  ResetApplication = '[application] - Reset Application',
   // GetApplicationList = '[application] - Get Application List',
   // GetApplicationListSuccess = '[application] - Get Application List Success',
   // GetApplicationListFail = '[application] - Get Application List Fail',
 };
+
+export const resetApplication = createAction(
+  AllFeatureActionTypes.ResetApplication,
+);
 
 export const submitApplication = createAction(
   AllFeatureActionTypes.SubmitApplication,

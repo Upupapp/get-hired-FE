@@ -42,7 +42,8 @@
     *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
       <!-- <button class="btn btn-save-draft me-3">Save as Draft</button> -->
 
-      <button class="btn btn-save me-2" type="button" (click)="submitApplication()">Submit for Evaluation</button>
+      <button class="btn btn-save me-2" type="button" (click)="submitApplication()" [disabled]="isSubmitting">
+        Submit for Evaluation</button>
     </div>
   </form>
 

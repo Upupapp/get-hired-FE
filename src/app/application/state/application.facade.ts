@@ -21,4 +21,8 @@ export class ApplicationFacade {
     this.store.dispatch(JobAction.submitApplication({ application }));
   }
 
+  resetApplication() {
+    this.store.dispatch(JobAction.resetApplication());
+  }
+
 }

@@ -195,6 +195,7 @@ export class RecordInterviewComponent implements OnInit {
     this.isVideoRecording = false;
     this.previewBlob = null;
     this.videoBlob = null;
+    this.stopRecorderTimer();
   }
 
   clearVideoRecordedData() {
@@ -244,6 +245,14 @@ export class RecordInterviewComponent implements OnInit {
         //   audioOut: this.audioSrc,
         //     videoSrc: this.videoSrc
       });
+  }
+
+  stopRecorderTimer() {
+    this.pauseTimer();
+    this.timer_value = 0;
+    this.display = '00:00';
+    this.time = 0;
+    clearInterval(this.timer_value);
   }
 }
 

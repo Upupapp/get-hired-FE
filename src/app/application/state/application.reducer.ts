@@ -25,6 +25,14 @@ const initialState: ApplicationState  = {
 
 export const ApplicationsReducer = createReducer<ApplicationState>(
   initialState,
+  on(ApplicationActions.resetApplication, (state, action): ApplicationState => {
+    return {
+      ...state,
+      loading: false,
+      error: null,
+      selected: null
+    };
+  }),
   on(ApplicationActions.submitApplication, (state, action): ApplicationState => {
     return {
       ...state,
