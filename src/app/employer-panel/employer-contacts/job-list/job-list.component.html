@@ -1,0 +1,23 @@
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+    <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+      <div class="card card-body py-3">
+        <div class="w-100">
+          <span class="main-title mt-3">Job Lists</span>
+        </div>
+      </div>
+      <br>
+      <div class="card card-body" *ngIf="listView && !loading">
+        <app-reusable-table [loading]="loading"
+          [componentTitle]="'Job Lists'" [displayedColumns]="displayedColumns"
+          [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
+          [maxRows]="10" [listDataSource]="jobList">
+        </app-reusable-table>
+      </div>
+  
+  
+      <!-- LOADING ANIMATION SCREEN -->
+      <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
+      </custom-profile-loader>
+    </div>
+  </div>
+  
