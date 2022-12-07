@@ -21,7 +21,6 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(tap(() => { },
       (err: any) => {
         if (err instanceof HttpErrorResponse) {
-          console.log(err)
           localStorage.setItem('returnURL', this.router.url);
 
           if ((err.status === 403)) {

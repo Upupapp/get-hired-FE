@@ -66,7 +66,6 @@ export class ApplicationPreviewComponent implements OnInit {
       })
     }
 
-    console.log(this.govFiles);
   }
 
   viewMore() {
@@ -74,7 +73,6 @@ export class ApplicationPreviewComponent implements OnInit {
   }
 
   previewVideo(question, url) {
-    console.log(question);
 
     let dialog = this.dialog.open(VideoPreviewComponent, {
       width: '50vw',

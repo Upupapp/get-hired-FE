@@ -83,7 +83,6 @@ export class ProfileFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.user);
     if (this.user) {
       this.applicantFacade.getApplicantById(this.user._id);
 
@@ -96,7 +95,6 @@ export class ProfileFormComponent implements OnInit {
   }
 
   initializedForm(data?: Model.Applicant) {
-    console.log(data);
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
         photoUrl: [data ? data.photoUrl : null],
@@ -138,8 +136,6 @@ export class ProfileFormComponent implements OnInit {
 
     this.subscriptions$.add(
       this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
-        console.log(value);
-
       }));
   }
 
@@ -159,9 +155,6 @@ export class ProfileFormComponent implements OnInit {
       && applicant.salaryMinimum != 0
       && applicant.salaryMaximum != 0;
 
-    console.log(applicant);
-    console.log(isProfileReady);
-
     this.applicantFacade.saveApplicant({
       ...applicant,
       isProfileReady: isProfileReady
@@ -170,7 +163,6 @@ export class ProfileFormComponent implements OnInit {
 
   mappedApplicant(data) {
     if (data) {
-      console.log(data);
       this.applicant = data;
       this.applicantId = data.applicantProfileId;
 
@@ -352,7 +344,6 @@ export class ProfileFormComponent implements OnInit {
       });
       this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'updated') {
-      console.log('HALA')
       this.snackBar.open(`Profile successfully updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],

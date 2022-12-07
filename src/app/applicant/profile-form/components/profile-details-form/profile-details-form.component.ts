@@ -44,7 +44,6 @@ export class ProfileDetailsFormComponent implements OnInit {
     this.applicantFacade.getSetup();
 
     this.profileDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-    console.log(this.profileDetailsForm);
     this.photo = this.profileDetailsForm.controls['photoUrl'] as FormControl;
   }
 

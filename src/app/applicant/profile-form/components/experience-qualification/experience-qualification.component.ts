@@ -57,8 +57,6 @@ export class ExperienceQualificationComponent implements OnInit {
   addItem(control, controlArray: FormArray) {
     let value = this.arrayForm.get(control).value;
 
-    console.log(controlArray);
-
     if (value && value != '') {
       if (controlArray.controls.length != 5) {
         controlArray.push(new FormControl(value));

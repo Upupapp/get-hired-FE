@@ -44,8 +44,6 @@ export class AppComponent implements OnInit {
   checkScreenSize() {
     const height = window.screen.availHeight;
     const width = window.screen.availWidth;
-    console.log(width);
-    console.log(height);
 
     if(width < 1025) {
       this.isSmallScreen = true;

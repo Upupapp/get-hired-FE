@@ -171,7 +171,6 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   changeStep(step: number): void {
-    console.log(4);
     this.stepper = step;
 
     if (step === 3) {
@@ -192,8 +191,6 @@ export class ApplicationProcessComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
-        console.log(result)
-
         if (result?.skip) {
           this.changeStep(4);
         }

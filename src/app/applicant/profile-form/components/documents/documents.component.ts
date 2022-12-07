@@ -66,7 +66,6 @@ export class DocumentsComponent implements OnInit {
   onUpload(docs: any) {
     this.docArray.reset();
 
-    console.log(docs);
     const array = docs.map(item => {
       return this.fb.group({
         file: new FormControl(item.file),
@@ -135,7 +134,6 @@ export class DocumentsComponent implements OnInit {
     const dlUrl$ = this.recordService.getRecordedUrl()
       .pipe(
         tap(url => {
-          console.log(url);
           if (url) {
             const pipe = new DatePipe('en-US');
             const d = pipe.transform(this.myDate, 'yyyy-MM-dd');

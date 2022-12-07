@@ -152,12 +152,11 @@ export class CandidateListComponent implements OnInit {
         width: '34vw',
         data: event?.data,
       });
-  
+
       openDialog
         .afterClosed()
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe(result => {
-          console.log(result);
           if(result && result.profile) {
             this.getApplicant(result.data.candidate_id);
           }
@@ -178,5 +177,5 @@ export class CandidateListComponent implements OnInit {
         }
       })
   }
-  
+
 }
