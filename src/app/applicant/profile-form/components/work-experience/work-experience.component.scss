@@ -29,38 +29,7 @@
 	padding: 30px 30px !important;
 }
 
-.form-control{
-	background: #FFFFFF;
-	min-height: 50px;
-	border: 1px solid #AFBCC6 !important;
-}
 
-.form-select-multiple{
-	margin-bottom: 20px;
-	min-height: 170px !important;
-
-	option{
-		border-radius: 4px;
-		padding: 6px 10px;
-		margin-bottom: 5px;
-
-	}
-
-
-	option select {
-	    margin: 40px;
-	    background: red !important;
-	    color: #fff;
-	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-	}
-}
-
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-}
 
 
 .img-banner{
@@ -265,9 +234,141 @@ label{
 	border-radius: 7px;
 	padding: 7px 20px !important;
 
+	&:hover {
+	  background: #FF7062;
+	  color: #ffffff;
+	  border: 1px solid #FF7062;
+	}
+
   &:disabled {
     background: #a9a9a9;
     color: #ffffff;
     cursor: not-allowed;
   }
+}
+
+
+/*.form-control{
+	background: #FFFFFF;
+	min-height: 50px;
+	border: 1px solid #AFBCC6 !important;
+}
+
+.form-select-multiple{
+	margin-bottom: 20px;
+	min-height: 170px !important;
+
+	option{
+		border-radius: 4px;
+		padding: 6px 10px;
+		margin-bottom: 5px;
+
+	}
+
+
+	option select {
+	    margin: 40px;
+	    background: red !important;
+	    color: #fff;
+	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+	}
+}
+
+.form-select{
+	height: 50px;
+	//background: #FFFFFF !important;
+	border: 1px solid #AFBCC6 !important;
+	border-radius: 6px !important;
+}*/
+
+
+input,
+select{
+	background: rgba(#e7e7e7, 1) !important;
+	border: none;
+	//border: 1px solid #AFBCC6 !important;
+	border-radius: 6px;
+	padding-left: 20px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	letter-spacing: 0px !important;
+
+	&:focus,
+	&:active{
+		background: rgba(#D9E7FF, 0.3);
+		border-color: 1.5px solid #FF7062 !important;
+		outline: 1px solid #D9E7FF !important;
+	}
+
+	&:hover{
+		background: rgba(#E2E1E4, 0.3) !important;
+		border-color: 1.5px solid #E2E1E4 !important;
+		outline: 1px solid #D9E7FF !important;
+	}
+}
+
+select{
+	option{
+		background: white !important;
+	}
+	option:first-child{
+		background: #e9e9e9 !important;
+		color: #c9c9c9 !important;
+	}
+}
+
+input.ng-valid.ng-dirty,
+input.ng-valid.ng-pristine{
+	background: #ECF7EC !important;
+}
+
+select.ng-valid.ng-pristine,
+select.ng-valid.ng-dirty{
+	background: #ECF7EC !important;
+	border: solid 1px #e7e7e7 !important
+}
+
+textarea.ng-invalid.ng-pristine{
+	background: rgba(#E2E1E4, 0.7) !important;
+}
+
+textarea.ng-valid.ng-dirty{
+	background: #fff !important;
+}
+
+input.ng-untouched{
+	background: rgba(#E2E1E4, 0.7) !important;
+}
+
+select.ng-untouched.ng-invalid{
+	color: #a9a9a9;
+	background: rgba(#E2E1E4, 0.7) !important;
+
+	option{
+		background: white !important;
+		color: gray !important;
+	}
+	option:first-child{
+		background: #e9e9e9 !important;
+		color: #c9c9c9 !important;
+	}
+}
+
+input.ng-invalid.ng-dirty.ng-touched,
+input.ng-invalid.ng-touched{
+  color:#de87a3 !important;
+  background: rgba(#FDECF2, 1) !important;
+  border: solid 1px #FF7062 !important;
+}
+
+select.ng-invalid.ng-dirty.ng-touched,
+select.ng-invalid.ng-touched {
+  color:#de87a3 !important;
+  background: rgba(#FDECF2, 1) !important;
+  border: solid 1px #FF7062 !important;
+}
+
+.error-message{
+	border-radius: 15px !important;
+	margin-bottom: 30px;
 }
