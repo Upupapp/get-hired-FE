@@ -18,7 +18,7 @@ export class FileViewerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.sanitize = this.sanitizer.bypassSecurityTrustUrl(this.data.fileUrl);
+    this.sanitize = this.sanitizer.bypassSecurityTrustResourceUrl(this.data.fileurl);
   }
 
 }
