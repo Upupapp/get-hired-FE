@@ -239,7 +239,7 @@ export class ProfileFormComponent implements OnInit {
 
       const profSkill = this.profileForm.controls.profileArraysForm.get('professionalSkills') as FormArray;
       if (data.skills.length > 0) {
-        data.skill.map((item: string) => {
+        data.skills.map((item: string) => {
           profSkill.push(new FormControl(item));
         });
       }
@@ -303,7 +303,7 @@ export class ProfileFormComponent implements OnInit {
       certifications: filteredCert,
       educationalBackground: filteredEduc,
       skillsTxt: data.skillsTxt,
-      professionalSkills: data.professionalSkills
+      skills: data.professionalSkills
     }
 
     return {

@@ -70,8 +70,6 @@ export class DetailsComponent implements OnInit {
     },
   ];
 
-  public skills: string[] = ["Marketing", "Angular", "JavaScript", "TypeScript", "HTML", "CSS", "Bootstrap", "MongoDB", "Node", "Web Development", "Frontend"];
-
   constructor(public router: Router) { }
 
   ngOnInit(): void {
