@@ -15,7 +15,7 @@ export class RecordLoadingComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.data.selfClose) {
-      setTimeout(() => this.dialogRef.close(), 3000);
+      setTimeout(() => this.dialogRef.close(), 5000);
     }
 
   }

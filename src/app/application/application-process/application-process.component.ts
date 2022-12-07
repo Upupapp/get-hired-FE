@@ -205,7 +205,7 @@ export class ApplicationProcessComponent implements OnInit {
         }
       });
     } else {
-      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      setTimeout(() => this.loadingDialog.closeAll(), 5000);
     }
   }
 

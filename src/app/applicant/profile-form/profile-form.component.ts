@@ -213,6 +213,26 @@ export class ProfileFormComponent implements OnInit {
         })
         docs.push(fileGroup);
       });
+
+      const works = this.profileForm.controls.profileArraysForm.get('workExperience') as FormArray;
+      data.workExperience.map((item: Model.WorkExperience) => {
+        const fileGroup = this.fb.group({
+          createdAt: new FormControl(item.createdAt),
+          updatedAt: new FormControl(item.updatedAt),
+          jobTitle: new FormControl(item.jobTitle),
+          companyName: new FormControl(item.companyName),
+          location: new FormControl(item.location),
+          jobTypeId: new FormControl(item.jobTypeId),
+          jobTypeName: new FormControl(item.jobTypeName),
+          startMonth: new FormControl(item.startMonth),
+          startYear: new FormControl(item.startYear),
+          endMonth: new FormControl(item.endMonth),
+          endYear: new FormControl(item.endYear),
+          isCurrentJob: new FormControl(item.isCurrentJob),
+          details: new FormControl(item.details),
+        })
+        works.push(fileGroup);
+      });
     }
 
   }
