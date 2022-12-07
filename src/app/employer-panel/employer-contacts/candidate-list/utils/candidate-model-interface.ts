@@ -49,7 +49,7 @@ const displayedColumns: TableHeader[] = [
   { col_name: 'job_id', title: 'Job ID' },
   { col_name: 'job_title', title: 'Job Title' },
   { col_name: 'created_at', title: 'Date Created', type: 'date' },
-  // { col_name: 'groups', title: 'Group Name' },
+  { col_name: 'action', title: 'Action' , type: 'menu' },
 ];
 
 const selectedColumns: string[] =  [
@@ -60,7 +60,7 @@ const selectedColumns: string[] =  [
   'job_id',
   'job_title',
   'created_at',
-  //'groups'
+  'action'
 ];
 
 

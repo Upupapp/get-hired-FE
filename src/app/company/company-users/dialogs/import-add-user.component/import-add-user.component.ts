@@ -25,9 +25,10 @@ export class ImportAddUserComponent implements OnInit {
   public importEmployee: boolean = false;
   public importing: boolean = false;
   public localData: any = localStorage.getItem('user');
-  public invitedCompanyUsers$: any;
+  private invitedCompanyUsers$: any;
   public loading: boolean = false;
-  private req: Subscription = new Subscription;
+  private req: Subscription;
+  private unsubscribe$ = new Subject<void>();
   public invitedUsersList: any[] = [];
   public document:any = null;
   public fileData: any;
@@ -43,7 +44,7 @@ export class ImportAddUserComponent implements OnInit {
     private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
     public snackBar: MatSnackBar,
-    private company: Store<StoreState>,
+    private companyState: Store<StoreState>,
   ) {
     console.log(data)
   }
@@ -53,20 +54,25 @@ export class ImportAddUserComponent implements OnInit {
     this.inviteForm = this.formBuilder.group({
       email: [this.data ? this.data?.invitation?.email : '', [Validators.email]],
     });
-    this.invitedCompanyUsers$ = this.company.pipe(select(state => state.company));
-    this.req =  this.invitedCompanyUsers$.subscribe((invite: CompanyState) => {
+    this.invitedCompanyUsers$ = this.companyState.pipe(select(state => state.company));
+    this.req = this.invitedCompanyUsers$.subscribe((invite: CompanyState) => {
       this.loading = invite.pending;
+      console.log(this.loading, "loading");
       if(invite.companyUserRes){
-        if(invite.companyUserRes.length > 0){
-          this.invitedUsersList = invite.companyUserRes;
+        if(invite.companyUserRes.emails.length > 0){
+          this.invitedUsersList = invite.companyUserRes.emails;
           this.isLoading = false;
           this.submitting = true;
           console.log(this.invitedUsersList, "list of invited users");
+          this.snackBar.open("Successfully added contact", "" , {
+            duration: 4000,
+            panelClass:'success-snackbar'
+          });
         }
-        this.company.dispatch({
-          type: CompanyActionTypes.SAVE_COMPANY_USER_SUCCESS,
-          payload: null
-        });
+        // this.company.dispatch({
+        //   type: CompanyActionTypes.SAVE_COMPANY_USER_SUCCESS,
+        //   payload: null
+        // });
       }
     })
   }
@@ -124,7 +130,7 @@ export class ImportAddUserComponent implements OnInit {
     this.saveCompanyUser(this.emailArray);
     this.uploadedFile = undefined;
     this.inviteForm.reset();
-    this.invitedUsersList = [];
+    // this.invitedUsersList = [];
   }
 
   saveCompanyUser(value){
@@ -135,7 +141,7 @@ export class ImportAddUserComponent implements OnInit {
       ]
     }
     console.log(data, "company add user data")
-    this.company.dispatch({
+    this.companyState.dispatch({
       type: CompanyActionTypes.SAVE_COMPANY_USER,
       payload: data
     }); 
@@ -217,4 +223,9 @@ export class ImportAddUserComponent implements OnInit {
       this.isLoading = true;
        this.saveCompanyUser(this.records);
     }
+
+    ngOnDestroy(): void {
+      if(this.req) this.req.unsubscribe();
+    }
+  
 }
