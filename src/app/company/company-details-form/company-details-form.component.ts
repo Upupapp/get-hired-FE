@@ -219,9 +219,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       });
     } else {
       // dont close automatically all modal
-      if (!this.updateSuccess) {
+      // if (!this.updateSuccess) {
         setTimeout(() => this.loadingDialog.closeAll(), 3000);
-      }
+      // }
     }
   }
 
