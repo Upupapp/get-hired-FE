@@ -44,15 +44,15 @@ export class WorkExperienceComponent implements OnInit {
     // });
     this.workForm = this.fb.group({
       jobTitle: new FormControl(this.data?.jobTitle, Validators.required),
-      location: new FormControl(this.data?.location),
+      location: new FormControl(this.data?.location, Validators.required),
       isCurrentJob: new FormControl(this.data?.isCurrentJob),
       companyName: new FormControl(this.data?.companyName, Validators.required),
-      jobTypeId: new FormControl(this.data?.jobTypeId),
-      startMonth: new FormControl(this.data?.startMonth),
-      startYear: new FormControl(this.data?.startYear),
-      endMonth: new FormControl(this.data?.endMonth),
-      endYear: new FormControl(this.data?.endYear),
-      details: new FormControl(this.data?.details)
+      jobTypeId: new FormControl(this.data?.jobTypeId, Validators.required),
+      startMonth: new FormControl(this.data?.startMonth, Validators.required),
+      startYear: new FormControl(this.data?.startYear, Validators.required),
+      endMonth: new FormControl(this.data?.endMonth, Validators.required),
+      endYear: new FormControl(this.data?.endYear, Validators.required),
+      details: new FormControl(this.data?.details, Validators.required)
     });
   }
 
