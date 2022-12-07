@@ -6,6 +6,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { map } from 'rxjs';
+import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
 
 export interface TableHeader {
   col_name: string;
@@ -14,6 +15,7 @@ export interface TableHeader {
   button_title?: string;
   button_class?: string;
   button_logo?: string;
+  params?: string;
 }
 
 @Component({
@@ -52,14 +54,15 @@ export class JobApplicantsComponent implements OnInit {
     { col_name: 'workSetupName', title: 'Work Setup' },
     { col_name: 'jobTypeName', title: 'Type' },
     { col_name: 'salary', title: 'Expected Salary', type: 'salary' },
-    // {
-    //   col_name: 'cv_link',
-    //   title: 'CV',
-    //   button_title: 'View CV',
-    //   button_class: 'cv-link',
-    //   button_logo: '/assets/images/placeholder/icons/cv.png',
-    //   type: 'action_button'
-    // },
+    {
+      col_name: 'cv_link',
+      title: 'CV',
+      button_title: 'View CV',
+      button_class: 'cv-link',
+      button_logo: '/assets/images/placeholder/icons/cv.png',
+      type: 'action_button',
+      params: 'videoCVUrl'
+    },
     { col_name: 'jobApplicationStatusName', title: 'Status' },
     // { col_name: 'action', title: 'Action', type: 'menu' },
   ];
@@ -70,7 +73,7 @@ export class JobApplicantsComponent implements OnInit {
     'dateApplied',
     'address',
     'salary',
-    // 'cv_link',
+    'cv_link',
     'jobApplicationStatusName',
     // 'action'
   ];
@@ -89,7 +92,8 @@ export class JobApplicantsComponent implements OnInit {
     public route: ActivatedRoute,
     private location: Location,
     private loadingDialog: MatDialog,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private dialog: MatDialog
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id
@@ -124,6 +128,17 @@ export class JobApplicantsComponent implements OnInit {
       });
     } else {
       setTimeout(() => this.loadingDialog.closeAll(), 2000);
+    }
+  }
+
+  viewCv(event) {
+    if(event) {
+      let dialog = this.dialog.open(VideoPreviewComponent, {
+        width: '50vw',
+        data: {
+          url: event
+        }
+      });
     }
   }
 

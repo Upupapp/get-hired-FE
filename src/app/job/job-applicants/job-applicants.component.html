@@ -44,7 +44,7 @@
         (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'"
         [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
         [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10"
-        [listDataSource]="applicants">
+        [listDataSource]="applicants" (actionOfButton)="viewCv($event)">
       </app-reusable-table>
     </div>
 
