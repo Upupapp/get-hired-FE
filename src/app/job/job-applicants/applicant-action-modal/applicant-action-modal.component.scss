@@ -43,6 +43,9 @@
 
 .img-avatar{
     height: 46px;
+    width: 46px;
+    object-fit: cover;
+    object-position: center;
     margin-right: 10px;
     border-radius: 50%;
 }
