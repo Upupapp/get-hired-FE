@@ -23,6 +23,13 @@
 	justify-content: center;
 }
 
+.btn-member {
+	font-size: .8rem;
+	&:hover {
+		background: #FE742B;
+		color: #fff;
+	}
+}
 .dropdown{
 	margin-right: 5px;
 	background: #FCFCFD !important;

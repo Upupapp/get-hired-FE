@@ -15,6 +15,7 @@ import { JobListComponent } from './job-list/job-list.component';
 import { TableControlModalComponent } from './candidate-list/dialogs/table-control-modal/table-control-modal.component'
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicationModule } from '@app-application/application.module';
+import { GroupListComponent } from './group-list/group-list.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'candidates', component: JobListComponent },
       { path: 'candidate-list/:id', component: CandidateListComponent },
       { path: 'groups', component: ContactGroupComponent },
+      { path: 'group-list/:id', component: GroupListComponent },
       { path: '', redirectTo: 'list', pathMatch: 'full' }
     ]
   }
@@ -43,7 +45,8 @@ const routes: Routes = [
     CheckboxComponent,
     CheckboxGroupComponent,
     JobListComponent,
-    TableControlModalComponent
+    TableControlModalComponent,
+    GroupListComponent
   ],
   imports: [
     CommonModule,

@@ -2,14 +2,7 @@
     <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
       <div class="card card-body py-3">
         <div class="w-100">
-          <span class="main-title mt-3">Contact Groups</span>
-  
-          <div class="float-end">
-            <button class="btn btn-add-service" (click)="addCandidate()">
-              Add Group
-              <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1">
-            </button>
-          </div>
+          <span class="main-title mt-3">Contact Group List</span>
         </div>
       </div>
       <br>
@@ -20,9 +13,7 @@
           [selectedColumnsMobile]="selectedColumns"
           [searchSource]="searchSource"
           [maxRows]="10"
-          [listDataSource]="groupList"
-          (deleteSelectedRow)="deleteRow($event)" 
-          (updateSelectedRowDialog)="editGroup($event)">
+          [listDataSource]="groupList">
         </app-reusable-table>
       </div>
   
