@@ -8,9 +8,14 @@
       <br>
       <div class="card card-body" *ngIf="listView && !loading">
         <app-reusable-table [loading]="loading"
-          [componentTitle]="'Job Lists'" [displayedColumns]="displayedColumns"
-          [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
-          [maxRows]="10" [listDataSource]="jobList">
+          [componentTitle]="'Job Lists'"
+          [displayedColumns]="displayedColumns"
+          [selectedColumns]="selectedColumns" 
+          [selectedColumnsMobile]="selectedColumns"
+           [searchSource]="searchSource"
+          [maxRows]="10"
+        (updateSelectedRowDialog)="viewMenu($event)" 
+          [listDataSource]="jobList">
         </app-reusable-table>
       </div>
   

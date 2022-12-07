@@ -96,5 +96,9 @@ export class JobListComponent implements OnInit {
     });
   }
 
+  viewMenu(event: any): void {
+    this.router.navigateByUrl(`/recruiter/contacts/candidate-list/${event?.data?.jobId}`);
+  }
+
 
 }
