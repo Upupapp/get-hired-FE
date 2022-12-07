@@ -26,6 +26,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImportAddCandidateComponent } from './dialogs/import-add-candidate/import-add-candidate.component';
 import { CandidateActionTypes } from '@main/shared/store/actions/candidate.action';
 import { StoreState } from '@main/shared/store/index';
+import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
+import { JobService } from '@app-job/job.service';
+import * as InterviewModel from '@main/interview/interview.model';
+import * as ApplicantModel from '@main/applicant/applicant.model';
 
 @Component({
   selector: 'app-candidate-list',
@@ -41,6 +45,14 @@ export class CandidateListComponent implements OnInit {
   public id;
   public localData: any = localStorage.getItem('user');
   public CandidateData$: any;
+  public jobId: string;
+
+  interviewQuestions: InterviewModel.InterviewQuestion[];
+  showProfile: boolean = false;
+  profile:ApplicantModel.Applicant;
+  profileDocs = [];
+  answers = [];
+
 
   public displayedColumns: TableHeader[] = displayedColumns;
   public candidateList: Candidate[] = [];
@@ -64,9 +76,11 @@ export class CandidateListComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private candidateState: Store<StoreState>
+    private candidateState: Store<StoreState>,
+    private jobService: JobService
     ) {
-
+      this.jobId = this.route.snapshot.params['id'];
+      console.log("jobId: ", this.jobId)
   }
 
   ngOnInit(): void {
@@ -78,7 +92,9 @@ export class CandidateListComponent implements OnInit {
       this.loading = candidate.pending;
 
       if(candidate.candidateList.length > 0){
-        this.candidateList = candidate.candidateList;
+        const result = candidate.candidateList.filter(item => this.jobId.includes(item.job_id));
+        console.log("result :", result);
+        this.candidateList = result;
       } else {
         this.candidateList = [];
       }
@@ -131,4 +147,38 @@ export class CandidateListComponent implements OnInit {
       payload: this.localData.companyId
     });
   }
+
+  viewMenu(event: any): void {
+    if(event?.data.status !== 'imported') {
+      let openDialog = this.dialog.open(TableControlModalComponent, {
+        width: '34vw',
+        data: event?.data,
+      });
+  
+      openDialog
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(result => {
+          console.log(result);
+          if(result && result.profile) {
+            this.getApplicant(result.data.candidate_id);
+          }
+        });
+    }
+  }
+
+  getApplicant(userId: string) {
+    this.jobService.getJobApplicantDetails(this.jobId, userId)
+      .pipe().subscribe(res => {
+        console.log(res);
+        if(res.data) {
+          this.profile = res.data.profile;
+          this.interviewQuestions = res.data.interviewQuestions;
+          this.profileDocs = res.data.profileDocs;
+          this.showProfile = true;
+          this.answers = res.data.answers;
+        }
+      })
+  }
+  
 }

@@ -317,6 +317,26 @@ select{
 	}
 }
 
+/*
+	input.ng-valid.ng-dirty{
+		background: #ECF7EC !important;
+	}
+
+	input.ng-valid.ng-pristine{
+		background: #fff !important;
+	}
+
+	select.ng-valid.ng-dirty{
+		background: #ECF7EC !important;
+		border: solid 1px #e7e7e7 !important
+	}
+
+	select.ng-valid.ng-pristine{
+		background: #fff !important;
+		border: solid 1px #e7e7e7 !important
+	}
+*/
+
 input.ng-valid.ng-dirty,
 input.ng-valid.ng-pristine{
 	background: #ECF7EC !important;

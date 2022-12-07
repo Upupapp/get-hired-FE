@@ -8,11 +8,11 @@
 		<img [src]="data?.data?.photoUrl" class="img-avatar">
 
 		<div class="mt-1 ms-2">
-			<strong>{{data?.data?.firstName + ' ' + data?.data?.lastName}}</strong>
+			<strong class="text-capitalize">{{data?.full_name}}</strong>
 
 			<br><!--  - Applied to Job ID {{data?.data?.job_id}} -->
-			<small>{{data?.data?.jobTitle}} - </small>
-			<small>{{data?.data?.workSetupName}}, {{data?.data?.jobTypeName}} ssss</small>
+			<small>{{data?.job_title}} - </small>
+			<small>{{data?.status}}</small>
 		</div>
 	</h6>
 
