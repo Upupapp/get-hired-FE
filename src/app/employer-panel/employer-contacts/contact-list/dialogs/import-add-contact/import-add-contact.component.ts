@@ -69,7 +69,7 @@ export class ImportAddContactComponent implements OnInit {
       email: [this.data ? this.data?.email : '', [Validators.email, Validators.required]],
       mobileNumber: [this.data ? this.data?.mobile_number : ''],
       address: [this.data ? this.data?.address : ''],
-      // jobId: ['', [Validators.required]], 
+      jobId: [''], 
       groupName: ['', !this.data ? [Validators.required] : null],
       groupId: ['']
     });
@@ -105,11 +105,11 @@ export class ImportAddContactComponent implements OnInit {
         this.close();
       }
 
-      // if(onboard.jobId){
-      //   this.jobList = onboard.jobId;
-      //   this.isLoading = false;
-      //   this.submitting = false;
-      // }
+      if(onboard.jobId){
+        this.jobList = onboard.jobId;
+        this.isLoading = false;
+        this.submitting = false;
+      }
 
       if(onboard.error){
         this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {

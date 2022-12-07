@@ -71,15 +71,15 @@
 							<input type="email" class="form-control" formControlName="address" name="email">
 						</div>
 
-						<!-- <div class="form-group mt-3">
-							<label class="mb-2">Job Id <i class="text-danger">*</i></label>
+						<div class="form-group mt-3">
+							<label class="mb-2">Job Id</label>
 							<select class="form-select" formControlName="jobId">
 								<option selected disabled hidden value="">Select Job Id </option>
 								<ng-container *ngFor="let item of jobList; let i = index">
 									<option [value]="item.jobId">{{item.jobId}}</option>
 								</ng-container>
 							</select>
-						</div> -->
+						</div>
 
 						<div *ngIf="!data" class="form-group mt-4">
 							<mat-form-field style="width: 100%">
