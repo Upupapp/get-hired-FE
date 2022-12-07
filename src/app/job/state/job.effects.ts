@@ -303,38 +303,56 @@ export class JobEffects {
     );
   });
 
+  getJobApplicants$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getJobApplicants),
+      mergeMap((action) => this.jobService.getJobApplicantsByJobId(action.jobId)
+        .pipe(
+          map((res: any) => {
+            const applicants: Model.JobApplicants[] = res.data;
+            return JobActions.getJobApplicantsSuccess({ applicants });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getJobApplicantsFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   getInitialDetailsOfJob(job: Model.Job): Model.InitialDetails {
     return {
-       jobTitle: job.jobTitle,
-       jobTypeId: job.jobTypeId,
-       jobLevelId: job.jobLevelId,
-       workSetupId: job.workSetupId,
-       jobAddress: job.jobAddress,
-       jobCity: job.jobCity,
-       jobCountry: job.jobCountry,
-       jobBanner: job.jobBanner,
-       bannerFile: job.bannerFile,
-       badges: job.badges,
-       jobDescription: job.jobDescription,
-       jobDuties: job.jobDuties,
-       requirements: job.requirements,
-       goodToHave: job.goodToHave,
-       educationalBackground: job.educationalBackground,
-       jobCategoryId: job.jobCategoryId
+      jobTitle: job.jobTitle,
+      jobTypeId: job.jobTypeId,
+      jobLevelId: job.jobLevelId,
+      workSetupId: job.workSetupId,
+      jobAddress: job.jobAddress,
+      jobCity: job.jobCity,
+      jobCountry: job.jobCountry,
+      jobBanner: job.jobBanner,
+      bannerFile: job.bannerFile,
+      badges: job.badges,
+      jobDescription: job.jobDescription,
+      jobDuties: job.jobDuties,
+      requirements: job.requirements,
+      goodToHave: job.goodToHave,
+      educationalBackground: job.educationalBackground,
+      jobCategoryId: job.jobCategoryId
     }
   }
 
-getJobInfo(job:Model.Job):Model.JobInfo {
-  return {
-    industryId: job.industryId,
-    jobRoleId: job.jobRoleId,
-    skills: job.skills,
-    tags: job.tags,
-    rate: job.rate,
-    salaryMinimum: job.salaryMinimum,
-    salaryMaximum: job.salaryMaximum,
-    // contractStart
-    // contractEnd: DetailedDate;
+  getJobInfo(job: Model.Job): Model.JobInfo {
+    return {
+      industryId: job.industryId,
+      jobRoleId: job.jobRoleId,
+      skills: job.skills,
+      tags: job.tags,
+      rate: job.rate,
+      salaryMinimum: job.salaryMinimum,
+      salaryMaximum: job.salaryMaximum,
+      // contractStart
+      // contractEnd: DetailedDate;
+    }
   }
- }
 }

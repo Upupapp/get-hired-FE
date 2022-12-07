@@ -20,6 +20,7 @@ export class ApplicantFacade {
   typeList$ = this.store.pipe(select(fromfeature.getTypeList));
   level$ = this.store.pipe(select(fromfeature.getLevelList));
   // category$ = this.store.pipe(select(fromfeature.getCategoryList));
+  dashboard$ = this.store.pipe(select(fromfeature.applicantDashboard));
 
   initial$ = this.store.pipe(select(fromfeature.getInitialDetails));
   // info$ = this.store.pipe(select(fromfeature.getApplicantInfo));
@@ -29,6 +30,11 @@ export class ApplicantFacade {
   error$: any;
 
   constructor(private store: Store<State>) {}
+
+
+  getApplicantDashboard() {
+    this.store.dispatch(ApplicantAction.applicantDashboard());
+  }
 
   getUser(userId: string) {
     this.store.dispatch(ApplicantAction.getUserProfile({ userId }));

@@ -4,6 +4,7 @@ import { RecordService } from './recorder.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import RecordRTC from "recordrtc";
 import { Observable, Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface RecordedVideoOutput {
   blob: Blob;
@@ -19,6 +20,7 @@ interface RecordedVideoOutput {
 })
 export class RecorderComponent implements OnInit, AfterViewInit {
   @ViewChild('videoElement') videoElement: any;
+
   video: any;
   isPlaying = false;
   displayControls = true;
@@ -27,10 +29,12 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   videoBlobUrl;
   videoBlob;
   videoName;
+  videoFile;
   videoStream: MediaStream;
-  audioConf = { audio: true }
-  videoConf = { video: { facingMode: "user", width: 320 }, audio: true }
-
+  videoSrc: string;
+  audioSrc: string;
+  audioOut: string;
+  videoConf: any;
   public timer_value: number = 0;
   public time: number = 0;
   public interval;
@@ -41,7 +45,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<RecorderComponent>,
     private ref: ChangeDetectorRef,
     private recordService: RecordService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
   ) {
     this.recordService.recordingFailed().subscribe(() => {
       this.isVideoRecording = false;
@@ -58,6 +62,11 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       this.ref.detectChanges();
     });
 
+    this.recordService.getBase64().subscribe((data) => {
+      this.videoFile = data;
+      this.ref.detectChanges();
+    });
+
     this.recordService.getRecordedBlob().subscribe((data) => {
       this.videoBlob = data.blob;
       this.videoName = data.title;
@@ -65,14 +74,20 @@ export class RecorderComponent implements OnInit, AfterViewInit {
       this.ref.detectChanges();
     });
   }
+
   ngAfterViewInit() {
     this.video = this.videoElement.nativeElement;
   }
 
   ngOnInit() {
+
   }
 
   startVideoRecording() {
+    this.startTimer();
+    this.videoConf = { video: { deviceId: this.videoSrc, facingMode: "user", width: 320 }, audio: { deviceId: this.audioSrc } }
+
+    this.videoConf['video'].deviceId = this.videoSrc;
     if (!this.isVideoRecording) {
       this.video.controls = false;
       this.video.muted = true;
@@ -100,6 +115,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   stopVideoRecording() {
     if (this.isVideoRecording) {
+      this.pauseTimer();
       this.recordService.stopRecording();
       this.video.srcObject = this.videoBlobUrl;
       this.isVideoRecording = false;
@@ -108,7 +124,10 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   previewVideoRecording() {
-    this.dialogRef.close(this.videoBlobUrl);
+    console.log(this.videoFile);
+    console.log(this.videoBlob);
+    console.log(this.videoBlobUrl);
+    this.dialogRef.close({ blobUrl: this.videoBlobUrl, file: this.videoFile });
   }
 
   clearVideoRecordedData() {
@@ -119,7 +138,7 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   downloadVideoRecordedData() {
-    this._downloadFile(this.videoBlob, 'video/mp4', this.videoName);
+    this._downloadFile(this.videoBlob, 'video/webm', this.videoName);
   }
 
   _downloadFile(data: any, type: string, filename: string): any {
@@ -147,6 +166,18 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     }, 1000);
   }
 
+  stopRecorderTimer() {
+    this.pauseTimer();
+    this.timer_value = 0;
+    this.display = '00:00';
+    this.time = 0;
+    clearInterval(this.timer_value);
+  }
+
+  pauseTimer() {
+    clearInterval(this.interval);
+  }
+
   transform(value: number): string {
     const minutes: number = Math.floor(value / 60);
     return ('00' + minutes).slice(-2) + ':' + ('00' + Math.floor(value - minutes * 60)).slice(-2);
@@ -158,6 +189,6 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-
+    this.stopRecorderTimer();
   }
 }

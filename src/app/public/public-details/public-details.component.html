@@ -1,38 +1,37 @@
 <!-- CUSTOM BANNER -->
-<div class="p-0" style="overflow-x: hidden;"
-*ngIf="details$ | async as selectedJobPost">
-	<div class="row">
-		<div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
-			<div class="col-12 col-md-12 text-center"
-			[@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}"
-			*ngIf="screenSize >= 1600 ? 'col-lg-4' : 'col-lg-6'">
-				<h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
-				<p class="title-banner-description mb-2">
-				  <ng-container *ngIf="selectedJobPost?.industryId">
-				    {{selectedJobPost?.industryName}} /
-				  </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / PHP
-				  {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{selectedJobPost?.salaryMaximum |
-				  number:'1.0':'en-US' }}
-				</p>
-			</div>
-		</div>
-	</div>
+<div class="p-0" style="overflow-x: hidden;" *ngIf="details$ | async as selectedJobPost">
+  <div class="row">
+    <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
+      <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}"
+        *ngIf="screenSize >= 1600 ? 'col-lg-4' : 'col-lg-6'">
+        <h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
+        <p class="title-banner-description mb-2">
+          <ng-container *ngIf="selectedJobPost?.industryId">
+            {{selectedJobPost?.industryName}} /
+          </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / PHP
+          {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{selectedJobPost?.salaryMaximum |
+          number:'1.0':'en-US' }}
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="container-fluid px-3 px-lg-5 mb-4"
- *ngIf="details$ | async as selectedJobPost">
-	<div class="row">
-		<div class="col-12 col-md-12 col-lg-3" style="margin-top: -105px">
-			<app-job-details-sidecard
-			[data]="selectedJobPost"
-			[company]="selectedJobPost"
-			[screenSize]="screenSize"></app-job-details-sidecard>
-		</div>
+<div class="container-fluid px-3 px-lg-5 mb-4" style="margin-top: -105px" *ngIf="details$ | async as selectedJobPost">
+  <div class="row">
+    <div class="col-12 col-md-12 col-lg-3">
+      <app-job-details-sidecard [data]="selectedJobPost" [company]="selectedJobPost" [screenSize]="screenSize">
+      </app-job-details-sidecard>
+    </div>
 
-		<div class="col-12 col-md-12 col-lg-9 px-0">
-      		<app-job-posts-details
-      		[withBanner]="false">
-      		</app-job-posts-details>
-		</div>
-	</div>
+    <div class="col-12 col-md-12 col-lg-9 px-0">
+
+      <app-application-process *ngIf="isApplying" [job]="selectedJobPost" (apply)="apply($event)">
+      </app-application-process>
+
+      <app-job-posts-details [withBanner]="false" *ngIf="!isApplying" (apply)="apply($event)">
+      </app-job-posts-details>
+
+    </div>
+  </div>
 </div>

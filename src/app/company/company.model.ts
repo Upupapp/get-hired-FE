@@ -18,24 +18,42 @@ export interface Company {
   companyIndustryName? : string;
 }
 
+
 export interface Dashboard {
-  company: {
-    companyId: string;
-    companyName: string;
-    companyLogoUrl: string;
-    companyCity: string;
-    companyCountry: string;
-    companyEmail: string;
-  },
-  charts: {
-    activeJobs: number;
-    applicants: number;
-    interviews: number;
-  },
-  statistic: {
-    totalHired: number;
-    interviewAppointments: number;
+  company: any;
+  charts: any;
+  graph: any;
+  stat: {
+    contacts: string;
+    applicants: string;
   }
+  // company: {
+  //   companyId: string;
+  //   companyName: string;
+  //   companyLogoUrl: string;
+  //   companyCity: string;
+  //   companyCountry: string;
+  //   companyEmail: string;
+  // },
+  // charts: {
+  //   activeJobs: number;
+  //   applicants: number;
+  //   interviews: number;
+  // },
+  statistic?: {
+    contacts: string;
+    applicants: string;
+  },
+  // graph: [{
+  //   month: number;
+  //   day: number;
+  //   count: number;
+  // }],
+  totalContacts?: number;
+  cities?: [{
+    city: string;
+    count: string;
+  }]
 }
 
 export interface Options {

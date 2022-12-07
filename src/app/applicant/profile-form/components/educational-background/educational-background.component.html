@@ -30,13 +30,13 @@
         <hr style="border: dashed 1px #868686">
       </div>
 
-      <div class="col-12 col-lg-6" *ngIf="level$ | async as levelOfEducation">
+      <div class="col-12 col-lg-6">
         <div class="title-container mb-3">
           <label>Level of Education</label>
           <select class="form-select" formControlName="levelOfEducation">
             <option selected disabled [ngValue]="null">Select Level of Education</option>
             <ng-container *ngFor="let item of levelOfEducation; let i = index">
-              <option [value]="item.id">{{item.name}}</option>
+              <option [value]="item">{{item}}</option>
             </ng-container>
           </select>
         </div>

@@ -62,6 +62,16 @@ export class CoreService {
     return this.asyncLocalStorage.getItem('role');
   }
 
+  async getUserId() {
+    const user = await this.asyncLocalStorage.getItem('user');
+    return JSON.parse(user)._id;
+  }
+
+  async getUserFullName() {
+    const user = await this.asyncLocalStorage.getItem('user');
+    return JSON.parse(user).firstName + ' ' + JSON.parse(user).lastName;
+  }
+
   resetLocalStorage(user) {
     // TODO
   }

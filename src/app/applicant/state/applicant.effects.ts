@@ -31,6 +31,24 @@ export class ApplicantEffects {
   //   );
   // });
 
+  applicantDashboard$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.applicantDashboard),
+      mergeMap(() => this.applicantService.getDashboardDetails()
+        .pipe(
+          map((res: any) => {
+            const dashboard: Model.Dashboard = res.data;
+            return ApplicantActions.applicantDashboardSuccess({ dashboard });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.applicantDashboardFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   getApplicantDetails$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ApplicantActions.getApplicant),

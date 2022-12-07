@@ -130,7 +130,7 @@
           </span>
 
           <ng-container>
-            <span class="text-capitalize" 
+            <span class="text-capitalize"
             *ngIf="header?.col_name !== 'profile_image'
 						 && header?.col_name !== 'icon'
 						 && header?.col_name !== 'action'
@@ -151,7 +151,7 @@
 
             <span *ngIf="header?.type === 'action_button'">
 
-              <button class="btn" [ngClass]="header?.button_class">
+              <button class="btn" [ngClass]="header?.button_class" (click)="btnAction(data[header?.params])">
                 <img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
                 {{ header?.button_title }}
               </button>

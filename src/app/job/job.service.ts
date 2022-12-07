@@ -29,12 +29,19 @@ export class JobService {
     }
   }
 
+  getJobApplicantsByJobId(jobId: string) {
+    return this.baseService.get<Model.JobApplicants[]>(`${this.jobUrl}/applicants?id=${jobId}`);
+  }
+
   getJobBasicList(companyId: string) {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
   }
 
   getJobById(jobId: string) {
-    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}`);
+    const user = localStorage.getItem('user');
+    const uid = user ? JSON.parse(user)._id: null;
+
+    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}&uid=${uid}`);
   }
 
   getJobExpiredList(companyId: string) {

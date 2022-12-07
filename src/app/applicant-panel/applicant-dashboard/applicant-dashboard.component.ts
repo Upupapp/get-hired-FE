@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
-import Module from 'module';
-import * as Model from '../../applicant/applicant.model';
 import { tap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as Model from '@main/applicant/applicant.model';
 
 @Component({
   selector: 'app-applicant-dashboard',
@@ -18,10 +18,19 @@ export class ApplicantDashboardComponent implements OnInit {
   public isVisible: boolean = false;
 
   profile$ = this.applicantFacade.applicantDetails$.pipe(
-    tap((applicant) => (this.applicant = applicant))
+    tap((applicant) => {
+      if(applicant) {
+        this.applicant = applicant
+        this.isVisible = true;
+      }
+    })
   );
 
-  constructor(private applicantFacade: ApplicantFacade) {}
+  constructor(
+    private applicantFacade: ApplicantFacade,
+    private router: Router,
+    private route: ActivatedRoute
+    ) {}
 
   ngOnInit(): void {
     var user = JSON.parse(localStorage.getItem('user'));
@@ -34,5 +43,9 @@ export class ApplicantDashboardComponent implements OnInit {
 
   closeSnackbar(): void {
     this.isVisible = false;
+  }
+
+  redirectToEdit(){
+    this.router.navigate(['../profile/edit'], { relativeTo: this.route})
   }
 }

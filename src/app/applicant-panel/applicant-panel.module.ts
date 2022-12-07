@@ -15,12 +15,17 @@ import { ApplicantEffects } from '@main/applicant/state/applicant.effects';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { AuthModule } from '@main/auth/auth.module';
 import { ApplicantModule } from '@main/applicant/applicant.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ApplicationModule } from '@main/application/application.module';
 
 const routes: Routes = [
   {
     path: '',
     component: ApplicantPanelComponent,
     children: [
+      // {
+      //   path: 'apply', component: ApplicantApplicationComponent
+      // },
       {
         path: 'dashboard',
         loadChildren: () =>
@@ -54,7 +59,9 @@ const routes: Routes = [
     CommonModule,
     CoreModule,
     RouterModule.forChild(routes),
-    ApplicantModule
+    ApplicantModule,
+    ReactiveFormsModule,
+    ApplicationModule
     // StoreModule.forFeature('applicant', applicantReducer),
     // EffectsModule.forFeature([ApplicantEffects]),
     // AuthModule

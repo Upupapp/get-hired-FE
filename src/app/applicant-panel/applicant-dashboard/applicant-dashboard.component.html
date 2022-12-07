@@ -1,5 +1,5 @@
-<section>
-  <app-applicant-panel-banner></app-applicant-panel-banner>
+<section *ngIf="profile$ | async as profile; else noProfile">
+  <app-applicant-panel-banner [details]="profile"></app-applicant-panel-banner>
 
   <app-applicant-stat-chart></app-applicant-stat-chart>
 
@@ -7,6 +7,16 @@
 </section>
 
 <div class="alert" [class.visible]="isVisible" *ngIf="isVisible">
-  <span>“Update your profile to showcase your skills”</span>
+  <h5>Stay Up to Date</h5>
+  <span>Update your profile to showcase your skills</span>
   <button class="btn" (click)="closeSnackbar()"><i class="bi bi-x"></i></button>
 </div>
+
+<ng-template #noProfile>
+  <section class="text-center p-5 w-100">
+    <img src="assets/images/showcase.png" class="w-25" />
+    <h5 class="my-2">Update your profile to showcase your skills</h5>
+    <button class="btn btn-primary me-3 hvr-grow" (click)="redirectToEdit()">
+      Update Profile</button>
+  </section>
+</ng-template>

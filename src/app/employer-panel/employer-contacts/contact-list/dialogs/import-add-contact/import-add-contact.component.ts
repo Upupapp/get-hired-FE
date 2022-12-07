@@ -59,17 +59,18 @@ export class ImportAddContactComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.data);
     this.localData = JSON.parse(this.localData);
     this.getJobList();
     this.getGroupList();
     this.contactForm = this.formBuilder.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      email: ['', [Validators.email, Validators.required]],
-      mobileNumber: [''],
-      address: [''],
-      // jobId: ['', [Validators.required]],
-      groupName: ['', [Validators.required]],
+      firstName: [this.data ? this.data?.first_name : '', [Validators.required]],
+      lastName: [this.data ? this.data?.last_name : '', [Validators.required]],
+      email: [this.data ? this.data?.email : '', [Validators.email, Validators.required]],
+      mobileNumber: [this.data ? this.data?.mobile_number : ''],
+      address: [this.data ? this.data?.address : ''],
+      // jobId: ['', [Validators.required]], 
+      groupName: ['', !this.data ? [Validators.required] : null],
       groupId: ['']
     });
     this.importContactForm = this.formBuilder.group({
@@ -195,17 +196,30 @@ export class ImportAddContactComponent implements OnInit {
   }
 
   saveOnboard(){
-    this.contactForm.get("groupName")?.patchValue(this.setGroupName(this.contactForm.controls['groupName'].value));
-    this.contactForm.get("groupId")?.patchValue(this.setGroupId(this.contactForm.controls['groupName'].value));
-    let data = {
-      ...this.contactForm.value,
-      userId: this.localData._id,
-      companyId: this.localData.companyId
+
+    if(!this.data){
+      this.contactForm.get("groupName")?.patchValue(this.setGroupName(this.contactForm.controls['groupName'].value));
+      this.contactForm.get("groupId")?.patchValue(this.setGroupId(this.contactForm.controls['groupName'].value));
+      let data = {
+        ...this.contactForm.value,
+        userId: this.localData._id,
+        companyId: this.localData.companyId
+      }
+      this.contactState.dispatch({
+        type: ContactActionTypes.SAVE_CONTACT,
+        payload: data
+      });
+    } else {
+      let data = {
+        ...this.contactForm.value,
+        contactId: this.data.contact_id
+      }
+
+      this.contactState.dispatch({
+        type: ContactActionTypes.EDIT_CONTACT,
+        payload: data
+      });
     }
-    this.contactState.dispatch({
-      type: ContactActionTypes.SAVE_CONTACT,
-      payload: data
-    });
   }
 
   setGroupName(value) {

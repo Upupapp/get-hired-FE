@@ -40,7 +40,7 @@ export class ReusableTableComponent implements OnInit {
   @Output() updateSelectedRows: EventEmitter<any> = new EventEmitter<any>();
   @Output() deleteSelectedRow: EventEmitter<any> = new EventEmitter<any>();
   @Output() updateSelectedRowDialog: EventEmitter<any> = new EventEmitter<any>();
-
+  @Output() actionOfButton: EventEmitter<any> = new EventEmitter<any>();
   @Output() viewDetails: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(MatSort) sort: MatSort;
   @Input() maxRows: number = 5;
@@ -106,6 +106,10 @@ export class ReusableTableComponent implements OnInit {
     this.pageNumbers = Math.ceil(list.length / this.maxRows);
     this.paginate = Array(this.pageNumbers).fill(0).map((el, i) => i + 1);
     this.page = 1;
+  }
+
+  btnAction(params) {
+    this.actionOfButton.emit(params);
   }
 
 

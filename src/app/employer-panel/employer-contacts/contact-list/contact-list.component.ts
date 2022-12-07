@@ -26,6 +26,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ImportAddContactComponent } from './dialogs/import-add-contact/import-add-contact.component';
 import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
 import { StoreState } from '@main/shared/store/index';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { ContactState } from '@app-shared/store/reducers/contact.reducer';
 
 @Component({
   selector: 'app-contact-list',
@@ -75,7 +77,7 @@ export class ContactListComponent implements OnInit {
     this.getContactList();
 
     this.ContactData$ = this.contactState.pipe(select(state => state.contact));
-    this.req =  this.ContactData$.subscribe((contact: any) => {
+    this.req =  this.ContactData$.subscribe((contact: ContactState) => {
       this.loading = contact.pending;
 
       if(contact.contactList.length > 0){
@@ -90,6 +92,32 @@ export class ContactListComponent implements OnInit {
           duration: 4000,
           panelClass:'success-snackbar'
         });
+      }
+
+      if(contact.editContactRes){
+        this.snackBar.open("Successfully Edited Contact!", "", {
+          duration: 4000,
+          panelClass:'success-snackbar'
+        });
+
+        this.contactState.dispatch({
+          type:ContactActionTypes.EDIT_CONTACT_SUCCESS,
+          payload: null
+        });
+      }
+
+      if(contact.deleteContactRes){
+        this.snackBar.open("Successfully Deleted Contact!", "", {
+          duration: 4000,
+          panelClass:'success-snackbar'
+        });
+
+        this.contactState.dispatch({
+          type:ContactActionTypes.DELETE_CONTACT_SUCCESS,
+          payload: null
+        });
+
+        this.getContactList();
       }
 
       if(contact.error){
@@ -114,11 +142,11 @@ export class ContactListComponent implements OnInit {
     this.router.navigate(['/onboarding/contacts/details'], {queryParams: {userId: `${event?.data?.owner_id}`}});
   }
 
-  addContacts(){
+  addContacts(data?: any){
     let dialog = this.dialog.open(ImportAddContactComponent, {
       width: '40vw',
       maxHeight: '90vh',
-      //data: this.data,
+      data: data,
     });
 
     dialog
@@ -131,6 +159,32 @@ export class ContactListComponent implements OnInit {
         // console.log(result, "test")
       }
     });
+  }
+
+  editContact(data: any){
+    this.addContacts(data?.data)
+  }
+
+  deleteRow(data: any) {
+    const ref = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: true,
+      data: {
+        action: 'Delete',
+      },
+    });
+
+    ref
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((result) => {
+        if (result == 1) {
+          this.contactState.dispatch({
+            type:ContactActionTypes.DELETE_CONTACT,
+            payload: data?.data
+          });
+          
+        }
+      });
   }
 
   getContactList(){

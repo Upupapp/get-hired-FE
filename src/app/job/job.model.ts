@@ -41,6 +41,7 @@ export interface Job {
   companyRating?: number;
   numberOfEmployee?: string;
   jobCategoryId?: number;
+  isApplied?: boolean;
 }
 
 export interface InitialDetails {
@@ -100,4 +101,24 @@ export interface BasicList {
   jobStatusId: number;
   jobCity: string;
   rate: string;
+}
+
+export interface JobApplicants {
+  applicantProfileId: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  photoUrl: string;
+  salaryMinimum: number;
+  salaryMaximum: number;
+  email: string;
+  city: string;
+  country: string;
+  videoCVUrl: string;
+  jobApplicationStatusId: string;
+  dateApplied: Date,
+  workSetupId: number;
+  workSetupName: string;
+  jobTypeId: number;
+  jobTypeName: string;
 }

@@ -30,11 +30,14 @@
 			<div class="card card-body py-4 bg-user"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex">
-					<img [src]="user.photoUrl" class="img-avatar me-2">
-
-					<div class="mt-1">
+          <img [src]="user.photoUrl"
+          *ngIf="user.photoUrl" class="img-avatar me-3">
+          <div *ngIf="!user.photoUrl" class="initial-thumbnail-inner" >
+            {{ initials }}
+          </div>
+					<div class="mt-1 d-flex align-items-center">
 						<h5 class="img-avatar-full-name text-capitalize">
-              {{ user.firstName + ' ' + user.lastName }}</h5>
+              			{{ user.firstName + ' ' + user.lastName }}</h5>
 					</div>
 				</div>
 

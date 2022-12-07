@@ -1,3 +1,8 @@
+.gethired-trademark {
+  color: #FF7062;
+  font-weight: 700;
+}
+
 .card-application{
 	border-radius: 15px;
 	padding: 22px 22px 5px 25px !important;
@@ -15,7 +20,7 @@
 	cursor: pointer;
 	//height: 110px;
 	//box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.06);
-	border-radius: 15px;	
+	border-radius: 15px;
 
 	background: url(~/src/assets/images/placeholder/total-hired.png);
 	background-repeat: no-repeat;
@@ -23,10 +28,17 @@
 	background-position: right;
 	background-size: cover;
 	background-color: #0C5ED8;//linear-gradient(121.09deg, #0C5ED8 31.19%, #0C5ED8 95.32%);
-	
+
 	height: 185px;
 }
 
+.title-verified{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 24px;
+	line-height: 26px;
+}
 
 .title-card{
 	font-family: 'Manrope';

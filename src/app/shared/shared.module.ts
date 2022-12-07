@@ -19,12 +19,16 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
 import { AddAccessModalComponent } from './components/add-access-modal/add-access-modal.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 
 // import { NgxOrgChartModule } from 'ngx-org-chart';
 
 import { EmptySectionComponent } from './components/empty-section/empty-section.component';
 import { UnderConstructionComponent } from './components/under-construction/under-construction.component';
 import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component';
+import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
+import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
+import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -42,7 +46,10 @@ const classesToInclude: any[] = [
   TabSelectorsComponent,
   EmptySectionComponent,
   UnderConstructionComponent,
-  SuccessDialogComponent
+  SuccessDialogComponent,
+  FileViewerComponent,
+  VideoPreviewComponent,
+  RecordLoadingComponent
 ];
 
 @NgModule({
@@ -51,7 +58,8 @@ const classesToInclude: any[] = [
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialComponentsModule
+    MaterialComponentsModule,
+    NgxDocViewerModule
   ],
   entryComponents: [...classesToInclude],
   providers: [

@@ -2,19 +2,24 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecorderComponent } from './recorder.component';
 import { SharedModule } from '@app-shared/shared.module';
+import { FormsModule } from '@angular/forms';
+import { RecorderSettingComponent } from './recorder-setting/recorder-setting.component';
 
 
 
 @NgModule({
   declarations: [
-    RecorderComponent
+    RecorderComponent,
+    RecorderSettingComponent
   ],
   imports: [
     CommonModule,
-    SharedModule
+    SharedModule,
+    FormsModule
   ],
   exports:[
-    RecorderComponent
+    RecorderComponent,
+    RecorderSettingComponent
   ]
 })
 export class RecorderModule { }

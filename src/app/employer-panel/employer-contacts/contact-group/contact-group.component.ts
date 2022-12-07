@@ -26,6 +26,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddContactGroupComponent } from './dialogs/add-contact-group/add-contact-group.component';
 import { GroupActionTypes } from '@main/shared/store/actions/group.action';
 import { StoreState } from '@main/shared/store/index';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { GroupState } from '@app-shared/store/reducers/group.reducer';
 
 @Component({
   selector: 'app-contact-group',
@@ -75,11 +77,17 @@ export class ContactGroupComponent implements OnInit {
     this.getGroupList();
 
     this.GroupData$ = this.groupState.pipe(select(state => state.group));
-    this.req =  this.GroupData$.subscribe((group: any) => {
+    this.req =  this.GroupData$.subscribe((group: GroupState) => {
       this.loading = group.pending;
       if(group.groupList.length > 0){
-        this.groupList = group.groupList
-        ;
+        group.groupList
+        console.log(group.groupList)
+        this.groupList = [...group.groupList].map(el => {
+          return {
+            'members': el?.emails?.length,
+            ...el
+          }
+        });
       } else {
         this.groupList = [];
       }
@@ -89,6 +97,37 @@ export class ContactGroupComponent implements OnInit {
           duration: 4000,
           panelClass:'success-snackbar'
         });
+
+        this.groupState.dispatch({
+          type:GroupActionTypes.SAVE_GROUP_SUCCESS,
+          payload: {status: null}
+        });
+      }
+
+      if(group.editGroupRes){
+        this.snackBar.open("Successfully Edited Group", "", {
+          duration: 4000,
+          panelClass:'success-snackbar'
+        });
+
+        this.groupState.dispatch({
+          type:GroupActionTypes.EDIT_GROUP_SUCCESS,
+          payload: null
+        });
+      }
+
+      if(group.deleteGroupRes){
+        this.snackBar.open("Successfully Deleted Group", "", {
+          duration: 4000,
+          panelClass:'success-snackbar'
+        });
+
+        this.groupState.dispatch({
+          type:GroupActionTypes.DELETE_GROUP_SUCCESS,
+          payload: null
+        });
+
+        this.getGroupList();
       }
 
       if(group.error){
@@ -107,11 +146,11 @@ export class ContactGroupComponent implements OnInit {
     if(this.req) this.req.unsubscribe();
   }
 
-  addCandidate(){
+  addCandidate(data?: any){
     let dialog = this.dialog.open(AddContactGroupComponent, {
       width: '40vw',
       maxHeight: '90vh',
-      //data: this.data,
+      data: data?.data,
     });
 
     dialog
@@ -124,6 +163,31 @@ export class ContactGroupComponent implements OnInit {
         // console.log(result, "test")
       }
     });
+  }
+
+  editGroup(data) {
+    this.addCandidate(data);
+  }
+  deleteRow(data: any) {
+    const ref = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: true,
+      data: {
+        action: 'Delete',
+      },
+    });
+
+    ref
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((result) => {
+        if (result == 1) {
+          this.groupState.dispatch({
+            type:GroupActionTypes.DELETE_GROUP,
+            payload: data?.data
+          });
+          
+        }
+      });
   }
 
   getGroupList(){

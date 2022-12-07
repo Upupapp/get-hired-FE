@@ -20,8 +20,7 @@
 				<div class="chart-container">
 					<canvas
 					baseChart
-					[datasets]="activityGraphChartData"
-					[labels]="activityGraphChartLabels"
+					[data]="lineChartData"
 					[options]="activityGraphChartOptions"
 					[legend]="activityGraphChartLegend"
 					[type]="activityGraphChartType">
@@ -31,7 +30,7 @@
 
 			<div class="chart-container-2 col-12 col-lg-4 px-4 py-lg-3 mt-lg-5">
 				<canvas baseChart
-					[datasets]="doughnutChartData"
+					[data]="doughnutChartData"
 					[legend]="doughnutChartLegend"
 					[labels]="doughnutChartLabels"
 					[options]="doughnutChartOptions"

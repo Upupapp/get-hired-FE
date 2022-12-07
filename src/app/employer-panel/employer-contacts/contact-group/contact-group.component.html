@@ -17,7 +17,9 @@
         <app-reusable-table [loading]="loading"
           [componentTitle]="'Groups'" [displayedColumns]="displayedColumns"
           [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
-          [maxRows]="10" [listDataSource]="groupList">
+          [maxRows]="10" [listDataSource]="groupList"
+          (deleteSelectedRow)="deleteRow($event)" 
+          (updateSelectedRowDialog)="editGroup($event)">
         </app-reusable-table>
       </div>
   

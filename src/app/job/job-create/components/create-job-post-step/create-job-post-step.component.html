@@ -169,10 +169,7 @@
 
             <div class="col-12 col-lg-3">
               <select class="form-select">
-                <option selected>23</option>
-                <option>24</option>
-                <option>25</option>
-                <option>26</option>
+                <option *ngFor="let day of days">{{day}}</option>
               </select>
             </div>
 

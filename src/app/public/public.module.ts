@@ -12,6 +12,7 @@ import { PublicListComponent } from './public-list/public-list.component';
 import { PublicDetailsComponent } from './public-details/public-details.component';
 import { JobFacade } from '@app-job/state/job.facade';
 import { PublicSearchComponent } from './public-search/public-search.component';
+import { ApplicationModule } from '@main/application/application.module';
 
 const routes: Routes = [
   {
@@ -45,6 +46,7 @@ const routes: Routes = [
     JobsModule,
     CoreModule,
     SharedModule,
+    ApplicationModule,
     RouterModule.forChild(routes)
   ], providers: [JobFacade]
 })

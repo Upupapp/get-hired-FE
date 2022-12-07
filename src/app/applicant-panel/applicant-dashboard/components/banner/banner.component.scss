@@ -55,9 +55,13 @@
 .company-logo {
   &-image {
     width: 100px;
+    height: 100px;
+    object-position: center;
+    object-fit: cover;
     border-radius: 50%;
     cursor: pointer;
     border: solid 3px #f8f8f8;
+
 
     &:hover {
       border: solid 3px #f8f8f8;

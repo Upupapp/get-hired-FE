@@ -93,6 +93,60 @@ public saveContact = createEffect(() =>
     )
 );
 
+public editContact = createEffect(() =>
+    this.actions$.pipe(
+        // set type
+        ofType(ContactActionTypes.EDIT_CONTACT),
+        // switch to a new observable and cancel previous subscription
+        switchMap((data: any) => {
+        return this.contactService.editContact(data?.payload).pipe(
+            // return payload
+            map((result: any) => {
+            return {
+                type: ContactActionTypes.EDIT_CONTACT_SUCCESS,
+                payload: result,
+            };
+            }),
+            catchError((error: any) =>
+            // error handler
+            of({
+                type: ContactActionTypes.EDIT_CONTACT_FAIL,
+                payload: error,
+            })
+            )
+        );
+        })
+    )
+);
+
+public deleteContact = createEffect(() =>
+    this.actions$.pipe(
+        // set type
+        ofType(ContactActionTypes.DELETE_CONTACT),
+        // switch to a new observable and cancel previous subscription
+        switchMap((data: any) => {
+        return this.contactService.deleteContact(data?.payload).pipe(
+            // return payload
+            map((result: any) => {
+            return {
+                type: ContactActionTypes.DELETE_CONTACT_SUCCESS,
+                payload: result,
+            };
+            }),
+            catchError((error: any) =>
+            // error handler
+            of({
+                type: ContactActionTypes.DELETE_CONTACT_FAIL,
+                payload: error,
+            })
+            )
+        );
+        })
+    )
+);
+
+
+
 public saveContactMultiple = createEffect(() =>
   this.actions$.pipe(
     // set type

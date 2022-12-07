@@ -68,8 +68,9 @@ export class ProfileFormComponent implements OnInit {
   loading$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));
 
+
   success$ = this.applicantFacade.success$
-    .pipe().subscribe(this.afterSubmit.bind(this));
+    .pipe().subscribe(this.afterSubmit.bind(this))
 
   constructor(
     private fb: FormBuilder,
@@ -211,7 +212,76 @@ export class ProfileFormComponent implements OnInit {
           created_at: new FormControl(item.created_at)
         })
         docs.push(fileGroup);
-      })
+      });
+
+
+      const works = this.profileForm.controls.profileArraysForm.get('workExperience') as FormArray;
+      if (data.workExperience.length > 0) {
+        data.workExperience.map((item: Model.WorkExperience) => {
+          const fileGroup = this.fb.group({
+            createdAt: new FormControl(item.createdAt),
+            updatedAt: new FormControl(item.updatedAt),
+            jobTitle: new FormControl(item.jobTitle),
+            companyName: new FormControl(item.companyName),
+            location: new FormControl(item.location),
+            jobTypeId: new FormControl(item.jobTypeId),
+            jobTypeName: new FormControl(item.jobTypeName),
+            startMonth: new FormControl(item.startMonth),
+            startYear: new FormControl(item.startYear),
+            endMonth: new FormControl(item.endMonth),
+            endYear: new FormControl(item.endYear),
+            isCurrentJob: new FormControl(item.isCurrentJob),
+            details: new FormControl(item.details),
+          })
+          works.push(fileGroup);
+        });
+      }
+
+      const profSkill = this.profileForm.controls.profileArraysForm.get('professionalSkills') as FormArray;
+      if (data.skills.length > 0) {
+        data.skills.map((item: string) => {
+          profSkill.push(new FormControl(item));
+        });
+      }
+
+      const educ = this.profileForm.controls.profileArraysForm.get('educationalBackground') as FormArray;
+      if (data.educationalBackground.length > 0) {
+        data.educationalBackground.map((item: Model.EducationalBackground) => {
+          const fileGroup = this.fb.group({
+            createdAt: new FormControl(item.createdAt),
+            updatedAt: new FormControl(item.updatedAt),
+            educLevelId: new FormControl(item.educLevelId),
+            educLevelName: new FormControl(item.educLevelName),
+            fieldOfStudy: new FormControl(item.fieldOfStudy),
+            school: new FormControl(item.school),
+            schoolAddress: new FormControl(item.schoolAddress),
+            startMonth: new FormControl(item.startMonth),
+            startYear: new FormControl(item.startYear),
+            endMonth: new FormControl(item.endMonth),
+            endYear: new FormControl(item.endYear)
+          })
+          educ.push(fileGroup);
+        });
+      }
+
+      const cert = this.profileForm.controls.profileArraysForm.get('certifications') as FormArray;
+      if (data.certifications.length > 0) {
+        data.certifications.map((item: Model.Certifications) => {
+          const fileGroup = this.fb.group({
+            createdAt: new FormControl(item.createdAt),
+            updatedAt: new FormControl(item.updatedAt),
+            certTitle: new FormControl(item.certTitle),
+            noExpiry: new FormControl(item.noExpiry),
+            startMonth: new FormControl(item.startMonth),
+            startYear: new FormControl(item.startYear),
+            endMonth: new FormControl(item.endMonth),
+            endYear: new FormControl(item.endYear),
+            details: new FormControl(item.details),
+
+          })
+          cert.push(fileGroup);
+        });
+      }
     }
 
   }
@@ -233,7 +303,7 @@ export class ProfileFormComponent implements OnInit {
       certifications: filteredCert,
       educationalBackground: filteredEduc,
       skillsTxt: data.skillsTxt,
-      professionalSkills: data.professionalSkills
+      skills: data.professionalSkills
     }
 
     return {
@@ -282,13 +352,16 @@ export class ProfileFormComponent implements OnInit {
       });
       this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'updated') {
-      /*this.snackBar.open(`Profile successfully updated`, '', {
+      console.log('HALA')
+      this.snackBar.open(`Profile successfully updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
-      });*/
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
 
-      this.loadingDialog.closeAll();
-      this.showSuccessDialog();
+      // this.loadingDialog.closeAll();
+      // this.showSuccessDialog();
     }
   }
 
@@ -302,11 +375,12 @@ export class ProfileFormComponent implements OnInit {
       });
     } else {
       this.loading = loading;
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
 
       // dont close automatically all modal
-      if (!this.updateSuccess) {
-        setTimeout(() => this.loadingDialog.closeAll(), 3000);
-      }
+      // if (!this.updateSuccess) {
+      //   setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      // }
     }
   }
 
@@ -335,8 +409,13 @@ export class ProfileFormComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions$.unsubscribe();
+    if (this.subscriptions$) {
+      this.subscriptions$.unsubscribe();
+    }
     sessionStorage.removeItem('profile-update')
+    if (this.success$) {
+      this.success$.unsubscribe();
+    }
   }
 
 }

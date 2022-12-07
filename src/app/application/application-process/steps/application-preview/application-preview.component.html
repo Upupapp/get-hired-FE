@@ -1,0 +1,116 @@
+<div style="overflow: hidden; position: relative;" [ngStyle]="{
+	'height': profileSummary ? '650px' : ''
+}">
+  <app-applicant-details [user]="profile"></app-applicant-details>
+
+  <!-- <app-profile-preview></app-profile-preview> -->
+  <div class="bg-opacity" *ngIf="profileSummary"></div>
+</div>
+
+<div class="text-center mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+  <button class="btn btn-read-more" (click)="viewMore()">
+    <ng-container *ngIf="profileSummary">View More</ng-container>
+    <ng-container *ngIf="!profileSummary">Show Less</ng-container>
+  </button>
+</div>
+
+<div id="profile-document">
+  <div class="card card-body mt-3">
+    <h5>Documents</h5>
+    <hr style="border: dashed 1px #969696">
+
+    <div class="row w-100">
+      <div class="col-md-4">
+        <h5 class="title-main mb-3">Resume</h5>
+        <ng-container *ngFor="let item of resume; let i = index">
+          <img src="assets/images/file-icon.png" class="col-md-2" />
+
+          <div class="row w-100">
+
+            <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div>
+            <div classs="col-12 col-md-2">
+              {{(item.size * 0.000001)?.toFixed(2) }} MB
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="col-md-4">
+        <h5 class="title-main mb-3">Cover Letter</h5>
+        <ng-container *ngFor="let item of coverLetter; let i = index">
+          <img src="assets/images/file-icon.png" class="col-md-2" />
+
+          <div class="row w-100">
+
+            <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div>
+            <div classs="col-12 col-md-2">
+              {{(item.size * 0.000001)?.toFixed(2) }} MB
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="col-md-4">
+        <h5 class="title-main mb-3">Government Files</h5>
+        <ng-container *ngFor="let item of govFiles; let i = index">
+          <img src="assets/images/file-icon.png" class="col-md-2" />
+
+          <div class="row w-100">
+
+            <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div>
+            <div classs="col-12 col-md-2">
+              {{(item.size * 0.000001)?.toFixed(2) }} MB
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-body mt-3">
+  <h5>Interview Answers</h5>
+  <hr style="border: dashed 1px #969696">
+
+  <ng-container *ngIf="answers.length > 0">
+    <section class="interview-card card-body p-2 px-1 mb-1" id="interview-list2"
+      *ngFor="let item of answers; let i = index">
+      <div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}"
+        (click)="previewVideo(interviews[item.index].question, item.answerBlob)">
+        <div class="col-12">
+          <!-- <div class="float-end">
+            <div class="mt-3 me-2">
+              <button class="btn btn-upload me-2">Upload</button>
+
+              <button class="btn btn-record"
+              routerLink="/job-post/answer-interview/{{data?.id}}/{{i + 1}}"><img src="/assets/images/placeholder/icons/retake-interview.png" style="height: 10px" class="me-2">Retake</button>
+            </div>
+          </div> -->
+
+          <div class="d-flex">
+            <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+              <img src="/assets/images/check-icon.png">
+            </div>
+            <!--
+            <div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
+              <img src="/assets/images/placeholder/icons/interview-logo-4-active.png">
+            </div> -->
+
+            <div class="mt-3">
+              <p class="title-label-sub">
+                <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+                Answer {{item.index + 1}}
+              </p>
+              <h5 class="title-label">{{interviews[item.index].question}}</h5>
+              <!-- <p class="title-label-sub-duration"><span>Date Recorded:</span> September 21, 2022 4:00pm</p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+</div>

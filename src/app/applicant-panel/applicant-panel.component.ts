@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CoreService } from '@app-core/services/core.service';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { AuthFacade } from '@main/auth/state/auth.facade';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-applicant-panel',
@@ -10,7 +9,7 @@ import { tap } from 'rxjs';
   styleUrls: ['./applicant-panel.component.scss']
 })
 export class ApplicantPanelComponent implements OnInit {
-  fullName = 'Aryhan Coyco';
+  fullName = 'GetHired Applicant';
   isUserLoggedIn: boolean;
   local = JSON.parse(localStorage.getItem('user'));
   user$ = this.applicantFacade.user$;
@@ -21,8 +20,10 @@ export class ApplicantPanelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.applicantFacade.getUser(this.local._id)
   }
 
 }
+

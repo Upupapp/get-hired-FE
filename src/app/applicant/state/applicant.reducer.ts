@@ -26,6 +26,7 @@ export interface ApplicantState {
   // category: Model.Options[];
   documents: Model.Documents[];
   profileDocs: Model.ProfileDocuments;
+  dashboard
   // applicant: Model.Applicant | null;
   // applicantLoading: boolean
 }
@@ -45,6 +46,7 @@ const initialState: ApplicantState = {
   setup: [],
   typeList: [],
   level: [],
+  dashboard: [],
   // category: [],
   // initialDetails: null,
   // applicantInfo: null,
@@ -197,6 +199,28 @@ export const applicantReducer = createReducer<ApplicantState>(
     };
   }),
   on(ApplicantActions.getLevelListFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(ApplicantActions.applicantDashboard, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(ApplicantActions.applicantDashboardSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      dashboard: action.dashboard
+    };
+  }),
+  on(ApplicantActions.applicantDashboardFail, (state, action): ApplicantState => {
     return {
       ...state,
       loading: false,

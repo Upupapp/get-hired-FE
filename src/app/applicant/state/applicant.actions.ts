@@ -19,6 +19,10 @@ enum AllFeatureActionTypes {
   SaveApplicantSuccess = '[applicant] -Save Applicant Success',
   SaveApplicantFail = '[applicant] - Save Applicant Fail',
 
+  GetApplicantDashboard = '[applicant] - Get applicant status Dashboard',
+  GetApplicantDashboardSuccess = '[applicant] -Get applicant Success Dashboard',
+  GetApplicantDashboardFail = '[applicant] - Get applicant Fail Dashboard',
+
   // GetIndustryList = '[applicant] - Get Industry List',
   // GetIndustryListSuccess = '[applicant] - Get Industry List Success',
   // GetIndustryListFail = '[applicant] - Get Industry List Fail',
@@ -68,6 +72,21 @@ enum AllFeatureActionTypes {
   // SetInterview = '[applicant] - Set Applicant Interview',
   // ResetApplicantForm = '[applicant] - Reset Applicant Form',
 }
+
+
+export const applicantDashboard = createAction(
+  AllFeatureActionTypes.GetApplicantDashboard
+);
+
+export const applicantDashboardSuccess = createAction(
+  AllFeatureActionTypes.GetApplicantDashboard,
+  props<{ dashboard: Model.Dashboard }>()
+);
+
+export const applicantDashboardFail = createAction(
+  AllFeatureActionTypes.GetApplicantDashboard,
+  props<{ payload: any }>()
+);
 
 export const getUserProfile = createAction(
   AllFeatureActionTypes.GetUserProfile,

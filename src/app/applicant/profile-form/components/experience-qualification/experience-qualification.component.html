@@ -55,7 +55,7 @@
   <div class="mb-3 mt-5 ms-2">
     <h5 class="mt-3 main-title">Certification / Awards</h5>
   </div>
-  
+
   <div *ngIf="!awardRendering">
     <ng-container *ngFor="let certFormGroup of certifications.value let i = index">
       <app-awards-details [data]="certFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"

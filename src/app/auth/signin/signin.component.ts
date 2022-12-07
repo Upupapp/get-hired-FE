@@ -120,6 +120,7 @@ export class SigninComponent implements OnInit {
   }
 
   loginAdmin() {
+    localStorage.clear();
     this.email = this.loginForm?.get('email')?.value;
     const password = this.loginForm?.get('password')?.value;
     this.submitting = true;

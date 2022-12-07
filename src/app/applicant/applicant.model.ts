@@ -30,6 +30,7 @@ export interface Applicant {
   skills: string[];
   documents: Documents[];
   jobTypeId: number;
+  jobTypeName?: string;
   jobLevelId: number;
   salaryMinimum: number;
   salaryMaximum: number;
@@ -46,6 +47,7 @@ export interface WorkExperience {
   companyName: string;
   location: string;
   jobTypeId: string;
+  jobTypeName?: string;
   startMonth: string;
   startYear: number;
   endMonth: string;
@@ -128,4 +130,8 @@ export interface Documents {
   fileurl?: string;
   applicant_id?: string;
   created_at: Date;
+}
+
+export interface Dashboard {
+
 }

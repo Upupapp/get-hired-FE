@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as Model from '../jobs.model';
 
 @Component({
@@ -13,14 +13,19 @@ export class JobCardComponent implements OnInit {
   @Input() data: Model.BasicJob;
   @Input() i: number;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
   }
 
   applyNow(route){
-    // TODO apply button
-    this.router.navigate(['/']).then(el => this.router.navigate([`/jobs/details/${this.data?.jobId}`]));
+    this.router.navigateByUrl(`jobs/details/${this.data?.jobId}`)
+  }
+
+  companyRedirect(){
+    this.router.navigate([`../companies/details`], { relativeTo: this.route, queryParams: {
+      id: this.data?.companyId
+    }});
   }
 
 }

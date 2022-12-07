@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
-import { 
-  Router, 
-  ActivatedRoute 
+import {
+  Router,
+  ActivatedRoute
 } from '@angular/router';
 
 @Component({
@@ -14,8 +14,8 @@ import {
   styleUrls: ['./stat-chart.component.scss']
 })
 export class StatChartComponent implements OnInit {
-  public activityGraphChartLabels: string[] = new Array(7).fill(0).map((el, i) => "September " + i);
-  
+  public activityGraphChartLabels: string[] = new Array(7).fill(0).map((el, i) => "December " + (i + 1));
+
   /* Stacked Graph CHART */
   public activityGraphChartOptions: any = {
     indexAxis: 'x',
@@ -72,40 +72,31 @@ export class StatChartComponent implements OnInit {
       pointBackgroundColor: 'rgba(239,162,13, 1)',
       pointStyle: 'crossRot',
       tension: 0.3,
-      label: 'Hired',
+      label: 'Job Application',
       barThickness: 25,
       borderRadius: 5,
-      data: [22, 14, 17, 15, 14, 18, 12, 22, 14, 17, 15, 14, 18, 12],
+      // data: [22, 14, 17, 15, 14, 18, 12, 22, 14, 17, 15, 14, 18, 12],
+      data: [0,0,0,0,0,0,0],
       hoverBackgroundColor: 'rgba(239,162,13, 1)',
       backgroundColor: 'rgba(239,162,13, 0.2)',
       borderColor: 'rgba(239,162,13, 0.7)',
       fill: true,
       //borderDash: [10,7]
     },
-
     {
       label: 'Profile View',
       barThickness: 25,
       borderRadius: 5,
-      data: [25, 15, 13, 22, 7, 11, 20],
+      // data: [25, 15, 13, 22, 7, 11, 20],
+      data: [0,0,0,0,0,0,0],
       hoverBackgroundColor: 'rgba(53, 199, 104, 0.8)',
       backgroundColor: 'rgba(53, 199, 104, 1)',
       borderColor: 'rgba(53, 199, 104, 1)',
     },
-    
-    {
-      label: 'Job Applicantion',
-      barThickness: 25,
-      borderRadius: 5,
-      data: [35,10, 20, 21, 10, 10, 15],
-      hoverBackgroundColor: 'rgba(254, 111, 97, 0.8)',
-      backgroundColor: 'rgba(254, 111, 97, 1)',
-      borderColor: 'rgba(254, 111, 97, 1)',
-    },
 
-    
+
   ];
-  
+
 
   /* PIE CHART */
   public doughnutChartOptions: any = {
@@ -130,22 +121,23 @@ export class StatChartComponent implements OnInit {
     },
     maintainAspectRatio: false,
   };
-  
+
   public doughnutChartType: any = 'doughnut';
   public doughnutChartLegend = true;
   public doughnutChartData: any[] = [
-    { 
+    {
       label: 'Invites',
-      data: [75, 84, 45],
+      data: [0,0, 0.0000001,],
+      // data: [75, 84, 45],
       backgroundColor: [
         'rgba(9,201,134, 1)',
         'rgba(254,116,43, 1)',
-        'rgba(239,162,13, 1)'
+        '#f6f6f6'
       ],
       hoverBackgroundColor: [
         'rgba(9,201,134, 0.5)',
         'rgba(254,116,43, 0.5)',
-        'rgba(239,162,13, 0.5)'
+        '#f6f6f6'
 
       ],
       borderWidth: [0, 0],
@@ -156,7 +148,7 @@ export class StatChartComponent implements OnInit {
       cutout: ['70%', '75%', '40%'],
       //weight: [5, 1, 1, 1],
       //radius: '45%',
-      //circumference: 45,  
+      //circumference: 45,
       animation: {
         animateRotate: true,
       },
@@ -165,9 +157,9 @@ export class StatChartComponent implements OnInit {
     },
 
   ];
-  public doughnutChartLabels: string[] = ['Interviewed', 'Hired', 'Archived'];
+  public doughnutChartLabels: string[] = ['Application', 'Interviewed'];
 
-    
+
 
   constructor() { }
 

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -10,6 +10,8 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   animations: [mainAnimations]
 })
 export class PublicDetailsComponent implements OnInit {
+  @Input() isApplying: boolean = false;
+
   details$ = this.jobFacade.getJobById$;
   jobId: string;
   public screenSize: number = 1600;
@@ -28,6 +30,10 @@ export class PublicDetailsComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenSize = window.innerWidth;
+  }
+
+  apply(event){
+    this.isApplying = event;
   }
 
 }

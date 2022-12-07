@@ -1,0 +1,19 @@
+<div class="row" *ngIf="profile$ | async as profile; else noProfile">
+  <div class="col-12 col-md-12 col-lg-12">
+    <app-applicant-avatar [user]="profile"></app-applicant-avatar>
+  </div>
+
+  <div class="col-12 col-md-12 col-lg-12">
+    <app-applicant-details [user]="profile"></app-applicant-details>
+  </div>
+</div>
+
+
+<ng-template #noProfile>
+  <section class="text-center p-5 w-100">
+    <img src="assets/images/showcase.png" class="w-25" />
+    <h5 class="my-2">Update your profile to showcase your skills</h5>
+    <button class="btn btn-primary me-3 hvr-grow" (click)="redirectToEdit()">
+      Update Profile</button>
+  </section>
+</ng-template>

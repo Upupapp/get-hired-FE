@@ -1,5 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { mainAnimations } from '@main/shared/animations/main-animations';
+import { ChartConfiguration, ChartData } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import 'chartjs-adapter-moment';
+import { month } from '@app-shared/mock.data';
 
 @Component({
   selector: 'app-dashboard-charts',
@@ -9,10 +13,11 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 })
 export class DashboardChartsComponent implements OnInit {
   @Input() details: any;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  months = month;
 
-  public activityGraphChartLabels: string[] = new Array(7).fill(0).map((el, i) => "September " + i);
+  // public activityGraphChartLabels: string[] = new Array(7).fill(0).map((el, i) => "September " + i);
 
-  /* Stacked Graph CHART */
   public activityGraphChartOptions: any = {
     indexAxis: 'x',
     plugins: {
@@ -20,7 +25,6 @@ export class DashboardChartsComponent implements OnInit {
         //display: true,
         //text: 'Chart.js Bar Chart - Stacked'
       },
-
       legend: {
         position: 'right',
         labels: {
@@ -43,7 +47,10 @@ export class DashboardChartsComponent implements OnInit {
     },
     scales: {
       x: {
-        //activity: true,
+        type: 'time',
+        time: {
+          unit: 'day'
+        },
         grid: {
           display: false
         },
@@ -61,46 +68,33 @@ export class DashboardChartsComponent implements OnInit {
   public activityGraphChartType: any = 'bar';
   public activityGraphChartLegend = false;
 
-  public activityGraphChartData: any[] = [
-    {
-      type: 'line',
-      pointBorderWidth: 0,
-      pointBackgroundColor: 'rgba(239,162,13, 1)',
-      pointStyle: 'crossRot',
-      tension: 0.3,
-      label: 'Hired Applicants',
-      barThickness: 25,
-      borderRadius: 5,
-      data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-      hoverBackgroundColor: 'rgba(239,162,13, 1)',
-      backgroundColor: 'rgba(239,162,13, 0.2)',
-      borderColor: 'rgba(239,162,13, 0.7)',
-      fill: true,
-      //borderDash: [10,7]
-    },
-
-    {
-      label: 'Job View',
-      barThickness: 25,
-      borderRadius: 5,
-      data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-      hoverBackgroundColor: 'rgba(53, 199, 104, 0.8)',
-      backgroundColor: 'rgba(53, 199, 104, 1)',
-      borderColor: 'rgba(53, 199, 104, 1)',
-    },
-
-    {
-      label: 'Job Applicants',
-      barThickness: 25,
-      borderRadius: 5,
-      data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
-      hoverBackgroundColor: 'rgba(254, 111, 97, 0.8)',
-      backgroundColor: 'rgba(254, 111, 97, 1)',
-      borderColor: 'rgba(254, 111, 97, 1)',
-    },
-
-
-  ];
+  public lineChartData: ChartConfiguration['data'] = {
+    datasets: [
+      {
+        data: [],
+        label: 'JobView',
+        backgroundColor: 'rgba(148,159,177,0.2)',
+        borderColor: 'rgba(148,159,177,1)',
+        pointBackgroundColor: 'rgba(148,159,177,1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+        fill: 'origin',
+      },
+      {
+        data: [],
+        label: 'Job Applicant',
+        backgroundColor: 'rgba(77,83,96,0.2)',
+        borderColor: 'rgba(77,83,96,1)',
+        pointBackgroundColor: 'rgba(77,83,96,1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(77,83,96,1)',
+        fill: 'origin',
+      }
+    ],
+    labels: [ ]
+  };
 
 
   /* PIE CHART */
@@ -126,47 +120,39 @@ export class DashboardChartsComponent implements OnInit {
     },
     maintainAspectRatio: false,
   };
-
+  public doughnutChartLabels: string[] = ['Contacts', 'Applicants'];
   public doughnutChartType: any = 'doughnut';
   public doughnutChartLegend = true;
-  public doughnutChartData: any[] = [
-    {
-      label: 'Invites',
-      data: [0,0, 0.00000000001],
-      backgroundColor: [
-        'rgba(9,201,134, 1)',
-        'rgba(254,116,43, 1)',
-        '#e9e9e9'
-      ],
-      hoverBackgroundColor: [
-        'rgba(9,201,134, 0.5)',
-        'rgba(254,116,43, 0.5)',
-        '#e9e9e9'
-
-      ],
-      borderWidth: [0, 0],
-      hoverOffset: 6,
-      borderJoinStyle: 'miter',
-      borderAlign: 'center',
-      offset: [0, 3, 11],
-      cutout: ['70%', '75%', '40%'],
-      //weight: [5, 1, 1, 1],
-      //radius: '45%',
-      //circumference: 45,
-      animation: {
-        animateRotate: true,
-      },
-      //clip: {left: 5, top: false, right: -2, bottom: 0},
-      spacing: 0
-    },
-
-  ];
-  public doughnutChartLabels: string[] = ['Contacts', 'Applicants'];
-
-
+  public doughnutChartData: ChartData<'doughnut'> = {
+    labels: this.doughnutChartLabels,
+    datasets: []
+  };
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.details);
+    const { applicants, contacts } = this.details.statistic;
+
+    const data = { data: [parseInt(contacts), parseInt(applicants)] }
+    this.doughnutChartData.datasets.push(data);
+    this.lineChartRender();
+    this.chart?.update();
+
+  }
+
+  lineChartRender(){
+    const count = this.details.graph.map(cnt => parseInt(cnt.count));
+    const data = { data: [count] };
+    const mappedLabels = this.details.graph.map(cnt => this.getMonth(cnt.month));
+    this.lineChartData.datasets.push(data);
+    this.lineChartData.labels.push(mappedLabels);
+    this.chart?.update();
+
+  }
+
+  getMonth(monthNumber) {
+    return this.months[monthNumber + 1];
+  }
 
 }

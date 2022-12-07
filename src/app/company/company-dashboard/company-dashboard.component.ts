@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CompanyFacade } from '../state/company.facade';
 import * as Model from '../company.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-company-dashboard',
@@ -12,7 +13,26 @@ export class CompanyDashboardComponent implements OnInit {
   stat: any;
   charts: any;
 
-  dashboard$ = this.companyFacade.dashboard$;
+  dashboard$ = this.companyFacade.dashboard$
+    .pipe(
+      map(dash => {
+        if(dash) {
+          console.log(dash);
+          return {
+            company: dash.company,
+            charts: dash.charts,
+            graph: {
+              graph: dash.graph,
+              statistic: dash.statistic
+            },
+            stat: {
+              totalContacts: dash.totalContacts,
+              cities: dash.cities
+            }
+          }
+        }
+      })
+    );
 
   constructor(
     private companyFacade: CompanyFacade

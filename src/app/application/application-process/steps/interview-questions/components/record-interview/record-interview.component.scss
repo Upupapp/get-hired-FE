@@ -1,0 +1,329 @@
+.card{
+	background: #FFFFFF;
+	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
+	border-radius: 10px;
+	border: none;
+}
+
+
+.bg-interview{
+	background: #DADADA;
+	border-radius: 11px;
+	padding-top: 40px;
+	padding-left: 35px;
+	padding-right: 35px;
+	height: 110px;
+
+	img{
+		width: 40px;
+	}
+}
+
+.question-container{
+	.btn-skip{
+		box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
+		background: linear-gradient(266.44deg, #B32675 5.73%, #C8336D 109.51%);
+		border-radius: 566.808px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 10px;
+
+		color: #FFFFFF;
+		padding: 15px 5px !important
+	}
+
+	.btn-submit{
+		background: #FF7062;
+		box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
+		border-radius: 566.808px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 10px;
+
+		color: #FFFFFF;
+		padding: 15px 18px !important
+	}
+
+	.btn-upload{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 17px;
+		/* identical to box height */
+		background: #FFFFFF;
+		border: 0.629787px solid #B52775;
+		border-radius: 566.808px;
+		color: #B52775;
+		padding: 10px 5px !important;
+
+		&:hover{
+			color: #FFFFFF;
+			background: #B52775;
+			border: 0.629787px solid #B52775;
+		}
+	}
+
+	.bg-question{
+		background: #EAEAEA;
+		border-radius: 12px;
+		padding: 10px 13px 10px 20px;
+	}
+
+	.img-avatar{
+		object-position: center;
+		object-fit: cover;
+		height: 55px;
+		width: 55px;
+		border-radius: 50%;
+		border: solid 3px #c9c9c9;
+	}
+
+	.title-applicant{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 600;
+		font-size: 18px;
+		line-height: 15px;
+		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+		color: #FFFFFF;
+		&-email{
+			font-family: 'Manrope';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 12px;
+			line-height: 8px;
+			font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+			color: #D3D3D3;
+		}
+	}
+
+	.title-timer{
+		font-style: normal;
+		font-weight: 500;
+		font-size: 21.8182px;
+		line-height: 16px;
+		/* identical to box height, or 75% */
+
+		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+		color: #121212
+	}
+
+	.title-duration{
+		font-style: normal;
+		font-weight: 300;
+		font-size: 14.2727px;
+		line-height: 16px;
+		/* identical to box height, or 133% */
+
+		font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+		color: #8A8A8A;
+	}
+}
+
+.record-container{
+	background: #c9c9c9 !important;
+	min-height: 380px;
+	//height: 416px;
+	position: relative;
+	border-radius: 16px;
+
+	.placeholder-img{
+		height: auto;
+		width: 100%;
+		min-height: 380px;
+		object-position: center;
+		object-fit: cover;
+	}
+
+	.get-hired-logo{
+		background: #FFFFFF;
+		border-radius: 0px 0px 70px 70px;
+		padding: 10px 15px 18px 15px;
+		position: absolute;
+		left: 30px;
+
+		img{
+			height: 40px;
+		}
+	}
+
+	.bg-bottom{
+		position: absolute;
+		bottom: 20px;
+		padding: 0 20px
+	}
+
+	.bg-main-question{
+		background: rgba(75, 75, 75, 0.53);
+		backdrop-filter: blur(2px);
+		/* Note: backdrop-filter has minimal browser support */
+		padding: 20px 20px 10px 20px;
+		border-radius: 13px;
+		width: 70%;
+
+		p{
+			font-family: 'Manrope';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 12px;
+			line-height: 15px;
+			/* identical to box height */
+			margin-bottom: 0;
+			letter-spacing: 0.2px;
+
+			color: #FFFFFF;
+		}
+
+		h5{
+			font-style: normal;
+			font-weight: 500;
+			font-size: 15px;
+			line-height: 22px;
+			letter-spacing: 0.2px;
+
+			color: #FFFFFF;
+		}
+	}
+
+
+	.btn-take-interview{
+		background: #FB0242;
+		backdrop-filter: blur(75px);
+		border-radius: 10px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 13px;
+		line-height: 21px;
+		/* identical to box height */
+		height: 40px;
+
+
+		color: #fff;
+
+		&:hover{
+			background: #FE6F61;
+			color: white;
+		}
+	}
+
+	.btn-settings{
+		background: #FB0242;
+		backdrop-filter: blur(75px);
+		border-radius: 10px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		/* identical to box height */
+		height: 40px;
+		padding-left: 5px !important;
+		padding-right: 0 !important;
+	}
+
+}
+
+.bg-timer{
+	background: #FFFFFF;
+	box-shadow: 0px 10px 15px rgba(109, 109, 109, 0.19);
+	border-radius: 19.0909px;
+	padding: 5px 20px 0px 20px;
+}
+
+.bg-applicant{
+	background: #444152;
+	/* shawos */
+
+	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
+	border-radius: 16px 16px 0px 0px;
+}
+
+.progress{
+    .progress-bar{
+        background: #FE6F61;
+        box-shadow: 0px 13.7246px 28.5928px rgba(46, 46, 46, 0.04);
+        border-radius: 20.5868px;
+    }
+}
+
+.active{
+	border-bottom: solid 3px #FF7062 !important;
+	font-weight: 600 !important;
+	color: #050229 !important;
+}
+
+
+.title-job-interview{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px !important;
+	line-height: 34px;
+
+	width: 162px;
+	/* identical to box height, or 170% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #A6A6A6;
+	border-bottom: solid 3px #fff;
+	cursor: pointer;
+}
+
+.title-job-answer{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-size: 16px !important;
+	line-height: 34px;
+	font-weight: 400;
+	width: 150px;
+	/* identical to box height, or 170% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #A6A6A6;
+	border-bottom: solid 3px #fff;
+	cursor: pointer;
+}
+
+.title-question-number{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 15px;
+	/* or 94% */
+	margin-bottom: 10px;
+
+	color: #808080;
+}
+
+.title-question-title{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+	line-height: 18px;
+	/* or 100% */
+
+
+	color: #4D4D4D;
+}
+
+
+
+.form-control{
+	background: #FFFFFF;
+	border: 1px solid #AFBCC6 !important;
+}
+
+
+

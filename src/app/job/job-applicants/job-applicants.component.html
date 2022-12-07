@@ -1,0 +1,54 @@
+<section *ngIf="job$ | async as job">
+  <div class="px-4 mt-4 ms-1">
+    <p class="breadcrumb-label">
+      <img src="/assets/images/placeholder/icons/home.png" style="height: 14px; margin-top: -3px;" class="me-2">
+      <span (click)="redirectTo('recruiter/jobs/list')">Jobs</span> /
+      <span>{{job?.jobId}}</span> /
+      Applicants
+    </p>
+  </div>
+
+  <div class="ps-4 pe-4" id="job-order-main-container">
+    <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+      <div class="card card-body py-3">
+        <div class="w-100">
+          <!-- <div class="float-end">
+            <button class="btn btn-add-service" (click)="inviteApplicant()">
+              Invite Applicant
+              <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1">
+            </button>
+          </div> -->
+
+          <div class="float-end me-2">
+            <button class="btn btn-save-draft" (click)="goBack()">Back</button>
+          </div>
+
+          <span class="main-title mt-3 mb-0">
+            {{job?.jobTitle}}
+          </span> (<small>{{job?.workSetupName}}, {{job?.jobTypeName}}</small>)
+          <span class="d-flex flex-wrap">
+            <ng-container *ngFor="let tag of job?.tags, 'skill_requirements'">
+              <span class="flex-wrap me-2 talent-badge">{{tag}}
+              </span>
+            </ng-container>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO add status -->
+  <div *ngIf="applicants$ | async as applicants" class="px-4 mt-2">
+    <div class="card card-body" *ngIf="!loading">
+      <app-reusable-table [loading]="loading"
+        (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'"
+        [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
+        [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10"
+        [listDataSource]="applicants" (actionOfButton)="viewCv($event)">
+      </app-reusable-table>
+    </div>
+
+    <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
+    </custom-profile-loader>
+  </div>
+</section>

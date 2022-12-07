@@ -96,3 +96,8 @@ export const jobLoading = createSelector(
   getJobInitState,
   state => state.jobLoading
 );
+
+export const getjobApplicants = createSelector(
+  getJobInitState,
+  state => state.applicants
+);

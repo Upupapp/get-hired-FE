@@ -10,9 +10,17 @@ export const enum GroupActionTypes {
 	GET_CONTACT_GROUP_LIST_SUCCESS = '[Contact Group] Get Contact Group list Success', 
 	GET_CONTACT_GROUP_LIST_FAIL = '[Contact Group] Get Contact Group list Fail',
 
-	SAVE_GROUP = '[Contact Group] Save Contact Group', 
-	SAVE_GROUP_SUCCESS = '[Contact Group] Save Contact Group Success', 
-	SAVE_GROUP_FAIL = '[Contact Group] Save Contact Group Fail',
+	EDIT_GROUP = '[Groups] Group Contact', 
+	EDIT_GROUP_SUCCESS = '[Groups] Group Contact Success', 
+	EDIT_GROUP_FAIL = '[Groups] Group Contact Fail',
+
+	DELETE_GROUP = '[Groups] Delete Group', 
+	DELETE_GROUP_SUCCESS = '[Groups] Delete Group Success', 
+	DELETE_GROUP_FAIL = '[Groups] Delete Group Fail',
+
+	SAVE_GROUP = '[Groups Group] Save Groups Group', 
+	SAVE_GROUP_SUCCESS = '[Groups Group] Save Groups Group Success', 
+	SAVE_GROUP_FAIL = '[Groups Group] Save Groups Group Fail',
 }
 
 export class GetGroupList implements Action {
@@ -60,6 +68,36 @@ export class SaveGroupFail implements Action {
 	constructor(public payload: any) { }
 }
 
+export class EditGroup implements Action {
+	public readonly type = GroupActionTypes.EDIT_GROUP;
+	constructor(public payload: any) { }
+}
+
+export class EditGroupSuccess implements Action {
+	public readonly type = GroupActionTypes.EDIT_GROUP_SUCCESS;
+	constructor(public payload: any) { }
+}
+
+export class EditGroupFail implements Action {
+	public readonly type = GroupActionTypes.EDIT_GROUP_FAIL;
+	constructor(public payload: any) { }
+}
+
+export class DeleteGroup implements Action {
+	public readonly type = GroupActionTypes.DELETE_GROUP;
+	constructor(public payload: any) { }
+}
+
+export class DeleteGroupSuccess implements Action {
+	public readonly type = GroupActionTypes.DELETE_GROUP_SUCCESS;
+	constructor(public payload: any) { }
+}
+
+export class DeleteGroupFail implements Action {
+	public readonly type = GroupActionTypes.DELETE_GROUP_FAIL;
+	constructor(public payload: any) { }
+}
+
 export type GroupAction =
     GetGroupList
 |   GetGroupListSuccess
@@ -69,4 +107,10 @@ export type GroupAction =
 |   GetContactGroupListFail
 |	SaveGroup
 |	SaveGroupSuccess
-|	SaveGroupFail;
+|	SaveGroupFail
+|	EditGroup
+|	EditGroupSuccess
+|	EditGroupFail
+|	DeleteGroup
+|	DeleteGroupSuccess
+|	DeleteGroupFail;

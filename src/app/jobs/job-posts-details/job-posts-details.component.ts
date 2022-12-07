@@ -1,5 +1,5 @@
-import { Component, HostListener, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, HostListener, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -8,6 +8,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { environment } from "@environments/environment";
 import { catchError, of, Subscription, tap } from 'rxjs';
 import { JobsService } from '../jobs.service';
+import { CoreService } from '@app-core/services/core.service';
 
 @Component({
   selector: 'app-job-posts-details',
@@ -17,25 +18,32 @@ import { JobsService } from '../jobs.service';
 })
 export class JobPostsDetailsComponent implements OnInit {
   @Input() withBanner: boolean = true;
+  @Output() apply = new EventEmitter();
   details$ = this.jobFacade.getJobById$;
   link$: Subscription;
   jobId: string;
+  isLoggedIn: boolean = false;
+  userRole: string;
 
   public screenSize: number = 1600;
 
   constructor(
     private jobFacade: JobFacade,
     private route: ActivatedRoute,
+    private router: Router,
     public location: Location,
     private clipboard: Clipboard,
     private snackBar: MatSnackBar,
-    private jobsService: JobsService
+    private jobsService: JobsService,
+    private coreService: CoreService
   ) {
     this.jobId = this.route.snapshot.params['id']
   }
 
   ngOnInit(): void {
-    this.jobFacade.getJobById(this.jobId)
+    this.jobFacade.getJobById(this.jobId);
+    this.coreService.getRole()
+      .then(role => this.userRole = role );
   }
 
   @HostListener('window:resize', ['$event'])
@@ -47,16 +55,22 @@ export class JobPostsDetailsComponent implements OnInit {
     this.location.back();
   }
 
+  toApply(){
+    this.apply.emit(true);
+  }
+
   getShareableLink(jobId: string) {
     this.link$ = this.jobsService.getShareableLink(jobId)
       .pipe(
         tap(res => {
           if(res.data) {
             console.log(res.data);
-            this.clipboard.copy(res.data)
+            this.clipboard.copy(res.data.shortLink)
             this.snackBar.open(`Link copied to your clipboard`, '', {
               duration: 4000,
-              panelClass: 'success-snackbar'
+              panelClass: 'success-snackbar',
+              horizontalPosition: 'right',
+              verticalPosition: 'top'
             });
           }
         }),

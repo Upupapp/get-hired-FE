@@ -8,6 +8,8 @@ import { EmployerCompanyDetailsComponent } from './employer-company-details/empl
 import { EmployerCompanyUsersComponent } from './employer-company-users/employer-company-users.component';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EmployerCompanyComponent } from '../employer-company/employer-company.component';
+import { EmployerAccountSettingsComponent } from './employer-account-settings/employer-account-settings.component';
+import { AuthFacade } from '@main/auth/state/auth.facade';
 // import { AuthModule } from '@main/auth/auth.module';
 // import { AuthModule } from '@main/auth/auth.module';
 
@@ -22,7 +24,8 @@ const routes: Routes = [
     EmployerSettingsComponent,
     EmployerCompanyDetailsComponent,
     EmployerCompanyUsersComponent,
-    EmployerCompanyComponent
+    EmployerCompanyComponent,
+    EmployerAccountSettingsComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +35,6 @@ const routes: Routes = [
     // AuthModule,
     RouterModule.forChild(routes)
   ],
-  providers:[]
+  providers:[AuthFacade]
 })
 export class EmployerSettingsModule { }
