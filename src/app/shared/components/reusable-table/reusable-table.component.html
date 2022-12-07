@@ -137,6 +137,7 @@
 						 && header?.type !== 'date'
 						 && header?.type !== 'action_button'
 						 && header?.col_name !== 'status'
+             && header?.col_name !== 'members'
              && header?.col_name !== 'groups'" [ngClass]="header?.type === 'hash_code' ? 'text-primary' : ''">
               <!-- TRUE | FALSE VALUE CONVERT TO YES OR NO -->
               <span *ngIf="header?.type === 'currency'">$</span>
@@ -172,6 +173,11 @@
                 {{ data[header?.col_name] }} </button>
             </span>
 
+            <span *ngIf="header?.col_name === 'members'">
+              <button class="btn btn-member" (click)="redirectTo(data)">
+                {{ data[header?.col_name] }}</button>
+            </span>
+
             <span *ngIf="header?.col_name == 'profile_image'" class="table_img">
               <img [src]="data?.profile_image">
             </span>
@@ -204,7 +210,8 @@
 							 && header?.col_name !== 'icon'
 							 && header?.col_name !== 'action'
 							 && header?.type !== 'date'
-							 && header?.col_name !== 'status'" [ngClass]="header?.type === 'hash_code' ? 'order-number' : ''">
+							 && header?.col_name !== 'status'
+               && header?.col_name !== 'members'" [ngClass]="header?.type === 'hash_code' ? 'order-number' : ''">
                 <!-- TRUE | FALSE VALUE CONVERT TO YES OR NO -->
 
                 {{header?.title}}:

@@ -80,7 +80,6 @@ export class CandidateListComponent implements OnInit {
     private jobService: JobService
     ) {
       this.jobId = this.route.snapshot.params['id'];
-      console.log("jobId: ", this.jobId)
   }
 
   ngOnInit(): void {
@@ -93,7 +92,6 @@ export class CandidateListComponent implements OnInit {
 
       if(candidate.candidateList.length > 0){
         const result = candidate.candidateList.filter(item => this.jobId.includes(item.job_id));
-        console.log("result :", result);
         this.candidateList = result;
       } else {
         this.candidateList = [];
@@ -154,12 +152,11 @@ export class CandidateListComponent implements OnInit {
         width: '34vw',
         data: event?.data,
       });
-  
+
       openDialog
         .afterClosed()
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe(result => {
-          console.log(result);
           if(result && result.profile) {
             this.getApplicant(result.data.candidate_id);
           }
@@ -180,5 +177,5 @@ export class CandidateListComponent implements OnInit {
         }
       })
   }
-  
+
 }

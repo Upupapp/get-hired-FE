@@ -61,27 +61,19 @@ export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactiv
     const logged = await this.asyncLocalStorage.getItem('state');
     const role = await this.asyncLocalStorage.getItem('role');
 
-    console.log(url);
-    console.log(this.router.config);
-    console.log(logged);
-
     if (logged != 'true') {
-      console.log('HOY Login!');
       this.router.resetConfig([
         ...authRoutes
       ]);
       return false;
     } else {
       if(role != '3') {
-        console.log('Ligaw');
         this.router.resetConfig([
           ...adminRoutes,
           ...employerRoutes
         ]);
         return false;
       } else {
-        console.log('dito b? baka');
-
         return true
       }
     }

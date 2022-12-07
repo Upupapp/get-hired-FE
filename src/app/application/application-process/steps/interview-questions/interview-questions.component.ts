@@ -38,6 +38,7 @@ export class InterviewQuestionsComponent implements OnInit {
   }
 
   changeQuestion(index) {
+    console.log(index);
     if (index < this.interviews.length) {
       this.selectedIndex = index;
     } else {

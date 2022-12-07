@@ -49,7 +49,6 @@ export class ApplicantDashboardComponent implements OnInit {
     this.applicantService.getDashboardDetails()
       .pipe().subscribe(dash => {
         const { data } = dash;
-        console.log(data);
         this.charts = data.charts;
 
         this.cardDetails = {

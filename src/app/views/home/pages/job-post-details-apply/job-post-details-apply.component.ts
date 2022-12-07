@@ -70,7 +70,7 @@ export class JobPostDetailsApplyComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    public router: Router,  
+    public router: Router,
     public route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -79,7 +79,6 @@ export class JobPostDetailsApplyComponent implements OnInit {
     let id = this.route.snapshot.params['id'] * 1;
     this.selectedJobPost = this.jobLists.find(el => el.id === id);
     this.selectedCompany = this.companyLists.find(el => el.id === this.selectedJobPost?.company_id);
-    console.log(id, this.selectedJobPost)
 
     window.scrollTo({
       top: 0,
@@ -114,8 +113,6 @@ export class JobPostDetailsApplyComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
-        console.log(result)
-
         if(result?.skip){
           this.changeStep(4);
         }
