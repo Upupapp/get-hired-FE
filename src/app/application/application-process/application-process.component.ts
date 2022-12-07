@@ -161,7 +161,7 @@ export class ApplicationProcessComponent implements OnInit {
     if (event == 'submitted') {
       this.isSubmitting = false;
 
-      this.snackBar.open(`You have been successfully Applied to this job`, '', {
+      this.snackBar.open(`You have successfully applied to this job`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
