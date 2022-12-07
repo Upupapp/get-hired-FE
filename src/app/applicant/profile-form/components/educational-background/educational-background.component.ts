@@ -21,6 +21,7 @@ export class EducationalBackgroundComponent implements OnInit {
   educBgForm: FormGroup;
 
   level$ = this.applicantFacade.level$;
+  public levelOfEducation: string[] = ["Primary education", "Upper Secondary Education", "Bachelor’s or equivalent level", "Master’s or equivalent level", "Doctoral or equivalent level"]
 
   constructor(
     private fb: FormBuilder,

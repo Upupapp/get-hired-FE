@@ -51,7 +51,7 @@
         <div class="float-end text-end">
           <div class="title-duration mb-2">
             <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
-            {{item?.startMonth}}, {{ item.startYear }} - {{item?.endMonth}}, {{ item.endYear }}
+            {{item?.startMonth}}, {{ item.startYear }} - <span *ngIf="item.endYear">{{item?.endMonth}}, {{ item.endYear }}</span><span *ngIf="!item.endYear"> Present </span>
           </div>
           <span class="title-job-type">{{item?.jobTypeName}}</span>
 
