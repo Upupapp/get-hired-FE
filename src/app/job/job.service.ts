@@ -29,6 +29,10 @@ export class JobService {
     }
   }
 
+  getJobApplicantsByJobId(jobId: string) {
+    return this.baseService.get<Model.JobApplicants[]>(`${this.jobUrl}/applicants?id=${jobId}`);
+  }
+
   getJobBasicList(companyId: string) {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
   }

@@ -36,13 +36,12 @@ export class TableControlModalComponent implements OnInit {
     //   background: "#D7F4F8"
     // },
 
-    // {
-    //   id: "view-applicants",
-    //   title: "View Applicants",
-    //   icon: "/assets/images/icons/client-menu/service-templates.png",
-    //   background: "#f7f2e4"
-    // },
-
+    {
+      id: "view-applicants",
+      title: "View Applicants",
+      icon: "/assets/images/icons/client-menu/service-templates.png",
+      background: "#f7f2e4"
+    },
     {
       id: "create-interview",
       title: "Create Interview",
@@ -125,7 +124,11 @@ export class TableControlModalComponent implements OnInit {
 
     else if(menu?.id === 'view-applicants'){
       this.dialogRef.close();
-      this.router.navigate([`/company/jobs/${this.data?.data?.id}/applicants`])
+      this.router.navigate([`recruiter/jobs/applicants`], {
+        queryParams: {
+          id: this.data?.jobId
+        }
+      })
     }
 
     else if(menu?.id === 'create-interview'){
@@ -137,7 +140,7 @@ export class TableControlModalComponent implements OnInit {
       this.dialogRef.close(this.data);
     }
 
-    
+
   }
 
 

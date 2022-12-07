@@ -25,7 +25,8 @@ export interface JobState {
   jobInfo: Model.JobInfo;
   interview: InterviewModel.InterviewQuestion[],
   job: Model.Job | null;
-  jobLoading: boolean
+  jobLoading: boolean;
+  applicants: Model.JobApplicants[]
 }
 
 const initialState: JobState  = {
@@ -45,7 +46,8 @@ const initialState: JobState  = {
   jobInfo: null,
   interview: [],
   job: null,
-  jobLoading: false
+  jobLoading: false,
+  applicants: []
 }
 
 export const jobReducer = createReducer<JobState>(
@@ -336,6 +338,28 @@ export const jobReducer = createReducer<JobState>(
     };
   }),
   on(JobActions.getJobFail, (state, action): JobState => {
+    return {
+      ...state,
+      jobLoading: false,
+      error: action.payload,
+      succesMsg: null
+    };
+  }),
+  on(JobActions.getJobApplicants, (state): JobState => {
+    return {
+      ...state,
+      jobLoading: true,
+      succesMsg: null
+    };
+  }),
+  on(JobActions.getJobApplicantsSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      applicants: action.applicants,
+      jobLoading: false,
+    };
+  }),
+  on(JobActions.getJobApplicantsFail, (state, action): JobState => {
     return {
       ...state,
       jobLoading: false,

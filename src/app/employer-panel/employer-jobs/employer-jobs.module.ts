@@ -8,12 +8,14 @@ import { EmployerJoblistComponent } from './employer-joblist/employer-joblist.co
 import { EmployerJobexpiredComponent } from './employer-jobexpired/employer-jobexpired.component';
 import { EmployerJobcreateComponent } from './employer-jobcreate/employer-jobcreate.component';
 import { EmployerJobviewComponent } from './employer-jobview/employer-jobview.component';
+import { EmployerApplicantsComponent } from '../employer-applicants/employer-applicants.component';
 
 const routes: Routes = [
   { path: 'list', component: EmployerJoblistComponent },
   { path: 'expired', component: EmployerJobexpiredComponent },
   { path: 'create', component: EmployerJobcreateComponent },
   { path: 'edit', component: EmployerJobcreateComponent },
+  { path: 'applicants', component: EmployerApplicantsComponent },
   { path: 'view', component: EmployerJobviewComponent },
   { path: '', redirectTo: 'list', pathMatch: 'full' },
 ];
@@ -24,7 +26,8 @@ const routes: Routes = [
     EmployerJoblistComponent,
     EmployerJobexpiredComponent,
     EmployerJobcreateComponent,
-    EmployerJobviewComponent
+    EmployerJobviewComponent,
+    EmployerApplicantsComponent,
   ],
   imports: [
     CommonModule,

@@ -25,6 +25,7 @@ export class JobFacade {
   interview$ = this.store.pipe(select(fromfeature.getJobInterview));
   getJobById$ = this.store.pipe(select(fromfeature.getJobById));
   getJobLoading$ = this.store.pipe(select(fromfeature.jobLoading));
+  applicants$ = this.store.pipe(select(fromfeature.getjobApplicants));
   error$: any;
 
   constructor(
@@ -35,9 +36,9 @@ export class JobFacade {
   //   this.store.dispatch(JobAction.getAlljob());
   // }
 
-  // getJobDetails(userId: string) {
-  //   this.store.dispatch(JobAction.getJobDetails({ userId }));
-  // }
+  getApplicants(jobId: string) {
+    this.store.dispatch(JobAction.getJobApplicants({ jobId }));
+  }
 
   // saveProfile(userProfile: Model.Job) {
   //   this.store.dispatch(JobAction.updateProfile({ userProfile }));
