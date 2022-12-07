@@ -14,6 +14,9 @@ import * as InterviewModel from '@main/interview/interview.model';
 export class ApplicationPreviewComponent implements OnInit {
   @Input() profile: any;
   @Input() interviews: InterviewModel.InterviewQuestion[];
+  @Input() docs: any;
+  @Input() applicantAnswers: any;
+
   govFiles = [];
   resume = [];
   coverLetter = [];
@@ -43,10 +46,27 @@ export class ApplicationPreviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.govFiles = this.docGovFile.value;
-    this.resume = this.docResume.value;
-    this.coverLetter = this.docCover.value;
-    this.answers = this.answersArray.value;
+    console.log(this.docs);
+
+    if (this.rootFormGroup.control) {
+      this.govFiles = this.docGovFile.value;
+      this.resume = this.docResume.value;
+      this.coverLetter = this.docCover.value;
+      this.answers = this.answersArray.value;
+    } else {
+      this.govFiles = this.docs.governmentFiles;
+      this.resume = this.docs.resume;
+      this.coverLetter = this.docs.coverLetter;
+
+      this.answers = this.applicantAnswers.map(answer => {
+        return {
+          ...answer,
+          index: this.interviews.findIndex(intv => intv.questionId === answer.questionId)
+        }
+      })
+    }
+
+    console.log(this.govFiles);
   }
 
   viewMore() {
