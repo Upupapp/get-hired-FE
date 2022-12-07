@@ -52,7 +52,7 @@
         <div class="row bg-applicant py-2">
           <div class="col-12 col-lg-6 d-flex align-items-center">
             <div class="w-100">
-              <div class="initial-thumbnail-inner mx-auto" >
+              <div class="initial-thumbnail-inner mx-auto" *ngIf="fullName">
                 {{ fullName.charAt(0) }}
               </div>
               <!-- <div>
