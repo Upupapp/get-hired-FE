@@ -13,12 +13,11 @@
       <!-- <h5 class="title-main">Video Introduction </h5> -->
       <div style="position: relative; z-index: 99 !important;">
         <video class="w-100"controls
-          style="border-radius: 6px !important; 
-          background: gray !important; 
-          padding: 0 !important; 
-          " 
+          style="border-radius: 6px !important;
+          background: gray !important;
+          padding: 0 !important;"
           #preview class="w-100" height="330" >
-          <source [src]="user.videoCVUrl" type="video/webm">
+          <source [src]="user.videoCVUrl + '#t=0'" type="video/webm">
         </video>
         <!-- <img src="/assets/images/placeholder/icons/play-button.png" class="play-button">
 				<img src="/assets/images/placeholder/video-placeholder-2.png" width="100%"> -->
@@ -59,7 +58,6 @@
             {{item?.startMonth}}, {{ item.startYear }} - <span *ngIf="item.endYear">{{item?.endMonth}}, {{ item.endYear }}</span><span *ngIf="!item.endYear"> Present </span>
           </div>
           <span class="title-job-type">{{item?.jobTypeName}}</span>
-
         </div>
       </h5>
 

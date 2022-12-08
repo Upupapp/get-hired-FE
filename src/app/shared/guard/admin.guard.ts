@@ -55,28 +55,19 @@ export class AdminGuard implements CanActivate, CanActivateChild, CanDeactivate<
     const logged = await this.asyncLocalStorage.getItem('state');
     const role = await this.asyncLocalStorage.getItem('role');
 
-    console.log(url);
-    console.log(this.router.config);
-    console.log(logged);
-
     if (logged != 'true') {
-      console.log('HOY Login!');
       this.router.resetConfig([
         ...authRoutes
       ]);
       return false;
     } else {
-      console.log('dito b?');
       if(role != '1') {
-        console.log('Ligaw');
         this.router.resetConfig([
           ...employerRoutes,
           ...applicantRoutes
         ]);
         return false;
       } else {
-        console.log('dito b ulit?');
-
         return true
       }
     }

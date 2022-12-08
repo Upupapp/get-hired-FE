@@ -41,17 +41,17 @@
     <div class="col-12 col-lg-6" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
       <div class="card card-body h-100">
         <h5 class="title-preview mb-4">Preview Video File</h5>
-        <img src="/assets/images/video-placeholder.png" class="w-100 h-100" 
+        <img src="/assets/images/video-placeholder.png" class="w-100 h-100"
         *ngIf="!previewBlob" />
         <!-- <video #preview class="w-100" height="340" controls autoplay="autoplay">
           <source *ngIf="previewBlob" [src]="previewBlob">
         </video> -->
-        <video #preview class="w-100" height="330" 
+        <video #preview class="w-100" height="330"
           controls autoplay="autoplay"
-          style="border-radius: 6px !important; 
-          background: gray !important; 
-          padding: 0 !important;" 
-          *ngIf="previewBlob" [src]="previewBlob">
+          style="border-radius: 6px !important;
+          background: gray !important;
+          padding: 0 !important;"
+          *ngIf="previewBlob" [src]="previewBlob + '#t=0'">
         </video>
       </div>
     </div>

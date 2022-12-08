@@ -20,6 +20,7 @@
     ],
     "paths": {
       "@app-applicant/*": ["app/applicant/*"],
+      "@app-application/*": ["app/application/*"],
       "@app-core/*": ["app/core/*"],
       "@environments/*": ["environments/*"],
       "@app-shared/*": ["app/shared/*"],

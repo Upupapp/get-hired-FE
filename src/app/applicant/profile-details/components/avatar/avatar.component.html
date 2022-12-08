@@ -75,8 +75,8 @@
             <td class="title-label" style="width: 30px">
               <img src="/assets/images/placeholder/icons/document.png" style="height: 20px">
             </td>
-            <td class="title-label" (click)="viewDocs(doc.fileurl)">{{doc.filename}}</td>
-            <td class="title-details download text-end pe-lg-5">
+            <td class="title-label" (click)="viewDocs(doc)">{{doc.filename}}</td>
+            <td (click)="downloadFile(doc)" class="title-details download text-end pe-lg-5">
               <img src="/assets/images/placeholder/icons/download.png">
             </td>
           </tr>

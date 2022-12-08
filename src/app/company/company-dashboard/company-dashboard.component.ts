@@ -23,7 +23,8 @@ export class CompanyDashboardComponent implements OnInit {
             charts: dash.charts,
             graph: {
               graph: dash.graph,
-              statistic: dash.statistic
+              statistic: dash.statistic,
+              jobViews: dash.jobViews
             },
             stat: {
               totalContacts: dash.totalContacts,

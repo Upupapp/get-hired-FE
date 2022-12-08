@@ -183,8 +183,6 @@ export class StatChartComponent implements OnInit {
   }
 
   getMonth(monthNumber) {
-
-    console.log(monthNumber);
     return this.months[monthNumber -1];
   }
 

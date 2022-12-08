@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy } from '@angular/compiler';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
@@ -47,7 +48,8 @@ export class EmployerSettingsComponent implements OnInit {
   constructor(
     private employeeFacade: EmployeeFacade,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {

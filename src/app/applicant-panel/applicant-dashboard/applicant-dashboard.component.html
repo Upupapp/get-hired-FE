@@ -8,7 +8,8 @@
 
 <div class="alert" [class.visible]="isVisible" *ngIf="isVisible">
   <h5>Stay Up to Date</h5>
-  <span>Update your profile to showcase your skills</span>
+  <u (click)="redirectToEdit()" class="cursor-pointer">Update your profile</u><span> to showcase your skills</span>
+
   <button class="btn" (click)="closeSnackbar()"><i class="bi bi-x"></i></button>
 </div>
 
