@@ -1,3 +1,11 @@
+.card{
+	background: #FFFFFF;
+	border: 1px solid #F5F5F5;
+	box-shadow: 0px 6px 15px rgba(128, 128, 128, 0.1);
+	border-radius: 8px;
+	padding: 20px 30px 20px 40px !important;
+}
+
 #profile-document{
 	.card{
 		background: #FFFFFF;
@@ -177,6 +185,7 @@
 			border-radius: 14px;
 			height: 100px;
 			width: 100px;
+			min-width: 100px;
 
 			img{
 				width: auto;
@@ -206,6 +215,7 @@
 		border-radius: 14px;
 		height: 100px;
 		width: 100px;
+		min-width: 100px;
 
 		img{
 			width: auto;
