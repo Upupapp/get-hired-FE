@@ -75,7 +75,7 @@ export class ImportAddCandidateComponent implements OnInit {
       groupId: ['']
     });
     // this.importCandidateForm = this.formBuilder.group({
-    //   groupName: ['', [Validators.required]],
+    //   groupName: [''],
     //   groupId: ['']
     // });
     this.candidateData$ = this.candidateState.pipe(select(state => state.candidate));
@@ -253,6 +253,10 @@ export class ImportAddCandidateComponent implements OnInit {
 
     if (this.isValidCSVFile(files[0])) {
       this.document= files[0].name;
+      this.importCandidateForm = this.formBuilder.group({
+        groupName: [''],
+        groupId: ['']
+      });
       this.fileData = files[0];
 
       let input = $event.target;
