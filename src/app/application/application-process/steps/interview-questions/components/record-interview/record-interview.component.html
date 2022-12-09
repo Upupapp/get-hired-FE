@@ -12,11 +12,11 @@
             *ngIf="!isVideoRecording && !previewBlob"
             class="placeholder-img">
 
-          <video #videoElement class="w-100" height="auto" controls autoplay="autoplay" [src]="videoBlobUrl + '#t=0'"
+          <video #videoElement class="w-100" height="auto" controls autoplay="autoplay" [src]="videoBlobUrl"
             *ngIf="isVideoRecording"></video>
 
           <video #previewElement
-            class="w-100 wala-lang" height="auto" controls autoplay="autoplay" [src]="previewBlob + '#t=0'"
+            class="w-100 wala-lang" height="auto" controls autoplay="autoplay" [src]="previewBlob"
             *ngIf="!isVideoRecording && previewBlob" style="max-height: 380px; border-radius: 16px"></video>
 
           <div class="bg-bottom w-100" *ngIf="!videoBlob">
