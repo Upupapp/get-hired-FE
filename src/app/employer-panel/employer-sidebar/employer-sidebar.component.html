@@ -22,11 +22,31 @@
 						<img [src]="'assets/images/placeholder/icons/company-panel-' + item?.icon"
 						[ngClass]="item?.class">
 					</div>
-					<h5 class="sidebar-title">{{item?.title}}</h5>
+					<h5 class="sidebar-title">{{item?.title}}
+						<img src="/assets/images/placeholder/icons/caret-white.png" 
+						*ngIf="item?.sub_routes?.length > 0"
+						[ngClass]="location?.match(item?.route) ? 'active-caret' : 'inactive-caret'">
+					</h5>
 				</div>
 
 				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
-					<ng-container *ngFor="let sub_route of item?.sub_routes">
+					<ul class="tree text-start p-0" 
+					[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
+					style=" list-style-type: none;">
+					  	<li>
+						    <ul style=" list-style-type: none;">
+						    	<li *ngFor="let sub_route of item?.sub_routes">
+						    		<span class="tree_label">
+						    			<span class="sub-label hvr-grow"
+						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"	[ngClass]="location === ('/recruiter/' + sub_route?.route) ? 'sub-label-active' : ''" >{{sub_route?.title}}</span>
+						    		</span>
+						    	</li>
+						    </ul>
+					  	</li>
+
+					</ul>
+
+					<!-- <ng-container *ngFor="let sub_route of item?.sub_routes">
 						<div [@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
 						[ngClass]="location === ('/recruiter/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'"
 						style="margin-top: -10px; margin-bottom: 19px;">
@@ -35,13 +55,13 @@
 								{{sub_route?.title}}
 							</button>
 						</div>
-					</ng-container>
+					</ng-container> -->
 				</ng-container>
 			</ng-container>
 		</div>
 
 		<div class="px-2" style="background: #7A637F;">
-			<div class="card card-body py-4 bg-user"
+			<div class="card card-body py-3 bg-user"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex" *ngIf="screenHeight > 685">
 					<!-- <img src="assets/images/face-6.jpg" class="img-avatar me-2">-->

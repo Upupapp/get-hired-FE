@@ -4,6 +4,7 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import 'chartjs-adapter-moment';
 import { month } from '@app-shared/mock.data';
+import { format } from 'date-fns';
 import moment from "moment";
 
 @Component({
@@ -167,14 +168,14 @@ export class DashboardChartsComponent implements OnInit {
 
     if(jobViews.length > jobApplicants.length){
       jobViews.forEach(element => {
-        graphData.labels.push(moment(element.date).format('MMMM DD YYYY')),
+        graphData.labels.push(moment(element.date).format('MMM DD')),
         graphData.jobViews.push(element.count);
         graphData.jobApplicants.push(jobApplicants.find(x => x.date === element.date) ? jobApplicants.find(x => x.date === element.date)['count'] : 0);
 
       });
     } else {
       jobApplicants.forEach(element => {
-        graphData.labels.push(moment(element.date).format('MMMM DD YYYY')),
+        graphData.labels.push(moment(element.date).format('MMM DD')),
         graphData.jobViews.push(element.count);
         graphData.jobApplicants.push(jobViews.find(x => x.date === element.date) ? jobViews.find(x => x.date === element.date)['count'] : 0)
 
