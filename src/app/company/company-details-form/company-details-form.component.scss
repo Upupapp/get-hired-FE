@@ -341,6 +341,9 @@ label{
 	padding: 20px;
 	background-repeat: no-repeat;
 	//background-color: rgba(0, 0, 0, 0.1)!important;
+	@media(max-width: 1280px){
+		margin-top: 20px;
+	}
 
 }
 
@@ -352,4 +355,9 @@ label{
 	width: 200px;
 	border-radius: 50%;
 	border: solid 2px #c9c9c9;
+
+	@media(max-width: 1280px){
+		max-width: 150px;
+		max-height: 150px;
+	}
 }

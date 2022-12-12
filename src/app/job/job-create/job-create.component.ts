@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   mode: string;
   delayControl: boolean = true;
   public jobId: any = null;
+  public screenWidth: number = 1200;
   subscriptions = new Subscription();
   asyncLocalStorage = {
     setItem: async function (key, value) {
@@ -43,7 +44,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   initial$: any;
   info$: any;
   status: any = 1;
-
   stepperItems: any[] = [
     {
       id: 1,
@@ -94,6 +94,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.screenWidth = window.innerWidth;
     setTimeout(() => this.delayControl = false, 900);
 
     this.editJob$.subscribe((data: any) => {
@@ -110,9 +111,16 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.screenWidth = window.innerWidth;
+  }
+
   onLoad(isLoading) {
     this.loading = isLoading;
   }
+
+
 
   setFormGroup(data?: any) {
     this.jobForm = this.fb.group({
