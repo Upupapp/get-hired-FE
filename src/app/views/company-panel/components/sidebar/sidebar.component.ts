@@ -70,6 +70,10 @@ export class SidebarComponent implements OnInit {
         },  
 
         {
+          title: 'Contact Group',  icon: 'contact-list.png', class: 'contact-list', route: 'contact-group'
+        },  
+
+        {
           title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contact-list/candidates', 
         }, 
 
