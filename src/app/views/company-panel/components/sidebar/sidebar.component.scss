@@ -275,7 +275,7 @@
   padding: 0 0 25px 10px;
 }
 
-.tree ul li { padding: 14px 0 0 14px; }
+.tree ul li { padding: 8px 0 0 14px; }
 
 .tree > li:last-child { padding-bottom: 0; }
 
@@ -292,8 +292,8 @@
 
 .sub-label{
 	//background: #ACEAE3;
-	margin-top: -30px;
-	padding: 10px 20px;
+	margin-top: -25px;
+	padding: 8px 20px 8px 20px;
 	border-radius: 0px;
 	cursor: pointer;
 	width: 100%;
@@ -326,11 +326,11 @@ label.tree_label:before {
   float: left;
   margin: 0 14px 0 -27px;
   width: 14px;
-  height: 14px;
+  height: 12px;
   border-radius: 0;
   content: '+';
   text-align: center;
-  line-height: .9em;
+  line-height: .7em;
 }
 
 :checked ~ label.tree_label:before { content: '–'; }
