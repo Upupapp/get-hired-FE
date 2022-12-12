@@ -26,6 +26,7 @@
 	position: absolute;
 	bottom: 35px;
 	min-width: 230px;
+	max-width: 230px;
 }
 
 .copy-right{
@@ -114,23 +115,17 @@
 	&-title{
 		color: #FFFFFF;
 		cursor: pointer;
-
 		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 500;
 		font-size: 14px;
 		line-height: 20px;
-		/* identical to box height */
-
-		/*letter-spacing: 0.2px;*/
-
 
 		&:hover{
 			color: #FFFFFF;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
-
 	}
 
 	&-title-active{
@@ -144,14 +139,14 @@
 		font-weight: 600;
 		font-size: 14px;
 		line-height: 20px;
+		margin-bottom: 0;
 		/*letter-spacing: 0.2px;*/
-		
+
 		&:hover{
 			color: $color-global-red-buttons;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
-
 	}
 }
 
@@ -198,8 +193,6 @@
 }
 
 
-
-
 .btn-sub-route{
 	color: white;
 	font-family: 'Manrope';
@@ -212,27 +205,15 @@
 	/*letter-spacing: 0.2px;*/
 	padding-left: 10px !important;
 	padding-bottom: 10px !important;
-	
+
 	&:hover{
 		border: none;
 	}
 }
 
 .active-sub-route{
-	border-bottom: dashed white 1px;
-	margin-left: 35px;	
-	margin-right: 20px;
-}
-
-.inactive-sub-route{
-	margin-left: 35px;	
-	margin-right: 20px;
-}
-
-
-.active-sub-route{
 	//border-bottom: dashed white 1px;
-	margin-left: 20px;	
+	margin-left: 20px;
 	margin-right: 20px;
 
 	padding-left: 15px !important;
@@ -242,7 +223,24 @@
 }
 
 .inactive-sub-route{
-	margin-left: 20px;	
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+
+.active-sub-route{
+	//border-bottom: dashed white 1px;
+	margin-left: 20px;
+	margin-right: 20px;
+
+	padding-left: 15px !important;
+	color: #fff;
+	background: #67627E;
+	border-radius: 9px;
+}
+
+.inactive-sub-route{
+	margin-left: 20px;
 	margin-right: 20px;
 	padding-left: 15px !important;
 }
@@ -273,7 +271,7 @@
 	transition: all 0.3s ease !important;
 }
 
-.tree { 
+.tree {
 	padding: 0 !important;
 	margin-bottom: 0 !important;
 }
@@ -330,8 +328,8 @@
 	border-radius: 9px;
 }
 
-label.tree_label { 
-	cursor: pointer; 
+label.tree_label {
+	cursor: pointer;
 }
 
 label.tree_label:hover { color: #666; }
