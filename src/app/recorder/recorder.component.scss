@@ -88,6 +88,15 @@ video{
   border-radius: 16px;
 }
 
+.video-placeholder{
+  min-height: 430px;
+  background: url(~/src/assets/images/video-placeholder.png);
+  background-repeat: no-repeat;
+  //background-attachment: fixed;
+  background-position: top;
+  background-size: 100% 100%;
+}
+
 .title-main {
   font-size: 14px;
 }

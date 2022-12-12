@@ -13,17 +13,22 @@
     <div style="position: relative;">
       <div class="container-bg"></div>
 
-
-
       <div class="get-hired-logo">
         <img src="/assets/images/placeholder/logo.png">
       </div>
 
       <!-- VIDEO CONTAINER -->
       <section>
-        <video #videoElement class="w-100">
-          <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl">
-        </video>
+        <div [hidden]="!isVideoRecording || !videoBlobUrl">
+          <video #videoElement class="w-100">
+            <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl">
+          </video>
+        </div>
+
+        <div class="video-placeholder"
+        *ngIf="!isVideoRecording || !videoBlobUrl" >
+          
+        </div>
 
         <!-- <video #preview id="preview"
         [src]="url" controls class="w-100 h-100"
@@ -63,7 +68,8 @@
     </div>
 
     <div class="mt-2">
-      <button class="btn btn-primary w-100" (click)="previewVideoRecording()" [disabled]="!videoBlob">
+      <button class="btn btn-primary w-100" (click)="previewVideoRecording()" 
+      [disabled]="!videoBlob">
         View Recording
       </button>
     </div>
