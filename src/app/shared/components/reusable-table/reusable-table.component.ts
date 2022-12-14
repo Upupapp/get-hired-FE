@@ -22,7 +22,6 @@ import { ExcelDownloaderService } from '@app-shared/services/excel/excel-downloa
   styleUrls: ['./reusable-table.component.scss']
 })
 export class ReusableTableComponent implements OnInit {
-
   @Input() loading: boolean = true;
   @Input() componentTitle: string = '';
   @Input() listDataSource: any[] = [];
@@ -40,11 +39,10 @@ export class ReusableTableComponent implements OnInit {
   @Output() updateSelectedRows: EventEmitter<any> = new EventEmitter<any>();
   @Output() deleteSelectedRow: EventEmitter<any> = new EventEmitter<any>();
   @Output() updateSelectedRowDialog: EventEmitter<any> = new EventEmitter<any>();
-  
+  @Output() customButtonEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() viewDetails: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild(MatSort) sort: MatSort;
   @Input() maxRows: number = 5;
-
   @Input() statusFilter: boolean = false;  
   @Input() statusArray: any[] = ["Active", "Inactive", "Pending"];
   @Input() statusName: string = "";
@@ -237,6 +235,12 @@ export class ReusableTableComponent implements OnInit {
     }); 
   }
 
+
+  customButtonFunction(data){
+    this.customButtonEvent.emit({
+      data: data
+    });
+  }
 
   /*
     Open dialog component 

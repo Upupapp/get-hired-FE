@@ -15,6 +15,7 @@ import { CompanySettingsComponent } from './pages/company-settings/company-setti
 import { AddInterviewTemplatesComponent } from './pages/create-interview/pages/add-interview-templates/add-interview-templates.component';
 import { CandidatesComponent } from './pages/candidates/candidates.component';
 import { ViewJobPostComponent } from './pages/jobs/pages/view-job-post/view-job-post.component';
+import { ContactGroupComponent } from './pages/contact-group/contact-group.component';
 
 export const CompanyPanelRoutes: Routes = [
   {
@@ -89,6 +90,11 @@ export const CompanyPanelRoutes: Routes = [
             path: 'details/:id',  
             component: ApplicantDetailsComponent,
           },
+
+          {
+            path: 'groups',  
+            component: ContactGroupComponent
+          }
         ]
       },
       

@@ -35,14 +35,6 @@
 	<div *ngIf="exportable" class="table-controls-container float-end">
 		<!-- CONTROLLER ICONS -->
 		<div class="table-controls mt-3">
-			<!-- <button class="px-0 me-3 pe-0" *ngFor="let action of tableController; let i = index"
-			[ngClass]="i === 0 && !showImport ? 'd-none' : '' "
-			[disabled]="action?.class === 'delete' && selectedRows?.length === 0"
-			(click)="action?.action_event(openDialog(action?.class, selectedRows[0]?.id))">
-				<img [src]="action?.icon" [ngClass]="action?.class">
-				<span>{{action?.name}}</span>
-			</button>
- -->
 			<span id="export-table">
 				<button style="position: relative;" 
 					type="button"
@@ -161,10 +153,18 @@
 						</span>
 
 						<span *ngIf="header?.type === 'action_button'">
-
-							<button class="btn" 
+							<button class="btn d-flex" 
+								[ngStyle]="{ 
+									'padding-left': header?.col_name === 'view_group' ? '8px': '15px'
+								}"
+								(click)="customButtonFunction(data)"
 								[ngClass]="header?.button_class">
 								<img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
+
+								<ng-container *ngIf="header?.col_name === 'view_group'">
+									<div class="group-number">{{data['number_of_group']}}</div>
+								</ng-container>
+
 								{{ header?.button_title }} 
 							</button>
 						</span>

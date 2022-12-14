@@ -16,23 +16,21 @@ import {
   displayedColumns,
   selectedColumns,
   TableHeader,
-  Contact,
-  contactLists
-} from './utils/contact-list-model-interface';
+  Group,
+  contactGroupLists
+} from './utils/group-list-model-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AddContactComponent } from './dialogs/add-contact/add-contact.component';
-import { ViewGroupsComponent } from './dialogs/view-groups/view-groups.component';
 
 @Component({
-  selector: 'app-contact-list',
+  selector: 'app-contact-group',
   animations: [mainAnimations],
-  templateUrl: './contact-list.component.html',
-  styleUrls: ['./contact-list.component.scss']
+  templateUrl: './contact-group.component.html',
+  styleUrls: ['./contact-group.component.scss']
 })
-export class ContactListComponent implements OnInit {
+export class ContactGroupComponent implements OnInit {
 
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
@@ -40,21 +38,16 @@ export class ContactListComponent implements OnInit {
   public loading: boolean = true;
   public id;
   public displayedColumns: TableHeader[] = displayedColumns;
-  public contactLists: Contact[] = contactLists;
+  public contactGroupLists: Group[] = contactGroupLists;
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
   public searchSource: any = (el) => {
     return {
       id: el.id,
-      full_name: el.full_name,
-      email: el.email,
-      address: el.address,
-      contact_number: el.contact_number,
-      company: el.company,
-      code_number: el.code_number,
+      group_name: el.group_name,
     };
   };
-  public status: string[] = ["Initial Interview", "Technical Interview", "Contract Signing"];
+  public status: string[] = ["Active", "Inactive"];
   
   constructor(
     private router: Router,
@@ -65,14 +58,7 @@ export class ContactListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    this.contactLists.forEach((el) => {
-      el['salary'] = `₱${el?.expected_salary_min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${el?.expected_salary_max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-      el['full_name'] = `${el?.first_name} ${el.last_name}`;
-    });
-
     setTimeout(() => this.loading = false, 1500);
-
   }
 
 
@@ -86,8 +72,8 @@ export class ContactListComponent implements OnInit {
   }
 
 
-  addContacts(){
-    let openDialog = this.dialog.open(
+  addGroup(){
+    /*let openDialog = this.dialog.open(
       AddContactComponent,
       { 
         width: '34vw',
@@ -100,24 +86,7 @@ export class ContactListComponent implements OnInit {
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
 
-    });
-  }
-
-  viewGroup(event){
-    let openDialog = this.dialog.open(
-      ViewGroupsComponent,
-      { 
-        minWidth: '44vw',
-        data: event,
-      }
-    );
-
-    openDialog
-    .afterClosed()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe(result => {
-
-    });
+    });*/
   }
 
 }

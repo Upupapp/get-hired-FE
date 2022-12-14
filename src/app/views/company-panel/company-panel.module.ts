@@ -50,6 +50,8 @@ import { InterviewTemplateStepComponent } from './pages/create-interview/pages/a
 import { CandidatesComponent } from './pages/candidates/candidates.component';
 import { ViewJobPostComponent } from './pages/jobs/pages/view-job-post/view-job-post.component';
 import { CreateNewTemplateDialogComponent } from './pages/create-interview/pages/add-interview-templates/components/create-new-template-dialog/create-new-template-dialog.component';
+import { ContactGroupComponent } from './pages/contact-group/contact-group.component';
+import { ViewGroupsComponent } from './pages/contact-list/dialogs/view-groups/view-groups.component';
 
 @NgModule({
   imports: [
@@ -103,7 +105,9 @@ import { CreateNewTemplateDialogComponent } from './pages/create-interview/pages
    InterviewTemplateStepComponent,
    CandidatesComponent,
    ViewJobPostComponent,
-   CreateNewTemplateDialogComponent
+   CreateNewTemplateDialogComponent,
+   ContactGroupComponent,
+   ViewGroupsComponent
   ]
 })
 export class CompanyPanelModule{ }
