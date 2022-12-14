@@ -1,8 +1,8 @@
 <div class="card card-body" style="min-height: 400px; "
 [@animate]="{value:'*', params:{ y:'10px', delay:'350ms' }}">
 	<div class="row">
-		<div class="col-9 row ">
-			<div class="col-12 col-md-4 mb-3 pe-lg-2" 
+		<div class="col-8 d-flex ">
+			<div class="flex-wrap mb-3 pe-lg-2" 
 			*ngFor="let badge of data?.badge; let i = index">
 				<div class="d-flex badge-card" [ngClass]="'badge-' + i">
 					<img src="/assets/images/placeholder/icons/{{badge?.logo}}.png" 
@@ -14,9 +14,9 @@
 			</div>
 		</div>
 
-		<div class="col-3">
-			<div class="d-flex mb-3">
-				<button class="btn btn-apply-now w-100" (click)="navigateToInterview()">View Public Job Post</button>
+		<div class="col-4">
+			<div class="d-flex justify-content-end mb-3">
+				<button class="btn btn-apply-now" (click)="navigateToInterview()">View Public Job Post</button>
 
 				<img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2" style="height: 45px; cursor: pointer;">
 			</div>
