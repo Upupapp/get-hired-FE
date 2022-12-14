@@ -78,14 +78,15 @@
 	background: #FF7062;
 	border-radius: 5px;
 	color: white;
-	padding: 9px;
+	padding: 9px 20px !important;
 	z-index: 99 !important;
 }
 
 .badge-card{
-	width: 100%;;
+	min-width: 150px;
+	width: 100%;
 	border-radius: 5px;
-	padding: 10px 10px 7px 15px;
+	padding: 10px 25px 7px 15px;
 }
 
 .badge-0{

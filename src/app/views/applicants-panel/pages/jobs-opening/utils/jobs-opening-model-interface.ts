@@ -88,16 +88,6 @@ const jobLists: Job[] = [
         title: "Gym and Health Membership",  
         logo: 'badge-3'
       },  
-
-      {
-        title: "Friendly Team Members",  
-        logo: 'badge-2'
-      },  
-
-      {
-        title: "Competetive Salary",  
-        logo: 'badge-1'
-      },  
     ],  
     job_type: "Full-Time",
     work_setup: "Hybrid",  
