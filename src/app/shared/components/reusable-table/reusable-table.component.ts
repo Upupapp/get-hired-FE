@@ -42,6 +42,8 @@ export class ReusableTableComponent implements OnInit {
   @Output() updateSelectedRowDialog: EventEmitter<any> = new EventEmitter<any>();
   @Output() actionOfButton: EventEmitter<any> = new EventEmitter<any>();
   @Output() viewDetails: EventEmitter<any> = new EventEmitter<any>();
+  @Output() customButtonEvent: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild(MatSort) sort: MatSort;
   @Input() maxRows: number = 5;
 
@@ -244,6 +246,12 @@ export class ReusableTableComponent implements OnInit {
     this.updateSelectedRows.emit({
       tableNumber: this.tableNumber,
       selectedRows: this.selectedRows
+    });
+  }
+
+  customButtonFunction(data){
+    this.customButtonEvent.emit({
+      data: data
     });
   }
 

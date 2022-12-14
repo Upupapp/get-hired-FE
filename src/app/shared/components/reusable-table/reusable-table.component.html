@@ -151,11 +151,20 @@
             </span>
 
             <span *ngIf="header?.type === 'action_button'">
+              	<button class="btn d-flex" 
+					[ngStyle]="{ 
+						'padding-left': header?.col_name === 'view_group' ? '8px': '15px'
+					}"
+					(click)="customButtonFunction(data)"
+					[ngClass]="header?.button_class">
+					<img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
 
-              <button class="btn" [ngClass]="header?.button_class" (click)="btnAction(data[header?.params])">
-                <img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
-                {{ header?.button_title }}
-              </button>
+					<ng-container *ngIf="header?.col_name === 'view_group'">
+						<div class="group-number">{{data['groups']?.length}}</div>
+					</ng-container>
+
+					{{ header?.button_title }} 
+				</button>
             </span>
 
             <span *ngIf="header?.col_name === 'groups'">
