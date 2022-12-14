@@ -22,7 +22,6 @@ import { ExcelDownloaderService } from '@app-shared/services/excel/excel-downloa
   styleUrls: ['./reusable-table.component.scss']
 })
 export class ReusableTableComponent implements OnInit {
-
   @Input() loading: boolean = true;
   @Input() componentTitle: string = '';
   @Input() listDataSource: any[] = [];
@@ -41,8 +40,8 @@ export class ReusableTableComponent implements OnInit {
   @Output() deleteSelectedRow: EventEmitter<any> = new EventEmitter<any>();
   @Output() updateSelectedRowDialog: EventEmitter<any> = new EventEmitter<any>();
   @Output() actionOfButton: EventEmitter<any> = new EventEmitter<any>();
-  @Output() viewDetails: EventEmitter<any> = new EventEmitter<any>();
   @Output() customButtonEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() viewDetails: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild(MatSort) sort: MatSort;
   @Input() maxRows: number = 5;
