@@ -42,7 +42,8 @@
 		<div class="d-flex mt-1">
 			<h5 class="d-flex title-details me-3 ms-1">
 				<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-				PHP {{data?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{data?.salaryMaximum | number:'1.0':'en-US' }}
+				<!-- PHP {{data?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{data?.salaryMaximum | number:'1.0':'en-US' }} -->
+        {{data?.salaryMinimum | currency: data.salaryCurrency: 'symbol' }} - {{data?.salaryMaximum | currency: data.salaryCurrency: 'symbol' }}
 			</h5>
 		</div>
 

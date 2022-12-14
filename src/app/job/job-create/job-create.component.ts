@@ -155,6 +155,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         rate: [data ? data.rate : null],
         salaryMinimum: [data ? data.salaryMinimum : null],
         salaryMaximum: [data ? data.salaryMaximum : null],
+        salaryCurrency: [data ? data.salaryCurrency : null],
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }),

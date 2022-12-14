@@ -17,6 +17,7 @@ export interface Job {
   workSetupName?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
+  salaryCurrency?:string;
   jobAddress?: string;
   createdAt?: Date;
   updatedAt?: Date;

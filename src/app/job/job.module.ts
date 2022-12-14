@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { JobCreateComponent } from './job-create/job-create.component';
 import { SharedModule } from '@main/shared/shared.module';
 import { CreateInterviewComponent } from './job-create/components/create-interview/create-interview.component';
@@ -63,7 +63,7 @@ const exportedComponents = [
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),
   ],
-  providers: [JobFacade, DatePipe, ApplicantFacade],
+  providers: [JobFacade, DatePipe, CurrencyPipe, ApplicantFacade],
   exports: [
     ...exportedComponents
   ]

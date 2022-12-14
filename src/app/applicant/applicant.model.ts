@@ -34,6 +34,7 @@ export interface Applicant {
   jobLevelId: number;
   salaryMinimum: number;
   salaryMaximum: number;
+  salaryCurrency: string;
   videoCVFile? : File;
   profileImage?: File;
   isProfileReady: boolean;
