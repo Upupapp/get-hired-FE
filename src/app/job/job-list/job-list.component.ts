@@ -18,6 +18,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-job-list',
@@ -49,7 +50,8 @@ export class JobListComponent implements OnInit {
               salary: this.formatSalary(
                 job.salaryMinimum,
                 job.salaryMaximum,
-                job.rate
+                job.rate,
+                job.salaryCurrency
               ),
             };
           })
@@ -93,7 +95,8 @@ export class JobListComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private jobFacade: JobFacade
+    private jobFacade: JobFacade,
+    private currencyPipe:CurrencyPipe
   ) {}
 
   ngOnInit(): void {
@@ -107,11 +110,13 @@ export class JobListComponent implements OnInit {
     setTimeout(() => (this.loading = false), 1500);
   }
 
-  formatSalary(salaryMin, salaryMax, rate) {
+  formatSalary(salaryMin, salaryMax, rate, currency) {
     if (salaryMin && salaryMax) {
-      return `₱${salaryMin
+      const min = this.currencyPipe.transform(salaryMin, currency, 'symbol');
+      const max = this.currencyPipe.transform(salaryMax, currency, 'symbol');
+      return `${min
         .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} - ₱${salaryMax
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} - ${max
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (${rate})`;
     } else {

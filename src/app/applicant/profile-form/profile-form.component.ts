@@ -107,6 +107,7 @@ export class ProfileFormComponent implements OnInit {
         workSetupId: [data ? data.workSetUpId : null],
         salaryMinimum: [data ? data.salaryMinimum : null],
         salaryMaximum: [data ? data.salaryMaximum : null],
+        salaryCurrency: [data ? data.salaryCurrency : null],
         firstName: [data ? data.firstName : this.user.firstName, Validators.required],
         lastName: [data ? data.lastName : this.user.lastName, Validators.required],
         address: [data ? data.address : null],
@@ -152,6 +153,7 @@ export class ProfileFormComponent implements OnInit {
       && applicant.email != ""
       && applicant.contactNumber != ""
       && applicant.shortBio != ""
+      && applicant.salaryCurrency != null
       && applicant.salaryMinimum != 0
       && applicant.salaryMaximum != 0;
 
@@ -190,7 +192,7 @@ export class ProfileFormComponent implements OnInit {
       this.profileForm.controls.profileDetailsForm.get('contactNumber').setValue(data.contactNumber);
       this.profileForm.controls.profileDetailsForm.get('city').setValue(data.city);
       this.profileForm.controls.profileDetailsForm.get('country').setValue(data.country);
-
+      this.profileForm.controls.profileDetailsForm.get('salaryCurrency').setValue(data.salaryCurrency);
       this.profileForm.controls.profileDocuments.get('videoCVUrl').setValue(data.videoCVUrl);
 
       const docs = this.profileForm.controls.profileDocuments.get('documents') as FormArray;
