@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -7,7 +9,7 @@
 
 
 .btn-add-service{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 6px;
 	padding: 7px 10px 7px 20px;
 	color: white;
@@ -16,7 +18,7 @@
 	//right: 0px;
 
 	&:hover{
-		background: rgba(#FF7062, 0.7);
+		background: rgba($color-gethired-red-buttons, 0.7);
 	}
 }
 
@@ -170,7 +172,7 @@
 }
 
 .btn-search{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -318,7 +320,7 @@ label{
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;

@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .sidebar-details{
 	position: sticky !important;
 	top: 0px !important;
@@ -14,7 +16,7 @@
 }
 
 .bg-menu{
-	background: #7A637F;
+	background: $color-gethired-gray-cancel;
 }
 
 .bg-user{
@@ -203,9 +205,9 @@
   margin-right: 10px !important;
   border-radius: 50%;
   // line-height: 2;
-  color: #FF7062;
+  color: $color-gethired-red-buttons;
   padding: 5px;
   text-align: center;
-  border: 2px solid #FF7062;
+  border: 2px solid $color-gethired-red-buttons;
   line-height: 25px;
 }

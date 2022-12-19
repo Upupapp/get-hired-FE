@@ -1,7 +1,9 @@
+@import "src/assets/styles/colors";
+
 .view-all{
 	font-size: 15px !important;
 	font-weight: 500 !important;
-	color: #FF7062;
+	color: $color-gethired-red-buttons;
 	margin-right: 30px !important;
 
 	&:hover{

@@ -1,5 +1,7 @@
+@import "src/assets/styles/colors";
+
 .btn-save{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;

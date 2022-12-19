@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .title-main{
 	font-style: normal;
 	font-weight: 500;
@@ -12,24 +14,24 @@
 
 .btn-cancel{
 	background: #FFFFFF;
-	border: 1px solid #FF7062;
+	border: 1px solid $color-gethired-red-buttons;
 	border-radius: 111px;
 	font-style: normal;
 	font-weight: 400;
 	font-size: 14px;
 	line-height: 17px;
 	width: 130px;
-	color: #FE6F61;
+	color: $color-gethired-red;
 	padding: 9px 35px !important;
 
 	&:hover{
 		color: #fff;
-		background: #FF7062;
+		background: $color-gethired-red-buttons;
 	}
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 111px;
 	font-style: normal;
 	font-weight: 500;

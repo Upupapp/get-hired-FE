@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .title-companies{
 	font-family: 'Manrope';
 	font-style: normal;
@@ -16,7 +18,7 @@
 	font-weight: 500;
 	font-size: 25.2352px;
 	line-height: 140%;
-	color: #FF7062;
+	color: $color-gethired-red-buttons;
 	cursor: pointer;
 
 	&:hover{

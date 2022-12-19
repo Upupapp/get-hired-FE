@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .banner-image{
 	border-radius: 0 !important;
 	object-position: center;
@@ -29,7 +31,7 @@
 }
 
 .btn-upload{
-	background: linear-gradient(95.7deg, #FF7062 14.94%, #F85141 54.97%, #F4402F 76.21%);
+	background: linear-gradient(95.7deg, $color-gethired-red-buttons 14.94%, #F85141 54.97%, #F4402F 76.21%);
 	border-radius: 5px;
 	color: white;
 	padding: 10px 30px

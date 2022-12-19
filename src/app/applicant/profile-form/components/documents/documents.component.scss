@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -104,7 +106,7 @@ video{
 }
 
 .btn-search{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -271,7 +273,7 @@ label{
 }
 
 .btn-create{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
@@ -298,7 +300,7 @@ label{
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;

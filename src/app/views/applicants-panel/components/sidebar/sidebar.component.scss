@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .sidebar-details{
 	position: sticky !important;
 	top: 0px !important;
@@ -14,11 +16,11 @@
 }
 
 .bg-menu{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 }
 
 .bg-user{
-	background: #7A637F;
+	background: $color-gethired-gray-cancel;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;

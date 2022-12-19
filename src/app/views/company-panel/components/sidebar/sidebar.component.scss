@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .sidebar-details{
 	position: sticky !important;
 	top: 0px !important;
@@ -18,7 +20,7 @@
 }
 
 .bg-user{
-	background: #7A637F;
+	background: $color-gethired-gray-cancel;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
@@ -134,7 +136,7 @@
 	&-title-active{
 		color: #FFFFFF !important;
 		cursor: pointer;
-		background: #FE6F61;
+		background: $color-gethired-red;
 		border-radius: 100px;
 		padding: 10px 15px 5px 5px;
 		font-family: 'Manrope';
@@ -145,7 +147,7 @@
 		/*letter-spacing: 0.2px;*/
 		
 		&:hover{
-			color: #FF7062;
+			color: $color-gethired-red-buttons;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}

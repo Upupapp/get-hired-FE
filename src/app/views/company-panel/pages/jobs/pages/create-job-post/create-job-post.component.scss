@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -19,7 +21,7 @@
 }
 
 .btn-stepper-active{
-	background: #FE6F61;
+	background: $color-gethired-red;
 	border-radius: 1px;
 	border-top-left-radius: 4px;
 	border-bottom-left-radius: 4px;
@@ -44,7 +46,7 @@
 	  height: 0;
 	  border-style: solid;
 	  border-width: 20px 0px 20px 20px;
-	  border-color: #FE6F61 transparent transparent transparent;
+	  border-color: $color-gethired-red transparent transparent transparent;
 	  transform: rotate(45deg);
 	}
 }
@@ -62,12 +64,12 @@
 	line-height: 27px;
 
 	&:hover{
-		border: solid 2px #FE6F61;
+		border: solid 2px $color-gethired-red;
 	}
 }
 
 .badge-step{
-	background: #FE6F61;
+	background: $color-gethired-red;
 	height: 30px;
 	width: 30px;
 	margin-right: 8px;
@@ -85,7 +87,7 @@
 }
 
 .btn-preview-job-post{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 10px;
 	color: white;
 	font-size: 14px;
@@ -96,7 +98,7 @@
 }
 
 .btn-save-draft{
-	background: #7A637F;
+	background: $color-gethired-gray-cancel;
 	border-radius: 10px;
 	color: white;
 	font-size: 14px;

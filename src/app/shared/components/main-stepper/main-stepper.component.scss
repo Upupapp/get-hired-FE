@@ -1,7 +1,8 @@
+@import "src/assets/styles/colors";
 
 .btn-stepper-active{
 	min-width: 180px !important;
-	background: #FE6F61;
+	background: $color-gethired-red;
 	border-radius: 1px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
@@ -25,7 +26,7 @@
 	  height: 0;
 	  border-style: solid;
 	  border-width: 20px 0px 20px 20px;
-	  border-color: #FE6F61 transparent transparent transparent;
+	  border-color: $color-gethired-red transparent transparent transparent;
 	  transform: rotate(45deg);
 	}
 
@@ -34,7 +35,7 @@
 
 .btn-stepper-active-2{
 	min-width: 180px !important;
-	background: #FE6F61;
+	background: $color-gethired-red;
 	border-radius: 1px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
@@ -66,7 +67,7 @@
 	line-height: 18px;
 
 	&:hover{
-		border: solid 2px #FE6F61;
+		border: solid 2px $color-gethired-red;
 	}
 
   &:disabled {
@@ -75,7 +76,7 @@
 }
 
 .badge-step{
-	background: #FE6F61;
+	background: $color-gethired-red;
 	height: 27px;
 	width: 27px;
 	margin-right: 8px;

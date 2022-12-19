@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .card{
 	background: #FFFFFF;
 	border: 1px solid rgba(231, 231, 231, 0.65);
@@ -95,7 +97,7 @@
 }
 
 .btn-apply-now{
-	background: #FF7062;
+	background: $color-gethired-red-buttons;
 	border-radius: 5px;
 	color: white;
 }
