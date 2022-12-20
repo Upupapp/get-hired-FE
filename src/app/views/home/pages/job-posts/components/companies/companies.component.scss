@@ -18,7 +18,7 @@
 	font-weight: 500;
 	font-size: 25.2352px;
 	line-height: 140%;
-	color: $color-gethired-red-buttons;
+	color: $color-global-red-buttons;
 	cursor: pointer;
 
 	&:hover{
@@ -104,7 +104,7 @@
 	text-align: center;
 
 	color: #FFFFFF;
-	background: #FC6859;
+	background: $color-global-red-buttons;
 	/* shawos */
 
 	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);

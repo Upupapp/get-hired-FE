@@ -87,7 +87,7 @@
 .search-div{
     vertical-align: center !important;
     background: #FFEFED;
-    color: $color-gethired-red-buttons;
+    color: $color-global-red-buttons;
     padding: 10px 20px 10px 15px !important;
     border-radius: 8px !important;
     width: 340px !important;
@@ -118,18 +118,18 @@
         border: none !important;
         background: #FFEFED !important;
         outline: none !important;
-        color: $color-gethired-red-buttons !important;
+        color: $color-global-red-buttons !important;
         //border-color: #a8a8a8 !important;
     }
 
     input{
       outline: none !important;
-      color: $color-gethired-red-buttons !important;
+      color: $color-global-red-buttons !important;
 
     }
 
     ::placeholder{
-      color: $color-gethired-red-buttons !important;
+      color: $color-global-red-buttons !important;
     }
 }
 
@@ -287,7 +287,7 @@
         font-weight: 400 !important;
         font-size: 15px !important;
         line-height: 130% !important;
-        color: #444152;
+        color: $color-global-sidebar-employer-user-menu;
         padding-left: 10px !important;
       }
 
@@ -315,7 +315,7 @@
   font-weight: 400 !important;
   font-size: 15px !important;
   line-height: 130% !important;
-  color: #444152;
+  color: $color-global-sidebar-employer-user-menu;
   padding-left: 10px !important;
   //margin-top: 5px;
 }
@@ -325,7 +325,7 @@
   font-weight: 400 !important;
   font-size: 15px !important;
   line-height: 130% !important;
-  color: #444152;
+  color: $color-global-sidebar-employer-user-menu;
   padding-left: 10px !important;
   //margin-top: 5px;
 }

@@ -27,10 +27,10 @@
   width: 40px;
   border-radius: 50%;
   // line-height: 2;
-  color: $color-gethired-red-buttons;
+  color: $color-global-red-buttons;
   padding: 5px;
   text-align: center;
-  border: 2px solid $color-gethired-red-buttons;
+  border: 2px solid $color-global-red-buttons;
   line-height: 25px;
 }
 
@@ -50,7 +50,7 @@
 	}
 
 	.btn-submit{
-		background: $color-gethired-red-buttons;
+		background: $color-global-red-buttons;
 		box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
 		border-radius: 566.808px;
 		font-family: 'Manrope';
@@ -226,7 +226,7 @@
 		color: #fff;
 
 		&:hover{
-			background: $color-gethired-red;
+			background: $color-global-red;
 			color: white;
 		}
 	}
@@ -254,7 +254,7 @@
 }
 
 .bg-applicant{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 	/* shawos */
 
 	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
@@ -263,14 +263,14 @@
 
 .progress{
     .progress-bar{
-        background: $color-gethired-red;
+        background: $color-global-red;
         box-shadow: 0px 13.7246px 28.5928px rgba(46, 46, 46, 0.04);
         border-radius: 20.5868px;
     }
 }
 
 .active{
-	border-bottom: solid 3px $color-gethired-red-buttons !important;
+	border-bottom: solid 3px $color-global-red-buttons !important;
 	font-weight: 600 !important;
 	color: #050229 !important;
 }

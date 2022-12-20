@@ -189,7 +189,7 @@
 		line-height: 66px;
 		letter-spacing: 0.01em;
 
-		background: linear-gradient(268.54deg, $color-gethired-red-buttons 10.03%, #FFCD60 91.14%);
+		background: linear-gradient(268.54deg, $color-global-red-buttons 10.03%, #FFCD60 91.14%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
@@ -329,7 +329,7 @@
 .btn-submit{
 	border-radius: 18px;
 	padding: 13px 10px;
-	background: $color-gethired-red-buttons;
+	background: $color-global-red-buttons;
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
@@ -375,8 +375,8 @@ input{
 	letter-spacing: 0px !important;
 
 	&:focus{
-		border-color: 1.5px solid $color-gethired-red-buttons !important;
-		outline: 2px solid $color-gethired-red-buttons !important;
+		border-color: 1.5px solid $color-global-red-buttons !important;
+		outline: 2px solid $color-global-red-buttons !important;
 	}
 }
 
@@ -405,7 +405,7 @@ select::placeholder{
 
 
 .register{
-	color: $color-gethired-red-buttons;
+	color: $color-global-red-buttons;
 }
 
 .form-group{
@@ -439,13 +439,13 @@ select::placeholder{
 
 input.ng-dirty + label{
 
-  color: $color-gethired-red-buttons !important;
+  color: $color-global-red-buttons !important;
 
 
 }
 
 input.ng-dirty{
-	border: solid 2px $color-gethired-red-buttons !important
+	border: solid 2px $color-global-red-buttons !important
 }
 
 
@@ -453,7 +453,7 @@ input.ng-invalid.ng-dirty.ng-touched {
   color:#de87a3 !important;
   background: rgba(#b55058, 0.08) !important;
   //opacity: 0.1;
-  border: solid 1px $color-gethired-red-buttons !important
+  border: solid 1px $color-global-red-buttons !important
 }
 
 

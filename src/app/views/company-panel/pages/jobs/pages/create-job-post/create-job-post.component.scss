@@ -21,7 +21,7 @@
 }
 
 .btn-stepper-active{
-	background: $color-gethired-red;
+	background: $color-global-red;
 	border-radius: 1px;
 	border-top-left-radius: 4px;
 	border-bottom-left-radius: 4px;
@@ -46,7 +46,7 @@
 	  height: 0;
 	  border-style: solid;
 	  border-width: 20px 0px 20px 20px;
-	  border-color: $color-gethired-red transparent transparent transparent;
+	  border-color: $color-global-red transparent transparent transparent;
 	  transform: rotate(45deg);
 	}
 }
@@ -64,12 +64,12 @@
 	line-height: 27px;
 
 	&:hover{
-		border: solid 2px $color-gethired-red;
+		border: solid 2px $color-global-red;
 	}
 }
 
 .badge-step{
-	background: $color-gethired-red;
+	background: $color-global-red;
 	height: 30px;
 	width: 30px;
 	margin-right: 8px;
@@ -87,7 +87,7 @@
 }
 
 .btn-preview-job-post{
-	background: $color-gethired-red-buttons;
+	background: $color-global-red-buttons;
 	border-radius: 10px;
 	color: white;
 	font-size: 14px;
@@ -98,7 +98,7 @@
 }
 
 .btn-save-draft{
-	background: $color-gethired-gray-cancel;
+	background: $color-global-gray-cancel;
 	border-radius: 10px;
 	color: white;
 	font-size: 14px;

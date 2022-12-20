@@ -14,24 +14,24 @@
 
 .btn-cancel{
 	background: #FFFFFF;
-	border: 1px solid $color-gethired-red-buttons;
+	border: 1px solid $color-global-red-buttons;
 	border-radius: 111px;
 	font-style: normal;
 	font-weight: 400;
 	font-size: 14px;
 	line-height: 17px;
 	width: 130px;
-	color: $color-gethired-red;
+	color: $color-global-red;
 	padding: 9px 35px !important;
 
 	&:hover{
 		color: #fff;
-		background: $color-gethired-red-buttons;
+		background: $color-global-red-buttons;
 	}
 }
 
 .btn-save{
-	background: $color-gethired-red-buttons;
+	background: $color-global-red-buttons;
 	border-radius: 111px;
 	font-style: normal;
 	font-weight: 500;

@@ -32,7 +32,7 @@
 }
 
 .btn-add-service{
-	background: $color-gethired-red-buttons;
+	background: $color-global-red-buttons;
 	border-radius: 6px;
 	padding: 7px 10px 6px 20px;
 	color: white;
@@ -41,7 +41,7 @@
 	//right: 0px;
 
 	&:hover{
-		background: rgba($color-gethired-red-buttons, 0.7);
+		background: rgba($color-global-red-buttons, 0.7);
 	}
 }
 

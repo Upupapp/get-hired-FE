@@ -81,7 +81,7 @@
 }
 
 .btn-search{
-	background: $color-gethired-red-buttons;
+	background: $color-global-red-buttons;
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -176,7 +176,7 @@ label{
 }
 
 .rate-selection{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
 	min-height: 300px;
@@ -242,7 +242,7 @@ label{
 }
 
 .btn-save{
-	background: $color-gethired-red-buttons;
+	background: $color-global-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
