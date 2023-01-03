@@ -2,7 +2,7 @@
 
 .btn-stepper-active{
 	min-width: 180px !important;
-	background: $color-global-red;
+	background: $color-global-red !important;
 	border-radius: 1px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
@@ -21,12 +21,11 @@
 	  position:absolute;
 	  top:28%;
 	  right: -1%;
-	  //z-index: 999 !important;
 	  width: 0;
 	  height: 0;
 	  border-style: solid;
 	  border-width: 20px 0px 20px 20px;
-	  border-color: $color-global-red transparent transparent transparent;
+	  border-color: $color-global-red transparent transparent transparent !important;
 	  transform: rotate(45deg);
 	}
 
@@ -47,9 +46,6 @@
 	font-size: 15px;
 	line-height: 18px;
 	position: relative !important;
-
-
-
 	border: none !important;
 }
 
@@ -58,7 +54,6 @@
 	background: #FFEFED;
 	border-radius: 4px;
 	padding: 10px 20px;
-
 	color: #121212;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -82,14 +77,11 @@
 	margin-right: 8px;
 	color: white;
 	border-radius: 50%;
-
-
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 600;
 	font-size: 16px;
 	line-height: 28px;
-
 	color: #FFFFFF;
 }
 
@@ -97,3 +89,4 @@
 .title-step{
 	font-size: 11px !important;
 }
+
