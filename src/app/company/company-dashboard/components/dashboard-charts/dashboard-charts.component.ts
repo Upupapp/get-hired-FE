@@ -31,10 +31,19 @@ export class DashboardChartsComponent implements OnInit {
     },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
-      y:
-        {
-          position: 'left',
+      y: {
+        type: 'logarithmic',
+        position: 'left',
+        //stacked: true,
+        grid: {
+          //display: false
         },
+      },
+      x: {
+        grid: {
+          display: false
+        },
+      },
     },
 
     plugins: {
@@ -42,7 +51,7 @@ export class DashboardChartsComponent implements OnInit {
       annotation: {
         annotations: [
           {
-            type: 'line',
+            //type: 'line',
             scaleID: 'x',
             value: 'March',
             borderColor: 'orange',
@@ -62,29 +71,33 @@ export class DashboardChartsComponent implements OnInit {
     }
   };
 
-  public activityGraphChartType: any = 'line';
+  public activityGraphChartType: any = 'bar';
   public activityGraphChartLegend = false;
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
         data: [],
-        label: 'JobView',
+        type: 'line',
+        label: 'Job Applicant',
         borderColor: '#35C768',
         pointBackgroundColor: '#35C768',
-        pointBorderColor: '#fff',
+        pointBorderColor: '#35C768',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+        pointHoverBorderColor: 'rgba(77,83,96,1)',
       },
       {
         data: [],
-        label: 'Job Applicant',
-        borderColor: '#FE6F61',
-        pointBackgroundColor: '#FE6F61',
+        barThickness: 25,
+        label: 'Job View',
+        borderColor: '#f7b2a6',
+        backgroundColor: '#f7b2a6',
+        hoverBackgroundColor: 'rgba(254, 111, 97,1)',
+        pointBackgroundColor: '#f7b2a6',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
-      }
+        pointHoverBorderColor: 'rgba(254, 111, 97,0.7)',
+      },
     ],
     labels: [ ]
   };
@@ -148,8 +161,8 @@ export class DashboardChartsComponent implements OnInit {
 
     let formattedLineChartData = this.formatLineGraphVal(sortedJobViews, sortedApplicants)
 
-    this.lineChartData.datasets[0].data = formattedLineChartData.jobViews; 
-    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplicants; 
+    this.lineChartData.datasets[0].data = formattedLineChartData.jobApplicants; 
+    this.lineChartData.datasets[1].data = formattedLineChartData.jobViews; 
     this.lineChartData.labels = formattedLineChartData.labels;
     this.lineChartRendering = false;
 

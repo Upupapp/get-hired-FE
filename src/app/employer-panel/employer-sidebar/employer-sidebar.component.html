@@ -38,7 +38,8 @@
 						    	<li *ngFor="let sub_route of item?.sub_routes">
 						    		<span class="tree_label">
 						    			<span class="sub-label hvr-grow"
-						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"	[ngClass]="location === ('/recruiter/' + sub_route?.route) ? 'sub-label-active' : ''" >{{sub_route?.title}}</span>
+						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"	
+						    			[ngClass]="subRouteActive(sub_route?.route) ? 'sub-label-active' : ''" >{{sub_route?.title}}</span>
 						    		</span>
 						    	</li>
 						    </ul>

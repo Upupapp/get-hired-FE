@@ -43,8 +43,24 @@ export class EmployerSidebarComponent implements OnInit {
     this.screenHeight = window.innerHeight;
     console.log('Secret')
     console.log(this.user);
+  }
 
+  subRouteActive(route){
+    console.log(route)
+    if(route.match('jobs') && this.location.match('jobs') 
+      && !route.match('expired') && this.location !== '/recruiter/jobs/expired'){
+      return true;
+    }
 
+    else if(this.location === '/recruiter/jobs/expired' && route.match('expired')){
+      return true;
+    }
+
+    else if(this.location === '/recruiter/' + route && !this.location.match('expired')){
+      return true
+    }
+
+    else return false;
   }
 
   ngOnChanges(changes) {
