@@ -36,7 +36,6 @@ export class ApplicationProcessComponent implements OnInit {
       title: "My Details",
       valid: true
     },
-
     {
       id: 2,
       title: "Additional Documents",
@@ -113,6 +112,12 @@ export class ApplicationProcessComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.job)
+
+    if(this.job && this.job.interviewQuestions.length == 0) {
+      this.stepperItems[2].disabled = true;
+    }
+
     this.isLoggedIn = this.coreService.isLoggedIn();
     this.coreService.getUserId()
       .then(userId => {
