@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .image-placeholder{
 	width: auto;
 	border-radius: 50%;
@@ -6,7 +8,7 @@
 	padding-top: 25px;
 	width: 100px;
 	height: 100px;
-	background: linear-gradient(155.15deg, #FE6F61 7.77%, #FB9187 90.78%);
+	background: linear-gradient(155.15deg, $color-global-red 7.77%, #FB9187 90.78%);
 	box-shadow: 0px 30px 50px rgba(251, 145, 135, 0.32);
 	
 
@@ -40,24 +42,24 @@
 
 .btn-cancel{
 	background: #FFFFFF;
-	border: 1px solid #FF7062;
+	border: 1px solid $color-global-red-buttons;
 	border-radius: 111px;
 	font-style: normal;
 	font-weight: 400;
 	font-size: 14px;
 	line-height: 17px;
 	width: 150px;
-	color: #FE6F61;
+	color: $color-global-red;
 	padding: 9px 35px !important;
 
 	&:hover{
 		color: #fff;
-		background: #FF7062;
+		background: $color-global-red-buttons;
 	}
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 111px;
 	font-style: normal;
 	font-weight: 500;

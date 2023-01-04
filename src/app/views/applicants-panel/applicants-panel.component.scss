@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 #body-main-container{
   z-index: 1 !important;
   background-color: #2222 !important;
@@ -7,7 +9,7 @@
 #main-applicant-component{
   width: 100% !important;
   overflow: auto;
-  background-color: #F6F7FB !important;
+  background-color: $color-global-sidebar-applicant-gray !important;
   padding-left: 0px !important;
   padding-right: 0px !important;
   margin-bottom: 0 !important;
@@ -17,7 +19,7 @@
   margin: 0 !important;
   padding: 0 !important;
   position: relative !important;
-  background-color: #F6F7FB !important;
+  background-color: $color-global-sidebar-applicant-gray !important;
   overflow-x: hidden !important;
   overflow-y: none !important;
   margin-bottom: 30px !important;
@@ -40,7 +42,7 @@
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   padding: 0;
-  background: #FF7062;
+  background: $color-global-red-buttons;
   max-width: 250px;
   min-height: 100vh;
   margin-bottom: 0 !important;

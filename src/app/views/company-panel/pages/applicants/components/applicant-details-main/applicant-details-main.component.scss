@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .card{
 	background: #fff;  
 	border: none;
@@ -25,7 +27,7 @@
 }
 
 .btn-invite{
-	background: linear-gradient(255.43deg, #FF7062 39.68%, #F35040 115.72%);
+	background: linear-gradient(255.43deg, $color-global-red-buttons 39.68%, #F35040 115.72%);
 	border-radius: 10px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -53,7 +55,7 @@
 	align-items: center;
 	margin-bottom: 5px;
 
-	color: #444152;
+	color: $color-global-sidebar-employer-user-menu;
 }
 
 

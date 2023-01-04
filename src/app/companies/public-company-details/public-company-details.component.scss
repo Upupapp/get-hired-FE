@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .share{
 	height: 45px;
 	border-radius: 4px;
@@ -92,7 +94,7 @@
 	}
 
 	.btn-review{
-		background: #FF7062;
+		background: $color-global-red-buttons;
 		border-radius: 10px;
 		color: white; 
 		border-radius: 6px;

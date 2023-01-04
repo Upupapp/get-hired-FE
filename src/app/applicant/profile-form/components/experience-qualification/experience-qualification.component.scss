@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -89,7 +91,7 @@
 }
 
 .btn-search{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -184,7 +186,7 @@ label{
 }
 
 .rate-selection{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
 	min-height: 300px;
@@ -250,7 +252,7 @@ label{
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
@@ -274,9 +276,9 @@ label{
 	padding: 7px 20px !important;
 
 	&:hover {
-	  background: #FF7062;
+	  background: $color-global-red-buttons;
 	  color: #ffffff;
-	  border: 1px solid #FF7062;
+	  border: 1px solid $color-global-red-buttons;
 	}
 
   &:disabled {
@@ -324,7 +326,7 @@ label{
 
 	.btn-add-now{
 		margin-left: -9px;
-		background: #FF7062;
+		background: $color-global-red-buttons;
 		box-shadow: 0px 7px 20px rgba(252, 139, 121, 0.34);
 		border-radius: 9px;
 		//border-bottom-left-radius: 0 !important;
@@ -356,7 +358,7 @@ select{
 	&:focus,
 	&:active{
 		background: rgba(#D9E7FF, 0.3);
-		border-color: 1.5px solid #FF7062 !important;
+		border-color: 1.5px solid $color-global-red-buttons !important;
 		outline: 1px solid #D9E7FF !important;
 	}
 
@@ -418,14 +420,14 @@ input.ng-invalid.ng-dirty.ng-touched,
 input.ng-invalid.ng-touched{
   color:#de87a3 !important;
   background: rgba(#FDECF2, 1) !important;
-  border: solid 1px #FF7062 !important;
+  border: solid 1px $color-global-red-buttons !important;
 }
 
 select.ng-invalid.ng-dirty.ng-touched,
 select.ng-invalid.ng-touched {
   color:#de87a3 !important;
   background: rgba(#FDECF2, 1) !important;
-  border: solid 1px #FF7062 !important;
+  border: solid 1px $color-global-red-buttons !important;
 }
 
 .error-message{

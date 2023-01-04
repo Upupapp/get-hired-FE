@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .accordion-header{
 	background: #FFEFED !important;
 	.collapse{
@@ -7,11 +9,11 @@
 
 .accordion-button:focus {
    z-index: 3;
-   border-color: #FF7062;
+   border-color: $color-global-red-buttons;
    outline: 0!important;
    /* I changed the color on this line */
    /* If you do not want any color, just delete */
-   box-shadow: 0 0 0 0.25rem rgba(#FF7062, 0.15);
+   box-shadow: 0 0 0 0.25rem rgba($color-global-red-buttons, 0.15);
 }
 
 .show{
@@ -123,7 +125,7 @@ label{
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
@@ -237,7 +239,7 @@ label{
 	}
 
 	.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-	    background: #FF7062
+	    background: $color-global-red-buttons
 	}
 
 	.mat-slide-toggle{

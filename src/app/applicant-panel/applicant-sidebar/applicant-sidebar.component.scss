@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .sidebar-details{
 	position: sticky !important;
 	top: 0px !important;
@@ -14,11 +16,11 @@
 }
 
 .bg-menu{
-	background: #7A637F;
+	background: $color-global-gray-cancel;
 }
 
 .bg-user{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
@@ -99,13 +101,13 @@
 
 
 		color: #FFFFFF;
-		background: #FC8B79;
+		background: $color-global-sidebar-applicant-route-active;
 		border-radius: 9px;
 	}
 }
 
 .bg-gray{
-	background-color: #F6F7FB !important;
+	background-color: $color-global-sidebar-applicant-gray !important;
 }
 
 
@@ -137,9 +139,9 @@
 	}
 
 	&-title-active{
-		color: #444152 !important;
+		color: $color-global-sidebar-employer-user-menu !important;
 		cursor: pointer;
-		background: #FC8B79;
+		background: $color-global-sidebar-applicant-route-active;
 		border-radius: 9px;
 		padding: 10px 15px 5px 5px;
 		font-family: 'Manrope';
@@ -150,7 +152,7 @@
 		letter-spacing: 0.2px;
 
 		&:hover{
-			color: #444152;
+			color: $color-global-sidebar-employer-user-menu;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
@@ -203,9 +205,9 @@
   margin-right: 10px !important;
   border-radius: 50%;
   // line-height: 2;
-  color: #FF7062;
+  color: $color-global-red-buttons;
   padding: 5px;
   text-align: center;
-  border: 2px solid #FF7062;
+  border: 2px solid $color-global-red-buttons;
   line-height: 25px;
 }

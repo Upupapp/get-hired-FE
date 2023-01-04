@@ -63,6 +63,6 @@
 
 .hvr-underline-from-center{
     &::before{
-        background: #FE6F61;
+        background: $color-global-red;
     }
 }
