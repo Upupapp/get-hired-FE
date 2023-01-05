@@ -46,8 +46,7 @@ export class EmployerSidebarComponent implements OnInit {
   }
 
   subRouteActive(route){
-    console.log(route)
-    if(route.match('jobs') && this.location.match('jobs') 
+    if(route.match('jobs') && this.location.match('jobs')
       && !route.match('expired') && this.location !== '/recruiter/jobs/expired'){
       return true;
     }
@@ -97,7 +96,7 @@ export class EmployerSidebarComponent implements OnInit {
               {
                 title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
               },
-              
+
             ]
           },
           {
