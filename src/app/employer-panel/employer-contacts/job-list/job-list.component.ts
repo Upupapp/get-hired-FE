@@ -32,7 +32,6 @@ import {
   animations: [mainAnimations]
 })
 export class JobListComponent implements OnInit {
-
   public loading: boolean = true;
   public localData: any = localStorage.getItem('user');
 

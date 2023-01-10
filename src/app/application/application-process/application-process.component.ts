@@ -87,7 +87,7 @@ export class ApplicationProcessComponent implements OnInit {
   //   }
   // ]
 
-  public stepper: number = 1;
+  public stepper: number = 3;
 
 
   profile$ = this.applicantFacade.applicantDetails$

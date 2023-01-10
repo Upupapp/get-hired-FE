@@ -169,7 +169,19 @@ export class StatChartComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.charts);
-    const data = { data: [parseInt(this.charts.application), parseInt(this.charts.applicants)] }
+    const data = { 
+      data: [parseInt(this.charts.application), parseInt(this.charts.applicants)],
+      backgroundColor: [
+        'rgba(15, 8, 75, 1)',
+        'rgba(61, 96, 167, 1)',
+        '#f6f6f6'
+      ],
+      hoverBackgroundColor: [
+        'rgba(15, 8, 75, 0.5)',
+        'rgba(61, 96, 167, 0.5)',
+        '#f6f6f6'
+      ], 
+    }
     this.doughnutChartData.datasets.push(data);
     this.lineChartRender();
     // this.chart?.update();

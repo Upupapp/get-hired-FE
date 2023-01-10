@@ -61,7 +61,7 @@
 	align-items: center;
 	margin-bottom: 5px;
 
-	color: $color-global-sidebar-employer-user-menu;
+	color: #444 !important;
 }
 
 
@@ -124,7 +124,7 @@
 	/* identical to box height, or 120% */
 
 
-	color: #6F6F6F;
+	color: #444;
 }
 
 .title-other{
@@ -135,7 +135,7 @@
 	font-size: 14px;
 	line-height: 24px;
 	margin-bottom: 0;;
-	color: #9E9E9E;
+	color: #444;
 }
 
 .skills{
@@ -154,7 +154,7 @@
 	/* identical to box height */
 	padding: 5px 10px;
 	//max-width: 130px;
-	color: #6A6A6A;
+	color: #444;
 	cursor: pointer;
 	margin-top: 5px;
 }

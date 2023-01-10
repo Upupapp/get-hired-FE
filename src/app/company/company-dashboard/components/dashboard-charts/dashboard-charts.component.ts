@@ -31,10 +31,15 @@ export class DashboardChartsComponent implements OnInit {
     },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
-      y:
-        {
-          position: 'left',
-        },
+      y: { 
+        position: 'left',
+      },
+
+      x: {
+        grid: {
+           display:false
+        }, 
+      },
     },
 
     plugins: {
@@ -62,29 +67,33 @@ export class DashboardChartsComponent implements OnInit {
     }
   };
 
-  public activityGraphChartType: any = 'line';
+  public activityGraphChartType: any = 'bar';
   public activityGraphChartLegend = false;
 
   public lineChartData: ChartConfiguration['data'] = {
     datasets: [
       {
         data: [],
-        label: 'JobView',
-        borderColor: '#35C768',
-        pointBackgroundColor: '#35C768',
+        label: 'Job Views',
+        borderColor: '#1666BA',
+        backgroundColor: '#1666BA',
+        hoverBackgroundColor: 'rgba(22, 102, 186,0.8)',
+        pointBackgroundColor: '#1666BA',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+        pointHoverBorderColor: 'rgba(22, 102, 186,1)',
       },
       {
         data: [],
         label: 'Job Applicant',
-        borderColor: '#FE6F61',
-        pointBackgroundColor: '#FE6F61',
+        borderColor: '#7AB3EF',
+        backgroundColor: '#7AB3EF',
+        hoverBackgroundColor: 'rgba(122, 179, 239,0.8)',
+        pointBackgroundColor: '#7AB3EF',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
-      }
+        pointHoverBorderColor: 'rgba(122, 179, 239,0.8)',
+      },
     ],
     labels: [ ]
   };
@@ -126,7 +135,22 @@ export class DashboardChartsComponent implements OnInit {
   ngOnInit(): void {
     const { applicants, contacts } = this.details.statistic;
 
-    const data = { data: [parseInt(contacts), parseInt(applicants)] }
+    const data = { 
+      data: [parseInt(contacts), parseInt(applicants)], 
+      backgroundColor: [
+        'rgba(15, 8, 75, 1)',
+        'rgba(61, 96, 167, 1)',
+        '#f6f6f6'
+      ],
+      hoverBackgroundColor: [
+        'rgba(15, 8, 75, 0.5)',
+        'rgba(61, 96, 167, 0.5)',
+        '#f6f6f6'
+      ],
+      hoverOffset: 4,
+      //offset: [0, 3, 11],
+      //cutout: ['70%', '75%', '40%']
+    }
     this.doughnutChartData.datasets.push(data);
     this.lineChartRender();
     this.chart?.update();

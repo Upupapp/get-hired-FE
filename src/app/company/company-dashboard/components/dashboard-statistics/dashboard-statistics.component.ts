@@ -66,7 +66,8 @@ export class DashboardStatisticsComponent implements OnInit {
       label: 'Top Cities',
       data: cityData,
       backgroundColor: '#ffffff',
-      borderColor: '#ffffff'
+      borderColor: '#ffffff',
+      barThickness: 40
     })
     this.chart?.update();
 

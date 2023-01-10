@@ -8,9 +8,9 @@
       </div>
 
       <div class="mt-2">
-        <!-- <button class="btn btn-upload me-2" (click)="uploadItem(index)">Upload</button> -->
+        <button class="btn btn-upload me-2" (click)="recordItem(index)">Upload</button>
 
-        <button class="btn btn-record" (click)="recordItem(index)"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record / Upload Interview</button>
+        <button class="btn btn-record" (click)="recordItem(index)"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record Interview</button>
       </div>
     </div>
 
@@ -21,7 +21,7 @@
 
       <div class="mt-2">
         <p class="title-label-sub">
-          <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+          <!-- <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;"> -->
           Question {{index + 1}}
         </p>
         <h5 class="title-label">{{item?.question}}</h5>
