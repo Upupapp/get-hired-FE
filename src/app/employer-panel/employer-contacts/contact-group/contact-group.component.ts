@@ -81,10 +81,9 @@ export class ContactGroupComponent implements OnInit {
       this.loading = group.pending;
       if(group.groupList.length > 0){
         group.groupList
-        console.log(group.groupList)
         this.groupList = [...group.groupList].map(el => {
           return {
-            'members': el?.emails?.length,
+            'members': el?.details.length,
             ...el
           }
         });
@@ -185,7 +184,7 @@ export class ContactGroupComponent implements OnInit {
             type:GroupActionTypes.DELETE_GROUP,
             payload: data?.data
           });
-          
+
         }
       });
   }

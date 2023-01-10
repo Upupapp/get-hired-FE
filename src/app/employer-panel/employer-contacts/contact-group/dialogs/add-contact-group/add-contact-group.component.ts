@@ -35,10 +35,9 @@ export class AddContactGroupComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data);
     this.localData = JSON.parse(this.localData);
     if(this.data){
-      this.data.emails.forEach(element => {
+      this.data.details.forEach(element => {
         this.emailArray.push(element.email)
       });
     }
@@ -80,11 +79,11 @@ export class AddContactGroupComponent implements OnInit {
           ...this.contactGroupForm.value,
           companyId:this.localData.companyId
         }
-  
+
         this.groupState.dispatch({
           type: GroupActionTypes.SAVE_GROUP,
           payload: data
-        }); 
+        });
       }
     } else {
       if(this.contactGroupForm.valid){
@@ -94,11 +93,11 @@ export class AddContactGroupComponent implements OnInit {
           ...this.contactGroupForm.value,
           groupId: this.data?.group_id
         }
-  
+
         this.groupState.dispatch({
           type: GroupActionTypes.EDIT_GROUP,
           payload: data
-        }); 
+        });
       }
     }
   }
@@ -114,7 +113,7 @@ export class AddContactGroupComponent implements OnInit {
     return [];
   }
 
-  getContactGrouptList() {  
+  getContactGrouptList() {
     let data = {
       companyId:this.localData.companyId,
       groupName:""
