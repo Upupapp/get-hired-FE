@@ -321,6 +321,24 @@ export class JobEffects {
     );
   });
 
+  getJobApplicantDetails$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getJobApplicantDetails),
+      mergeMap((action) => this.jobService.getJobApplicantDetails(action.jobId, action.userId)
+        .pipe(
+          map((res: any) => {
+            const applicant: Model.JobApplicantDetails = res.data;
+            return JobActions.getJobApplicantDetailsSuccess({ applicant });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getJobApplicantDetailsFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   getInitialDetailsOfJob(job: Model.Job): Model.InitialDetails {
     return {
       jobTitle: job.jobTitle,

@@ -36,7 +36,6 @@ export class ApplicationProcessComponent implements OnInit {
       title: "My Details",
       valid: true
     },
-
     {
       id: 2,
       title: "Additional Documents",
@@ -113,6 +112,12 @@ export class ApplicationProcessComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.job)
+
+    if(this.job && this.job.interviewQuestions.length == 0) {
+      this.stepperItems[2].disabled = true;
+    }
+
     this.isLoggedIn = this.coreService.isLoggedIn();
     this.coreService.getUserId()
       .then(userId => {
@@ -161,7 +166,7 @@ export class ApplicationProcessComponent implements OnInit {
     if (event == 'submitted') {
       this.isSubmitting = false;
 
-      this.snackBar.open(`You have been successfully Applied to this job`, '', {
+      this.snackBar.open(`You have successfully applied to this job`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
       });
@@ -171,7 +176,6 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   changeStep(step: number): void {
-    console.log(4);
     this.stepper = step;
 
     if (step === 3) {
@@ -192,8 +196,6 @@ export class ApplicationProcessComponent implements OnInit {
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
-        console.log(result)
-
         if (result?.skip) {
           this.changeStep(4);
         }

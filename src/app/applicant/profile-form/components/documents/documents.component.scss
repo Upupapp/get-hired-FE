@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -10,6 +12,9 @@
 	}*/
 }
 
+video{
+	border-radius: 6px !important;
+}
 
 :host ::ng-deep{
 	.uploader-container{
@@ -101,7 +106,7 @@
 }
 
 .btn-search{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -196,7 +201,7 @@ label{
 }
 
 .rate-selection{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
 	min-height: 300px;
@@ -268,7 +273,7 @@ label{
 }
 
 .btn-create{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
@@ -295,7 +300,7 @@ label{
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;

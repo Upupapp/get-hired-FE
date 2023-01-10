@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .with-add{
 	background: white !important;
 	//border-top-right-radius: 0 !important;
@@ -24,7 +26,7 @@
 
 	.btn-add-now{
 		margin-left: -9px;
-		background: #FF7062;
+		background: $color-global-red-buttons;
 		box-shadow: 0px 7px 20px rgba(252, 139, 121, 0.34);
 		border-radius: 9px;
 		//border-bottom-left-radius: 0 !important;
@@ -113,7 +115,7 @@
 }
 
 .btn-search{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -208,7 +210,7 @@ label{
 }
 
 .rate-selection{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
 	min-height: 300px;

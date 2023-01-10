@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .sidebar-details{
 	position: sticky !important;
 	top: 0px !important;
@@ -14,11 +16,11 @@
 }
 
 .bg-menu{
-	background: #444152;
+	background: $color-global-sidebar-employer-user-menu;
 }
 
 .bg-user{
-	background: #7A637F;
+	background: $color-global-gray-cancel;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
@@ -94,13 +96,13 @@
 
 
 		color: #FFFFFF;
-		background: #FC8B79;
+		background: $color-global-sidebar-applicant-route-active;
 		border-radius: 9px;
 	}
 }
 
 .bg-gray{
-	background-color: #F6F7FB !important;
+	background-color: $color-global-sidebar-applicant-gray !important;
 }
 
 
@@ -134,7 +136,7 @@
 	&-title-active{
 		color: #FFFFFF !important;
 		cursor: pointer;
-		background: #FE6F61;
+		background: $color-global-red;
 		border-radius: 100px;
 		padding: 10px 15px 5px 5px;
 		font-family: 'Manrope';
@@ -145,7 +147,7 @@
 		/*letter-spacing: 0.2px;*/
 		
 		&:hover{
-			color: #FF7062;
+			color: $color-global-red-buttons;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
@@ -225,4 +227,185 @@
 .inactive-sub-route{
 	margin-left: 35px;	
 	margin-right: 20px;
+}
+
+
+.active-sub-route{
+	//border-bottom: dashed white 1px;
+	margin-left: 20px;	
+	margin-right: 20px;
+
+	padding-left: 15px !important;
+	color: #fff;
+	background: #67627E;
+	border-radius: 9px;
+}
+
+.inactive-sub-route{
+	margin-left: 20px;	
+	margin-right: 20px;
+	padding-left: 15px !important;
+}
+
+
+
+
+/* ————————————————————–
+  Tree core styles
+*/
+
+.inactive-caret{
+	height: 14px;
+	right: 35px;
+	margin-top: 5px;
+	//top: 10px;
+	position: absolute;
+	transition: all 0.3s ease !important;
+}
+
+.active-caret{
+	height: 14px;
+	right: 35px;
+	margin-top: 5px;
+	//top: 10px;
+	position: absolute;
+	transform: rotate(90deg);
+	transition: all 0.3s ease !important;
+}
+
+.tree { 
+	padding: 0 !important;
+	margin-bottom: 0 !important;
+}
+
+.tree input {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+.tree input ~ ul { display: none; }
+
+.tree input:checked ~ ul { display: block; }
+
+/* ————————————————————–
+  Tree rows
+*/
+.tree li {
+  line-height: 20px;
+  position: relative;
+  padding: 0 0 25px 10px;
+}
+
+.tree ul li { padding: 14px 0 0 14px; }
+
+.tree > li:last-child { padding-bottom: 0; }
+
+/* ————————————————————–
+  Tree labels
+*/
+.tree_label {
+  position: relative;
+  display: inline-block;
+  padding: 10px 0px;
+  width: 100%;
+  z-index: 9;
+}
+
+.sub-label{
+	//background: #ACEAE3;
+	margin-top: -30px;
+	padding: 10px 20px;
+	border-radius: 0px;
+	cursor: pointer;
+	width: 100%;
+	z-index: 99;
+	color: #878592;
+	margin-left: -5px;
+	//margin-bottom: 0 !important;
+}
+
+.sub-label-active{
+	background: $color-global-sidebar-employer-sub-route-button;
+	color: #fff;
+	border-radius: 9px;
+}
+
+label.tree_label { 
+	cursor: pointer; 
+}
+
+label.tree_label:hover { color: #666; }
+
+/* ————————————————————–
+  Tree expanded icon
+*/
+label.tree_label:before {
+  background: #000;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  float: left;
+  margin: 0 14px 0 -27px;
+  width: 14px;
+  height: 14px;
+  border-radius: 0;
+  content: '+';
+  text-align: center;
+  line-height: .9em;
+}
+
+:checked ~ label.tree_label:before { content: '–'; }
+
+/* ————————————————————–
+  Tree branches
+*/
+.tree li:before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -15px;
+  display: block;
+  width: 0;
+  border-left: 2px solid $color-global-sidebar-employer-sub-route-button;
+  content: "";
+  }
+
+.tree_label:after {
+  position: absolute;
+  top: 0;
+  left: -29px;
+  display: block;
+  height: 0.5em;
+  width: 20px;
+  border-bottom: 2px solid $color-global-sidebar-employer-sub-route-button;
+  border-left: 2px solid $color-global-sidebar-employer-sub-route-button;
+  border-radius: 0 0 0 0px;
+  content: '';
+  }
+
+label.tree_label:after { border-bottom: 0; }
+
+:checked ~ label.tree_label:after {
+  border-radius: 0 .3em 0 0;
+  border-top: 2px solid $color-global-sidebar-employer-sub-route-button;
+  border-right: 2px solid $color-global-sidebar-employer-sub-route-button;
+  border-bottom: 0;
+  border-left: 0;
+  bottom: 0;
+  top: 0.5em;
+  height: auto;
+  }
+
+.tree li:last-child:before {
+  height: 14px;
+  bottom: auto;
+  }
+
+.tree > li:last-child:before { display: none; }
+
+.tree_custom {
+  display: block;
+  background: #eee;
+  padding: 14px;
+  border-radius: 0.3em;
 }

@@ -1,9 +1,11 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import 'chartjs-adapter-moment';
 import { month } from '@app-shared/mock.data';
+import { format } from 'date-fns';
+import moment from "moment";
 
 @Component({
   selector: 'app-dashboard-charts',
@@ -15,57 +17,52 @@ export class DashboardChartsComponent implements OnInit {
   @Input() details: any;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
   months = month;
+  lineChartRendering: boolean = true;
 
   // public activityGraphChartLabels: string[] = new Array(7).fill(0).map((el, i) => "September " + i);
 
   public activityGraphChartOptions: any = {
-    indexAxis: 'x',
-    plugins: {
-      title: {
-        //display: true,
-        //text: 'Chart.js Bar Chart - Stacked'
-      },
-      legend: {
-        position: 'right',
-        labels: {
-          boxWidth: 15,
-          boxHeight: 12,
-          fontColor: '#333',
-          //pointStyle: 'circle',
-          //usePointStyle: true,
-          padding: 10,
-          font: {
-            family: 'Noto Sans'
-          }
-        }
-      }
-    },
     responsive: true,
     maintainAspectRatio: false,
-    interaction: {
-      intersect: false,
+    elements: {
+      line: {
+        tension: 0.5
+      }
     },
     scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'day'
+      // We use this empty structure as a placeholder for dynamic theming.
+      y:
+        {
+          position: 'left',
         },
-        grid: {
-          display: false
-        },
-      },
-      y: {
-        //activity: true,
-        grid: {
-          display: true,
-          borderDash: [8, 4],
-        },
+    },
+
+    plugins: {
+      legend: { display: true },
+      annotation: {
+        annotations: [
+          {
+            type: 'line',
+            scaleID: 'x',
+            value: 'March',
+            borderColor: 'orange',
+            borderWidth: 2,
+            label: {
+              display: true,
+              position: 'center',
+              color: 'orange',
+              content: 'LineAnno',
+              font: {
+                weight: 'bold'
+              }
+            }
+          },
+        ],
       }
     }
   };
 
-  public activityGraphChartType: any = 'bar';
+  public activityGraphChartType: any = 'line';
   public activityGraphChartLegend = false;
 
   public lineChartData: ChartConfiguration['data'] = {
@@ -73,24 +70,20 @@ export class DashboardChartsComponent implements OnInit {
       {
         data: [],
         label: 'JobView',
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
+        borderColor: '#35C768',
+        pointBackgroundColor: '#35C768',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
       },
       {
         data: [],
         label: 'Job Applicant',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
+        borderColor: '#FE6F61',
+        pointBackgroundColor: '#FE6F61',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(77,83,96,1)',
-        fill: 'origin',
       }
     ],
     labels: [ ]
@@ -131,7 +124,6 @@ export class DashboardChartsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.details);
     const { applicants, contacts } = this.details.statistic;
 
     const data = { data: [parseInt(contacts), parseInt(applicants)] }
@@ -142,12 +134,24 @@ export class DashboardChartsComponent implements OnInit {
   }
 
   lineChartRender(){
-    const count = this.details.graph.map(cnt => parseInt(cnt.count));
-    const data = { data: [count] };
-    const mappedLabels = this.details.graph.map(cnt => this.getMonth(cnt.month));
-    this.lineChartData.datasets.push(data);
-    this.lineChartData.labels.push(mappedLabels);
-    this.chart?.update();
+    let sortedJobViews = this.details.jobViews?.slice().sort(function(a: any, b: any){
+      var c: any = new Date(a.date);
+      var d: any = new Date(b.date);
+      return c-d;
+    });
+
+    let sortedApplicants = this.details.graph?.slice().sort(function(a: any, b: any){
+      var c: any = new Date(a.date);
+      var d: any = new Date(b.date);
+      return c-d;
+    });
+
+    let formattedLineChartData = this.formatLineGraphVal(sortedJobViews, sortedApplicants)
+
+    this.lineChartData.datasets[0].data = formattedLineChartData.jobViews; 
+    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplicants; 
+    this.lineChartData.labels = formattedLineChartData.labels;
+    this.lineChartRendering = false;
 
   }
 
@@ -155,4 +159,31 @@ export class DashboardChartsComponent implements OnInit {
     return this.months[monthNumber + 1];
   }
 
+  formatLineGraphVal(jobViews: any[], jobApplicants: any[]){
+    let graphData = {
+      labels: [],
+      jobViews: [],
+      jobApplicants: []
+    }
+
+    if(jobViews.length > jobApplicants.length){
+      jobViews.forEach(element => {
+        graphData.labels.push(moment(element.date).format('MMM DD')),
+        graphData.jobViews.push(element.count);
+        graphData.jobApplicants.push(jobApplicants.find(x => x.date === element.date) ? jobApplicants.find(x => x.date === element.date)['count'] : 0);
+
+      });
+    } else {
+      jobApplicants.forEach(element => {
+        graphData.labels.push(moment(element.date).format('MMM DD')),
+        graphData.jobViews.push(element.count);
+        graphData.jobApplicants.push(jobViews.find(x => x.date === element.date) ? jobViews.find(x => x.date === element.date)['count'] : 0)
+
+      });
+    }
+    
+    return graphData;
+  }
+
 }
+ 

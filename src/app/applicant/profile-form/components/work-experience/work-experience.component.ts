@@ -30,29 +30,17 @@ export class WorkExperienceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.workForm = this.fb.group({
-    //   jobTitle: this.bindFG.get('jobTitle'),
-    //   location: this.bindFG.get('location'),
-    //   isCurrentJob: this.bindFG.get('isCurrentJob'),
-    //   companyName: this.bindFG.get('companyName'),
-    //   jobTypeId: this.bindFG.get('jobTypeId'),
-    //   startMonth: this.bindFG.get('startMonth'),
-    //   startYear: this.bindFG.get('startYear'),
-    //   endMonth: this.bindFG.get('endMonth'),
-    //   endYear: this.bindFG.get('endYear'),
-    //   details: this.bindFG.get('details')
-    // });
     this.workForm = this.fb.group({
       jobTitle: new FormControl(this.data?.jobTitle, Validators.required),
-      location: new FormControl(this.data?.location),
+      location: new FormControl(this.data?.location, Validators.required),
       isCurrentJob: new FormControl(this.data?.isCurrentJob),
       companyName: new FormControl(this.data?.companyName, Validators.required),
-      jobTypeId: new FormControl(this.data?.jobTypeId),
-      startMonth: new FormControl(this.data?.startMonth),
-      startYear: new FormControl(this.data?.startYear),
+      jobTypeId: new FormControl(this.data?.jobTypeId, Validators.required),
+      startMonth: new FormControl(this.data?.startMonth, Validators.required),
+      startYear: new FormControl(this.data?.startYear, Validators.required),
       endMonth: new FormControl(this.data?.endMonth),
       endYear: new FormControl(this.data?.endYear),
-      details: new FormControl(this.data?.details)
+      details: new FormControl(this.data?.details, Validators.required)
     });
   }
 

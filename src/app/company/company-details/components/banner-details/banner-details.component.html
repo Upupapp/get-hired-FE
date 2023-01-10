@@ -74,11 +74,11 @@
             </p>
 
             <div class="px-lg-4 details" *ngIf="seeMore == 2">
-              <h5 class="title-company">
+              <h5 class="title-verified">
                 {{ details?.companyDetails | slice: 0:50 }}
                 <ng-container *ngIf="details?.companyDetails.length > 50">...</ng-container>
                 <br>
-                <span class="show-more" style="cursor: pointer" 
+                <span class="show-more" style="cursor: pointer"
                   *ngIf="details?.companyDetails.length > 50"
                   (click)="showMore(1)"
                   >(Show More)</span
@@ -86,10 +86,10 @@
               </h5>
             </div>
             <div class="px-lg-4 details" *ngIf="seeMore == 1">
-              <h5 class="title-company">
+              <h5 class="title-verified">
                 {{ details?.companyDetails }}
                 <br>
-                <span class="show-more" style="cursor: pointer" 
+                <span class="show-more" style="cursor: pointer"
                   *ngIf="details?.companyDetails.length > 50"
                   (click)="showMore(2)"
                   >(Show Less)</span

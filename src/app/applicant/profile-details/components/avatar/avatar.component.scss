@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .avatar-main{
 	width: 108px !important;
 	min-width: 108px !important;
@@ -101,7 +103,7 @@
 	font-weight: 500;
 	font-size: 15px;
 	line-height: 21px;
-	color: #444152;
+	color: $color-global-sidebar-employer-user-menu;
 }
 
 .contact-table{

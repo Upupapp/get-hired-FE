@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 .card{
 	background: #FFFFFF;
 	border: 1px solid rgba(231, 231, 231, 0.65);
@@ -95,7 +97,7 @@
 }
 
 .btn-apply-now{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 5px;
 	color: white;
 }
@@ -106,13 +108,14 @@
 	padding-top: 14px;
 	height: 50px;
 	width: 50px;
+	min-width: 50px;
 }
 
 
 .bg-bluish{
 	background: #F3F8FF;
 	border-radius: 17px;
-	padding: 40px 40px 10px 40px;
+	// padding: 40px 40px 10px 40px;
 }
 
 .title-job-details{

@@ -8,7 +8,7 @@
             <img src="/assets/images/placeholder/logo.png">
           </div>
 
-          <img src="/assets/images/placeholder/record-interview-placeholder.png"
+          <img src="/assets/images/interview-placeholder.png"
             *ngIf="!isVideoRecording && !previewBlob"
             class="placeholder-img">
 
@@ -52,9 +52,12 @@
         <div class="row bg-applicant py-2">
           <div class="col-12 col-lg-6 d-flex align-items-center">
             <div class="w-100">
-              <div>
-                <img src="/assets/images/face-3.jpg" class="img-avatar">
+              <div class="initial-thumbnail-inner mx-auto" *ngIf="fullName">
+                {{ fullName.charAt(0) }}
               </div>
+              <!-- <div>
+                <img src="/assets/images/face-3.jpg" class="img-avatar">
+              </div> -->
 
               <div class="mt-2">
                 <h5 class="title-applicant">{{ fullName }}</h5>

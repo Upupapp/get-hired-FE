@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { JobCreateComponent } from './job-create/job-create.component';
 import { SharedModule } from '@main/shared/shared.module';
 import { CreateInterviewComponent } from './job-create/components/create-interview/create-interview.component';
@@ -19,6 +19,10 @@ import { MaterialComponentsModule } from '@main/shared/components/material-compo
 import { TableControlModalComponent } from './job-list/dialogs/table-control-modal/table-control-modal.component';
 import { JobViewComponent } from './job-view/job-view.component';
 import { JobApplicantsComponent } from './job-applicants/job-applicants.component';
+import { ApplicantActionModalComponent } from './job-applicants/applicant-action-modal/applicant-action-modal.component';
+import { ApplicationModule } from '@main/application/application.module';
+import { ApplicantModule } from '@app-applicant/applicant.module';
+import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 
 // const routes: Routes = [
   // { path: 'expired', component: JobExpiredComponent },
@@ -38,7 +42,8 @@ const exportedComponents = [
   JobExpiredComponent,
   TableControlModalComponent,
   JobViewComponent,
-  JobApplicantsComponent
+  JobApplicantsComponent,
+  ApplicantActionModalComponent
 ]
 
 @NgModule({
@@ -53,10 +58,12 @@ const exportedComponents = [
     FormsModule,
     MaterialComponentsModule,
     InterviewModule,
+    ApplicationModule,
+    ApplicantModule,
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),
   ],
-  providers: [JobFacade, DatePipe],
+  providers: [JobFacade, DatePipe, CurrencyPipe, ApplicantFacade],
   exports: [
     ...exportedComponents
   ]

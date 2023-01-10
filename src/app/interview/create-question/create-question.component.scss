@@ -1,3 +1,5 @@
+@import "src/assets/styles/colors";
+
 i{
 	font-style: italic !important;
 }
@@ -143,7 +145,7 @@ label{
 }
 
 .btn-save{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
@@ -220,7 +222,7 @@ label{
 }
 
 .btn-record{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
 	border-radius: 566.808px;
 	font-family: 'Manrope';
@@ -266,8 +268,8 @@ label{
 	font-size: 14px !important;
 	padding: 7px 25px !important;
 	&:hover{
-		border-color: #FE6F61;
-		background: #FE6F61;
+		border-color: $color-global-red;
+		background: $color-global-red;
 		color: #fff;
 		font-weight: 600;
 	}

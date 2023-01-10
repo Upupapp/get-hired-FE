@@ -4,6 +4,7 @@ import { industries, job_role } from '@app-job/jobs-model-interface';
 import { JobFacade } from '@app-job/state/job.facade';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { currencies } from '@app-shared/mock.data';
 
 @Component({
   selector: 'app-create-job-post-step',
@@ -20,6 +21,7 @@ export class CreateJobPostStepComponent implements OnInit {
   skills: FormArray;
   tags: FormArray;
   jobInfoForm: FormGroup;
+  salaryCurrencies = currencies;
 
   public search: string = "";
   public rates: any[] = [

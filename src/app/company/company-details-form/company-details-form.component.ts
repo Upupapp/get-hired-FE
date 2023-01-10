@@ -74,7 +74,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
     this.companyDetailsForm = this.formBuilder.group({
       companyEmail: ['', [Validators.required, Validators.email]],
-      companyContactNumber: [''],
+      companyContactNumber: ['', Validators.required],
       companyAddress: [''],
       companyCity: ['', [Validators.required]],
       companyCountry: ['', [Validators.required]],
@@ -219,9 +219,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       });
     } else {
       // dont close automatically all modal
-      if (!this.updateSuccess) {
+      // if (!this.updateSuccess) {
         setTimeout(() => this.loadingDialog.closeAll(), 3000);
-      }
+      // }
     }
   }
 

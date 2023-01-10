@@ -83,7 +83,6 @@ export class ProfileFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.user);
     if (this.user) {
       this.applicantFacade.getApplicantById(this.user._id);
 
@@ -96,7 +95,6 @@ export class ProfileFormComponent implements OnInit {
   }
 
   initializedForm(data?: Model.Applicant) {
-    console.log(data);
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
         photoUrl: [data ? data.photoUrl : null],
@@ -109,6 +107,7 @@ export class ProfileFormComponent implements OnInit {
         workSetupId: [data ? data.workSetUpId : null],
         salaryMinimum: [data ? data.salaryMinimum : null],
         salaryMaximum: [data ? data.salaryMaximum : null],
+        salaryCurrency: [data ? data.salaryCurrency : null],
         firstName: [data ? data.firstName : this.user.firstName, Validators.required],
         lastName: [data ? data.lastName : this.user.lastName, Validators.required],
         address: [data ? data.address : null],
@@ -138,8 +137,6 @@ export class ProfileFormComponent implements OnInit {
 
     this.subscriptions$.add(
       this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
-        console.log(value);
-
       }));
   }
 
@@ -156,11 +153,9 @@ export class ProfileFormComponent implements OnInit {
       && applicant.email != ""
       && applicant.contactNumber != ""
       && applicant.shortBio != ""
+      && applicant.salaryCurrency != null
       && applicant.salaryMinimum != 0
       && applicant.salaryMaximum != 0;
-
-    console.log(applicant);
-    console.log(isProfileReady);
 
     this.applicantFacade.saveApplicant({
       ...applicant,
@@ -170,7 +165,6 @@ export class ProfileFormComponent implements OnInit {
 
   mappedApplicant(data) {
     if (data) {
-      console.log(data);
       this.applicant = data;
       this.applicantId = data.applicantProfileId;
 
@@ -198,7 +192,7 @@ export class ProfileFormComponent implements OnInit {
       this.profileForm.controls.profileDetailsForm.get('contactNumber').setValue(data.contactNumber);
       this.profileForm.controls.profileDetailsForm.get('city').setValue(data.city);
       this.profileForm.controls.profileDetailsForm.get('country').setValue(data.country);
-
+      this.profileForm.controls.profileDetailsForm.get('salaryCurrency').setValue(data.salaryCurrency);
       this.profileForm.controls.profileDocuments.get('videoCVUrl').setValue(data.videoCVUrl);
 
       const docs = this.profileForm.controls.profileDocuments.get('documents') as FormArray;
@@ -352,7 +346,6 @@ export class ProfileFormComponent implements OnInit {
       });
       this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'updated') {
-      console.log('HALA')
       this.snackBar.open(`Profile successfully updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],

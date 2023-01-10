@@ -42,6 +42,8 @@ export class ReusableTableComponent implements OnInit {
   @Output() updateSelectedRowDialog: EventEmitter<any> = new EventEmitter<any>();
   @Output() actionOfButton: EventEmitter<any> = new EventEmitter<any>();
   @Output() viewDetails: EventEmitter<any> = new EventEmitter<any>();
+  @Output() customButtonEvent: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild(MatSort) sort: MatSort;
   @Input() maxRows: number = 5;
 
@@ -247,6 +249,12 @@ export class ReusableTableComponent implements OnInit {
     });
   }
 
+  customButtonFunction(data){
+    this.customButtonEvent.emit({
+      data: data
+    });
+  }
+
 
   /*
     Open dialog component
@@ -274,11 +282,15 @@ export class ReusableTableComponent implements OnInit {
   /* View Detail Dialog
   */
   viewDetailDialog(row): void{
-    console.log(row)
+    console.log(row, "row clicked")
     this.viewDetails.emit({
       title: this.componentTitle,
       data: row
     });
+  }
+
+  redirectTo(rowData:any) {
+    this.router.navigate([`recruiter/contacts/group-list/${rowData.group_id}`]);
   }
 
   exportAsXLSX(type?):void {

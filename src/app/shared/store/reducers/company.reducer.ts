@@ -7,10 +7,10 @@ import {
 // Create new interface for reducer
 export interface CompanyState {
   companyUserList: any;
-  companyUserRes: any;
-  pending: any;
-  error: any;
-  success: any;
+	companyUserRes:any;
+	pending: any;
+	error: any;
+	success: any;
 }
 
 // Set initial state of the data

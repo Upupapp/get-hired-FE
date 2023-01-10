@@ -13,6 +13,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class BannerComponent implements OnInit {
   public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
   @Input() details;
+  @Input() cardDetails;
+
   constructor() {}
 
   ngOnInit(): void {}

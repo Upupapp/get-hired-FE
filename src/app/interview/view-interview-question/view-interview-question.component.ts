@@ -20,6 +20,7 @@ export class ViewInterviewQuestionComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log('ANO na')
   }
 
   removeItem(index) {
@@ -27,6 +28,7 @@ export class ViewInterviewQuestionComponent implements OnInit {
   }
 
   recordItem(index) {
+    console.log(index);
     this.record.emit(index)
   }
 

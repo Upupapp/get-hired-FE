@@ -10,7 +10,12 @@ import { ImportAddCandidateComponent } from './candidate-list/dialogs/import-add
 import { ContactGroupComponent } from './contact-group/contact-group.component';
 import { AddContactGroupComponent } from './contact-group/dialogs/add-contact-group/add-contact-group.component';
 import { CheckboxGroupComponent}  from './contact-group/dialogs/add-contact-group/checkbox-group.component'
-import { CheckboxComponent}  from './contact-group/dialogs/add-contact-group/checkbox.component'
+import { CheckboxComponent}  from './contact-group/dialogs/add-contact-group/checkbox.component';
+import { JobListComponent } from './job-list/job-list.component';
+import { TableControlModalComponent } from './candidate-list/dialogs/table-control-modal/table-control-modal.component'
+import { ApplicantModule } from '@app-applicant/applicant.module';
+import { ApplicationModule } from '@app-application/application.module';
+import { GroupListComponent } from './group-list/group-list.component';
 
 const routes: Routes = [
   {
@@ -18,8 +23,10 @@ const routes: Routes = [
     component: EmployerContactsComponent,
     children: [
       { path: 'list', component: ContactListComponent },
-      { path: 'candidates', component: CandidateListComponent },
+      { path: 'candidates', component: JobListComponent },
+      { path: 'candidate-list/:id', component: CandidateListComponent },
       { path: 'groups', component: ContactGroupComponent },
+      { path: 'group-list/:id', component: GroupListComponent },
       { path: '', redirectTo: 'list', pathMatch: 'full' }
     ]
   }
@@ -36,11 +43,16 @@ const routes: Routes = [
     ContactGroupComponent,
     AddContactGroupComponent,
     CheckboxComponent,
-    CheckboxGroupComponent
+    CheckboxGroupComponent,
+    JobListComponent,
+    TableControlModalComponent,
+    GroupListComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    ApplicantModule,
+    ApplicationModule,
     RouterModule.forChild(routes)
   ]
 })

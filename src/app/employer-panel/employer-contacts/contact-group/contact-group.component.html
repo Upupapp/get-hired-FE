@@ -3,7 +3,7 @@
       <div class="card card-body py-3">
         <div class="w-100">
           <span class="main-title mt-3">Contact Groups</span>
-  
+
           <div class="float-end">
             <button class="btn btn-add-service" (click)="addCandidate()">
               Add Group
@@ -16,17 +16,20 @@
       <div class="card card-body" *ngIf="listView && !loading">
         <app-reusable-table [loading]="loading"
           [componentTitle]="'Groups'" [displayedColumns]="displayedColumns"
-          [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
-          [maxRows]="10" [listDataSource]="groupList"
-          (deleteSelectedRow)="deleteRow($event)" 
-          (updateSelectedRowDialog)="editGroup($event)">
+          [selectedColumns]="selectedColumns"
+          [selectedColumnsMobile]="selectedColumns"
+          [searchSource]="searchSource"
+          [maxRows]="10"
+          [listDataSource]="groupList"
+          (deleteSelectedRow)="deleteRow($event)"
+          (updateSelectedRowDialog)="editGroup($event)"
+          (customButtonEvent)="showMembers($event)">
         </app-reusable-table>
       </div>
-  
-  
+
+
       <!-- LOADING ANIMATION SCREEN -->
       <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
       </custom-profile-loader>
     </div>
-  </div>
-  
+</div>

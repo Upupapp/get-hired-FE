@@ -40,7 +40,7 @@ export class ChangePwComponent implements OnInit {
     this.pwForm = this.formBuilder.group({
       newPassword: ['', [Validators.required, Validators.pattern(this.pwPattern)]],
       confirmPassword: ['', [Validators.required, Validators.pattern(this.pwPattern)]],
-    }, { validators: this.checkIfMatchingPasswords });
+    }, { validators: this.checkIfMatchingPasswords('newPassword', 'confirmPassword')});
   }
 
   changePW() {
@@ -72,7 +72,10 @@ export class ChangePwComponent implements OnInit {
     }
   }
 
-  checkIfMatchingPasswords(passwordKey: string, passwordConfirmationKey: string) {
+  checkIfMatchingPasswords(
+    passwordKey: string,
+    passwordConfirmationKey: string
+  ) {
     return (group: FormGroup) => {
       const passwordInput = group.controls[passwordKey];
       const passwordConfirmationInput = group.controls[passwordConfirmationKey];

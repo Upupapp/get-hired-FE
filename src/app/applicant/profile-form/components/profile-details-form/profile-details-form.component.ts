@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { currencies } from '@app-shared/mock.data';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { Subscription } from 'rxjs';
 
@@ -18,7 +19,7 @@ export class ProfileDetailsFormComponent implements OnInit {
   photo: FormControl;
 
   private req: Subscription;
-
+  salaryCurrencies = currencies;
   profileDetailsForm: FormGroup;
   profileSelected: FormControl;
 
@@ -44,7 +45,6 @@ export class ProfileDetailsFormComponent implements OnInit {
     this.applicantFacade.getSetup();
 
     this.profileDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-    console.log(this.profileDetailsForm);
     this.photo = this.profileDetailsForm.controls['photoUrl'] as FormControl;
   }
 

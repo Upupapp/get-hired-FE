@@ -40,6 +40,20 @@ export class CandidateService {
         );
     }
 
+    UpdateCandidate(data:any): Observable<any> {
+      return this.http.put<any>(`${this.server}/candidates/updatecandidate`, data).pipe(
+        map((res: any) => <any>res.data),
+        catchError(this.handleError)
+    ); 
+    }
+
+    DeleteCandidate(data:any): Observable<any> {
+      return this.http.delete<any>(`${this.server}/candidates/deletecandidate?candidateId=${data}`)
+      .pipe(
+        map((res: any) => <any>res),
+        catchError(this.handleError)
+      );
+    }
 
     // error handler
     private handleError(error: any, caught: any): any {

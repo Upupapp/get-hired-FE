@@ -9,6 +9,7 @@ export interface BasicJob {
   jobCity: string;
   salaryMinimum: number;
   salaryMaximum: number;
+  salaryCurrency: string;
   companyName: string;
   jobTypeName: string;
   workSetupName: string;

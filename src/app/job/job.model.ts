@@ -17,6 +17,7 @@ export interface Job {
   workSetupName?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
+  salaryCurrency?:string;
   jobAddress?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -121,4 +122,11 @@ export interface JobApplicants {
   workSetupName: string;
   jobTypeId: number;
   jobTypeName: string;
+}
+
+export interface JobApplicantDetails {
+  profile: any,
+  interviewQuestions: any[],
+  profileDocs: any[],
+  answers: any[]
 }

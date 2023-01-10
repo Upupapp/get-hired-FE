@@ -26,8 +26,8 @@
       <div class="title-container mb-3">
         <label>Profile Photo</label>
 
-        <app-file-upload (upload)="onUpload($event)" label="Select Profile Photo"
-          [labelTop]="false" formControlName="photoUrl"></app-file-upload>
+        <app-file-upload (upload)="onUpload($event)" label="Select Profile Photo" [labelTop]="false"
+          formControlName="photoUrl"></app-file-upload>
       </div>
 
       <div class="title-container mb-3" *ngIf="profileImage || photo.value">
@@ -116,12 +116,19 @@
         <label>Expected Salary (monthly)</label>
 
         <div class="row">
-          <div class="col-6 form-group pe-0">
+          <div class="col-2 form-group pe-0">
+            <select class="form-select px-2 text-center" formControlName="salaryCurrency">
+              <ng-container *ngFor="let item of salaryCurrencies; let i = index">
+                <option [value]="item.name">{{item.name}}</option>
+              </ng-container>
+            </select>
+          </div>
+          <div class="col-5 form-group pe-0">
             <input type="number" name="search" formControlName="salaryMinimum" class="form-control form-control-main"
               placeholder="Php 25,000">
           </div>
 
-          <div class="col-6 form-group pe-0">
+          <div class="col-5 form-group pe-0">
             <input type="number" name="search" class="form-control form-control-main" formControlName="salaryMaximum"
               placeholder="Php 35,500">
           </div>

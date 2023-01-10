@@ -137,6 +137,7 @@
 						 && header?.type !== 'date'
 						 && header?.type !== 'action_button'
 						 && header?.col_name !== 'status'
+             && header?.col_name !== 'members'
              && header?.col_name !== 'groups'" [ngClass]="header?.type === 'hash_code' ? 'text-primary' : ''">
               <!-- TRUE | FALSE VALUE CONVERT TO YES OR NO -->
               <span *ngIf="header?.type === 'currency'">$</span>
@@ -150,11 +151,20 @@
             </span>
 
             <span *ngIf="header?.type === 'action_button'">
+              	<button class="btn d-flex" 
+					[ngStyle]="{ 
+						'padding-left': header?.col_name === 'view_group' ? '8px': '15px'
+					}"
+					(click)="customButtonFunction(data)"
+					[ngClass]="header?.button_class">
+					<img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
 
-              <button class="btn" [ngClass]="header?.button_class" (click)="btnAction(data[header?.params])">
-                <img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-12">
-                {{ header?.button_title }}
-              </button>
+					<ng-container *ngIf="header?.col_name === 'view_group'">
+						<div class="group-number">{{data['groups']?.length}}</div>
+					</ng-container>
+
+					{{ header?.button_title }} 
+				</button>
             </span>
 
             <span *ngIf="header?.col_name === 'groups'">
@@ -170,6 +180,11 @@
             <span *ngIf="header?.col_name === 'status'">
               <button class="btn btn-status" [ngClass]="data[header?.col_name]?.split(' ').join('-').toLowerCase()">
                 {{ data[header?.col_name] }} </button>
+            </span>
+
+            <span *ngIf="header?.col_name === 'members'">
+              <button class="btn btn-member" (click)="redirectTo(data)">
+                {{ data[header?.col_name] }}</button>
             </span>
 
             <span *ngIf="header?.col_name == 'profile_image'" class="table_img">
@@ -204,7 +219,8 @@
 							 && header?.col_name !== 'icon'
 							 && header?.col_name !== 'action'
 							 && header?.type !== 'date'
-							 && header?.col_name !== 'status'" [ngClass]="header?.type === 'hash_code' ? 'order-number' : ''">
+							 && header?.col_name !== 'status'
+               && header?.col_name !== 'members'" [ngClass]="header?.type === 'hash_code' ? 'order-number' : ''">
                 <!-- TRUE | FALSE VALUE CONVERT TO YES OR NO -->
 
                 {{header?.title}}:

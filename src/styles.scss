@@ -32,14 +32,18 @@ body {
 
 .btn-primary{
   padding: 8px 15px !important;
-  background: #FF7062 !important;
+  background: $color-global-red-buttons !important;
   border-radius: 5px !important;
   font-size: 14px !important;
+
+  &:hover{
+    background: rgba($color-global-red-buttons, 0.9) !important;
+  }
 }
 
 .btn-outline-primary {
-  border: solid 2px #FF7062;
-  color: #FF7062;
+  border: solid 2px $color-global-red-buttons;
+  color: $color-global-red-buttons;
   transition: all 0.1s ease;
   background: transparent;
   border-radius: 1232px;
@@ -52,8 +56,8 @@ body {
 	transition: all 0.4s ease !important;
 
   &:hover {
-    background: #FF7062;
-    border: solid 2px #FF7062;
+    background: $color-global-red-buttons;
+    border: solid 2px $color-global-red-buttons;
     color: #fff;
   }
 }

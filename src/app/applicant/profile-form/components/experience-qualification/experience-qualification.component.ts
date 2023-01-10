@@ -57,8 +57,6 @@ export class ExperienceQualificationComponent implements OnInit {
   addItem(control, controlArray: FormArray) {
     let value = this.arrayForm.get(control).value;
 
-    console.log(controlArray);
-
     if (value && value != '') {
       if (controlArray.controls.length != 5) {
         controlArray.push(new FormControl(value));
@@ -82,7 +80,9 @@ export class ExperienceQualificationComponent implements OnInit {
     switch (event.formArrayName) {
       case 'workExperience':
         this.workRendering = true;
+        console.log(this.workExperience);
         this.workExperience.push(event.fg);
+        // console.log(this.workExperience);
         setTimeout(() => {
           this.workRendering = false
         }, 300);
@@ -139,7 +139,7 @@ export class ExperienceQualificationComponent implements OnInit {
     return this.fb.group({
       jobTitle: [null, Validators.required],
       location: [null, Validators.required],
-      isCurrentJob: [null, Validators.required],
+      isCurrentJob: [false, Validators.required],
       companyName: [null, Validators.required],
       jobTypeId: [null, Validators.required],
       startMonth: [null, Validators.required],

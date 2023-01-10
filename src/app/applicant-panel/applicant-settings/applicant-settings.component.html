@@ -1,6 +1,6 @@
 <section class="mt-4 px-4">
   <form [formGroup]="profileDetailsForm" (ngSubmit)="onSubmit()">
-    <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
+    <div class="text-end submit-container pe-3 pt-3" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
       <button class="btn btn-save me-2" (click)="changePw()">Submit Changes</button>
     </div>
 

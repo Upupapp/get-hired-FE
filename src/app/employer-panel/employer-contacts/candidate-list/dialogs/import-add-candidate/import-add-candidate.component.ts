@@ -12,6 +12,8 @@ import { CandidateState } from '@main/shared/store/reducers/candidate.reducer';
 import { GroupState } from '@main/shared/store/reducers/group.reducer';
 import { Subject, Observable, startWith, map } from 'rxjs';
 import { CSVDataRecord } from './import-candidate-model';
+import { ContactState } from '@main/shared/store/reducers/contact.reducer';
+import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
 
 @Component({
   selector: 'app-import-add-candidate',
@@ -55,6 +57,7 @@ export class ImportAddCandidateComponent implements OnInit {
     public snackBar: MatSnackBar,
     private candidateState: Store<StoreState>,
     private groupState: Store<StoreState>,
+    private contactState: Store<StoreState>,
   ) {}
 
   ngOnInit(): void {
@@ -68,11 +71,11 @@ export class ImportAddCandidateComponent implements OnInit {
       mobileNumber: [''],
       address: [''],
       jobId: ['', [Validators.required]],
-      // groupName: ['', [Validators.required]],
-      // groupId: ['']
+      groupName: [''],
+      groupId: ['']
     });
     // this.importCandidateForm = this.formBuilder.group({
-    //   groupName: ['', [Validators.required]],
+    //   groupName: [''],
     //   groupId: ['']
     // });
     this.candidateData$ = this.candidateState.pipe(select(state => state.candidate));
@@ -142,10 +145,10 @@ export class ImportAddCandidateComponent implements OnInit {
       }
     });
 
-    // this.filteredOptions = this.candidateForm.get("groupName").valueChanges.pipe(
-    //   startWith(''),
-    //   map(val => this.filter(val))
-    // );
+    this.filteredOptions = this.candidateForm.get("groupName").valueChanges.pipe(
+      startWith(''),
+      map(val => this.filter(val))
+    );
 
   }
 
@@ -205,6 +208,10 @@ export class ImportAddCandidateComponent implements OnInit {
       type: CandidateActionTypes.SAVE_CANDIDATE,
       payload: data
     });
+    this.contactState.dispatch({
+      type: ContactActionTypes.SAVE_CONTACT,
+      payload: data
+    });
   }
 
   setGroupName(value) {
@@ -246,6 +253,10 @@ export class ImportAddCandidateComponent implements OnInit {
 
     if (this.isValidCSVFile(files[0])) {
       this.document= files[0].name;
+      this.importCandidateForm = this.formBuilder.group({
+        groupName: [''],
+        groupId: ['']
+      });
       this.fileData = files[0];
 
       let input = $event.target;

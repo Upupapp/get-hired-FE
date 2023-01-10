@@ -55,7 +55,7 @@
 }
 
 .btn-add-service{
-	background: #FF7062;
+	background: $color-global-red-buttons;
 	border-radius: 6px;
 	padding: 7px 10px 7px 20px !important;
 	font-size: 13px;
@@ -64,7 +64,7 @@
 	//right: 0px;
 
 	&:hover{
-		background: rgba(#FF7062, 0.7);
+		background: rgba($color-global-red-buttons, 0.7);
 	}
 }
 

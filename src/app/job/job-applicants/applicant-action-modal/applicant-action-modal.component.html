@@ -1,0 +1,32 @@
+<div class="side-sub-menu px-0">
+	<span class="close float-end">
+		<img src="/assets/images/placeholder/icons/remove-gray.png"
+		style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
+	</span>
+
+	<h6 class="pb-3 d-flex" style="border-bottom: dashed 1px #d9d9d9;">
+		<img [src]="data?.data?.photoUrl" class="img-avatar">
+
+		<div class="mt-1 ms-2">
+			<strong>{{data?.data?.firstName + ' ' + data?.data?.lastName}}</strong>
+
+			<br><!--  - Applied to Job ID {{data?.data?.job_id}} -->
+			<small>{{data?.data?.jobTitle}} - </small>
+			<small>{{data?.data?.workSetupName}}, {{data?.data?.jobTypeName}} ssss</small>
+		</div>
+	</h6>
+
+
+
+	<div class="row">
+		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls">
+			<div class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center"
+			[ngStyle]="{ background: menu?.background }"
+			(click)="openControlMenu(menu)">
+				<!-- <img [src]="menu?.icon" width="18px"> -->
+				<span class="side-sub-menu-title">{{menu.title}}</span>
+			</div>
+		</div>
+	</div>
+</div>
+

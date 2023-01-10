@@ -81,6 +81,7 @@ export class ContactGroupComponent implements OnInit {
       this.loading = group.pending;
       if(group.groupList.length > 0){
         group.groupList
+        console.log(group.groupList)
         this.groupList = [...group.groupList].map(el => {
           return {
             'members': el?.details.length,
@@ -194,6 +195,11 @@ export class ContactGroupComponent implements OnInit {
       type:GroupActionTypes.GET_GROUP_LIST,
       payload: this.localData.companyId
     });
+  }
+
+  showMembers(row) {
+    const { data } = row;
+    this.router.navigate([`recruiter/contacts/group-list/${data.group_id}`]);
   }
 
 }
