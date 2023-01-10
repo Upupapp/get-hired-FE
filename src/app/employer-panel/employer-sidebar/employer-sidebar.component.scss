@@ -43,11 +43,11 @@
 }
 
 .bg-menu{
-	background: $color-global-sidebar-employer-user-menu;
+	background: #1D2549;
 }
 
 .bg-user{
-	background: $color-global-gray-cancel;
+	background: #0D163E;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
@@ -123,9 +123,9 @@
 		line-height: 20px;
 		/* identical to box height */
 
-
-		color: #FFFFFF;
-		background: $color-global-sidebar-applicant-route-active;
+		font-weight: 500;
+		color: #1D2549;
+		background: #BEF245;
 		border-radius: 9px;
 	}
 }
@@ -163,9 +163,9 @@
 	}
 
 	&-title-active{
-		color: #FFFFFF !important;
+		color: #fff !important;
 		cursor: pointer;
-		background: $color-global-sidebar-employer-route-active;
+		background: #1666BA;
 		border-radius: 9px;
 		padding: 10px 15px 5px 5px;
 		font-family: 'Manrope';
@@ -348,14 +348,14 @@
 	cursor: pointer;
 	width: 100%;
 	z-index: 99;
-	color: $color-global-sidebar-employer-sub-label;
+	color: rgba(#E7FFF2, 0.7);
 	margin-left: -5px;
 	//margin-bottom: 0 !important;
 }
 
 .sub-label-active{
-	background: $color-global-sidebar-employer-sub-route-button;
-	color: #fff;
+	background: #0D163E;
+	color: #E7FFF2;
 	border-radius: 9px;
 }
 

@@ -21,7 +21,6 @@
     #f85b4b 128.45%
   ) !important;
   border-radius: 0px;
-  position: right;
   height: 260px;
 
   @media (max-width: 1099px) {
@@ -95,39 +94,39 @@
 }
 
 .orange {
-  background: #fe742b;
+  background: #1666BA;
 
   &:hover {
     background: white;
-    border: solid 2px #fe742b;
+    border: solid 2px #1666BA;
     padding: 18px 12px 8px 15px;
     transition: all 0.2s ease !important;
 
     .title-card {
-      color: #fe742b;
+      color: #1666BA;
     }
 
     .title-stat {
-      color: #fe742b;
+      color: #1666BA;
     }
   }
 }
 
 .yellow {
-  background: #efa20d;
+  background: #368CE7;
 
   &:hover {
     background: white;
-    border: solid 2px #efa20d;
+    border: solid 2px #368CE7;
     padding: 18px 12px 8px 15px;
     transition: all 0.2s ease !important;
 
     .title-card {
-      color: #efa20d;
+      color: #368CE7;
     }
 
     .title-stat {
-      color: #efa20d;
+      color: #368CE7;
     }
   }
 }

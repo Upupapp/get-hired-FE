@@ -98,7 +98,7 @@
 }
 
 .btn-nav-gradient{
-  background: linear-gradient(163.18deg, #D06047 1.81%, #D06047 98.2%) !important;
+  background: #368CE7 !important;
   box-shadow: 0px 29.81px 46.8519px rgba(10, 146, 200, 0.1059), 0px 14.52px 25.4815px rgba(10, 146, 200, 0.1007) !important;
   border-radius: 900px !important;
   color: white;
@@ -109,8 +109,8 @@
   height: 38px !important;
 
   &:hover{
-    border: solid 2px #FF4D3C !important;
-    color: #FF4D3C;
+    border: solid 2px #368CE7 !important;
+    color: #368CE7;
     transition: all 0.1s ease !important;
     background: transparent !important;
     padding-bottom: 8px !important;
@@ -120,8 +120,8 @@
 
 .search-div{
     vertical-align: center !important;
-    background: #FFEFED;
-    color: $color-global-red-buttons;
+    background: #F4F6FF;
+    color: #1D2549;
     padding: 10px 20px 10px 15px !important;
     border-radius: 8px !important;
     width: 340px !important;
@@ -133,7 +133,7 @@
     }
 
     .input-group{
-
+        background: #F4F6FF;
         padding: 0px !important;
         outline: none !important;
         img{
@@ -150,20 +150,20 @@
         margin-left: 10px;
         padding: 0 !important;
         border: none !important;
-        background: #FFEFED !important;
+        background: #F4F6FF !important;
         outline: none !important;
-        color: $color-global-red-buttons !important;
+        color: #1D2549 !important;
         //border-color: #a8a8a8 !important;
     }
 
     input{
       outline: none !important;
-      color: $color-global-red-buttons !important;
+      color: #1D2549 !important;
 
     }
 
     ::placeholder{
-      color: $color-global-red-buttons !important;
+      color: #1D2549 !important;
     }
 }
 

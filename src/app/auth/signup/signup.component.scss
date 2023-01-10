@@ -188,8 +188,7 @@
 		font-size: 45.0689px;
 		line-height: 66px;
 		letter-spacing: 0.01em;
-
-		background: linear-gradient(268.54deg, $color-global-red-buttons 10.03%, #FFCD60 91.14%);
+		background: linear-gradient(93.98deg, #BDF248 -50.84%, #0AD6F1 108.82%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
@@ -329,7 +328,7 @@
 .btn-submit{
 	border-radius: 18px;
 	padding: 13px 10px;
-	background: $color-global-red-buttons;
+	background: $color-blue-gradient;
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
@@ -339,8 +338,8 @@
 	color: #FFFFFF;
 
 	&:hover{
-	  border: solid 2px #FF4D3C !important;
-	  color: #FF4D3C;
+	  border: solid 2px $color-global-red-buttons !important;
+	  color: $color-global-red-buttons;
 	  transition: all 0.1s ease !important;
 	  background: transparent !important;
 	  padding-bottom: 9px !important;
@@ -427,8 +426,8 @@ select::placeholder{
 }
 
 // 	&:hover{
-// 	  border: solid 2px #FF4D3C !important;
-// 	  color: #FF4D3C;
+// 	  border: solid 2px #BEF249 !important;
+// 	  color: #BEF249;
 // 	  transition: all 0.1s ease !important;
 // 	  background: transparent !important;
 // 	  padding-bottom: 9px !important;

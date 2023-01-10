@@ -50,10 +50,10 @@
 }
 
 .banner-person{
-	width: 480px;
+	width: 350px;
 	position: absolute;
-	right: 0;
-	bottom: -12.5%;
+	right: 7%;
+	bottom: -1%;
 
 	@media(min-width: 768px) and (max-width: 1100px){
 		top: 5%;
@@ -70,6 +70,51 @@
 	position: absolute;
 	right: 80px;
 	top: 35%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.banner-float-2{
+	width: 130px;
+	position: absolute;
+	right: 250px;
+	top: 51%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.banner-float-3{
+	width: 110px;
+	position: absolute;
+	right: 310px;
+	top: 10%;
+
+	@media(min-width: 768px) and (max-width: 1100px){
+		width: 0px;
+	}
+
+	@media (max-width: 860px){
+		width: 0px;
+	}
+}
+
+.banner-float-4{
+	width: 270px;
+	position: absolute;
+	right: 250px;
+	top: 47%;
 
 	@media(min-width: 768px) and (max-width: 1100px){
 		width: 0px;
@@ -116,50 +161,7 @@
 	}
 }
 
-.banner-float-2{
-	width: 160px;
-	position: absolute;
-	right: 250px;
-	top: 51%;
 
-	@media(min-width: 768px) and (max-width: 1100px){
-		width: 0px;
-	}
-
-	@media (max-width: 860px){
-		width: 0px;
-	}
-}
-
-.banner-float-3{
-	width: 130px;
-	position: absolute;
-	right: 310px;
-	top: 10%;
-
-	@media(min-width: 768px) and (max-width: 1100px){
-		width: 0px;
-	}
-
-	@media (max-width: 860px){
-		width: 0px;
-	}
-}
-
-.banner-float-4{
-	width: 410px;
-	position: absolute;
-	right: 250px;
-	top: 37%;
-
-	@media(min-width: 768px) and (max-width: 1100px){
-		width: 0px;
-	}
-
-	@media (max-width: 860px){
-		width: 0px;
-	}
-}
 
 .bg-transparent{
 	background: rgba(255, 255, 255, 0.54) !important;
@@ -197,17 +199,17 @@
 	}
 
 	.btn-find-jobs{
-		background: linear-gradient(99.75deg, $color-global-red 24.68%, #FF4D3C 91.74%);
+		background: linear-gradient(99.75deg, #BEF249 24.68%, #BEF249 91.74%);;
 		border-radius: 5px;
-		color: white;
+		color: #1D2549;
 		border: none;
 		padding: 10px 55px;
 		transition: all 0.2s ease !important;
 		height: 44px !important;
 
 		&:hover{
-			border: solid 2px #FF4D3C !important;
-			color: #FF4D3C;
+			border: solid 2px #BEF249 !important;
+			color: #1D2549;
 			transition: all 0.2s ease !important;
 			background: transparent;
 			//padding-bottom: 8px !important;

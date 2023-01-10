@@ -71,77 +71,77 @@
 }
 
 .green{
-	background: #09C986;
+	background: #1666BA;
 
 	transition: all 0.4s ease !important;
 
 	&:hover{
 		background: white;
-		border: solid 2px #09C986;
+		border: solid 2px #1666BA;
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
 		/*.title-card{
-			color: #09C986;
+			color: #1666BA;
 		}
 
 		.title-stat{
-			color: #09C986;
+			color: #1666BA;
 		}*/
 
 		.title-card, .title-stat, .subheading{
-			color: #09C986 !important
+			color: #1666BA !important
 		}
 	}
 
 	img{
-		background: #09C986;
+		background: #1666BA;
 		border-radius: 50%;
 	}
 }
 
 .orange{
-	background: #FE742B;
+	background: #368CE7;
 
 	&:hover{
 		background: white;
-		border: solid 2px #FE742B;
+		border: solid 2px #368CE7;
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
 		/*.title-card{
-			color: #FE742B;
+			color: #368CE7;
 		}*/
 
 		.title-card, .title-stat, .subheading{
-			color: #FE742B !important
+			color: #368CE7 !important
 		}
 	}
 
 
 	img{
-		background: #FE742B;
+		background: #368CE7;
 		border-radius: 50%;
 	}
 }
 
 .yellow{
-	background: #EFA20D;
+	background: #7AB3EF;
 
 	&:hover{
 		background: white;
-		border: solid 2px #EFA20D;
+		border: solid 2px #7AB3EF;
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
 		.title-card, .title-stat, .subheading{
-			color: #EFA20D;
+			color: #7AB3EF;
 		}
 	}
 
 
 	img{
-		background: #EFA20D;
+		background: #7AB3EF;
 		border-radius: 50%;
 	}
 

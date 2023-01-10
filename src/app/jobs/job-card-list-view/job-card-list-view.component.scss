@@ -59,12 +59,10 @@
 }
 
 .btn-primary{
-	background: rgba(255,112,98, 1) !important;
-	border-radius: 5px;
-
-	&:hover{
-		background: rgba(255,112,98, 0.8) !important
-	}
+	background: linear-gradient(95.7deg, #BEF245 14.94%, #93C91A 76.21%) !important;
+	border-radius: 4.87297px !important;
+	color: #1D2549 !important;
+	font-weight: 600 !important;
 }
 
 .tags{

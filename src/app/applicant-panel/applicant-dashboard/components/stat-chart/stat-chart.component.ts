@@ -73,7 +73,7 @@ export class StatChartComponent implements OnInit {
     datasets: [
       {
         data: [],
-        label: 'JobView',
+        label: 'Job View',
         backgroundColor: 'rgba(148,159,177,0.2)',
         borderColor: 'rgba(148,159,177,1)',
         pointBackgroundColor: 'rgba(148,159,177,1)',
@@ -161,7 +161,8 @@ export class StatChartComponent implements OnInit {
 
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: this.doughnutChartLabels,
-    datasets: []
+    datasets: [],
+    
   };
 
   constructor() { }

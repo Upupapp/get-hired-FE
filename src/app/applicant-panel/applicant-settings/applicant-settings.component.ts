@@ -4,9 +4,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
   selector: 'app-applicant-settings',
+  animations: [mainAnimations],
   templateUrl: './applicant-settings.component.html',
   styleUrls: ['./applicant-settings.component.scss']
 })

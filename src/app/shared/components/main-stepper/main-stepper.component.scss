@@ -2,7 +2,7 @@
 
 .btn-stepper-active{
 	min-width: 180px !important;
-	background: $color-global-red !important;
+	background: #1D2549 !important;
 	border-radius: 1px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
@@ -25,7 +25,7 @@
 	  height: 0;
 	  border-style: solid;
 	  border-width: 20px 0px 20px 20px;
-	  border-color: $color-global-red transparent transparent transparent !important;
+	  border-color: #1D2549 transparent transparent transparent !important;
 	  transform: rotate(45deg);
 	}
 
@@ -51,13 +51,13 @@
 
 .btn-stepper-next{
 	min-width: 180px !important;
-	background: #FFEFED;
+	background: #CBDDFF;
 	border-radius: 4px;
 	padding: 10px 20px;
-	color: #121212;
+	color: #333333;
 	font-family: 'Manrope';
 	font-style: normal;
-	font-weight: 500;
+	font-weight: 600;
 	font-size: 15px;
 	line-height: 18px;
 
@@ -71,7 +71,7 @@
 }
 
 .badge-step{
-	background: $color-global-red;
+	background: #1D2549;
 	height: 27px;
 	width: 27px;
 	margin-right: 8px;

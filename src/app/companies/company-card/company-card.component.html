@@ -2,7 +2,7 @@
   <img [src]="company.companyLogo" class="img img-fluid company-image">
 
   <div class="company-details text-center">
-    <h5 class="title-company text-capitalize mt-3">{{company?.companyName}}</h5>
+    <h5 class="title-company text-capitalize mt-3" style="min-height: 30px">{{company?.companyName}}</h5>
     <p class="title-company-category text-capitalize">{{company?.companyIndustry}}</p>
 
     <button class="btn btn-job-opening" *ngIf="company.companyJobsOpening != 0">

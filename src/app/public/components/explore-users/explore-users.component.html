@@ -1,23 +1,26 @@
 
 <div class="container mb-5">
 	<div class="bg-banner" >
-		<div class="p-5">
+		<div class="mt-2">
 
-			<div class="banner-text">
+			<div class="pt-5 banner-text">
 				<ng-container *ngIf="userRole == '3'">
 					<h5 class="title-banner mb-3" >Let employers find you</h5>
 
 					<div class="mt-4">
-						<button class="btn btn-upload" (click)="redirectToCreate('resume')">
-              Upload Your Resume</button>
+						<button class="btn btn-upload" 
+						(click)="redirectToCreate('resume')">Upload Your Resume</button>
 					</div>
 				</ng-container>
 
 				<ng-container *ngIf="!userRole || userRole != '3'">
-					<h5 class="title-banner mb-3" >Let's find a solution to your problem</h5>
+					<h5 class="title-banner mt-4 mb-2" >Find the job that is</h5>
+					<h5 class="title-banner mb-3" >perfect for You</h5>
 
 					<div class="mt-4">
-						<button class="btn btn-upload" (click)="redirectToCreate('job')">Create Jobs</button>
+						<button class="btn btn-upload me-2" (click)="redirectToCreate('job')">Upload your resume</button>
+
+						<button class="btn btn-register" (click)="redirectToCreate('job')">Register for FREE</button>
 					</div>
 				</ng-container>
 			</div>

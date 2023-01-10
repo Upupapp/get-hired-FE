@@ -192,10 +192,11 @@
 }
 
 .btn-apply-now{
-	background: $color-global-red-buttons;
+	background: #BEF249;
 	border-radius: 5px;
-	color: white;
+	color: #1D2549;
 	padding: 9px;
+	font-weight: 500;
 }
 
 .badge-card{
@@ -352,7 +353,7 @@
 		.logo-thumbnail-2{
 			transition: all 0.3s ease !important;
 			display: flex !important;
-			background: #FFF6F5;
+			background: #D2E8FF;
 			border-radius: 14px;
 			height: 100px;
 			width: 100px;

@@ -1,17 +1,17 @@
 <div class="container-fluid bg-white vh-100">
   <div class="row">
-    <div class="col-12 col-md-12 col-lg-6 px-5 pb-2 bg-left">
-      <div class="carousel slide" data-bs-ride="carousel">
+    <div class="col-12 col-md-12 col-lg-6 px-5 pb-2 bg-left" >
+      <section data-bs-ride="carousel" id="admin-carousel" 
+      class="carousel slide"  data-bs-interval="7000">
         <div class="carousel-indicators">
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="0" class="active"
-            aria-current="true"></button>
-
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1"></button>
-
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="0" 
+          class="active"></button>
+          <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="1"></button>
+          <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="2"></button>
         </div>
-        <div class="carousel-inner pb-5" id="admin-welcome-screens">
-          <div class="carousel-item active text-center">
+        
+        <div class="carousel-inner pb-5">
+          <section class="carousel-item active text-center">
             <div class="text-center">
               <img src="/assets/images/placeholder/logo.png" routerLink="/jobs" class="main-logo">
               <h5 class="title-left-main">
@@ -23,9 +23,9 @@
               <img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
                 src="assets/images/placeholder/login-object-new-2.png" class="img-object">
             </div>
-          </div>
+          </section>
 
-          <div class="carousel-item text-center">
+          <section class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
                 <img src="/assets/images/placeholder/logo.png" routerLink="/jobs" class="main-logo">
@@ -39,9 +39,9 @@
             </div>
             <img src="assets/images/placeholder/login-object-new-1.png"
               [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
-          </div>
+          </section>
 
-          <div class="carousel-item text-center">
+          <section class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
                 <img src="/assets/images/placeholder/logo.png" routerLink="/jobs" class="main-logo">
@@ -55,9 +55,9 @@
             </div>
             <img src="assets/images/placeholder/login-object-new-3.png"
               [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
-          </div>
+          </section>
         </div>
-      </div>
+      </section>
     </div>
 
     <div class="col-12 col-md-12 col-lg-6 bg-form">
