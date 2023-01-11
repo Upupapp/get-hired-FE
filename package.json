@@ -10,7 +10,9 @@
     "heroku-postinstall": "npm install --force",
     "build-dev": "ng build --configuration=staging",
     "build-prod": "ng build --configuration=production",
-    "deploy": "cd dist && gcloud app deploy --project get-hired-363107"
+    "deploy": "cd dist && gcloud app deploy --project get-hired-363107",
+    "postinstall": "ng build --aot --prod",
+    "preinstall": "npm install -g @angular/cli @angular/compiler-cli @angular-devkit/build-angular typescript"
   },
   "private": true,
   "dependencies": {
