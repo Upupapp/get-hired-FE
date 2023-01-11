@@ -4,15 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "node server.ts",
-    "build": "ng build --configuration=production",
+    "build": "ng build --configuration=development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "heroku-postinstall": "npm install --force",
     "build-dev": "ng build --configuration=staging",
     "build-prod": "ng build --configuration=production",
-    "deploy": "cd dist && gcloud app deploy --project get-hired-363107",
-    "postinstall": "ng build --aot --prod",
-    "preinstall": "npm install -g @angular/cli @angular/compiler-cli @angular-devkit/build-angular typescript"
+    "deploy": "cd dist && gcloud app deploy --project get-hired-363107"
   },
   "private": true,
   "dependencies": {
