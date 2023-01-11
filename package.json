@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.ts",
-    "build": "ng build --configuration=development",
+    "start": "ng serve",
+    "build": "npm run build:ssr",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "heroku-postinstall": "npm install --force",
