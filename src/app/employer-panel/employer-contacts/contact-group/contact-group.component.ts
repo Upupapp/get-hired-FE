@@ -84,11 +84,10 @@ export class ContactGroupComponent implements OnInit {
         console.log(group.groupList)
         this.groupList = [...group.groupList].map(el => {
           return {
-            'members': el.details.length,
+            'members': el?.details.length,
             ...el
           }
         });
-        console.log("GROUP", this.groupList)
       } else {
         this.groupList = [];
       }

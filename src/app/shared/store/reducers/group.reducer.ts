@@ -1,12 +1,12 @@
-import { 
+import {
 	GroupAction,
 	GroupActionTypes
-	
+
 } from '../actions/group.action';
 
 // Create new interface for reducer
 export interface GroupState {
-    groupList: any;
+  groupList: any;
 	contactGroupList:any;
 	pending: any;
 	error: any;
@@ -17,7 +17,7 @@ export interface GroupState {
 
 // Set initial state of the data
 export const GROUP_INITIAL_STATE: GroupState = {
-    groupList: [],
+  groupList: [],
 	contactGroupList: [],
 	pending: false,
 	error: null,
@@ -28,8 +28,8 @@ export const GROUP_INITIAL_STATE: GroupState = {
 
 /*
 	Create Reducer
-	Take 2 Parameter: from Event 
-	@param 
+	Take 2 Parameter: from Event
+	@param
 		state: value (event, pending, error)
 		action: from action type
 */
