@@ -32,6 +32,11 @@ export class ProfileDetailsComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(){
+    if(this.pageLoad$)
+      this.pageLoad$.unsubscribe();
+  }
+
   redirectToEdit(){
     this.router.navigate(['../edit'], { relativeTo: this.route})
   }

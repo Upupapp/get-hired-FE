@@ -227,7 +227,6 @@ export class ApplicationProcessComponent implements OnInit {
     }
 
     this.applicationFacade.resetApplication();
-
   }
 
 

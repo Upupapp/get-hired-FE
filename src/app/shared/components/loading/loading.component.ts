@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs';
 
 @Component({
   selector: 'app-loading',
@@ -7,7 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./loading.component.scss']
 })
 export class LoadingComponent implements OnInit {
-
+  public unsubscribe$ = new Subject<void>();
   constructor(
     public dialogRef: MatDialogRef<LoadingComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
@@ -18,6 +19,15 @@ export class LoadingComponent implements OnInit {
       setTimeout(() => this.dialogRef.close(), 3000);
     }
 
+    // unsubscribe
+    this.dialogRef.afterClosed()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(result => {
+    });
+
   }
 
+  ngOnDestroy(){
+    this.dialogRef.close()
+  }
 }

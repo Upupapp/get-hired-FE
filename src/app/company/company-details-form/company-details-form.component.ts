@@ -247,5 +247,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.companyFacade.resetStateNotif();
+
+    if(this.loading$) this.loading$.unsubscribe();
   }
 }

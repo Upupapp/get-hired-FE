@@ -409,6 +409,8 @@ export class ProfileFormComponent implements OnInit {
     if (this.success$) {
       this.success$.unsubscribe();
     }
-  }
 
+    if(this.loading$)
+      this.loading$.unsubscribe();
+  }
 }

@@ -129,6 +129,10 @@ export class JobApplicantsComponent implements OnInit {
     this.jobFacade.getApplicants(this.jobId);
   }
 
+  ngOnDestroy(){
+    if(this.loading$) this.loading$.unsubscribe();
+  }
+
   redirectTo(url) {
     this.router.navigateByUrl(url);
   }

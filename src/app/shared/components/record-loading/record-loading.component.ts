@@ -20,4 +20,7 @@ export class RecordLoadingComponent implements OnInit {
 
   }
 
+  ngOnDestroy(){
+    this.dialogRef.close()
+  }
 }
