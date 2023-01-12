@@ -29,6 +29,7 @@ import { SuccessDialogComponent } from './components/success-dialog/success-dial
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -59,7 +60,8 @@ const classesToInclude: any[] = [
     FormsModule,
     ReactiveFormsModule,
     MaterialComponentsModule,
-    NgxDocViewerModule
+    NgxDocViewerModule,
+    TranslateModule
   ],
   entryComponents: [...classesToInclude],
   providers: [
@@ -70,7 +72,8 @@ const classesToInclude: any[] = [
     ...classesToInclude,
     MaterialComponentsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ]
 })
 export class SharedModule { }

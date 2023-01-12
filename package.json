@@ -29,6 +29,8 @@
     "@ngrx/store": "^13.1.0",
     "@ngrx/store-devtools": "^13.1.0",
     "@nguniversal/express-engine": "^13.0.2",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^7.0.0",
     "@popperjs/core": "^2.11.5",
     "aos": "^2.3.4",
     "bootstrap": "^5.2.0",

@@ -64,7 +64,7 @@
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
           <div class="form-group text-start mt-5">
-            <h4 class="main-title m-0">Sign in to your account</h4>
+            <h4 class="main-title m-0">{{ 'SIGNIN.WELCOME_MESSAGE' | translate }}</h4>
             <br>
           </div>
 
