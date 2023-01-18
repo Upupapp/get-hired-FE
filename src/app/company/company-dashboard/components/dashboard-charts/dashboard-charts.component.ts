@@ -158,13 +158,13 @@ export class DashboardChartsComponent implements OnInit {
   }
 
   lineChartRender(){
-    let sortedJobViews = this.details.jobViews?.slice().sort(function(a: any, b: any){
+    let sortedJobViews = this.details.jobViews?.slice(/*4,19*/).sort(function(a: any, b: any){
       var c: any = new Date(a.date);
       var d: any = new Date(b.date);
       return c-d;
     });
 
-    let sortedApplicants = this.details.graph?.slice().sort(function(a: any, b: any){
+    let sortedApplicants = this.details.graph?.slice(/*4,19*/).sort(function(a: any, b: any){
       var c: any = new Date(a.date);
       var d: any = new Date(b.date);
       return c-d;
