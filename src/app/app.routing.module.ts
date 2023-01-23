@@ -21,7 +21,8 @@ export const routes: Routes = [
     loadChildren: () => import('./employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
     canActivate: [AuthGuard],
     data: {
-      role: '2'
+      role: '2',
+      isMobileViewAllowed: false
     }
   },
   {
@@ -29,16 +30,24 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
     canActivate: [AuthGuard],
-    data: { role: '3' }
+    data: {
+      role: '3', isMobileViewAllowed: false
+    }
   },
   {
     path: '',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
     canActivate: [UnauthGuard],
+    data: {
+      isMobileViewAllowed: true
+    }
   },
   {
     path: '',
     loadChildren: () => import('@main/public/public.module').then(m => m.PublicModule),
+    data: {
+      isMobileViewAllowed: false
+    }
   }
 ];
 

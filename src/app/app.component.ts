@@ -14,8 +14,8 @@ import {
   NavigationEnd,
   Router
 } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { filter, map, mergeMap, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent implements OnInit {
   public title = 'Get Hired';
   isSmallScreen: boolean = false;
+  isSmallScreenAllowed: boolean;
 
   constructor(
     public router: Router,
@@ -44,6 +45,20 @@ export class AppComponent implements OnInit {
     const selectedLang: any = localStorage.getItem("selectedLang")
     this.translateService.use(selectedLang ? selectedLang: browserLang.match(/en|vie/) ? browserLang : 'en');
     this.checkScreenSize();
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => this.rootRoute(this.route)),
+      filter((route: ActivatedRoute) => route.outlet === 'primary'),
+      mergeMap((route: ActivatedRoute) => route.data)
+    ).subscribe((event: {[name: string]: any}) => {
+
+      this.isSmallScreenAllowed = event['isMobileViewAllowed'] ? event['isMobileViewAllowed']: false;
+
+      console.log(this.isSmallScreenAllowed);
+      this.checkScreenSize();
+
+    });
   }
 
   checkScreenSize() {
@@ -55,6 +70,12 @@ export class AppComponent implements OnInit {
     }
   }
 
+  private rootRoute(route: ActivatedRoute): ActivatedRoute {
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route;
+  }
 
 
 
