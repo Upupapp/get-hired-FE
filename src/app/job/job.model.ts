@@ -26,6 +26,7 @@ export interface Job {
   jobCity?: string;
   jobCountry?: string;
   bannerFile?: File;
+  isInterviewRequired: boolean;
   interviewQuestions?: InterviewModel.InterviewQuestion[];
   requirements?: string[];
   goodToHave?: string[];

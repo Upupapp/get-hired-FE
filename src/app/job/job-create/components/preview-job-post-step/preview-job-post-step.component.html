@@ -173,8 +173,14 @@
 
   <section class="card card-body mb-3">
     <div class="p-4">
-      <label class="title-job-interview text-capitalize mb-3">
-        Interview Questions <i>(Candidate view)</i></label>
+      <div>
+        <label class="title-job-interview text-capitalize mb-3">
+          Interview Questions <i>(Candidate view)</i></label>
+
+        <span [ngClass]="preview.isInterviewRequired ? 'd-none' : 'float-end'">
+          {{ preview.isInterviewRequired ? 'Required': 'Optional'}}
+        </span>
+      </div>
 
       <section class="interview-card card-body mt-3 p-4" id="interview-list"
         *ngFor="let item of preview.interviewQuestions; let i = index"

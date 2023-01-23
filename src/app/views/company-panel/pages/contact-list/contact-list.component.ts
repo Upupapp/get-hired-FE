@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AddContactComponent } from './dialogs/add-contact/add-contact.component';
+import { ViewGroupsComponent } from './dialogs/view-groups/view-groups.component';
 
 @Component({
   selector: 'app-contact-list',
@@ -90,6 +91,23 @@ export class ContactListComponent implements OnInit {
       AddContactComponent,
       { 
         width: '34vw',
+        data: event,
+      }
+    );
+
+    openDialog
+    .afterClosed()
+    .pipe(takeUntil(this.unsubscribe$))
+    .subscribe(result => {
+
+    });
+  }
+
+  viewGroup(event){
+    let openDialog = this.dialog.open(
+      ViewGroupsComponent,
+      { 
+        minWidth: '44vw',
         data: event,
       }
     );

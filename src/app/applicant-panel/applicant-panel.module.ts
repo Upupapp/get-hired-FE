@@ -17,6 +17,7 @@ import { AuthModule } from '@main/auth/auth.module';
 import { ApplicantModule } from '@main/applicant/applicant.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApplicationModule } from '@main/application/application.module';
+import { ApplicantJobsComponent } from './applicant-jobs/applicant-jobs.component';
 
 const routes: Routes = [
   {
@@ -54,6 +55,7 @@ const routes: Routes = [
     ApplicantPanelComponent,
     ApplicantSidebarComponent,
     ApplicantSettingsComponent,
+    ApplicantJobsComponent,
   ],
   imports: [
     CommonModule,
