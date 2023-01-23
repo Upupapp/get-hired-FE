@@ -21,10 +21,33 @@
 						<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.icon" 
 						[ngClass]="item?.class">
 					</div>
-					<h5 class="sidebar-title">{{item?.title}}</h5>
+					<h5 class="sidebar-title">{{item?.title}}
+						<img src="/assets/images/placeholder/icons/caret-right.png" 
+						*ngIf="item?.sub_routes?.length > 0"
+						[ngClass]="location?.match(item?.route) ? 'active-caret' : 'inactive-caret'">
+					</h5>
 				</div>
 
+				<!-- TREE VIEW SIDEBAR -->
 				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
+					<ul class="tree text-start p-0" 
+					[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
+					style=" list-style-type: none;">
+					  	<li>
+						    <ul style=" list-style-type: none;">
+						    	<li *ngFor="let sub_route of item?.sub_routes">
+						    		<span class="tree_label">
+						    			<span class="sub-label hvr-grow"
+						    			(click)="changeRoute('/company/' + sub_route?.route)"
+						    			[ngClass]="location === ('/company/' + sub_route?.route) ? 'sub-label-active' : ''" >{{sub_route?.title}}</span>
+						    		</span>
+						    	</li>
+						    </ul>
+					  	</li>
+
+					</ul>
+
+					<!-- 
 					<ng-container *ngFor="let sub_route of item?.sub_routes">
 						<div [@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
 						[ngClass]="location === ('/company/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'" 
@@ -33,8 +56,10 @@
 							(click)="changeRoute('/company/' + sub_route?.route)">
 								{{sub_route?.title}}
 							</button>
-						</div>
-					</ng-container>
+						</div> 
+
+					</ng-container>-->
+
 				</ng-container>
 			</ng-container>
 
@@ -42,7 +67,7 @@
 		</div>
 
 		<div class="px-2">
-			<div class="card card-body py-4 bg-user"
+			<div class="card card-body py-3 bg-user"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex">
 					<img src="/assets/images/face-6.jpg" class="img-avatar me-2">

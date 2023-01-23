@@ -70,6 +70,10 @@ export class SidebarComponent implements OnInit {
         },  
 
         {
+          title: 'Contact Group',  icon: 'contact-list.png', class: 'contact-list', route: 'contact-list/groups'
+        },  
+
+        {
           title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contact-list/candidates', 
         }, 
 
@@ -78,7 +82,7 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Create Interview', icon: 'applicants.png', class: 'applicants', route: 'create-interview'
+      title: 'Interviews', icon: 'applicants.png', class: 'applicants', route: 'create-interview'
     },
 
     {

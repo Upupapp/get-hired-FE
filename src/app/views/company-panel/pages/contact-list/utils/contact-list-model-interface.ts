@@ -5,7 +5,7 @@ export interface Contact {
   first_name: string;
   last_name: string;
   email: string;  
-  code_number: string;
+  mobile_number: string;
   company: string;  
   industry: string;  
   job_type: string;
@@ -13,7 +13,8 @@ export interface Contact {
   expected_salary_min: number;
   expected_salary_max: number;  
   address: string;
-  date_applied: Date;  
+  date_created: any;  
+  number_of_group: number;
   status: string;
 }
 
@@ -28,33 +29,24 @@ export interface TableHeader {
 
 const displayedColumns: TableHeader[] = [
   { col_name: 'full_name', title: 'Full Name'  },
-  { col_name: 'date_applied', title: 'Date Applied', type: 'date'  },
-  { col_name: 'address', title: 'Location'  },
-  { col_name: 'work_setup', title: 'Work Setup'  },
-  { col_name: 'job_type', title: 'Type'  },
+  { col_name: 'email', title: 'Email Address'  },
   { col_name: 'company', title: 'Company'  },
-  { col_name: 'email', title: 'Email'  },
-  { col_name: 'code_number', title: 'Code Number'  },
-  { col_name: 'salary', title: 'Expected Salary', type: 'salary'  },
-  /*{ 
-    col_name: 'cv_link', 
-    title: 'CV', 
-    button_title: 'View CV', 
-    button_class: 'cv-link', 
-    button_logo: '/assets/images/placeholder/icons/cv.png',
-    type:'action_button'  
-  },*/
+  { col_name: 'address', title: 'Address'  },
+  { col_name: 'mobile_number', title: 'Mobile Number'  },
+  { col_name: 'date_created', title: 'Date Created'  },
   { col_name: 'status', title: 'Status'  },
+  { col_name: 'view_group', title: 'Groups', type: 'action_button', button_title: 'View Group', button_class: 'view-group'  },
   { col_name: 'action', title: 'Action' , type: 'menu' },
 ];
 
 const selectedColumns: string[] =  [
   'full_name',
-  'date_applied',
   'email',
   'company',
-  'code_number',
+  'mobile_number',
   'address',
+  'date_created',
+  'view_group',
   'action'
 ];
  
@@ -65,7 +57,7 @@ const contactLists: Contact[] = [
     first_name: "Jordan",
     last_name: "Clark",
     email: "clark.jordan@gmail.com",
-    code_number: "A-55012334",
+    mobile_number: "495-4587-455",
     company: "Software Wev Inc.",  
     industry: "", 
     status: "Active", 
@@ -74,7 +66,8 @@ const contactLists: Contact[] = [
     expected_salary_min: 25000,
     expected_salary_max: 50000,  
     address: "Ranchview, California ",
-    date_applied: new Date(),  
+    date_created: "02-12-2022",  
+    number_of_group: 5
   },
 
   {
@@ -83,7 +76,7 @@ const contactLists: Contact[] = [
     first_name: "Samuel",
     last_name: "Solomon",
     email: "solomon.samuel@gmail.com",
-    code_number: "A-55012334",
+    mobile_number: "495-4587-455",
     company: "Moveup Wev Inc.",  
     industry: "", 
     status: "Active",  
@@ -92,7 +85,8 @@ const contactLists: Contact[] = [
     expected_salary_min: 56000,
     expected_salary_max: 85000,  
     address: "Manila, Philippines ",
-    date_applied: new Date(),  
+    date_created: "02-12-2022",  
+    number_of_group: 2
   },
 
   {
@@ -101,7 +95,7 @@ const contactLists: Contact[] = [
     first_name: "Michael",
     last_name: "Yemeni",
     email: "yemeni.michael@gmail.com",
-    code_number: "C-13356244",
+    mobile_number: "441-4234-155",
     company: "Moveup Wev Inc.",  
     industry: "", 
     status: "Active", 
@@ -110,7 +104,8 @@ const contactLists: Contact[] = [
     expected_salary_min: 36000,
     expected_salary_max: 65000,  
     address: "123 Street Office, Singapore ",
-    date_applied: new Date(),  
+    date_created: "02-12-2022",  
+    number_of_group: 5
   },
 
   {
@@ -119,7 +114,7 @@ const contactLists: Contact[] = [
     first_name: "Brian",
     last_name: "Mitchelle",
     email: "b.mitchelle@gmail.com",
-    code_number: "B-612313461",
+    mobile_number: "114-4566-253",
     company: "Moveup Wev Inc.",  
     industry: "", 
     status: "Active",   
@@ -128,7 +123,8 @@ const contactLists: Contact[] = [
     expected_salary_min: 20000,
     expected_salary_max: 50000,  
     address: "Soutville, USA ",
-    date_applied: new Date(),   
+    date_created: "02-12-2022",  
+    number_of_group: 3 
   },
 
 ];
