@@ -11,26 +11,28 @@
     <div class="card card-body py-3">
       <div>
         <span class="main-title">{{ jobId ? 'Update':'Create' }} a Job</span>
-        <span [ngClass]="delayControl ? 'd-none' : 'float-end'">
-          <button
-            *ngIf="status === 1"
-            class="btn btn-save-draft me-2"
-            (click)="saveAsDraft()"
-            [disabled]="!initialFormValid"
-          >
-            Save as Draft
-          </button>
 
-          <button class="btn btn-add-service me-2" (click)="cancel()">
-            Cancel
-          </button>
+        <span [ngClass]="delayControl ? 'd-none' : 'float-end'">
+          <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
         </span>
       </div>
     </div>
 
     <div class="mt-3">
       <div class="mt-2" [ngClass]="delayControl ? 'd-none' : 'adjust-flex'">
-        <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
+        <!-- <span class="text-primary-red cursor-pointer me-2"
+        (click)="saveAsDraft()" *ngIf="initialFormValid && status === 1">Save as Draft</span> -->
+        <button
+            *ngIf="initialFormValid && status === 1"
+            class="btn btn-create-interview me-2"
+            (click)="saveAsDraft()"
+          >
+            Save as Draft
+          </button>
+
+          <button class="btn btn-create-interview me-2" (click)="cancel()">
+            Cancel
+          </button>
       </div>
 
       <app-main-stepper
@@ -93,7 +95,7 @@
 
     <ng-template #stepperButtons>
       <button
-        class="btn btn-next me-2"
+        class="btn btn-add-service me-2"
         (click)="changeStep(2)"
         *ngIf="stepper == 1"
         [disabled]="!initialFormValid"
@@ -103,7 +105,7 @@
       </button>
 
       <button
-        class="btn btn-next me-2"
+        class="btn btn-save-draft me-2"
         (click)="changeStep(1)"
         *ngIf="stepper == 2"
       >
@@ -114,7 +116,7 @@
       </button>
 
       <button
-        class="btn btn-next me-2"
+        class="btn btn-add-service me-2"
         (click)="changeStep(3)"
         *ngIf="stepper == 2"
         [disabled]="!jobInfoValid"
@@ -123,7 +125,7 @@
       </button>
 
       <button
-        class="btn btn-next me-2"
+        class="btn btn-save-draft me-2"
         (click)="changeStep(2)"
         *ngIf="stepper == 3"
       >
@@ -134,7 +136,7 @@
       </button>
 
       <button
-        class="btn btn-next me-2"
+        class="btn btn-add-service me-2"
         (click)="changeStep(4)"
         *ngIf="stepper == 3"
         [disabled]="!interviewValid"
@@ -143,7 +145,7 @@
       </button>
 
       <button
-        class="btn btn-next me-2"
+        class="btn btn-save-draft me-2"
         (click)="changeStep(3)"
         *ngIf="stepper == 4"
       >
@@ -154,7 +156,7 @@
       </button>
 
       <button
-        class="btn btn-next me-2"
+        class="btn btn-add-service me-2"
         (click)="publishJobPost()"
         *ngIf="stepper == 4"
       >

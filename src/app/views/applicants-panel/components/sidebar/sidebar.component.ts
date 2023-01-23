@@ -51,7 +51,7 @@ export class SidebarComponent implements OnInit {
     },
 
     {
-      title: 'Jobs Opening', icon: 'jobs.png', class: 'jobs', route: 'jobs'
+      title: 'My Jobs', icon: 'jobs.png', class: 'jobs', route: 'jobs'
     },
 
     {

@@ -1,0 +1,35 @@
+<div mat-dialog-content>
+	<div class="card card-body">
+		<div class="group-header mb-3 d-flex">
+			<img [src]="data?.data?.profile_image" class="img-avatar">
+			
+			<div class="w-100 mt-3">
+				<h4 class="title-group">{{data?.data?.full_name}}'s Group
+					<span class="float-end">
+						<img src="/assets/images/placeholder/icons/remove-gray.png" 
+						(click)="close()" class="me-3" 
+						style="height: 14px; cursor: pointer; margin-top: -30px;">
+					</span>
+				</h4>
+				<h4 class="title-group-description">{{data?.data?.email}}</h4>
+			</div>
+		</div>
+
+		<div class="row mb-2 group-row" *ngFor="let group of contactGroupLists">
+			<div class="col-12 col-lg-6">
+				<h5 class="group-name">
+					{{group?.group_name}}
+				</h5>
+				<p class="group-description">
+					{{group?.number_of_members}} Members 
+					<span class="mx-2">|</span> 
+					{{ group?.date_created | date: 'MMM dd, yyyy' }}
+				</p>
+			</div>
+
+			<div class="col-12 col-lg-6 text-end">
+				<button class="btn btn-view-member mt-2">View Members</button>
+			</div>
+		</div>		
+	</div>
+</div>

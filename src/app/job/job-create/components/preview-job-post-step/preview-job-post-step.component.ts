@@ -48,6 +48,7 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
       this.preview = {
         ...info,
         ...initial,
+        isInterviewRequired: false,
         interviewQuestions: interview,
         companyId: JSON.parse(user).companyId,
         bannerPosition: this.dragPosition

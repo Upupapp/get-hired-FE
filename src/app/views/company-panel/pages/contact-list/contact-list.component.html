@@ -18,6 +18,7 @@
 			<!-- <app-reusable-org-chart></app-reusable-org-chart>
 			 --><app-reusable-table
 				[loading]="loading"
+				(customButtonEvent)="viewGroup($event)"
 				(updateSelectedRowDialog)="viewMenu($event)"
 				(viewDetails)="viewMenu($event)"			
 				[componentTitle]="'Contact List'"								
