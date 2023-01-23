@@ -23,6 +23,7 @@ import { ApplicantActionModalComponent } from './job-applicants/applicant-action
 import { ApplicationModule } from '@main/application/application.module';
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
+import { JobAppliedComponent } from './job-applied/job-applied.component';
 
 // const routes: Routes = [
   // { path: 'expired', component: JobExpiredComponent },
@@ -50,6 +51,7 @@ const exportedComponents = [
   declarations: [
     ...exportedComponents,
     JobExpiredComponent,
+    JobAppliedComponent,
   ],
   imports: [
     CommonModule,
