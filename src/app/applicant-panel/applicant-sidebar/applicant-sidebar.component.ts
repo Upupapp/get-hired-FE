@@ -39,9 +39,9 @@ export class ApplicantSidebarComponent implements OnInit {
       title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
     },
 
-    // {
-    //   title: 'Jobs Opening', icon: 'jobs.png', class: 'jobs', route: 'jobs'
-    // },
+    {
+      title: 'Applicant Jobs', icon: 'jobs.png', class: 'jobs', route: 'applicant-jobs'
+    },
 
     // {
     //   title: 'Inbox', icon: 'applicants.png', class: 'inbox', route: 'inbox'
