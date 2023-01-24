@@ -71,13 +71,15 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
   navigateToUserRole(role) {
     switch (role) {
       case '1':
-        this.router.navigateByUrl('/admin/dashboard');
+        this.router.navigate(['/admin/dashboard'], { queryParams: { isMobileViewAllowed: false }});
         return true;
       case '2':
-        this.router.navigateByUrl('/recruiter/dashboard');
+        this.router.navigate(['/recruiter/dashboard'], { queryParams: { isMobileViewAllowed: false }});
+        // this.router.navigateByUrl('/recruiter/dashboard');
         return true;
       case '3':
-        this.router.navigateByUrl('/user/dashboard');
+        this.router.navigate(['/user/dashboard'], { queryParams: { isMobileViewAllowed: false }});
+        // this.router.navigateByUrl('/user/dashboard');
         return true;
       default:
         return false;
