@@ -1,1 +1,24 @@
-<p>admin-panel works!</p>
+<section id="body-main-container" *ngIf="user$ | async as user">
+	<div class="d-flex" id="body-row">
+		<!-- SIDEBAR  -->
+		<div class="d-none d-md-block" id="sidebar-container">
+      <app-admin-sidebar [user]="user"></app-admin-sidebar>
+
+			<!-- <app-applicants-panel-sidebar
+			[sidebarWidth]="sidebarWidth"
+			></app-applicants-panel-sidebar>  -->
+		</div>
+
+		<div id="main-applicant-component">
+			<!-- COMPANY/EMPLOYER HEADER -->
+			<div style="margin-bottom: 80px; ">
+				<app-header [isPublic]="false"
+        [isUserLoggedIn]="isUserLoggedIn" [user]="user"></app-header>
+			</div>
+
+			<div id="sub-applicant-component">
+				<router-outlet></router-outlet>
+			</div>
+		</div>
+	</div>
+</section>

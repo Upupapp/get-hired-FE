@@ -24,6 +24,7 @@ export class AccountAuthenticationComponent implements OnInit {
   loading: boolean = true;
   isResent: boolean;
   resendLinkForm: FormGroup;
+  manual: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,6 +40,7 @@ export class AccountAuthenticationComponent implements OnInit {
       this.lang = params.lang
       this.role = params.role
       this.email = params.email
+      this.manual = params.manual
     });
   }
 
@@ -78,6 +80,9 @@ export class AccountAuthenticationComponent implements OnInit {
           this.loading = false;
           if (result?.data) {
             this.isVerified = true;
+            if(this.manual) {
+              window.self.close();
+            }
             localStorage.removeItem('loginError');
           }
         }),
