@@ -100,18 +100,14 @@
 	font-weight: 400;
 	font-size: 14px;
 	line-height: 21px;
-	/* identical to box height */
-
 	text-align: center;
-
 	color: #FFFFFF;
-	background: $color-global-red-buttons;
-	/* shawos */
-
-	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
-	border-radius: 6px;
+	background: linear-gradient(99.75deg, #407700 24.68%, #407700 91.74%) !important;
+	border-radius: 5px;
+	color: #fff;
 
 	&:hover{
-		background: rgba($color-global-red-buttons, 0.8);
+		transition: 0.1s all !important;
+		background: rgba(#407700, 0.8) !important;
 	}
 }

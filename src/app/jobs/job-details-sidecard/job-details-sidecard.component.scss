@@ -113,9 +113,17 @@
 
 
 .bg-bluish{
-	background: #F3F8FF;
+	background: rgba(240, 255, 247, 1);
 	border-radius: 17px;
 	// padding: 40px 40px 10px 40px;
+}
+
+.bg-greenish{
+	height: 44px;
+	width: 44px;
+	padding-top: 8px;  
+	border-radius: 7px;
+	background: #D7FFE9;
 }
 
 .title-job-details{

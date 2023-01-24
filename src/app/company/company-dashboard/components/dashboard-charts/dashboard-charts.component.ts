@@ -75,24 +75,24 @@ export class DashboardChartsComponent implements OnInit {
       {
         data: [],
         label: 'Job Views',
-        borderColor: '#1666BA',
-        backgroundColor: '#1666BA',
-        hoverBackgroundColor: 'rgba(22, 102, 186,0.8)',
-        pointBackgroundColor: '#1666BA',
+        borderColor: '#95B52E',
+        backgroundColor: '#95B52E',
+        hoverBackgroundColor: 'rgba(149, 181, 46, 0.8)',
+        pointBackgroundColor: '#95B52E',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(22, 102, 186,1)',
+        pointHoverBorderColor: 'rgba(149, 181, 46, 1)',
       },
       {
         data: [],
         label: 'Job Applicant',
-        borderColor: '#7AB3EF',
-        backgroundColor: '#7AB3EF',
-        hoverBackgroundColor: 'rgba(122, 179, 239,0.8)',
-        pointBackgroundColor: '#7AB3EF',
+        borderColor: '#407700',
+        backgroundColor: '#407700',
+        hoverBackgroundColor: 'rgba(64, 119, 0, 0.8)',
+        pointBackgroundColor: '#407700',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(122, 179, 239,0.8)',
+        pointHoverBorderColor: 'rgba(64, 119, 0, 1)',
       },
     ],
     labels: [ ]
@@ -138,13 +138,13 @@ export class DashboardChartsComponent implements OnInit {
     const data = { 
       data: [parseInt(contacts), parseInt(applicants)], 
       backgroundColor: [
-        'rgba(15, 8, 75, 1)',
-        'rgba(61, 96, 167, 1)',
+        'rgba(4, 102, 69, 1)',
+        'rgba(0, 160, 100, 0.5)',
         '#f6f6f6'
       ],
       hoverBackgroundColor: [
-        'rgba(15, 8, 75, 0.5)',
-        'rgba(61, 96, 167, 0.5)',
+        'rgba(4, 102, 69, 1)',
+        'rgba(0, 160, 100, 0.5)',
         '#f6f6f6'
       ],
       hoverOffset: 4,

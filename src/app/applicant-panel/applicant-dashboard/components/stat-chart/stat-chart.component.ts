@@ -74,23 +74,25 @@ export class StatChartComponent implements OnInit {
       {
         data: [],
         label: 'Job View',
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
+        borderColor: '#95B52E',
+        backgroundColor: '#95B52E',
+        hoverBackgroundColor: 'rgba(149, 181, 46, 0.8)',
+        pointBackgroundColor: '#95B52E',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
+        pointHoverBorderColor: 'rgba(149, 181, 46, 1)',
+        fill: 'origin'
       },
       {
         data: [],
         label: 'Job Applicant',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
+        borderColor: '#407700',
+        backgroundColor: '#407700',
+        hoverBackgroundColor: 'rgba(64, 119, 0, 0.8)',
+        pointBackgroundColor: '#407700',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)',
+        pointHoverBorderColor: 'rgba(64, 119, 0, 1)',
         fill: 'origin',
       }
     ],
@@ -172,13 +174,13 @@ export class StatChartComponent implements OnInit {
     const data = { 
       data: [parseInt(this.charts.application), parseInt(this.charts.applicants)],
       backgroundColor: [
-        'rgba(15, 8, 75, 1)',
-        'rgba(61, 96, 167, 1)',
+        'rgba(4, 102, 69, 1)',
+        'rgba(0, 160, 100, 0.5)',
         '#f6f6f6'
       ],
       hoverBackgroundColor: [
-        'rgba(15, 8, 75, 0.5)',
-        'rgba(61, 96, 167, 0.5)',
+        'rgba(4, 102, 69, 1)',
+        'rgba(0, 160, 100, 0.5)',
         '#f6f6f6'
       ], 
     }

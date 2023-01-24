@@ -43,11 +43,11 @@
 }
 
 .bg-menu{
-	background: #1D2549;
+	background: #0F4F34;
 }
 
 .bg-user{
-	background: #0D163E;
+	background: #062E1D;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
@@ -74,7 +74,8 @@
 }
 
 .img-logo{
-	width: 100px;
+	margin-top: 0px !important;
+	width: 120px;
 }
 
 .bg-logo{
@@ -124,8 +125,8 @@
 		/* identical to box height */
 
 		font-weight: 500;
-		color: #1D2549;
-		background: #BEF245;
+		color: #fff;
+		background: #0C8542;
 		border-radius: 9px;
 	}
 }
@@ -165,7 +166,7 @@
 	&-title-active{
 		color: #fff !important;
 		cursor: pointer;
-		background: #1666BA;
+		background: #0C8542;
 		border-radius: 9px;
 		padding: 10px 15px 5px 5px;
 		font-family: 'Manrope';
@@ -177,7 +178,7 @@
 		/*letter-spacing: 0.2px;*/
 		
 		&:hover{
-			color: $color-global-red-buttons;
+			color: #062E1D;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
@@ -355,7 +356,7 @@
 }
 
 .sub-label-active{
-	background: #0D163E;
+	background: #062E1D;
 	color: #E7FFF2;
 	border-radius: 9px;
 }

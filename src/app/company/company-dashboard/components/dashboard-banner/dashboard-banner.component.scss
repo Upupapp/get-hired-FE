@@ -71,77 +71,77 @@
 }
 
 .green{
-	background: #1666BA;
+	background: #036D3D;
 
 	transition: all 0.4s ease !important;
 
 	&:hover{
 		background: white;
-		border: solid 2px #1666BA;
+		border: solid 2px #036D3D;
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
 		/*.title-card{
-			color: #1666BA;
+			color: #036D3D;
 		}
 
 		.title-stat{
-			color: #1666BA;
+			color: #036D3D;
 		}*/
 
 		.title-card, .title-stat, .subheading{
-			color: #1666BA !important
+			color: #036D3D !important
 		}
 	}
 
 	img{
-		background: #1666BA;
+		background: #036D3D;
 		border-radius: 50%;
 	}
 }
 
 .orange{
-	background: #368CE7;
+	background: #004D26;
 
 	&:hover{
 		background: white;
-		border: solid 2px #368CE7;
+		border: solid 2px #004D26;
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
 		/*.title-card{
-			color: #368CE7;
+			color: #004D26;
 		}*/
 
 		.title-card, .title-stat, .subheading{
-			color: #368CE7 !important
+			color: #004D26 !important
 		}
 	}
 
 
 	img{
-		background: #368CE7;
+		background: #004D26;
 		border-radius: 50%;
 	}
 }
 
 .yellow{
-	background: #7AB3EF;
+	background: #407700;
 
 	&:hover{
 		background: white;
-		border: solid 2px #7AB3EF;
+		border: solid 2px #407700;
 		padding: 18px 12px 8px 15px;
 		transition: all 0.2s ease !important;
 
 		.title-card, .title-stat, .subheading{
-			color: #7AB3EF;
+			color: #407700;
 		}
 	}
 
 
 	img{
-		background: #7AB3EF;
+		background: #407700;
 		border-radius: 50%;
 	}
 
