@@ -1,5 +1,9 @@
 @import "src/assets/styles/colors";
 
+.text-capitalized{
+	text-transform: capitalize !important;
+}
+
 .img-banner{
 	width: 300px;
 	height: 180px;
@@ -21,13 +25,14 @@
 	font-weight: 500;
 	font-size: 18px;
 	line-height: 24px;
-	/* or 189% */
-
-	display: flex;
-	align-items: center;
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 	margin-bottom: 5px;
 	color: #222222;
+	text-transform: lowercase;
+
+	&:first-line{
+		text-transform: capitalize !important;
+	}
 }
 
 .title-company{
