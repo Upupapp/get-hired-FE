@@ -1,0 +1,105 @@
+<div class="employee-container ">
+	<div class="card"
+	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+
+
+		<ng-container>
+			<div class="share-container text-center"
+			style="position: relative;"
+			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
+				<div class="row pt-4">
+					<div class="col-12 col-md-12 text-start mb-2">
+						<h4 class="title-add">Uploading CSV file</h4>
+						<h5 class="title-description">Add new candidate by uploading .csv file. You can <a href="../../../../../../../assets/files/import-contact.csv" download="import-candidate.csv">download the Template</a> here for reference</h5>
+					</div>
+				</div>
+
+
+				<ng-container>
+					<div class="text-center"
+					[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}"
+					style="min-height:50px"
+					>
+					<div>
+						<div class="card-body" *ngIf="!uploadedFile">
+							<input type="file" #csvReader hidden name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
+
+							<!-- <app-file-upload-document
+							(upload)="uploadListener($event)"
+							label="Upload CSV"
+							[singleLine]="true"></app-file-upload-document> -->
+
+							<!-- <button (click)="csvReader.click()" class="btn upload btn-primary">Choose File</button> -->
+
+							<div class="uploader-container">
+								<div class="row">
+								    <div class="col-8 text-start">
+								        <h6>Choose File</h6>
+								        <span>We accept: <span class="text-document">CSV File Only</span></span>
+								    </div>
+
+								    <div class="col-4">
+								        <button type="button" class="btn btn-uploader"
+								        [disabled]="document"
+								        (click)="csvReader.click()">Browse Files</button>
+								    </div>
+								</div>
+							</div>
+
+							<div class="upload mt-2">
+								<!-- <div class="upload--name" *ngIf="document">
+									{{document}}
+								</div> -->
+
+								<div class="preview-file mt-4">
+								    <h5 class="title-preview">Preview File</h5>
+								    <div class="mb-3 p-3">
+								        <div class="d-flex file">
+								            <div class="img-circle me-3">
+								                <img src="/assets/images/placeholder/icons/document-upload.png" width="40px">
+								            </div>
+
+								            <div class="w-100 mt-2">
+								                <div>
+								                    <div class="document-uploaded truncate">{{fileData?.name}}
+
+								                    </div>
+
+
+								                    <img src="/assets/images/placeholder/icons/remove-gray.png" height="15px" *ngIf="fileData"
+								                    class="float-end" (click)="removeDocument()">
+
+								                    <div class="float-end me-2"
+								                    *ngIf="fileData"
+								                    style="margin-top: -21px;">
+								                        {{(fileData?.size * 0.000001)?.toFixed(1) }}
+								                        MB/50 MB
+								                    </div>
+								                </div>
+								                <div class="progress mt-2">
+								                    <div class="progress-bar" role="progressbar"
+								                    [ngStyle]="{ width: (((uploadedFile?.size * 0.000001) / 50) * 100) + '%' }"
+								                    style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+								                </div>
+								            </div>
+								        </div>
+								    </div>
+								</div>
+
+
+								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()">Upload</button>
+							</div>
+						</div>
+					</div>
+					</div>
+				</ng-container>
+			</div>
+		</ng-container>
+
+    <h3>Email Read: {{ emails.length }}</h3>
+    <h3>Email Verified: {{ verified }}</h3>
+    <button class="btn btn-primary" *ngIf="emails && emails.length > 0"
+      (click)="manualVerifyEmails()">
+      Start Manual Verification</button>
+	</div>
+</div>
