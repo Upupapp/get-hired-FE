@@ -23,11 +23,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {ApplicantJobsFacade} from './state/applicant-jobs.facade'
+
 
 @Component({
   selector: 'app-applicant-jobs',
   templateUrl: './applicant-jobs.component.html',
-  styleUrls: ['./applicant-jobs.component.scss']
+  styleUrls: ['./applicant-jobs.component.scss'],
+  animations: [mainAnimations]
 })
 export class ApplicantJobsComponent implements OnInit {
 
@@ -37,7 +40,7 @@ export class ApplicantJobsComponent implements OnInit {
   public loading: boolean = true;
   public id;
   public displayedColumns: TableHeader[] = displayedColumns;
-  public jobLists: Job[] = jobLists;
+  public jobLists: any[] = [];
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
   public searchSource: any = (el) => {
@@ -54,22 +57,29 @@ export class ApplicantJobsComponent implements OnInit {
     };
   };
   public status: string[] = ["Active", "Inactive", "Archived"];
- 
+  public user: any = localStorage.getItem('user');
+
+  pageLoad$ = this.applicantJobsFacade.loading$
+  .pipe().subscribe(this.checkLoading.bind(this));
+
+  jobList$ = this.applicantJobsFacade.applicantJobs$;
+
   constructor(
     private router: Router,
     private dialog: MatDialog,
     private route: ActivatedRoute,
+    private applicantJobsFacade: ApplicantJobsFacade,
     private snackBar: MatSnackBar) {
 
   }
 
   ngOnInit(): void {
+    this.user = JSON.parse(this.user);
+    this.applicantJobsFacade.getApplicantJobs(this.user?._id);
+    this.jobList$.subscribe((data: any) => {
+      console.log(data);
+    });
 
-    this.jobLists.forEach((el) => {
-      el['salary'] = `₱${el?.salary_min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${el?.salary_max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-    })
-
-    setTimeout(() => this.loading = false, 1500);
   }
 
 
@@ -85,6 +95,10 @@ export class ApplicantJobsComponent implements OnInit {
 
   addJobs(){
     this.router.navigate(['/company/jobs/create'])
+  }
+
+  checkLoading(isLoading: boolean){
+    this.loading = isLoading;
   }
 
 }
