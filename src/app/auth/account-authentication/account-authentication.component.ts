@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { catchError, map, of } from 'rxjs';
+import { catchError, finalize, map, of } from 'rxjs';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -80,15 +80,20 @@ export class AccountAuthenticationComponent implements OnInit {
           this.loading = false;
           if (result?.data) {
             this.isVerified = true;
-            if(this.manual) {
-              window.self.close();
-            }
             localStorage.removeItem('loginError');
           }
         }),
         catchError((err: any) => {
           this.loading = false;
           return of(err);
+        }),
+        finalize(() => {
+          console.log('verified na');
+          // if(this.manual) {
+          //   setTimeout(() => {
+          //     window.self.close(), 3000
+          //   });
+          // }
         })
       ).subscribe();
   }
