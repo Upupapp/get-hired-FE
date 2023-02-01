@@ -34,7 +34,7 @@ export class AdminUsersComponent implements OnInit {
   }
 
   manualVerifyEmails() {
-    this.emails.forEach(email => this.verifyEmails(email))
+    this.emails.forEach((email, index) => setTimeout(() => this.verifyEmails(email), 2000 * (index + 1)))
   }
 
   verifyEmails(email: string) {
@@ -49,7 +49,9 @@ export class AdminUsersComponent implements OnInit {
           this.verified++;
           url = `${res.data}&manual=true`;
         }
-        window.open(url, "_blank");
+        window.open(url, "_blank")
+
+
       });
 
       this.subscriptions.add(req$);
