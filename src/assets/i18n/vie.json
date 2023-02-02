@@ -145,55 +145,112 @@
         "JOBS_CAREERS_SECTION":"Việc làm và nghề nghiệp mới nhất",
         "JOBS_CAREERS_MESSAGE":"Ứng tuyển vào những Công việc này để bắt đầu sự nghiệp của bạn",
         "EMPTY_CONTENT_MESSAGE":"Chưa có việc làm nào được tạo, TheChưa có hoạt động nào ở hiện tại"
-},
-"APPLY PAGE":{
-    "APPLY_NOW_BUTTON":"Ứng tuyển ngay",
-    "DUPLICATE_APPLICATION_MESSAGE":"Bạn đã nộp đơn cho công việc này",
-    "NUMBER_OF_EMPLOYEES":"Số lượng nhân viên",
-    "COMPANY_REVIEWS":"Đánh giá Công ty",
-    "ABOUT_COMPANY":"Về Công ty",
-    "JOB_DATE_POSTED":"Ngày đăng tuyển",
+    },
+    "APPLY PAGE":{
+        "APPLY_NOW_BUTTON":"Ứng tuyển ngay",
+        "DUPLICATE_APPLICATION_MESSAGE":"Bạn đã nộp đơn cho công việc này",
+        "NUMBER_OF_EMPLOYEES":"Số lượng nhân viên",
+        "COMPANY_REVIEWS":"Đánh giá Công ty",
+        "ABOUT_COMPANY":"Về Công ty",
+        "JOB_DATE_POSTED":"Ngày đăng tuyển",
 
-    "JOB_DESCRIPTION":"Ngày đăng tuyển",
-    "DUTIES_RESPONSIBILITIES":"Trách nhiệm và nghĩa vụ",
-    "REQUIREMENTS":"Yêu cầu công việc",
-    "SKILLS_EXPERIENCE":"Kỹ năng và kinh nghiệm",
-    "BACKGROUND_EDUCATION":"Trình độ học vấn",
-    "ADVANTAGES":"Lợi thế",
-    "INTERVIEW_QUESTIONS":"Câu hỏi phỏng vấn"
-},
-"USER APPLICATION PAGE":{
-    "USER_INFORMATION_SECTION":"Thông tin của tôi",
-    "EXTRA_DOCUMENTS_SECTION":"Tài liệu đính kèm",
-    "INTERVIEW_SECTION":"Phỏng vấn",
-    "SUMMARY_SECTION":"Tổng kết"
-},
-"ADDITIONAL DOCUMENTS PAGE/SECTION":{
-    "COVERLETTER_UPLOAD_BOX":"Đăng tải Thư giới thiệu, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
-    "RESUME_UPLOAD_BOX":"Đăng tải Lý lịch nghề nghiệp, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
-    "GOV_FILES_UPLOAD_BOX":"Đăng tải Hồ sơ chứng nhận liên quan từ cơ quan chính quyền, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
-    "FILE_PREVIEW":"Xem trước File",
-    "DOCUMENT_UPLOAD_STATUS":"Chưa có File nào được đăng tải"
-},
-"INTERVIEW PAGE/SECTION":{
-    "POP_UP_MESSAGE":"Nhà tuyển dụng muốn biết thêm về bạn qua vài câu hỏi",
-    "POP_UP_CONTEXT":"Trả lời các cuộc phỏng vấn trong quá trình nộp đơn của bạn giúp cải thiện tỷ lệ thành công của bạn. Vui lòng bấm tiếp tục để tiếp tục trả lời các câu hỏi này. Chuẩn bị camera của bạn. Bắt lấy ánh sáng tốt và đừng quên mỉm cười nha. Hãy bắt đầu nào.",
-    "SKIP_BUTTON":"Bỏ qua phần này",
-    "PROCEED_BUTTON":"Bắt đầu ngay",
+        "JOB_DESCRIPTION":"Ngày đăng tuyển",
+        "DUTIES_RESPONSIBILITIES":"Trách nhiệm và nghĩa vụ",
+        "REQUIREMENTS":"Yêu cầu công việc",
+        "SKILLS_EXPERIENCE":"Kỹ năng và kinh nghiệm",
+        "BACKGROUND_EDUCATION":"Trình độ học vấn",
+        "ADVANTAGES":"Lợi thế",
+        "INTERVIEW_QUESTIONS":"Câu hỏi phỏng vấn"
+    },
+    "USER APPLICATION PAGE":{
+        "USER_INFORMATION_SECTION":"Thông tin của tôi",
+        "EXTRA_DOCUMENTS_SECTION":"Tài liệu đính kèm",
+        "INTERVIEW_SECTION":"Phỏng vấn",
+        "SUMMARY_SECTION":"Tổng kết"
+    },
+    "ADDITIONAL DOCUMENTS PAGE/SECTION":{
+        "COVERLETTER_UPLOAD_BOX":"Đăng tải Thư giới thiệu, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+        "RESUME_UPLOAD_BOX":"Đăng tải Lý lịch nghề nghiệp, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+        "GOV_FILES_UPLOAD_BOX":"Đăng tải Hồ sơ chứng nhận liên quan từ cơ quan chính quyền, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+        "FILE_PREVIEW":"Xem trước File",
+        "DOCUMENT_UPLOAD_STATUS":"Chưa có File nào được đăng tải"
+    },
+    "INTERVIEW PAGE/SECTION":{
+        "POP_UP_MESSAGE":"Nhà tuyển dụng muốn biết thêm về bạn qua vài câu hỏi",
+        "POP_UP_CONTEXT":"Trả lời các cuộc phỏng vấn trong quá trình nộp đơn của bạn giúp cải thiện tỷ lệ thành công của bạn. Vui lòng bấm tiếp tục để tiếp tục trả lời các câu hỏi này. Chuẩn bị camera của bạn. Bắt lấy ánh sáng tốt và đừng quên mỉm cười nha. Hãy bắt đầu nào.",
+        "SKIP_BUTTON":"Bỏ qua phần này",
+        "PROCEED_BUTTON":"Bắt đầu ngay",
 
-    "READY_MESSAGE_RECORDING":"Sẵn sàng khi bạn đang có!Nhấn nút Quay để trả lời câu hỏi phỏng vấn nhé",
-    "START_BUTTON":"Bắt đầu quay",
-    "UPLOAD_VIDEO_BUTTON":"Đăng lên",
-    "SKIP_INTERVIEW_BUTTON":"Bỏ qua phỏng vấn",
-    "QUESTIONS":"Câu hỏi phỏng vấn",
-    "ANSWERS":"Câu trả lời",
-    "RECORD_UPLOAD_BUTTON":"Quay video / Đăng tải video"
-},
-"SUMMARY PAGE":{
-    "EVALUATION_SUBMIT_BUTTON":"Gửi đi"
-},
-"ADMIN DASHOBOARD":{
-    "SIDEBAR_CONTACTS":"",
-    
-}
-}
+        "READY_MESSAGE_RECORDING":"Sẵn sàng khi bạn đang có!Nhấn nút Quay để trả lời câu hỏi phỏng vấn nhé",
+        "START_BUTTON":"Bắt đầu quay",
+        "UPLOAD_VIDEO_BUTTON":"Đăng lên",
+        "SKIP_INTERVIEW_BUTTON":"Bỏ qua phỏng vấn",
+        "QUESTIONS":"Câu hỏi phỏng vấn",
+        "ANSWERS":"Câu trả lời",
+        "RECORD_UPLOAD_BUTTON":"Quay video / Đăng tải video"
+    },
+    "SUMMARY PAGE":{
+        "EVALUATION_SUBMIT_BUTTON":"Gửi đi"
+    },
+    "ADMIN DASHOBOARD":{
+        "SIDEBAR_CONTACTS":"Liên hệ",
+        "SIDEBAR_INTERVIEWS":"Phỏng vấn",
+        "SIDEBAR_SUBCRIPTIONS":"Đăng ký của tôi",
+        "SIDEBAR_EMPLOYER_BRANDING":"Nhận diện thương hiệu nhà tuyển dụng",
+
+        "WIDGET_ACTIVE_JOBS":"Công việc đang hoạt động",
+        "ACTIVE_JOBS_THIS_MONTH":"0 Tháng này",
+        "WIDGET_APPLICANTS":"Số lượng Ứng viên",
+        "ON_ACTIVE_JOBS":"1 Trên các công việc đang hoạt động",
+        "WIDGET_VIDEO_INTERVIEW":"Video trả lời phỏng vấn",
+        "VID_INTERVIEWS_MONTH":"3 trong Tháng này",
+        "WIDGET_CITIES_APPLIED":"Top 5 thành phố được nộp đơn nhiều nhất",
+        "WIDGET_CADIDATE":"Cơ sở dữ liệu Ứng viên",
+        "TOTAL_CONTACTS":"3 liên hệ tổng cộng"
+    },
+    "JOBS:JOB POSTS PAGE":{
+        "SIDEBAR_JOB_POSTS":"Công việc đã đăng",
+        "NEW_JOB_BUTTON":"Tạo công việc mới +",
+        "SIDEBAR_EXPIRED_JOBS":"Công việc đã hết hạn",
+        "TABLE_COLUMN_ID":"Công việc đã đăng",
+        "TABLE_COLUMN_TITLE":"Chức vụ",
+        "TABLE_COLUMN_DATE":"Ngày đăng tuyển",
+        "TABLE_COLUMN_LOCATION":"Địa điểm",
+        "TABLE_COLUMN_SETUP":"Cách thức làm việc",
+        "TABLE_COLUMN_TYPE":"Hình thức làm việc",
+        "TABLE_COLUMN_SALARY":"Lương",
+        "TABLE_COLUMN_STATUS":"tình trạng",
+        "TABLE_COLUMN_ACTION":"Hoạt động"
+    },
+    "RECRUITMENT MANAGEMENT TOOLS":{
+        "VIEW_JOB_BUTTON":"Xem Công việc đã đăng",
+        "UPDATE_JOB_BUTTON":"Cập nhật công việc",
+        "VIEW_APPLICANTS_BUTTON":"Xem Ứng viên đã nộp đơn",
+        "CREATE_INTERVIEW_BUTTON":"Tạo câu hỏi phỏng vấn",
+        "DELETE_JOB_BUTTON":"Xóa công việc đã đăng"
+    },
+    "JOBS:EXPIRED JOBS PAGE":{
+        "PAGE_TITLE":"Công việc đã hết hạn",
+        "LIST_JOBS":"Danh sách Công việc đã hết hạn hiện đang trống",
+        "NEW_JOB_BUTTON":"Tạo công việc mới+"
+    },
+    "CONCTACTS:CONTACT LIST PAGE":{
+        "NUMBER_OF_ENTRIES":"Thể hiện 1 đến 10 của 17 danh mục",
+        "ADD_CONTACT_BUTTON":"Thêm liên hệ mới+",
+        "TABLE_COLUMN_CREATION_DATE":"Ngày tạo Công việc",
+        "TABLE_COLUMN_GROUP_NAME":"Tên nhóm"
+    },
+    "EDIT CONTACT PAGE":{
+        "TITLE_PAGE":"Chỉnh sửa liên hệ",
+        "TITLE_TEXT":"Thông tin liên hệ",
+        "CONTACT_INFORMATION_REQUEST":"Nhập vào thông tin liên hệ mà bạn muốn mời phỏng vấn",
+        "CLOSE_BUTTON":"Đóng",
+        "SUBMIT_BUTTON":" Nhập vào"
+    },
+    "DELETE WARNING PROMPT":{
+        "DELETE_CONFIRMATION_PROMPT":"Xác nhận xóa bỏ, Bạn chắc chắn muốn xóa chứ?",
+        "CANCEL_BUTTON":"Hủy bỏ",
+        "CONTINUE_BUTTON":"Tiếp tục"
+    },
+
+    }
