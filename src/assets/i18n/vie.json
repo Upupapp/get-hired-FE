@@ -1,5 +1,31 @@
 {
     "SIGNIN": {
-        "WELCOME_MESSAGE": "Dăng nhập vào tài khoản của bạn"
-    }
+        "WELCOME_MESSAGE": "Mang lại tất cả Ứng viên của bạn chỉ trong một nền tảng duy nhất",
+        "LOGIN_TEXTBOX": "Đăng nhập",
+        "LOGIN_HEADING": "Đăng nhập vào tài khoản của bạn",
+        "REGISTRATION_PROMPT": "Không có tài khoản, Đăng ký ngay!"
+
+    },
+    "CREATE ACCOUNT": {
+        "CREATE_ACCOUNT_TEXT": "Tạo tài khoản",
+        "FIRSTNAME_TEXTBOX": "Tên đầu tiên",
+        "LASTNAME_TEXTBOX": "Họ",
+        "EMAIL_TEXTBOX": "Địa chỉ email",
+        "PASSWORD_TEXTBOX": "Mật khẩu",
+        "CONFIRM_PASSWORD_TEXTBOX": "Mật khẩu",
+        "REGISTER_AS_TEXTBOX":"Tôi muốn đăng ký làm",
+        "ACCEPTANCE_CHECKBOX": "Bằng cách tạo tài khoản của mình, bạn đồng ý với Chính sách quyền riêng tư và Điều khoản sử dụng của GetHired.",
+        "LOGIN_PROMPT": "Đã có tài khoản, đăng nhập ngay",
+        "REGISTRATION_TYPE_SELECTOR": "Ứng viên",
+        "REGISTRATION_TYPE_SELECTOR2": "Công ty",
+        "REGISTRATION_BUTTON":"Đăng ký"
+    },
+    "RESET PASSWORD":{
+        "RESET_PASSWORD_TEXT":"đặt lại mật khẩu",
+        "PW_RESET_CONFIRMATION_TEXT":"Chúng tôi sẽ gửi cho bạn một email có liên kết để đặt lại mật khẩu cho tài khoản của bạn",
+        "GET_RESET_LINK_BUTTON":"Nhận liên kết",
+        "CANCEL_BUTTON":"Hủy"
+},
+
+
 }
