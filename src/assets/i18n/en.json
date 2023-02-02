@@ -20,11 +20,189 @@
         "REGISTRATION_TYPE_SELECTOR2": "Company",
         "REGISTRATION_BUTTON":"Register"
     },
-    "RESET PASSWORD":{
+    "FORGET PASSWORD":{
+        "FORGET_PASSWORD_TEXT":"Forget Password",
         "RESET_PASSWORD_TEXT":"Reset Password",
         "PW_RESET_CONFIRMATION_TEXT":"We'll send you an email with a link to reset the password to your account",
         "GET_RESET_LINK_BUTTON":"Get Reset Link",
         "CANCEL_BUTTON":"Cancel"
     },
+    "APPLICANT DASHBOARD":{
+        "DASHBOARD":"Dashboard",
+        "SIDEBAR_PROFILE":"Profile",
+        "SIDEBAR_SETTINGS":"Settings",
+        "WIDGET_ACTIVE_APPLICATION":"Active Application",
+        "WIDGET_VIDEO_INTERVIEW":"Video Interview",
+        "POP_UP_MESSAGE":"Stay Up to Date, Update your profile to showcase your skills",
+        "TITLE_GRAPH":"Current Activity",
+        "GRAPH_CONTENT":"Profile View",
+        "GRAPH_CONTENT2":"Job Application",
+        "GRAPH_CONTENT3":"Application",
+        "GRAPH_CONTENT4":"Interviewed",
+        "WIDGET_TOTAL_JOB_APPLICATION":"Total Job Application",
+        "UPDATE_PROFILE_BUTTON":"Update Profile",
+    },
+    "PROFILE":{
+        "PUBLIC_VIEW_":"Public View",
+        "EDIT_PROFILE_BUTTON":"Edit Profile",
+        "CONTACT_DETAILS_TEXT":"Contact Details",
+        "STATUS_TEXT":"Available",
+        "EMAIL_ADDRESS_TEXT":"Email Address",
+        "ADDRESS_TEXT":"Address",
+        "MOBILE_NUMBER_TEXT:":"Mobile Phone",
+        "DOCUMENTS_TEXT":"Documents",
+        "SHORT_BIO_SECTION":"Short Bio",
+        "SERVICES_SECTION":"Provided Services",
+        "EXPERIENCE_SECTION":"Work Experience",
+        "EDUCATION_QUALIFICATION_SECTION":"Education & Qualification",
+        "AWARDS_CERTIFICATIONS_SECTION":"Awards & Certifications",
+        "SKILLS_SECTION":"Skills"
+    },
+    "SETTINGS":{
+        "ACCOUNT_SETTINGS":"Account Settings",
+        "SUBMIT_CHANGES_BUTTON":"Submit Changes"
+    },
+    "PROFILE DETAILS":{
+        "PROFILE_DETAILS_TITLE":"Profile Details",
+        "PHOTO_TEXT":"Profile Photo",
+        "UPLOAD_PHOTO_BUTTON":"Select Profile Photo",
+        "CURRENT_JOB_TITLE_TEXT":"Current Job Title",
+        "JOB_TYPE":"Job Type",
+        "JOB_TYPE_SELECTOR":"Full time, Part time, Contractor",
+        "WORK_SETUP":"Preffered Work Setup",
+        "WORK_SETUP_SELECTOR":"Hybrid, On-site, Remote",
+        "EXPERIENCE_LEVEL":"Level of Experience",
+        "EXPERIENCE_LEVEL_SELECTOR":"Intern or Student, Newer or Entry Level, Intermedetate 2 to 3 years of experience, More than 5 years of experience, Belonging to the Board of Directors and senior management personnel",
+        "SALARY_RANGE":"Expected Salary(Month)",
+        "FIRSTNAME_TEXT":"First Name",
+        "LASTNAME_TEXT":"Last Name",
+        "PHONE_TEXT":"Phone",
+        "ADDRESS_TEXT":"Address",
+        "CITY_MUNICIPALITY_TEXT":"City/Municipality",
+        "COUNTRY_TEXT":"Country"
+    },
+    "SKILLS AND EXPERIENCE":{
+        "SKILLS_EXPERIENCE_SECTION":"Skills and Experience",
+        "ADD_ITEM_BUTTON":"Add item",
+        "WORK_EXPERIENCE_TITLE":"Work Experience",
+        "JOB_TITLE":"Job title",
+        "LOCATION":"Location",
+        "COMPANY":"Company",
+        "DURATION":"Duration",
+        "DURATION_TYPE":"I currently work here",
+        "START_DATE":"Start Date",
+        "END_DATE":"End Date",
+        "DETAILS":"Details",
+
+        "EDUCATION_BACKGROUND_MODULE":"Education Background",
+        "EDUCATION_LEVEL":"Level of Education",
+        "EDUCATION_LEVEL_SELECTOR":"Primary education, Upper Secondary Education, Bachelor's or equivalent level, Masters or equivalent level, Doctoral or equivalent level",
+        "EDUCATION_START_DATE":"Start Date",
+        "EDUCATION_END_DATE":"End Date",
+        "FIELD_OF_STUDY":"Field of Study",
+        "SCHOOL":"School",
+        "SCHOOL_ADDRESS":"School Address",
+
+        "SKILLS_SECTION":"Professional Skills",
+
+        "CERTIFICATIONS_AWARDS_MODULe":"Certification/Awards",
+        "TITLE":"Title",
+        "TIME_PERIOD":"Time Period",
+        "TIME_PERIOD_TYPE":"This certification or award does not expire",
+        "CERT_AWARD_DETAILS":"Details"
+    },
+    "DOCUMENTS":{
+        "DOCUMENTS_SECTION":"Documents",
+        "DOCUMENTS_TITLE":"Profile Documents",
+        "PREVIEW_PROFILE":"Profile Preview",
+        "SUBMIT_CHANGES_BUTTON":"Submit Changes",
+        "MESSAGE_GUIDE":"You can upload your CV, resume and other documents that might help you with your jog application",
+        "UPLOAD_BOX":"Upload documents you want to share.",
+        "ACCEPTED_FILES":"We accept: DOCS. DOCX. TXT. PDF.",
+        "FILE_PREVIEW":"Preview File",
+        "VIDEO_INTRODUCTION_MODULE":"Create Video Introduction",
+        "RECORD_VIDEO_BUTTON":"Re-record Video",
+        "UPLOAD_VIDEO_BUTTON":"Upload Video",
+        "DOWNLOAD_VIDEO_BUTTON":"Download Video"
+
+
+    },
+    "PUBLIC PAGE":{
+        "PUBLIC_PAGE":"Public Page",
+        "KEYWORD_TEXTBOX":"Enter Keyword",
+        "WORK_SETUP_SELECTOR":"Work Setup",
+        "JOB_TYPE_SELECTOR":"Job Type",
+        "FIND_JOBS_BUTTON":"Find Jobs",
+        "JOB_POST_SECTION_MESSAGE":"Start your career now, Apply to these Jobs to kick start your career",
+
+        "RESUME_UPLOAD_BOX_MESSAGE":"Let employees find you",
+        "RESUME_UPLOAD_BUTTON":"Upload Your Resume",
+        "PHOTO_MESSAGE_EXAMPLE":"You're Hired",
+        "PHOTO_SUGGESTION_EXAMPLE":"Gain more skills"
+    },
+    "COMPANY DETAILS":{
+        "COMPANY_DETAILS":"Company Details",
+        "JOBS_CAREERS_SECTION":"Latest Jobs and Careers",
+        "JOBS_CAREERS_MESSAGE":"Apply to these Jobs to kick start your career",
+        "EMPTY_CONTENT_MESSAGE":"No Jobs Created Yet, There is no activity at the moment, but we can totally solve that"
+
+    },
+    "APPLY PAGE":{
+        "APPLY_NOW_BUTTON":"Apply Now",
+        "DUPLICATE_APPLICATION_MESSAGE":"You already applied to this Job",
+        "NUMBER_OF_EMPLOYEES":"Employees",
+        "COMPANY_REVIEWS":"Rating",
+        "ABOUT_COMPANY":"About Company",
+        "JOB_DATE_POSTED":"Date Posted",
+
+        "JOB_DESCRIPTION":"Job Description",
+        "DUTIES_RESPONSIBILITIES":"Duties and Responsibilities",
+        "REQUIREMENTS":"Requirements",
+        "SKILLS_EXPERIENCE":"Skills & Experience",
+        "BACKGROUND_EDUCATION":"Educational Background",
+        "ADVANTAGES":"Good to have",
+        "INTERVIEW_QUESTIONS":"Interview Questions"
+    },
+    "USER APPLICATION PAGE":{
+        "USER_INFORMATION_SECTION":"My details",
+        "EXTRA_DOCUMENTS_SECTION":"Additonal Documents",
+        "INTERVIEW_SECTION":"Interview",
+        "SUMMARY_SECTION":"Summary"
+    },
+    "ADDITIONAL DOCUMENTS PAGE/SECTION":{
+        "COVERLETTER_UPLOAD_BOX":"Browse Cover Letter, We accept: DOCS. DOCX. TXT. PDF.",
+        "RESUME_UPLOAD_BOX":"Browse Resume, We accept: DOCS. DOCX. TXT. PDF.",
+        "GOV_FILES_UPLOAD_BOX":"Browse Government Files, We accept: DOCS. DOCX. TXT. PDF.",
+        "FILE_PREVIEW":"Preview File",
+        "DOCUMENT_UPLOAD_STATUS":"No Document Uploaded"
+    },
+    "INTERVIEW PAGE/SECTION":{
+        "POP_UP_MESSAGE":"The Recruiter would like to ask you some questions.",
+        "POP_UP_CONTEXT":"Answering Interviews during your application helps improve your success rate. Please click proceed to continue answering the interview questions. Prepare your camera. Get a good lighting and don't forget to smile. Let's Begin.",
+        "SKIP_BUTTON":"Skip for now",
+        "PROCEED_BUTTON":"Proceed",
+
+        "READY_MESSAGE_RECORDING":"Ready when you are! Click Start recording to answer your video interview",
+        "START_BUTTON":"Start Recording",
+        "UPLOAD_VIDEO_BUTTON":"Upload",
+        "SKIP_INTERVIEW_BUTTON":"Skip Interview",
+        "QUESTIONS":"Interview Questions",
+        "ANSWERS":"Interview Answers",
+        "RECORD_UPLOAD_BUTTON":"Record/Upload Interview"
+    },
+    "SUMMARY PAGE":{
+        "EVALUATION_SUBMIT_BUTTON":"Submit for Evaluation"
+    },
+    "ADMIN DASHOBOARD":{
+        "SIDEBAR_CONTACTS":"Contacts",
+        "SIDEBAR_INTERVIEWS":"Interviews",
+        "SIDEBAR_SUBCRIPTIONS":"My Subscription",
+        "SIDEBAR_EMPLOYER_BRANDING":"Employer Branding",
+
+        "WIDGET_ACTIVE_JOBS":"Active Jobs",
+        ""
+
+
+
     
 }

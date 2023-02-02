@@ -20,12 +20,180 @@
         "REGISTRATION_TYPE_SELECTOR2": "Công ty",
         "REGISTRATION_BUTTON":"Đăng ký"
     },
-    "RESET PASSWORD":{
+    "FORGET PASSWORD":{
+        "FORGET_PASSWORD_TEXT":"Quên mật khẩu",
         "RESET_PASSWORD_TEXT":"đặt lại mật khẩu",
         "PW_RESET_CONFIRMATION_TEXT":"Chúng tôi sẽ gửi cho bạn một email có liên kết để đặt lại mật khẩu cho tài khoản của bạn",
         "GET_RESET_LINK_BUTTON":"Nhận liên kết",
         "CANCEL_BUTTON":"Hủy"
+    },
+    "APPLICANT DASHBOARD":{
+        "DASHBOARD_TEXT":"Bảng điều khiển dữ liệu",
+        "SIDEBAR_PROFILE":"Hồ sơ của bạn",
+        "SIDEBAR_SETTINGS":"Cài đặt",
+        "WIDGET_ACTIVE_APPLICATION":"ứng viên hiện có",
+        "WIDGET_VIDEO_INTERVIEW":"video phỏng vấn",
+        "POP_UP_MESSAGE":"Luôn cập nhật bạn nhé! Cập nhật hồ sơ để thể hiện những kỹ năng bạn có",
+        "TITLE_GRAPH":"hoạt động hiện tại",
+        "GRAPH_CONTENT":"xem hồ sơ",
+        "GRAPH_CONTENT2":"ứng viên hiện có",
+        "GRAPH_CONTENT3":"ứng viên nộp đơn",
+        "GRAPH_CONTENT4":"đã phỏng vấn",
+        "WIDGET_TOTAL_JOB_APPLICATION":"tổng số lượng nộp đơn",
+        "UPDATE_PROFILE_BUTTON":"Cập nhật hồ sơ"
+    },
+    "PROFILE":{
+        "PUBLIC_VIEW_TEXT":"Giao diện chung",
+        "EDIT_PROFILE_BUTTON":"Chỉnh sửa Hồ sơ",
+        "CONTACT_DETAILS_TEXT":"Thông tin liên hệ",
+        "STATUS_TEXT":"Có thể làm việc",
+        "EMAIL_ADDRESS_TEXT":"Email ",
+        "ADDRESS_TEXT":"Địa chỉ",
+        "MOBILE_NUMBER_TEXT:":"Số điện thoại",
+        "DOCUMENTS_TEXT":"Tài liệu đính kèm",
+        "SHORT_BIO_SECTION":"Giới thiệu ngắn gọn",
+        "SERVICES_SECTION":"Chịu trách nhiệm cho việc",
+        "EXPERIENCE_SECTION":"Kinh nghiệm làm việc",
+        "EDUCATION_QUALIFICATION_SECTION":"Trình độ học vấn",
+        "AWARDS_CERTIFICATIONS_SECTION":"Bằng cấp & Giải thưởng",
+        "SKILLS_SECTION":"Kỹ năng"
+
+    },
+    "SETTINGS":{
+        "ACCOUNT_SETTINGS":"Cài đặt Tài khoản",
+        "SUBMIT_CHANGES_BUTTON":"Lưu thay đổi"
+    },
+    "PROFILE DETAILS":{
+        "PROFILE_DETAILS_TITLE":"Thông tin hồ sơ",
+        "PHOTO_TEXT":"Hình ảnh cá nhân",
+        "UPLOAD_PHOTO_BUTTON":"Chọn hình ảnh của bạn",
+        "CURRENT_JOB_TITLE_TEXT":"Chức vụ hiện tại",
+        "JOB_TYPE":"Hình thức làm việc:",
+        "JOB_TYPE_SELECTOR":"Toàn thời gian, Bán thời gian, Theo hợp đồn",
+        "WORK_SETUP":"Cách thức làm việc",
+        "WORK_SETUP_SELECTOR":"Môi trường làm việc linh hoạt, Làm việc tại văn phòng, Làm việc từ xa",
+        "EXPERIENCE_LEVEL":"Kinh nghiệme",
+        "EXPERIENCE_LEVEL_SELECTOR":"Thực tập hoặc sinh viên, Mới hơn hoặc cấp nhập cảnh, Trung cấp từ 2 đến 3 năm kinh nghiệm, Kinh nghiệm dày dặn hơn 5 năm, Thuộc hội đồng quản trị và nhân sự quản lý cấp cao",
+        "SALARY_RANGE":"Mức lương mong muốn",
+        "FIRSTNAME_TEXT":"Tên",
+        "LASTNAME_TEXT":"Họ",
+        "PHONE_TEXT":"Số điện thoại",
+        "ADDRESS_TEXT":"Địa chỉ",
+        "CITY_MUNICIPALITY_TEXT":"Thành phố/ Quận huyện",
+        "COUNTRY_TEXT":"Quốc gia"
+    },
+    "SKILLS AND EXPERIENCE":{
+        "SKILLS_EXPERIENCE_SECTION":"Kỹ năng và Kinh nghiệm",
+        "ADD_ITEM_BUTTON":"Thêm vào",
+        "WORK_EXPERIENCE_TITLE":"Kinh nghiệm làm việc",
+        "JOB_TITLE":"Tên công việc",
+        "LOCATION":"Địa chỉ",
+        "COMPANY":"Công ty",
+        "DURATION":"Thời lượng làm việc",
+        "DURATION_TYPE":"Tôi đang làm việc tại đây",
+        "START_DATE":"Ngày bắt đầu",
+        "END_DATE":"Ngày kết thúc",
+        "DETAILS":"Miêu tả chi tiết",
+
+        "EDUCATION_BACKGROUND_SECTION":"Trình độ học vấn",
+        "EDUCATION_LEVEL":"Trình độ chi tiết",
+        "EDUCATION_LEVEL_SELECTOR":"giáo dục tiểu học, giáo dục phổ thông, bằng cử nhân hoặc trình độ tương đương, Thạc sĩ hoặc trình độ tương đương, trình độ tiến sĩ hoặc tương đương",
+        "EDUCATION_START_DATE":"Ngày bắt đầu",
+        "EDUCATION_END_DATE":"Ngày kết thúc",
+        "FIELD_OF_STUDY":"Ngành học",
+        "SCHOOL":"Tên trường",
+        "SCHOOL_ADDRESS":"Địa chỉ trường học",
+
+        "SKILLS_SECTION":"Kỹ năng chuyên môn",
+
+        "CERTIFICATIONS_AWARDS_MODULe":"Bằng cấp hoặc giải thưởng",
+        "TITLE":"Danh hiệu",
+        "TIME_PERIOD":"Thời gian",
+        "TIME_PERIOD_TYPE":"Bằng cấp hoặc giải thưởng có giá trị vô thời hạn",
+        "CERT_AWARD_DETAILS":"Miêu tả chi tiết"
+    },
+    "DOCUMENTS":{
+        "DOCUMENTS_SECTION":"Tài liệu đính kèm",
+        "DOCUMENTS_TITLE":"Tài liệu đính kèm",
+        "PREVIEW_PROFILE":"Xem trước hồ sơ",
+        "SUBMIT_CHANGES_BUTTON":"Thêm vào",
+        "MESSAGE_GUIDE":"Bạn có thể tải lên CV, sơ yếu lý lịch và các tài liệu khác có thể giúp ích cho bạn trong quá trình xin việc.",
+        "UPLOAD_BOX":"Upload documents you want to share",
+        "ACCEPTED_FILES":"Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+        "FILE_PREVIEW":"Xem trước tài liệu",
+        "VIDEO_INTRODUCTION_MODULE":"Tạo Video giới thiệu bản thân",
+        "RECORD_VIDEO_BUTTON":"Quay lại Video",
+        "UPLOAD_VIDEO_BUTTON":"Đăng tải Video",
+        "DOWNLOAD_VIDEO_BUTTON":"Tải về Video"
+
+    },
+    "PUBLIC PAGE":{
+        "PUBLIC_PAGE":"Giao diện công chúng",
+        "KEYWORD_TEXTBOX":"Thêm vào từ khóa",
+        "WORK_SETUP_SELECTOR":"Cách thức làm việc",
+        "JOB_TYPE_SELECTOR":"Hình thức làm việc",
+        "FIND_JOBS_BUTTON":"Tìm việc làm",
+        "JOB_POST_SECTION_MESSAGE":"Bắt đầu sự nghiệp của bạn bây giờỨng tuyển vào những Công việc này để bắt đầu sự nghiệp của bạn",
+
+        "RESUME_UPLOAD_BOX_MESSAGE":"Để Nhà tuyển dụng tìm tới bạn",
+        "RESUME_UPLOAD_BUTTON":"Đăng tải CV của bạn",
+        "PHOTO_MESSAGE_EXAMPLE":"Bạn đã được tuyển",
+        "PHOTO_SUGGESTION_EXAMPLE":"Trau dồi kỹ năng"
+    },
+    "COMPANY DETAILS":{
+        "COMPANY_DETAILS":"Thông tin Công ty",
+        "JOBS_CAREERS_SECTION":"Việc làm và nghề nghiệp mới nhất",
+        "JOBS_CAREERS_MESSAGE":"Ứng tuyển vào những Công việc này để bắt đầu sự nghiệp của bạn",
+        "EMPTY_CONTENT_MESSAGE":"Chưa có việc làm nào được tạo, TheChưa có hoạt động nào ở hiện tại"
 },
+"APPLY PAGE":{
+    "APPLY_NOW_BUTTON":"Ứng tuyển ngay",
+    "DUPLICATE_APPLICATION_MESSAGE":"Bạn đã nộp đơn cho công việc này",
+    "NUMBER_OF_EMPLOYEES":"Số lượng nhân viên",
+    "COMPANY_REVIEWS":"Đánh giá Công ty",
+    "ABOUT_COMPANY":"Về Công ty",
+    "JOB_DATE_POSTED":"Ngày đăng tuyển",
 
+    "JOB_DESCRIPTION":"Ngày đăng tuyển",
+    "DUTIES_RESPONSIBILITIES":"Trách nhiệm và nghĩa vụ",
+    "REQUIREMENTS":"Yêu cầu công việc",
+    "SKILLS_EXPERIENCE":"Kỹ năng và kinh nghiệm",
+    "BACKGROUND_EDUCATION":"Trình độ học vấn",
+    "ADVANTAGES":"Lợi thế",
+    "INTERVIEW_QUESTIONS":"Câu hỏi phỏng vấn"
+},
+"USER APPLICATION PAGE":{
+    "USER_INFORMATION_SECTION":"Thông tin của tôi",
+    "EXTRA_DOCUMENTS_SECTION":"Tài liệu đính kèm",
+    "INTERVIEW_SECTION":"Phỏng vấn",
+    "SUMMARY_SECTION":"Tổng kết"
+},
+"ADDITIONAL DOCUMENTS PAGE/SECTION":{
+    "COVERLETTER_UPLOAD_BOX":"Đăng tải Thư giới thiệu, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+    "RESUME_UPLOAD_BOX":"Đăng tải Lý lịch nghề nghiệp, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+    "GOV_FILES_UPLOAD_BOX":"Đăng tải Hồ sơ chứng nhận liên quan từ cơ quan chính quyền, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+    "FILE_PREVIEW":"Xem trước File",
+    "DOCUMENT_UPLOAD_STATUS":"Chưa có File nào được đăng tải"
+},
+"INTERVIEW PAGE/SECTION":{
+    "POP_UP_MESSAGE":"Nhà tuyển dụng muốn biết thêm về bạn qua vài câu hỏi",
+    "POP_UP_CONTEXT":"Trả lời các cuộc phỏng vấn trong quá trình nộp đơn của bạn giúp cải thiện tỷ lệ thành công của bạn. Vui lòng bấm tiếp tục để tiếp tục trả lời các câu hỏi này. Chuẩn bị camera của bạn. Bắt lấy ánh sáng tốt và đừng quên mỉm cười nha. Hãy bắt đầu nào.",
+    "SKIP_BUTTON":"Bỏ qua phần này",
+    "PROCEED_BUTTON":"Bắt đầu ngay",
 
+    "READY_MESSAGE_RECORDING":"Sẵn sàng khi bạn đang có!Nhấn nút Quay để trả lời câu hỏi phỏng vấn nhé",
+    "START_BUTTON":"Bắt đầu quay",
+    "UPLOAD_VIDEO_BUTTON":"Đăng lên",
+    "SKIP_INTERVIEW_BUTTON":"Bỏ qua phỏng vấn",
+    "QUESTIONS":"Câu hỏi phỏng vấn",
+    "ANSWERS":"Câu trả lời",
+    "RECORD_UPLOAD_BUTTON":"Quay video / Đăng tải video"
+},
+"SUMMARY PAGE":{
+    "EVALUATION_SUBMIT_BUTTON":"Gửi đi"
+},
+"ADMIN DASHOBOARD":{
+    "SIDEBAR_CONTACTS":"",
+    
+}
 }
