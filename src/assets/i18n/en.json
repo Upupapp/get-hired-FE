@@ -1,4 +1,4 @@
-{
+                {
     "SIGNIN": {
         "WELCOME_MESSAGE": "Sign in to your account",
         "LOGIN_TEXTBOX": "Login",
@@ -40,7 +40,7 @@
         "GRAPH_CONTENT3":"Application",
         "GRAPH_CONTENT4":"Interviewed",
         "WIDGET_TOTAL_JOB_APPLICATION":"Total Job Application",
-        "UPDATE_PROFILE_BUTTON":"Update Profile",
+        "UPDATE_PROFILE_BUTTON":"Update Profile"
     },
     "PROFILE":{
         "PUBLIC_VIEW_":"Public View",
@@ -124,8 +124,6 @@
         "RECORD_VIDEO_BUTTON":"Re-record Video",
         "UPLOAD_VIDEO_BUTTON":"Upload Video",
         "DOWNLOAD_VIDEO_BUTTON":"Download Video"
-
-
     },
     "PUBLIC PAGE":{
         "PUBLIC_PAGE":"Public Page",
@@ -241,7 +239,7 @@
         "TABLE_COLUMN_CREATION_DATE":"Date Created",
         "TABLE_COLUMN_GROUP_NAME":"Group Name"
     },
-    "EDIT CONTACT PAGE":{
+    "EDIT CONTACT FORM":{
         "TITLE_PAGE":"Edit Contact",
         "TITLE_TEXT":"Contact Details",
         "CONTACT_INFORMATION_REQUEST":"Provide the contact details necessary for the person you want to invite",
@@ -253,11 +251,88 @@
         "CANCEL_BUTTON":"Cancel",
         "CONTINUE_BUTTON":"Continue"
     },
+    "CONCTACTS:CONTACT GROUP":{
+        "TABLE_COLUMN_GROUP_ID":"Group ID",
+        "TABLE_COLUMN_GROUP_NAME":"Group Name",
+        "TABLE_COLUMN_NO._MEMBERS":"Number of Members",
+        "TABLE_COLUMN_ACTION":"Action",
+        "ADD_GROUP_BUTTON":"Add Group +"
+    },
+    "EDIT CONTACT GROUP FORM":{
+        "GROUP_CONTACTS":"Group of Contacts",
+        "DETAILS_FORM":"Provide the contact groups details necessary for the person you want to add within the group",
+        "GROUP_NAME_FIELD":"Group Name",
+        "LISTS_CONTACT_FIELD":"Lists of contacts",
+        "ERROR_MESSAGE":"No contact email available",
+        "RESET_BUTTON":"Reset",
+        "CLOSE_BUTTON":"Close",
+        "SUBMIT_BUTTON":"Submit"
+    },
+    "CONTACTS:CANDIDATES":{
+        "SIDEBAR_CANDIDATE":"Candidates",
+        "TABLE_COLUMN_MIN_SALARY":"Minimum Salary",
+        "TABLE_COLUMN_MAX_SALARY":"Maximum Salary"
+    },
+    "CANDIDATE APPLIED ON JOB TABLE":{
+        "CANDIDATE_MANAGEMENT":"Candidate List",
+        "ADD_CANDIDATE_BUTTON":"Add Cnadidate +"
+    },
+    "NEW CONTACT FORM":{
+        "NEW_CONTACT":"New Contact",
+        "JOB_ID_SELECTOR":"Select Job Id",
+        "GROUP_NAME_FIELD":"Group Name*"
+    },
+    "IMPORT CONTACT FORM":{
+        "IMPORT_CONTACT":"Import Contact",
+        "CSV_FILE_UPLOAD_TEXT":"Uploading CSV file",
+        "FILE_UPLOAD_TEXT":"Add new contact by uploading .csv file. You can download the template here for reference",
+        "FILE_UPLOAD_INSTRUCTION":"We accept: CSV File Only",
+        "FILE_SELECTOR":"Browse Files"
+    },
+    "EMPLOYER BRANDING":{
+        "VERIFIED_BADGE":"Verified employer",
+        "CALL_TO_ACTION_BUTTON":"Apply now"   
+    },
+    "EDIT COMPANY DETAILS":{
+        "COMPANY_USER_SECTION":"Company Users",
+        "ACCOUNT_SETTINGS":"Account Settings",
+        "COMPANY_LOGO_TEXT":"Company Logo",
+        "COMPANY_NAME_TEXT":"Company Name",
 
-    }
+        "COMPANY_DESCRIPTION":"Company Details",
+        "TYPE_INDUSTRY":"Type of Industry",
+        "NUMBER_OF_EMPLOYEES":"Number of Employee",
 
+        "MOBILE_PHONE":"Work Phone",
+        "ADDRESS":"Company Address",
+        "CITY_MUNICIPALITY_TEXT":"City/Municipality",
+        "SUBMIT_BUTTON":"Submit Changes",
 
-
-
-    
+        "TYPE_INDUSTRY_SELECTOR_OPTIONS":"Advertising, Beauty And Healthcare, Ecommerce, Education, Engineering, F&B, Finance Services, FMCG, Hospitality, IT/Technology, Logistic, Real Estate, Retail, Sales, Telecom"
+    },
+    "EDIT COMPANY USERS":{
+        "TABLE_COLUMN_ID":"Emoployee ID",
+        "TABLE_COLUMN_DATE_ADDED":"Date added",
+        "ADD_NEW_ACCESS_BUTTON":"Add New Access +"
+    },
+    "NEW USER ACCESS":{
+        "NEW_USER__ACCESS_FORM":"New User Access",
+        "INSTRUCTION_MESSAGE":"Create new user, one at a time. Input the email of the person you want to add to your team",
+        "EMAIL_TEXT":"Add Email address",
+        "CANCEL_BUTTON":"Cancel",
+        "ADD_EMAIL_BUTTON":"Add Email"
+    },
+    "IMPORT USERS":{
+        "IMPORT_USERS_FORM":"Import Users",
+        "INSTRUCTION_MESSAGE":"Uploading CSV file. Add new company user by uploading .csv file. You can download the template here for reference",
+        "FILE_UPLOAD_INSTRUCTION":"Choose File We accept: CSV File Only",
+        "FILE_SELECTOR":"Browse Files"
+    },
+    "ACCOUNT SETTINGS":{
+        "TITLE_TEXT":"Account Settings",
+        "FN_INPUT_FIELD":"First Name",
+        "LN_INPUT_FIELD":"Last Name",
+        "PW_INPUT FIELD":"Password",
+        "SUBMIT_BUTTON":"Submit Changes"
+    },
 }

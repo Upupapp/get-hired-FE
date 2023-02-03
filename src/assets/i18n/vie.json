@@ -4,7 +4,6 @@
         "LOGIN_TEXTBOX": "Đăng nhập",
         "LOGIN_HEADING": "Đăng nhập vào tài khoản của bạn",
         "REGISTRATION_PROMPT": "Không có tài khoản, Đăng ký ngay!"
-
     },
     "CREATE ACCOUNT": {
         "CREATE_ACCOUNT_TEXT": "Tạo tài khoản",
@@ -57,7 +56,6 @@
         "EDUCATION_QUALIFICATION_SECTION":"Trình độ học vấn",
         "AWARDS_CERTIFICATIONS_SECTION":"Bằng cấp & Giải thưởng",
         "SKILLS_SECTION":"Kỹ năng"
-
     },
     "SETTINGS":{
         "ACCOUNT_SETTINGS":"Cài đặt Tài khoản",
@@ -125,7 +123,6 @@
         "RECORD_VIDEO_BUTTON":"Quay lại Video",
         "UPLOAD_VIDEO_BUTTON":"Đăng tải Video",
         "DOWNLOAD_VIDEO_BUTTON":"Tải về Video"
-
     },
     "PUBLIC PAGE":{
         "PUBLIC_PAGE":"Giao diện công chúng",
@@ -252,5 +249,84 @@
         "CANCEL_BUTTON":"Hủy bỏ",
         "CONTINUE_BUTTON":"Tiếp tục"
     },
+    "CONCTACTS:CONTACT GROUP":{
+        "TABLE_COLUMN_GROUP_ID":"ID Nhóm",
+        "TABLE_COLUMN_GROUP_NAME":"Tên nhóm",
+        "TABLE_COLUMN_NO._MEMBERS":"Số lượng thành viên",
+        "TABLE_COLUMN_ACTION":"Hoạt động",
+        "ADD_GROUP_BUTTON":"Thêm Nhóm"
+    },
+    "EDIT CONTACT GROUP FORM":{
+        "GROUP_CONTACTS":"Phân Nhóm các Liên hệ",
+        "DETAILS_FORM":"Cung cấp chi tiết nhóm liên hệ cần thiết cho người mà bạn muốn thêm vào nhóm đó",
+        "GROUP_NAME_FIELD":"Tên nhóm",
+        "LISTS_CONTACT_FIELD":"Danh sách các liên hệ",
+        "ERROR_MESSAGE":"Không có liên hệ nào được nhập",
+        "RESET_BUTTON":"Làm lại",
+        "CLOSE_BUTTON":"Đóng",
+        "SUBMIT_BUTTON":"Nhập thông tin"
+    },
+    "CONTACTS:CANDIDATES":{
+        "SIDEBAR_CANDIDATE":"Ứng viên",
+        "TABLE_COLUMN_MIN_SALARY":"Mức lương tối thiểu",
+        "TABLE_COLUMN_MAX_SALARY":"Mức lương tối đa"
+    },
+    "CANDIDATE APPLIED ON JOB TABLE":{
+        "CANDIDATE_MANAGEMENT":"Danh sách ứng viên",
+        "ADD_CANDIDATE_BUTTON":"Thêm ứng viên +"
+    },
+    "NEW CONTACT FORM":{
+        "NEW_CONTACT":"Tạo liên hệ",
+        "JOB_ID_SELECTOR":"Chọn ID công việc",
+        "GROUP_NAME_FIELD":"Tên nhóm*"
+    },
+    "IMPORTANT CONTACT FORM":{
+        "IMPORT_CONTACT":"Đăng tải file Liên hệ",
+        "CSV_FILE_UPLOAD_TEXT":"Đang tải lên tệp CSV",
+        "FILE_UPLOAD_TEXT":"Thêm liên hệ mới bằng cách tải tệp .csv lên. Bạn có thể tải mẫu tại đây để tham khảo",
+        "FILE_UPLOAD_INSTRUCTION":"Chúng tôi chỉ chấp nhận File định dạng CSV",
+        "FILE_SELECTOR":"Tải file lên"
+    },
+    "EDIT COMPANY DETAILS":{
+        "COMPANY_USER_SECTION":"Tài khoản tuyển dụng",
+        "ACCOUNT_SETTINGS":"Cài4 đặt Tài khoản",
+        "COMPANY_LOGO_TEXT":"Logo của Công ty",
+        "COMPANY_NAME_TEXT":"Tên Công ty",
 
-    }
+        "COMPANY_DESCRIPTION":"Thông tin Công ty",
+        "TYPE_INDUSTRY_TEXT":"Khối ngành ",
+        "NUMBER_OF_EMPLOYEES_TEXT":"Số lượng nhân viên",
+
+        "MOBILE_PHONE_TEXT":"Điện thoại Công ty",
+        "ADDRESS_TEXT":"Địa chỉ Công ty",
+        "CITY_MUNICIPALITY_TEXT":"Tỉnh thành",
+        "SUBMIT_BUTTON":"Nhập Thay đổi",
+
+        "TYPE_INDUSTRY_SELECTOR_OPTIONS":"quảng cáo, Chăm sóc sắc đẹp và sức khỏe, thương mại điện tử, giáo dục, kỹ thuật, F&B, dịch vụ tài chính, FMCG, Lòng hiếu khách, công nghệ thông tin, hậu cần, Địa ốc, Bán lẻ, Việc bán hàng, viễn thông"
+    },
+    "EDIT COMPANY USERS":{
+        "TABLE_COLUMN_ID":"ID người dùng",
+        "TABLE_COLUMN_DATE_ADDED":"Ngày thêm vào",
+        "ADD_NEW_ACCESS_BUTTON":"Thêm vào người dùng mới +"
+    },
+    "NEW USER ACCESS":{
+        "NEW_USER__ACCESS_FORM":"Người dùng mới",
+        "INSTRUCTION_MESSAGE":"Thêm vào người dùng mới mà bạn muốn thêm vào để hỗ trợ công tác tuyển dụng ",
+        "EMAIL_TEXT":"Thêm vào email",
+        "CANCEL_BUTTON":"Hủy bỏ",
+        "ADD_EMAIL_BUTTON":"Thêm vào"
+    },
+    "IMPORT USERS":{
+        "IMPORT_USERS_FORM":"Nhập file người dùng",
+        "INSTRUCTION_MESSAGE":"Đang tải lên tệp CSV. Thêm người dùng công ty mới bằng cách tải lên tệp .csv. Bạn có thể tải mẫu tại đây để tham khảo",
+        "FILE_UPLOAD_INSTRUCTION":"Chọn File Chúng tôi chỉ chấp nhận File định dạng CSV",
+        "FILE_SELECTOR":"Đăng tải file người dùng"
+    },
+    "ACCOUNT SETTINGS":{
+        "TITLE_TEXT":"Cài đặt tài khoản",
+        "FN_INPUT_FIELD":"Tên",
+        "LN_INPUT_FIELD":"Họ",
+        "PW_INPUT FIELD":"Mật khẩu",
+        "SUBMIT_BUTTON":"Lưu hay đổi"
+    },
+}
