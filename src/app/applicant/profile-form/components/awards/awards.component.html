@@ -67,7 +67,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" *ngIf="!certForm.controls.noExpiry.value">
           <div class="col-12 col-lg-6">
             <div class="title-container mb-3">
               <label>End Date</label>

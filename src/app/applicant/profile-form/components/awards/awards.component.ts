@@ -40,9 +40,9 @@ export class AwardsComponent implements OnInit {
   }
 
   addAward(){
-    // this.arrayFormArray.emit({
-    //   formArrayName: 'cert', fg: this.certForm
-    // });
+    if(this.certForm.valid) {
+      this.dialogRef.close(this.certForm.value);
+    }
   }
 
   // removeAward(index){

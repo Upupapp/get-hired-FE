@@ -30,6 +30,10 @@ body {
   color: #ff7062;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .btn-primary{
   padding: 8px 15px !important;
   background: $color-global-red-buttons !important;
