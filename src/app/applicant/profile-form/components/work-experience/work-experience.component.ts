@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from '@main/applicant/applicant.model';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { month } from '@app-shared/mock.data';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-work-experience',
@@ -12,10 +13,10 @@ import { month } from '@app-shared/mock.data';
   styleUrls: ['./work-experience.component.scss']
 })
 export class WorkExperienceComponent implements OnInit {
-  @Input() controlIndex: number;
-  @Input() data: any;
-  @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
-  @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
+  // @Input() controlIndex: number;
+  // @Input() data: any;
+  // @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
+  // @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
 
   workForm: FormGroup;
 
@@ -27,6 +28,8 @@ export class WorkExperienceComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
+    public dialogRef: MatDialogRef<WorkExperienceComponent>,
+    @Inject(MAT_DIALOG_DATA) public data,
   ) { }
 
   ngOnInit(): void {
@@ -45,12 +48,12 @@ export class WorkExperienceComponent implements OnInit {
   }
 
   addWorkExp() {
-    this.arrayFormArray.emit({
-      formArrayName: 'workExperience', fg: this.workForm, index: this.controlIndex
-    });
+    // this.arrayFormArray.emit({
+    //   formArrayName: 'workExperience', fg: this.workForm, index: this.controlIndex
+    // });
   }
 
-  removeWorkExp(index) {
-    this.removeArrayFormArray.emit({ formArrayName: 'workExperience', index:index });
+  cancel() {
+    this.dialogRef.close();
   }
 }
