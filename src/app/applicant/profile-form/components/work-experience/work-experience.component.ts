@@ -48,9 +48,9 @@ export class WorkExperienceComponent implements OnInit {
   }
 
   addWorkExp() {
-    // this.arrayFormArray.emit({
-    //   formArrayName: 'workExperience', fg: this.workForm, index: this.controlIndex
-    // });
+    if(this.workForm.valid) {
+      this.dialogRef.close(this.workForm.value);
+    }
   }
 
   cancel() {

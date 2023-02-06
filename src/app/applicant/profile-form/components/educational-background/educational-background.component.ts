@@ -47,9 +47,9 @@ export class EducationalBackgroundComponent implements OnInit {
   }
 
   addEducationBackground(){
-    // this.arrayFormArray.emit({
-    //   formArrayName: 'educBg', fg: this.educBgForm
-    // });
+    if(this.educBgForm.valid) {
+      this.dialogRef.close(this.educBgForm.value);
+    }
   }
 
   // removeEducationBackground(index){
