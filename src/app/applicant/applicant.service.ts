@@ -20,11 +20,18 @@ export class ApplicantService {
   }
 
   saveApplicant(profile: Model.Applicant) {
-    if(profile.applicantProfileId) {
+    if (profile.applicantProfileId) {
       return this.baseService.put<Model.Applicant>(`${this.applicantUrl}/updateprofile`, profile);
     } else {
       return this.baseService.post<Model.Applicant>(`${this.applicantUrl}/createprofile`, profile);
     }
+  }
+
+  saveWorkExperience(workExp: Model.WorkExperience[], profileId: string) {
+    const body = {
+      workExperience: workExp, applicantProfileId: profileId
+    };
+    return this.baseService.post<Model.WorkExperience[]>(`${this.applicantUrl}/createprofile`, body);
   }
 
   getDashboardDetails() {
@@ -39,7 +46,7 @@ export class ApplicantService {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/type`);
   }
 
-  getLevelList(){
+  getLevelList() {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/levels`);
   }
 

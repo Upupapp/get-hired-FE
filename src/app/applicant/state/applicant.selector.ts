@@ -34,6 +34,18 @@ export const applicantDashboard = createSelector (
   state => state.dashboard
 );
 
+export const getProfileDocs = createSelector(
+  getApplicantInitState,
+  state => state.profileDocs
+);
+
+// export const applicantTemp = createSelector (
+//   getApplicantInitState,
+//   getInitialDetails,
+//   getAdditionalInfo,
+//   getProfileDocs
+// );
+
 // export const applicantLoading = createSelector(
 //   getApplicantInitState,
 //   state => state.loading
@@ -98,11 +110,6 @@ export const getLevelList = createSelector(
 //   getApplicantInitState,
 //   state => state.applicantInfo
 // );
-
-export const getProfileDocs = createSelector(
-  getApplicantInitState,
-  state => state.profileDocs
-);
 
 // export const getApplicantPreview = createSelector(
 //   getApplicantInitState,

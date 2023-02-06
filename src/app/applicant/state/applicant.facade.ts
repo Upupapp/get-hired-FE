@@ -28,6 +28,7 @@ export class ApplicantFacade {
   // getApplicantById$ = this.store.pipe(select(fromfeature.getApplicantById));
   // getApplicantLoading$ = this.store.pipe(select(fromfeature.applicantLoading));
   error$: any;
+  // applicantTemp$ = this.store.pipe(select(fromfeature.applicantTemp));
 
   constructor(private store: Store<State>) {}
 
@@ -58,6 +59,10 @@ export class ApplicantFacade {
 
   setProfileDocu(profileDocs: Model.ProfileDocuments) {
     this.store.dispatch(ApplicantAction.setProfileDocuments({ profileDocs }));
+  }
+
+  saveWorkExperience(workExperience: Model.WorkExperience[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveWorkExperience({ workExperience, profileId }));
   }
 
   // getAllApplicant() {
