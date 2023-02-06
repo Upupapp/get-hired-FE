@@ -151,8 +151,8 @@
             </span>
 
             <span *ngIf="header?.type === 'action_button'">
-              	<button class="btn d-flex" 
-					[ngStyle]="{ 
+              	<button class="btn d-flex"
+					[ngStyle]="{
 						'padding-left': header?.col_name === 'view_group' ? '8px': '15px'
 					}"
 					(click)="customButtonFunction(data)"
@@ -163,7 +163,7 @@
 						<div class="group-number">{{data['groups']?.length}}</div>
 					</ng-container>
 
-					{{ header?.button_title }} 
+					{{ header?.button_title }}
 				</button>
             </span>
 

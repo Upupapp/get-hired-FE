@@ -29,6 +29,8 @@ import { SuccessDialogComponent } from './components/success-dialog/success-dial
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
+import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
+
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -49,7 +51,9 @@ const classesToInclude: any[] = [
   SuccessDialogComponent,
   FileViewerComponent,
   VideoPreviewComponent,
-  RecordLoadingComponent
+  RecordLoadingComponent,
+  EmptySectionComponent,
+  DropdownSearchComponent
 ];
 
 @NgModule({

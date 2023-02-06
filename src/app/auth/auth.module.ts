@@ -17,7 +17,12 @@ import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
 
 const routes: Routes = [
-  { path: 'signin', component: SigninComponent },
+  {
+    path: 'signin', component: SigninComponent,
+    data: {
+      isMobileViewAllowed: true
+    }
+  },
   { path: 'signup', component: SignupComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'change-password', component: ChangePwComponent },

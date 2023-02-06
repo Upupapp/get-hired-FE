@@ -1,4 +1,4 @@
-<div *ngIf="!isSmallScreen; else small">
+<div *ngIf="!isSmallScreen || isSmallScreenAllowed; else small">
   <router-outlet></router-outlet>
 </div>
 

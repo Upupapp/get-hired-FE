@@ -1,0 +1,57 @@
+<div class="text-input">
+    <!-- <div>
+        <p class="label-top text-start text-truncate">
+            <span [innerHtml]="label"></span>
+            <span *ngIf="required" class="asterisk-required">*</span>
+        </p> 
+    </div> -->
+
+    <div class="container-input">
+        <div class="d-flex">
+            <mat-form-field class="text-capitalize" [ngClass]="[isTouched ? 'error' : '']" appearance="outline">
+                <mat-select 
+                    [multiple]="multiple"
+                    [disableOptionCentering]="true"
+                    [disabled]="disabled"
+                    (selectionChange)="onSelectionChange($event)"
+                    (closed)="onTouch()"
+                    [(ngModel)]="initialVal"
+                    [compareWith]="objectComparisonFunction"
+                    [placeholder]="placeholder"
+                >
+                    <div class="d-flex bg-light-gray">
+                        <img src="/assets/images/placeholder/icons/search.png" class="search">
+				                
+                        <input matInput class="filter-control" 
+                            [formControl]="filterControl" 
+                            type="text" 
+                            name="filter-options" 
+                            id="filter-options" 
+                            placeholder="Search">
+                    </div>
+                    <ng-template *ngIf="isObjectValue; else single">
+                        <mat-option *ngFor="let item of optionSearch" [value]="item">
+                            {{ item.name || item.value || item.text }}
+                        </mat-option>
+                    </ng-template>
+
+                    <ng-template #single>
+                        <mat-option class="text-capitalize" *ngFor="let item of optionSearch" [value]="item">
+                            {{ item.name || item.value || item.text }}
+                        </mat-option>
+                    </ng-template>
+                </mat-select>
+            </mat-form-field>
+
+            <div class="container-info">
+                <span class="img-info-container" *ngIf="info">
+                    <img src="/assets/images/icons/info-input-icon.png" 
+                    [matTooltip]="infoTitle"
+                    matTooltipPosition="above"
+                    class="img-fluid">
+                </span>
+            </div>
+        </div>
+        <p *ngIf="isTouched" class="error-msg">*Empty Field</p>
+    </div>
+</div> 

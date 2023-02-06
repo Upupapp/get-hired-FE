@@ -1,4 +1,11 @@
 @import "src/assets/styles/colors";
+:host ::ng-deep{
+  ::-webkit-scrollbar {
+    width: 3px !important;
+    height: 10px;
+    cursor: move; /* fallback if grab cursor is unsupported */
+  }
+}
 
 i{
 	font-style: italic !important;
@@ -24,7 +31,7 @@ i{
 }
 
 /* MAT SELECT SEARCH DROPDOWN */
-:host ::ng-deep { 
+:host ::ng-deep {
     .text-input {
       	font-family: 'Manrope' !important;
 
@@ -39,7 +46,7 @@ i{
               color: #4d4d4d; /*!important*/;
             }
         }
-    
+
         .mat-form-field {
             width: 100%;
             font-family: 'Manrope' !important;
@@ -50,7 +57,7 @@ i{
                 margin: 0px !important;
                 padding-bottom: 0px;
 
-                
+
                 .mat-form-field-infix {
                     padding: 21px 25px 22px 0px !important;
                     position: relative !important;
@@ -58,7 +65,7 @@ i{
             }
 
             .mat-select{
-                position: absolute !important;                 
+                position: absolute !important;
                 margin-top: -10px !important;
                 font-family: 'Manrope' !important;
                 font-size: 15px !important;
@@ -83,7 +90,7 @@ i{
           border-top: 6px solid transparent !important;
           border-image-source: url('/assets/images/placeholder/caret-down.png') !important;
           border-image-repeat: stretch !important;
-        } 
+        }
 
         .mat-form-field-outline{
             //border: none;
@@ -128,8 +135,8 @@ i{
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
+	font-size: 21px;
+	line-height: 28px;
 	/* or 215% */
 
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
@@ -171,7 +178,7 @@ i{
 		border-radius: 4px;
 		padding: 6px 10px;
 		margin-bottom: 5px;
-		
+
 		i{
 			font-style: italic !important;
 		}
@@ -196,10 +203,10 @@ i{
 		border-radius: 4px;
 		padding: 6px 10px;
 		margin-bottom: 5px;
-		
+
 		i{
 			font-style: italic !important;
-			
+
 		}
 	}
 
@@ -281,12 +288,12 @@ label{
 .bg-gray{
 	background-size: cover !important;
 	background-position: center !important;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
+	background: linear-gradient(0deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.01)) !important;
 	border-radius: 7px;
 	padding: 20px;
 	background-repeat: no-repeat;
-	//background-color: rgba(0, 0, 0, 0.1)!important;
-	
+	background-color: rgba(0, 0, 0, 0.07)!important;
+
 }
 
 
@@ -361,7 +368,7 @@ label{
 	border-radius: 14px;
 	height: 80px;
 	width: 80px;
-	
+
 	img{
 		width: auto;
 		height: 34px;
@@ -377,7 +384,7 @@ label{
 	padding: 7px 25px !important;
 	&:hover{
 		border-color: $color-global-red;
-		background: $color-global-red; 
+		background: $color-global-red;
 		color: #fff;
 		font-weight: 600;
 	}

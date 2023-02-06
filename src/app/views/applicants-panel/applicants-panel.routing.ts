@@ -8,6 +8,7 @@ import { InboxComponent } from './pages/inbox/inbox.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { UpdateProfileComponent } from './pages/update-profile/update-profile.component';
+import { JobsOpeningDetailsComponent } from './pages/jobs-opening/pages/jobs-opening-details/jobs-opening-details.component';
 
 export const ApplicantsPanelRoutes: Routes = [
   {
@@ -29,6 +30,11 @@ export const ApplicantsPanelRoutes: Routes = [
         path: 'jobs',  
         component: JobsOpeningComponent
       },    
+
+      {
+        path: 'jobs/details/:id',  
+        component: JobsOpeningDetailsComponent
+      }, 
 
       {
         path: 'inbox',  
