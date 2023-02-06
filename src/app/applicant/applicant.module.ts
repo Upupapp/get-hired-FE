@@ -20,6 +20,7 @@ import { AwardsComponent } from './profile-form/components/awards/awards.compone
 import { DocumentsComponent } from './profile-form/components/documents/documents.component';
 import { RecorderModule } from '@main/recorder/recorder.module';
 import { PreviewComponent } from './profile-details/preview/preview.component';
+import { SkillsAndExpComponent } from './profile-form/components/skills-and-exp/skills-and-exp.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { PreviewComponent } from './profile-details/preview/preview.component';
     EducationalBackgroundComponent,
     AwardsComponent,
     DocumentsComponent,
-    PreviewComponent
+    PreviewComponent,
+    SkillsAndExpComponent
   ],
   imports: [
     CommonModule,
