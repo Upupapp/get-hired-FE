@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular/core';
 import { AbstractControl, FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { month } from '@app-shared/mock.data';
-import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 
 @Component({
   selector: 'app-awards-details',
@@ -11,10 +11,6 @@ import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
   styleUrls: ['./awards.component.scss']
 })
 export class AwardsComponent implements OnInit {
-  @Input() controlIndex: number;
-  @Input() data: any;
-  @Output() arrayFormArray: EventEmitter<any> = new EventEmitter();
-  @Output() removeArrayFormArray: EventEmitter<any> = new EventEmitter();
 
   certForm: FormGroup;
 
@@ -23,7 +19,8 @@ export class AwardsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private applicantFacade: ApplicantFacade,
+    public dialogRef: MatDialogRef<AwardsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data,
   ) { }
 
   ngOnInit(): void {
@@ -38,14 +35,18 @@ export class AwardsComponent implements OnInit {
     });
   }
 
-  addAward(){
-    this.arrayFormArray.emit({
-      formArrayName: 'cert', fg: this.certForm
-    });
+  cancel() {
+    this.dialogRef.close();
   }
 
-  removeAward(index){
-    this.removeArrayFormArray.emit({ formArrayName: 'cert', index:index });
+  addAward(){
+    // this.arrayFormArray.emit({
+    //   formArrayName: 'cert', fg: this.certForm
+    // });
   }
+
+  // removeAward(index){
+  //   this.removeArrayFormArray.emit({ formArrayName: 'cert', index:index });
+  // }
 
 }

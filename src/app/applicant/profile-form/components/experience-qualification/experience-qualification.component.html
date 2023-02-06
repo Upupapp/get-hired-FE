@@ -16,9 +16,9 @@
 
   <div *ngIf="!educRendering">
     <ng-container *ngFor="let educFormGroup of educationalBackground.value let i = index">
-      <app-educational-background [data]="educFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
+      <!-- <app-educational-background [data]="educFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
         (removeArrayFormArray)="removeMeToArray($event)">
-      </app-educational-background>
+      </app-educational-background> -->
     </ng-container>
   </div>
 
@@ -61,9 +61,9 @@
 
   <div *ngIf="!awardRendering">
     <ng-container *ngFor="let certFormGroup of certifications.value let i = index">
-      <app-awards-details [data]="certFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
+      <!-- <app-awards-details [data]="certFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
         (removeArrayFormArray)="removeMeToArray($event)">
-      </app-awards-details>
+      </app-awards-details> -->
     </ng-container>
   </div>
 

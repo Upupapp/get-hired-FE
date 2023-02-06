@@ -1,5 +1,5 @@
 <form [formGroup]="certForm">
-  <div class="card card-body mt-2" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+  <div class="mt-2" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
     <div class="row">
       <div class="col-12">
         <div class="row">
@@ -11,7 +11,7 @@
             </h5>
           </div>
           <div class="col-12 col-md-3">
-            <span (click)="removeAward(controlIndex)" class="float-end btn btn-add" *ngIf="controlIndex !=0">
+            <span (click)="cancel()" class="float-end btn btn-add">
               <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">
             </span>
             <button class="float-end btn btn-save-draft" type="button" [disabled]="!certForm.valid"
@@ -102,6 +102,12 @@
               rows="9"></textarea>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="row justify-content-end">
+      <div class="col-12 col-md-3">
+        <button class="float-end btn btn-save-draft" type="button" [disabled]="!certForm.valid" (click)="addAward()">
+          Add Item</button>
       </div>
     </div>
   </div>
