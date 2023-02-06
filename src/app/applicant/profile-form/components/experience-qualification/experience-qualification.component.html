@@ -5,8 +5,8 @@
 
   <div *ngIf="!workRendering">
     <ng-container *ngFor="let workFormGroup of workExperience?.value; let i = index;">
-      <app-work-experience [data]="workFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
-        (removeArrayFormArray)="removeMeToArray($event)"></app-work-experience>
+      <!-- <app-work-experience [data]="workFormGroup" [controlIndex]="i" (arrayFormArray)="addMeToArray($event)"
+        (removeArrayFormArray)="removeMeToArray($event)"></app-work-experience> -->
     </ng-container>
   </div>
 

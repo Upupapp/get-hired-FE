@@ -22,11 +22,9 @@ export class SkillsAndExpComponent implements OnInit {
 
   addWorkExperience() {
     const ref = this.dialog.open(WorkExperienceComponent, {
-      disableClose: true,
+      width: '70vw',
       data: {
         controlIndex: 1,
-        data: []
-
       }
     });
   }
