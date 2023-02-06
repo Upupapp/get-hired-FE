@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { AwardsComponent } from '../awards/awards.component';
+import { EducationalBackgroundComponent } from '../educational-background/educational-background.component';
 import { WorkExperienceComponent } from '../work-experience/work-experience.component';
 
 @Component({
@@ -22,6 +24,24 @@ export class SkillsAndExpComponent implements OnInit {
 
   addWorkExperience() {
     const ref = this.dialog.open(WorkExperienceComponent, {
+      width: '70vw',
+      data: {
+        controlIndex: 1,
+      }
+    });
+  }
+
+  addEducBg() {
+    const ref = this.dialog.open(EducationalBackgroundComponent, {
+      width: '70vw',
+      data: {
+        controlIndex: 1,
+      }
+    });
+  }
+
+  addCertAndAwards() {
+    const ref = this.dialog.open(AwardsComponent, {
       width: '70vw',
       data: {
         controlIndex: 1,
