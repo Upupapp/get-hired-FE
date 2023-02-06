@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { AwardsComponent } from '../awards/awards.component';
 import { EducationalBackgroundComponent } from '../educational-background/educational-background.component';
@@ -14,7 +15,7 @@ import { WorkExperienceComponent } from '../work-experience/work-experience.comp
 })
 export class SkillsAndExpComponent implements OnInit {
   @Input() formGroupName: string;
-
+  @Output() initiateSaving: EventEmitter<any> = new EventEmitter();
   arrayForm: FormGroup
 
   workExperience: any[] = [];
@@ -24,9 +25,13 @@ export class SkillsAndExpComponent implements OnInit {
 
   forChange = [];
 
+  // applicant$ = this.applicantFacade.applicantTemp$
+  //   .pipe().subscribe(this.getApplicantDetails.bind(this));
+
   constructor(
     private rootFormGroup: FormGroupDirective,
     private dialog: MatDialog,
+    private applicantFacade: ApplicantFacade
   ) { }
 
   ngOnInit(): void {
@@ -47,8 +52,9 @@ export class SkillsAndExpComponent implements OnInit {
 
     ref.afterClosed().subscribe(res => {
       if (res) {
-        this.workExperience.push(res);
         console.log(res);
+        this.workExperience.push(res);
+        this.submittingAllArrays();
       }
     });
   }
@@ -61,8 +67,9 @@ export class SkillsAndExpComponent implements OnInit {
 
     ref.afterClosed().subscribe(res => {
       if (res) {
-        this.educationalBackground.push(res);
         console.log(res);
+        this.educationalBackground.push(res);
+        this.submittingAllArrays();
       }
     });
   }
@@ -75,20 +82,55 @@ export class SkillsAndExpComponent implements OnInit {
 
     ref.afterClosed().subscribe(res => {
       if (res) {
-        this.certifications.push(res);
         console.log(res);
+        this.certifications.push(res);
+        this.submittingAllArrays();
       }
     });
   }
 
-  addItem(control, controlArray: FormArray) {
-    // TODO
+  submittingAllArrays() {
+    this.applicantFacade.setAdditionalInfo({
+      workExperience: this.workExperience,
+      educationalBackground: this.educationalBackground,
+      professionalSkills: [],
+      certifications: this.certifications
+    });
+
+    setTimeout(() => {
+      this.initiateSaving.emit();
+    })
   }
 
+  getApplicantDetails(data) {
+    console.log(data);
+  }
+
+  // addItem(control, controlArray: FormArray) {
+  //   let value = this.arrayForm.get(control).value;
+
+  //   if (value && value != '') {
+  //     if (controlArray.controls.length != 5) {
+  //       controlArray.push(new FormControl(value));
+  //       this.arrayForm.controls[control].setValue(null);
+  //     } else {
+  //       this.snackBar.open(`You are only allowed to add up to 5 items to this category`,
+  //         '', { duration: 4000, panelClass: ['danger-snackbar'] });
+  //     }
+  //   } else {
+  //     this.snackBar.open(`Empty string not allowed`,
+  //       '', { duration: 4000, panelClass: ['danger-snackbar'] });
+  //   }
+  // }
+
+  // removeItemInArray(index: number, controlArray: FormArray) {
+  //   controlArray.removeAt(index);
+  // }
+
   removeItem(index: number, objArray) {
-    console.log(this['objArray']);
-    this['objArray'].removeAt(index);
-    console.log(this['objArray']);
+    console.log(objArray);
+    objArray.removeAt(index);
+    console.log(objArray);
   }
 
   updateArray() {
@@ -97,5 +139,13 @@ export class SkillsAndExpComponent implements OnInit {
 
   showButton(status, index) {
     this.forChange[index] = status;
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    // if(this.applicant$) {
+    //   this.applicant$.unsubscribe();
+    // }
   }
 }

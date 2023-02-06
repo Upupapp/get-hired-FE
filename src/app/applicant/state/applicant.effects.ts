@@ -99,6 +99,24 @@ export class ApplicantEffects {
     );
   });
 
+  saveWorkExperience$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveWorkExperience),
+      mergeMap((action) => this.applicantService.saveWorkExperience(action.workExperience, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const workExperience: Model.WorkExperience[] = res.data;
+            return ApplicantActions.saveWorkExperienceSuccess({ workExperience });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveWorkExperienceFail({ payload: error }));
+          })
+        )
+      )
+    );
+  });
+
   getInitialDetailsOfApplicant(applicant: Model.Applicant): Model.InitialDetails {
     return {
       profilePhoto: applicant.photoUrl,

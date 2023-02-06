@@ -157,6 +157,8 @@ export class ProfileFormComponent implements OnInit {
     // TODO save profile
     const applicant = await this.formatProfile();
 
+    console.log(applicant);
+
     const isProfileReady = applicant.firstName != ""
       && applicant.lastName != ""
       && applicant.profileImage

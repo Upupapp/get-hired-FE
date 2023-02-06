@@ -113,7 +113,7 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       selected: action.applicant,
       loading: false,
-      succesMsg: action.applicant.applicantProfileId ? 'updated':'created'
+      succesMsg: action.applicant.applicantProfileId ? 'updated' : 'created'
     };
   }),
   on(ApplicantActions.saveApplicantFail, (state, action): ApplicantState => {
@@ -133,7 +133,14 @@ export const applicantReducer = createReducer<ApplicantState>(
   on(ApplicantActions.setAdditionalInfo, (state, action): ApplicantState => {
     return {
       ...state,
-      additionalInfo: action.additionalInfo
+      additionalInfo: action.additionalInfo,
+      selected: {
+        ...state.selected,
+        workExperience: action.additionalInfo.workExperience,
+        educationalBackground: action.additionalInfo.educationalBackground,
+        certifications: action.additionalInfo.certifications,
+        skills: action.additionalInfo.professionalSkills,
+      }
     };
   }),
   on(ApplicantActions.setProfileDocuments, (state, action): ApplicantState => {
