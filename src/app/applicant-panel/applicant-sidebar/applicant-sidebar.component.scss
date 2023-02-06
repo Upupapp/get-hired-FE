@@ -48,12 +48,13 @@
 
 
 .img-logo{
-	width: 100px;
+	padding-top: 10px;
+	width: 180px;
 }
 
 .bg-logo{
-	background: white;
-	border-bottom-right-radius: 30px;
+	background: #fff;
+	border-bottom-right-radius: 0px;
 }
 
 .img-avatar{
@@ -95,13 +96,13 @@
 		font-family: 'Manrope';
 		font-style: normal;
 		font-weight: 500;
-		font-size: 16px;
+		font-size: 14px;
 		line-height: 20px;
 		/* identical to box height */
 
 
-		color: #FFFFFF;
-		background: $color-global-sidebar-applicant-route-active;
+		color: #fff;
+		background: #368CE7;
 		border-radius: 9px;
 	}
 }
@@ -129,6 +130,9 @@
 
 		letter-spacing: 0.2px;
 
+		h5{
+			color: #fff !important;
+		}
 
 		&:hover{
 			color: #FFFFFF;
@@ -139,9 +143,9 @@
 	}
 
 	&-title-active{
-		color: $color-global-sidebar-employer-user-menu !important;
+		color: #03002E !important;
 		cursor: pointer;
-		background: $color-global-sidebar-applicant-route-active;
+		background: #BFD756;
 		border-radius: 9px;
 		padding: 10px 15px 5px 5px;
 		font-family: 'Manrope';
@@ -151,8 +155,13 @@
 		line-height: 20px;
 		letter-spacing: 0.2px;
 
+		h5{
+			color: #03002E !important;
+			font-weight: 600 !important;
+		}
+
 		&:hover{
-			color: $color-global-sidebar-employer-user-menu;
+			color: #03002E;
 			font-weight: 500;
 			transition: all 0.4s ease !important;
 		}
@@ -163,6 +172,7 @@
 .dashboard{
 	width: 15px;
 	height: 15px;
+	margin-top: -3px !important;
 }
 
 .jobs{
@@ -178,9 +188,9 @@
 }
 
 .profile{
-	width: 14px !important;
-	height: 13px !important;
-	margin-top: -3px;
+	width: 20px !important;
+	height: 16px !important;
+	margin-top: -2px;
 }
 
 .interviews{
@@ -190,9 +200,9 @@
 }
 
 .expired{
-	width: 15px !important;
-	height: 15px !important;
-	margin-top: -5px;
+	width: 16px !important;
+	height: 16px !important;
+	margin-top: -3px;
 }
 
 

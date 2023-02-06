@@ -2,7 +2,11 @@
 [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
 	<div class="d-flex">
 		<div class="banner-thumbnail flex-wrap me-2">
-			<img [src]="data?.jobBanner" class="img img-fluid img-banner">
+			<img [src]="data.jobBanner" *ngIf="data.jobBanner; else showDefaultBanner" class="img img-fluid img-banner">
+
+			<ng-template #showDefaultBanner>
+				<img src="/assets/images/video-placeholder.png" class="img img-fluid img-banner">
+			</ng-template>
 		</div>
 
 		<div class="p-3 py-3 flex-wrap d-flex w-100">

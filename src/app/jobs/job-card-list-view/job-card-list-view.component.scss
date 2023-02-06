@@ -6,6 +6,7 @@
 	object-position: center;
 	object-fit: cover;
 	border-radius: 5px;
+	background: rgba(#E2E2E2, 0.5);
 }
 
 .card{
@@ -59,7 +60,7 @@
 }
 
 .btn-primary{
-	background: linear-gradient(95.7deg, #BEF245 14.94%, #93C91A 76.21%) !important;
+	background: #BEF245 !important;
 	border-radius: 4.87297px !important;
 	color: #1D2549 !important;
 	font-weight: 600 !important;

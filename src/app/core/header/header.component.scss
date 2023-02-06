@@ -98,7 +98,7 @@
 }
 
 .btn-nav-gradient{
-  background: #368CE7 !important;
+  background: #151E44 !important;
   box-shadow: 0px 29.81px 46.8519px rgba(10, 146, 200, 0.1059), 0px 14.52px 25.4815px rgba(10, 146, 200, 0.1007) !important;
   border-radius: 900px !important;
   color: white;
@@ -109,8 +109,8 @@
   height: 38px !important;
 
   &:hover{
-    border: solid 2px #368CE7 !important;
-    color: #368CE7;
+    border: solid 2px #151E44 !important;
+    color: #151E44;
     transition: all 0.1s ease !important;
     background: transparent !important;
     padding-bottom: 8px !important;
@@ -282,8 +282,9 @@
 
 .navbar{
   .navbar-brand{
-    width: 200px;
-    margin-top: 10px;
+    height: auto;
+    width: 160px;
+    margin-top: 5px;
     //margin-left: 20px;
   }
 

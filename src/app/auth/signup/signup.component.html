@@ -59,8 +59,8 @@
       </section>
     </div>
 
-    <div class="col-12 col-md-6 bg-form">
-      <div class="card py-5 pt-2" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+    <div class="col-12 col-md-6  bg-form">
+      <div class="card py-5 px-lg-5 pt-2" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <!-- Error Message -->
         <form class="" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
           <div class="form-group text-start">

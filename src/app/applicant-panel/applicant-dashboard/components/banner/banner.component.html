@@ -43,48 +43,54 @@
 
 <div class="px-3 px-lg-5" style="margin-top: -60px">
   <div class="row">
-    <div class="col-12 col-md-6 col-lg-5 mb-3">
-      <div
-        class="orange mb-2 card-application"
-        [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
-      >
-        <h5 class="title-card">
-          Active Application
+    <div class="col-12 col-lg-9 row">
+      <div class="col-12 col-md-6 col-lg-6 mb-3">
+        <div
+          class="green mb-2 card-application"
+          [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
+        >
+          <h5 class="title-card">
+            Active Application
+            <img
+              src="/assets/images/placeholder/icons/card-interview-icon.png"
+              class="card-img"
+              style="width: 30px; margin-top: -5px"
+            />
+          </h5>
+          <h3 class="title-stat">{{ cardDetails?.activeApplications || 0}}</h3>
           <img
-            src="/assets/images/placeholder/icons/card-interview-icon.png"
-            class="card-img"
-            style="width: 30px; margin-top: -5px"
+            src="/assets/images/placeholder/icons/arrow-right-white.png"
+            style="height: 16px; margin-top: -25px"
+            class="float-end me-2"
           />
-        </h5>
-        <h3 class="title-stat">{{ cardDetails?.activeApplications || 0}}</h3>
-        <img
-          src="/assets/images/placeholder/icons/arrow-right-white.png"
-          style="height: 16px; margin-top: -25px"
-          class="float-end me-2"
-        />
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-6 mb-3">
+        <div
+          class="card-application orange mb-2"
+          [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
+        >
+          <h5 class="title-card">
+            Video Interview
+            <img
+              src="/assets/images/placeholder/icons/card-video-icon.png"
+              class="card-img"
+              style="width: 30px; margin-top: -5px"
+            />
+          </h5>
+          <h3 class="title-stat">{{ cardDetails?.videoInterviews || 0 }}</h3>
+          <img
+            src="/assets/images/placeholder/icons/arrow-right-white.png"
+            style="height: 16px; margin-top: -25px"
+            class="float-end me-2"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-5 mb-3">
-      <div
-        class="card-application yellow mb-2"
-        [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
-      >
-        <h5 class="title-card">
-          Video Interview
-          <img
-            src="/assets/images/placeholder/icons/card-video-icon.png"
-            class="card-img"
-            style="width: 30px; margin-top: -5px"
-          />
-        </h5>
-        <h3 class="title-stat">{{ cardDetails?.videoInterviews || 0 }}</h3>
-        <img
-          src="/assets/images/placeholder/icons/arrow-right-white.png"
-          style="height: 16px; margin-top: -25px"
-          class="float-end me-2"
-        />
-      </div>
-    </div>
+    <!-- extra -->
+    <div class="col-12 col-lg-2"></div>
+
   </div>
 </div>

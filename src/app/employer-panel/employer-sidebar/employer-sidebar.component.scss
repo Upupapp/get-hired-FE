@@ -43,11 +43,11 @@
 }
 
 .bg-menu{
-	background: #1D2549;
+	background: #0D163E;
 }
 
 .bg-user{
-	background: #0D163E;
+	background: #1D2549;
 	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
 	border-radius: 12px;
 	position: absolute;
@@ -74,12 +74,13 @@
 }
 
 .img-logo{
-	width: 100px;
+	padding-top: 10px;
+	width: 180px;
 }
 
 .bg-logo{
 	background: white;
-	border-bottom-right-radius: 30px;
+	border-bottom-right-radius: 0px;
 }
 
 .img-avatar{
@@ -124,7 +125,7 @@
 		/* identical to box height */
 
 		font-weight: 500;
-		color: #1D2549;
+		color: #0D163E;
 		background: #BEF245;
 		border-radius: 9px;
 	}
@@ -187,12 +188,13 @@
 .dashboard{
 	width: 15px;
 	height: 15px;
+	margin-top: -3px;
 }
 
 .jobs{
-	width: 14px !important;
-	height: 17px !important;
-	margin-top: -2px;
+	width: 15px !important;
+	height: 15px !important;
+	margin-top: -5px;
 }
 
 .applicants{
@@ -202,22 +204,21 @@
 }
 
 .accounts{
-	width: 14px !important;
-	height: 13px !important;
+	width: 19px !important;
+	height: 16px !important;
 	margin-top: -3px;
 }
 
 .subscription{
-	width: 22px !important;
-	height: 22px !important;
-	margin-top: -3px;
-	margin-left: -2px;
+	width: 15px !important;
+	height: 15px !important;
+	margin-top: -5px;
 }
 
 .interviews{
 	width: 16px !important;
 	height: 16px !important;
-	//margin-top: -1px;
+	margin-top: -3px;
 }
 
 .expired{
@@ -355,7 +356,7 @@
 }
 
 .sub-label-active{
-	background: #0D163E;
+	background: #1D2549;
 	color: #E7FFF2;
 	border-radius: 9px;
 }

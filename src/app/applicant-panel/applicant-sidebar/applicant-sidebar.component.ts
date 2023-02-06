@@ -36,7 +36,7 @@ export class ApplicantSidebarComponent implements OnInit {
 
   public sidebarItems: any[] = [
     {
-      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard', active: 'dashboard-blk.png'
     },
 
     // {
@@ -48,11 +48,11 @@ export class ApplicantSidebarComponent implements OnInit {
     // },
 
     {
-      title: 'Profile', icon: 'account.png', class: 'profile', route: 'profile/details'
+      title: 'Profile', icon: 'jobs.png', class: 'expired', route: 'profile/details', active: 'jobs-blk.png'
     },
 
     {
-      title: 'Settings', icon: 'expired-jobs.png', class: 'expired', route: 'settings'
+      title: 'Settings', icon: 'account.png', class: 'profile', route: 'settings', active: 'account-blk.png'
     },
   ]
 

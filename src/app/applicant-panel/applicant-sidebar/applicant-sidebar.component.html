@@ -2,7 +2,7 @@
 	<div style="position: relative; height: 100vh;">
 		<div class="card card-body bg-logo text-center d-flex align-items-center"
 		style="height: 110px; cursor: pointer;">
-			<img src="/assets/images/placeholder/logo.png" class="hvr-grow img-logo img-fluid mt-2"
+			<img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-logo img-fluid mt-2"
 			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}" routerLink="/jobs">
 		</div>
 
@@ -19,6 +19,11 @@
 				(click)="changeRoute('/user/' + item?.route)">
 					<div class="sidebar-icon ms-lg-3" style="width: 20px">
 						<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.icon"
+						*ngIf="!location?.match(item?.route)"
+						[ngClass]="item?.class">
+
+						<img [src]="'/assets/images/placeholder/icons/company-panel-' + item?.active"
+						*ngIf="location?.match(item?.route) && !location?.match('expired')"
 						[ngClass]="item?.class">
 					</div>
 					<h5 class="sidebar-title">{{item?.title}}</h5>
@@ -46,7 +51,7 @@
 			</div>
 
 			<h5 class="text-center copy-right mt-4">
-				© 2022 Job-Hunt.au
+				© 2022 JobHive
 			</h5>
 		</div>
 
