@@ -149,4 +149,12 @@ export class SigninComponent implements OnInit {
     this.error = undefined;
     this.message = undefined;
   }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    if(this.credentials$) {
+      this.credentials$.unsubscribe();
+    }
+  }
 }
