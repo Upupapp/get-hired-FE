@@ -51,6 +51,9 @@
 }
 
 .company-logo{
+	border: solid 2px #fff !important;
+	border-radius: 50%;
+	padding: 4px;
 	&-image{
 		width: 100px;
 		height: 100px;
@@ -60,10 +63,10 @@
 		border-radius: 50%;
 		cursor: pointer;
 		background: white;
-		border: solid 1px #f6f6f6;
+		//border: solid 2px #fff !important;
 
 		&:hover{
-			border: solid 3px #0455CE;
+			border: solid 3px #fff;
 			transition: all 0.2s !important;
 			transform: scale(1.1);
 		}
@@ -71,7 +74,7 @@
 }
 
 .green{
-	background: #1666BA;
+	background: #134274;
 
 	transition: all 0.4s ease !important;
 
@@ -95,13 +98,13 @@
 	}
 
 	img{
-		background: #1666BA;
+		background: #134274;
 		border-radius: 50%;
 	}
 }
 
 .orange{
-	background: #368CE7;
+	background: #3D60A7;
 
 	&:hover{
 		background: white;
@@ -120,13 +123,13 @@
 
 
 	img{
-		background: #368CE7;
+		background: #3D60A7;
 		border-radius: 50%;
 	}
 }
 
 .yellow{
-	background: #7AB3EF;
+	background: #5D7DC1;
 
 	&:hover{
 		background: white;
@@ -135,13 +138,13 @@
 		transition: all 0.2s ease !important;
 
 		.title-card, .title-stat, .subheading{
-			color: #172045;
+			color: #1666BA;
 		}
 	}
 
 
 	img{
-		background: #7AB3EF;
+		background: #5D7DC1;
 		border-radius: 50%;
 	}
 

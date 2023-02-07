@@ -1,8 +1,8 @@
-<div class="sidebar-details">
+<div class="sidebar-details" [ngStyle]="{ 'width': sidebarWidth + 'px' }">
 	<div style="position: relative; height: 100vh;">
 		<div class="card card-body bg-logo text-center d-flex align-items-center"
 		style="height: 110px; cursor: pointer;">
-			<img src="assets/images/placeholder/logo-2.png" class="hvr-grow img-logo img-fluid mt-2"
+			<img src="assets/images/placeholder/logo-3.png" class="hvr-grow img-logo img-fluid mt-2"
 			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}" routerLink="/jobs">
 		</div>
 
@@ -22,14 +22,15 @@
 						<img [src]="'assets/images/placeholder/icons/company-panel-' + item?.icon"
 						[ngClass]="item?.class">
 					</div>
-					<h5 class="sidebar-title">{{item?.title}}
+					<h5 class="sidebar-title">
+						<ng-container *ngIf="sidebarWidth >= 240">{{item?.title}}</ng-container>
 						<img src="/assets/images/placeholder/icons/caret-white.png" 
-						*ngIf="item?.sub_routes?.length > 0"
+						*ngIf="item?.sub_routes?.length > 0 && sidebarWidth >= 240"
 						[ngClass]="location?.match(item?.route) ? 'active-caret' : 'inactive-caret'">
 					</h5>
 				</div>
 
-				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
+				<ng-container *ngIf="(item?.sub_routes?.length > 0 && location?.match(item?.route)) && sidebarWidth >= 240">
 					<ul class="tree text-start p-0" 
 					[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
 					style=" list-style-type: none;">
@@ -61,7 +62,7 @@
 			</ng-container>
 		</div>
 
-		<div class="px-2">
+		<div class="px-2" *ngIf="sidebarWidth >= 240">
 			<div class="card card-body pb-3 bg-user" style="padding-top: 10px" 
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex" *ngIf="screenHeight > 685">

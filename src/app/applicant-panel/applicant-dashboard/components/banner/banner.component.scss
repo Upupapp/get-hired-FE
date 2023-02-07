@@ -73,13 +73,13 @@
 }
 
 .green{
-  background: #1666BA;
+  background: #134274;
 
   transition: all 0.4s ease !important;
 
   &:hover{
     background: white;
-    border: solid 2px #1666BA;
+    border: solid 2px #172045;
     padding: 18px 12px 8px 15px;
     transition: all 0.2s ease !important;
 
@@ -92,22 +92,22 @@
     }*/
 
     .title-card, .title-stat, .subheading{
-      color: #1666BA !important
+      color: #172045 !important
     }
   }
 
   img{
-    background: #1666BA;
+    background: #134274;
     border-radius: 50%;
   }
 }
 
 .orange{
-  background: #368CE7;
+  background: #3D60A7;
 
   &:hover{
     background: white;
-    border: solid 2px #368CE7;
+    border: solid 2px #172045;
     padding: 18px 12px 8px 15px;
     transition: all 0.2s ease !important;
 
@@ -116,38 +116,39 @@
     }*/
 
     .title-card, .title-stat, .subheading{
-      color: #368CE7 !important
+      color: #172045 !important
     }
   }
 
 
   img{
-    background: #368CE7;
+    background: #3D60A7;
     border-radius: 50%;
   }
 }
 
 .yellow{
-  background: #7AB3EF;
+  background: #5D7DC1;
 
   &:hover{
     background: white;
-    border: solid 2px #7AB3EF;
+    border: solid 2px #172045;
     padding: 18px 12px 8px 15px;
     transition: all 0.2s ease !important;
 
     .title-card, .title-stat, .subheading{
-      color: #7AB3EF;
+      color: #1666BA;
     }
   }
 
 
   img{
-    background: #7AB3EF;
+    background: #5D7DC1;
     border-radius: 50%;
   }
 
 }
+
 
 .card-application {
   border-radius: 15px;

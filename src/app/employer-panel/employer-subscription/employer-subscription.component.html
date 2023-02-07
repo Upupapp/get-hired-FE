@@ -3,13 +3,14 @@
 <div class="bg-pink">
 	<div [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
 		<h5 class="text-center title-main">Job Hive Pricing</h5>
+		<h5 class="text-center title-description">This is your current Job Hive Subscription</h5>
 		<!-- <div class="text-center">
 			<button class="btn btn-get-started">Get Started Today</button>
 		</div> -->
 	</div>
 </div>
 
-<div class="p-4 p-lg-5" style="margin-top: -140px">
+<div class="p-4 p-lg-5" style="margin-top: -160px">
 	<div class="card card-body">
 
 		<div class="w-100">
@@ -57,7 +58,9 @@
 				<tbody>
 					<tr>
 						<td>Job Post
-							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" style="height: 18px; cursor: pointer;">
+							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" 
+							[matTooltip]="'Job Post: A section of the app where you can post job vacancies, including job title, job description, required skills, and other relevant information.'"
+							style="height: 18px; cursor: pointer;">
 						</td>
 						<td>1</td>
 						<td>4</td>
@@ -67,7 +70,9 @@
 
 					<tr>
 						<td>Customized Company Page
-							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" style="height: 18px; cursor: pointer;">
+							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" 
+							style="height: 18px; cursor: pointer;"
+							[matTooltip]="'Customized Company Page: A feature that allows you to create a unique and branded page for your company to showcase your company culture, products/services, and other important information.'">
 						</td>
 						<td>
 							<img src="/assets/images/placeholder/icons/check-circle-gray.png"
@@ -92,7 +97,9 @@
 
 					<tr>
 						<td>Admin
-							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" style="height: 18px; cursor: pointer;">
+							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" 
+							style="height: 18px; cursor: pointer;"
+							[matTooltip]="'Admin: A feature that grants you administrative access to the app, allowing you to manage job postings, receive applications, and perform other administrative tasks.'">
 						</td>
 						<td>1</td>
 						<td>3</td>
@@ -102,7 +109,9 @@
 
 					<tr>
 						<td>Video Interview Questions
-							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" style="height: 18px; cursor: pointer;">
+							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" 
+							style="height: 18px; cursor: pointer;"
+							[matTooltip]="'Video Interview Questions: A feature that allows you to create video interview questions to assess applicants skills, knowledge, and attitude.'">
 						</td>
 						<td>
 							<img src="/assets/images/placeholder/icons/check-circle-gray.png"
@@ -127,7 +136,9 @@
 
 					<tr>
 						<td>Video Reponses
-							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" style="height: 18px; cursor: pointer;">
+							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" 
+							style="height: 18px; cursor: pointer;"
+							[matTooltip]="'Video Responses: A feature that allows applicants to respond to the video interview questions with recorded video answers.'">
 						</td>
 						<td>50</td>
 						<td>250</td>
@@ -137,7 +148,9 @@
 
 					<tr>
 						<td>Customer care
-							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" style="height: 18px; cursor: pointer;">
+							<img src="/assets/images/placeholder/icons/info-gray.png" class="float-end me-2 mt-1" 
+							style="height: 18px; cursor: pointer;"
+							[matTooltip]="'Customer Care: A support feature that provides assistance to users with any questions or issues they may have while using the app.'">
 						</td>
 						<td>No</td>
 						<td>No</td>
@@ -147,12 +160,12 @@
 
 					<tr>
 						<td></td>
-						<td><button class="btn btn-subscribe">Try for Free</button></td>
-						<td><button class="btn btn-subscribe">Upgrade</button></td>
+						<td><button class="btn btn-subscribe hvr-grow">Try for Free</button></td>
+						<td><button class="btn btn-subscribe hvr-grow">Upgrade</button></td>
 						<td class="bg-promotion">
-							<button class="btn btn-subscribe-active">Upgrade</button>
+							<button class="btn btn-subscribe-active hvr-grow">Upgrade</button>
 						</td>
-						<td><button class="btn btn-subscribe">Upgrade</button></td>
+						<td><button class="btn btn-subscribe hvr-grow">Upgrade</button></td>
 					</tr>
 				</tbody>
 			</table>

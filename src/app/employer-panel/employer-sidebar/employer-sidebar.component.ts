@@ -17,7 +17,7 @@ export class EmployerSidebarComponent implements OnInit {
   companyName: string;
 
   public location: any = '';
-  public screenHeight: number = 300;
+  public screenHeight: number = 30;
   sidebarItems: any[];
 
   constructor(
