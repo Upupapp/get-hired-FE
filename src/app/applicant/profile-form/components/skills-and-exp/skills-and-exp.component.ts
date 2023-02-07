@@ -21,7 +21,9 @@ export class SkillsAndExpComponent implements OnInit {
   workExperience: any[] = [];
   educationalBackground: any[] = [];
   certifications: any[] = [];
-  professionalSkills: FormArray;
+  professionalSkills: any[] = [];
+  // professionalSkills: FormArray;
+  skillChanged = false;
 
   forChange = [];
 
@@ -41,7 +43,17 @@ export class SkillsAndExpComponent implements OnInit {
     this.workExperience = [...this.arrayForm.controls['workExperience'].value];
     this.educationalBackground = [...this.arrayForm.controls['educationalBackground'].value];
     this.certifications = [...this.arrayForm.controls['certifications'].value];
+    this.professionalSkills = [...this.arrayForm.controls['professionalSkills'].value];
+  }
 
+  addSkills() {
+    this.professionalSkills.push(this.arrayForm.controls['skillsTxt'].value);
+    this.arrayForm.controls['skillsTxt'].reset();
+    this.skillChanged = true;
+  }
+
+  submitSkills() {
+    this.submittingAllArrays();
   }
 
   addWorkExperience(index?: number) {
@@ -93,12 +105,13 @@ export class SkillsAndExpComponent implements OnInit {
     this.applicantFacade.setAdditionalInfo({
       workExperience: this.workExperience,
       educationalBackground: this.educationalBackground,
-      professionalSkills: [],
+      professionalSkills: this.professionalSkills,
       certifications: this.certifications
     });
 
     setTimeout(() => {
       this.initiateSaving.emit();
+      this.skillChanged = false;
     })
   }
 
@@ -127,10 +140,13 @@ export class SkillsAndExpComponent implements OnInit {
   //   controlArray.removeAt(index);
   // }
 
-  removeItem(index: number, objArray) {
-    console.log(objArray);
-    objArray.removeAt(index);
-    console.log(objArray);
+  removeItem(index: number, arrayName: string) {
+    switch(arrayName) {
+      case 'professionalSkills':
+        this.professionalSkills = this.professionalSkills.filter((skill, i) => i != index);
+        this.skillChanged = true;
+        break;
+    }
   }
 
   updateArray() {
