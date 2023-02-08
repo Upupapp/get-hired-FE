@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 
@@ -9,6 +9,7 @@ import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 })
 export class PreviewComponent implements OnInit {
   profile$ = this.applicantFacade.applicantDetails$;
+  @Input() isApplicantView: boolean = false;
 
   constructor(
     private applicantFacade: ApplicantFacade,
