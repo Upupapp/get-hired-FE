@@ -305,7 +305,6 @@ export class ProfileFormComponent implements OnInit {
       case 'profileDetailsForm':
         const bodyInitial = this.profileForm.controls[formCtrl].value;
         this.applicantFacade.setInitialForm(bodyInitial);
-        this.submitProfile();
         break;
       case 'profileArraysForm':
         const bodyInfo = this.profileForm.controls[formCtrl].value;
@@ -343,6 +342,8 @@ export class ProfileFormComponent implements OnInit {
 
       // this.loadingDialog.closeAll();
       // this.showSuccessDialog();
+    } else if (event == 'saveStepperForm') {
+      this.submitProfile();
     }
   }
 
