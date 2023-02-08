@@ -1,5 +1,13 @@
 @import "src/assets/styles/colors";
 
+.btn-add-default {
+  background-color: #3B3947;
+}
+
+.btn-disabled {
+  background-color: #FFD4D0;
+}
+
 .submit-container{
 	z-index: 99 !important;;
 	position: fixed !important;
@@ -336,7 +344,7 @@ label{
 
 	.btn-add-now{
 		margin-left: -9px;
-		background: $color-global-red-buttons;
+		// background: $color-global-red-buttons;
 		box-shadow: 0px 7px 20px rgba(252, 139, 121, 0.34);
 		border-radius: 9px;
 		//border-bottom-left-radius: 0 !important;
@@ -361,8 +369,8 @@ select{
 	//border: 1px solid #AFBCC6 !important;
 	border-radius: 6px;
 	padding-left: 20px;
-	padding-top: 15px;
-	padding-bottom: 15px;
+	// padding-top: 15px;
+	// padding-bottom: 15px;
 	letter-spacing: 0px !important;
 
 	&:focus,
