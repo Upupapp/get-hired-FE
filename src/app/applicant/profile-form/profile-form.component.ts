@@ -99,6 +99,7 @@ export class ProfileFormComponent implements OnInit {
   }
 
   initializedForm(data?: Model.Applicant) {
+    console.log(data);
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
         photoUrl: [data ? data.photoUrl : null],
@@ -120,12 +121,19 @@ export class ProfileFormComponent implements OnInit {
         country: [data ? data.country : null, Validators.required]
       }),
       profileArraysForm: this.fb.group({
-        workExperience: data ? data.workExperience : [],
-        educationalBackground: data ? data.educationalBackground : [],
-        professionalSkills: data ? data.skills : [],
-        certifications: data ? data.certifications : [],
+        workExperience:  [],
+        educationalBackground:  [],
+        professionalSkills:  [],
+        certifications: [],
         skillsTxt: [null]
       }),
+      // profileArraysForm: this.fb.group({
+      //   workExperience: data ? data.workExperience : [],
+      //   educationalBackground: data ? data.educationalBackground : [],
+      //   professionalSkills: data ? data.skills : [],
+      //   certifications: data ? data.certifications : [],
+      //   skillsTxt: [null]
+      // }),
       profileDocuments: this.fb.group({
         documents: this.fb.array([]),
         videoCVFile: [null],
@@ -209,8 +217,6 @@ export class ProfileFormComponent implements OnInit {
         lastName: data.lastName,
         photoUrl: data.photoUrl
       }));
-
-      // this.initializedForm(data);
 
       this.profileForm.controls.profileDetailsForm.get('photoUrl').setValue(data.photoUrl);
       this.profileForm.controls.profileDetailsForm.get('jobTitle').setValue(data.jobTitle);

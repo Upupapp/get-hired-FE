@@ -10,6 +10,6 @@ export class ApplicantProfileFormComponent implements OnInit {
   user =  JSON.parse(localStorage.getItem('user'));
 
   ngOnInit(): void {
-    // console.log(this.user);
+    console.log(this.user);
   }
 }
