@@ -9,6 +9,7 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
 import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-profile-form',
@@ -79,7 +80,8 @@ export class ProfileFormComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private successDialog: MatDialog,
-    private loadingDialog: MatDialog
+    private loadingDialog: MatDialog,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -138,6 +140,33 @@ export class ProfileFormComponent implements OnInit {
     // this.subscriptions$.add(
     //   this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
     //   }));
+  }
+
+  saveProgress(event: number) {
+    console.log(this.stepper)
+    console.log(event)
+
+    if(this.stepper != event) {
+      const ref = this.dialog.open(ConfirmationDialogComponent, {
+        disableClose: true,
+        data: {
+          action: `Save Step ${this.stepper}`,
+        },
+      });
+
+      ref
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((result) => {
+          if (result == 1) {
+            // TODO
+            this.changeStep(event);
+          } else {
+            // TODO on Cancel
+          }
+        });
+    }
+
   }
 
   async submitProfile() {
@@ -238,9 +267,9 @@ export class ProfileFormComponent implements OnInit {
       ...profileArraysForm.value
     }
 
-    let filteredWork = data?.workExperience.filter(item => item.jobTitle)
-    let filteredCert = data?.certifications.filter(item => item.certTitle)
-    let filteredEduc = data?.educationalBackground.filter(item => item.school)
+    let filteredWork = data?.workExperience && data?.workExperience.length != 0 ? data?.workExperience.filter(item => item.jobTitle): [];
+    let filteredCert = data?.certifications && data?.certifications.length != 0 ? data?.certifications.filter(item => item.certTitle):[];
+    let filteredEduc = data?.educationalBackground && data?.educationalBackground.length != 0 ? data?.educationalBackground.filter(item => item.school):[];
 
     let fileteredProfileArray = {
       workExperience: filteredWork,
@@ -268,6 +297,7 @@ export class ProfileFormComponent implements OnInit {
       case 'profileDetailsForm':
         const bodyInitial = this.profileForm.controls[formCtrl].value;
         this.applicantFacade.setInitialForm(bodyInitial);
+        this.submitProfile();
         break;
       case 'profileArraysForm':
         const bodyInfo = this.profileForm.controls[formCtrl].value;

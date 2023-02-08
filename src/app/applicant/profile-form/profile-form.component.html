@@ -2,7 +2,7 @@
 <div class="bg-gray" *ngIf="!loading">
   <div style="position: relative;">
     <div class="bg-upper-gray">
-      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="saveProgress($event)">
       </app-main-stepper>
 
       <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
