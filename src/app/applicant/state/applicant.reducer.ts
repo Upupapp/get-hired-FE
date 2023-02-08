@@ -127,7 +127,8 @@ export const applicantReducer = createReducer<ApplicantState>(
   on(ApplicantActions.setInitialDetails, (state, action): ApplicantState => {
     return {
       ...state,
-      initialDetails: action.initialDetails
+      initialDetails: action.initialDetails,
+      succesMsg: 'saveStepperForm'
     };
   }),
   on(ApplicantActions.setAdditionalInfo, (state, action): ApplicantState => {
@@ -140,13 +141,15 @@ export const applicantReducer = createReducer<ApplicantState>(
         educationalBackground: action.additionalInfo.educationalBackground,
         certifications: action.additionalInfo.certifications,
         skills: action.additionalInfo.professionalSkills,
-      }
+      },
+      succesMsg: 'saveStepperForm'
     };
   }),
   on(ApplicantActions.setProfileDocuments, (state, action): ApplicantState => {
     return {
       ...state,
-      profileDocs: action.profileDocs
+      profileDocs: action.profileDocs,
+      succesMsg: 'saveStepperForm'
     };
   }),
   on(ApplicantActions.getSetupList, (state): ApplicantState => {
