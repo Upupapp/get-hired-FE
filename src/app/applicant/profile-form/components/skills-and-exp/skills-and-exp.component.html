@@ -30,7 +30,7 @@
 
       </div> -->
       <div class="col-12 col-md-2 mb-3 d-flex align-items-center">
-        <button class="btn btn-save mb-4" (click)="submitSkills()" disabled="skillChanged">
+        <button class="btn btn-save mb-4" (click)="submitSkills()" [disabled]="!skillChanged">
           Apply Change
         </button>
       </div>

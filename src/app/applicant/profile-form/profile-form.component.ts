@@ -208,7 +208,7 @@ export class ProfileFormComponent implements OnInit {
         photoUrl: data.photoUrl
       }));
 
-      this.initializedForm();
+      // this.initializedForm(data);
 
       this.profileForm.controls.profileDetailsForm.get('photoUrl').setValue(data.photoUrl);
       this.profileForm.controls.profileDetailsForm.get('jobTitle').setValue(data.jobTitle);

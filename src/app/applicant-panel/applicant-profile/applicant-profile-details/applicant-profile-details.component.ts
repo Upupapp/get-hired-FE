@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ApplicantProfileDetailsComponent implements OnInit {
   user = localStorage.getItem('user');
   userId: string;
+  isApplicantView: boolean;
 
   constructor(
     private router: Router,
