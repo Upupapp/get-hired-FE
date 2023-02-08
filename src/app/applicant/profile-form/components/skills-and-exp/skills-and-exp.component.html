@@ -1,18 +1,16 @@
 <form [formGroup]="arrayForm">
   <div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-    <div class="row mt-3">
-      <div class="col-12 col-md-4 mb-3">
+    <div class="row">
+      <div class="col-12 col-md-6 mb-3">
         <label class="text-center">Professional Skills</label>
         <div class="form-group d-flex with-add search-group" style="height: 60px;">
           <input type="text" name="search" class="form-control form-control-main" formControlName="skillsTxt"
             style="background: white !important" placeholder="ex. Data Encoding, Ruby, JavaScript"
             (keyup.up)="addSkills()">
-          <button class="btn btn-add-now" (click)="addSkills()">
+          <button class="btn btn-add-default text-white" (click)="addSkills()">
             Add
           </button>
         </div>
-      </div>
-      <div class="col-12 col-md-6 mb-3">
         <div class="d-flex flex-wrap">
           <div class="mt-3 d-flex"
           *ngIf="professionalSkills && professionalSkills.length > 0">
@@ -28,8 +26,11 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-2 mb-3">
-        <button class="btn btn-save" (click)="submitSkills()" *ngIf="skillChanged">
+      <!-- <div class="col-12 col-md-6 mb-3">
+
+      </div> -->
+      <div class="col-12 col-md-2 mb-3 d-flex align-items-center">
+        <button class="btn btn-save mb-4" (click)="submitSkills()" disabled="skillChanged">
           Apply Change
         </button>
       </div>

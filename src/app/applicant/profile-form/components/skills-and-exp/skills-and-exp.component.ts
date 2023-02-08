@@ -3,6 +3,7 @@ import { FormArray, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { AwardsComponent } from '../awards/awards.component';
 import { EducationalBackgroundComponent } from '../educational-background/educational-background.component';
 import { WorkExperienceComponent } from '../work-experience/work-experience.component';
@@ -33,10 +34,12 @@ export class SkillsAndExpComponent implements OnInit {
   constructor(
     private rootFormGroup: FormGroupDirective,
     private dialog: MatDialog,
-    private applicantFacade: ApplicantFacade
+    private applicantFacade: ApplicantFacade,
+    private loadingDialog: MatDialog
   ) { }
 
   ngOnInit(): void {
+    this.formLoading(true);
     this.arrayForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
     console.log(this.arrayForm);
 
@@ -160,8 +163,26 @@ export class SkillsAndExpComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    // if(this.applicant$) {
-    //   this.applicant$.unsubscribe();
+    // if(this.loading$) {
+    //   this.loading$.unsubscribe();
     // }
+  }
+
+  formLoading(loading: boolean) {
+    if (loading) {
+      const ref = this.loadingDialog.open(LoadingComponent, {
+        disableClose: true,
+        data: {
+          selfClose: true
+        }
+      });
+    } else {
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+
+      // dont close automatically all modal
+      // if (!this.updateSuccess) {
+      //   setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      // }
+    }
   }
 }
