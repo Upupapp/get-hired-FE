@@ -43,10 +43,11 @@ export class SkillsAndExpComponent implements OnInit {
     this.arrayForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
     console.log(this.arrayForm);
 
-    this.workExperience = [...this.arrayForm.controls['workExperience'].value];
-    this.educationalBackground = [...this.arrayForm.controls['educationalBackground'].value];
-    this.certifications = [...this.arrayForm.controls['certifications'].value];
-    this.professionalSkills = [...this.arrayForm.controls['professionalSkills'].value];
+
+    this.workExperience = this.arrayForm.controls['workExperience'].value ? [...this.arrayForm.controls['workExperience'].value]:[];
+    this.educationalBackground = this.arrayForm.controls['educationalBackground'].value ? [...this.arrayForm.controls['educationalBackground'].value]: null;
+    this.certifications = this.arrayForm.controls['certifications'].value ? [...this.arrayForm.controls['certifications'].value]: [];
+    this.professionalSkills = this.arrayForm.controls['professionalSkills'].value ? [...this.arrayForm.controls['professionalSkills'].value]: null;
   }
 
   addSkills() {
