@@ -64,6 +64,57 @@ export class ApplicantEffects {
     )
   });
 
+  saveEducBg$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveEducationalBackground),
+      mergeMap((action) => this.applicantService.saveEducationalBackground(action.educBg, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const educBg: Model.EducationalBackground[] = res.data;
+            return ApplicantActions.saveEducationalBackgroundSuccess({ educBg })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveEducationalBackgroundFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveDocs$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveDocuments),
+      mergeMap((action) => this.applicantService.saveDocuments(action.docs, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const docs: Model.Documents[] = res.data;
+            return ApplicantActions.saveDocumentsSuccess({ docs })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveDocumentsFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveCerts$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveCertifications),
+      mergeMap((action) => this.applicantService.saveCertifications(action.certs, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const certs: Model.Certifications[] = res.data;
+            return ApplicantActions.saveCertificationsSuccess({ certs })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveCertificationsFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
   // getAllApplicant$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.getAllapplicant),

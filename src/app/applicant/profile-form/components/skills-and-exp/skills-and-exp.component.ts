@@ -4,8 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
-import { AwardsComponent } from '../awards/awards.component';
-import { EducationalBackgroundComponent } from '../educational-background/educational-background.component';
 
 @Component({
   selector: 'app-skills-and-exp',
@@ -75,33 +73,33 @@ export class SkillsAndExpComponent implements OnInit {
   }
 
   addEducBg() {
-    const ref = this.dialog.open(EducationalBackgroundComponent, {
-      width: '70vw',
-      data: this.arrayForm.controls['educationalBackground'].value
-    });
+    // const ref = this.dialog.open(EducationalBackgroundComponent, {
+    //   width: '70vw',
+    //   data: this.arrayForm.controls['educationalBackground'].value
+    // });
 
-    ref.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.educationalBackground.push(res);
-        this.submittingAllArrays();
-      }
-    });
+    // ref.afterClosed().subscribe(res => {
+    //   if (res) {
+    //     console.log(res);
+    //     this.educationalBackground.push(res);
+    //     this.submittingAllArrays();
+    //   }
+    // });
   }
 
   addCertAndAwards() {
-    const ref = this.dialog.open(AwardsComponent, {
-      width: '70vw',
-      data: this.arrayForm.controls['certifications'].value
-    });
+    // const ref = this.dialog.open(AwardsComponent, {
+    //   width: '70vw',
+    //   data: this.arrayForm.controls['certifications'].value
+    // });
 
-    ref.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.certifications.push(res);
-        this.submittingAllArrays();
-      }
-    });
+    // ref.afterClosed().subscribe(res => {
+    //   if (res) {
+    //     console.log(res);
+    //     this.certifications.push(res);
+    //     this.submittingAllArrays();
+    //   }
+    // });
   }
 
   submittingAllArrays() {

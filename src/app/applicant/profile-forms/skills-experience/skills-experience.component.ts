@@ -5,6 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from '../../applicant.model';
+import { AwardsComponent } from './awards/awards.component';
+import { EducationalBackgroundComponent } from './educational-background/educational-background.component';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';
 
 @Component({
@@ -29,6 +31,8 @@ export class SkillsExperienceComponent implements OnInit {
   skillChanged: boolean;
 
   workExperience: Model.WorkExperience[];
+  educationalBackground: Model.EducationalBackground[];
+  certifications: Model.Certifications[];
 
   constructor(
     private dialog: MatDialog,
@@ -60,6 +64,36 @@ export class SkillsExperienceComponent implements OnInit {
         console.log(res);
         this.workExperience.push(res);
         this.applicantFacade.saveWorkExperience(this.workExperience, this.applicantProfileId);
+      }
+    });
+  }
+
+  addEducBg(index?: number) {
+    const ref = this.dialog.open(EducationalBackgroundComponent, {
+      width: '70vw',
+      data: index ? this.educationalBackground[index] : null
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.educationalBackground.push(res);
+        this.applicantFacade.saveEducBg(this.educationalBackground, this.applicantProfileId);
+      }
+    });
+  }
+
+  addCertAndAwards(index?: number) {
+    const ref = this.dialog.open(AwardsComponent, {
+      width: '70vw',
+      data: index ? this.certifications[index] : null
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.certifications.push(res);
+        this.applicantFacade.saveCert(this.certifications, this.applicantProfileId);
       }
     });
   }
@@ -102,6 +136,18 @@ export class SkillsExperienceComponent implements OnInit {
         this.workExperience = [...data.workExperience]
       } else {
         this.workExperience = [];
+      }
+
+      if (data.educationalBackground) {
+        this.educationalBackground = [...data.educationalBackground]
+      } else {
+        this.educationalBackground = [];
+      }
+
+      if (data.certifications) {
+        this.certifications = [...data.certifications]
+      } else {
+        this.certifications = [];
       }
     }
   }

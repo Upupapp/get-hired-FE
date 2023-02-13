@@ -4,7 +4,7 @@ import * as InterviewModel from '@main/interview/interview.model';
 
 enum AllFeatureActionTypes {
   GetUserProfile = '[applicant] - Get User Profile status',
-  GetUserProfileSuccess = '[applicant] -Get User Profile Success',
+  GetUserProfileSuccess = '[applicant] - Get User Profile Success',
   GetUserProfileFail = '[applicant] - Get User Profile Fail',
 
   GetApplicant = '[applicant] - Get applicant status',
@@ -16,12 +16,24 @@ enum AllFeatureActionTypes {
   SaveBasicProfileInfoFail = '[applicant] - Save Basic Profile Info Fail',
 
   SaveProfessionalSkills = '[applicant] - Save Professional Skills',
-  SaveProfessionalSkillSuccess = '[applicant] -Save Professional Skills Success',
+  SaveProfessionalSkillSuccess = '[applicant] - Save Professional Skills Success',
   SaveProfessionalSkillsFail = '[applicant] - Save Professional Skills Fail',
 
   SaveWorkExperience = '[applicant] - Save Work Experience',
-  SaveWorkExperienceSuccess = '[applicant] -Save Work Experience Success',
+  SaveWorkExperienceSuccess = '[applicant] - Save Work Experience Success',
   SaveWorkExperienceFail = '[applicant] - Save Work Experience Fail',
+
+  SaveEducationalBackground = '[applicant] - Save Educational Background',
+  SaveEducationalBackgroundSuccess = '[applicant] - Save Educational Background Success',
+  SaveEducationalBackgroundFail = '[applicant] - Save Educational Background Fail',
+
+  SaveDocuments = '[applicant] - Save Documents',
+  SaveDocumentsSuccess = '[applicant] - Save Documents Success',
+  SaveDocumentsFail = '[applicant] - Save Documents Fail',
+
+  SaveCertifications = '[applicant] - Save Certifications',
+  SaveCertificationsSuccess = '[applicant] - Save Certifications Success',
+  SaveCertificationsFail = '[applicant] - Save Certifications Fail',
 
   // **************************
 
@@ -87,6 +99,36 @@ enum AllFeatureActionTypes {
   // ResetApplicantForm = '[applicant] - Reset Applicant Form',
 }
 
+export const saveCertifications = createAction(
+  AllFeatureActionTypes.SaveCertifications,
+  props<{ certs: Model.Certifications[], profileId: string }>()
+);
+
+export const saveCertificationsSuccess = createAction(
+  AllFeatureActionTypes.SaveCertificationsSuccess,
+  props<{ certs: Model.Certifications[] }>()
+);
+
+export const saveCertificationsFail = createAction(
+  AllFeatureActionTypes.SaveCertificationsFail,
+  props<{ payload: any }>()
+);
+
+export const saveDocuments = createAction(
+  AllFeatureActionTypes.SaveDocuments,
+  props<{ docs: Model.Documents[], profileId: string }>()
+);
+
+export const saveDocumentsSuccess = createAction(
+  AllFeatureActionTypes.SaveDocumentsSuccess,
+  props<{ docs: Model.Documents[] }>()
+);
+
+export const saveDocumentsFail = createAction(
+  AllFeatureActionTypes.SaveDocumentsFail,
+  props<{ payload: any }>()
+);
+
 export const saveProfessionalSkills = createAction(
   AllFeatureActionTypes.SaveProfessionalSkills,
   props<{ skills: string[], profileId: string }>()
@@ -129,6 +171,21 @@ export const saveWorkExperienceSuccess = createAction(
 
 export const saveWorkExperienceFail = createAction(
   AllFeatureActionTypes.SaveWorkExperienceFail,
+  props<{ payload: any }>()
+);
+
+export const saveEducationalBackground = createAction(
+  AllFeatureActionTypes.SaveEducationalBackground,
+  props<{ educBg: Model.EducationalBackground[], profileId: string }>()
+);
+
+export const saveEducationalBackgroundSuccess = createAction(
+  AllFeatureActionTypes.SaveEducationalBackgroundSuccess,
+  props<{ educBg: Model.EducationalBackground[] }>()
+);
+
+export const saveEducationalBackgroundFail = createAction(
+  AllFeatureActionTypes.SaveEducationalBackgroundFail,
   props<{ payload: any }>()
 );
 

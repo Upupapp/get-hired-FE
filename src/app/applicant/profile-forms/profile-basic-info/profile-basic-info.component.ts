@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { currencies } from '@app-shared/mock.data';
-import { startWith, pairwise } from 'rxjs';
+import { startWith, pairwise, debounceTime, distinctUntilChanged } from 'rxjs';
 import * as Model from '../../applicant.model';
 
 @Component({
@@ -25,6 +27,9 @@ export class ProfileBasicInfoComponent implements OnInit {
   salaryCurrencies = currencies;
   applicantProfileId: string;
 
+  loading$ = this.applicantFacade.loading$
+    .pipe().subscribe(this.formLoading.bind(this));
+
   details$ = this.applicantFacade.applicantDetails$
     .pipe().subscribe(this.fillUpForm.bind(this))
 
@@ -40,11 +45,13 @@ export class ProfileBasicInfoComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
+    private loadingDialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
     if (this.user) {
       this.applicantFacade.getApplicantById(this.user._id);
+      this.formInitialized();
     }
 
     this.applicantFacade.getType();
@@ -53,11 +60,15 @@ export class ProfileBasicInfoComponent implements OnInit {
 
 
     // this.profileDetailsForm.valueChanges
-    // .pipe(startWith(''), pairwise())
+    // .pipe(startWith(''), pairwise(), debounceTime(1000))
     // .subscribe(([prev, cur]) => {
     //   console.log(prev);
     //   console.log(cur)
     // })
+
+    this.profileDetailsForm.statusChanges.pipe(distinctUntilChanged()).subscribe((status) => {
+      this.submitBasicInfo.emit(status);
+    });
   }
 
   formInitialized() {
@@ -89,7 +100,7 @@ export class ProfileBasicInfoComponent implements OnInit {
 
       this.formInitialized();
 
-      if(this.profileDetailsForm) {
+      if (this.profileDetailsForm) {
         this.photo = data.photoUrl;
 
         this.profileDetailsForm.get('photoUrl').setValue(data.photoUrl);
@@ -163,6 +174,19 @@ export class ProfileBasicInfoComponent implements OnInit {
     }
   }
 
+  formLoading(loading: boolean) {
+    if (loading) {
+      const ref = this.loadingDialog.open(LoadingComponent, {
+        disableClose: true,
+        data: {
+          selfClose: false
+        }
+      });
+    } else {
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+    }
+  }
+
   get country_validators() {
     return this.profileDetailsForm.get('country');
   }
@@ -212,6 +236,10 @@ export class ProfileBasicInfoComponent implements OnInit {
     //Add 'implements OnDestroy' to the class.
     if (this.success$) {
       this.success$.unsubscribe();
+    }
+
+    if(this.loading$) {
+      this.loading$.unsubscribe();
     }
   }
 

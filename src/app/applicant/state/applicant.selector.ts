@@ -44,6 +44,11 @@ export const getProfileDocs = createSelector(
   state => state.profileDocs
 );
 
+export const getDocs = createSelector(
+  getApplicantInitState,
+  state => state.documents
+);
+
 // export const applicantTemp = createSelector (
 //   getApplicantInitState,
 //   getInitialDetails,

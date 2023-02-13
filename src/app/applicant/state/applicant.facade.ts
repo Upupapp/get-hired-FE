@@ -32,8 +32,22 @@ export class ApplicantFacade {
 
   getBasicInfo$ = this.store.pipe(select(fromfeature.getBasicInfo));
   additionalInfo$ = this.store.pipe(select(fromfeature.getAdditionalInfo));
+  documents$ = this.store.pipe(select(fromfeature.getDocs));
 
   constructor(private store: Store<State>) {}
+
+
+  saveDocs(docs: Model.Documents[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveDocuments({ docs, profileId }));
+  }
+
+  saveCert(certs: Model.Certifications[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveCertifications({ certs, profileId }));
+  }
+
+  saveEducBg(educBg: Model.EducationalBackground[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveEducationalBackground({ educBg, profileId }));
+  }
 
   saveWorkExperience(workExperience: Model.WorkExperience[], profileId: string) {
     this.store.dispatch(ApplicantAction.saveWorkExperience({ workExperience, profileId }));
