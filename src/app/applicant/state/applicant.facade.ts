@@ -35,6 +35,10 @@ export class ApplicantFacade {
 
   constructor(private store: Store<State>) {}
 
+  saveWorkExperience(workExperience: Model.WorkExperience[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveWorkExperience({ workExperience, profileId }));
+  }
+
   saveSkills(skills: string[], profileId: string) {
     this.store.dispatch(ApplicantAction.saveProfessionalSkills({ skills, profileId }));
   }
@@ -73,10 +77,6 @@ export class ApplicantFacade {
 
   setProfileDocu(profileDocs: Model.ProfileDocuments) {
     this.store.dispatch(ApplicantAction.setProfileDocuments({ profileDocs }));
-  }
-
-  saveWorkExperience(workExperience: Model.WorkExperience[], profileId: string) {
-    this.store.dispatch(ApplicantAction.saveWorkExperience({ workExperience, profileId }));
   }
 
   // getAllApplicant() {

@@ -19,6 +19,10 @@ enum AllFeatureActionTypes {
   SaveProfessionalSkillSuccess = '[applicant] -Save Professional Skills Success',
   SaveProfessionalSkillsFail = '[applicant] - Save Professional Skills Fail',
 
+  SaveWorkExperience = '[applicant] - Save Work Experience',
+  SaveWorkExperienceSuccess = '[applicant] -Save Work Experience Success',
+  SaveWorkExperienceFail = '[applicant] - Save Work Experience Fail',
+
   // **************************
 
   SetInitialDetails = '[applicant] - Set Initial Details',
@@ -32,10 +36,6 @@ enum AllFeatureActionTypes {
   GetApplicantDashboard = '[applicant] - Get applicant status Dashboard',
   GetApplicantDashboardSuccess = '[applicant] -Get applicant Success Dashboard',
   GetApplicantDashboardFail = '[applicant] - Get applicant Fail Dashboard',
-
-  SaveWorkExperience = '[applicant] - Save Work Experience',
-  SaveWorkExperienceSuccess = '[applicant] -Save Work Experience Success',
-  SaveWorkExperienceFail = '[applicant] - Save Work Experience Fail',
 
   // GetIndustryList = '[applicant] - Get Industry List',
   // GetIndustryListSuccess = '[applicant] - Get Industry List Success',

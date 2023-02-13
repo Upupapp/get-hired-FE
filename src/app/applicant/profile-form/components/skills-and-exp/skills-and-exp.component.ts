@@ -6,7 +6,6 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { AwardsComponent } from '../awards/awards.component';
 import { EducationalBackgroundComponent } from '../educational-background/educational-background.component';
-import { WorkExperienceComponent } from '../work-experience/work-experience.component';
 
 @Component({
   selector: 'app-skills-and-exp',
@@ -61,18 +60,18 @@ export class SkillsAndExpComponent implements OnInit {
   }
 
   addWorkExperience(index?: number) {
-    const ref = this.dialog.open(WorkExperienceComponent, {
-      width: '70vw',
-      data: index ? this.workExperience[index] : null
-    });
+    // const ref = this.dialog.open(WorkExperienceComponent, {
+    //   width: '70vw',
+    //   data: index ? this.workExperience[index] : null
+    // });
 
-    ref.afterClosed().subscribe(res => {
-      if (res) {
-        console.log(res);
-        this.workExperience.push(res);
-        this.submittingAllArrays();
-      }
-    });
+    // ref.afterClosed().subscribe(res => {
+    //   if (res) {
+    //     console.log(res);
+    //     this.workExperience.push(res);
+    //     this.submittingAllArrays();
+    //   }
+    // });
   }
 
   addEducBg() {

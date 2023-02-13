@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import * as Model from '../../applicant.model';
+import { WorkExperienceComponent } from './work-experience/work-experience.component';
 
 @Component({
   selector: 'app-skills-experience',
@@ -21,9 +23,12 @@ export class SkillsExperienceComponent implements OnInit {
   success$ = this.applicantFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this))
 
+  forChange = [];
   skillsFG: FormGroup
   professionalSkills: string[];
   skillChanged: boolean;
+
+  workExperience: Model.WorkExperience[];
 
   constructor(
     private dialog: MatDialog,
@@ -35,13 +40,28 @@ export class SkillsExperienceComponent implements OnInit {
   ngOnInit(): void {
     this.skillsFG = this.fb.group({
       skillsTxt: [null, Validators.required]
-    })
+    });
   }
 
   addSkills() {
     this.professionalSkills.push(this.skillsFG.controls['skillsTxt'].value);
     this.skillsFG.controls['skillsTxt'].reset();
     this.skillChanged = true;
+  }
+
+  addWorkExperience(index?: number) {
+    const ref = this.dialog.open(WorkExperienceComponent, {
+      width: '70vw',
+      data: index ? this.workExperience[index] : null
+    });
+
+    ref.afterClosed().subscribe(res => {
+      if (res) {
+        console.log(res);
+        this.workExperience.push(res);
+        this.applicantFacade.saveWorkExperience(this.workExperience, this.applicantProfileId);
+      }
+    });
   }
 
   removeItem(index: number, arrayName: string) {
@@ -77,17 +97,27 @@ export class SkillsExperienceComponent implements OnInit {
       } else {
         this.professionalSkills = [];
       }
+
+      if (data.workExperience) {
+        this.workExperience = [...data.workExperience]
+      } else {
+        this.workExperience = [];
+      }
     }
+  }
+
+  showButton(status, index) {
+    this.forChange[index] = status;
   }
 
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    if(this.success$) {
+    if (this.success$) {
       this.success$.unsubscribe();
     }
 
-    if(this.skillsAndExperience$) {
+    if (this.skillsAndExperience$) {
       this.skillsAndExperience$.unsubscribe();
     }
   }

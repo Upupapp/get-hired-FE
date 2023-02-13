@@ -58,7 +58,6 @@ export class ProfileFormsComponent implements OnInit {
 
   getBasicInfo(data) {
     if(data && data.applicantProfileId && this.basicInfo) {
-      this.basicInfo.fillUpForm(data);
       this.applicantProfileId = data.applicantProfileId;
     }
   }

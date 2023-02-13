@@ -49,7 +49,7 @@ export class ApplicantService {
     const body = {
       workExperience: workExp, applicantProfileId: profileId
     };
-    return this.baseService.post<Model.WorkExperience[]>(`${this.applicantUrl}/createprofile`, body);
+    return this.baseService.post<Model.WorkExperience[]>(`${this.applicantUrl}/workexp`, body);
   }
 
   getDashboardDetails() {
