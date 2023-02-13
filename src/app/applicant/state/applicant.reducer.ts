@@ -15,8 +15,9 @@ export interface ApplicantState {
   succesMsg: string;
   loading: boolean;
   basicProfile: Model.BasicProfileInfo;
-  initialDetails: Model.InitialDetails;
   additionalInfo: Model.AdditionalInfo;
+
+  initialDetails: Model.InitialDetails;
   user: Model.User;
   // industry: Model.Options[];
   // badge: Model.Options[];
@@ -59,6 +60,31 @@ const initialState: ApplicantState = {
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.saveProfessionalSkills, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveProfessionalSkillsSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        professionalSkills: action.skills
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveProfessionalSkillsFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.saveApplicantBasicProfile, (state): ApplicantState => {
     return {
       ...state,
@@ -114,6 +140,10 @@ export const applicantReducer = createReducer<ApplicantState>(
     return {
       ...state,
       selected: action.applicant,
+      additionalInfo: {
+        ...state.additionalInfo,
+        professionalSkills: action.applicant.skills
+      },
       loading: false,
     };
   }),

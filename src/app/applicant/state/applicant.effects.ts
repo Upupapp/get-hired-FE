@@ -30,6 +30,23 @@ export class ApplicantEffects {
     )
   });
 
+  saveSkills$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveProfessionalSkills),
+      mergeMap((action) => this.applicantService.saveProfessionalSkills(action.skills, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const skills: string[] = res.data;
+            return ApplicantActions.saveProfessionalSkillsSuccess({ skills })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveProfessionalSkillsFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
   // getAllApplicant$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.getAllapplicant),

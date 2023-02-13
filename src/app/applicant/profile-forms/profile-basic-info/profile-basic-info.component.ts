@@ -122,8 +122,7 @@ export class ProfileBasicInfoComponent implements OnInit {
       }
 
       console.log(basicInfo);
-      // TODO
-      // this.applicantFacade.saveBasicInfo(basicInfo);
+      this.applicantFacade.saveBasicInfo(basicInfo);
     }
   }
 

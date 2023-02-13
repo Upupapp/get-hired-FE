@@ -20,6 +20,7 @@ export class ProfileFormsComponent implements OnInit {
   details$ = this.applicantFacade.applicantDetails$
     .pipe().subscribe(this.getBasicInfo.bind(this))
 
+  applicantProfileId: string;
   loading: boolean;
   stepper: number = 1;
   stepperItems: any[] = [
@@ -58,6 +59,7 @@ export class ProfileFormsComponent implements OnInit {
   getBasicInfo(data) {
     if(data && data.applicantProfileId && this.basicInfo) {
       this.basicInfo.fillUpForm(data);
+      this.applicantProfileId = data.applicantProfileId;
     }
   }
 

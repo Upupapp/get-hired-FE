@@ -9,8 +9,7 @@
   <ng-container *ngIf="stepper === 1">
     <app-profile-basic-info [user]="user" (submitBasicInfo)="submitBasicInfo($event)"></app-profile-basic-info>
   </ng-container>
-  <ng-container *ngIf="stepper === 2">
-    <app-skills-experience [user]="user"></app-skills-experience>
+  <ng-container *ngIf="stepper === 2 && applicantProfileId">
+    <app-skills-experience [user]="user" [applicantProfileId]="applicantProfileId"></app-skills-experience>
   </ng-container>
-
 </div>
