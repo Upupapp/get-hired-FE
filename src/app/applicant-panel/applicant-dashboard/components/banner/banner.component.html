@@ -1,40 +1,24 @@
 <div class="bg-banner">
   <div class="p-5 d-flex">
     <div class="company-logo me-4">
-      <img
-        [src]="details.photoUrl"
-        class="img-fluid company-logo-image"
-      />
+      <img [src]="details.photoUrl" class="img-fluid company-logo-image" />
     </div>
     <div class="mt-1">
       <h5 class="title-banner mb-3">
         {{ details.firstName }} {{ details.lastName }}
-        <img
-          src="/assets/images/placeholder/icons/company-edit.png"
-          class="me-1 hvr-grow"
-          style="
+        <img src="/assets/images/placeholder/icons/company-edit.png" class="me-1 hvr-grow" style="
             height: 25px;
             cursor: pointer !important;
             z-index: 999 !important;
-          "
-          routerLink="/user/details/edit"
-        />
+          " routerLink="/user/details/edit" />
       </h5>
 
       <p class="title-banner-description">
-        <img
-          src="/assets/images/placeholder/icons/location-white.png"
-          class="me-1"
-          style="height: 18px"
-        />
+        <img src="/assets/images/placeholder/icons/location-white.png" class="me-1" style="height: 18px" />
         {{ details.city }}, {{ details.country }}
       </p>
       <p class="title-banner-description mt-2">
-        <img
-          src="/assets/images/placeholder/icons/email-white.png"
-          class="me-1"
-          style="height: 12px"
-        />
+        <img src="/assets/images/placeholder/icons/email-white.png" class="me-1" style="height: 12px" />
         {{ details?.email }}
       </p>
     </div>
@@ -43,47 +27,37 @@
 
 <div class="px-3 px-lg-5" style="margin-top: -60px">
   <div class="row">
-    <div class="col-12 col-md-6 col-lg-5 mb-3">
-      <div
-        class="orange mb-2 card-application"
-        [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
-      >
+    <div class="col-12 col-md-4 col-lg-4 mb-3">
+      <div class="orange mb-2 card-application" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
         <h5 class="title-card">
           Active Application
-          <img
-            src="/assets/images/placeholder/icons/card-interview-icon.png"
-            class="card-img"
-            style="width: 30px; margin-top: -5px"
-          />
+          <img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img"
+            style="width: 30px; margin-top: -5px" />
         </h5>
         <h3 class="title-stat">{{ cardDetails?.activeApplications || 0}}</h3>
-        <img
-          src="/assets/images/placeholder/icons/arrow-right-white.png"
-          style="height: 16px; margin-top: -25px"
-          class="float-end me-2"
-        />
+        <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 16px; margin-top: -25px"
+          class="float-end me-2" />
       </div>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-5 mb-3">
-      <div
-        class="card-application yellow mb-2"
-        [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
-      >
+    <div class="col-12 col-md-4 col-lg-4 mb-3">
+      <div class="card-application yellow mb-2" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
         <h5 class="title-card">
           Video Interview
-          <img
-            src="/assets/images/placeholder/icons/card-video-icon.png"
-            class="card-img"
-            style="width: 30px; margin-top: -5px"
-          />
+          <img src="/assets/images/placeholder/icons/card-video-icon.png" class="card-img"
+            style="width: 30px; margin-top: -5px" />
         </h5>
         <h3 class="title-stat">{{ cardDetails?.videoInterviews || 0 }}</h3>
-        <img
-          src="/assets/images/placeholder/icons/arrow-right-white.png"
-          style="height: 16px; margin-top: -25px"
-          class="float-end me-2"
-        />
+        <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 16px; margin-top: -25px"
+          class="float-end me-2" />
+      </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-4 mb-3">
+      <div class="mb-2 card-application-hired" style="position: relative;"
+        [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
+        <h5 class="title-card">Total Job Application</h5>
+        <h3 class="title-stat">{{cardDetails.totals}}</h3>
+        <!-- <h5 class="title-stat-sub-hired">80% Total Increase</h5> -->
       </div>
     </div>
   </div>

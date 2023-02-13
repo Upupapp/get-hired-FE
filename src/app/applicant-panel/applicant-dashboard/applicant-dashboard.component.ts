@@ -53,7 +53,8 @@ export class ApplicantDashboardComponent implements OnInit {
 
         this.cardDetails = {
           videoInterviews: data.user.videoInterviews,
-          activeApplications: data.user.activeApplications
+          activeApplications: data.user.activeApplications,
+          totals: data.charts.totalJobApplication
         }
       })
 
