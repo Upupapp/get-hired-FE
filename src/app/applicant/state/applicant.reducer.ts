@@ -60,6 +60,31 @@ const initialState: ApplicantState = {
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.saveWorkExperience, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveWorkExperienceSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        workExperience: action.workExperience
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveWorkExperienceFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.saveProfessionalSkills, (state): ApplicantState => {
     return {
       ...state,
@@ -142,6 +167,7 @@ export const applicantReducer = createReducer<ApplicantState>(
       selected: action.applicant,
       additionalInfo: {
         ...state.additionalInfo,
+        workExperience: action.applicant.workExperience,
         professionalSkills: action.applicant.skills
       },
       loading: false,

@@ -47,6 +47,23 @@ export class ApplicantEffects {
     )
   });
 
+  saveWorkExperience$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveWorkExperience),
+      mergeMap((action) => this.applicantService.saveWorkExperience(action.workExperience, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const workExperience: Model.WorkExperience[] = res.data;
+            return ApplicantActions.saveWorkExperienceSuccess({ workExperience })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveWorkExperienceFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
   // getAllApplicant$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.getAllapplicant),
@@ -145,24 +162,6 @@ export class ApplicantEffects {
           catchError((err) => {
             const { error } = err.error;
             return of(ApplicantActions.saveApplicantFail({ payload: error }));
-          })
-        )
-      )
-    );
-  });
-
-  saveWorkExperience$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(ApplicantActions.saveWorkExperience),
-      mergeMap((action) => this.applicantService.saveWorkExperience(action.workExperience, action.profileId)
-        .pipe(
-          map((res: any) => {
-            const workExperience: Model.WorkExperience[] = res.data;
-            return ApplicantActions.saveWorkExperienceSuccess({ workExperience });
-          }),
-          catchError((err) => {
-            const { error } = err.error;
-            return of(ApplicantActions.saveWorkExperienceFail({ payload: error }));
           })
         )
       )

@@ -18,12 +18,15 @@ export class ProfileBasicInfoComponent implements OnInit {
   @Input() user: any;
   @Output() submitBasicInfo: EventEmitter<any> = new EventEmitter();
 
-  photo: FormControl;
+  photo: string;
 
   profileDetailsForm: FormGroup;
   profileImage: any;
   salaryCurrencies = currencies;
-  applicantId: string;
+  applicantProfileId: string;
+
+  details$ = this.applicantFacade.applicantDetails$
+    .pipe().subscribe(this.fillUpForm.bind(this))
 
   workSetup$ = this.applicantFacade.setup$;
   typeList$ = this.applicantFacade.typeList$;
@@ -40,10 +43,24 @@ export class ProfileBasicInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if (this.user) {
+      this.applicantFacade.getApplicantById(this.user._id);
+    }
+
     this.applicantFacade.getType();
     this.applicantFacade.getLevel();
     this.applicantFacade.getSetup();
 
+
+    // this.profileDetailsForm.valueChanges
+    // .pipe(startWith(''), pairwise())
+    // .subscribe(([prev, cur]) => {
+    //   console.log(prev);
+    //   console.log(cur)
+    // })
+  }
+
+  formInitialized() {
     this.profileDetailsForm = this.fb.group({
       photoUrl: [null],
       profileImage: [],
@@ -64,34 +81,36 @@ export class ProfileBasicInfoComponent implements OnInit {
       country: [null, Validators.required]
     });
 
-    this.photo = this.profileDetailsForm.controls['photoUrl'] as FormControl;
-
-    // this.profileDetailsForm.valueChanges
-    // .pipe(startWith(''), pairwise())
-    // .subscribe(([prev, cur]) => {
-    //   console.log(prev);
-    //   console.log(cur)
-    // })
   }
 
   fillUpForm(data) {
-    this.applicantId = data.applicantProfileId;
-    this.profileDetailsForm.get('photoUrl').setValue(data.photoUrl);
-      this.profileDetailsForm.get('jobTitle').setValue(data.jobTitle);
-      this.profileDetailsForm.get('shortBio').setValue(data.shortBio);
-      this.profileDetailsForm.get('servicesProvided').setValue(data.servicesProvided);
-      this.profileDetailsForm.get('jobTypeId').setValue(data.jobTypeId);
-      this.profileDetailsForm.get('jobLevelId').setValue(data.jobLevelId);
-      this.profileDetailsForm.get('workSetupId').setValue(data.workSetupId);
-      this.profileDetailsForm.get('salaryMinimum').setValue(data.salaryMinimum);
-      this.profileDetailsForm.get('salaryMaximum').setValue(data.salaryMaximum);
-      this.profileDetailsForm.get('salaryCurrency').setValue(data.salaryCurrency);
-      this.profileDetailsForm.get('firstName').setValue(data.firstName);
-      this.profileDetailsForm.get('lastName').setValue(data.lastName);
-      this.profileDetailsForm.get('address').setValue(data.address);
-      this.profileDetailsForm.get('contactNumber').setValue(data.contactNumber);
-      this.profileDetailsForm.get('city').setValue(data.city);
-      this.profileDetailsForm.get('country').setValue(data.country);
+    if (data && this.user) {
+      this.applicantProfileId = data.applicantProfileId;
+
+      this.formInitialized();
+
+      if(this.profileDetailsForm) {
+        this.photo = data.photoUrl;
+
+        this.profileDetailsForm.get('photoUrl').setValue(data.photoUrl);
+        this.profileDetailsForm.get('jobTitle').setValue(data.jobTitle);
+        this.profileDetailsForm.get('shortBio').setValue(data.shortBio);
+        this.profileDetailsForm.get('servicesProvided').setValue(data.servicesProvided);
+        this.profileDetailsForm.get('jobTypeId').setValue(data.jobTypeId);
+        this.profileDetailsForm.get('jobLevelId').setValue(data.jobLevelId);
+        this.profileDetailsForm.get('workSetupId').setValue(data.workSetupId);
+        this.profileDetailsForm.get('salaryMinimum').setValue(data.salaryMinimum);
+        this.profileDetailsForm.get('salaryMaximum').setValue(data.salaryMaximum);
+        this.profileDetailsForm.get('salaryCurrency').setValue(data.salaryCurrency);
+        this.profileDetailsForm.get('firstName').setValue(data.firstName);
+        this.profileDetailsForm.get('lastName').setValue(data.lastName);
+        this.profileDetailsForm.get('address').setValue(data.address);
+        this.profileDetailsForm.get('contactNumber').setValue(data.contactNumber);
+        this.profileDetailsForm.get('city').setValue(data.city);
+        this.profileDetailsForm.get('country').setValue(data.country);
+
+      }
+    }
   }
 
   onUpload(item: any) {
@@ -117,7 +136,7 @@ export class ProfileBasicInfoComponent implements OnInit {
       const basicInfo: Model.BasicProfileInfo = {
         ...applicant,
         userId: this.user._id,
-        applicantProfileId: this.applicantId,
+        applicantProfileId: this.applicantProfileId,
         isProfileReady,
       }
 

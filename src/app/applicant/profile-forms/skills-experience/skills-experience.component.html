@@ -36,3 +36,57 @@
     </div>
   </form>
 </div>
+
+<!-- Work Experience -->
+<div [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+  <div class="my-3 ms-2 w-100 d-flex justify-content-between">
+    <h5 class="mt-3 main-title">Work Experience</h5>
+    <span class="text-primary-red cursor-pointer align-self-center" (click)="addWorkExperience()"
+      *ngIf="workExperience && workExperience.length != 0">Add more</span>
+  </div>
+  <div class="ms-2 w-100 card m-0 p-3">
+    <div class="" *ngIf="workExperience && workExperience.length > 0; else emptyWorkExp">
+      <ng-container *ngFor="let item of workExperience; let i = index">
+        <hr style="border-color: #909090" *ngIf="i > 0">
+        <div class="row d-flex p-2 list" (mouseenter)="forChange[i] = true" (mouseleave)="forChange[i] = false">
+          <div class="col-12 col-lg-9">
+            <h5 class="title-experience">{{item?.jobTitle}}</h5>
+            <div class="d-flex">
+              <p class="title-other">
+                <img src="/assets/images/placeholder/icons/applicant-company.png" style="height: 14px"
+                  class="me-2">{{item?.companyName}}
+              </p>
+
+              <p class="title-other">
+                <img src="/assets/images/placeholder/icons/applicant-location.png" style="height: 14px"
+                  class="me-1">{{item?.location}}
+              </p>
+            </div>
+            <p class="title-details mt-3 w-75">{{item?.details}}</p>
+          </div>
+          <div class="col-12 col-lg-3 text-end">
+            <div class="title-duration mb-2 justify-content-end">
+              <img src="/assets/images/placeholder/icons/applicant-date.png" style="height: 14px" class="me-2">
+              {{item?.startMonth}}, {{ item.startYear }} - <span *ngIf="item.endYear">{{item?.endMonth}}, {{
+                item.endYear }}</span><span *ngIf="!item.endYear"> Present </span>
+            </div>
+            <span class="title-job-type">{{item?.jobTypeName}}</span>
+            <div class="mt-3" *ngIf="forChange[i]">
+              <!-- <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray()">
+                  Edit</button>
+                <button class="btn btn-save-draft btn-sm px-2 py-2" type="button"
+                  (click)="removeItem(i, this.workExperience)">
+                  Delete</button> -->
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <ng-template #emptyWorkExp>
+      <img src="assets/images/empty-list-grayscale.png" style="width: 5rem" class="text-center mx-auto" />
+      <h5 class="text-center sub-title">No Work Experience</h5>
+      <button class="btn btn-light-red mx-auto w-20 text-primary-red" (click)="addWorkExperience()" type="button">
+        Add</button>
+    </ng-template>
+  </div>
+</div>
