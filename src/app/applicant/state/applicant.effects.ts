@@ -13,6 +13,23 @@ export class ApplicantEffects {
     private actions$: Actions
   ) { }
 
+  saveBasicProfile$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveApplicantBasicProfile),
+      mergeMap((action) => this.applicantService.saveApplicantBasicProfile(action.basicProfile)
+        .pipe(
+          map((res: any) => {
+            const basicProfile: Model.BasicProfileInfo = res.data;
+            return ApplicantActions.saveApplicantBasicProfileSuccess({ basicProfile })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveApplicantBasicProfileFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
   // getAllApplicant$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.getAllapplicant),
@@ -54,23 +71,9 @@ export class ApplicantEffects {
       ofType(ApplicantActions.getApplicant),
       mergeMap((action) => this.applicantService.getApplicant(action.applicantId)
         .pipe(
-          switchMap((res: any) => {
+          map((res: any) => {
             const applicant: Model.Applicant = res.data;
-            return [
-              ApplicantActions.getApplicantSuccess({ applicant }),
-              ApplicantActions.setInitialDetails({
-                initialDetails: this.getInitialDetailsOfApplicant(applicant)
-              }),
-              ApplicantActions.setAdditionalInfo({
-                additionalInfo: this.getJobInfo(applicant)
-              }),
-              ApplicantActions.setProfileDocuments({
-                profileDocs: {
-                  documents: applicant.documents,
-                  videoCVUrl: applicant.videoCVUrl
-                }
-              })
-            ];
+            return ApplicantActions.getApplicantSuccess({ applicant })
           }),
           catchError((err) => {
             const { error } = err;
@@ -80,6 +83,38 @@ export class ApplicantEffects {
       )
     );
   });
+
+  // getApplicantDetails$ = createEffect(() => {
+  //   return this.actions$.pipe(
+  //     ofType(ApplicantActions.getApplicant),
+  //     mergeMap((action) => this.applicantService.getApplicant(action.applicantId)
+  //       .pipe(
+  //         switchMap((res: any) => {
+  //           const applicant: Model.Applicant = res.data;
+  //           return [
+  //             ApplicantActions.getApplicantSuccess({ applicant }),
+  //             ApplicantActions.setInitialDetails({
+  //               initialDetails: this.getInitialDetailsOfApplicant(applicant)
+  //             }),
+  //             ApplicantActions.setAdditionalInfo({
+  //               additionalInfo: this.getJobInfo(applicant)
+  //             }),
+  //             ApplicantActions.setProfileDocuments({
+  //               profileDocs: {
+  //                 documents: applicant.documents,
+  //                 videoCVUrl: applicant.videoCVUrl
+  //               }
+  //             })
+  //           ];
+  //         }),
+  //         catchError((err) => {
+  //           const { error } = err;
+  //           return of(ApplicantActions.getApplicantFail({ payload: error }));
+  //         })
+  //       )
+  //     )
+  //   );
+  // });
 
   createApplicantDetails$ = createEffect(() => {
     return this.actions$.pipe(

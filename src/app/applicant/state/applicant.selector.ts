@@ -19,6 +19,11 @@ export const getApplicantById = createSelector(
   (state) => state.selected
 );
 
+export const getBasicInfo = createSelector(
+  getApplicantInitState,
+  (state) => state.basicProfile
+);
+
 export const getInitialDetails = createSelector(
   getApplicantInitState,
   (state) => state.initialDetails

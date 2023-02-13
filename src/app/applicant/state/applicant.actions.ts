@@ -11,6 +11,12 @@ enum AllFeatureActionTypes {
   GetApplicantSuccess = '[applicant] -Get applicant Success',
   GetApplicantFail = '[applicant] - Get applicant Fail',
 
+  SaveBasicProfileInfo = '[applicant] - Save Basic Profile Info',
+  SaveBasicProfileInfoSuccess = '[applicant] - Save Basic Profile Info Success',
+  SaveBasicProfileInfoFail = '[applicant] - Save Basic Profile Info Fail',
+
+  // **************************
+
   SetInitialDetails = '[applicant] - Set Initial Details',
   SetAdditionalInfo = '[applicant] - Set Additional Info',
   SetProfileDocuments = '[applicant] - Set Profile Documents',
@@ -76,6 +82,21 @@ enum AllFeatureActionTypes {
   // SetInterview = '[applicant] - Set Applicant Interview',
   // ResetApplicantForm = '[applicant] - Reset Applicant Form',
 }
+
+export const saveApplicantBasicProfile = createAction(
+  AllFeatureActionTypes.SaveBasicProfileInfo,
+  props<{ basicProfile: Model.BasicProfileInfo }>()
+);
+
+export const saveApplicantBasicProfileSuccess = createAction(
+  AllFeatureActionTypes.SaveBasicProfileInfoSuccess,
+  props<{ basicProfile: Model.BasicProfileInfo }>()
+);
+
+export const saveApplicantBasicProfileFail = createAction(
+  AllFeatureActionTypes.SaveBasicProfileInfoFail,
+  props<{ payload: any }>()
+);
 
 export const saveWorkExperience = createAction(
   AllFeatureActionTypes.SaveWorkExperience,

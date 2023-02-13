@@ -6,6 +6,34 @@ export interface User {
   email: string;
 }
 
+export interface BasicProfileInfo {
+  applicantProfileId?: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  photoUrl? : string;
+  jobTitle: string;
+  rating?: string;
+  workSetupId: string;
+  workSetupName?: string;
+  email: string;
+  address: string;
+  city: string;
+  country: string;
+  contactNumber: string;
+  shortBio: string;
+  servicesProvided?: string;
+  jobTypeId: string;
+  jobTypeName?: string;
+  jobLevelId: string;
+  jobLevelName?: string;
+  salaryMinimum: string;
+  salaryMaximum: string;
+  salaryCurrency: string;
+}
+
+// ****************
+
 export interface Applicant {
   applicantProfileId?: string;
   userId: string;

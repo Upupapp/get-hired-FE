@@ -30,8 +30,13 @@ export class ApplicantFacade {
   error$: any;
   // applicantTemp$ = this.store.pipe(select(fromfeature.applicantTemp));
 
+  getBasicInfo$ = this.store.pipe(select(fromfeature.getBasicInfo));
+
   constructor(private store: Store<State>) {}
 
+  saveBasicInfo(basicProfile: Model.BasicProfileInfo) {
+    this.store.dispatch(ApplicantAction.saveApplicantBasicProfile({ basicProfile }));
+  }
 
   getApplicantDashboard() {
     this.store.dispatch(ApplicantAction.applicantDashboard());
@@ -47,6 +52,10 @@ export class ApplicantFacade {
 
   saveApplicant(applicant: Model.Applicant) {
     this.store.dispatch(ApplicantAction.saveApplicant({ applicant }));
+  }
+
+  saveApplicantBasicProfile(basicProfile: Model.BasicProfileInfo) {
+    this.store.dispatch(ApplicantAction.saveApplicantBasicProfile({ basicProfile }));
   }
 
   setInitialForm(initialDetails: Model.InitialDetails) {

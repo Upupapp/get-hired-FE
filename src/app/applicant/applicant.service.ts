@@ -19,6 +19,14 @@ export class ApplicantService {
     );
   }
 
+  saveApplicantBasicProfile(basicProfile: Model.BasicProfileInfo) {
+    if (basicProfile.applicantProfileId) {
+      return this.baseService.put<Model.BasicProfileInfo>(`${this.applicantUrl}/updatebasicinfo`, basicProfile);
+    } else {
+      return this.baseService.post<Model.BasicProfileInfo>(`${this.applicantUrl}/createprofile`, basicProfile);
+    }
+  }
+
   saveApplicant(profile: Model.Applicant) {
     if (profile.applicantProfileId) {
       return this.baseService.put<Model.Applicant>(`${this.applicantUrl}/updateprofile`, profile);

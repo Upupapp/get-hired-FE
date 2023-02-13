@@ -14,6 +14,7 @@ export interface ApplicantState {
   error: any;
   succesMsg: string;
   loading: boolean;
+  basicProfile: Model.BasicProfileInfo;
   initialDetails: Model.InitialDetails;
   additionalInfo: Model.AdditionalInfo;
   user: Model.User;
@@ -37,6 +38,7 @@ const initialState: ApplicantState = {
   error: null,
   succesMsg: null,
   loading: false,
+  basicProfile: null,
   initialDetails: null,
   additionalInfo: null,
   user: null,
@@ -57,6 +59,28 @@ const initialState: ApplicantState = {
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.saveApplicantBasicProfile, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveApplicantBasicProfileSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      basicProfile: action.basicProfile,
+      succesMsg: action.basicProfile.applicantProfileId ? 'updated' : 'created'
+    };
+  }),
+  on(ApplicantActions.saveApplicantBasicProfileFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.getUserProfile, (state): ApplicantState => {
     return {
       ...state,
