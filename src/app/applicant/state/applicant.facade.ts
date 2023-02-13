@@ -31,8 +31,13 @@ export class ApplicantFacade {
   // applicantTemp$ = this.store.pipe(select(fromfeature.applicantTemp));
 
   getBasicInfo$ = this.store.pipe(select(fromfeature.getBasicInfo));
+  additionalInfo$ = this.store.pipe(select(fromfeature.getAdditionalInfo));
 
   constructor(private store: Store<State>) {}
+
+  saveSkills(skills: string[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveProfessionalSkills({ skills, profileId }));
+  }
 
   saveBasicInfo(basicProfile: Model.BasicProfileInfo) {
     this.store.dispatch(ApplicantAction.saveApplicantBasicProfile({ basicProfile }));

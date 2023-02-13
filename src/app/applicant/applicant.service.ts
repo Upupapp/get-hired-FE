@@ -27,6 +27,16 @@ export class ApplicantService {
     }
   }
 
+  saveProfessionalSkills(skills: string[], profileId: string) {
+    const body = {
+      skills, applicantProfileId: profileId
+    };
+
+    return this.baseService.post<string[]>(`${this.applicantUrl}/skills`, body);
+  }
+
+  // ******************
+
   saveApplicant(profile: Model.Applicant) {
     if (profile.applicantProfileId) {
       return this.baseService.put<Model.Applicant>(`${this.applicantUrl}/updateprofile`, profile);

@@ -32,6 +32,13 @@ export interface BasicProfileInfo {
   salaryCurrency: string;
 }
 
+export interface AdditionalInfo {
+  workExperience: WorkExperience[];
+  educationalBackground: EducationalBackground[];
+  professionalSkills: string[];
+  certifications: Certifications[];
+}
+
 // ****************
 
 export interface Applicant {
@@ -130,13 +137,6 @@ export interface InitialDetails {
   contactNumber: string;
   city: string;
   country: string;
-}
-
-export interface AdditionalInfo {
-  workExperience: WorkExperience[];
-  educationalBackground: EducationalBackground[];
-  professionalSkills: string[];
-  certifications: Certifications[];
 }
 
 export interface Options {
