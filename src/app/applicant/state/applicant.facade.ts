@@ -33,9 +33,13 @@ export class ApplicantFacade {
   getBasicInfo$ = this.store.pipe(select(fromfeature.getBasicInfo));
   additionalInfo$ = this.store.pipe(select(fromfeature.getAdditionalInfo));
   documents$ = this.store.pipe(select(fromfeature.getDocs));
+  videoCV$ = this.store.pipe(select(fromfeature.getVideoCV));
 
   constructor(private store: Store<State>) {}
 
+  saveVideo(video:Model.VideoCV, profileId: string) {
+    this.store.dispatch(ApplicantAction.saveVideoCV({ video, profileId }));
+  }
 
   saveDocs(docs: Model.Documents[], profileId: string) {
     this.store.dispatch(ApplicantAction.saveDocuments({ docs, profileId }));

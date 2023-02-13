@@ -145,6 +145,15 @@ export interface Options {
   icon?: string;
 }
 
+export interface VideoCV {
+  videoCVFile?: File;
+  videoCVUrl?: string
+  filename?: string;
+  size?: number;
+  type?: string;
+  created_at?: Date;
+}
+
 export interface ProfileDocuments {
   documents: Documents[],
   videoCVFile?: File,

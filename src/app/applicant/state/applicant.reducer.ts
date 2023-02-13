@@ -17,6 +17,7 @@ export interface ApplicantState {
   basicProfile: Model.BasicProfileInfo;
   additionalInfo: Model.AdditionalInfo;
   documents: Model.Documents[];
+  videoCV: Model.VideoCV;
 
   initialDetails: Model.InitialDetails;
   user: Model.User;
@@ -54,12 +55,35 @@ const initialState: ApplicantState = {
   // initialDetails: null,
   // applicantInfo: null,
   documents: [],
+  videoCV: null,
   profileDocs: null
   // applicantLoading: false
 };
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.saveVideoCV, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveVideoCVSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      videoCV: action.video,
+      succesMsg: action.video.videoCVUrl ? 'updated': 'deleted'
+    };
+  }),
+  on(ApplicantActions.saveVideoCVFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.saveDocuments, (state): ApplicantState => {
     return {
       ...state,
@@ -244,6 +268,10 @@ export const applicantReducer = createReducer<ApplicantState>(
         professionalSkills: action.applicant ? action.applicant.skills: null
       },
       documents: action.applicant ? action.applicant.documents: null,
+      videoCV: {
+        ...state.videoCV,
+        videoCVUrl: action.applicant ? action.applicant.videoCVUrl: null
+      },
       loading: false,
     };
   }),

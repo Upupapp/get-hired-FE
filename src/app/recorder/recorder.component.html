@@ -20,19 +20,19 @@
       <!-- VIDEO CONTAINER -->
       <section>
         <div [hidden]="!isVideoRecording || !videoBlobUrl">
-          <video #videoElement class="w-100">
-            <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl">
+          <video #videoElement class="w-100" controls autoplay="autoplay">
+            <source *ngIf="isVideoRecording" [src]="videoBlobUrl">
+
+            <!-- <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl"> -->
           </video>
         </div>
 
-        <div class="video-placeholder"
-        *ngIf="!isVideoRecording || !videoBlobUrl" >
-          
+        <div class="video-placeholder" *ngIf="!isVideoRecording || !videoBlobUrl">
         </div>
 
         <!-- <video #preview id="preview"
-        [src]="url" controls class="w-100 h-100"
-        *ngIf="url"></video> -->
+        [src]="videoBlobUrl" controls class="w-100 h-100"
+        *ngIf="videoBlobUrl"></video> -->
       </section>
 
       <div style="position: absolute; left: 2%; bottom: 4%;">
@@ -68,9 +68,13 @@
     </div>
 
     <div class="mt-2">
-      <button class="btn btn-primary w-100" (click)="previewVideoRecording()" 
-      [disabled]="!videoBlob">
+      <button class="btn btn-primary my-1 w-100" (click)="previewVideoRecording()" [disabled]="!videoBlob">
         View Recording
+      </button>
+      <input #uploadFile hidden type="file" (change)="upload($event)" accept="video/mp4,video/x-m4v,video/*" />
+      <button class="btn btn-primary w-100 btn-block mb-3" (click)="uploadFile.click()">
+        <i class="bi bi-cloud-upload me-3"></i>
+        Upload Video Instead
       </button>
     </div>
 
