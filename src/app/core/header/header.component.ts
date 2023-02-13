@@ -34,6 +34,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private coreService: CoreService,
     private router: Router,
+    private route: ActivatedRoute,
     private appFacade: AppFacade
   ) {
     this.req = this.router.events.subscribe((event: any) => {
@@ -54,8 +55,8 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  navigateToLink(){
-    this.router.navigate(['/jobs'])
+  navigateToJobs(){
+    this.router.navigate(['/jobs'], { relativeTo: this.route })
   }
 
   redirectToRegister() {

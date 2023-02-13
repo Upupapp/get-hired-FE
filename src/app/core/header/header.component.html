@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-transparent py-4 fixed-top"
   [ngClass]="isPublic ? 'shadow': ''">
   <div class="container-fluid d-flex px-0 px-lg-5">
-    <a class="navbar-brand me-3 me-lg-5 d-flex" (click)="navigateToLink()" *ngIf="isPublic">
+    <a class="navbar-brand me-3 me-lg-5 d-flex" (click)="navigateToJobs()" *ngIf="isPublic">
       <img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-fluid" style="cursor: pointer">
     </a>
 
@@ -16,7 +16,7 @@
 
     <div class="collapse navbar-collapse" id="togglerButton">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item me-1" >
+        <li class="nav-item me-1">
           <div class="search-div">
             <div class="input-group">
               <img src="/assets/images/placeholder/icons/search-red.png">
@@ -25,6 +25,13 @@
               aria-label="Search" >
             </div>
           </div>
+        </li>
+
+        <li class="nav-item">
+          <button class="btn btn-primary" type="button"
+            (click)="navigateToJobs()" >
+              Jobs
+            </button>
         </li>
 
         <li class="nav-item">
