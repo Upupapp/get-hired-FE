@@ -21,6 +21,9 @@ import { DocumentsComponent } from './profile-form/components/documents/document
 import { RecorderModule } from '@main/recorder/recorder.module';
 import { PreviewComponent } from './profile-details/preview/preview.component';
 import { SkillsAndExpComponent } from './profile-form/components/skills-and-exp/skills-and-exp.component';
+import { ProfileBasicInfoComponent } from './profile-forms/profile-basic-info/profile-basic-info.component';
+import { ProfileFormsComponent } from './profile-forms/profile-forms.component';
+import { SkillsExperienceComponent } from './profile-forms/skills-experience/skills-experience.component';
 
 
 @NgModule({
@@ -36,7 +39,10 @@ import { SkillsAndExpComponent } from './profile-form/components/skills-and-exp/
     AwardsComponent,
     DocumentsComponent,
     PreviewComponent,
-    SkillsAndExpComponent
+    SkillsAndExpComponent,
+    ProfileBasicInfoComponent,
+    ProfileFormsComponent,
+    SkillsExperienceComponent
   ],
   imports: [
     CommonModule,
@@ -47,6 +53,7 @@ import { SkillsAndExpComponent } from './profile-form/components/skills-and-exp/
     EffectsModule.forFeature([ApplicantEffects])
   ],
   exports: [
+    ProfileFormsComponent,
     ProfileDetailsComponent,
     ProfileFormComponent,
     AvatarComponent,

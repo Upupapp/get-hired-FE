@@ -198,6 +198,7 @@ export class ProfileFormComponent implements OnInit {
       && applicant.salaryMinimum != 0
       && applicant.salaryMaximum != 0;
 
+
     this.applicantFacade.saveApplicant({
       ...applicant,
       isProfileReady: isProfileReady

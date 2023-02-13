@@ -1,0 +1,16 @@
+<div class="bg-gray position-relative" *ngIf="!loading">
+  <div class="bg-upper-gray">
+    <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="saveProgressConfirmation($event)">
+    </app-main-stepper>
+  </div>
+</div>
+
+<div class="p-4 mt-5">
+  <ng-container *ngIf="stepper === 1">
+    <app-profile-basic-info [user]="user" (submitBasicInfo)="submitBasicInfo($event)"></app-profile-basic-info>
+  </ng-container>
+  <ng-container *ngIf="stepper === 2">
+    <app-skills-experience [user]="user"></app-skills-experience>
+  </ng-container>
+
+</div>

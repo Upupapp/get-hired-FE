@@ -1,0 +1,242 @@
+<div class="card card-body mt-3">
+  <form class="row" [formGroup]="profileDetailsForm" (ngSubmit)="submitForm()"
+    [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+    <!-- EMPLOYMENT DETAILS -->
+    <div class="col-12">
+      <h5 class="title-label">Profile Details</h5>
+      <hr style="border: dashed 1px #868686">
+    </div>
+
+    <div class="col-12 col-lg-3" *ngIf="!profileImage && photo.value">
+      <div>
+        <div class="text-center mb-3 bg-gray">
+          <img [src]="photo.value" class="avatar-image">
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-3" *ngIf="profileImage">
+      <div>
+        <div class="text-center mb-3 bg-gray" *ngIf="profileImage">
+          <img [src]="profileImage.file" class="avatar-image">
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-9" *ngIf="!(profileImage || photo.value)"></div>
+
+    <div class="col-12 col-lg-6" [ngClass]="(profileImage || photo.value ) ? 'mt-3' :''">
+      <div class="title-container mb-3">
+        <label>Profile Photo</label>
+
+        <app-file-upload (upload)="onUpload($event)" label="Select Profile Photo" [labelTop]="false"
+          formControlName="photoUrl"></app-file-upload>
+      </div>
+
+      <div class="title-container mb-3" *ngIf="profileImage || photo.value">
+        <label>Current Job title</label>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle"
+            [class.is-invalid]="jobTitle_validators?.invalid && jobTitle_validators?.touched">
+          <div class="px-3" *ngIf="jobTitle_validators?.invalid && jobTitle_validators?.touched">
+            <small class="invalid-feedback">Title is required</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6">
+      <div class="title-container mb-3" *ngIf="!profileImage && !photo.value">
+        <label>Current Job title</label>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle"
+            [class.is-invalid]="jobTitle_validators?.invalid && jobTitle_validators?.touched">
+          <div class="px-3" *ngIf="jobTitle_validators?.invalid && jobTitle_validators?.touched">
+            <small class="invalid-feedback">Title is required</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="col-lg-6" *ngIf="!profileImage">
+    </div>
+
+    <div class="col-12 mb-3" *ngIf="profileImage">
+      <hr style="border: dashed 1px #868686">
+    </div>
+
+    <div class="col-12 col-lg-12 mb-3">
+      <div class="title-container mb-3">
+        <label>Short Bio</label>
+        <div class="form-group">
+          <textarea type="text" class="form-control" formControlName="shortBio"
+            placeholder="What Is a Short Bio? A short bio is a short paragraph that serves as a brief professional biography for résumés, company websites, personal branding, and more. These little blurbs sum up your current position, your years of experience in education and the workforce, plus your professional goals"
+            rows="4" [class.is-invalid]="shortBio_validators?.invalid && shortBio_validators?.touched"></textarea>
+          <div class="px-3" *ngIf="shortBio_validators?.invalid && shortBio_validators?.touched">
+            <small class="invalid-feedback">Short Bio is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="title-container mb-3">
+        <label>Services Provided</label>
+        <div class="form-group">
+          <textarea type="text" class="form-control" formControlName="servicesProvided"
+            placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. "
+            rows="4"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-3" *ngIf="typeList$ | async as jobType">
+      <div class="title-container mb-3">
+        <label>Job Type</label>
+        <select class="form-select" formControlName="jobTypeId"
+          [class.is-invalid]="jobTypeId_validators?.invalid && jobTypeId_validators?.touched">
+          <option selected disabled [ngValue]="null">Select Job Type</option>
+          <ng-container *ngFor="let item of jobType; let i = index">
+            <option [value]="item.id">{{item.name}}</option>
+          </ng-container>
+        </select>
+        <div class="px-3" *ngIf="jobTypeId_validators?.invalid && jobTypeId_validators?.touched">
+          <small class="invalid-feedback">Job Type is required</small>
+        </div>
+      </div>
+
+      <div class="title-container mb-3" *ngIf="workSetup$ | async as workSetup">
+        <label>Preffered Work Setup</label>
+        <select class="form-select" formControlName="workSetupId"
+        [class.is-invalid]="workSetupId_validators?.invalid && workSetupId_validators?.touched">
+          <option selected disabled [ngValue]="null">Select Work Setup</option>
+          <ng-container *ngFor="let item of workSetup; let i = index">
+            <option [value]="item.id">{{item.name}}</option>
+          </ng-container>
+        </select>
+        <div class="px-3" *ngIf="workSetupId_validators?.invalid && workSetupId_validators?.touched">
+          <small class="invalid-feedback">Work Setup is required</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-3">
+
+
+      <div class="title-container mb-3" *ngIf="level$ | async as jobLevel">
+        <label>Level of Experience</label>
+        <select class="form-select" formControlName="jobLevelId"
+          [class.is-invalid]="jobLevelId_validators?.invalid && jobLevelId_validators?.touched">
+          <option selected disabled [ngValue]="null">Select Level Experience</option>
+          <ng-container *ngFor="let item of jobLevel; let i = index">
+            <option [value]="item.id">{{item.name}}</option>
+          </ng-container>
+        </select>
+        <div class="px-3" *ngIf="jobLevelId_validators?.invalid && jobLevelId_validators?.touched">
+          <small class="invalid-feedback">Level of Eperience is required</small>
+        </div>
+      </div>
+
+      <div class="title-container mb-3">
+        <label>Expected Salary (monthly)</label>
+
+        <div class="row">
+          <div class="col-4 form-group pe-0">
+            <select class="form-select px-0 py-3 text-center" formControlName="salaryCurrency"
+            [class.is-invalid]="salaryCurrency_validators?.invalid && salaryCurrency_validators?.touched">
+              <option selected disabled [ngValue]="null">Choose Currency</option>
+              <ng-container *ngFor="let item of salaryCurrencies; let i = index">
+                <option [value]="item.name">{{item.name}}</option>
+              </ng-container>
+            </select>
+            <div class="px-3" *ngIf="salaryCurrency_validators?.invalid && salaryCurrency_validators?.touched">
+              <small class="invalid-feedback">Currency is required</small>
+            </div>
+          </div>
+          <div class="col-4 form-group pe-0">
+            <input type="number" name="search" formControlName="salaryMinimum" class="form-control form-control-main"
+              placeholder="ex. Php 25,000" [class.is-invalid]="salaryMinimum_validators?.invalid && salaryMinimum_validators?.touched">
+              <div class="px-3" *ngIf="salaryMinimum_validators?.invalid && salaryMinimum_validators?.touched">
+                <small class="invalid-feedback">Minimum salary is required</small>
+              </div>
+          </div>
+
+          <div class="col-4 form-group pe-0">
+            <input type="number" name="search" class="form-control form-control-main" formControlName="salaryMaximum"
+              placeholder="ex. Php 35,500" [class.is-invalid]="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
+              <div class="px-3" *ngIf="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
+                <small class="invalid-feedback">Minimum salary is required</small>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT DETAILS -->
+    <div class="col-12 mt-3">
+      <h5 class="title-label">Contact Details</h5>
+      <hr style="border: dashed 1px #868686">
+    </div>
+
+    <div class="col-12 col-lg-6 mb-3">
+      <div class="title-container mb-3">
+        <label>First Name</label>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="ex. George" formControlName="firstName">
+        </div>
+      </div>
+
+      <div class="title-container mb-3">
+        <label>Last Name</label>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="ex. Cruz" formControlName="lastName">
+        </div>
+      </div>
+
+      <div class="title-container mb-3">
+        <label>Phone</label>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="ex. 000-000000" formControlName="contactNumber"
+          [class.is-invalid]="contactNumber_validators?.invalid && contactNumber_validators?.touched">
+          <div class="px-3" *ngIf="contactNumber_validators?.invalid && contactNumber_validators?.touched">
+            <small class="invalid-feedback">Contact number is required</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-3">
+      <div class="title-container mb-3">
+        <label>Address</label>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="ex. Subdivision, Street No, Building No, Barangay"
+            formControlName="address">
+        </div>
+      </div>
+
+      <div class="title-container mb-3">
+        <label>City/Municipality</label>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="ex. Manila" formControlName="city" [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
+          <div class="px-3" *ngIf="city_validators?.invalid && city_validators?.touched">
+            <small class="invalid-feedback">City is required</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="title-container mb-3">
+        <label>Country</label>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country" [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
+          <div class="px-3" *ngIf="country_validators?.invalid && country_validators?.touched">
+            <small class="invalid-feedback">Country is required</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
