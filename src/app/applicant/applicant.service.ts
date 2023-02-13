@@ -35,6 +35,34 @@ export class ApplicantService {
     return this.baseService.post<string[]>(`${this.applicantUrl}/skills`, body);
   }
 
+  saveWorkExperience(workExp: Model.WorkExperience[], profileId: string) {
+    const body = {
+      workExperience: workExp, applicantProfileId: profileId
+    };
+    return this.baseService.post<Model.WorkExperience[]>(`${this.applicantUrl}/workexp`, body);
+  }
+
+  saveEducationalBackground(educBg: Model.EducationalBackground[], profileId: string) {
+    const body = {
+      educationalBackground: educBg, applicantProfileId: profileId
+    };
+    return this.baseService.post<Model.EducationalBackground[]>(`${this.applicantUrl}/educbg`, body);
+  }
+
+  saveCertifications(cert: Model.Certifications[], profileId: string) {
+    const body = {
+      certifications: cert, applicantProfileId: profileId
+    };
+    return this.baseService.post<Model.EducationalBackground[]>(`${this.applicantUrl}/cert`, body);
+  }
+
+  saveDocuments(docs: Model.Documents[], profileId: string) {
+    const body = {
+      documents: docs, applicantProfileId: profileId
+    };
+    return this.baseService.post<Model.Documents[]>(`${this.applicantUrl}/docs`, body);
+  }
+
   // ******************
 
   saveApplicant(profile: Model.Applicant) {
@@ -43,13 +71,6 @@ export class ApplicantService {
     } else {
       return this.baseService.post<Model.Applicant>(`${this.applicantUrl}/createprofile`, profile);
     }
-  }
-
-  saveWorkExperience(workExp: Model.WorkExperience[], profileId: string) {
-    const body = {
-      workExperience: workExp, applicantProfileId: profileId
-    };
-    return this.baseService.post<Model.WorkExperience[]>(`${this.applicantUrl}/workexp`, body);
   }
 
   getDashboardDetails() {

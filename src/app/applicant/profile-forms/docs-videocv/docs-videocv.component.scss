@@ -1,0 +1,13 @@
+@import "src/assets/styles/colors";
+
+.btn-save{
+	background: $color-global-red-buttons;
+	border-radius: 7px;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 27px;
+
+	color: #FFFFFF;
+	padding: 7px 20px !important;
+}

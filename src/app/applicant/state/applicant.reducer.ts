@@ -16,6 +16,7 @@ export interface ApplicantState {
   loading: boolean;
   basicProfile: Model.BasicProfileInfo;
   additionalInfo: Model.AdditionalInfo;
+  documents: Model.Documents[];
 
   initialDetails: Model.InitialDetails;
   user: Model.User;
@@ -26,7 +27,6 @@ export interface ApplicantState {
   typeList: Model.Options[];
   level: Model.Options[];
   // category: Model.Options[];
-  documents: Model.Documents[];
   profileDocs: Model.ProfileDocuments;
   dashboard
   // applicant: Model.Applicant | null;
@@ -60,6 +60,78 @@ const initialState: ApplicantState = {
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.saveDocuments, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveDocumentsSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      documents: action.docs,
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveDocumentsFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveCertifications, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveCertificationsSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        certifications: action.certs
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveCertificationsFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveEducationalBackground, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveEducationalBackgroundSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        educationalBackground: action.educBg
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveEducationalBackgroundFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.saveWorkExperience, (state): ApplicantState => {
     return {
       ...state,
@@ -166,10 +238,12 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       selected: action.applicant,
       additionalInfo: {
-        ...state.additionalInfo,
-        workExperience: action.applicant.workExperience,
-        professionalSkills: action.applicant.skills
+        certifications: action.applicant ? action.applicant.certifications: null,
+        educationalBackground: action.applicant ? action.applicant.educationalBackground: null,
+        workExperience: action.applicant ? action.applicant.workExperience: null,
+        professionalSkills: action.applicant ? action.applicant.skills: null
       },
+      documents: action.applicant ? action.applicant.documents: null,
       loading: false,
     };
   }),

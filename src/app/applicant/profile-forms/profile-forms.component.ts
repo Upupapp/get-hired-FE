@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -22,6 +23,7 @@ export class ProfileFormsComponent implements OnInit {
 
   applicantProfileId: string;
   loading: boolean;
+  basicFormValid: boolean;
   stepper: number = 1;
   stepperItems: any[] = [
     {
@@ -33,21 +35,22 @@ export class ProfileFormsComponent implements OnInit {
     {
       id: 2,
       title: "Skills and Experience",
-      disabled: false,
+      disabled: true,
       formName: 'initialData'
 
     },
     {
       id: 3,
       title: "Documents",
-      disabled: false,
+      disabled: true,
       formName: ''
     },
   ];
 
   constructor(
     private dialog: MatDialog,
-    private applicantFacade: ApplicantFacade
+    private applicantFacade: ApplicantFacade,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -60,10 +63,18 @@ export class ProfileFormsComponent implements OnInit {
     if(data && data.applicantProfileId && this.basicInfo) {
       this.applicantProfileId = data.applicantProfileId;
     }
+
+    if(this.applicantProfileId) {
+      this.stepperItems[1].disabled = false;
+      this.stepperItems[2].disabled = false
+    }
   }
 
   submitBasicInfo(event) {
     console.log(event);
+    if(event == 'VALID') {
+      this.basicFormValid = true;
+    }
   }
 
   saveProgress(currentStepper: number) {
@@ -100,6 +111,10 @@ export class ProfileFormsComponent implements OnInit {
           }
         });
     }
+  }
+
+  redirectToProfile() {
+    this.router.navigateByUrl('user/profile/details');
   }
 
   ngOnDestroy(): void {
