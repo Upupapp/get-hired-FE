@@ -49,6 +49,11 @@ export const getDocs = createSelector(
   state => state.documents
 );
 
+export const getVideoCV = createSelector(
+  getApplicantInitState,
+  state => state.videoCV
+);
+
 // export const applicantTemp = createSelector (
 //   getApplicantInitState,
 //   getInitialDetails,

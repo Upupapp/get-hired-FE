@@ -35,6 +35,10 @@ enum AllFeatureActionTypes {
   SaveCertificationsSuccess = '[applicant] - Save Certifications Success',
   SaveCertificationsFail = '[applicant] - Save Certifications Fail',
 
+  SaveVideoCV = '[applicant] - Save VideoCV',
+  SaveVideoCVSuccess = '[applicant] - Save VideoCV Success',
+  SaveVideoCVFail = '[applicant] - Save VideoCV Fail',
+
   // **************************
 
   SetInitialDetails = '[applicant] - Set Initial Details',
@@ -49,22 +53,6 @@ enum AllFeatureActionTypes {
   GetApplicantDashboardSuccess = '[applicant] -Get applicant Success Dashboard',
   GetApplicantDashboardFail = '[applicant] - Get applicant Fail Dashboard',
 
-  // GetIndustryList = '[applicant] - Get Industry List',
-  // GetIndustryListSuccess = '[applicant] - Get Industry List Success',
-  // GetIndustryListFail = '[applicant] - Get Industry List Fail',
-
-  // GetCategoryList = '[applicant] - Get Category List',
-  // GetCategoryListSuccess = '[applicant] - Get Category List Success',
-  // GetCategoryListFail = '[applicant] - Get Category List Fail',
-
-  // GetBadgeList = '[applicant] - Get Badge List',
-  // GetBadgeListSuccess = '[applicant] - Get Badge List Success',
-  // GetBadgeListFail = '[applicant] - Get Badge List Fail',
-
-  // GetApplicantRoleList = '[applicant] - Get Applicant Role List',
-  // GetApplicantRoleListSuccess = '[applicant] - Get Applicant Role List Success',
-  // GetApplicantRoleListFail = '[applicant] - Get Applicant Role List Fail',
-
   GetSetupList = '[applicant] - Get Setup List',
   GetSetupListSuccess = '[applicant] - Get Setup List Success',
   GetSetupListFail = '[applicant] - Get Setup List Fail',
@@ -76,28 +64,22 @@ enum AllFeatureActionTypes {
   GetLevelList = '[applicant] - Get Level List',
   GetLevelListSuccess = '[applicant] - Get Level List Success',
   GetLevelListFail = '[applicant] - Get Level List Fail',
-
-  // GetBasicApplicantList = '[applicant] - Get Basic Applicant List',
-  // GetBasicApplicantListSuccess = '[applicant] - Get Basic Applicant List Success',
-  // GetBasicApplicantListFail = '[applicant] - Get Basic Applicant List Fail',
-
-  // GetExpiredApplicantList = '[applicant] - Get Expired Applicant List',
-  // GetExpiredApplicantListSuccess = '[applicant] - Get Expired Applicant List Success',
-  // GetExpiredApplicantListFail = '[applicant] - Get Expired Applicant List Fail',
-
-  // SaveApplicant = '[applicant] - Save Applicant',
-  // SaveApplicantSuccess = '[applicant] - Save Applicant Success',
-  // SaveApplicantFail = '[applicant] - Save Applicant Fail',
-
-  // ChangeApplicantStatus = '[applicant] - Change Applicant status',
-  // ChangeApplicantStatusSuccess = '[applicant] - Change Applicant status Success',
-  // ChangeApplicantStatusFail = '[applicant] - Change Applicant status Fail',
-
-  // SetApplicantInitialDetails = '[applicant] - Set Applicant Initial Details',
-  // SetApplicantInfo = '[applicant] - Set Applicant Info',
-  // SetInterview = '[applicant] - Set Applicant Interview',
-  // ResetApplicantForm = '[applicant] - Reset Applicant Form',
 }
+
+export const saveVideoCV = createAction(
+  AllFeatureActionTypes.SaveVideoCV,
+  props<{ video: Model.VideoCV, profileId: string }>()
+);
+
+export const saveVideoCVSuccess = createAction(
+  AllFeatureActionTypes.SaveVideoCVSuccess,
+  props<{ video: Model.VideoCV }>()
+);
+
+export const saveVideoCVFail = createAction(
+  AllFeatureActionTypes.SaveVideoCVFail,
+  props<{ payload: any }>()
+);
 
 export const saveCertifications = createAction(
   AllFeatureActionTypes.SaveCertifications,
@@ -262,114 +244,6 @@ export const saveApplicantFail = createAction(
   AllFeatureActionTypes.SaveApplicantFail,
   props<{ payload: any }>()
 );
-
-
-// export const resetApplicantForm = createAction(
-//   AllFeatureActionTypes.ResetApplicantForm
-// );
-
-// export const setApplicantInitialDetails = createAction(
-//   AllFeatureActionTypes.SetApplicantInitialDetails,
-//   props<{ initialDetails: Model.InitialDetails }>()
-// );
-
-// export const setApplicantInfo = createAction(
-//   AllFeatureActionTypes.SetApplicantInfo,
-//   props<{ applicantInfo: Model.ApplicantInfo }>()
-// );
-
-// export const setInterview = createAction(
-//   AllFeatureActionTypes.SetInterview,
-//   props<{ interview: InterviewModel.InterviewQuestion[] }>()
-// );
-
-// export const saveApplicant = createAction(
-//   AllFeatureActionTypes.SaveApplicant,
-//   props<{ applicant: Model.Applicant }>()
-// );
-
-// export const saveApplicantSuccess = createAction(
-//   AllFeatureActionTypes.SaveApplicantSuccess,
-//   props<{ applicant: Model.Applicant }>()
-// );
-
-// export const saveApplicantFail = createAction(
-//   AllFeatureActionTypes.SaveApplicantFail,
-//   props<{ payload: any }>()
-// );
-
-// export const changeApplicantStatus = createAction(
-//   AllFeatureActionTypes.ChangeApplicantStatus,
-//   props<{ status: number, applicantId: string  }>()
-// );
-
-// export const changeApplicantStatusSuccess = createAction(
-//   AllFeatureActionTypes.ChangeApplicantStatusSuccess,
-//   props<{ applicant: Model.Applicant }>()
-// );
-
-// export const changeApplicantStatusFail = createAction(
-//   AllFeatureActionTypes.ChangeApplicantStatusFail,
-//   props<{ payload: any }>()
-// );
-
-// // OPTIONS
-
-// export const getCategoryList = createAction(
-//   AllFeatureActionTypes.GetCategoryList
-// );
-
-// export const getCategoryListSuccess = createAction(
-//   AllFeatureActionTypes.GetCategoryListSuccess,
-//   props<{ category: Model.Options[] }>()
-// );
-
-// export const getCategoryListFail = createAction(
-//   AllFeatureActionTypes.GetCategoryListFail,
-//   props<{ payload: any }>()
-// );
-
-// export const getIndustryList = createAction(
-//   AllFeatureActionTypes.GetIndustryList
-// );
-
-// export const getIndustryListSuccess = createAction(
-//   AllFeatureActionTypes.GetIndustryListSuccess,
-//   props<{ industry: Model.Options[] }>()
-// );
-
-// export const getIndustryListFail = createAction(
-//   AllFeatureActionTypes.GetIndustryListFail,
-//   props<{ payload: any }>()
-// );
-
-// export const getBadgeList = createAction(
-//   AllFeatureActionTypes.GetBadgeList
-// );
-
-// export const getBadgeListSuccess = createAction(
-//   AllFeatureActionTypes.GetBadgeListSuccess,
-//   props<{ badge: Model.Options[] }>()
-// );
-
-// export const getBadgeListFail = createAction(
-//   AllFeatureActionTypes.GetBadgeListFail,
-//   props<{ payload: any }>()
-// );
-
-// export const getApplicantRoleList = createAction(
-//   AllFeatureActionTypes.GetApplicantRoleList
-// );
-
-// export const getApplicantRoleListSuccess = createAction(
-//   AllFeatureActionTypes.GetApplicantRoleListSuccess,
-//   props<{ applicantRole: Model.Options[] }>()
-// );
-
-// export const getApplicantRoleListFail = createAction(
-//   AllFeatureActionTypes.GetApplicantRoleListFail,
-//   props<{ payload: any }>()
-// );
 
 export const getSetupList = createAction(
   AllFeatureActionTypes.GetSetupList

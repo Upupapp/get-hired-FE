@@ -30,6 +30,23 @@ export class ApplicantEffects {
     )
   });
 
+  saveVideoCV$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveVideoCV),
+      mergeMap((action) => this.applicantService.saveVideoCV(action.video, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const video: Model.VideoCV = res.data;
+            return ApplicantActions.saveVideoCVSuccess({ video })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveVideoCVFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
   saveSkills$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ApplicantActions.saveProfessionalSkills),

@@ -27,6 +27,14 @@ export class ApplicantService {
     }
   }
 
+  saveVideoCV(video: Model.VideoCV, profileId: string) {
+    const body = {
+      video, applicantProfileId: profileId
+    };
+
+    return this.baseService.put<Model.VideoCV>(`${this.applicantUrl}/savevideocv`, body);
+  }
+
   saveProfessionalSkills(skills: string[], profileId: string) {
     const body = {
       skills, applicantProfileId: profileId
