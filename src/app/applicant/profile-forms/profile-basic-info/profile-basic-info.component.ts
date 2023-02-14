@@ -239,6 +239,7 @@ export class ProfileBasicInfoComponent implements OnInit {
     }
 
     if(this.loading$) {
+      this.formLoading(false);
       this.loading$.unsubscribe();
     }
   }

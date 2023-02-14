@@ -4,6 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { LoadingComponent } from '@app-shared/components/loading/loading.component';
+import { Subscription } from 'rxjs';
 import * as Model from '../../applicant.model';
 import { AwardsComponent } from './awards/awards.component';
 import { EducationalBackgroundComponent } from './educational-background/educational-background.component';
@@ -18,6 +21,10 @@ import { WorkExperienceComponent } from './work-experience/work-experience.compo
 export class SkillsExperienceComponent implements OnInit {
   @Input() user: any;
   @Input() applicantProfileId: string;
+
+  confirmation$: Subscription;
+  loading$ = this.applicantFacade.loading$
+    .pipe().subscribe(this.formLoading.bind(this));
 
   skillsAndExperience$ = this.applicantFacade.additionalInfo$
     .pipe().subscribe(this.fillUpArrays.bind(this));
@@ -38,7 +45,8 @@ export class SkillsExperienceComponent implements OnInit {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private loadingDialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -63,7 +71,7 @@ export class SkillsExperienceComponent implements OnInit {
       if (res) {
         console.log(res);
         this.workExperience.push(res);
-        this.applicantFacade.saveWorkExperience(this.workExperience, this.applicantProfileId);
+        this.submitArray('workExperience');
       }
     });
   }
@@ -78,7 +86,7 @@ export class SkillsExperienceComponent implements OnInit {
       if (res) {
         console.log(res);
         this.educationalBackground.push(res);
-        this.applicantFacade.saveEducBg(this.educationalBackground, this.applicantProfileId);
+        this.submitArray('educBackground');
       }
     });
   }
@@ -93,9 +101,31 @@ export class SkillsExperienceComponent implements OnInit {
       if (res) {
         console.log(res);
         this.certifications.push(res);
-        this.applicantFacade.saveCert(this.certifications, this.applicantProfileId);
+        this.submitArray('certifications');
       }
     });
+  }
+
+  updateArray(index: number, arrayName: string) {
+
+  }
+
+  confirm(arrayName: string) {
+    const ref = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: true,
+      data: {
+        action: `Delete`,
+      },
+    });
+
+    this.confirmation$ = ref
+      .afterClosed()
+      .pipe()
+      .subscribe((result) => {
+        if (result == 1) {
+          this.submitArray(arrayName);
+        }
+      });
   }
 
   removeItem(index: number, arrayName: string) {
@@ -103,6 +133,32 @@ export class SkillsExperienceComponent implements OnInit {
       case 'professionalSkills':
         this.professionalSkills = this.professionalSkills.filter((skill, i) => i != index);
         this.skillChanged = true;
+        break;
+      case 'certifications':
+        this.certifications = this.certifications.filter((cert, i) => i != index);
+        this.confirm(arrayName);
+        break;
+      case 'workExperience':
+        this.workExperience = this.workExperience.filter((work, i) => i != index);
+        this.confirm(arrayName);
+        break;
+      case 'educBackground':
+        this.educationalBackground = this.educationalBackground.filter((educ, i) => i != index);
+        this.confirm(arrayName);
+        break;
+    }
+  }
+
+  submitArray(item: string) {
+    switch (item) {
+      case 'certifications':
+        this.applicantFacade.saveCert(this.certifications, this.applicantProfileId);
+        break;
+      case 'workExperience':
+        this.applicantFacade.saveWorkExperience(this.workExperience, this.applicantProfileId);
+        break;
+      case 'educBackground':
+        this.applicantFacade.saveEducBg(this.educationalBackground, this.applicantProfileId);
         break;
     }
   }
@@ -156,6 +212,19 @@ export class SkillsExperienceComponent implements OnInit {
     this.forChange[index] = status;
   }
 
+  formLoading(loading: boolean) {
+    if (loading) {
+      const ref = this.loadingDialog.open(LoadingComponent, {
+        disableClose: true,
+        data: {
+          selfClose: false
+        }
+      });
+    } else {
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+    }
+  }
+
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
@@ -165,6 +234,11 @@ export class SkillsExperienceComponent implements OnInit {
 
     if (this.skillsAndExperience$) {
       this.skillsAndExperience$.unsubscribe();
+    }
+
+    if (this.loading$) {
+      this.formLoading(false);
+      this.loading$.unsubscribe();
     }
   }
 
