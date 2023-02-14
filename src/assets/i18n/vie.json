@@ -3,36 +3,39 @@
         "WELCOME_MESSAGE": "Mang lại tất cả Ứng viên của bạn chỉ trong một nền tảng duy nhất",
         "LOGIN_TEXTBOX": "Đăng nhập",
         "LOGIN_HEADING": "Đăng nhập vào tài khoản của bạn",
-        "REGISTRATION_PROMPT": "Không có tài khoản, Đăng ký ngay!"
+        "REGISTRATION_PROMPT": "Không có tài khoản",
+        "REGISTER": "Đăng ký ngay!"
     },
-    "CREATE ACCOUNT": {
+    "CREATE_ACCOUNT": {
         "CREATE_ACCOUNT_TEXT": "Tạo tài khoản",
         "FIRSTNAME_TEXTBOX": "Tên đầu tiên",
         "LASTNAME_TEXTBOX": "Họ",
         "EMAIL_TEXTBOX": "Địa chỉ email",
         "PASSWORD_TEXTBOX": "Mật khẩu",
         "CONFIRM_PASSWORD_TEXTBOX": "Mật khẩu",
-        "REGISTER_AS_TEXTBOX":"Tôi muốn đăng ký làm",
+        "REGISTER_AS":"Tôi muốn đăng ký làm",
         "ACCEPTANCE_CHECKBOX": "Bằng cách tạo tài khoản của mình, bạn đồng ý với Chính sách quyền riêng tư và Điều khoản sử dụng của GetHired.",
-        "LOGIN_PROMPT": "Đã có tài khoản, đăng nhập ngay",
+        "LOGIN_PROMPT": "Đã có tài khoản",
+        "LOGIN_BUTTON": "đăng nhập ngay",
         "REGISTRATION_TYPE_SELECTOR": "Ứng viên",
         "REGISTRATION_TYPE_SELECTOR2": "Công ty",
         "REGISTRATION_BUTTON":"Đăng ký"
     },
-    "FORGET PASSWORD":{
+    "FORGET_PASSWORD":{
         "FORGET_PASSWORD_TEXT":"Quên mật khẩu",
         "RESET_PASSWORD_TEXT":"đặt lại mật khẩu",
         "PW_RESET_CONFIRMATION_TEXT":"Chúng tôi sẽ gửi cho bạn một email có liên kết để đặt lại mật khẩu cho tài khoản của bạn",
         "GET_RESET_LINK_BUTTON":"Nhận liên kết",
         "CANCEL_BUTTON":"Hủy"
     },
-    "APPLICANT DASHBOARD":{
+    "APPLICANT_DASHBOARD":{
         "DASHBOARD_TEXT":"Bảng điều khiển dữ liệu",
         "SIDEBAR_PROFILE":"Hồ sơ của bạn",
         "SIDEBAR_SETTINGS":"Cài đặt",
         "WIDGET_ACTIVE_APPLICATION":"ứng viên hiện có",
         "WIDGET_VIDEO_INTERVIEW":"video phỏng vấn",
-        "POP_UP_MESSAGE":"Luôn cập nhật bạn nhé! Cập nhật hồ sơ để thể hiện những kỹ năng bạn có",
+        "POP_UP_MESSAGE":"Luôn cập nhật bạn nhé!",
+        "UPDATE_PROFILE": " Cập nhật hồ sơ để thể hiện những kỹ năng bạn có",
         "TITLE_GRAPH":"hoạt động hiện tại",
         "GRAPH_CONTENT":"xem hồ sơ",
         "GRAPH_CONTENT2":"ứng viên hiện có",
@@ -328,5 +331,5 @@
         "LN_INPUT_FIELD":"Họ",
         "PW_INPUT FIELD":"Mật khẩu",
         "SUBMIT_BUTTON":"Lưu hay đổi"
-    },
+    }
 }

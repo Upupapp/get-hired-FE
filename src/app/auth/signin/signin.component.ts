@@ -5,6 +5,7 @@ import { routes } from '@main/app.routing.module';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-signin',

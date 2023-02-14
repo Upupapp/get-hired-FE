@@ -1,12 +1,13 @@
-                {
+{
     "SIGNIN": {
-        "WELCOME_MESSAGE": "Sign in to your account",
-        "LOGIN_TEXTBOX": "Login",
+        "WELCOME_MESSAGE": "Sign in to your account", 
+        "LOGIN_TEXTBOX": "Login", 
         "LOGIN_HEADING": "Sign in to your account",
-        "REGISTRATION_PROMPT": "Don't have an account? Register"
+        "REGISTRATION_PROMPT": "Don't have an account?",
+        "REGISTER": "Register"
 
     },
-    "CREATE ACCOUNT": {
+    "CREATE_ACCOUNT": {
         "CREATE_ACCOUNT_TEXT": "Create Account",
         "FIRSTNAME_TEXTBOX": "First Name",
         "LASTNAME_TEXTBOX": "Last Name",
@@ -16,24 +17,26 @@
         "REGISTER_AS":"I want to register as",
         "ACCEPTANCE_CHECKBOX": "By creating your account, you agree to GetHired's Privacy Policy and Terms of Use.",
         "LOGIN_PROMPT": "Already have an account? Login",
+        "LOGIN_BUTTON": "Login",
         "REGISTRATION_TYPE_SELECTOR": "Applicant",
         "REGISTRATION_TYPE_SELECTOR2": "Company",
         "REGISTRATION_BUTTON":"Register"
     },
-    "FORGET PASSWORD":{
+    "FORGET_PASSWORD":{
         "FORGET_PASSWORD_TEXT":"Forget Password",
         "RESET_PASSWORD_TEXT":"Reset Password",
         "PW_RESET_CONFIRMATION_TEXT":"We'll send you an email with a link to reset the password to your account",
         "GET_RESET_LINK_BUTTON":"Get Reset Link",
         "CANCEL_BUTTON":"Cancel"
     },
-    "APPLICANT DASHBOARD":{
+    "APPLICANT_DASHBOARD":{
         "DASHBOARD":"Dashboard",
         "SIDEBAR_PROFILE":"Profile",
         "SIDEBAR_SETTINGS":"Settings",
         "WIDGET_ACTIVE_APPLICATION":"Active Application",
         "WIDGET_VIDEO_INTERVIEW":"Video Interview",
-        "POP_UP_MESSAGE":"Stay Up to Date, Update your profile to showcase your skills",
+        "POP_UP_MESSAGE":"Stay Up to Date",
+        "UPDATE_PROFILE":"Update your profile to showcase your skills",
         "TITLE_GRAPH":"Current Activity",
         "GRAPH_CONTENT":"Profile View",
         "GRAPH_CONTENT2":"Job Application",
@@ -334,5 +337,5 @@
         "LN_INPUT_FIELD":"Last Name",
         "PW_INPUT FIELD":"Password",
         "SUBMIT_BUTTON":"Submit Changes"
-    },
+    }
 }

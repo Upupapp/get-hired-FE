@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { month } from '@app-shared/mock.data';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-applicant-stat-chart',
@@ -157,14 +158,15 @@ export class StatChartComponent implements OnInit {
   //   },
 
   // ];
-  public doughnutChartLabels: string[] = ['Application', 'Interviewed'];
+  public doughnutChartLabels: string[] = [this.translate.instant('APPLICANT_DASHBOARD.GRAPH_CONTENT3'), this.translate.instant('APPLICANT_DASHBOARD.GRAPH_CONTENT4')];
 
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: this.doughnutChartLabels,
     datasets: []
   };
 
-  constructor() { }
+  constructor(
+    private translate: TranslateService) { }
 
   ngOnInit(): void {
     console.log(this.charts);
