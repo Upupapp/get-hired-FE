@@ -33,6 +33,7 @@ export class WorkExperienceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log(this.data);
     this.workForm = this.fb.group({
       jobTitle: new FormControl(this.data?.jobTitle, Validators.required),
       location: new FormControl(this.data?.location, Validators.required),
