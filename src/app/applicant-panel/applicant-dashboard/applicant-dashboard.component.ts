@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
-import { tap } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as Model from '@main/applicant/applicant.model';
 import { ApplicantService } from '@app-applicant/applicant.service';
@@ -17,6 +17,7 @@ export class ApplicantDashboardComponent implements OnInit {
   applicant: Model.Applicant;
   cardDetails: any;
   charts: any;
+  dashboard$: Subscription;
 
   public isVisible: boolean = false;
 
@@ -46,7 +47,7 @@ export class ApplicantDashboardComponent implements OnInit {
       this.isVisible = true;
     }
 
-    this.applicantService.getDashboardDetails()
+    this.dashboard$ = this.applicantService.getDashboardDetails()
       .pipe().subscribe(dash => {
         const { data } = dash;
         this.charts = data.charts;
@@ -66,5 +67,13 @@ export class ApplicantDashboardComponent implements OnInit {
 
   redirectToEdit(){
     this.router.navigate(['../profile/edit'], { relativeTo: this.route})
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    if(this.dashboard$) {
+      this.dashboard$.unsubscribe();
+    }
   }
 }
