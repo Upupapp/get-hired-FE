@@ -72,11 +72,11 @@
             </div>
             <span class="title-job-type">{{item?.jobTypeName}}</span>
             <div class="mt-3" *ngIf="forChange[i]">
-              <!-- <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray()">
+              <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray(i, 'workExperience')">
                   Edit</button>
                 <button class="btn btn-save-draft btn-sm px-2 py-2" type="button"
-                  (click)="removeItem(i, this.workExperience)">
-                  Delete</button> -->
+                  (click)="removeItem(i, 'workExperience')">
+                  Delete</button>
             </div>
           </div>
         </div>
@@ -116,11 +116,11 @@
               {{item?.startMonth}}, {{ item.startYear }} - {{item?.endMonth}}, {{ item.endYear }}
             </div>
             <div class="mt-3" *ngIf="forChange[i]">
-              <!-- <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray()">
+              <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray(i, 'educBackground')">
                   Edit</button>
                 <button class="btn btn-save-draft btn-sm px-2 py-2" type="button"
-                  (click)="removeItem(i, this.certifications)">
-                  Delete</button> -->
+                  (click)="removeItem(i, 'educBackground')">
+                  Delete</button>
             </div>
           </div>
         </div>
@@ -158,11 +158,11 @@
                 item.endYear }}</span><span *ngIf="!item.endYear"> Present </span>
             </div>
             <div class="mt-3" *ngIf="forChange[i]">
-              <!-- <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray()">
+              <button class="btn btn-save-draft btn-sm mx-2 px-2 py-2" type="button" (click)="updateArray(i, 'certifications')">
                   Edit</button>
                 <button class="btn btn-save-draft btn-sm px-2 py-2" type="button"
-                  (click)="removeItem(i, this.certifications)">
-                  Delete</button> -->
+                  (click)="removeItem(i, 'certifications')">
+                  Delete</button>
             </div>
           </div>
         </div>
