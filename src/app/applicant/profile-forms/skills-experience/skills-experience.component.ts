@@ -64,13 +64,22 @@ export class SkillsExperienceComponent implements OnInit {
   addWorkExperience(index?: number) {
     const ref = this.dialog.open(WorkExperienceComponent, {
       width: '70vw',
-      data: index ? this.workExperience[index] : null
+      data: index >= 0 ? {...this.workExperience[index]} : null
     });
 
     ref.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
-        this.workExperience.push(res);
+        if(index >= 0) {
+          this.workExperience = [...this.workExperience.map((work, i) => {
+            if(i == index) {
+              return res;
+            } else {
+              return work;
+            }
+          })];
+        } else {
+          this.workExperience.push(res);
+        }
         this.submitArray('workExperience');
       }
     });
@@ -79,13 +88,22 @@ export class SkillsExperienceComponent implements OnInit {
   addEducBg(index?: number) {
     const ref = this.dialog.open(EducationalBackgroundComponent, {
       width: '70vw',
-      data: index ? this.educationalBackground[index] : null
+      data: index >= 0 ? {...this.educationalBackground[index]} : null
     });
 
     ref.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
-        this.educationalBackground.push(res);
+        if(index >= 0) {
+          this.educationalBackground = [...this.educationalBackground.map((educ, i) => {
+            if(i == index) {
+              return res;
+            } else {
+              return educ;
+            }
+          })];
+        } else {
+          this.educationalBackground.push(res);
+        }
         this.submitArray('educBackground');
       }
     });
@@ -94,20 +112,40 @@ export class SkillsExperienceComponent implements OnInit {
   addCertAndAwards(index?: number) {
     const ref = this.dialog.open(AwardsComponent, {
       width: '70vw',
-      data: index ? this.certifications[index] : null
+      data: index >= 0 ? {...this.certifications[index] }: null
     });
 
     ref.afterClosed().subscribe(res => {
       if (res) {
-        console.log(res);
-        this.certifications.push(res);
+        if(index >= 0) {
+          this.certifications = [...this.certifications.map((cert, i) => {
+            if(i == index) {
+              return res;
+            } else {
+              return cert;
+            }
+          })];
+        } else {
+          this.certifications.push(res);
+        }
         this.submitArray('certifications');
       }
     });
   }
 
   updateArray(index: number, arrayName: string) {
-
+    console.log(index);
+    switch (arrayName) {
+      case 'certifications':
+        this.addCertAndAwards(index);
+        break;
+      case 'workExperience':
+        this.addWorkExperience(index);
+        break;
+      case 'educBackground':
+        this.addEducBg(index);
+        break;
+    }
   }
 
   confirm(arrayName: string) {
