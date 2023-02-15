@@ -148,7 +148,7 @@ export class SkillsExperienceComponent implements OnInit {
     }
   }
 
-  confirm(arrayName: string) {
+  confirm(index: number, arrayName: string) {
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
@@ -161,7 +161,7 @@ export class SkillsExperienceComponent implements OnInit {
       .pipe()
       .subscribe((result) => {
         if (result == 1) {
-          this.submitArray(arrayName);
+          this.removeItem(index, arrayName)
         }
       });
   }
@@ -174,17 +174,17 @@ export class SkillsExperienceComponent implements OnInit {
         break;
       case 'certifications':
         this.certifications = this.certifications.filter((cert, i) => i != index);
-        this.confirm(arrayName);
         break;
       case 'workExperience':
         this.workExperience = this.workExperience.filter((work, i) => i != index);
-        this.confirm(arrayName);
         break;
       case 'educBackground':
         this.educationalBackground = this.educationalBackground.filter((educ, i) => i != index);
-        this.confirm(arrayName);
         break;
     }
+
+    this.submitArray(arrayName);
+
   }
 
   submitArray(item: string) {
