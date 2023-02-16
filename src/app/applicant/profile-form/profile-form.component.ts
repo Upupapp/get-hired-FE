@@ -9,6 +9,7 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
 import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-profile-form',
@@ -79,7 +80,8 @@ export class ProfileFormComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private successDialog: MatDialog,
-    private loadingDialog: MatDialog
+    private loadingDialog: MatDialog,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -95,6 +97,7 @@ export class ProfileFormComponent implements OnInit {
   }
 
   initializedForm(data?: Model.Applicant) {
+    console.log(data);
     this.profileForm = this.fb.group({
       profileDetailsForm: this.fb.group({
         photoUrl: [data ? data.photoUrl : null],
@@ -116,12 +119,19 @@ export class ProfileFormComponent implements OnInit {
         country: [data ? data.country : null, Validators.required]
       }),
       profileArraysForm: this.fb.group({
-        workExperience: this.fb.array([]),
-        educationalBackground: this.fb.array([]),
-        professionalSkills: this.fb.array([]),
-        certifications: this.fb.array([]),
+        workExperience:  [],
+        educationalBackground:  [],
+        professionalSkills:  [],
+        certifications: [],
         skillsTxt: [null]
       }),
+      // profileArraysForm: this.fb.group({
+      //   workExperience: data ? data.workExperience : [],
+      //   educationalBackground: data ? data.educationalBackground : [],
+      //   professionalSkills: data ? data.skills : [],
+      //   certifications: data ? data.certifications : [],
+      //   skillsTxt: [null]
+      // }),
       profileDocuments: this.fb.group({
         documents: this.fb.array([]),
         videoCVFile: [null],
@@ -135,9 +145,36 @@ export class ProfileFormComponent implements OnInit {
 
       }));
 
-    this.subscriptions$.add(
-      this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
-      }));
+    // this.subscriptions$.add(
+    //   this.profileForm.controls.profileArraysForm.valueChanges.pipe(distinctUntilChanged()).subscribe((value) => {
+    //   }));
+  }
+
+  saveProgress(event: number) {
+    console.log(this.stepper)
+    console.log(event)
+
+    if(this.stepper != event) {
+      const ref = this.dialog.open(ConfirmationDialogComponent, {
+        disableClose: true,
+        data: {
+          action: `Save Step ${this.stepper}`,
+        },
+      });
+
+      ref
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((result) => {
+          if (result == 1) {
+            // TODO
+            this.changeStep(event);
+          } else {
+            // TODO on Cancel
+          }
+        });
+    }
+
   }
 
   async submitProfile() {
@@ -145,6 +182,8 @@ export class ProfileFormComponent implements OnInit {
 
     // TODO save profile
     const applicant = await this.formatProfile();
+
+    console.log(applicant);
 
     const isProfileReady = applicant.firstName != ""
       && applicant.lastName != ""
@@ -156,6 +195,7 @@ export class ProfileFormComponent implements OnInit {
       && applicant.salaryCurrency != null
       && applicant.salaryMinimum != 0
       && applicant.salaryMaximum != 0;
+
 
     this.applicantFacade.saveApplicant({
       ...applicant,
@@ -194,90 +234,36 @@ export class ProfileFormComponent implements OnInit {
       this.profileForm.controls.profileDetailsForm.get('country').setValue(data.country);
       this.profileForm.controls.profileDetailsForm.get('salaryCurrency').setValue(data.salaryCurrency);
       this.profileForm.controls.profileDocuments.get('videoCVUrl').setValue(data.videoCVUrl);
-
-      const docs = this.profileForm.controls.profileDocuments.get('documents') as FormArray;
-      data.documents.map(item => {
-        const fileGroup = this.fb.group({
-          file: new FormControl(item.file),
-          filename: new FormControl(item.filename),
-          size: new FormControl(item.size),
-          type: new FormControl(item.type),
-          fileurl: new FormControl(item.fileurl),
-          created_at: new FormControl(item.created_at)
-        })
-        docs.push(fileGroup);
-      });
+      this.profileForm.controls.profileArraysForm.get('workExperience').setValue(data.workExperience);
+      this.profileForm.controls.profileArraysForm.get('professionalSkills').setValue(data.skills);
+      this.profileForm.controls.profileArraysForm.get('educationalBackground').setValue(data.educationalBackground);
+      this.profileForm.controls.profileArraysForm.get('certifications').setValue(data.certifications);
 
 
-      const works = this.profileForm.controls.profileArraysForm.get('workExperience') as FormArray;
-      if (data.workExperience.length > 0) {
-        data.workExperience.map((item: Model.WorkExperience) => {
-          const fileGroup = this.fb.group({
-            createdAt: new FormControl(item.createdAt),
-            updatedAt: new FormControl(item.updatedAt),
-            jobTitle: new FormControl(item.jobTitle),
-            companyName: new FormControl(item.companyName),
-            location: new FormControl(item.location),
-            jobTypeId: new FormControl(item.jobTypeId),
-            jobTypeName: new FormControl(item.jobTypeName),
-            startMonth: new FormControl(item.startMonth),
-            startYear: new FormControl(item.startYear),
-            endMonth: new FormControl(item.endMonth),
-            endYear: new FormControl(item.endYear),
-            isCurrentJob: new FormControl(item.isCurrentJob),
-            details: new FormControl(item.details),
-          })
-          works.push(fileGroup);
-        });
-      }
-
-      const profSkill = this.profileForm.controls.profileArraysForm.get('professionalSkills') as FormArray;
-      if (data.skills.length > 0) {
-        data.skills.map((item: string) => {
-          profSkill.push(new FormControl(item));
-        });
-      }
-
-      const educ = this.profileForm.controls.profileArraysForm.get('educationalBackground') as FormArray;
-      if (data.educationalBackground.length > 0) {
-        data.educationalBackground.map((item: Model.EducationalBackground) => {
-          const fileGroup = this.fb.group({
-            createdAt: new FormControl(item.createdAt),
-            updatedAt: new FormControl(item.updatedAt),
-            educLevelId: new FormControl(item.educLevelId),
-            educLevelName: new FormControl(item.educLevelName),
-            fieldOfStudy: new FormControl(item.fieldOfStudy),
-            school: new FormControl(item.school),
-            schoolAddress: new FormControl(item.schoolAddress),
-            startMonth: new FormControl(item.startMonth),
-            startYear: new FormControl(item.startYear),
-            endMonth: new FormControl(item.endMonth),
-            endYear: new FormControl(item.endYear)
-          })
-          educ.push(fileGroup);
-        });
-      }
-
-      const cert = this.profileForm.controls.profileArraysForm.get('certifications') as FormArray;
-      if (data.certifications.length > 0) {
-        data.certifications.map((item: Model.Certifications) => {
-          const fileGroup = this.fb.group({
-            createdAt: new FormControl(item.createdAt),
-            updatedAt: new FormControl(item.updatedAt),
-            certTitle: new FormControl(item.certTitle),
-            noExpiry: new FormControl(item.noExpiry),
-            startMonth: new FormControl(item.startMonth),
-            startYear: new FormControl(item.startYear),
-            endMonth: new FormControl(item.endMonth),
-            endYear: new FormControl(item.endYear),
-            details: new FormControl(item.details),
-
-          })
-          cert.push(fileGroup);
-        });
-      }
+      let docs = this.formatDocToFileGroup(data.documents);
+      this.docArray.controls = docs;
+      this.docArray.patchValue(docs);
     }
 
+  }
+
+  get docArray() {
+    return this.profileForm.controls.profileDocuments.get('documents') as FormArray;
+  }
+
+  formatDocToFileGroup(rawDocs) {
+    const formArraysDoc = rawDocs.map(item => {
+      const filegroup = this.fb.group({
+        file: new FormControl(item.file),
+        filename: new FormControl(item.filename),
+        size: new FormControl(item.size),
+        type: new FormControl(item.type),
+        fileurl: new FormControl(item.fileurl),
+        created_at: new FormControl(item.created_at)
+      });
+      return filegroup;
+    });
+    return formArraysDoc
   }
 
   async formatProfile(): Promise<Model.Applicant> {
@@ -288,9 +274,9 @@ export class ProfileFormComponent implements OnInit {
       ...profileArraysForm.value
     }
 
-    let filteredWork = data?.workExperience.filter(item => item.jobTitle)
-    let filteredCert = data?.certifications.filter(item => item.certTitle)
-    let filteredEduc = data?.educationalBackground.filter(item => item.school)
+    let filteredWork = data?.workExperience && data?.workExperience.length != 0 ? data?.workExperience.filter(item => item.jobTitle): [];
+    let filteredCert = data?.certifications && data?.certifications.length != 0 ? data?.certifications.filter(item => item.certTitle):[];
+    let filteredEduc = data?.educationalBackground && data?.educationalBackground.length != 0 ? data?.educationalBackground.filter(item => item.school):[];
 
     let fileteredProfileArray = {
       workExperience: filteredWork,
@@ -321,7 +307,7 @@ export class ProfileFormComponent implements OnInit {
         break;
       case 'profileArraysForm':
         const bodyInfo = this.profileForm.controls[formCtrl].value;
-        this.applicantFacade.setAdditionalInfo(bodyInitial);
+        this.applicantFacade.setAdditionalInfo(bodyInfo);
         break;
       // case 'profileDocuments':
       //   const bodyDocu = this.profileForm.controls[formCtrl] as FormArray;
@@ -355,6 +341,8 @@ export class ProfileFormComponent implements OnInit {
 
       // this.loadingDialog.closeAll();
       // this.showSuccessDialog();
+    } else if (event == 'saveStepperForm') {
+      this.submitProfile();
     }
   }
 

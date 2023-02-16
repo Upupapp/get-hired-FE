@@ -13,13 +13,18 @@ import { applicantReducer } from './state/applicant.reducer';
 import { ApplicantEffects } from './state/applicant.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { WorkExperienceComponent } from './profile-form/components/work-experience/work-experience.component';
+import { WorkExperienceComponent } from './profile-forms/skills-experience/work-experience/work-experience.component';
 import { ExperienceQualificationComponent } from './profile-form/components/experience-qualification/experience-qualification.component';
-import { EducationalBackgroundComponent } from './profile-form/components/educational-background/educational-background.component';
-import { AwardsComponent } from './profile-form/components/awards/awards.component';
+import { EducationalBackgroundComponent } from './profile-forms/skills-experience/educational-background/educational-background.component';
+import { AwardsComponent } from './profile-forms/skills-experience/awards/awards.component';
 import { DocumentsComponent } from './profile-form/components/documents/documents.component';
 import { RecorderModule } from '@main/recorder/recorder.module';
 import { PreviewComponent } from './profile-details/preview/preview.component';
+import { SkillsAndExpComponent } from './profile-form/components/skills-and-exp/skills-and-exp.component';
+import { ProfileBasicInfoComponent } from './profile-forms/profile-basic-info/profile-basic-info.component';
+import { ProfileFormsComponent } from './profile-forms/profile-forms.component';
+import { SkillsExperienceComponent } from './profile-forms/skills-experience/skills-experience.component';
+import { DocsVideocvComponent } from './profile-forms/docs-videocv/docs-videocv.component';
 
 
 @NgModule({
@@ -34,7 +39,12 @@ import { PreviewComponent } from './profile-details/preview/preview.component';
     EducationalBackgroundComponent,
     AwardsComponent,
     DocumentsComponent,
-    PreviewComponent
+    PreviewComponent,
+    SkillsAndExpComponent,
+    ProfileBasicInfoComponent,
+    ProfileFormsComponent,
+    SkillsExperienceComponent,
+    DocsVideocvComponent
   ],
   imports: [
     CommonModule,
@@ -45,6 +55,7 @@ import { PreviewComponent } from './profile-details/preview/preview.component';
     EffectsModule.forFeature([ApplicantEffects])
   ],
   exports: [
+    ProfileFormsComponent,
     ProfileDetailsComponent,
     ProfileFormComponent,
     AvatarComponent,

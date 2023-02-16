@@ -1,5 +1,21 @@
 @import "src/assets/styles/colors";
 
+.card-application-hired{
+	border-radius: 15px;
+	padding: 18px 22px 5px 25px !important;
+	cursor: pointer;
+	//height: 110px;
+	//box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.06);
+	border-radius: 15px;
+
+	background: url(~/src/assets/images/placeholder/total-hired.png);
+	background-repeat: no-repeat;
+	//background-attachment: fixed;
+	background-position: right;
+	background-size: 80%;
+	background-color: #0C5ED8;//linear-gradient(121.09deg, #0C5ED8 31.19%, #0C5ED8 95.32%);
+}
+
 .banner-image {
   border-radius: 0 !important;
   object-position: right;

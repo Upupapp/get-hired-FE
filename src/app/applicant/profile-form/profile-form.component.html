@@ -2,7 +2,7 @@
 <div class="bg-gray" *ngIf="!loading">
   <div style="position: relative;">
     <div class="bg-upper-gray">
-      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="saveProgress($event)">
       </app-main-stepper>
 
       <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
@@ -21,7 +21,9 @@
         </ng-container>
 
         <ng-container *ngIf="stepper === 2">
-          <app-experience-qualification formGroupName="profileArraysForm"></app-experience-qualification>
+          <!-- <app-experience-qualification formGroupName="profileArraysForm"></app-experience-qualification> -->
+          <app-skills-and-exp formGroupName="profileArraysForm"
+          (initiateSaving)="submitProfile()"></app-skills-and-exp>
         </ng-container>
 
         <ng-container *ngIf="stepper === 3">

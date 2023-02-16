@@ -13,6 +13,7 @@ import { ApplicantFacade } from '../state/applicant.facade';
 })
 export class ProfileDetailsComponent implements OnInit {
   @Input() userId: string;
+  @Input() isApplicantView: boolean;
 
   pageLoad$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));

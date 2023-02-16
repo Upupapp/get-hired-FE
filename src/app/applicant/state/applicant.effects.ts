@@ -13,6 +13,125 @@ export class ApplicantEffects {
     private actions$: Actions
   ) { }
 
+  saveBasicProfile$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveApplicantBasicProfile),
+      mergeMap((action) => this.applicantService.saveApplicantBasicProfile(action.basicProfile)
+        .pipe(
+          map((res: any) => {
+            const basicProfile: Model.BasicProfileInfo = res.data;
+            return ApplicantActions.saveApplicantBasicProfileSuccess({ basicProfile })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveApplicantBasicProfileFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveVideoCV$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveVideoCV),
+      mergeMap((action) => this.applicantService.saveVideoCV(action.video, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const video: Model.VideoCV = res.data;
+            return ApplicantActions.saveVideoCVSuccess({ video })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveVideoCVFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveSkills$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveProfessionalSkills),
+      mergeMap((action) => this.applicantService.saveProfessionalSkills(action.skills, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const skills: string[] = res.data;
+            return ApplicantActions.saveProfessionalSkillsSuccess({ skills })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveProfessionalSkillsFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveWorkExperience$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveWorkExperience),
+      mergeMap((action) => this.applicantService.saveWorkExperience(action.workExperience, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const workExperience: Model.WorkExperience[] = res.data;
+            return ApplicantActions.saveWorkExperienceSuccess({ workExperience })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveWorkExperienceFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveEducBg$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveEducationalBackground),
+      mergeMap((action) => this.applicantService.saveEducationalBackground(action.educBg, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const educBg: Model.EducationalBackground[] = res.data;
+            return ApplicantActions.saveEducationalBackgroundSuccess({ educBg })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveEducationalBackgroundFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveDocs$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveDocuments),
+      mergeMap((action) => this.applicantService.saveDocuments(action.docs, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const docs: Model.Documents[] = res.data;
+            return ApplicantActions.saveDocumentsSuccess({ docs })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveDocumentsFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
+  saveCerts$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ApplicantActions.saveCertifications),
+      mergeMap((action) => this.applicantService.saveCertifications(action.certs, action.profileId)
+        .pipe(
+          map((res: any) => {
+            const certs: Model.Certifications[] = res.data;
+            return ApplicantActions.saveCertificationsSuccess({ certs })
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(ApplicantActions.saveCertificationsFail({ payload: error }))
+          })
+        ))
+    )
+  });
+
   // getAllApplicant$ = createEffect(() => {
   //   return this.actions$.pipe(
   //     ofType(ApplicantActions.getAllapplicant),
@@ -54,23 +173,9 @@ export class ApplicantEffects {
       ofType(ApplicantActions.getApplicant),
       mergeMap((action) => this.applicantService.getApplicant(action.applicantId)
         .pipe(
-          switchMap((res: any) => {
+          map((res: any) => {
             const applicant: Model.Applicant = res.data;
-            return [
-              ApplicantActions.getApplicantSuccess({ applicant }),
-              ApplicantActions.setInitialDetails({
-                initialDetails: this.getInitialDetailsOfApplicant(applicant)
-              }),
-              ApplicantActions.setAdditionalInfo({
-                additionalInfo: this.getJobInfo(applicant)
-              }),
-              ApplicantActions.setProfileDocuments({
-                profileDocs: {
-                  documents: applicant.documents,
-                  videoCVUrl: applicant.videoCVUrl
-                }
-              })
-            ];
+            return ApplicantActions.getApplicantSuccess({ applicant })
           }),
           catchError((err) => {
             const { error } = err;
@@ -80,6 +185,38 @@ export class ApplicantEffects {
       )
     );
   });
+
+  // getApplicantDetails$ = createEffect(() => {
+  //   return this.actions$.pipe(
+  //     ofType(ApplicantActions.getApplicant),
+  //     mergeMap((action) => this.applicantService.getApplicant(action.applicantId)
+  //       .pipe(
+  //         switchMap((res: any) => {
+  //           const applicant: Model.Applicant = res.data;
+  //           return [
+  //             ApplicantActions.getApplicantSuccess({ applicant }),
+  //             ApplicantActions.setInitialDetails({
+  //               initialDetails: this.getInitialDetailsOfApplicant(applicant)
+  //             }),
+  //             ApplicantActions.setAdditionalInfo({
+  //               additionalInfo: this.getJobInfo(applicant)
+  //             }),
+  //             ApplicantActions.setProfileDocuments({
+  //               profileDocs: {
+  //                 documents: applicant.documents,
+  //                 videoCVUrl: applicant.videoCVUrl
+  //               }
+  //             })
+  //           ];
+  //         }),
+  //         catchError((err) => {
+  //           const { error } = err;
+  //           return of(ApplicantActions.getApplicantFail({ payload: error }));
+  //         })
+  //       )
+  //     )
+  //   );
+  // });
 
   createApplicantDetails$ = createEffect(() => {
     return this.actions$.pipe(

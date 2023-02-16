@@ -28,9 +28,42 @@ export class ApplicantFacade {
   // getApplicantById$ = this.store.pipe(select(fromfeature.getApplicantById));
   // getApplicantLoading$ = this.store.pipe(select(fromfeature.applicantLoading));
   error$: any;
+  // applicantTemp$ = this.store.pipe(select(fromfeature.applicantTemp));
+
+  getBasicInfo$ = this.store.pipe(select(fromfeature.getBasicInfo));
+  additionalInfo$ = this.store.pipe(select(fromfeature.getAdditionalInfo));
+  documents$ = this.store.pipe(select(fromfeature.getDocs));
+  videoCV$ = this.store.pipe(select(fromfeature.getVideoCV));
 
   constructor(private store: Store<State>) {}
 
+  saveVideo(video:Model.VideoCV, profileId: string) {
+    this.store.dispatch(ApplicantAction.saveVideoCV({ video, profileId }));
+  }
+
+  saveDocs(docs: Model.Documents[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveDocuments({ docs, profileId }));
+  }
+
+  saveCert(certs: Model.Certifications[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveCertifications({ certs, profileId }));
+  }
+
+  saveEducBg(educBg: Model.EducationalBackground[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveEducationalBackground({ educBg, profileId }));
+  }
+
+  saveWorkExperience(workExperience: Model.WorkExperience[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveWorkExperience({ workExperience, profileId }));
+  }
+
+  saveSkills(skills: string[], profileId: string) {
+    this.store.dispatch(ApplicantAction.saveProfessionalSkills({ skills, profileId }));
+  }
+
+  saveBasicInfo(basicProfile: Model.BasicProfileInfo) {
+    this.store.dispatch(ApplicantAction.saveApplicantBasicProfile({ basicProfile }));
+  }
 
   getApplicantDashboard() {
     this.store.dispatch(ApplicantAction.applicantDashboard());
@@ -46,6 +79,10 @@ export class ApplicantFacade {
 
   saveApplicant(applicant: Model.Applicant) {
     this.store.dispatch(ApplicantAction.saveApplicant({ applicant }));
+  }
+
+  saveApplicantBasicProfile(basicProfile: Model.BasicProfileInfo) {
+    this.store.dispatch(ApplicantAction.saveApplicantBasicProfile({ basicProfile }));
   }
 
   setInitialForm(initialDetails: Model.InitialDetails) {

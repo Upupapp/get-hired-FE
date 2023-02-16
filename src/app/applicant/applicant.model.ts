@@ -6,6 +6,41 @@ export interface User {
   email: string;
 }
 
+export interface BasicProfileInfo {
+  applicantProfileId?: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  photoUrl? : string;
+  jobTitle: string;
+  rating?: string;
+  workSetupId: string;
+  workSetupName?: string;
+  email: string;
+  address: string;
+  city: string;
+  country: string;
+  contactNumber: string;
+  shortBio: string;
+  servicesProvided?: string;
+  jobTypeId: string;
+  jobTypeName?: string;
+  jobLevelId: string;
+  jobLevelName?: string;
+  salaryMinimum: string;
+  salaryMaximum: string;
+  salaryCurrency: string;
+}
+
+export interface AdditionalInfo {
+  workExperience: WorkExperience[];
+  educationalBackground: EducationalBackground[];
+  professionalSkills: string[];
+  certifications: Certifications[];
+}
+
+// ****************
+
 export interface Applicant {
   applicantProfileId?: string;
   userId: string;
@@ -104,17 +139,19 @@ export interface InitialDetails {
   country: string;
 }
 
-export interface AdditionalInfo {
-  workExperience: WorkExperience[];
-  educationalBackground: EducationalBackground[];
-  professionalSkills: string[];
-  certifications: Certifications[];
-}
-
 export interface Options {
   id: number;
   name: string;
   icon?: string;
+}
+
+export interface VideoCV {
+  videoCVFile?: File;
+  videoCVUrl?: string
+  filename?: string;
+  size?: number;
+  type?: string;
+  created_at?: Date;
 }
 
 export interface ProfileDocuments {
