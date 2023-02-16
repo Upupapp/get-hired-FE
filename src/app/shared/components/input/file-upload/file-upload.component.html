@@ -5,7 +5,7 @@
                 <div>
                     <div *ngIf="!uploadedFile">
                         <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
-                        <button  (click)="uploadFile.click()" class="btn btn-primary float-end"
+                        <button  (click)="uploadFile.click()" class="btn btn-primary float-end" type="button"
                         id="btn-uploader">Choose File</button>
                     </div>
 
@@ -13,7 +13,7 @@
 
                 <div class="container-info">
                     <span class="img-info-container" *ngIf="info">
-                        <img src="/assets/images/icons/info-input-icon.png" 
+                        <img src="/assets/images/icons/info-input-icon.png"
                         [matTooltip]="infoTitle"
                         matTooltipPosition="above"
                         class="img-fluid">
@@ -41,7 +41,7 @@
             </div>
             <p *ngIf="isTouched" class="error-msg">*Empty Field</p>
         </div>
-    </div> 
+    </div>
 </ng-container>
 
 <ng-container *ngIf="labelTop && !isMultiple">
@@ -50,7 +50,7 @@
             <p class="label-top text-start text-truncate">
                 <span [innerHtml]="label"></span>
                 <span *ngIf="required" class="asterisk-required">*</span>
-            </p> 
+            </p>
         </div>
 
         <div class="container-input pt-2 px-md-4"
@@ -61,7 +61,7 @@
             <div *ngIf="!isMultiple" class="d-flex">
                 <div *ngIf="!uploadedFile">
                     <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
-                    <button  (click)="uploadFile.click()" class="btn btn-primary btn-uploader float-end">
+                    <button  (click)="uploadFile.click()" class="btn btn-primary btn-uploader float-end" type="button">
                     {{ subtitle || 'Choose File'}}</button>
                 </div>
 
@@ -81,7 +81,7 @@
 
         <div class="container-info">
             <span class="img-info-container" *ngIf="info">
-                <img src="/assets/images/icons/info-input-icon.png" 
+                <img src="/assets/images/icons/info-input-icon.png"
                 [matTooltip]="infoTitle"
                 matTooltipPosition="above"
                 class="img-fluid">
@@ -113,7 +113,7 @@
                         </div>
 
                         <span class="chip-text truncate">{{file.filename}}</span>
-                        
+
                         <mat-icon class="close" (click)="removeImageInArray(i)">close</mat-icon>
                     </div>
 
@@ -121,7 +121,7 @@
             </div>
         </div>
 
-        
+
     </div>
 
 </ng-container>

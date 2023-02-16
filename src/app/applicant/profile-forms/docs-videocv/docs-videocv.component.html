@@ -1,0 +1,77 @@
+<div class="mt-3 card card-body">
+  <div class="row">
+    <div class="col-12 col-lg-12 mb-3 " [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
+      <h5 class="mb-2 title-main">Profile Documents</h5>
+
+      <div class="card card-body mt-3">
+        <div class="row flex">
+          <div class="col-12 col-lg-6">
+            <p>You can upload your CV, resume and other documents that might help you <br>with your job application.</p>
+          </div>
+          <div class="col-12 col-lg-6 text-end">
+            <button class="btn btn-save"
+              (click)="uploadDocs()" *ngIf="tempDocs.length != 0 && tempDocs.length >= docs.length">
+              Submit Uploaded Files
+            </button>
+          </div>
+        </div>
+
+        <div class="px-3">
+          <app-file-upload-document [labelTop]="true" [multiple]="true" (upload)="onUpload($event)" [fileArray]="docs"
+            label="Upload documents you want to share"></app-file-upload-document>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 text-center mt-lg-5" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
+      <p>----- and ----</p>
+
+      <h5 class="title-main mt-5">Create Video Introduction</h5>
+
+      <div class="px-5 mt-4">
+        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="showVideoRecorder()">
+          <img src="/assets/images/placeholder/icons/video-create.png" style="height: 17px;" class="me-3">
+          Record or Upload a Video
+        </button>
+
+        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="submitVideo()" [disabled]="!previewBlob">
+          Submit Video
+        </button>
+
+        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="removeUploadVideo()" *ngIf="videoUrl">
+          Remove uploaded Video
+        </button>
+
+        <!-- <input #uploadFile hidden type="file" (change)="upload($event)" accept="video/mp4,video/x-m4v,video/*" />
+        <button class="btn btn-upload w-100 btn-block mb-3" (click)="uploadFile.click()">
+          <img src="/assets/images/placeholder/icons/video-upload.png" style="height: 17px;" class="me-3">Upload Video
+        </button> -->
+
+        <!-- <button class="btn btn-upload w-100 btn-block mb-3" (click)="clearVid()" *ngIf="previewBlob">
+          <i class="bi bi-download me-3"></i>Download Video
+        </button> -->
+
+
+      </div>
+
+    </div>
+    <div class="col-12 col-lg-6" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
+      <div class="card card-body h-100">
+        <h5 class="title-preview mb-4" *ngIf="!videoUrl">Preview Video File</h5>
+        <h5 class="title-preview mb-4" *ngIf="videoUrl">Uploaded Video File</h5>
+        <img src="/assets/images/video-placeholder.png" class="w-100 h-100"
+        *ngIf="!previewBlob && !videoUrl" />
+        <!-- <video #preview class="w-100" height="340" controls autoplay="autoplay">
+          <source *ngIf="previewBlob" [src]="previewBlob">
+        </video> -->
+        <video #preview class="w-100" height="330"
+          controls autoplay="autoplay"
+          style="border-radius: 6px !important;
+          background: gray !important;
+          padding: 0 !important;"
+          *ngIf="previewBlob || videoUrl" [src]="previewBlob ? previewBlob : videoUrl">
+        </video>
+      </div>
+    </div>
+  </div>
+</div>

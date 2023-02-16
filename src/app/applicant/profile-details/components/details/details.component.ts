@@ -12,6 +12,7 @@ import { month } from '@app-shared/mock.data';
 })
 export class DetailsComponent implements OnInit {
   @Input() user: Model.Applicant;
+  @Input() isApplicantView: boolean;
 
   months = month;
 

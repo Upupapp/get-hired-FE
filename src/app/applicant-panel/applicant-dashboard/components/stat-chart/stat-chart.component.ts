@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { month } from '@app-shared/mock.data';
+import moment from 'moment';
 
 @Component({
   selector: 'app-applicant-stat-chart',
@@ -19,82 +20,82 @@ export class StatChartComponent implements OnInit {
   @Input() charts: any;
   public activityGraphChartLabels: string[] = new Array(7).fill(0).map((el, i) => "December " + (i + 1));
   months = month;
+  lineChartRendering: boolean = true;
 
   /* Stacked Graph CHART */
   public activityGraphChartOptions: any = {
-    indexAxis: 'x',
-    plugins: {
-      title: {
-        //display: true,
-        //text: 'Chart.js Bar Chart - Stacked'
-      },
-
-      legend: {
-        position: 'right',
-        labels: {
-          boxWidth: 15,
-          boxHeight: 12,
-          fontColor: '#333',
-          //pointStyle: 'circle',
-          //usePointStyle: true,
-          padding: 10,
-          font: {
-            family: 'Noto Sans'
-          }
-        }
-      }
-    },
     responsive: true,
     maintainAspectRatio: false,
-    interaction: {
-      intersect: false,
+    elements: {
+      line: {
+        tension: 0.5
+      }
     },
     scales: {
-      x: {
-        //activity: true,
-        grid: {
-          display: false
-        },
+      // We use this empty structure as a placeholder for dynamic theming.
+      y:
+      {
+        position: 'left',
       },
-      y: {
-        //activity: true,
-        grid: {
-          display: true,
-          borderDash: [8, 4],
-        },
+    },
+
+    plugins: {
+      legend: { display: true },
+      annotation: {
+        annotations: [
+          {
+            type: 'line',
+            scaleID: 'x',
+            value: 'March',
+            borderColor: 'orange',
+            borderWidth: 2,
+            label: {
+              display: true,
+              position: 'center',
+              color: 'orange',
+              content: 'LineAnno',
+              font: {
+                weight: 'bold'
+              }
+            }
+          },
+        ],
       }
     }
   };
 
-  public activityGraphChartType: any = 'bar';
+  public activityGraphChartType: any = 'line';
   public activityGraphChartLegend = false;
 
   public lineChartData: ChartConfiguration['data'] = {
+    // {
+      //   data: [],
+      //   label: 'Job View',
+      //   backgroundColor: 'rgba(148,159,177,0.2)',
+      //   borderColor: 'rgba(148,159,177,1)',
+      //   pointBackgroundColor: 'rgba(148,159,177,1)',
+      // }
     datasets: [
       {
         data: [],
-        label: 'Job View',
-        backgroundColor: 'rgba(148,159,177,0.2)',
-        borderColor: 'rgba(148,159,177,1)',
-        pointBackgroundColor: 'rgba(148,159,177,1)',
+        label: 'Profile View',
+        borderColor: '#35C768',
+        pointBackgroundColor: '#35C768',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(148,159,177,0.8)',
-        fill: 'origin',
       },
       {
         data: [],
-        label: 'Job Applicant',
-        backgroundColor: 'rgba(77,83,96,0.2)',
-        borderColor: 'rgba(77,83,96,1)',
-        pointBackgroundColor: 'rgba(77,83,96,1)',
+        label: 'Job Application',
+        borderColor: '#FE6F61',
+        pointBackgroundColor: '#FE6F61',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(77,83,96,1)',
-        fill: 'origin',
       }
     ],
-    labels: [ ]
+    labels: []
   };
 
 
@@ -124,79 +125,75 @@ export class StatChartComponent implements OnInit {
 
   public doughnutChartType: any = 'doughnut';
   public doughnutChartLegend = true;
-  // public doughnutChartData: any[] = [
-  //   {
-  //     label: 'Invites',
-  //     data: [0,0, 0.0000001,],
-  //     // data: [75, 84, 45],
-  //     backgroundColor: [
-  //       'rgba(9,201,134, 1)',
-  //       'rgba(254,116,43, 1)',
-  //       '#f6f6f6'
-  //     ],
-  //     hoverBackgroundColor: [
-  //       'rgba(9,201,134, 0.5)',
-  //       'rgba(254,116,43, 0.5)',
-  //       '#f6f6f6'
-
-  //     ],
-  //     borderWidth: [0, 0],
-  //     hoverOffset: 6,
-  //     borderJoinStyle: 'miter',
-  //     borderAlign: 'center',
-  //     offset: [0, 3, 11],
-  //     cutout: ['70%', '75%', '40%'],
-  //     //weight: [5, 1, 1, 1],
-  //     //radius: '45%',
-  //     //circumference: 45,
-  //     animation: {
-  //       animateRotate: true,
-  //     },
-  //     //clip: {left: 5, top: false, right: -2, bottom: 0},
-  //     spacing: 0
-  //   },
-
-  // ];
   public doughnutChartLabels: string[] = ['Application', 'Interviewed'];
 
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: this.doughnutChartLabels,
     datasets: [],
-    
+
   };
 
   constructor() { }
 
   ngOnInit(): void {
     console.log(this.charts);
-    const data = { 
-      data: [parseInt(this.charts.application), parseInt(this.charts.applicants)],
-      backgroundColor: [
-        'rgba(15, 8, 75, 1)',
-        'rgba(61, 96, 167, 1)',
-        '#f6f6f6'
-      ],
-      hoverBackgroundColor: [
-        'rgba(15, 8, 75, 0.5)',
-        'rgba(61, 96, 167, 0.5)',
-        '#f6f6f6'
-      ], 
-    }
+    const data = { data: [parseInt(this.charts.application), parseInt(this.charts.interviews)] }
     this.doughnutChartData.datasets.push(data);
     this.lineChartRender();
+    console.log()
     // this.chart?.update();
   }
 
   lineChartRender() {
-    const count = this.charts.jobApplication.map(cnt => parseInt(cnt.count));
-    const data = { data: [count] };
-    const mappedLabels = this.charts.jobApplication.map(cnt => this.getMonth(cnt.month));
-    this.lineChartData.datasets.push(data);
-    this.lineChartData.labels.push(mappedLabels);
+    let sortedProfileView = this.charts.profileView?.slice().sort(function (a: any, b: any) {
+      var c: any = new Date(a.date);
+      var d: any = new Date(b.date);
+      return c - d;
+    });
+
+    let sortedJobApplication = this.charts.jobApplication?.slice().sort(function (a: any, b: any) {
+      var c: any = new Date(a.date);
+      var d: any = new Date(b.date);
+      return c - d;
+    });
+
+    let formattedLineChartData = this.formatLineGraphVal(sortedProfileView, sortedJobApplication)
+
+    this.lineChartData.datasets[0].data = formattedLineChartData.profileViews;
+    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplications;
+    this.lineChartData.labels = formattedLineChartData.labels;
+    this.lineChartRendering = false;
+
   }
 
   getMonth(monthNumber) {
-    return this.months[monthNumber -1];
+    return this.months[monthNumber + 1];
+  }
+
+  formatLineGraphVal(profileViews: any[], jobApplications: any[]) {
+    let graphData = {
+      labels: [],
+      profileViews: [],
+      jobApplications: []
+    }
+
+    if (profileViews.length > jobApplications.length) {
+      profileViews.forEach(element => {
+        graphData.labels.push(moment(element.date).format('MMM DD')),
+          graphData.profileViews.push(element.count);
+        graphData.jobApplications.push(jobApplications.find(x => x.date === element.date) ? jobApplications.find(x => x.date === element.date)['count'] : 0);
+
+      });
+    } else {
+      jobApplications.forEach(element => {
+        graphData.labels.push(moment(element.date).format('MMM DD')),
+          graphData.profileViews.push(element.count);
+        graphData.jobApplications.push(profileViews.find(x => x.date === element.date) ? profileViews.find(x => x.date === element.date)['count'] : 0)
+
+      });
+    }
+
+    return graphData;
   }
 
 }

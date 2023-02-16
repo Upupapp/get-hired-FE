@@ -30,11 +30,23 @@ body {
   color: #ff7062;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .btn-primary{
-  padding: 8px 15px !important;
-  background: $color-global-red-buttons !important;
-  border-radius: 5px !important;
   font-size: 14px !important;
+
+  background: $color-global-red-buttons!important;
+	border-radius: 7px;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 27px;
+  border: none;
+
+	color: #FFFFFF!important;
+	padding: 7px 20px !important;
 
   &:hover{
     background: rgba($color-global-red-buttons, 0.9) !important;
@@ -75,17 +87,6 @@ body {
 .bg-light {
   background: #ffffff;
   border-radius: 18px;
-}
-
-.btn-primary {
-  background: $color-blue-gradient;
-  border: none;
-  border-radius: 100px;
-  //min-width: 200px !important;
-  display: inline-block !important;
-  position: relative !important;
-  padding-top: 12px !important;
-  padding-bottom: 12px !important;
 }
 
 .form-control {

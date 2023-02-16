@@ -19,6 +19,11 @@ export const getApplicantById = createSelector(
   (state) => state.selected
 );
 
+export const getBasicInfo = createSelector(
+  getApplicantInitState,
+  (state) => state.basicProfile
+);
+
 export const getInitialDetails = createSelector(
   getApplicantInitState,
   (state) => state.initialDetails
@@ -33,6 +38,28 @@ export const applicantDashboard = createSelector (
   getApplicantInitState,
   state => state.dashboard
 );
+
+export const getProfileDocs = createSelector(
+  getApplicantInitState,
+  state => state.profileDocs
+);
+
+export const getDocs = createSelector(
+  getApplicantInitState,
+  state => state.documents
+);
+
+export const getVideoCV = createSelector(
+  getApplicantInitState,
+  state => state.videoCV
+);
+
+// export const applicantTemp = createSelector (
+//   getApplicantInitState,
+//   getInitialDetails,
+//   getAdditionalInfo,
+//   getProfileDocs
+// );
 
 // export const applicantLoading = createSelector(
 //   getApplicantInitState,
@@ -98,11 +125,6 @@ export const getLevelList = createSelector(
 //   getApplicantInitState,
 //   state => state.applicantInfo
 // );
-
-export const getProfileDocs = createSelector(
-  getApplicantInitState,
-  state => state.profileDocs
-);
 
 // export const getApplicantPreview = createSelector(
 //   getApplicantInitState,

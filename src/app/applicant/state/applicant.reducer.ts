@@ -14,8 +14,12 @@ export interface ApplicantState {
   error: any;
   succesMsg: string;
   loading: boolean;
-  initialDetails: Model.InitialDetails;
+  basicProfile: Model.BasicProfileInfo;
   additionalInfo: Model.AdditionalInfo;
+  documents: Model.Documents[];
+  videoCV: Model.VideoCV;
+
+  initialDetails: Model.InitialDetails;
   user: Model.User;
   // industry: Model.Options[];
   // badge: Model.Options[];
@@ -24,7 +28,6 @@ export interface ApplicantState {
   typeList: Model.Options[];
   level: Model.Options[];
   // category: Model.Options[];
-  documents: Model.Documents[];
   profileDocs: Model.ProfileDocuments;
   dashboard
   // applicant: Model.Applicant | null;
@@ -37,6 +40,7 @@ const initialState: ApplicantState = {
   error: null,
   succesMsg: null,
   loading: false,
+  basicProfile: null,
   initialDetails: null,
   additionalInfo: null,
   user: null,
@@ -51,12 +55,179 @@ const initialState: ApplicantState = {
   // initialDetails: null,
   // applicantInfo: null,
   documents: [],
+  videoCV: null,
   profileDocs: null
   // applicantLoading: false
 };
 
 export const applicantReducer = createReducer<ApplicantState>(
   initialState,
+  on(ApplicantActions.saveVideoCV, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveVideoCVSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      videoCV: action.video,
+      succesMsg: action.video.videoCVUrl ? 'updated': 'deleted'
+    };
+  }),
+  on(ApplicantActions.saveVideoCVFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveDocuments, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveDocumentsSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      documents: action.docs,
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveDocumentsFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveCertifications, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveCertificationsSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        certifications: action.certs
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveCertificationsFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveEducationalBackground, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveEducationalBackgroundSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        educationalBackground: action.educBg
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveEducationalBackgroundFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveWorkExperience, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveWorkExperienceSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        workExperience: action.workExperience
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveWorkExperienceFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveProfessionalSkills, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveProfessionalSkillsSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      additionalInfo: {
+        ...state.additionalInfo,
+        professionalSkills: action.skills
+      },
+      succesMsg: 'updated'
+    };
+  }),
+  on(ApplicantActions.saveProfessionalSkillsFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveApplicantBasicProfile, (state): ApplicantState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+    };
+  }),
+  on(ApplicantActions.saveApplicantBasicProfileSuccess, (state, action): ApplicantState => {
+    return {
+      ...state,
+      loading: false,
+      basicProfile: action.basicProfile,
+      succesMsg: action.basicProfile.applicantProfileId ? 'updated' : 'created'
+    };
+  }),
+  on(ApplicantActions.saveApplicantBasicProfileFail, (state, action): ApplicantState => {
+    return {
+      ...state,
+      error: action.payload,
+      succesMsg: null,
+    };
+  }),
   on(ApplicantActions.getUserProfile, (state): ApplicantState => {
     return {
       ...state,
@@ -90,6 +261,17 @@ export const applicantReducer = createReducer<ApplicantState>(
     return {
       ...state,
       selected: action.applicant,
+      additionalInfo: {
+        certifications: action.applicant ? action.applicant.certifications: null,
+        educationalBackground: action.applicant ? action.applicant.educationalBackground: null,
+        workExperience: action.applicant ? action.applicant.workExperience: null,
+        professionalSkills: action.applicant ? action.applicant.skills: null
+      },
+      documents: action.applicant ? action.applicant.documents: null,
+      videoCV: {
+        ...state.videoCV,
+        videoCVUrl: action.applicant ? action.applicant.videoCVUrl: null
+      },
       loading: false,
     };
   }),
@@ -113,7 +295,7 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       selected: action.applicant,
       loading: false,
-      succesMsg: action.applicant.applicantProfileId ? 'updated':'created'
+      succesMsg: action.applicant.applicantProfileId ? 'updated' : 'created'
     };
   }),
   on(ApplicantActions.saveApplicantFail, (state, action): ApplicantState => {
@@ -127,19 +309,29 @@ export const applicantReducer = createReducer<ApplicantState>(
   on(ApplicantActions.setInitialDetails, (state, action): ApplicantState => {
     return {
       ...state,
-      initialDetails: action.initialDetails
+      initialDetails: action.initialDetails,
+      succesMsg: 'saveStepperForm'
     };
   }),
   on(ApplicantActions.setAdditionalInfo, (state, action): ApplicantState => {
     return {
       ...state,
-      additionalInfo: action.additionalInfo
+      additionalInfo: action.additionalInfo,
+      selected: {
+        ...state.selected,
+        workExperience: action.additionalInfo.workExperience,
+        educationalBackground: action.additionalInfo.educationalBackground,
+        certifications: action.additionalInfo.certifications,
+        skills: action.additionalInfo.professionalSkills,
+      },
+      succesMsg: 'saveStepperForm'
     };
   }),
   on(ApplicantActions.setProfileDocuments, (state, action): ApplicantState => {
     return {
       ...state,
-      profileDocs: action.profileDocs
+      profileDocs: action.profileDocs,
+      succesMsg: 'saveStepperForm'
     };
   }),
   on(ApplicantActions.getSetupList, (state): ApplicantState => {
