@@ -18,16 +18,6 @@ export class LoadingComponent implements OnInit {
     if(this.data.selfClose) {
       setTimeout(() => this.dialogRef.close(), 3000);
     }
-
-    // unsubscribe
-    this.dialogRef.afterClosed()
-    .pipe(takeUntil(this.unsubscribe$))
-    .subscribe(result => {
-    });
-
   }
 
-  ngOnDestroy(){
-    this.dialogRef.close()
-  }
 }
