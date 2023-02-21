@@ -21,14 +21,14 @@
             </div>
             <div style="height: 400px;">
               <img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
-                src="assets/images/placeholder/login-object-new-2.png" class="img-object">
+              [src]="'/assets/images/' + env.projectName +'/login-object-new-1.png'" class="img-object">
             </div>
           </section>
 
           <section class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="/assets/images/placeholder/logo-2.png" routerLink="/jobs" class="main-logo">
+                <img [src]="'/assets/images/' + env.projectName +'/logo-words-vertical.png'" routerLink="/jobs" class="main-logo">
                 <h5 class="title-left-main">
                   Interview
                   <span class="title-left-gradient">ALL </span> your applicants
@@ -37,14 +37,14 @@
                 <h4 class="title-left-gradient">AUTOMATICALLY</h4>
               </div>
             </div>
-            <img src="assets/images/placeholder/login-object-new-1.png"
+            <img [src]="'/assets/images/' + env.projectName +'/login-object-new-2.png'"
               [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
           </section>
 
           <section class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="/assets/images/placeholder/logo-2.png" routerLink="/jobs" class="main-logo">
+                <img [src]="'/assets/images/' + env.projectName +'/logo-words-vertical.png'" routerLink="/jobs" class="main-logo">
                 <h5 class="title-left-main">
                   Choose the
                   <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
@@ -53,7 +53,7 @@
                 <h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
               </div>
             </div>
-            <img src="assets/images/placeholder/login-object-new-3.png"
+            <img [src]="'/assets/images/' + env.projectName +'/login-object-new-3.png'"
               [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
           </section>
         </div>
