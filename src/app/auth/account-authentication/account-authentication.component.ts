@@ -46,7 +46,7 @@ export class AccountAuthenticationComponent implements OnInit {
 
   ngOnInit(): void {
     this.resendLinkForm = this.fb.group({
-      'email': ['', [Validators.required, Validators.email]]
+      'email': [this.email, [Validators.required, Validators.email]]
     });
 
     switch (this.mode) {
@@ -108,9 +108,9 @@ export class AccountAuthenticationComponent implements OnInit {
             this.isResent = true;
             localStorage.removeItem('loginError');
             localStorage.removeItem('loginMessage');
-            // this.snackBar.open(`Verification link send to your email. Please verify and login again.`,
-            //   '', { duration: 4000, panelClass: ['danger-snackbar'] });
-            // setTimeout(() => this.redirectToLogin(), 3000);
+            this.snackBar.open(`Verification link send to your email. Please verify and login again.`,
+              '', { duration: 4000, panelClass: ['success-snackbar'] });
+            setTimeout(() => this.redirectToLogin(), 3000);
           }
         }),
         catchError((err: any) => {
