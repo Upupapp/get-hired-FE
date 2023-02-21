@@ -3,12 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  projectName: 'jobhive',
   production: false,
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
-  api_url: 'https://api-dot-jobhunt-375218.ts.r.appspot.com/api',
+  // api_url: 'https://api-dot-jobhunt-375218.ts.r.appspot.com/api',
   // app_url: 'https://jobhunt.com.au',
-  // api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
+  api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
   // api_url: 'http://localhost:3000/api',
   app_url: 'http://localhost:4200',
   NgRxName: 'App devtools',

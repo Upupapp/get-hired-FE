@@ -89,7 +89,7 @@
       </div>
 
       <div class="title-container mb-3" *ngIf="workSetup$ | async as workSetup">
-        <label>Preffered Work Setup</label>
+        <label>Preferred Work Setup</label>
         <select class="form-select" formControlName="workSetupId">
           <option selected disabled [ngValue]="null">Select Work Setup</option>
           <ng-container *ngFor="let item of workSetup; let i = index">

@@ -78,14 +78,14 @@
         </div>
       </div>
 
-      <div class="title-container mb-3">
+      <!-- <div class="title-container mb-3">
         <label>Services Provided</label>
         <div class="form-group">
           <textarea type="text" class="form-control" formControlName="servicesProvided"
-            placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. "
+            placeholder="What is Services Provided? It is a Short Description of what services an applicant can offer"
             rows="4"></textarea>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="col-12 col-lg-6 mb-3" *ngIf="typeList$ | async as jobType">
@@ -104,7 +104,7 @@
       </div>
 
       <div class="title-container mb-3" *ngIf="workSetup$ | async as workSetup">
-        <label>Preffered Work Setup</label>
+        <label>Preferred Work Setup</label>
         <select class="form-select" formControlName="workSetupId"
         [class.is-invalid]="workSetupId_validators?.invalid && workSetupId_validators?.touched">
           <option selected disabled [ngValue]="null">Select Work Setup</option>

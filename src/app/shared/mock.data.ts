@@ -2,12 +2,9 @@ export const month = ["January", "February", "March", "April", "May", "June", "J
 
 export const currencies = [
     {
-        name: 'PHP',
+        name: 'AUD',
     },
     {
         name: 'USD',
-    },
-    {
-        name: 'VND',
     }
 ];

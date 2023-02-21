@@ -1,4 +1,5 @@
 export const environment = {
+  projectName: 'jobhive',
   production: true,
   server: 'https://ssr-back.herokuapp.com',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
@@ -10,13 +11,6 @@ export const environment = {
   NgRxMaxAge: 15,
   isDebug: false,
   firebase: {
-    // apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
-    // authDomain: 'get-hired-363107.firebaseapp.com',
-    // projectId: 'get-hired-363107',
-    // storageBucket: 'get-hired-363107.appspot.com',
-    // messagingSenderId: "818317489154",
-    // appId: "1:818317489154:web:d849afade1105af929631b",
-    // measurementId: "G-4C797NXLJF"
     apiKey: "AIzaSyDMw_IXIFJkgKE53Fy4UnWwYQ8NhyTHrhI",
     authDomain: "jobhunt-375218.firebaseapp.com",
     projectId: "jobhunt-375218",
