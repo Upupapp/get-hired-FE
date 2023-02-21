@@ -22,8 +22,13 @@ body {
   width: 100%;
 }
 
+.bordered {
+  border: solid 2px $color-global-red-buttons;
+  border-radius: 1rem;
+}
+
 .success-snackbar {
-  background-color: #ff7062;
+  background-color: $color-global-red-buttons;
 }
 
 .text-primary-red {
