@@ -10,7 +10,8 @@
     "heroku-postinstall": "npm install --force",
     "build-dev": "ng build --configuration=staging",
     "build-prod": "ng build --configuration=production",
-    "deploy": "cd dist && gcloud app deploy --project get-hired-363107"
+    "deploy": "cd dist && gcloud app deploy --project get-hired-363107",
+    "deploy-eucanna": "cd dist && gcloud app deploy app-eucanna.yaml --project eucannajobs-343407"
   },
   "private": true,
   "dependencies": {
