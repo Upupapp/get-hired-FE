@@ -14,12 +14,12 @@ export class AdminGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    
+
     return this.adminService.getRefreshToken()
     .pipe(map((result:any) => {
-      if(!JSON.parse(JSON.stringify(result)).refreshToken){ 
+      if(!JSON.parse(JSON.stringify(result)).refreshToken){
         localStorage.setItem('loginError', "You are not allowed to access this URL. Please login to continue.");
-        localStorage.setItem('returnURL', this.router.url);
+        // localStorage.setItem('returnURL', this.router.url);
         this.adminService.logoutAdmin().subscribe((res: any) => res);
         this.router.navigate(['/signin']);
         return false;
@@ -31,5 +31,5 @@ export class AdminGuard implements CanActivate {
       }
     }));
   }
-  
+
 }

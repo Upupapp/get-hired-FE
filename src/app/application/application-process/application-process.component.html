@@ -34,7 +34,21 @@
         </div>
       </div>
 
-      <ng-template #noProfile></ng-template>
+      <ng-template #noProfile>
+        <div class="py-5 row justify-content-center">
+          <div class="col-12 col-lg-8 text-center">
+            <h3 class="text-primary-red">
+              It seems your account details is Empty.
+            </h3>
+            <h5 class="text-primary-red">
+              To start applying on Jobs, Please complete your profile details.
+            </h5>
+            <button class="btn btn-save mb-3 d-block mx-auto" type="button" (click)="redirectToUpdate()">
+              Update Profile</button>
+            <img [src]="'assets/images/' + env.projectName + '/update-profile.gif'" class="w-70 bordered" />
+          </div>
+        </div>
+      </ng-template>
     </section>
 
     <div class="text-end mt-4"
