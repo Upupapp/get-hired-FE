@@ -2,7 +2,7 @@
   [ngClass]="isPublic ? 'shadow': ''">
   <div class="container-fluid d-flex px-0 px-lg-5">
     <a class="navbar-brand me-3 me-lg-5 d-flex" (click)="navigateToJobs()" *ngIf="isPublic">
-      <img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-fluid" style="cursor: pointer">
+      <img [src]="'/assets/images/' + env.projectName + '/logo-words.png'" class="hvr-grow img-fluid" style="cursor: pointer">
     </a>
 
     <button

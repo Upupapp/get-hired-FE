@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { environment } from '@environments/environment';
 import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs';
 
 @Component({
@@ -9,6 +10,8 @@ import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs
 })
 export class LoadingComponent implements OnInit {
   public unsubscribe$ = new Subject<void>();
+  env = environment;
+
   constructor(
     public dialogRef: MatDialogRef<LoadingComponent>,
     @Inject(MAT_DIALOG_DATA) public data,

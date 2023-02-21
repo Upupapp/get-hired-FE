@@ -7,6 +7,7 @@ import { AuthService } from '../auth.service';
 import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
 import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } from 'rxjs';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-signup',
@@ -17,7 +18,7 @@ import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } 
 export class SignupComponent implements OnInit {
   unsubscribe$ = new Subject<void>();
   req$: Subscription;
-
+  env = environment;
   registerForm: FormGroup;
   message: any = localStorage.getItem('loginMessage');
   error: any = localStorage.getItem('loginError');

@@ -1,19 +1,19 @@
 <div class="container-fluid bg-white vh-100">
   <div class="row">
     <div class="col-12 col-md-12 col-lg-6 px-5 pb-2 bg-left" >
-      <section data-bs-ride="carousel" id="admin-carousel" 
+      <section data-bs-ride="carousel" id="admin-carousel"
       class="carousel slide"  data-bs-interval="7000">
         <div class="carousel-indicators">
-          <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="0" 
+          <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="0"
           class="active"></button>
           <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="1"></button>
           <button type="button" data-bs-target="#admin-carousel" data-bs-slide-to="2"></button>
         </div>
-        
+
         <div class="carousel-inner pb-5">
           <section class="carousel-item active text-center">
             <div class="text-center">
-              <img src="/assets/images/placeholder/logo-2.png" routerLink="/jobs" class="main-logo">
+              <img [src]="'/assets/images/' + env.projectName +'/logo-words-vertical.png'" routerLink="/jobs" class="main-logo">
               <h5 class="title-left-main">
                 Bring all your applicants in</h5>
               <h4 class="title-left-gradient">ONE PLATFORM</h4>
@@ -69,7 +69,7 @@
           </div>
 
           <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
-            [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" 
+            [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error"
             role="alert">
             <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
               (click)="onAlertClose()"></button>

@@ -15,6 +15,7 @@ import {
 import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
 import { Subscription } from 'rxjs';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -22,6 +23,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+  env = environment;
+
   @Input() user: any;
   @Input() isUserLoggedIn: boolean;
   @Input() isPublic: boolean;

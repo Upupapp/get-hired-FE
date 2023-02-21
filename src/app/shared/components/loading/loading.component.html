@@ -5,7 +5,8 @@
         <div class="col-12 col-md-12 loading-animation">
           <div class="mb-2 text-center">
 
-            <img src="assets/images/loading-hemp.gif" class="img-fluid lens-loader mb-3" />
+            <img [src]="'assets/images/' + env.projectName +'/loading.gif'"
+              class="img-fluid lens-loader mb-3" />
 
             <h2 class="color-blue-dark mt-5 loading-text">LOA<span class="text-primary-blue">DING</span></h2>
           </div>
