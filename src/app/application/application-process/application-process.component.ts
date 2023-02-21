@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output,HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, HostListener } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
@@ -13,6 +13,8 @@ import * as ApplicantModel from '@main/applicant/applicant.model';
 import { RecordLoadingComponent } from '@app-shared/components/record-loading/record-loading.component';
 import { TranslateService } from '@ngx-translate/core';
 import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
+import { environment } from '@environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-application-process',
@@ -23,6 +25,8 @@ import { InterviewNotificationComponent } from './steps/interview-questions/comp
 export class ApplicationProcessComponent implements OnInit {
   @Input() job: JobModel.Job;
   @Output() apply = new EventEmitter();
+
+  env = environment;
 
   private unsubscribe$ = new Subject<void>();
   isLoggedIn: boolean = false;
@@ -93,7 +97,13 @@ export class ApplicationProcessComponent implements OnInit {
 
   profile$ = this.applicantFacade.applicantDetails$
     .pipe(
-      tap(user => this.user = user)
+      tap(user => {
+        this.user = user;
+
+        this.stepperItems[1].disabled = !user;
+        this.stepperItems[2].disabled = !user || this.job && this.job.interviewQuestions.length == 0;
+        this.stepperItems[3].disabled = !user;
+      })
     );
 
   pageLoad$ = this.applicantFacade.loading$
@@ -110,15 +120,16 @@ export class ApplicationProcessComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private applicationFacade: ApplicationFacade,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    console.log(this.job)
+    console.log(this.user)
 
-    if(this.job && this.job.interviewQuestions.length == 0) {
-      this.stepperItems[2].disabled = true;
-    }
+    // if (this.job && this.job.interviewQuestions.length == 0 && !this.user) {
+    //   this.stepperItems[2].disabled = true;
+    // }
 
     this.isLoggedIn = this.coreService.isLoggedIn();
     this.coreService.getUserId()
@@ -217,14 +228,18 @@ export class ApplicationProcessComponent implements OnInit {
     }
   }
 
+  redirectToUpdate() {
+    this.router.navigateByUrl('user/profile/edit')
+  }
+
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    if(this.success$) {
+    if (this.success$) {
       this.success$.unsubscribe();
     }
 
-    if(this.pageLoad$) {
+    if (this.pageLoad$) {
       this.pageLoad$.unsubscribe();
     }
 
@@ -239,13 +254,13 @@ export class ApplicationProcessComponent implements OnInit {
   onScroll(event) {
     let scrollPosition = window.pageYOffset;
     let mainHeight = window.innerHeight - 100;
-    if(scrollPosition <= mainHeight){
+    if (scrollPosition <= mainHeight) {
       this.showEvaluateButton = false;
     }
 
     else {
       this.showEvaluateButton = true;
     }
-    console.debug("Scroll Event", window.pageYOffset, window.innerHeight );
+    console.debug("Scroll Event", window.pageYOffset, window.innerHeight);
   }
 }

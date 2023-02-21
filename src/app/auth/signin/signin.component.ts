@@ -66,7 +66,7 @@ export class SigninComponent implements OnInit {
 
       this.message = localStorage.getItem('loginMessage');
       console.log(user);
-      switch(user.role) {
+      switch (user.role) {
         case 1:
           localStorage.setItem('user', JSON.stringify({
             _id: data.id,
@@ -86,7 +86,7 @@ export class SigninComponent implements OnInit {
             lastName: data.lastName
           }));
 
-          if(user.withCompany) {
+          if (user.withCompany) {
             this.router.navigate(['../recruiter/dashboard'], { relativeTo: this.activatedRoute });
           } else {
             this.router.navigate(['../recruiter/company'], { relativeTo: this.activatedRoute });
@@ -99,7 +99,14 @@ export class SigninComponent implements OnInit {
             firstName: data.firstName,
             lastName: data.lastName
           }));
-          this.router.navigate(['/user/dashboard'], { relativeTo: this.activatedRoute });
+
+          const redirect = localStorage.getItem('returnURL');
+          console.log(redirect);
+          if (redirect) {
+            this.router.navigateByUrl(redirect);
+          } else {
+            this.router.navigate(['/user/dashboard'], { relativeTo: this.activatedRoute });
+          }
           break;
         default:
           break;
@@ -121,12 +128,12 @@ export class SigninComponent implements OnInit {
   }
 
   loginAdmin() {
-    localStorage.clear();
+    // localStorage.clear();
     this.email = this.loginForm?.get('email')?.value;
     const password = this.loginForm?.get('password')?.value;
     this.submitting = true;
 
-    this.authFacade.signIn(this.email, password);
+    this.authFacade.signIn(this.email.toLowerCase(), password);
   }
 
   resendVerification() {
@@ -153,7 +160,7 @@ export class SigninComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    if(this.credentials$) {
+    if (this.credentials$) {
       this.credentials$.unsubscribe();
     }
   }
