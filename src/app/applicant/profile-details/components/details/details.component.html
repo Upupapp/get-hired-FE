@@ -25,7 +25,7 @@
     </div>
 
     <!-- VIDEO CV PLACEHOLDER -->
-    <div class="col-12 col-lg-6" *ngIf="!user?.videoCVUrl">
+    <div class="col-12 col-lg-6" *ngIf="!user?.videoCVUrl && userRole != '2'">
 
       <h5 class="title-description">You can add your video introduction
         <span class="text-danger video-cv-link" (click)="navigateToEdit()">here</span>
@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <div class="row mt-4">
+  <div class="row mt-4" *ngIf="user.servicesProvided">
     <div class="col-12 col-lg-12 mb-3 pe-lg-5">
       <h5 class="title-main mb-2">{{ 'PROFILE.SERVICES_SECTION' | translate }}</h5>
       <p class="title-description">
