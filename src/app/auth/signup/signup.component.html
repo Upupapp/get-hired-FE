@@ -75,30 +75,48 @@
             <span [innerHtml]="error"></span>
           </div>
 
-          <div class="form-group  mt-4">
+          <div class="form-group mt-4">
             <input type="text" class="form-control" formControlName="firstName" name="firstName"
-              placeholder="First Name">
+              placeholder="First Name"
+              [class.is-invalid]="firstName_validators?.invalid && firstName_validators?.touched">
 
               <label class="d-flex">
                 <div>{{ 'CREATE_ACCOUNT.FIRSTNAME_TEXTBOX' | translate }}</div>
               </label>
+
+            <div class="mt-1 ms-4" *ngIf="
+            (firstName_validators?.invalid && firstName_validators?.touched) || firstName_validators?.dirty">
+              <small *ngIf="firstName_validators?.errors?.required" class="text-danger">First Name is required</small>
+            </div>
           </div>
 
           <div class="form-group  mt-4">
-            <input type="text" class="form-control" formControlName="lastName" name="lastName"
-                placeholder="Last Name">
+            <input type="text" class="form-control" formControlName="lastName" name="lastName" placeholder="Last Name"
+              [class.is-invalid]="lastName_validators?.invalid && lastName_validators?.touched">
 
               <label class="d-flex">
                 <div>{{ 'CREATE_ACCOUNT.LASTNAME_TEXTBOX' | translate }}</div>
               </label>
+
+
+            <div class="mt-1 ms-4" *ngIf="
+            (lastName_validators?.invalid && lastName_validators?.touched) || lastName_validators?.dirty">
+              <small *ngIf="lastName_validators?.errors?.required" class="text-danger">Last Name is required</small>
+            </div>
           </div>
 
           <div class="form-group mt-4">
-            <input type="email" class="form-control" formControlName="email" name="email" placeholder="Email Address">
+            <input type="email" class="form-control" formControlName="email" name="email" placeholder="Email Address"
+              [class.is-invalid]="email_validators?.invalid && email_validators?.touched">
 
             <label class="d-flex">
               <div>{{ 'CREATE_ACCOUNT.EMAIL_TEXTBOX' | translate }}</div>
             </label>
+
+            <div class="mt-1 ms-4" *ngIf="
+            (email_validators?.invalid && email_validators?.touched) || email_validators?.dirty">
+              <small *ngIf="email_validators?.errors?.required" class="text-danger">Email is required</small>
+            </div>
           </div>
 
           <div class="form-group mt-4">
@@ -164,10 +182,14 @@
             <label class="d-flex">
               <div>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</div>
             </label>
+
+            <div class="mt-1 ms-4" *ngIf="
+            (role_validators?.invalid && role_validators?.touched) || role_validators?.dirty">
+              <small *ngIf="role_validators?.errors?.required" class="text-danger">Role is required</small>
+            </div>
           </div>
 
           <div class="mt-4">
-
             <a class="mat-primary float-start forget-password">
               <mat-checkbox formControlName="agreeToTerms" class="remember-me  mt-1"></mat-checkbox>
               <span class="ms-2">
