@@ -88,7 +88,7 @@ export class SignupComponent implements OnInit {
   }
 
   openVerification(email: string) {
-    this.router.navigate(['../verify'], { queryParams: { mode: 'registered'}})
+    this.router.navigate(['../verify'], { queryParams: { mode: 'registered' } })
     // if (email) {
     //   this.isResent = true;
     //   setTimeout(() => this.router.navigate(['../signin'], { relativeTo: this.activatedRoute }), 3000);
@@ -125,6 +125,26 @@ export class SignupComponent implements OnInit {
     localStorage.removeItem('loginMessage');
     this.error = undefined;
     this.message = undefined;
+  }
+
+  get email_validators() {
+    return this.registerForm.get('email');
+  }
+
+  get firstName_validators() {
+    return this.registerForm.get('firstName');
+  }
+
+  get lastName_validators() {
+    return this.registerForm.get('lastName');
+  }
+
+  get agreeToTerms_validators() {
+    return this.registerForm.get('agreeToTerms');
+  }
+
+  get role_validators() {
+    return this.registerForm.get('role');
   }
 
   get pw_validators() {
