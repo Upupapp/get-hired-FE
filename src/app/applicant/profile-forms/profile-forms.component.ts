@@ -74,6 +74,7 @@ export class ProfileFormsComponent implements OnInit {
     console.log(event);
     if(event == 'VALID') {
       this.basicFormValid = true;
+      this.stepperItems[2].disabled = false
     }
   }
 
