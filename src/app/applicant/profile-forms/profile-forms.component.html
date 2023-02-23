@@ -6,9 +6,14 @@
   </div>
   <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
     <button class="btn btn-save-draft me-3" *ngIf="applicantProfileId" (click)="redirectToProfile()">Profile Preview</button>
-    <button class="btn btn-save me-2" type="button" (click)="basicInfo.submitForm()" *ngIf="stepper==1"
+    <!-- <button class="btn btn-save me-2" type="button" (click)="basicInfo.submitForm()" *ngIf="stepper==1"
       [disabled]="basicInfo ? !basicInfo.profileDetailsForm.valid : !basicFormValid">
-      Submit Changes</button>
+      Submit Changes</button> -->
+      <button class="btn btn-save me-2" type="button" (click)="saveProgressConfirmation(2)" *ngIf="stepper==1"
+      [disabled]="basicInfo ? !basicInfo.profileDetailsForm.valid : !basicFormValid">
+      Next</button>
+      <button class="btn btn-save me-2" type="button" (click)="saveProgressConfirmation(3)" *ngIf="stepper==2">
+      Next</button>
   </div>
 </div>
 
