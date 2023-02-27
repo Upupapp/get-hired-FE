@@ -12,6 +12,7 @@ import { StoreModule } from '@ngrx/store';
 import { companiesReducer } from './state/companies.reducer';
 import { CompaniesEffects } from './state/companies.effects';
 import { JobsModule } from '@main/jobs/jobs.module';
+import { SharedModule } from '@app-shared/shared.module';
 
 const routes: Routes = [
   {
@@ -36,6 +37,7 @@ const exportedComponents = [
   imports: [
     CommonModule,
     JobsModule,
+    SharedModule,
     StoreModule.forFeature('companies', companiesReducer),
     EffectsModule.forFeature([CompaniesEffects]),
     RouterModule.forChild(routes)

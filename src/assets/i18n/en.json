@@ -52,7 +52,7 @@
         "STATUS_TEXT":"Available",
         "EMAIL_ADDRESS_TEXT":"Email Address",
         "ADDRESS_TEXT":"Address",
-        "MOBILE_NUMBER_TEXT:":"Mobile Phone",
+        "MOBILE_NUMBER_TEXT":"Mobile Phone",
         "DOCUMENTS_TEXT":"Documents",
         "SHORT_BIO_SECTION":"Short Bio",
         "SERVICES_SECTION":"Provided Services",
@@ -133,7 +133,7 @@
         "UPLOAD_VIDEO_BUTTON":"Upload Video",
         "DOWNLOAD_VIDEO_BUTTON":"Download Video"
     },
-    "PUBLIC PAGE":{
+    "PUBLIC_PAGE":{
         "PUBLIC_PAGE":"Public Page",
         "KEYWORD_TEXTBOX":"Enter Keyword",
         "WORK_SETUP_SELECTOR":"Work Setup",
@@ -141,19 +141,20 @@
         "FIND_JOBS_BUTTON":"Find Jobs",
         "JOB_POST_SECTION_MESSAGE":"Start your career now, Apply to these Jobs to kick start your career",
 
-        "RESUME_UPLOAD_BOX_MESSAGE":"Let employees find you",
+        "RESUME_UPLOAD_BOX_MESSAGE":"Let employers find you",
         "RESUME_UPLOAD_BUTTON":"Upload Your Resume",
         "PHOTO_MESSAGE_EXAMPLE":"You're Hired",
         "PHOTO_SUGGESTION_EXAMPLE":"Gain more skills"
     },
-    "COMPANY DETAILS":{
+    "COMPANY_DETAILS":{
         "COMPANY_DETAILS":"Company Details",
         "JOBS_CAREERS_SECTION":"Latest Jobs and Careers",
         "JOBS_CAREERS_MESSAGE":"Apply to these Jobs to kick start your career",
-        "EMPTY_CONTENT_MESSAGE":"No Jobs Created Yet, There is no activity at the moment, but we can totally solve that"
+        "EMPTY_CONTENT_MESSAGE":"No Jobs Created Yet",
+        "EMPTY_CONTENT_SUB": "There is no activity at the moment, but we can totally solve that"
 
     },
-    "APPLY PAGE":{
+    "APPLY_PAGE":{
         "APPLY_NOW_BUTTON":"Apply Now",
         "DUPLICATE_APPLICATION_MESSAGE":"You already applied to this Job",
         "NUMBER_OF_EMPLOYEES":"Employees",
@@ -169,20 +170,21 @@
         "ADVANTAGES":"Good to have",
         "INTERVIEW_QUESTIONS":"Interview Questions"
     },
-    "USER APPLICATION PAGE":{
+    "USER_APPLICATION_PAGE":{
         "USER_INFORMATION_SECTION":"My details",
         "EXTRA_DOCUMENTS_SECTION":"Additonal Documents",
         "INTERVIEW_SECTION":"Interview",
         "SUMMARY_SECTION":"Summary"
     },
-    "ADDITIONAL DOCUMENTS PAGE/SECTION":{
-        "COVERLETTER_UPLOAD_BOX":"Browse Cover Letter, We accept: DOCS. DOCX. TXT. PDF.",
-        "RESUME_UPLOAD_BOX":"Browse Resume, We accept: DOCS. DOCX. TXT. PDF.",
-        "GOV_FILES_UPLOAD_BOX":"Browse Government Files, We accept: DOCS. DOCX. TXT. PDF.",
+    "ADDITIONAL_DOCUMENTS_PAGE_SECTION":{
+        "COVERLETTER_UPLOAD_BOX":"Browse Cover Letter",
+        "RESUME_UPLOAD_BOX":"Browse Resume",
+        "GOV_FILES_UPLOAD_BOX":"Browse Government Files",
+        "FILE_ACCEPT": "We accept",
         "FILE_PREVIEW":"Preview File",
         "DOCUMENT_UPLOAD_STATUS":"No Document Uploaded"
     },
-    "INTERVIEW PAGE/SECTION":{
+    "INTERVIEW_PAGE_SECTION":{
         "POP_UP_MESSAGE":"The Recruiter would like to ask you some questions.",
         "POP_UP_CONTEXT":"Answering Interviews during your application helps improve your success rate. Please click proceed to continue answering the interview questions. Prepare your camera. Get a good lighting and don't forget to smile. Let's Begin.",
         "SKIP_BUTTON":"Skip for now",
@@ -196,7 +198,7 @@
         "ANSWERS":"Interview Answers",
         "RECORD_UPLOAD_BUTTON":"Record/Upload Interview"
     },
-    "SUMMARY PAGE":{
+    "SUMMARY_PAGE":{
         "EVALUATION_SUBMIT_BUTTON":"Submit for Evaluation"
     },
     "ADMIN DASHOBOARD":{

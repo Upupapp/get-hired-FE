@@ -6,14 +6,14 @@
 	</div>
 
 	<div class="text-center px-lg-4">
-		<h5 class="title-main">The Recruiter would like to ask you some questions.</h5>
+		<h5 class="title-main">{{ 'INTERVIEW_PAGE_SECTION.POP_UP_MESSAGE' | translate }}</h5>
 
-		<p class="title-description">Answering Interviews during your application helps improve your success rate. Please click proceed to continue answering the interview questions. Prepare your camera. Get a good lighting and don't forget to smile. Let's Begin.</p>
+		<p class="title-description">{{ 'INTERVIEW_PAGE_SECTION.POP_UP_CONTEXT' | translate }}</p>
 	</div>
 
 	<div class="justify-content-center align-self-center d-flex mt-4">
-		<button class="btn btn-cancel me-2" (click)="close()">Skip for now</button>
+		<button class="btn btn-cancel me-2" (click)="close()">{{ 'INTERVIEW_PAGE_SECTION.SKIP_BUTTON' | translate }}</button>
 
-		<button class="btn btn-save" (click)="save()">Proceed</button>
+		<button class="btn btn-save" (click)="save()">{{ 'INTERVIEW_PAGE_SECTION.PROCEED_BUTTON' | translate }}</button>
 	</div>
 </div>

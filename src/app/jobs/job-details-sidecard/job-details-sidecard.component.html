@@ -19,7 +19,7 @@
 
                             <div class="ms-2 ps-1 text-start">
                                 <h5 class="title-company-employee">{{company?.numberOfEmployee}}</h5>
-                                <p class="title-company-employee-description">Employee</p>
+                                <p class="title-company-employee-description">{{ 'APPLY_PAGE.NUMBER_OF_EMPLOYEES' | translate }}</p>
                             </div>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
 
                             <div class="ms-2 ps-1 text-start">
                                 <h5 class="title-company-employee">{{company?.companyRating}}</h5>
-                                <p class="title-company-employee-description">Rating</p>
+                                <p class="title-company-employee-description">{{ 'APPLY_PAGE.COMPANY_REVIEWS' | translate }}</p>
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
 
                     <div class="company-description text-start mt-4">
                         <h5 class="title-company-description">
-                            <strong>About Company</strong><br>
+                            <strong>{{ 'APPLY_PAGE.ABOUT_COMPANY' | translate }}</strong><br>
                             {{company?.companyDetails}}
                         </h5>
                     </div>
@@ -109,7 +109,7 @@
                             style="height: 20px;">
 
                         <div class="ms-4 ps-1 text-start">
-                            <h5 class="title-job-details">Date Posted</h5>
+                            <h5 class="title-job-details">{{ 'APPLY_PAGE.JOB_DATE_POSTED' | translate }}</h5>
                             <p class="title-job-details-description">{{data?.updatedAt | date: 'MMM dd, yyyy'}}</p>
                         </div>
                     </div>

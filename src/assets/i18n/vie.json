@@ -51,7 +51,7 @@
         "STATUS_TEXT":"Có thể làm việc",
         "EMAIL_ADDRESS_TEXT":"Email ",
         "ADDRESS_TEXT":"Địa chỉ",
-        "MOBILE_NUMBER_TEXT:":"Số điện thoại",
+        "MOBILE_NUMBER_TEXT":"Số điện thoại", 
         "DOCUMENTS_TEXT":"Tài liệu đính kèm",
         "SHORT_BIO_SECTION":"Giới thiệu ngắn gọn",
         "SERVICES_SECTION":"Chịu trách nhiệm cho việc",
@@ -132,7 +132,7 @@
         "UPLOAD_VIDEO_BUTTON":"Đăng tải Video",
         "DOWNLOAD_VIDEO_BUTTON":"Tải về Video"
     },
-    "PUBLIC PAGE":{
+    "PUBLIC_PAGE":{
         "PUBLIC_PAGE":"Giao diện công chúng",
         "KEYWORD_TEXTBOX":"Thêm vào từ khóa",
         "WORK_SETUP_SELECTOR":"Cách thức làm việc",
@@ -145,13 +145,14 @@
         "PHOTO_MESSAGE_EXAMPLE":"Bạn đã được tuyển",
         "PHOTO_SUGGESTION_EXAMPLE":"Trau dồi kỹ năng"
     },
-    "COMPANY DETAILS":{
+    "COMPANY_DETAILS":{
         "COMPANY_DETAILS":"Thông tin Công ty",
         "JOBS_CAREERS_SECTION":"Việc làm và nghề nghiệp mới nhất",
         "JOBS_CAREERS_MESSAGE":"Ứng tuyển vào những Công việc này để bắt đầu sự nghiệp của bạn",
-        "EMPTY_CONTENT_MESSAGE":"Chưa có việc làm nào được tạo, TheChưa có hoạt động nào ở hiện tại"
+        "EMPTY_CONTENT_MESSAGE":"Chưa có việc làm nào được tạo",
+        "EMPTY_CONTENT_SUB": "TheChưa có hoạt động nào ở hiện tại"
     },
-    "APPLY PAGE":{
+    "APPLY_PAGE":{
         "APPLY_NOW_BUTTON":"Ứng tuyển ngay",
         "DUPLICATE_APPLICATION_MESSAGE":"Bạn đã nộp đơn cho công việc này",
         "NUMBER_OF_EMPLOYEES":"Số lượng nhân viên",
@@ -167,20 +168,21 @@
         "ADVANTAGES":"Lợi thế",
         "INTERVIEW_QUESTIONS":"Câu hỏi phỏng vấn"
     },
-    "USER APPLICATION PAGE":{
+    "USER_APPLICATION_PAGE":{
         "USER_INFORMATION_SECTION":"Thông tin của tôi",
         "EXTRA_DOCUMENTS_SECTION":"Tài liệu đính kèm",
         "INTERVIEW_SECTION":"Phỏng vấn",
         "SUMMARY_SECTION":"Tổng kết"
     },
-    "ADDITIONAL DOCUMENTS PAGE/SECTION":{
-        "COVERLETTER_UPLOAD_BOX":"Đăng tải Thư giới thiệu, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
-        "RESUME_UPLOAD_BOX":"Đăng tải Lý lịch nghề nghiệp, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
-        "GOV_FILES_UPLOAD_BOX":"Đăng tải Hồ sơ chứng nhận liên quan từ cơ quan chính quyền, Chúng tôi chấp nhận: DOCS. DOCX. TXT. PDF.",
+    "ADDITIONAL_DOCUMENTS_PAGE_SECTION":{
+        "COVERLETTER_UPLOAD_BOX":"Đăng tải Thư giới thiệu",
+        "RESUME_UPLOAD_BOX":"Đăng tải Lý lịch nghề nghiệp",
+        "GOV_FILES_UPLOAD_BOX":"Đăng tải Hồ sơ chứng nhận liên quan từ cơ quan chính quyền",
+        "FILE_ACCEPT": "Chúng tôi chấp nhận",
         "FILE_PREVIEW":"Xem trước File",
         "DOCUMENT_UPLOAD_STATUS":"Chưa có File nào được đăng tải"
     },
-    "INTERVIEW PAGE/SECTION":{
+    "INTERVIEW_PAGE_SECTION":{
         "POP_UP_MESSAGE":"Nhà tuyển dụng muốn biết thêm về bạn qua vài câu hỏi",
         "POP_UP_CONTEXT":"Trả lời các cuộc phỏng vấn trong quá trình nộp đơn của bạn giúp cải thiện tỷ lệ thành công của bạn. Vui lòng bấm tiếp tục để tiếp tục trả lời các câu hỏi này. Chuẩn bị camera của bạn. Bắt lấy ánh sáng tốt và đừng quên mỉm cười nha. Hãy bắt đầu nào.",
         "SKIP_BUTTON":"Bỏ qua phần này",
@@ -194,7 +196,7 @@
         "ANSWERS":"Câu trả lời",
         "RECORD_UPLOAD_BUTTON":"Quay video / Đăng tải video"
     },
-    "SUMMARY PAGE":{
+    "SUMMARY_PAGE":{
         "EVALUATION_SUBMIT_BUTTON":"Gửi đi"
     },
     "ADMIN DASHOBOARD":{

@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col-8 text-start">
                         <h6>{{label}}</h6>
-                        <span>We accept: <span class="text-document">DOCS. DOCX. TXT. PDF.</span></span>
+                        <span>{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.FILE_ACCEPT' | translate }}: <span class="text-document">DOCS. DOCX. TXT. PDF.</span></span>
                     </div>
 
                     <div class="col-4">
@@ -26,7 +26,7 @@
 
         <div class="col-12" [ngClass]="singleLine ? 'col-12 pt-4' : 'col-12 col-md-6'">
             <div class="preview-file" *ngIf="fileArray.length > 0">
-                <h5 class="title-preview">Preview File</h5>
+                <h5 class="title-preview">{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.FILE_PREVIEW' | translate }}</h5>
                 <div class="mb-3 p-3" *ngFor="let file of fileArray; let i = index">
                     <div class="d-flex file">
                         <div class="img-circle me-3">
@@ -61,7 +61,7 @@
             </div>
 
             <div class="preview-file" *ngIf="fileArray.length === 0">
-                <h5 class="title-preview">Preview File</h5>
+                <h5 class="title-preview">{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.FILE_PREVIEW' | translate }}</h5>
                 <div class="mb-3 p-3">
                     <div class="d-flex file">
                         <div class="img-circle me-3">
@@ -70,7 +70,7 @@
 
                         <div class="w-100 mt-2">
                             <div>
-                                <span class="document-uploaded truncate">No Document Uploaded</span>
+                                <span class="document-uploaded truncate">{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.DOCUMENT_UPLOAD_STATUS' | translate }}</span>
                                 <div class="float-end me-2" style="margin-top: -21px;">0 MB</div>
                             </div>
                             <div class="progress mt-2">
