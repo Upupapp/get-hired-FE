@@ -64,7 +64,7 @@
         "ACCOUNT_SETTINGS":"Cài đặt Tài khoản",
         "SUBMIT_CHANGES_BUTTON":"Lưu thay đổi"
     },
-    "PROFILE DETAILS":{
+    "PROFILE_DETAILS":{
         "PROFILE_DETAILS_TITLE":"Thông tin hồ sơ",
         "PHOTO_TEXT":"Hình ảnh cá nhân",
         "UPLOAD_PHOTO_BUTTON":"Chọn hình ảnh của bạn",
@@ -83,7 +83,7 @@
         "CITY_MUNICIPALITY_TEXT":"Thành phố/ Quận huyện",
         "COUNTRY_TEXT":"Quốc gia"
     },
-    "SKILLS AND EXPERIENCE":{
+    "SKILLS_AND_EXPERIENCE":{
         "SKILLS_EXPERIENCE_SECTION":"Kỹ năng và Kinh nghiệm",
         "ADD_ITEM_BUTTON":"Thêm vào",
         "WORK_EXPERIENCE_TITLE":"Kinh nghiệm làm việc",
@@ -98,6 +98,11 @@
 
         "EDUCATION_BACKGROUND_SECTION":"Trình độ học vấn",
         "EDUCATION_LEVEL":"Trình độ chi tiết",
+        "PRIMAARY":"giáo dục tiểu học",
+        "SECONDARY":"giáo dục phổ thông",
+        "BACHELOR_DEGREE":"bằng cử nhân hoặc trình độ tương đương",
+        "MASTERS":"Thạc sĩ hoặc trình độ tương đương",
+        "DOCTORAL":"trình độ tiến sĩ hoặc tương đương",
         "EDUCATION_LEVEL_SELECTOR":"giáo dục tiểu học, giáo dục phổ thông, bằng cử nhân hoặc trình độ tương đương, Thạc sĩ hoặc trình độ tương đương, trình độ tiến sĩ hoặc tương đương",
         "EDUCATION_START_DATE":"Ngày bắt đầu",
         "EDUCATION_END_DATE":"Ngày kết thúc",
@@ -107,7 +112,7 @@
 
         "SKILLS_SECTION":"Kỹ năng chuyên môn",
 
-        "CERTIFICATIONS_AWARDS_MODULe":"Bằng cấp hoặc giải thưởng",
+        "CERTIFICATIONS_AWARDS_MODULE":"Bằng cấp hoặc giải thưởng",
         "TITLE":"Danh hiệu",
         "TIME_PERIOD":"Thời gian",
         "TIME_PERIOD_TYPE":"Bằng cấp hoặc giải thưởng có giá trị vô thời hạn",

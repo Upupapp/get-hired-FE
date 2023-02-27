@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { month } from '@app-shared/mock.data';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-educational-background',
@@ -21,11 +22,12 @@ export class EducationalBackgroundComponent implements OnInit {
   educBgForm: FormGroup;
 
   level$ = this.applicantFacade.level$;
-  public levelOfEducation: string[] = ["Primary education", "Upper Secondary Education", "Bachelor’s or equivalent level", "Master’s or equivalent level", "Doctoral or equivalent level"]
+  public levelOfEducation: string[] = [this.translate.instant('SKILLS_AND_EXPERIENCE.PRIMAARY'), this.translate.instant('SKILLS_AND_EXPERIENCE.SECONDARY'), this.translate.instant('SKILLS_AND_EXPERIENCE.BACHELOR_DEGREE'), this.translate.instant('SKILLS_AND_EXPERIENCE.MASTERS'), this.translate.instant('SKILLS_AND_EXPERIENCE.DCOTORAL')]
 
   constructor(
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {

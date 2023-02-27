@@ -1,6 +1,6 @@
 <form [formGroup]="arrayForm">
   <div class="mb-3 mt-4 ms-2 w-100">
-    <h5 class="mt-3 main-title text-center">Work Experience</h5>
+    <h5 class="mt-3 main-title text-center">{{ 'SKILLS_AND_EXPERIENCE.WORK_EXPERIENCE_TITLE' | translate }}</h5>
   </div>
 
   <div *ngIf="!workRendering">
@@ -11,7 +11,7 @@
   </div>
 
   <div class="mb-3 mt-5 ms-2 w-100">
-    <h5 class="mt-3 main-title text-center">Educational Background</h5>
+    <h5 class="mt-3 main-title text-center">{{ 'SKILLS_AND_EXPERIENCE.EDUCATION_BACKGROUND_MODULE' | translate }}</h5>
   </div>
 
   <div *ngIf="!educRendering">
@@ -26,14 +26,14 @@
   <div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
     <div class="row mt-3">
       <div class="col-12 col-md-6 mb-3">
-        <label class="text-center">Professional Skills</label>
+        <label class="text-center">{{ 'SKILLS_AND_EXPERIENCE.SKILLS_SECTION' | translate }}</label>
 
         <div class="form-group d-flex with-add search-group" style="height: 60px;">
           <input type="text" name="search" class="form-control form-control-main" formControlName="skillsTxt" style="background: white !important"
             placeholder="ex. Data Encoding, Ruby, JavaScript"
             (keyup.up)="addItem('skillsTxt', this.professionalSkills)">
           <button class="btn btn-add-now" (click)="addItem('skillsTxt', this.professionalSkills)">
-            Add
+            {{ 'SKILLS_AND_EXPERIENCE.ADD_ITEM_BUTTON' | translate }}
           </button>
         </div>
 
@@ -56,7 +56,7 @@
   </div>
 
   <div class="mb-3 mt-5 ms-2 w-100">
-    <h5 class="mt-3 main-title text-center">Certification / Awards</h5>
+    <h5 class="mt-3 main-title text-center">{{ 'SKILLS_AND_EXPERIENCE.CERTIFICATIONS_AWARDS_MODULE' | translate }}</h5>
   </div>
 
   <div *ngIf="!awardRendering">

@@ -9,6 +9,7 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
 import { Subscription, Subject, takeUntil, distinctUntilChanged, of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-form',
@@ -47,14 +48,14 @@ export class ProfileFormComponent implements OnInit {
     },
     {
       id: 2,
-      title: "Skills and Experience",
+      title: this.translate.instant('SKILLS_AND_EXPERIENCE.SKILLS_EXPERIENCE_SECTION'),
       disabled: false,
       formName: 'initialData'
 
     },
     {
       id: 3,
-      title: "Documents",
+      title: this.translate.instant('DOCUMENT.DOCUMENTS_SECTION'),
       disabled: false,
       formName: ''
     },
@@ -79,7 +80,8 @@ export class ProfileFormComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private successDialog: MatDialog,
-    private loadingDialog: MatDialog
+    private loadingDialog: MatDialog,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {

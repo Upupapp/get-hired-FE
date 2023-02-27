@@ -1,7 +1,7 @@
 <section class="mt-4 px-4">
   <form [formGroup]="profileDetailsForm" (ngSubmit)="onSubmit()">
     <div class="text-end submit-container pe-3 pt-3" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-      <button class="btn btn-save me-2" (click)="changePw()">Submit Changes</button>
+      <button class="btn btn-save me-2" (click)="changePw()">{{ 'SETTINGS.SUBMIT_CHANGES_BUTTON' | translate }}</button>
     </div>
 
     <div class="card card-body mt-3">
@@ -9,7 +9,7 @@
       <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
         <!-- CONTACT DETAILS -->
         <div class="col-12 mt-2">
-          <h5 class="title-label">Account Settings</h5>
+          <h5 class="title-label">{{ 'SETTINGS.ACCOUNT_SETTINGS' | translate }}</h5>
           <hr style="border: dashed 1px #868686">
         </div>
 

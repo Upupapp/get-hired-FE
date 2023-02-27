@@ -38,7 +38,7 @@ export class ApplicantSidebarComponent implements OnInit {
 
   public sidebarItems: any[] = [
     {
-      title: this.translate.instant('APPLICANT_DASHBOARD.DASHBOARD'), icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+      title: this.translate.instant('APPLICANT_DASHBOARD.DASHBOARD_TEXT'), icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
     },
 
     // {

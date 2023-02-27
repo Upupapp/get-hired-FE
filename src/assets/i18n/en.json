@@ -30,7 +30,7 @@
         "CANCEL_BUTTON":"Cancel"
     },
     "APPLICANT_DASHBOARD":{
-        "DASHBOARD":"Dashboard",
+        "DASHBOARD_TEXT":"Dashboard",
         "SIDEBAR_PROFILE":"Profile",
         "SIDEBAR_SETTINGS":"Settings",
         "WIDGET_ACTIVE_APPLICATION":"Active Application",
@@ -65,7 +65,7 @@
         "ACCOUNT_SETTINGS":"Account Settings",
         "SUBMIT_CHANGES_BUTTON":"Submit Changes"
     },
-    "PROFILE DETAILS":{
+    "PROFILE_DETAILS":{
         "PROFILE_DETAILS_TITLE":"Profile Details",
         "PHOTO_TEXT":"Profile Photo",
         "UPLOAD_PHOTO_BUTTON":"Select Profile Photo",
@@ -84,7 +84,7 @@
         "CITY_MUNICIPALITY_TEXT":"City/Municipality",
         "COUNTRY_TEXT":"Country"
     },
-    "SKILLS AND EXPERIENCE":{
+    "SKILLS_AND_EXPERIENCE":{
         "SKILLS_EXPERIENCE_SECTION":"Skills and Experience",
         "ADD_ITEM_BUTTON":"Add item",
         "WORK_EXPERIENCE_TITLE":"Work Experience",
@@ -99,6 +99,11 @@
 
         "EDUCATION_BACKGROUND_MODULE":"Education Background",
         "EDUCATION_LEVEL":"Level of Education",
+        "PRIMAARY":"Primary education",
+        "SECONDARY":"Upper Secondary Education, Bachelor's or equivalent level",
+        "BACHELOR_DEGREE":"Bachelor's or equivalent level",
+        "MASTERS":"Masters or equivalent level",
+        "DOCTORAL":"Doctoral or equivalent level",
         "EDUCATION_LEVEL_SELECTOR":"Primary education, Upper Secondary Education, Bachelor's or equivalent level, Masters or equivalent level, Doctoral or equivalent level",
         "EDUCATION_START_DATE":"Start Date",
         "EDUCATION_END_DATE":"End Date",
@@ -108,7 +113,7 @@
 
         "SKILLS_SECTION":"Professional Skills",
 
-        "CERTIFICATIONS_AWARDS_MODULe":"Certification/Awards",
+        "CERTIFICATIONS_AWARDS_MODULE":"Certification/Awards",
         "TITLE":"Title",
         "TIME_PERIOD":"Time Period",
         "TIME_PERIOD_TYPE":"This certification or award does not expire",
