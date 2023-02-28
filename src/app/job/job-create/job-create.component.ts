@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import * as Model from '../job.model';
+import * as QuestionModel from '@main/interview/interview.model';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
@@ -160,7 +161,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         // contractEnd: DetailedDate;
       }),
       interview: this.fb.group({
-        interviewQuestions: new FormArray([])
+        interviewQuestions: new FormArray([]),
+        interviewTemplateId: [data ? data.interviewTemplateId : null],
       })
     });
 
@@ -247,15 +249,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
       let interviewQuestions = this.jobForm.controls.interview.get('interviewQuestions') as FormArray;
       if (data.hasOwnProperty('interviewQuestions') && data?.interviewQuestions.length > 0) {
-        data.interviewQuestions.forEach(element => {
+        data.interviewQuestions.forEach((element: QuestionModel.InterviewQuestion) => {
           interviewQuestions.push(new FormGroup({
+            questionId: new FormControl(element.questionId),
             question: new FormControl(element.question),
             answerDuration: new FormControl(element.answerDuration),
             retakes: new FormControl(element?.retakes)
           }));
         })
       }
-
     }
 
     // this.initial$ = this.jobFacade.initial$
@@ -300,7 +302,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // }
 
   async getJobById() {
-    await this.jobFacade.getJobById(this.jobId);
+    this.jobFacade.getJobById(this.jobId);
   }
 
   async saveAsDraft() {
@@ -377,7 +379,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     const user = await this.asyncLocalStorage.getItem('user');
 
     const { initialData, jobInfo, interview } = this.jobForm.controls;
-    const { interviewQuestions } = interview.value;
+    const { interviewQuestions, interviewTemplateId } = interview.value;
 
     return {
       ...initialData.value,
@@ -386,6 +388,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         ? this.formatBadgesGetId(initialData.value.badges)
         : [],
       interviewQuestions,
+      interviewTemplateId,
       companyId: JSON.parse(user).companyId,
       jobStatusId: status,
       jobId: this.jobId
@@ -454,7 +457,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         break;
       case 'interview':
         const bodyInterview = this.jobForm.controls[formCtrl].value;
-        this.jobFacade.saveInterview(bodyInterview.interviewQuestions)
+        this.jobFacade.saveInterview(bodyInterview.interviewQuestions, bodyInterview.interviewTemplateId)
         break;
     }
   }

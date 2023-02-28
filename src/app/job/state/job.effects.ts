@@ -291,7 +291,7 @@ export class JobEffects {
                 initialDetails: this.getInitialDetailsOfJob(job)
               }),
               JobActions.setJobInfo({ jobInfo: this.getJobInfo(job) }),
-              JobActions.setInterview({ interview: job.interviewQuestions })
+              JobActions.setInterview({ interview: job.interviewQuestions, interviewTemplateId: job.interviewTemplateId })
             ];
           }),
           catchError((err) => {
@@ -369,8 +369,7 @@ export class JobEffects {
       rate: job.rate,
       salaryMinimum: job.salaryMinimum,
       salaryMaximum: job.salaryMaximum,
-      // contractStart
-      // contractEnd: DetailedDate;
+      salaryCurrency: job.salaryCurrency
     }
   }
 }

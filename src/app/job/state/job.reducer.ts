@@ -23,7 +23,8 @@ export interface JobState {
   category: Model.Options[];
   initialDetails: Model.InitialDetails;
   jobInfo: Model.JobInfo;
-  interview: InterviewModel.InterviewQuestion[],
+  interview: InterviewModel.InterviewQuestion[];
+  interviewTemplateId: string;
   job: Model.Job | null;
   jobLoading: boolean;
   applicants: Model.JobApplicants[],
@@ -46,6 +47,7 @@ const initialState: JobState  = {
   initialDetails: null,
   jobInfo: null,
   interview: [],
+  interviewTemplateId: null,
   job: null,
   jobLoading: false,
   applicants: [],
@@ -106,6 +108,7 @@ export const jobReducer = createReducer<JobState>(
       initialDetails: null,
       jobInfo: null,
       interview: null,
+      interviewTemplateId: null,
       succesMsg: null,
       error: null
     };
@@ -131,7 +134,8 @@ export const jobReducer = createReducer<JobState>(
   on(JobActions.setInterview, (state, action): JobState => {
     return {
       ...state,
-      interview: action.interview
+      interview: action.interview,
+      interviewTemplateId: action.interviewTemplateId
     };
   }),
   on(JobActions.getBasicJobList, (state): JobState => {
