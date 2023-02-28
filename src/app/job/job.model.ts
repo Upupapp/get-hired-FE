@@ -74,6 +74,7 @@ export interface JobInfo {
   rate?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
+  salaryCurrency?: string;
   contractStart?: DetailedDate;
   contractEnd?: DetailedDate;
 }
