@@ -85,7 +85,7 @@ export const setJobInfo = createAction(
 
 export const setInterview = createAction(
   AllFeatureActionTypes.SetInterview,
-  props<{ interview: InterviewModel.InterviewQuestion[] }>()
+  props<{ interview: InterviewModel.InterviewQuestion[], interviewTemplateId: string }>()
 );
 
 export const saveJob = createAction(
