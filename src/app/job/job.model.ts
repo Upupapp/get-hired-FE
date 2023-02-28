@@ -28,6 +28,7 @@ export interface Job {
   bannerFile?: File;
   isInterviewRequired: boolean;
   interviewQuestions?: InterviewModel.InterviewQuestion[];
+  interviewTemplateId?: string;
   requirements?: string[];
   goodToHave?: string[];
   educationalBackground?: string[];
