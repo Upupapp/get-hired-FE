@@ -27,23 +27,23 @@
 		<div class="card-body">
 			<ng-container *ngFor="let item of jobLists; let i = index">
 				<section class="bg-email hvr-underline-from-center w-100"
-				(click)="viewDetails(item?.id)"
+				(click)="viewDetails(item?.jobId)"
 				[@animate]="{value:'*', params:{ y:'-10px', delay: i * 150 + 'ms' }}">
 					<div class="d-flex px-1 ps-3">
 						<div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
-							<img [src]="item?.banner_thumbnail">
+							<img [src]="item?.jobBanner">
 						</div>
 
 						<div class="mt-2 me-5" style="width: 400px">
-							<h5 class="title-label">{{item?.title}}</h5>
-							<p class="title-label-sub">{{item?.job_type}} / {{item?.work_setup}} / {{item?.address}} </p>
+							<h5 class="title-label">{{item?.industryName}} - {{item?.jobRoleName}}</h5>
+							<p class="title-label-sub">{{item?.jobTypeName}} / {{item?.workSetupName}} / {{item?.jobAddress}} </p>
 
-							<p class="title-label-sub">Date Applied: {{item?.date_applied | date: 'MMMM dd, yyyy'}}</p>
+							<p class="title-label-sub">Date Applied: {{item?.dateApplied | date: 'MMMM dd, yyyy'}}</p>
 						</div>
 
 						<div class="me-4 mt-3 text-center" style="width: 400px">
 							<div class="tags mt-2">
-								<div class="title-tags me-2 mb-2" *ngFor="let tag of item?.tags">{{tag}}</div>
+								<div class="title-tags me-2 mb-2" *ngFor="let tag of item?.badges">{{tag?.name}}</div>
 							</div>
 
 						</div>

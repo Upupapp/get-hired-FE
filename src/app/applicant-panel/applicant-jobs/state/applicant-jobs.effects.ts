@@ -20,7 +20,7 @@ export class ApplicantJobsEffects {
         .pipe(
           switchMap((res: any) => {
             return [
-              ApplicantJobsActions.getApplicantJobsSuccess(res),
+              ApplicantJobsActions.getApplicantJobsSuccess({payload: res.data}),
             ];
           }),
           catchError((err) => {

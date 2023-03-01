@@ -13,7 +13,7 @@ export class ApplicantJobsService {
   constructor(private baseService: BaseService) { }
   getApplicantJobs(data: any) {
     return this.baseService.get<any>(
-      `${this.ApplicantJobsUrl}/appliedjobslist?id=${data}`
+      `${this.ApplicantJobsUrl}/appliedjobslist?candidateId=${data}`
     );
   }
 }

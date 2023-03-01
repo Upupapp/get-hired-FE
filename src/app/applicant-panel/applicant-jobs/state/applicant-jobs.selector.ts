@@ -2,7 +2,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ApplicantJobsState } from './applicant-jobs.reducer';
 
 const getApplicantInitState =
-  createFeatureSelector<ApplicantJobsState>('applicant');
+  createFeatureSelector<ApplicantJobsState>('applicantJobs');
 
 export const loading = createSelector(
   getApplicantInitState,

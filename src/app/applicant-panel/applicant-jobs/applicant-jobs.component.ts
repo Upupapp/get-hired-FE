@@ -77,7 +77,7 @@ export class ApplicantJobsComponent implements OnInit {
     this.user = JSON.parse(this.user);
     this.applicantJobsFacade.getApplicantJobs(this.user?._id);
     this.jobList$.subscribe((data: any) => {
-      console.log(data);
+      this.jobLists = data;
     });
 
   }
@@ -89,7 +89,7 @@ export class ApplicantJobsComponent implements OnInit {
 
 
   viewDetails(id): void {
-    this.router.navigate([`/applicant/jobs/details/${id}`])  
+    this.router.navigate([`/jobs/details/${id}`])  
   }
 
 
