@@ -75,9 +75,7 @@
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.12"
-  },
-  "engines": {
-    "node": "14.17.3",
-    "npm": "8.12.1"
   }
+
+   
 }

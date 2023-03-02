@@ -65,6 +65,9 @@ export class HeaderComponent implements OnInit {
   redirectToRegister() {
     this.router.navigateByUrl('/signin');
   }
+  redirectToSignUp() {
+    this.router.navigateByUrl('/signup');
+  }
 
   goToDashboard() {
     switch (this.userRole) {
