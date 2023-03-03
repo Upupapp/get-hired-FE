@@ -73,7 +73,7 @@
 
       <div class="col-12 col-lg-6 mb-3" *ngIf="industry$ | async as industries">
         <div class="title-container mb-3">
-          <label>Type of Industry</label>
+          <label>Industry</label>
           <select class="form-select" formControlName="industryId">
             <option selected disabled [ngValue]="null">Select Industry</option>
             <ng-container *ngFor="let item of industries; let i = index">

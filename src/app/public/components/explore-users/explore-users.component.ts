@@ -16,20 +16,19 @@ export class ExploreUsersComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private routes: ActivatedRoute
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
   }
 
   redirectToCreate(item: string) {
-    // TODO check if loggedIn
     switch (item) {
       case 'job':
-        // TODO Redirect to Create Jobs
+        this.router.navigate(['../signup'], { relativeTo: this.route });
         break;
       case 'resume':
-        // TODO Redirect to create Resume
+        this.router.navigate(['../user/profile/edit'], { relativeTo: this.route });
         break;
     }
   }
