@@ -66,6 +66,9 @@
 
         <ng-container *ngIf="stepper === 3">
           <app-create-interview-questions
+            (publishChanges)="publishJobPost()"
+            [questions]="questions"
+            [jobId]="jobId"
             formGroupName="interview"
           ></app-create-interview-questions>
         </ng-container>

@@ -53,15 +53,19 @@ export class JobFacade {
     this.store.dispatch(JobAction.resetJobForm());
   }
 
+  resetSuccessMsg() {
+    this.store.dispatch(JobAction.resetSuccessMsg());
+  }
+
   saveJob(job: Model.Job) {
     this.store.dispatch(JobAction.saveJob({ job }));
   }
 
-  changeJobStatus(status:number, jobId: string) {
+  changeJobStatus(status: number, jobId: string) {
     this.store.dispatch(JobAction.changeJobStatus({ status, jobId }));
   }
 
-  saveInterview(interview: InterviewModel.InterviewQuestion[], interviewTemplateId: string ) {
+  saveInterview(interview: InterviewModel.InterviewQuestion[], interviewTemplateId: string) {
     this.store.dispatch(JobAction.setInterview({ interview, interviewTemplateId }));
   }
 
@@ -110,7 +114,15 @@ export class JobFacade {
   }
 
   getJobById(jobId) {
-    this.store.dispatch(JobAction.getJob({jobId}));
+    this.store.dispatch(JobAction.getJob({ jobId }));
+  }
+
+  updateJobInterview(interviewQuestion: InterviewModel.InterviewQuestion) {
+    this.store.dispatch(JobAction.updateJobQuestion({ interviewQuestion }));
+  }
+
+  deleteJobInterview(questionId: string, jobId:string) {
+    this.store.dispatch(JobAction.deleteJobQuestion({ questionId, jobId }));
   }
 
   // getfeatureList() {

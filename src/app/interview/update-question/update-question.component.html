@@ -1,0 +1,7 @@
+<h5 class="title-main">Update Question</h5>
+<hr>
+
+<div class="p-1">
+  <app-create-question (addItem)="editQuestion($event)" [questionIndex]="data?.index"
+    [interviewQuestion]="data?.interviewQuestion"></app-create-question>
+</div>
