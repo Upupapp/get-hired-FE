@@ -74,7 +74,7 @@ export class DragAndDropComponent {
   @Input() row: string = 'col-sm-6';
   @Input() file: any;
   @Input() maxSize: number = 200000;
-  @Input() defaultImage: string = "/assets/images/placeholder/banner-uploader-sample.png";
+  @Input() defaultImage: string = "assets/images/placeholder/job-post-banner.png";
   fileObject: any = {
     filename: '',
     size: '',

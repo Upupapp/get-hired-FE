@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +19,8 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
+  questions: QuestionModel.InterviewQuestion[];
+
   mode: string;
   delayControl: boolean = true;
   public jobId: any = null;
@@ -72,11 +74,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     },
   ];
 
-  editJob$ = this.jobFacade.getJobById$.pipe(
+  editJob$ = this.jobFacade.jobDetails$.pipe(
     map((job) => {
       return job;
     })
   );
+
   loading$ = this.jobFacade.getJobLoading$
     .pipe()
     .subscribe(this.onLoad.bind(this));
@@ -87,7 +90,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -100,6 +104,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
     this.editJob$.subscribe((data: any) => {
       if (data) {
+        console.log(data);
         this.setFormGroup(data);
         this.status = data.jobStatusId;
       }
@@ -161,7 +166,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         // contractEnd: DetailedDate;
       }),
       interview: this.fb.group({
-        interviewQuestions: new FormArray([]),
+        interviewQuestions: this.fb.array([]),
         interviewTemplateId: [data ? data.interviewTemplateId : null],
       })
     });
@@ -250,13 +255,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       let interviewQuestions = this.jobForm.controls.interview.get('interviewQuestions') as FormArray;
       if (data.hasOwnProperty('interviewQuestions') && data?.interviewQuestions.length > 0) {
         data.interviewQuestions.forEach((element: QuestionModel.InterviewQuestion) => {
-          interviewQuestions.push(new FormGroup({
+          const interviewCtrl = this.fb.group({
             questionId: new FormControl(element.questionId),
             question: new FormControl(element.question),
             answerDuration: new FormControl(element.answerDuration),
-            retakes: new FormControl(element?.retakes)
-          }));
-        })
+            retakes: new FormControl(element?.retakes),
+            sequence: new FormControl(element?.sequence),
+          })
+          interviewQuestions.push(interviewCtrl);
+        });
+
+        this.questions = [...interviewQuestions.value]
+        console.log(this.questions)
+        this.cd.detectChanges();
       }
     }
 
@@ -268,38 +279,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
 
   }
-
-  // setInitialForm(raw: Model.InitialDetails) {
-  //   if (raw) {
-  //     this.jobForm.controls.initialData.get('jobTitle').setValue(raw.jobTitle);
-  //     this.jobForm.controls.initialData.get('jobTypeId').setValue(raw.jobTypeId);
-  //     this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
-  //     this.jobForm.controls.initialData.get('jobLevelId').setValue(raw.jobLevelId);
-  //     this.jobForm.controls.initialData.get('workSetupId').setValue(raw.workSetupId);
-  //     this.jobForm.controls.initialData.get('jobAddress').setValue(raw.jobAddress);
-  //     this.jobForm.controls.initialData.get('jobCity').setValue(raw.jobCity);
-  //     this.jobForm.controls.initialData.get('jobCountry').setValue(raw.jobCountry);
-  //     this.jobForm.controls.initialData.get('jobDescription').setValue(raw.jobDescription);
-  //     this.jobForm.controls.initialData.get('jobDuties').setValue(raw.jobDuties);
-  //     this.jobForm.controls.initialData.get('jobCategoryId').setValue(raw.jobCategoryId);
-  //     this.jobForm.controls.initialData.get('badges').setValue(raw.badges);
-  //     this.jobForm.controls.initialData.get('requirements').setValue(raw.requirements);
-  //     this.jobForm.controls.initialData.get('goodToHave').setValue(raw.goodToHave);
-  //     this.jobForm.controls.initialData.get('bannerFile').setValue(raw.bannerFile);
-  //   }
-  // }
-
-  // setJobInfo(raw: Model.JobInfo) {
-  //   if (raw) {
-  //     this.jobForm.controls.jobInfo.get('industryId').setValue(raw.industryId);
-  //     this.jobForm.controls.jobInfo.get('jobRoleId').setValue(raw.jobRoleId);
-  //     this.jobForm.controls.jobInfo.get('skills').setValue(raw.skills);
-  //     this.jobForm.controls.jobInfo.get('tags').setValue(raw.tags);
-  //     this.jobForm.controls.jobInfo.get('rate').setValue(raw.rate);
-  //     this.jobForm.controls.jobInfo.get('salaryMinimum').setValue(raw.salaryMinimum);
-  //     this.jobForm.controls.jobInfo.get('salaryMaximum').setValue(raw.salaryMaximum);
-  //   }
-  // }
 
   async getJobById() {
     this.jobFacade.getJobById(this.jobId);
@@ -377,10 +356,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   async formatJob(status) {
     const user = await this.asyncLocalStorage.getItem('user');
+    console.log(this.jobForm.controls);
 
     const { initialData, jobInfo, interview } = this.jobForm.controls;
     const { interviewQuestions, interviewTemplateId } = interview.value;
-
     return {
       ...initialData.value,
       ...jobInfo.value,
