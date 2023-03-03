@@ -1,5 +1,4 @@
 export const environment = {
-  projectName: 'jobhive',
   production: true,
   server: 'https://ssr-back.herokuapp.com',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
@@ -18,5 +17,6 @@ export const environment = {
     messagingSenderId: "639015967337",
     appId: "1:639015967337:web:ef77dedc469057e37be0f8",
     measurementId: "G-1VRREZSLDP"
-  }
+  },
+  projectName: 'jobhive'
 };
