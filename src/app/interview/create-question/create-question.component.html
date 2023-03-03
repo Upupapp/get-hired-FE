@@ -1,21 +1,30 @@
 <form [formGroup]="questionsForm">
-
   <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-
-    <div class="col-12 col-lg-12">
-      <h5 class="title-label mt-3">Question {{ questionIndex }}
-        <button class="btn btn-create-interview float-end" [disabled]="!questionsForm.valid"
-          (click)="add()">Add</button>
+    <div class="col-12 col-lg-8">
+      <h5 class="title-label py-3">Question {{ questionIndex }}
       </h5>
     </div>
 
+    <div class="col-12 col-lg-4" *ngIf="!interviewQuestion">
+      <button class="btn btn-create-interview float-end" [disabled]="!questionsForm.valid" (click)="add()"><i
+          class="bi bi-plus mr-2"></i>Add</button>
+    </div>
+
+    <div class="col-12 col-lg-4 text-right" *ngIf="interviewQuestion">
+      <button class="btn btn-create-interview mr-2" (click)="update()">Update</button>
+      <button class="btn btn-create-interview" (click)="cancel()">Cancel</button>
+
+    </div>
+
+  </div>
+  <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
     <div class="col-12 col-md-8 mb-3">
       <p class="title-label-sub mb-3">Add interview questions that can be save as template</p>
 
       <div class="form-group d-flex">
         <textarea type="text" name="search" class="form-control" rows="6" formControlName="question"
           placeholder="i.e. What have been your key as a web designer?">
-    </textarea>
+        </textarea>
       </div>
     </div>
 
@@ -34,7 +43,8 @@
         <div class="title-container mb-3">
           <label>Number of Retakes</label>
           <div class="form-group">
-            <input type="number" min="1" max="5" class="form-control" placeholder="Number of retakes - min: 1 max: 5" formControlName="retakes">
+            <input type="number" min="1" max="5" class="form-control" placeholder="Number of retakes - min: 1 max: 5"
+              formControlName="retakes">
           </div>
         </div>
       </div>
