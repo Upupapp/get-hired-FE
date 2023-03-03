@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from "@environments/environment";
 import { BaseService } from "@main/core/services/base.service";
 import * as Model from "./job.model";
+import * as InterviewModel from '@main/interview/interview.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,14 @@ export class JobService {
       // create
       return this.baseService.post<Model.Job>(`${this.jobUrl}/create`, job);
     }
+  }
+
+  updateJobInterviewQuestions(interviewQuestion: InterviewModel.InterviewQuestion) {
+    return this.baseService.put<InterviewModel.InterviewQuestion>(`${this.jobUrl}/updatejobinterview`, interviewQuestion);
+  }
+
+  deleteJobInterviewQuestions(questionId: string, jobId: string) {
+    return this.baseService.delete<string>(`${this.jobUrl}/deleteinterviewquestion?questionId=${questionId}&jobId=${jobId}`);
   }
 
   getJobApplicantDetails(jobId: string, userId: string) {

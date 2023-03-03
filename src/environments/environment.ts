@@ -5,6 +5,7 @@
 export const environment = {
   projectName: 'jobhive',
   production: false,
+  projectName: 'gethired',
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
   // api_url: 'https://api-dot-jobhunt-375218.ts.r.appspot.com/api',

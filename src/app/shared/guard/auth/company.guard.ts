@@ -14,25 +14,25 @@ export class CompanyGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    
+
     return this.adminService.getRefreshToken()
     .pipe(map((result:any) => {
-      let token =  JSON.parse(JSON.stringify(result)).refreshToken 
+      let token =  JSON.parse(JSON.stringify(result)).refreshToken
       let userData = JSON.parse(localStorage.getItem('userData'));
 
-      if(token && userData?.employer){ 
+      if(token && userData?.employer){
         localStorage.setItem('refreshTokenMessage', 'Refresh Token was successful.');
         localStorage.setItem('token', 'Bearer ' + JSON.parse(JSON.stringify(result)).refreshToken);
         return true;
       }
       else if(userData?.employer) {
         localStorage.setItem('loginError', "You are not allowed to access this URL. Please login to continue.");
-        localStorage.setItem('returnURL', this.router.url);
+        // localStorage.setItem('returnURL', this.router.url);
         this.adminService.logoutAdmin().subscribe((res: any) => res);
         this.router.navigate(['/signin']);
         return false;
       }
     }));
   }
-  
+
 }

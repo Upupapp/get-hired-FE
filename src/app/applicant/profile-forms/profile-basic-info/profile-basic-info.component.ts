@@ -171,6 +171,7 @@ export class ProfileBasicInfoComponent implements OnInit {
         verticalPosition: 'top',
         horizontalPosition: 'right'
       });
+      this.submitBasicInfo.emit('VALID');
     }
   }
 

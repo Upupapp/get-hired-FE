@@ -10,6 +10,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 })
 export class CreateQuestionComponent implements OnInit {
   @Input() questionIndex: number = 1;
+  @Input() interviewQuestion = null;
   @Output() addItem = new EventEmitter();
   questionsForm: FormGroup;
 
@@ -19,9 +20,10 @@ export class CreateQuestionComponent implements OnInit {
 
   ngOnInit(): void {
     this.questionsForm = this.fb.group({
-      question: ['', Validators.required],
-      answerDuration: [null, Validators.required],
-      retakes: [null, Validators.required]
+      question: [this.interviewQuestion ? this.interviewQuestion.question: null, Validators.required],
+      answerDuration: [this.interviewQuestion ? this.interviewQuestion.answerDuration:null, Validators.required],
+      retakes: [this.interviewQuestion ? this.interviewQuestion.retakes:null, Validators.required],
+      sequence: [this.questionIndex]
     });
   }
 
@@ -30,6 +32,17 @@ export class CreateQuestionComponent implements OnInit {
       this.addItem.emit(this.questionsForm.value);
       this.questionsForm.reset();
     }
+  }
+
+  update() {
+    this.addItem.emit({
+      ...this.questionsForm.value,
+      questionId: this.interviewQuestion.questionId
+    });
+  }
+
+  cancel() {
+    this.addItem.emit(null);
   }
 
 }

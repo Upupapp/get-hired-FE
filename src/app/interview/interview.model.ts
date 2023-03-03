@@ -3,6 +3,7 @@ export interface InterviewQuestion {
   question: string;
   answerDuration: number;
   retakes: number;
+  sequence: number;
 }
 
 export interface InterviewAnswer {
