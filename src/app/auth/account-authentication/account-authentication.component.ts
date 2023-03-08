@@ -99,7 +99,7 @@ export class AccountAuthenticationComponent implements OnInit {
   }
 
   resendVerification() {
-    const userEmail = this.email || this.resendLinkForm.controls.email.value;
+    const userEmail = this.email ? this.email:this.resendLinkForm.controls.email.value;
     this.authService.resendVerification(userEmail)
       .pipe(
         map((result: any) => {
@@ -124,5 +124,9 @@ export class AccountAuthenticationComponent implements OnInit {
 
   redirectToLogin() {
     this.router.navigate(['../signin']);
+  }
+
+  get email_validators() {
+    return this.resendLinkForm.get('email');
   }
 }
