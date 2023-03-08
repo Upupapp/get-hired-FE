@@ -2,11 +2,11 @@
   <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
     <div class="card card-body py-3">
       <div class="w-100">
-        <span class="main-title mt-3">Job Posts</span>
+        <span class="main-title mt-3">{{ 'JOB_POSTS_PAGE.SIDEBAR_JOB_POSTS' | translate }}</span>
 
         <div class="float-end">
           <button class="btn btn-add-service" (click)="addJobs()">
-            New Job
+            {{ 'JOB_POSTS_PAGE.NEW_JOB_BUTTON' | translate }}
             <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1">
           </button>
         </div>

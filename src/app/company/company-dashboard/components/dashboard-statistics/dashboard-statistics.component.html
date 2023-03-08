@@ -3,7 +3,7 @@
     <div class="col-12 col-md-6 col-lg-7 mb-3">
       <div class="mb-2 card-application-hired" style="position: relative;"
         [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-        <h5 class="title-card-hired">Top 5 cities applied from</h5>
+        <h5 class="title-card-hired">{{ 'ADMIN_DASHOBOARD.WIDGET_CITIES_APPLIED' | translate }}</h5>
         <div style="height:130px; width:400px">
           <canvas baseChart [data]="barChartData" [options]="barChartOptions"
           [type]="barChartType">
@@ -16,12 +16,12 @@
     <div class="col-12 col-md-6 col-lg-5 mb-3">
       <div class="mb-2 card-application" style="position: relative;"
         [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-        <h5 class="title-card">Candidate Database
+        <h5 class="title-card">{{ 'ADMIN_DASHOBOARD.WIDGET_CADIDATE' | translate }}
           <img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img me-4"
             style="width: 30px; margin-top: 15px;">
         </h5>
         <h3 class="title-stat">{{ details.totalContacts || 0}}</h3>
-        <h5 class="title-stat-sub">Total Contacts</h5>
+        <h5 class="title-stat-sub">{{ 'ADMIN_DASHOBOARD.TOTAL_CONTACTS' | translate }}</h5>
       </div>
     </div>
   </div>

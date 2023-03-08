@@ -199,25 +199,25 @@
     "SUMMARY_PAGE":{
         "EVALUATION_SUBMIT_BUTTON":"Gửi đi"
     },
-    "ADMIN DASHOBOARD":{
+    "ADMIN_DASHOBOARD":{
         "SIDEBAR_CONTACTS":"Liên hệ",
         "SIDEBAR_INTERVIEWS":"Phỏng vấn",
         "SIDEBAR_SUBCRIPTIONS":"Đăng ký của tôi",
         "SIDEBAR_EMPLOYER_BRANDING":"Nhận diện thương hiệu nhà tuyển dụng",
 
         "WIDGET_ACTIVE_JOBS":"Công việc đang hoạt động",
-        "ACTIVE_JOBS_THIS_MONTH":"0 Tháng này",
+        "ACTIVE_JOBS_THIS_MONTH":"Tháng này",
         "WIDGET_APPLICANTS":"Số lượng Ứng viên",
-        "ON_ACTIVE_JOBS":"1 Trên các công việc đang hoạt động",
+        "ON_ACTIVE_JOBS":"Trên các công việc đang hoạt động",
         "WIDGET_VIDEO_INTERVIEW":"Video trả lời phỏng vấn",
-        "VID_INTERVIEWS_MONTH":"3 trong Tháng này",
+        "VID_INTERVIEWS_MONTH":"trong Tháng này",
         "WIDGET_CITIES_APPLIED":"Top 5 thành phố được nộp đơn nhiều nhất",
         "WIDGET_CADIDATE":"Cơ sở dữ liệu Ứng viên",
-        "TOTAL_CONTACTS":"3 liên hệ tổng cộng"
+        "TOTAL_CONTACTS":"liên hệ tổng cộng"
     },
-    "JOBS:JOB POSTS PAGE":{
+    "JOB_POSTS_PAGE":{
         "SIDEBAR_JOB_POSTS":"Công việc đã đăng",
-        "NEW_JOB_BUTTON":"Tạo công việc mới +",
+        "NEW_JOB_BUTTON":"Tạo công việc mới",
         "SIDEBAR_EXPIRED_JOBS":"Công việc đã hết hạn",
         "TABLE_COLUMN_ID":"Công việc đã đăng",
         "TABLE_COLUMN_TITLE":"Chức vụ",
@@ -229,14 +229,14 @@
         "TABLE_COLUMN_STATUS":"tình trạng",
         "TABLE_COLUMN_ACTION":"Hoạt động"
     },
-    "RECRUITMENT MANAGEMENT TOOLS":{
+    "RECRUITMENT_MANAGEMENT_TOOLS":{
         "VIEW_JOB_BUTTON":"Xem Công việc đã đăng",
         "UPDATE_JOB_BUTTON":"Cập nhật công việc",
         "VIEW_APPLICANTS_BUTTON":"Xem Ứng viên đã nộp đơn",
         "CREATE_INTERVIEW_BUTTON":"Tạo câu hỏi phỏng vấn",
         "DELETE_JOB_BUTTON":"Xóa công việc đã đăng"
     },
-    "JOBS:EXPIRED JOBS PAGE":{
+    "EXPIRED_JOBS_PAGE":{
         "PAGE_TITLE":"Công việc đã hết hạn",
         "LIST_JOBS":"Danh sách Công việc đã hết hạn hiện đang trống",
         "NEW_JOB_BUTTON":"Tạo công việc mới+"

@@ -201,25 +201,25 @@
     "SUMMARY_PAGE":{
         "EVALUATION_SUBMIT_BUTTON":"Submit for Evaluation"
     },
-    "ADMIN DASHOBOARD":{
+    "ADMIN_DASHOBOARD":{
         "SIDEBAR_CONTACTS":"Contacts",
         "SIDEBAR_INTERVIEWS":"Interviews",
         "SIDEBAR_SUBCRIPTIONS":"My Subscription",
         "SIDEBAR_EMPLOYER_BRANDING":"Employer Branding",
 
-        "WIDGET_ACTIVE_JOBS":"Active Jobs",
-        "ACTIVE_JOBS_THIS_MONTH":"0 This Month",
+        "WIDGET_ACTIVE_JOBS":"Active Jobs", 
+        "ACTIVE_JOBS_THIS_MONTH":"This Month",
         "WIDGET_APPLICANTS":"Applicants",
-        "ON_ACTIVE_JOBS":"1 On Active Jobs",
+        "ON_ACTIVE_JOBS":"On Active Jobs",
         "WIDGET_VIDEO_INTERVIEW":"Video Interviews",
-        "VID_INTERVIEWS_MONTH":"3 This Month",
+        "VID_INTERVIEWS_MONTH":"This Month",
         "WIDGET_CITIES_APPLIED":"Top 5 cities applied from",
         "WIDGET_CADIDATE":"Candidate Database",
-        "TOTAL_CONTACTS":"3 Total Contacts"
+        "TOTAL_CONTACTS":"Total Contacts"
     },
-    "JOBS:JOB POSTS PAGE":{
+    "JOB_POSTS_PAGE":{
         "SIDEBAR_JOB_POSTS":"Job Posts",
-        "NEW_JOB_BUTTON":"New Job +",
+        "NEW_JOB_BUTTON":"New Job",
         "SIDEBAR_EXPIRED_JOBS":"Expired Jobs",
         "TABLE_COLUMN_ID":"Job Id",
         "TABLE_COLUMN_TITLE":"Title",
@@ -231,17 +231,17 @@
         "TABLE_COLUMN_STATUS":"Status",
         "TABLE_COLUMN_ACTION":"Action"
     },
-    "RECRUITMENT MANAGEMENT TOOLS":{
+    "RECRUITMENT_MANAGEMENT_TOOLS":{
         "VIEW_JOB_BUTTON":"View Job Post",
         "UPDATE_JOB_BUTTON":"Update Job Post",
         "VIEW_APPLICANTS_BUTTON":"View Applicants",
         "CREATE_INTERVIEW_BUTTON":"Create Interview",
         "DELETE_JOB_BUTTON":"Delete Job Post"
 },
-    "JOBS:EXPIRED JOBS PAGE":{
+    "EXPIRED_JOBS_PAGE":{
         "PAGE_TITLE":"Expired Jobs",
         "LIST_JOBS":"List of Expired Jobs is currently empty",
-        "NEW_JOB_BUTTON":"New Job +"
+        "NEW_JOB_BUTTON":"New Job"
     },
     "CONCTACTS:CONTACT LIST PAGE":{
         "NUMBER_OF_ENTRIES":"Showing 1 to 10 of 17 entries",
