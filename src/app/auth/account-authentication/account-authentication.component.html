@@ -9,8 +9,7 @@
         Verification link has been sent to your email. Please verify and login again.
       </h5>
       <div class="text-center mb-3">
-        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3"
-        (click)="redirectToLogin()" type="button">
+        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3" (click)="redirectToLogin()" type="button">
           Login
         </button>
       </div>
@@ -22,13 +21,15 @@
       <div class="text-center mb-3">
         <form [formGroup]="resendLinkForm" (ngSubmit)="resendVerification()">
 
-        <input type="email" formControlName="email" class="form-control" placeholder="sample@email.com" />
-
-        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3"
-        (click)="resendVerification()">
-          Resend Verification link
-        </button>
-      </form>
+          <input type="email" formControlName="email" class="form-control" placeholder="sample@email.com" />
+          <div class="mt-1 ms-4"
+            *ngIf=" (email_validators?.invalid && email_validators?.touched) || email_validators?.dirty">
+            <small *ngIf="email_validators?.errors?.required" class="text-danger">Email is required</small>
+          </div>
+          <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3" (click)="resendVerification()">
+            Resend Verification link
+          </button>
+        </form>
 
       </div>
     </ng-template>
@@ -41,12 +42,12 @@
       <div class="py-5">
         <img src="/assets/images/success.gif" style="width: 35%;">
 
-        <h5 class="title-verified mt-2 px-5">Your account in <span class="gwana-trademark"> <img src="/assets/images/logo.png" style="width: 15%;"></span> is verified!
+        <h5 class="title-verified mt-2 px-5">Your account in <span class="gwana-trademark"> <img
+              src="/assets/images/logo.png" style="width: 15%;"></span> is verified!
         </h5>
 
         <div class="mt-2">
-          <button class="btn btn-submit text-center w-50 mt-2"
-          (click)="redirectToLogin()" type="button">
+          <button class="btn btn-submit text-center w-50 mt-2" (click)="redirectToLogin()" type="button">
             Login
           </button>
         </div>
