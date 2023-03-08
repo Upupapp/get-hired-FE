@@ -117,6 +117,8 @@ export class AccountAuthenticationComponent implements OnInit {
           this.isResent = false;
           this.loading = false;
           console.log(err);
+          this.snackBar.open(err,
+              '', { duration: 4000, panelClass: ['danger-snackbar'] });
           return of(err);
         })
       ).subscribe();
