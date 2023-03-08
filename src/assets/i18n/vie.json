@@ -241,13 +241,13 @@
         "LIST_JOBS":"Danh sách Công việc đã hết hạn hiện đang trống",
         "NEW_JOB_BUTTON":"Tạo công việc mới+"
     },
-    "CONCTACTS:CONTACT LIST PAGE":{
+    "CONTACT_LIST_PAGE":{
         "NUMBER_OF_ENTRIES":"Thể hiện 1 đến 10 của 17 danh mục",
-        "ADD_CONTACT_BUTTON":"Thêm liên hệ mới+",
+        "ADD_CONTACT_BUTTON":"Thêm liên hệ mới",
         "TABLE_COLUMN_CREATION_DATE":"Ngày tạo Công việc",
         "TABLE_COLUMN_GROUP_NAME":"Tên nhóm"
     },
-    "EDIT CONTACT PAGE":{
+    "EDIT_CONTACT_FORM":{
         "TITLE_PAGE":"Chỉnh sửa liên hệ",
         "TITLE_TEXT":"Thông tin liên hệ",
         "CONTACT_INFORMATION_REQUEST":"Nhập vào thông tin liên hệ mà bạn muốn mời phỏng vấn",

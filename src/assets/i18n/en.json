@@ -243,13 +243,13 @@
         "LIST_JOBS":"List of Expired Jobs is currently empty",
         "NEW_JOB_BUTTON":"New Job"
     },
-    "CONCTACTS:CONTACT LIST PAGE":{
+    "CONTACT_LIST_PAGE":{
         "NUMBER_OF_ENTRIES":"Showing 1 to 10 of 17 entries",
-        "ADD_CONTACT_BUTTON":"Add Contact +",
+        "ADD_CONTACT_BUTTON":"Add Contact",
         "TABLE_COLUMN_CREATION_DATE":"Date Created",
         "TABLE_COLUMN_GROUP_NAME":"Group Name"
     },
-    "EDIT CONTACT FORM":{
+    "EDIT_CONTACT_FORM":{
         "TITLE_PAGE":"Edit Contact",
         "TITLE_TEXT":"Contact Details",
         "CONTACT_INFORMATION_REQUEST":"Provide the contact details necessary for the person you want to invite",

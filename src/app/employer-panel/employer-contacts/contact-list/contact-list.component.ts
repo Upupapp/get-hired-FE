@@ -28,6 +28,7 @@ import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
 import { StoreState } from '@main/shared/store/index';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ContactState } from '@app-shared/store/reducers/contact.reducer';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contact-list',
@@ -45,7 +46,17 @@ export class ContactListComponent implements OnInit {
   public localData: any = localStorage.getItem('user');
   public ContactData$: any;
 
-  public displayedColumns: TableHeader[] = displayedColumns;
+  public displayedColumns: TableHeader[] = [
+    { col_name: 'full_name', title: 'Full Name' },
+    { col_name: 'email', title: 'Email Address' },
+    { col_name: 'mobile_number', title: 'Mobile Number' },
+    { col_name: 'address', title: 'Address' },
+    { col_name: 'job_id', title: 'Job ID' },
+    { col_name: 'job_title', title: 'Job Title' },
+    { col_name: 'created_at', title: this.translate.instant("CONTACT_LIST_PAGE.TABLE_COLUMN_CREATION_DATE"), type: 'date' },
+    { col_name: 'view_group', title: this.translate.instant("CONTACT_LIST_PAGE.TABLE_COLUMN_GROUP_NAME"), type: 'action_button', button_title: 'View Group', button_class: 'view-group'  },
+    { col_name: 'action', title: 'Action' , type: 'menu' },
+  ];
   public contactList: Contact[] = [];
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
@@ -67,7 +78,8 @@ export class ContactListComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private contactState: Store<StoreState>
+    private contactState: Store<StoreState>,
+    private translate: TranslateService
     ) {
 
   }
