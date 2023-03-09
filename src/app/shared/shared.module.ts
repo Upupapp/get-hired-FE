@@ -33,6 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { LanguageSelectionComponent } from './components/language-selection/language-selection.component';
 import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
+import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
 
 
 const classesToInclude: any[] = [
@@ -57,7 +58,10 @@ const classesToInclude: any[] = [
   RecordLoadingComponent,
   ConfirmationDialogComponent,
   LanguageSelectionComponent,
-  DropdownSearchComponent
+  DropdownSearchComponent,
+  EmptySectionComponent,
+  DropdownSearchComponent,
+  GoogleAddressSearchComponent
 ];
 
 @NgModule({
