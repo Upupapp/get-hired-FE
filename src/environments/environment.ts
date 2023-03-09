@@ -13,8 +13,8 @@ export const environment = {
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: true,
-  mapRestrictions: ['sg', 'ph'],
-  apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
+  mapRestrictions: ["de"],
+  apiKey: 'AIzaSyDlXrLB_kU0IgzlzgJvdqZuVXWm_icp3lY',
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
     authDomain: 'get-hired-363107.firebaseapp.com',
