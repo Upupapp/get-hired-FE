@@ -13,6 +13,7 @@ export const environment = {
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: true,
+  mapRestrictions: ['sg', 'ph'],
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',

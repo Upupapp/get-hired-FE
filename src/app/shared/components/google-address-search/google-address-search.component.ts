@@ -4,6 +4,7 @@ import { EventEmitter } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GoogleAddressService } from '@app-shared/services/api/google-address.service';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-google-address-search',
@@ -58,7 +59,7 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       this.searchElementRef.nativeElement,
       {
 
-        componentRestrictions: { country: ["ph", "sg"] },
+        componentRestrictions: { country: environment.mapRestrictions },
         fields: ["address_components", "url"],
         types: ["address"]
       }
