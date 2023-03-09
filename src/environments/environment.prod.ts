@@ -10,6 +10,7 @@ export const environment = {
   NgRxMaxAge: 15,
   isDebug: false,
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
+  mapRestrictions: ['sg', 'ph'],
   firebase: {
     apiKey: "AIzaSyBHwXzme1n61tjWoZpxfd-3qKcmChKKUBw",
     authDomain: "eucannajobs-343407.firebaseapp.com",
