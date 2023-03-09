@@ -1,5 +1,74 @@
-<div>
-  <label>Enter address</label>
-  <input type="text" class="my-search-box" (keydown.enter)="$event.preventDefault()" placeholder="Search Location"
-    type="text" #search />
+<div class="sectioning">
+  <form [formGroup]="addressFormGroup">
+    <div class="row mb-3">
+      <div class="col-12 col-lg-6">
+        <div class="title-container">
+          <label>Search your Address</label>
+
+          <div class="form-group input-group">
+            <div class="input-group-prepend">
+              <div class="input-group-text prepend"><i class="bi bi-search"></i></div>
+            </div>
+
+              <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
+                placeholder="Start typing to begin address search and auto populate fields" formControlName="address"
+                #search>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-3">
+        <div class="title-container">
+          <label>State</label>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="ex. Metro Manila" formControlName="state">
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <div class="title-container">
+          <label>Country</label>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-lg-5">
+        <div class="title-container">
+          <label>Address 1</label>
+          <div class="form-group">
+            <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
+              placeholder="ex. Unit A 117 streetname st." formControlName="addressOne">
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <div class="title-container">
+          <label>Town / Suburb</label>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="ex. Salcedo" formControlName="town">
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-3">
+        <div class="title-container">
+          <label>City</label>
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="ex. Makati" formControlName="city">
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-1">
+        <div class="title-container">
+          <label>Zip Code</label>
+
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="ex. 1011" formControlName="zipcode">
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
