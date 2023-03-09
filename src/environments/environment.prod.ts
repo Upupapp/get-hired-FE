@@ -9,6 +9,8 @@ export const environment = {
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: false,
+  apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
+  mapRestrictions: ['sg', 'ph'],
   firebase: {
     apiKey: "AIzaSyDMw_IXIFJkgKE53Fy4UnWwYQ8NhyTHrhI",
     authDomain: "jobhunt-375218.firebaseapp.com",

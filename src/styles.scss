@@ -22,6 +22,12 @@ body {
   width: 100%;
 }
 
+.sectioning {
+  background-color: $color-global-sidebar-applicant-gray;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
 .bordered {
   border: solid 2px $color-global-red-buttons;
   border-radius: 1rem;

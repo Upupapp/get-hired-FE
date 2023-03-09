@@ -99,7 +99,7 @@ export class AccountAuthenticationComponent implements OnInit {
   }
 
   resendVerification() {
-    const userEmail = this.email || this.resendLinkForm.controls.email.value;
+    const userEmail = this.email ? this.email:this.resendLinkForm.controls.email.value;
     this.authService.resendVerification(userEmail)
       .pipe(
         map((result: any) => {
@@ -117,6 +117,8 @@ export class AccountAuthenticationComponent implements OnInit {
           this.isResent = false;
           this.loading = false;
           console.log(err);
+          this.snackBar.open(err,
+              '', { duration: 4000, panelClass: ['danger-snackbar'] });
           return of(err);
         })
       ).subscribe();
@@ -124,5 +126,9 @@ export class AccountAuthenticationComponent implements OnInit {
 
   redirectToLogin() {
     this.router.navigate(['../signin']);
+  }
+
+  get email_validators() {
+    return this.resendLinkForm.get('email');
   }
 }
