@@ -7,4 +7,5 @@ export const environment = {
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: false,
+  apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A'
 };
