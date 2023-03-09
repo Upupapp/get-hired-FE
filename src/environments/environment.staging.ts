@@ -8,6 +8,6 @@ export const environment = {
   NgRxMaxAge: 15,
   isDebug: false,
   projectName: 'jobhive',
-  apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
+  apiKey: 'AIzaSyDO1pnsz_9NDrBXcBndDdBe3FCOMXO3yQg',
   mapRestrictions: ['au']
 };
