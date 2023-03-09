@@ -1,4 +1,4 @@
-<form [formGroup]="companyDetailsForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="companyDetailsForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
   <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
     <!-- <button class="btn btn-save-draft me-3"
     *ngIf="canView" type="button" (click)="redirectToPreview()">
@@ -108,50 +108,30 @@
         <hr style="border: dashed 1px #868686">
       </div>
 
-      <div class="col-12 col-lg-6 mb-3">
-        <div class="title-container mb-3">
-          <label>Email</label>
+      <div class="row">
+        <div class="col-12 col-lg-6 mb-3">
+          <div class="title-container mb-3">
+            <label>Email</label>
 
-          <div class="form-group">
-            <input type="email" class="form-control" placeholder="sample.email@gmail.com"
-              formControlName="companyEmail">
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="sample.email@gmail.com"
+                formControlName="companyEmail">
+            </div>
           </div>
         </div>
+        <div class="col-12 col-lg-6 mb-3">
+          <div class="title-container mb-3">
+            <label>Work Phone</label>
 
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.MOBILE_PHONE' | translate }}</label>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="000-000000" formControlName="companyContactNumber">
-          </div>
-        </div>
-
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.ADDRESS' | translate }}</label>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Street No. Building No, Post Code"
-              formControlName="companyAddress">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="000-000000" formControlName="companyContactNumber">
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="col-12 col-lg-6 mb-3">
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.CITY_MUNICIPALITY_TEXT' | translate }}</label>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Manila" formControlName="companyCity">
-          </div>
-        </div>
-
-        <div class="title-container mb-3">
-          <label>Country</label>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Philippines" formControlName="companyCountry">
-          </div>
-        </div>
+      <div class="row" *ngIf="rawAddress">
+        <label>Company Address</label>
+        <app-google-address-search [rawAddress]="rawAddress" (addressChange)="addressChange($event)"></app-google-address-search>
       </div>
     </div>
   </div>
