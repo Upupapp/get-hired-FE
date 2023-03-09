@@ -10,7 +10,11 @@ export class GoogleAddressService {
   constructor(private http: HttpClient) { }
 
   apiLoaded() {
-    return this.http.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.apiKey}`, 'callback');
+    return this.http.jsonp(`https://maps.googleapis.com/maps/api/js?key=${environment.apiKey}&libraries=places`, 'callback');
+  }
+
+  getGoogleMapUrl(place: object) {
+    return place['url'];
   }
 
   getPlaceId(place: object) {
@@ -45,6 +49,18 @@ export class GoogleAddressService {
     const COMPONENT_TEMPLATE = { route: 'long_name' },
       street = this.getAddrComponent(place, COMPONENT_TEMPLATE);
     return street;
+  }
+
+  getTown(place) {
+    const COMPONENT_TEMPLATE = { sublocality_level_1: 'long_name' },
+      town = this.getAddrComponent(place, COMPONENT_TEMPLATE);
+    return town;
+  }
+
+  getNeighborhood(place) {
+    const COMPONENT_TEMPLATE = { neighborhood: 'long_name' },
+    neighborhood = this.getAddrComponent(place, COMPONENT_TEMPLATE);
+    return neighborhood;
   }
 
   getLocality(place) {
