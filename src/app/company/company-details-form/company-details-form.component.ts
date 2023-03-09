@@ -33,16 +33,19 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     },
   };
 
-  workSetup$ = this.companyFacade.setup$;
-  industry$ = this.companyFacade.industry$;
 
-  public companyDetailsForm!: FormGroup;
 
+  companyDetailsForm!: FormGroup;
   company: Model.Company;
   companyId: string;
   profileImage: any;
   canView: boolean;
   updateSuccess: boolean = false;
+  rawAddress: any;
+  loading: boolean = true;
+
+  workSetup$ = this.companyFacade.setup$;
+  industry$ = this.companyFacade.industry$;
 
   success$ = this.companyFacade.success$
     .pipe()
@@ -75,7 +78,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.companyDetailsForm = this.formBuilder.group({
       companyEmail: ['', [Validators.required, Validators.email]],
       companyContactNumber: ['', Validators.required],
-      companyAddress: [''],
+      companyAddress: [null],
       companyCity: ['', [Validators.required]],
       companyCountry: ['', [Validators.required]],
       companyLogoUrl: [''],
@@ -85,6 +88,11 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       workSetupId: [null, [Validators.required]],
       numberOfEmployee: [0],
       companyLogoFile: [],
+      companyState: [],
+      companyAddressOne: [],
+      companyTown: [],
+      companyZip: [],
+      companyMapUrl: [],
     });
 
     //this.showSuccessDialog()
@@ -101,6 +109,11 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         companyAddress,
         companyCity,
         companyCountry,
+        companyState,
+        companyTown,
+        companyZip,
+        companyMapUrl,
+        companyAddressOne,
         companyLogoUrl,
         companyDetails,
         industryId,
@@ -126,9 +139,29 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
       this.profileImage = companyLogoUrl;
       this.canView = true;
-
+      this.rawAddress = {
+        address: companyAddress,
+        state: companyState,
+        country: companyCountry,
+        addressOne: companyAddressOne,
+        town: companyTown,
+        city: companyCity,
+        zipcode: companyZip,
+        mapUrl: companyMapUrl
+      }
       this.updateLocalStorage();
     }
+  }
+
+  addressChange(event) {
+    this.companyDetailsForm.get('companyAddress')?.setValue(event.address);
+    this.companyDetailsForm.get('companyCity')?.setValue(event.city);
+    this.companyDetailsForm.get('companyCountry')?.setValue(event.country);
+    this.companyDetailsForm.get('companyState').setValue(event.state);
+    this.companyDetailsForm.get('companyAddressOne').setValue(event.addressOne);
+    this.companyDetailsForm.get('companyTown').setValue(event.town);
+    this.companyDetailsForm.get('companyZip').setValue(event.zipcode);
+    this.companyDetailsForm.get('companyMapUrl').setValue(event.mapUrl);
   }
 
   redirectToPreview() {
@@ -181,9 +214,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       });
 
       create
-      .afterClosed()
-      .pipe()
-      .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route }));
+        .afterClosed()
+        .pipe()
+        .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route }));
     } else if (event == 'updated') {
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
@@ -210,6 +243,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   formLoading(loading: boolean) {
+    this.loading = loading;
     if (loading) {
       const ref = this.loadingDialog.open(LoadingComponent, {
         disableClose: true,
@@ -220,7 +254,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     } else {
       // dont close automatically all modal
       // if (!this.updateSuccess) {
-        setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      setTimeout(() => this.loadingDialog.closeAll(), 3000);
       // }
     }
   }
