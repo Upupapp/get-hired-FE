@@ -2,7 +2,7 @@
 	<div style="position: relative; height: 100vh;">
 		<div class="card card-body bg-logo text-center d-flex align-items-center"
 		style="height: 110px; cursor: pointer;">
-			<img src="assets/images/placeholder/logo-2.png" class="hvr-grow img-logo img-fluid mt-2"
+    <img [src]="'/assets/images/' + env.projectName + '/logo-words-vertical.png'" class="hvr-grow img-logo img-fluid mt-2"
 			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}" routerLink="/jobs">
 		</div>
 
@@ -23,14 +23,14 @@
 						[ngClass]="item?.class">
 					</div>
 					<h5 class="sidebar-title">{{item?.title}}
-						<img src="/assets/images/placeholder/icons/caret-white.png" 
+						<img src="/assets/images/placeholder/icons/caret-white.png"
 						*ngIf="item?.sub_routes?.length > 0"
 						[ngClass]="location?.match(item?.route) ? 'active-caret' : 'inactive-caret'">
 					</h5>
 				</div>
 
 				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
-					<ul class="tree text-start p-0" 
+					<ul class="tree text-start p-0"
 					[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
 					style=" list-style-type: none;">
 					  	<li>
@@ -38,7 +38,7 @@
 						    	<li *ngFor="let sub_route of item?.sub_routes">
 						    		<span class="tree_label">
 						    			<span class="sub-label hvr-grow"
-						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"	
+						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"
 						    			[ngClass]="subRouteActive(sub_route?.route) ? 'sub-label-active' : ''" >{{sub_route?.title}}</span>
 						    		</span>
 						    	</li>
@@ -62,7 +62,7 @@
 		</div>
 
 		<div class="px-2">
-			<div class="card card-body pb-3 bg-user" style="padding-top: 10px" 
+			<div class="card card-body pb-3 bg-user" style="padding-top: 10px"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex" *ngIf="screenHeight > 685">
 					<!-- <img src="assets/images/face-6.jpg" class="img-avatar me-2">-->

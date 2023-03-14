@@ -1,19 +1,14 @@
-@import "src/assets/styles/colors";
+@import "src/assets/styles/colors.scss";
 
 i{
 	font-style: italic !important;
 }
 
 .submit-container{
-	z-index: 99 !important;;
+	z-index: 99 !important;
 	position: fixed !important;
 	right: 20px;
 	top: 105px;
-}
-
-
-.bg-upper-gray{
-	background: #F5F6FA;
 }
 
 .main-title{
@@ -22,10 +17,6 @@ i{
 	font-weight: 500;
 	font-size: 27px;
 	line-height: 58px;
-	/* or 215% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
 	color: #03011A;
 }
 
@@ -42,7 +33,7 @@ i{
 }
 
 .card{
-	background: #FFFFFF;
+	background: #FFF;
 	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
 	border-radius: 10px;
 	border: none;

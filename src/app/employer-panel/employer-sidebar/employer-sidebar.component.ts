@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '@environments/environment';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { Subscription } from 'rxjs';
@@ -15,7 +16,7 @@ export class EmployerSidebarComponent implements OnInit {
   @Input() sidebarWidth;
   @Input() user;
   companyName: string;
-
+  env = environment;
   public location: any = '';
   public screenHeight: number = 300;
   sidebarItems: any[];

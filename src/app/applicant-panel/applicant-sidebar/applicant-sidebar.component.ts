@@ -1,6 +1,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { environment } from '@environments/environment';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -12,7 +13,7 @@ import { Subscription } from 'rxjs';
 export class ApplicantSidebarComponent implements OnInit {
   @Input() sidebarWidth;
   @Input() user;
-
+  env = environment;
   private req: Subscription;
 
 

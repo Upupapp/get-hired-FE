@@ -78,6 +78,4 @@
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.12"
   }
-
-   
 }
