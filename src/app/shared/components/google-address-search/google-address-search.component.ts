@@ -26,28 +26,18 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    const {
-      address,
-      state,
-      country,
-      addressOne,
-      town,
-      city,
-      zipcode,
-      mapUrl
-    } = this.rawAddress;
+
 
     this.addressFormGroup = this.formBuilder.group({
-      address: [address],
-      state: [state],
-      country: [country, Validators.required],
-      addressOne: [addressOne, Validators.required],
-      town: [town],
-      city: [city, Validators.required],
-      zipcode: [zipcode],
-      mapUrl: [mapUrl]
+      address: [this.rawAddress ? this.rawAddress.address : null],
+      state: [this.rawAddress ? this.rawAddress.state : null],
+      country: [this.rawAddress ? this.rawAddress.country : null, Validators.required],
+      addressOne: [this.rawAddress ? this.rawAddress.addressOne : null, Validators.required],
+      town: [this.rawAddress ? this.rawAddress.town : null],
+      city: [this.rawAddress ? this.rawAddress.city : null, Validators.required],
+      zipcode: [this.rawAddress ? this.rawAddress.zipcode : null],
+      mapUrl: [this.rawAddress ? this.rawAddress.mapUrl : null]
     })
-
   }
 
   ngAfterViewInit(): void {
