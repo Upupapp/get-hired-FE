@@ -129,7 +129,7 @@
           </div>
         </div>
       </div>
-      <div class="row" *ngIf="rawAddress">
+      <div class="row">
         <label>Company Address</label>
         <app-google-address-search [rawAddress]="rawAddress" (addressChange)="addressChange($event)"></app-google-address-search>
       </div>
