@@ -123,8 +123,8 @@
               <div class="row mt-2">
 
                 <div class="col-4 form-group px-0">
-                  <input type="number" name="search" class="form-control form-control-main" placeholder="Php 25,000"
-                    formControlName="salaryMinimum">
+                  <input type="number" name="search" class="form-control form-control-main"
+                    [placeholder]="'ex. ' + env.defaultCurreny +' 5,000'" formControlName="salaryMinimum">
                 </div>
 
                 <div class="col-2 text-center px-0">
@@ -132,8 +132,8 @@
                 </div>
 
                 <div class="col-4 form-group px-0">
-                  <input type="number" name="search" class="form-control form-control-main" placeholder="Php 35,500"
-                    formControlName="salaryMaximum">
+                  <input type="number" name="search" class="form-control form-control-main"
+                    [placeholder]="'ex. ' + env.defaultCurreny +' 15,000'" formControlName="salaryMaximum">
                 </div>
 
                 <div class="col-2 px-2 text-center">

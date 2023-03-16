@@ -5,6 +5,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { currencies } from '@app-shared/mock.data';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-create-job-post-step',
@@ -17,7 +18,7 @@ export class CreateJobPostStepComponent implements OnInit {
 
   industry$ = this.jobFacade.industry$;
   jobRoles$ = this.jobFacade.jobRole$;
-
+  env = environment;
   skills: FormArray;
   tags: FormArray;
   jobInfoForm: FormGroup;

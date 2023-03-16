@@ -7,6 +7,7 @@ import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { currencies } from '@app-shared/mock.data';
+import { environment } from '@environments/environment';
 import { startWith, pairwise, debounceTime, distinctUntilChanged } from 'rxjs';
 import * as Model from '../../applicant.model';
 
@@ -21,7 +22,7 @@ export class ProfileBasicInfoComponent implements OnInit {
   @Output() submitBasicInfo: EventEmitter<any> = new EventEmitter();
 
   photo: string;
-
+  env = environment;
   profileDetailsForm: FormGroup;
   profileImage: any;
   salaryCurrencies = currencies;

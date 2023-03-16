@@ -11,6 +11,7 @@ export const environment = {
   isDebug: false,
   apiKey: 'AIzaSyDO1pnsz_9NDrBXcBndDdBe3FCOMXO3yQg',
   mapRestrictions: ["au"],
+  defaultCurreny: "AUD",
   firebase: {
     apiKey: "AIzaSyDMw_IXIFJkgKE53Fy4UnWwYQ8NhyTHrhI",
     authDomain: "jobhunt-375218.firebaseapp.com",

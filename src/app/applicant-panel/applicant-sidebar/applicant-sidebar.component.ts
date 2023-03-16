@@ -64,6 +64,7 @@ export class ApplicantSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.location = this.router.url;
     this.screenHeight = window.innerHeight;
+    console.log(this.user)
     if(this.user) {
       this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
     }

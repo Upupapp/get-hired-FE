@@ -16,6 +16,7 @@ export const environment = {
   NgRxMaxAge: 15,
   isDebug: true,
   mapRestrictions: ["au"],
+  defaultCurreny: "AUD",
   apiKey: 'AIzaSyDO1pnsz_9NDrBXcBndDdBe3FCOMXO3yQg',
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',

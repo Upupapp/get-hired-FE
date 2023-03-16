@@ -9,5 +9,6 @@ export const environment = {
   isDebug: false,
   projectName: 'jobhive',
   apiKey: 'AIzaSyDO1pnsz_9NDrBXcBndDdBe3FCOMXO3yQg',
-  mapRestrictions: ['au']
+  mapRestrictions: ['au'],
+  defaultCurreny: "AUD"
 };
