@@ -96,7 +96,7 @@ export class EmployerSidebarComponent implements OnInit {
                 title: 'Contact Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
               },
               {
-                title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
+                title: this.translate.instant('CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE'), icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
               },
 
             ]

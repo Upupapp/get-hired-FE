@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-employer-settings',
@@ -25,17 +26,17 @@ export class EmployerSettingsComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Company Details",
+      title: this.trannslate.instant('EDIT_COMPANY_DETAILS.COMPANY_DESCRIPTION'),
       disabled: false
     },
     {
       id: 2,
-      title: "Company Users",
+      title: this.trannslate.instant('EDIT_COMPANY_DETAILS.COMPANY_USER_SECTION'),
       disabled: false
     },
     {
       id: 3,
-      title: "Account Settings",
+      title: this.trannslate.instant('EDIT_COMPANY_DETAILS.ACCOUNT_SETTINGS'),
       disabled: false
     },
 
@@ -49,7 +50,8 @@ export class EmployerSettingsComponent implements OnInit {
     private employeeFacade: EmployeeFacade,
     private dialog: MatDialog,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private trannslate: TranslateService
   ) { }
 
   ngOnInit(): void {

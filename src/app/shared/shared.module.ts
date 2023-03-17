@@ -30,6 +30,8 @@ import { FileViewerComponent } from './components/file-viewer/file-viewer.compon
 import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { LanguageSelectionComponent } from './components/language-selection/language-selection.component';
 
 const classesToInclude: any[] = [
   CustomProfileLoaderComponent,
@@ -50,7 +52,9 @@ const classesToInclude: any[] = [
   SuccessDialogComponent,
   FileViewerComponent,
   VideoPreviewComponent,
-  RecordLoadingComponent
+  RecordLoadingComponent,
+  ConfirmationDialogComponent,
+  LanguageSelectionComponent
 ];
 
 @NgModule({

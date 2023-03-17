@@ -19,17 +19,17 @@
 					<form class="px-3"
 					[@animate]="{value:'*', params:{ x:'-10px', delay:'200ms' }}"
 					[formGroup]="contactGroupForm" novalidate>
-						<h5 class="title-add text-start">Group of Contacts</h5>
-						<h5 class="title-description text-start">Provide the contact group details necessary for the person you want to add within that group</h5>
+						<h5 class="title-add text-start">{{ 'EDIT_CONTACT_GROUP_FORM.GROUP_CONTACTS' | translate }}</h5>
+						<h5 class="title-description text-start">{{ 'EDIT_CONTACT_GROUP_FORM.DETAILS_FORM' | translate }}</h5>
 						<div class="row">
 							<div class="col-12 col-md-12 form-group mt-3">
-								<label class="mb-2">Group Name<i class="text-danger">*</i></label>
+								<label class="mb-2">{{ 'EDIT_CONTACT_GROUP_FORM.GROUP_NAME_FIELD' | translate }}<i class="text-danger">*</i></label>
 								<input type="text" class="form-control" formControlName="groupName" name="groupName"  [attr.disabled]="this.data" />
 							</div>
 							<div class="col-12 col-md-12 form-group mt-3">
 								<div class="group-email">
-									<label class="mb-2">Lists of contacts <i class="text-danger">*</i></label>
-									<button class="btn btn-add-service" (click)="contactGroupForm.controls['emails'].reset()">Reset</button>
+									<label class="mb-2">{{ 'EDIT_CONTACT_GROUP_FORM.LISTS_CONTACT_FIELD' | translate }} <i class="text-danger">*</i></label>
+									<button class="btn btn-add-service" (click)="contactGroupForm.controls['emails'].reset()">{{ 'EDIT_CONTACT_GROUP_FORM.RESET_BUTTON' | translate }}</button>
 								</div>
 
 								<checkbox-group formControlName="emails" class="checkbox-group"
@@ -41,7 +41,7 @@
 									</ng-container>
 								</checkbox-group>
 								  <ng-template #block>
-									No contact email available
+									{{ 'EDIT_CONTACT_GROUP_FORM.ERROR_MESSAGE' | translate }}
 								</ng-template>
 								<!-- <p>Form - {{contactGroupForm.controls['emails'].value | json}}</p> -->
 							</div>
@@ -51,11 +51,11 @@
 							<div style="position: relative;" class="mt-2 text-center">
 								<button type="button"
 								class="btn me-3 btn-default "
-								(click)="dialogRef.close()">Close </button>
+								(click)="dialogRef.close()">{{ 'EDIT_CONTACT_GROUP_FORM.CLOSE_BUTTON' | translate }} </button>
 
 								<button type="button"
 								class="btn me-1 btn-primary"
-								(click)="submitForm()" [disabled]="!contactGroupForm.valid">Submit
+								(click)="submitForm()" [disabled]="!contactGroupForm.valid">{{ 'EDIT_CONTACT_GROUP_FORM.SUBMIT_BUTTON' | translate }}
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>

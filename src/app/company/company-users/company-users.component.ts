@@ -8,6 +8,7 @@ import { TableHeader } from '@main/views/home/utils/job-list-model-interface';
 import { Subscription, Subject, takeUntil } from 'rxjs';
 import { CompanyFacade } from '@app-company/state/company.facade';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-company-users',
@@ -24,10 +25,10 @@ export class CompanyUsersComponent implements OnInit {
   // public companyUserLists: CompanyUser[] = companyUserLists;
 
   displayedColumns: TableHeader[] = [
-    { col_name: 'employeeId', title: 'Employee ID' },
+    { col_name: 'employeeId', title: this.translate.instant('EDIT_COMPANY_USERS.TABLE_COLUMN_ID') },
     { col_name: 'fullName', title: 'Full Name' },
     { col_name: 'email', title: 'Email Address' },
-    { col_name: 'assignedAt', title: 'Date added', type: 'date' },
+    { col_name: 'assignedAt', title: this.translate.instant('EDIT_COMPANY_USERS.TABLE_COLUMN_DATE_ADDED'), type: 'date' },
   ];
 
   selectedColumns: string[] = [
@@ -53,7 +54,8 @@ export class CompanyUsersComponent implements OnInit {
     private companyFacade: CompanyFacade,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {

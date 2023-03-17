@@ -41,8 +41,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const browserLang: any = this.translateService.getBrowserLang();
-    //this.translateService.use(browserLang.match(/en|vie/) ? browserLang : 'en');
-    this.translateService.use('vie');
+    const selectedLang: any = localStorage.getItem("selectedLang")
+    this.translateService.use(selectedLang ? selectedLang: browserLang.match(/en|vie/) ? browserLang : 'en');
     this.checkScreenSize();
   }
 

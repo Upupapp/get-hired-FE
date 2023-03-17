@@ -254,19 +254,20 @@
         "CLOSE_BUTTON":"Đóng",
         "SUBMIT_BUTTON":" Nhập vào"
     },
-    "DELETE WARNING PROMPT":{
+    "DELETE_WARNING":{
         "DELETE_CONFIRMATION_PROMPT":"Xác nhận xóa bỏ, Bạn chắc chắn muốn xóa chứ?",
         "CANCEL_BUTTON":"Hủy bỏ",
         "CONTINUE_BUTTON":"Tiếp tục"
     },
-    "CONCTACTS:CONTACT GROUP":{
+    "CONTACT_GROUP":{
         "TABLE_COLUMN_GROUP_ID":"ID Nhóm",
         "TABLE_COLUMN_GROUP_NAME":"Tên nhóm",
-        "TABLE_COLUMN_NO._MEMBERS":"Số lượng thành viên",
+        "TABLE_COLUMN_NO_MEMBERS":"Số lượng thành viên",
+        "TABLE_COLUMN_MEMBERS":"Thành viên",
         "TABLE_COLUMN_ACTION":"Hoạt động",
         "ADD_GROUP_BUTTON":"Thêm Nhóm"
     },
-    "EDIT CONTACT GROUP FORM":{
+    "EDIT_CONTACT_GROUP_FORM":{
         "GROUP_CONTACTS":"Phân Nhóm các Liên hệ",
         "DETAILS_FORM":"Cung cấp chi tiết nhóm liên hệ cần thiết cho người mà bạn muốn thêm vào nhóm đó",
         "GROUP_NAME_FIELD":"Tên nhóm",
@@ -276,36 +277,40 @@
         "CLOSE_BUTTON":"Đóng",
         "SUBMIT_BUTTON":"Nhập thông tin"
     },
-    "CONTACTS:CANDIDATES":{
+    "CONTACTS_CANDIDATES":{
         "SIDEBAR_CANDIDATE":"Ứng viên",
         "TABLE_COLUMN_MIN_SALARY":"Mức lương tối thiểu",
         "TABLE_COLUMN_MAX_SALARY":"Mức lương tối đa"
     },
-    "CANDIDATE APPLIED ON JOB TABLE":{
+    "CANDIDATE_APPLIED_ON_JOB_TABLE":{
         "CANDIDATE_MANAGEMENT":"Danh sách ứng viên",
         "ADD_CANDIDATE_BUTTON":"Thêm ứng viên +"
     },
-    "NEW CONTACT FORM":{
+    "NEW_CANDIDATE_FORM":{
         "NEW_CONTACT":"Tạo liên hệ",
         "JOB_ID_SELECTOR":"Chọn ID công việc",
         "GROUP_NAME_FIELD":"Tên nhóm*"
     },
-    "IMPORTANT CONTACT FORM":{
+    "IMPORT_CANDIDATE_FORM":{
         "IMPORT_CONTACT":"Đăng tải file Liên hệ",
         "CSV_FILE_UPLOAD_TEXT":"Đang tải lên tệp CSV",
         "FILE_UPLOAD_TEXT":"Thêm liên hệ mới bằng cách tải tệp .csv lên. Bạn có thể tải mẫu tại đây để tham khảo",
         "FILE_UPLOAD_INSTRUCTION":"Chúng tôi chỉ chấp nhận File định dạng CSV",
         "FILE_SELECTOR":"Tải file lên"
     },
-    "EDIT COMPANY DETAILS":{
+    "EMPLOYER_BRANDING":{
+        "VERIFIED_BADGE":"Nhà tuyển dụng đã được xác minh",
+        "CALL_TO_ACTION_BUTTON":"Ứng tuyển ngay"   
+    },
+    "EDIT_COMPANY_DETAILS":{
         "COMPANY_USER_SECTION":"Tài khoản tuyển dụng",
         "ACCOUNT_SETTINGS":"Cài4 đặt Tài khoản",
         "COMPANY_LOGO_TEXT":"Logo của Công ty",
         "COMPANY_NAME_TEXT":"Tên Công ty",
 
         "COMPANY_DESCRIPTION":"Thông tin Công ty",
-        "TYPE_INDUSTRY_TEXT":"Khối ngành ",
-        "NUMBER_OF_EMPLOYEES_TEXT":"Số lượng nhân viên",
+        "TYPE_INDUSTRY":"Khối ngành ",
+        "NUMBER_OF_EMPLOYEES":"Số lượng nhân viên",
 
         "MOBILE_PHONE_TEXT":"Điện thoại Công ty",
         "ADDRESS_TEXT":"Địa chỉ Công ty",
@@ -314,25 +319,25 @@
 
         "TYPE_INDUSTRY_SELECTOR_OPTIONS":"quảng cáo, Chăm sóc sắc đẹp và sức khỏe, thương mại điện tử, giáo dục, kỹ thuật, F&B, dịch vụ tài chính, FMCG, Lòng hiếu khách, công nghệ thông tin, hậu cần, Địa ốc, Bán lẻ, Việc bán hàng, viễn thông"
     },
-    "EDIT COMPANY USERS":{
+    "EDIT_COMPANY_USERS":{
         "TABLE_COLUMN_ID":"ID người dùng",
         "TABLE_COLUMN_DATE_ADDED":"Ngày thêm vào",
         "ADD_NEW_ACCESS_BUTTON":"Thêm vào người dùng mới +"
     },
-    "NEW USER ACCESS":{
+    "NEW_USER_ACCESS":{
         "NEW_USER__ACCESS_FORM":"Người dùng mới",
         "INSTRUCTION_MESSAGE":"Thêm vào người dùng mới mà bạn muốn thêm vào để hỗ trợ công tác tuyển dụng ",
         "EMAIL_TEXT":"Thêm vào email",
         "CANCEL_BUTTON":"Hủy bỏ",
         "ADD_EMAIL_BUTTON":"Thêm vào"
     },
-    "IMPORT USERS":{
+    "IMPORT_USERS":{
         "IMPORT_USERS_FORM":"Nhập file người dùng",
         "INSTRUCTION_MESSAGE":"Đang tải lên tệp CSV. Thêm người dùng công ty mới bằng cách tải lên tệp .csv. Bạn có thể tải mẫu tại đây để tham khảo",
         "FILE_UPLOAD_INSTRUCTION":"Chọn File Chúng tôi chỉ chấp nhận File định dạng CSV",
         "FILE_SELECTOR":"Đăng tải file người dùng"
     },
-    "ACCOUNT SETTINGS":{
+    "ACCOUNT_SETTINGS":{
         "TITLE_TEXT":"Cài đặt tài khoản",
         "FN_INPUT_FIELD":"Tên",
         "LN_INPUT_FIELD":"Họ",
