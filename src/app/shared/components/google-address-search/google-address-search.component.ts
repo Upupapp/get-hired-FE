@@ -27,6 +27,7 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
+    console.log(this.rawAddress);
 
     this.addressFormGroup = this.formBuilder.group({
       address: [this.rawAddress ? this.rawAddress.address : null],
@@ -37,7 +38,10 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       city: [this.rawAddress ? this.rawAddress.city : null, Validators.required],
       zipcode: [this.rawAddress ? this.rawAddress.zipcode : null],
       mapUrl: [this.rawAddress ? this.rawAddress.mapUrl : null]
-    })
+    });
+
+    this.addressFormGroup.markAllAsTouched();
+
   }
 
   ngAfterViewInit(): void {
@@ -80,6 +84,8 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       this.addressChange.emit(this.addressFormGroup.value);
     });
 
+    this.addressFormGroup.get('address').reset();
+
   }
 
   populateForm(rawAddress) {
@@ -90,6 +96,7 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
     this.addressFormGroup.get('city').setValue(rawAddress.city);
     this.addressFormGroup.get('zipcode').setValue(rawAddress.zipcode);
     this.addressFormGroup.get('mapUrl').setValue(rawAddress.mapUrl);
+
   }
 
   get city_validators() {
