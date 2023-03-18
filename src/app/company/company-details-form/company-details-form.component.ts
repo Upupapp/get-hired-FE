@@ -43,6 +43,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   updateSuccess: boolean = false;
   rawAddress: any;
   loading: boolean = true;
+  addressFormValid: boolean = false;
 
   workSetup$ = this.companyFacade.setup$;
   industry$ = this.companyFacade.industry$;
@@ -97,6 +98,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     });
 
     //this.showSuccessDialog()
+
+    console.log(!this.companyDetailsForm.valid && !this.addressFormValid);
+
   }
 
   setCompany(company: EmployeeCompany) {
@@ -165,6 +169,10 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.companyDetailsForm.get('companyTown').setValue(event.town);
     this.companyDetailsForm.get('companyZip').setValue(event.zipcode);
     this.companyDetailsForm.get('companyMapUrl').setValue(event.mapUrl);
+  }
+
+  isAddressFormValid(status: boolean) {
+    this.addressFormValid = status;
   }
 
   redirectToPreview() {

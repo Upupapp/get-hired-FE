@@ -4,7 +4,8 @@
     *ngIf="canView" type="button" (click)="redirectToPreview()">
     Company Preview
   </button> -->
-    <button class="btn btn-save me-2" type="submit" [disabled]="!companyDetailsForm.valid">
+    <button class="btn btn-save me-2" type="submit"
+    [disabled]="!(companyDetailsForm.valid && addressFormValid)">
       Submit Changes</button>
   </div>
 
@@ -144,7 +145,8 @@
           </div>
         </div>
         <app-google-address-search [rawAddress]="rawAddress"
-          (addressChange)="addressChange($event)"></app-google-address-search>
+          (addressChange)="addressChange($event)"
+          (isValid)="isAddressFormValid($event)"></app-google-address-search>
       </div>
     </div>
   </div>
