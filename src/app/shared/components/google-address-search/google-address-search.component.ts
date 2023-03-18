@@ -15,6 +15,7 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
   @ViewChild('search') searchElementRef!: ElementRef;
   @Input() rawAddress: any;
   @Output() addressChange = new EventEmitter<any>();
+  @Output() isValid = new EventEmitter<any>();
 
   addressFormGroup: FormGroup;
 
@@ -41,6 +42,12 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
     });
 
     this.addressFormGroup.markAllAsTouched();
+
+    this.addressFormGroup.statusChanges.subscribe(stat => {
+      if(stat == 'VALID') {
+        this.isValid.emit(true)
+      }
+    })
 
   }
 

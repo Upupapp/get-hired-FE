@@ -151,7 +151,8 @@
           </div>
         </div>
         <app-google-address-search [rawAddress]="rawAddress"
-          (addressChange)="addressChange($event)"></app-google-address-search>
+          (addressChange)="addressChange($event)"
+          (isValid)="isAddressFormValid($event)"></app-google-address-search>
       </div>
     </div>
   </div>
