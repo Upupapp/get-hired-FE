@@ -92,4 +92,16 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
     this.addressFormGroup.get('mapUrl').setValue(rawAddress.mapUrl);
   }
 
+  get city_validators() {
+    return this.addressFormGroup.get('city');
+  }
+
+  get country_validators() {
+    return this.addressFormGroup.get('country');
+  }
+
+  get adressOne_validators() {
+    return this.addressFormGroup.get('addressOne');
+  }
+
 }

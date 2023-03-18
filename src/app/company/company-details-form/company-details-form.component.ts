@@ -93,6 +93,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       companyTown: [],
       companyZip: [],
       companyMapUrl: [],
+      shownPublicly: []
     });
 
     //this.showSuccessDialog()
@@ -119,6 +120,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         industryId,
         workSetupId,
         numberOfEmployee,
+        shownPublicly
       } = company;
 
       this.companyDetailsForm.get('companyName')?.setValue(companyName);
@@ -136,6 +138,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         .get('numberOfEmployee')
         ?.setValue(numberOfEmployee);
       this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
+      this.companyDetailsForm.get('shownPublicly').setValue(shownPublicly);
 
       this.profileImage = companyLogoUrl;
       this.canView = true;
