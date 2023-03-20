@@ -10,9 +10,9 @@
               <div class="input-group-text prepend"><i class="bi bi-search"></i></div>
             </div>
 
-              <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
-                placeholder="Start typing to begin address search and auto populate fields" formControlName="address"
-                #search>
+            <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
+              placeholder="Start typing to begin address search and auto populate fields" formControlName="address"
+              #search>
           </div>
         </div>
       </div>
@@ -29,7 +29,13 @@
         <div class="title-container">
           <label>Country</label>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="ex. Australia" formControlName="country">
+            <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country"
+              [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
+          </div>
+          <div class="mt-1 ms-4" *ngIf="
+              (country_validators?.invalid && country_validators?.touched) || country_validators?.dirty">
+            <small *ngIf="country_validators?.errors?.required" class="text-danger">
+              Country is required</small>
           </div>
         </div>
       </div>
@@ -40,7 +46,13 @@
           <label>Address 1</label>
           <div class="form-group">
             <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
-              placeholder="ex. Unit A 117 streetname st." formControlName="addressOne">
+              placeholder="ex. Unit A 117 streetname st." formControlName="addressOne"
+              [class.is-invalid]="adressOne_validators?.invalid && adressOne_validators?.touched">
+          </div>
+          <div class="mt-1 ms-4" *ngIf="
+                (adressOne_validators?.invalid && adressOne_validators?.touched) || adressOne_validators?.dirty">
+            <small *ngIf="adressOne_validators?.errors?.required" class="text-danger">
+              Address line 1 is required</small>
           </div>
         </div>
       </div>
@@ -56,7 +68,13 @@
         <div class="title-container">
           <label>City</label>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="ex. VIC" formControlName="city">
+            <input type="text" class="form-control" placeholder="ex. Makati" formControlName="city"
+              [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
+          </div>
+          <div class="mt-1 ms-4" *ngIf="
+                (city_validators?.invalid && city_validators?.touched) || city_validators?.dirty">
+            <small *ngIf="city_validators?.errors?.required" class="text-danger">
+              City is required</small>
           </div>
         </div>
       </div>

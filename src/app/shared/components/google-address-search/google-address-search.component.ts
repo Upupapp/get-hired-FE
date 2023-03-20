@@ -15,6 +15,7 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
   @ViewChild('search') searchElementRef!: ElementRef;
   @Input() rawAddress: any;
   @Output() addressChange = new EventEmitter<any>();
+  @Output() isValid = new EventEmitter<any>();
 
   addressFormGroup: FormGroup;
 
@@ -27,6 +28,7 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
+    console.log(this.rawAddress);
 
     this.addressFormGroup = this.formBuilder.group({
       address: [this.rawAddress ? this.rawAddress.address : null],
@@ -37,7 +39,16 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       city: [this.rawAddress ? this.rawAddress.city : null, Validators.required],
       zipcode: [this.rawAddress ? this.rawAddress.zipcode : null],
       mapUrl: [this.rawAddress ? this.rawAddress.mapUrl : null]
+    });
+
+    this.addressFormGroup.markAllAsTouched();
+
+    this.addressFormGroup.statusChanges.subscribe(stat => {
+      if(stat == 'VALID') {
+        this.isValid.emit(true)
+      }
     })
+
   }
 
   ngAfterViewInit(): void {
@@ -80,6 +91,8 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       this.addressChange.emit(this.addressFormGroup.value);
     });
 
+    this.addressFormGroup.get('address').reset();
+
   }
 
   populateForm(rawAddress) {
@@ -90,6 +103,19 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
     this.addressFormGroup.get('city').setValue(rawAddress.city);
     this.addressFormGroup.get('zipcode').setValue(rawAddress.zipcode);
     this.addressFormGroup.get('mapUrl').setValue(rawAddress.mapUrl);
+
+  }
+
+  get city_validators() {
+    return this.addressFormGroup.get('city');
+  }
+
+  get country_validators() {
+    return this.addressFormGroup.get('country');
+  }
+
+  get adressOne_validators() {
+    return this.addressFormGroup.get('addressOne');
   }
 
 }

@@ -4,7 +4,8 @@
     *ngIf="canView" type="button" (click)="redirectToPreview()">
     Company Preview
   </button> -->
-    <button class="btn btn-save me-2" type="submit" [disabled]="!companyDetailsForm.valid">
+    <button class="btn btn-save me-2" type="submit"
+    [disabled]="!(companyDetailsForm.valid && addressFormValid)">
       Submit Changes</button>
   </div>
 
@@ -81,10 +82,9 @@
             </ng-container>
           </select>
         </div>
-
       </div>
 
-      <div class="col-12 col-lg-4 mb-2" *ngIf="workSetup$ | async as workSetup">
+      <div class="col-12 col-lg-4 mb-3" *ngIf="workSetup$ | async as workSetup">
         <div class="title-container mb-3">
           <label>Work Setup</label>
           <select class="form-select" formControlName="workSetupId">
@@ -96,7 +96,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-2 mb-2">
+      <div class="col-12 col-lg-2 mb-3">
         <div class="title-container mb-3">
           <label>Number of Employee</label>
           <div class="form-group">
@@ -133,8 +133,20 @@
         </div>
       </div>
       <div class="row">
-        <label>Company Address</label>
-        <app-google-address-search [rawAddress]="rawAddress" (addressChange)="addressChange($event)"></app-google-address-search>
+        <div class="col-12 col-lg-6 mb-3">
+          <label>Company Address</label>
+        </div>
+        <div class="col-12 col-lg-6 mb-3">
+          <div class="form-check row d-flex h-100 align-items-center justify-content-end">
+            <input class="form-check-input col-12 col-lg-8" type="checkbox" formControlName="shownPublicly">
+            <label class="form-check-label col-12 col-lg-4 m-0 text-end">
+              Publicly Shown
+            </label>
+          </div>
+        </div>
+        <app-google-address-search [rawAddress]="rawAddress"
+          (addressChange)="addressChange($event)"
+          (isValid)="isAddressFormValid($event)"></app-google-address-search>
       </div>
     </div>
   </div>

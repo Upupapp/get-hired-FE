@@ -36,4 +36,5 @@ export interface EmployeeCompany {
   companyZip: string;
   companyMapUrl: string;
   companyAddressOne: string;
+  shownPublicly: boolean;
 }

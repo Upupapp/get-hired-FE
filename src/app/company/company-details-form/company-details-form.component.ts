@@ -43,6 +43,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   updateSuccess: boolean = false;
   rawAddress: any;
   loading: boolean = true;
+  addressFormValid: boolean = false;
 
   workSetup$ = this.companyFacade.setup$;
   industry$ = this.companyFacade.industry$;
@@ -93,9 +94,13 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       companyTown: [],
       companyZip: [],
       companyMapUrl: [],
+      shownPublicly: []
     });
 
     //this.showSuccessDialog()
+
+    console.log(!this.companyDetailsForm.valid && !this.addressFormValid);
+
   }
 
   setCompany(company: EmployeeCompany) {
@@ -119,6 +124,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         industryId,
         workSetupId,
         numberOfEmployee,
+        shownPublicly
       } = company;
 
       this.companyDetailsForm.get('companyName')?.setValue(companyName);
@@ -136,6 +142,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         .get('numberOfEmployee')
         ?.setValue(numberOfEmployee);
       this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
+      this.companyDetailsForm.get('shownPublicly').setValue(shownPublicly);
 
       this.profileImage = companyLogoUrl;
       this.canView = true;
@@ -162,6 +169,10 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.companyDetailsForm.get('companyTown').setValue(event.town);
     this.companyDetailsForm.get('companyZip').setValue(event.zipcode);
     this.companyDetailsForm.get('companyMapUrl').setValue(event.mapUrl);
+  }
+
+  isAddressFormValid(status: boolean) {
+    this.addressFormValid = status;
   }
 
   redirectToPreview() {
