@@ -21,7 +21,7 @@
         <div class="title-container">
           <label>State</label>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="ex. Melbourne" formControlName="state">
+            <input type="text" class="form-control" placeholder="ex. Queensland" formControlName="state">
           </div>
         </div>
       </div>
@@ -29,7 +29,7 @@
         <div class="title-container">
           <label>Country</label>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country"
+            <input type="text" class="form-control" placeholder="ex. Australia" formControlName="country"
               [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
           </div>
           <div class="mt-1 ms-4" *ngIf="
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-12 col-lg-5">
         <div class="title-container">
-          <label>Address 1</label>
+          <label>Address</label>
           <div class="form-group">
             <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()"
               placeholder="ex. Unit A 117 streetname st." formControlName="addressOne"
@@ -52,15 +52,15 @@
           <div class="mt-1 ms-4" *ngIf="
                 (adressOne_validators?.invalid && adressOne_validators?.touched) || adressOne_validators?.dirty">
             <small *ngIf="adressOne_validators?.errors?.required" class="text-danger">
-              Address line 1 is required</small>
+              Address is required</small>
           </div>
         </div>
       </div>
       <div class="col-12 col-lg-3">
         <div class="title-container">
-          <label>Town / Suburb</label>
+          <label>Town/Suburb</label>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="ex. Wurundjeri Country" formControlName="town">
+            <input type="text" class="form-control" placeholder="ex. Burnie" formControlName="town">
           </div>
         </div>
       </div>
@@ -68,7 +68,7 @@
         <div class="title-container">
           <label>City</label>
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="ex. Makati" formControlName="city"
+            <input type="text" class="form-control" placeholder="ex. Melbourne" formControlName="city"
               [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
           </div>
           <div class="mt-1 ms-4" *ngIf="
@@ -80,7 +80,7 @@
       </div>
       <div class="col-12 col-lg-1">
         <div class="title-container">
-          <label>Zip Code</label>
+          <label>Post Code</label>
 
           <div class="form-group">
             <input type="text" class="form-control" placeholder="ex. 3000" formControlName="zipcode">
