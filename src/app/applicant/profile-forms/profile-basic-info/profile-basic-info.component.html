@@ -131,12 +131,12 @@
           </ng-container>
         </select>
         <div class="px-3" *ngIf="jobLevelId_validators?.invalid && jobLevelId_validators?.touched">
-          <small class="invalid-feedback">Level of Eperience is required</small>
+          <small class="invalid-feedback">Level of Experience is required</small>
         </div>
       </div>
 
       <div class="title-container mb-3">
-        <label>Expected Salary (monthly)</label>
+        <label>Expected Salary (yearly)</label>
 
         <div class="row">
           <div class="col-4 form-group pe-0">
@@ -213,16 +213,16 @@
         <label>Address</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Subdivision, Street No, Building No, Barangay"
+          <input type="text" class="form-control" placeholder="ex. Subdivision, Street No., Building No."
             formControlName="address">
         </div>
       </div>
 
       <div class="title-container mb-3">
-        <label>City/Municipality</label>
+        <label>City</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Manila" formControlName="city"
+          <input type="text" class="form-control" placeholder="ex. Melbourne" formControlName="city"
             [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
           <div class="px-3" *ngIf="city_validators?.invalid && city_validators?.touched">
             <small class="invalid-feedback">City is required</small>
@@ -234,7 +234,7 @@
         <label>Country</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country"
+          <input type="text" class="form-control" placeholder="ex. Australia" formControlName="country"
             [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
           <div class="px-3" *ngIf="country_validators?.invalid && country_validators?.touched">
             <small class="invalid-feedback">Country is required</small>
