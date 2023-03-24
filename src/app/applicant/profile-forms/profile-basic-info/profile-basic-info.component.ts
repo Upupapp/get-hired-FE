@@ -78,7 +78,7 @@ export class ProfileBasicInfoComponent implements OnInit {
       jobTitle: [null, Validators.required],
       shortBio: [null, Validators.required],
       servicesProvided: [null],
-      jobTypeId: [null, Validators.required],
+      jobTypeId: [null],
       jobLevelId: [null, Validators.required],
       workSetupId: [null, Validators.required],
       salaryMinimum: [null, Validators.required],

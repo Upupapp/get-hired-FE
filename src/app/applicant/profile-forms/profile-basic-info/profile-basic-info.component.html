@@ -98,9 +98,7 @@
             <option [value]="item.id">{{item.name}}</option>
           </ng-container>
         </select>
-        <div class="px-3" *ngIf="jobTypeId_validators?.invalid && jobTypeId_validators?.touched">
-          <small class="invalid-feedback">Job Type is required</small>
-        </div>
+       
       </div>
 
       <div class="title-container mb-3" *ngIf="workSetup$ | async as workSetup">
@@ -125,13 +123,13 @@
         <label>Level of Experience</label>
         <select class="form-select" formControlName="jobLevelId"
           [class.is-invalid]="jobLevelId_validators?.invalid && jobLevelId_validators?.touched">
-          <option selected disabled [ngValue]="null">Select Level Experience</option>
+          <option selected disabled [ngValue]="null">Select Level of Experience</option>
           <ng-container *ngFor="let item of jobLevel; let i = index">
             <option [value]="item.id">{{item.name}}</option>
           </ng-container>
         </select>
         <div class="px-3" *ngIf="jobLevelId_validators?.invalid && jobLevelId_validators?.touched">
-          <small class="invalid-feedback">Level of Eperience is required</small>
+          <small class="invalid-feedback">Level of Experience is required</small>
         </div>
       </div>
 
@@ -153,7 +151,7 @@
           </div>
           <div class="col-4 form-group pe-0">
             <input type="number" name="search" formControlName="salaryMinimum" class="form-control form-control-main"
-              placeholder="ex. Php 25,000" [class.is-invalid]="salaryMinimum_validators?.invalid && salaryMinimum_validators?.touched">
+              placeholder="ex. Eur 25,000" [class.is-invalid]="salaryMinimum_validators?.invalid && salaryMinimum_validators?.touched">
               <div class="px-3" *ngIf="salaryMinimum_validators?.invalid && salaryMinimum_validators?.touched">
                 <small class="invalid-feedback">Minimum salary is required</small>
               </div>
@@ -161,7 +159,7 @@
 
           <div class="col-4 form-group pe-0">
             <input type="number" name="search" class="form-control form-control-main" formControlName="salaryMaximum"
-              placeholder="ex. Php 35,500" [class.is-invalid]="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
+              placeholder="ex. Eur 35,500" [class.is-invalid]="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
               <div class="px-3" *ngIf="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
                 <small class="invalid-feedback">Minimum salary is required</small>
               </div>
@@ -181,7 +179,7 @@
         <label>First Name</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. George" formControlName="firstName">
+          <input type="text" class="form-control" placeholder="ex. Karl" formControlName="firstName">
         </div>
       </div>
 
@@ -189,7 +187,7 @@
         <label>Last Name</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Cruz" formControlName="lastName">
+          <input type="text" class="form-control" placeholder="ex. Klaus" formControlName="lastName">
         </div>
       </div>
 
@@ -211,7 +209,7 @@
         <label>Address</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Subdivision, Street No, Building No, Barangay"
+          <input type="text" class="form-control" placeholder="ex. Brandenburgische Strasse 96 Bischheim, Rheinland-Pfalz(RP), 67294"
             formControlName="address">
         </div>
       </div>
@@ -220,7 +218,7 @@
         <label>City/Municipality</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Manila" formControlName="city" [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
+          <input type="text" class="form-control" placeholder="ex. Berlin" formControlName="city" [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
           <div class="px-3" *ngIf="city_validators?.invalid && city_validators?.touched">
             <small class="invalid-feedback">City is required</small>
           </div>
@@ -231,7 +229,7 @@
         <label>Country</label>
 
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country" [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
+          <input type="text" class="form-control" placeholder="ex. Germany" formControlName="country" [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
           <div class="px-3" *ngIf="country_validators?.invalid && country_validators?.touched">
             <small class="invalid-feedback">Country is required</small>
           </div>
