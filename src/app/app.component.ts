@@ -39,20 +39,21 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('Loaded');
+    // this.router.events.pipe(
+    //   filter(event => event instanceof NavigationEnd),
+    //   map(() => this.rootRoute(this.route)),
+    //   filter((route: ActivatedRoute) => route.outlet === 'primary'),
+    //   mergeMap((route: ActivatedRoute) => route.data)
+    // ).subscribe((event: {[name: string]: any}) => {
+    //   console.log('Not here');
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(() => this.rootRoute(this.route)),
-      filter((route: ActivatedRoute) => route.outlet === 'primary'),
-      mergeMap((route: ActivatedRoute) => route.data)
-    ).subscribe((event: {[name: string]: any}) => {
+    //   this.isSmallScreenAllowed = event['isMobileViewAllowed'] ? event['isMobileViewAllowed']: false;
 
-      this.isSmallScreenAllowed = event['isMobileViewAllowed'] ? event['isMobileViewAllowed']: false;
+    //   console.log(this.isSmallScreenAllowed);
+    //   this.checkScreenSize();
 
-      console.log(this.isSmallScreenAllowed);
-      this.checkScreenSize();
-
-    });
+    // });
   }
 
   checkScreenSize() {

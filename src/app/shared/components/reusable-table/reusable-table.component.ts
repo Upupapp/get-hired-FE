@@ -69,18 +69,18 @@ export class ReusableTableComponent implements OnInit {
     },*/
 
     {
-      name:'Delete',
+      name: 'Delete',
       class: 'delete',
       icon: '/assets/images/icons/delete.png',
       action_event: (action_event) => action_event
     },
-  /*
-      {
-        name:'Export',
-        class: 'export',
-        icon: '/assets/images/icons/export.png',
-        action_event: (action_event) => action_event
-      },*/
+    /*
+        {
+          name:'Export',
+          class: 'export',
+          icon: '/assets/images/icons/export.png',
+          action_event: (action_event) => action_event
+        },*/
   ];
 
   constructor(private router: Router,
@@ -102,7 +102,7 @@ export class ReusableTableComponent implements OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  repaginate(list: any[]): void{
+  repaginate(list: any[]): void {
     this.pageNumbers = Math.ceil(list.length / this.maxRows);
     this.paginate = Array(this.pageNumbers).fill(0).map((el, i) => i + 1);
     this.page = 1;
@@ -132,12 +132,12 @@ export class ReusableTableComponent implements OnInit {
         - page: page number to navigate
   */
   changePage(page: number): void {
-    if(page < 1){
+    if (page < 1) {
       this.page = 1;
       return;
     }
 
-    if(page > this.paginate.length){
+    if (page > this.paginate.length) {
       this.page = this.paginate.length;
       return;
     }
@@ -152,22 +152,22 @@ export class ReusableTableComponent implements OnInit {
 
   pageRange(page, pageCount) {
     let start = page - 2,
-        end = page + 2;
+      end = page + 2;
 
     if (end > pageCount) {
-        start -= (end - pageCount);
-        end = pageCount;
+      start -= (end - pageCount);
+      end = pageCount;
     }
     if (start <= 0) {
-        end += ((start - 1) * (-1));
-        start = 1;
+      end += ((start - 1) * (-1));
+      start = 1;
     }
 
     end = end > pageCount ? pageCount : end;
 
     return {
-        start: start - 1,
-        end: end
+      start: start - 1,
+      end: end
     };
   }
 
@@ -177,18 +177,18 @@ export class ReusableTableComponent implements OnInit {
   */
   searchDataSource(): void {
     const listDataSource = [...this.listDataSource]
-    .filter(el => {
-      let source = this.searchSource(el);
-      /* Remove hidden columns from search */
-      for(let item in source){
-        let index = this.selectedColumns.indexOf(item)
+      .filter(el => {
+        let source = this.searchSource(el);
+        /* Remove hidden columns from search */
+        for (let item in source) {
+          let index = this.selectedColumns.indexOf(item)
 
-        if(index === -1)
-          delete source[item];
-      }
+          if (index === -1)
+            delete source[item];
+        }
 
-      return JSON.stringify(source).toLowerCase().includes(this.searchBy.toLowerCase());
-    });
+        return JSON.stringify(source).toLowerCase().includes(this.searchBy.toLowerCase());
+      });
 
     this.dataSource.data = listDataSource.slice(0, this.maxRows);
     this.pageNumbers = Math.ceil([...listDataSource].length / this.maxRows);
@@ -199,16 +199,16 @@ export class ReusableTableComponent implements OnInit {
 
 
   /* Filter Datasource by status */
-  filterByStatus(data?: any){
-    if(data != "All") {
+  filterByStatus(data?: any) {
+    if (data != "All") {
       const listDataSource = [...this.listDataSource]
-      .filter(el => {
-        let source = {
-          status: el?.status
-        }
+        .filter(el => {
+          let source = {
+            status: el?.status
+          }
 
-        return JSON.stringify(source).toLowerCase().includes(data.toLowerCase());
-      });
+          return JSON.stringify(source).toLowerCase().includes(data.toLowerCase());
+        });
 
       this.dataSource.data = listDataSource.slice(0, this.maxRows);
       this.pageNumbers = Math.ceil([...listDataSource].length / this.maxRows);
@@ -227,13 +227,13 @@ export class ReusableTableComponent implements OnInit {
     @params
       - row : Client List row
   */
-  selectRows(row: any){
+  selectRows(row: any) {
     let index = this.selectedRows.findIndex(el => el.id === row.id);
 
-    if(index > -1)
-        this.selectedRows.splice(index, 1);
+    if (index > -1)
+      this.selectedRows.splice(index, 1);
     else {
-      if(this.multipleSelect)
+      if (this.multipleSelect)
         this.selectedRows = [...this.selectedRows, row];
 
       else
@@ -247,7 +247,7 @@ export class ReusableTableComponent implements OnInit {
     });
   }
 
-  customButtonFunction(data){
+  customButtonFunction(data) {
     this.customButtonEvent.emit({
       data: data
     });
@@ -260,14 +260,14 @@ export class ReusableTableComponent implements OnInit {
   */
   openDialog(action_type: string, data: any): void {
 
-    if(action_type === 'menu') {
+    if (action_type === 'menu') {
       this.updateSelectedRowDialog.emit({
         action: action_type,
         data: data
       });
     }
 
-    else if(action_type === 'delete'){
+    else if (action_type === 'delete') {
       this.deleteSelectedRow.emit({
         action: action_type,
         data: data
@@ -278,7 +278,7 @@ export class ReusableTableComponent implements OnInit {
 
   /* View Detail Dialog
   */
-  viewDetailDialog(row): void{
+  viewDetailDialog(row): void {
     console.log(row, "row clicked")
     this.viewDetails.emit({
       title: this.componentTitle,
@@ -286,17 +286,17 @@ export class ReusableTableComponent implements OnInit {
     });
   }
 
-  redirectTo(rowData:any) {
+  redirectTo(rowData: any) {
     this.router.navigate([`recruiter/contacts/group-list/${rowData.group_id}`]);
   }
 
-  exportAsXLSX(type?):void {
+  exportAsXLSX(type?): void {
     /* Find index  */
     const index = (item) => this.selectedColumns.indexOf(item);
     /* Find title from columns */
     const findTitle = (col_name: any) => this.displayedColumns.find((el) => el.col_name === col_name)["col_name"];
     /* Sort columns by keys */
-    const sortedKeys = (el) => Object.getOwnPropertyNames(el).sort((a,b) => this.selectedColumns.indexOf(a) - this.selectedColumns.indexOf(b));
+    const sortedKeys = (el) => Object.getOwnPropertyNames(el).sort((a, b) => this.selectedColumns.indexOf(a) - this.selectedColumns.indexOf(b));
 
     /* Remove hidden columns from search */
     const modifyObject = (el: any) => {
@@ -304,7 +304,7 @@ export class ReusableTableComponent implements OnInit {
       const result = {};
 
       sorted.forEach((item, _i) => {
-        if(index(item) !== -1) {
+        if (index(item) !== -1) {
           result[findTitle(item)] = el[item];
         }
       });
@@ -315,11 +315,11 @@ export class ReusableTableComponent implements OnInit {
     /* OPTION FOR EXPORTING DATA */
     let data;
 
-    switch (true){
+    switch (true) {
       case (type === 'template'): {
         data = [[...this.displayedColumns.map(el => el.col_name)]
           .filter(el => el !== 'action')
-          .reduce((ac,a) => ({...ac,[a]:''}),{})
+          .reduce((ac, a) => ({ ...ac, [a]: '' }), {})
         ];
         break;
       }

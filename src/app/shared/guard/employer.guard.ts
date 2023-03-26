@@ -4,7 +4,6 @@ import { Observable, of } from 'rxjs';
 import { CoreService } from '@app-core/services/core.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { adminRoutes, applicantRoutes, authRoutes, employerRoutes } from './routes';
-import { routes } from '@main/app.routing.module';
 
 @Injectable({
   providedIn: 'root'

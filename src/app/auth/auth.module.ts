@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SignupComponent } from './signup/signup.component';
-import { SigninComponent } from './signin/signin.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { Routes, RouterModule } from '@angular/router';
+
+import { CommonModule } from '@angular/common';
 import { SharedModule } from '@app-shared/shared.module';
-import { ReactiveFormsModule } from '@angular/forms';
-import { AuthEffects } from './state/auth.effects';
+import { SigninComponent } from './signin/signin.component';
+
+import { SignupComponent } from './signup/signup.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { authReducer } from './state/auth.reducer';
+import { AuthEffects } from './state/auth.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ChangePwComponent } from './change-pw/change-pw.component';
 import { AccountAuthenticationComponent } from './account-authentication/account-authentication.component';
-import { ErrorNotFoundComponent } from '../views/error-page/error-not-found/error-not-found.component';
 import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
 
@@ -32,18 +32,16 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    SignupComponent,
     SigninComponent,
+    SignupComponent,
     ResetPasswordComponent,
     ChangePwComponent,
     AccountAuthenticationComponent,
-    ErrorNotFoundComponent,
     AccountSettingComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
-    ReactiveFormsModule,
     StoreModule.forFeature('status', authReducer),
     EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)

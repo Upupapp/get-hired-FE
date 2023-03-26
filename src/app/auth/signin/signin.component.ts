@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '@environments/environment';
-import { routes } from '@main/app.routing.module';
 import { mainAnimations } from '@main/shared/animations/main-animations';
-import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
 
 @Component({

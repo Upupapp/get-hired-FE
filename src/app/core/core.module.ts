@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { CoreService } from './services/core.service';
-
+import { GlobalErrorHandler } from './global-error-handler';
 
 
 @NgModule({
@@ -15,6 +15,10 @@ import { CoreService } from './services/core.service';
   exports: [
     HeaderComponent
   ],
-  providers: [CoreService]
+  providers: [CoreService, {
+    // processes all errors
+    provide: ErrorHandler,
+    useClass: GlobalErrorHandler,
+  }]
 })
 export class CoreModule { }
