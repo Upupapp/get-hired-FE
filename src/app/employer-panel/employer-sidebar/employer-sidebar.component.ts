@@ -102,10 +102,10 @@ export class EmployerSidebarComponent implements OnInit {
           // {
           //   title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
           // },
-          // {
-          //   title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-          //   route: 'subscription'
-          // },
+          {
+            title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+            route: 'subscription'
+          },
           {
             title: 'Employer Branding', icon: 'account.png', class: 'accounts',
             route: 'company/details'
