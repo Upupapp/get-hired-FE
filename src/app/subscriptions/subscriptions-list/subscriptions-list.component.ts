@@ -12,11 +12,9 @@ import { SubscriptionSummaryComponent } from '../subscription-summary/subscripti
   animations: [mainAnimations]
 })
 export class SubscriptionsListComponent implements OnInit {
-  @Input() isActiveSubs: boolean;
-
+  @Input() endDate: Date;
   confirmation$: Subscription;
   list$ = this.subscriptionFacade.subscriptionsList$;
-  details$ = this.subscriptionFacade.companySubs$;
 
   computedDays = 0;
   targetDate: Date = new Date('04/07/2023 23:59');
@@ -28,14 +26,6 @@ export class SubscriptionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscriptionFacade.getAllSubscriptions();
-
-    const user = localStorage.getItem('user');
-
-    if(this.isActiveSubs && user) {
-      this.subscriptionFacade.getCompanySubs(JSON.parse(user).companyId);
-    }
-
-    this.computedDays = this.countDown();
   }
 
   upgrade(chosenSub) {
@@ -56,18 +46,6 @@ export class SubscriptionsListComponent implements OnInit {
 
         }
       });
-  }
-
-  countDown() {
-    const today = new Date();
-
-    const targetDate = new Date('04/07/2023 23:59');
-    console.log(targetDate);
-    const monthDiff = targetDate.getMonth() - today.getMonth();
-
-    return (targetDate.getDate() + (monthDiff * 30)) - today.getDate();
-
-
   }
 
 }

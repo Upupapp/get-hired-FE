@@ -48,7 +48,7 @@ export class SubscriptionsEffects {
       mergeMap((action) => this.subscriptionsService.getCompanySubscription(action.companyId)
         .pipe(
           map((res: any) => {
-            const subscriptions: Model.CompanySubscriptions = res.data;
+            const subscriptions: Model.CompanySubscriptions[] = res.data;
             return SubscriptionsActions.getCompanysubscriptionsSuccess({ subscriptions });
           }),
           catchError((err) => {

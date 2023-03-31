@@ -8,13 +8,15 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { SubscriptionSummaryComponent } from './subscription-summary/subscription-summary.component';
 import { SharedModule } from '@app-shared/shared.module';
+import { SubscriptionsComponent } from './subscriptions.component';
 
 
 
 @NgModule({
   declarations: [
     SubscriptionsListComponent,
-    SubscriptionSummaryComponent
+    SubscriptionSummaryComponent,
+    SubscriptionsComponent
   ],
   imports: [
     CommonModule,
@@ -23,7 +25,7 @@ import { SharedModule } from '@app-shared/shared.module';
     EffectsModule.forFeature([SubscriptionsEffects])
   ],
   exports: [
-    SubscriptionsListComponent,
+    SubscriptionsComponent
   ],
   providers: [SubscriptionsFacade]
 })

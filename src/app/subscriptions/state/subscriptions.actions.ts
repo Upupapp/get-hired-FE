@@ -43,7 +43,7 @@ export const getCompanysubscriptions = createAction(
 
 export const getCompanysubscriptionsSuccess = createAction(
   AllSubscriptionsActionTypes.GetCompanySubscriptionsSuccess,
-  props<{ subscriptions: Model.CompanySubscriptions }>()
+  props<{ subscriptions: Model.CompanySubscriptions[] }>()
 );
 
 export const getCompanysubscriptionsFail = createAction(
