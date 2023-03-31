@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Subscription, tap } from 'rxjs';
@@ -12,9 +12,12 @@ import { SubscriptionSummaryComponent } from '../subscription-summary/subscripti
   animations: [mainAnimations]
 })
 export class SubscriptionsListComponent implements OnInit {
+  @Input() isActiveSubs: boolean;
 
   confirmation$: Subscription;
   list$ = this.subscriptionFacade.subscriptionsList$;
+  details$ = this.subscriptionFacade.companySubs$;
+
   computedDays = 0;
   targetDate: Date = new Date('04/07/2023 23:59');
 
@@ -25,6 +28,12 @@ export class SubscriptionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscriptionFacade.getAllSubscriptions();
+
+    const user = localStorage.getItem('user');
+
+    if(this.isActiveSubs && user) {
+      this.subscriptionFacade.getCompanySubs(JSON.parse(user).companyId);
+    }
 
     this.computedDays = this.countDown();
   }

@@ -30,7 +30,7 @@ export class SubscriptionsEffects {
       mergeMap(() => this.subscriptionsService.getAllSubscriptions()
         .pipe(
           map((res: any) => {
-            const subscriptions: Model.Subscriptions[] = res.data;
+            const subscriptions: Model.Subs[] = res.data;
             return SubscriptionsActions.getAllsubscriptionsSuccess({ subscriptions });
           }),
           catchError((err) => {
@@ -42,24 +42,22 @@ export class SubscriptionsEffects {
     );
   });
 
-  // getSubscriptions$ = createEffect(() => {
-  //   return this.actions$.pipe(
-  //     ofType(SubscriptionsActions.getSubscriptions),
-  //     mergeMap(() => this.subscriptionsService.getUserSubscriptions()
-  //       .pipe(
-  //         map((res: any) => {
-  //           const subscriptions: Model.Subscriptions = res.data;
-  //           return SubscriptionsActions.getSubscriptionsSuccess({ subscriptions });
-  //         }),
-  //         catchError((err) => {
-  //           const { error } = err.error;
-  //           return of(SubscriptionsActions.getSubscriptionsFail({ payload: error }))
-  //         })
-  //       )
-  //     )
-  //   );
-  // });
-
-
+  getCompanySubscriptions$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(SubscriptionsActions.getCompanysubscriptions),
+      mergeMap((action) => this.subscriptionsService.getCompanySubscription(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const subscriptions: Model.CompanySubscriptions = res.data;
+            return SubscriptionsActions.getCompanysubscriptionsSuccess({ subscriptions });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(SubscriptionsActions.getCompanysubscriptionsFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
 
 }

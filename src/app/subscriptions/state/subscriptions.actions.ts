@@ -13,6 +13,9 @@ enum AllSubscriptionsActionTypes {
   GetSubscriptionsSuccess = '[subscriptions] - Get Subscriptions Success',
   GetSubscriptionsFail = '[subscriptions] - Get Subscriptions Fail',
 
+  GetCompanySubscriptions = '[subscriptions] - Get Company Subscriptions',
+  GetCompanySubscriptionsSuccess = '[subscriptions] - Get Company SubscriptionsSuccess',
+  GetCompanySubscriptionsFail = '[subscriptions] - Get Company Subscriptions Fail',
 }
 
 // export const resetState = createAction(
@@ -25,11 +28,26 @@ export const getAllsubscriptions = createAction(
 
 export const getAllsubscriptionsSuccess = createAction(
   AllSubscriptionsActionTypes.GetAllSubscriptionsSuccess,
-  props<{ subscriptions: Model.Subscriptions[] }>()
+  props<{ subscriptions: Model.Subs[] }>()
 );
 
 export const getAllsubscriptionsFail = createAction(
   AllSubscriptionsActionTypes.GetAllSubscriptionsFail,
+  props<{ payload: any }>()
+);
+
+export const getCompanysubscriptions = createAction(
+  AllSubscriptionsActionTypes.GetCompanySubscriptions,
+  props<{ companyId: string }>()
+);
+
+export const getCompanysubscriptionsSuccess = createAction(
+  AllSubscriptionsActionTypes.GetCompanySubscriptionsSuccess,
+  props<{ subscriptions: Model.CompanySubscriptions }>()
+);
+
+export const getCompanysubscriptionsFail = createAction(
+  AllSubscriptionsActionTypes.GetCompanySubscriptionsFail,
   props<{ payload: any }>()
 );
 
@@ -40,7 +58,7 @@ export const getSubscriptions = createAction(
 
 export const getSubscriptionsSuccess = createAction(
   AllSubscriptionsActionTypes.GetSubscriptionsSuccess,
-  props<{ subscriptions: Model.Subscriptions }>()
+  props<{ subscriptions: Model.Subs }>()
 );
 
 export const getSubscriptionsFail = createAction(
