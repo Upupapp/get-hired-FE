@@ -7,6 +7,7 @@ import { SubscriptionsEffects } from './state/subscriptions.effects';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { SubscriptionSummaryComponent } from './subscription-summary/subscription-summary.component';
+import { SharedModule } from '@app-shared/shared.module';
 
 
 
@@ -17,6 +18,7 @@ import { SubscriptionSummaryComponent } from './subscription-summary/subscriptio
   ],
   imports: [
     CommonModule,
+    SharedModule,
     StoreModule.forFeature('subscriptions', subscriptionsReducer),
     EffectsModule.forFeature([SubscriptionsEffects])
   ],

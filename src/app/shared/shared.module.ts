@@ -31,6 +31,7 @@ import { VideoPreviewComponent } from './components/video-preview/video-preview.
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
 import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
 import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
+import { CountdownTimerComponent } from './components/countdown-timer/countdown-timer.component';
 
 
 const classesToInclude: any[] = [
@@ -55,7 +56,8 @@ const classesToInclude: any[] = [
   RecordLoadingComponent,
   EmptySectionComponent,
   DropdownSearchComponent,
-  GoogleAddressSearchComponent
+  GoogleAddressSearchComponent,
+  CountdownTimerComponent
 ];
 
 @NgModule({
