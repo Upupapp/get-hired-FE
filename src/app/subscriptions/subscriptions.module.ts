@@ -6,12 +6,14 @@ import { subscriptionsReducer } from './state/subscriptions.reducer';
 import { SubscriptionsEffects } from './state/subscriptions.effects';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { SubscriptionSummaryComponent } from './subscription-summary/subscription-summary.component';
 
 
 
 @NgModule({
   declarations: [
-    SubscriptionsListComponent
+    SubscriptionsListComponent,
+    SubscriptionSummaryComponent
   ],
   imports: [
     CommonModule,

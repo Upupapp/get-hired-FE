@@ -19,7 +19,7 @@
           </ng-container>
 
           <ng-container [ngTemplateOutlet]="inclusions"
-            [ngTemplateOutletContext]="{label: 'Admin', value: item.admin >= 0 ? item.admin: 'Unlimited'}">
+            [ngTemplateOutletContext]="{label: 'Admin users', value: item.admin >= 0 ? item.admin: 'Unlimited'}">
           </ng-container>
 
           <ng-container [ngTemplateOutlet]="inclusions"
@@ -45,7 +45,7 @@
           <h5 class="text-primary-red fs-5 fst-italic" *ngIf="i== 0">
             Plan ends in {{ computedDays }} days
           </h5>
-          <button class="btn btn-primary" (click)="upgrade()" style="height: 3rem" *ngIf="i!= 0">
+          <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem" *ngIf="i!= 0">
             Upgrade to this plan
           </button>
         </div>
