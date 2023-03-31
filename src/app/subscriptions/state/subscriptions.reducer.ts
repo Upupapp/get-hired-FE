@@ -8,11 +8,12 @@ export interface State extends AppState.State {
 }
 
 export interface SubscriptionsState {
-  selected: Model.Subscriptions;
-  list: Model.Subscriptions[];
+  selected: Model.Subs;
+  list: Model.Subs[];
   error: any;
   succesMsg: string;
   loading: boolean;
+  companySubs: Model.CompanySubscriptions;
 }
 
 const initialState: SubscriptionsState = {
@@ -20,7 +21,8 @@ const initialState: SubscriptionsState = {
   list: [],
   succesMsg: '',
   error: null,
-  loading: false
+  loading: false,
+  companySubs: null
 };
 
 export const subscriptionsReducer = createReducer<SubscriptionsState>(
@@ -46,8 +48,27 @@ export const subscriptionsReducer = createReducer<SubscriptionsState>(
       error: action.payload
     };
   }),
-
-
+  on(SubscriptionsActions.getCompanysubscriptions, (state): SubscriptionsState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(SubscriptionsActions.getCompanysubscriptionsSuccess, (state, action): SubscriptionsState => {
+    return {
+      ...state,
+      loading: false,
+      companySubs: action.subscriptions,
+      error: null
+    };
+  }),
+  on(SubscriptionsActions.getCompanysubscriptionsFail, (state, action): SubscriptionsState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
   on(SubscriptionsActions.getSubscriptions, (state): SubscriptionsState => {
     return {
       ...state,

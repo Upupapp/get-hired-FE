@@ -5,5 +5,5 @@
 </div>
 
 <div class="py-4 px-5" style="margin-top: -140px" [@animate]="{value:'*', params:{ x:'-40px', delay: (250) + 'ms' }}">
-  <app-subscriptions-list></app-subscriptions-list>
+  <app-subscriptions-list [isActiveSubs]="withActiveSubscription == 'true'"></app-subscriptions-list>
 </div>

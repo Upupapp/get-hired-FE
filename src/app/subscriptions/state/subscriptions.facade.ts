@@ -11,6 +11,7 @@ export class SubscriptionsFacade {
     subscriptionsDetails$ = this.store.pipe(select(fromfeature.getSubscriptionsDetails));
     subscriptionsList$ = this.store.pipe(select(fromfeature.getSubscriptionsList));
     success$ = this.store.pipe(select(fromfeature.getSuccessMsg));
+    companySubs$ = this.store.pipe(select(fromfeature.getCompanySubs));
 
     constructor(
       private store: Store<State>,
@@ -22,6 +23,10 @@ export class SubscriptionsFacade {
 
     getSubscriptions(subscriptionsId?: string) {
       this.store.dispatch(SubscriptionsAction.getSubscriptions({ subscriptionsId }));
+    }
+
+    getCompanySubs(companyId: string) {
+      this.store.dispatch(SubscriptionsAction.getCompanysubscriptions({ companyId }));
     }
 
 }

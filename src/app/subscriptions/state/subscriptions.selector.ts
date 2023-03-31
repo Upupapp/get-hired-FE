@@ -22,3 +22,8 @@ export const getSubscriptionsDetails = createSelector (
   getSubscriptionsInitState,
   state => state.selected
 );
+
+export const getCompanySubs = createSelector (
+  getSubscriptionsInitState,
+  state => state.companySubs
+);

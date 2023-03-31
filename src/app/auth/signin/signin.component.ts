@@ -83,10 +83,12 @@ export class SigninComponent implements OnInit {
             companyId: data.companyId,
             companyName: data.companyName,
             firstName: data.firstName,
-            lastName: data.lastName
+            lastName: data.lastName,
+
           }));
 
           if (user.withCompany) {
+            localStorage.setItem('withActiveSubscription', data.withActiveSubscription);
             this.router.navigate(['../recruiter/dashboard'], { relativeTo: this.activatedRoute });
           } else {
             this.router.navigate(['../recruiter/company'], { relativeTo: this.activatedRoute });

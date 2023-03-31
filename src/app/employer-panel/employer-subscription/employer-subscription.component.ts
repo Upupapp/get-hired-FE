@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { CartListComponent } from '@main/cart/cart-list/cart-list.component';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-employer-subscription',
@@ -12,29 +9,11 @@ import { Subscription } from 'rxjs';
 })
 export class EmployerSubscriptionComponent implements OnInit {
 
-  cartConfirm$: Subscription;
+  withActiveSubscription = localStorage.getItem('withActiveSubscription');
 
-  constructor(
-    private dialog: MatDialog
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
   }
 
-
-  upgradeSubscription(subscription) {
-    const ref = this.dialog.open(CartListComponent, {
-      disableClose: true,
-      data: {
-        subscriptionDetails: subscription
-      }
-    });
-
-    this.cartConfirm$ = ref
-      .afterClosed()
-      .pipe()
-      .subscribe((result) => {
-
-      });
-  }
 }
