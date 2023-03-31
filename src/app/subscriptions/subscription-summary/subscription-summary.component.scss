@@ -1,0 +1,35 @@
+@import "src/assets/styles/colors";
+
+.card{
+	padding: 0px !important;
+	border: none;
+	background: #f8f8f8;
+	border-radius: 0px !important;
+	cursor: pointer;
+}
+
+
+.btn-primary{
+	padding: 6px 20px !important;
+	min-width: 100px;
+	&:hover{
+		background: rgba($color-global-red-buttons, 0.8) !important;
+	}
+}
+
+.btn-default{
+	padding: 6px 15px !important;
+	border-radius: 5px !important;
+	font-size: 14px !important;
+	background: #E7E7E7 !important;
+	color: #464646 !important;
+	min-width: 100px;
+	&:hover{
+		background: rgba(#E7E7E7, 0.8) !important;
+	}
+}
+
+.border-solid{
+	border-radius: 9px;
+	border: solid 2px rgba($color-global-red-buttons, 0.3);
+}
