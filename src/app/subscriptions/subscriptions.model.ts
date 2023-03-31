@@ -17,8 +17,11 @@ export interface CompanySubscriptions {
   paymentDate: Date;
   subscriptionId: number;
   jobPost: number;
+  jobPostCount:number;
   admin: number;
+  adminCount: number;
   videoResponse: number;
+  videoResponseCount: number;
   withCustomerCare: boolean;
   price: number;
   priceCurrency: string;

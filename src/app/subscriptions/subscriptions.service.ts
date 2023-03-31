@@ -18,7 +18,7 @@ export class SubscriptionsService {
   }
 
   getCompanySubscription(companyId: string){
-    return this.baseService.get(`${this.subscriptionUrl}/getcompanysubscription?companyId=${companyId}`)
+    return this.baseService.get(`${this.subscriptionUrl}/getcompanysubscriptions?companyId=${companyId}`)
   }
 
 }

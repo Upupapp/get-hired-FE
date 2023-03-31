@@ -13,7 +13,7 @@ export interface SubscriptionsState {
   error: any;
   succesMsg: string;
   loading: boolean;
-  companySubs: Model.CompanySubscriptions;
+  companySubs: Model.CompanySubscriptions[];
 }
 
 const initialState: SubscriptionsState = {
@@ -22,7 +22,7 @@ const initialState: SubscriptionsState = {
   succesMsg: '',
   error: null,
   loading: false,
-  companySubs: null
+  companySubs: []
 };
 
 export const subscriptionsReducer = createReducer<SubscriptionsState>(

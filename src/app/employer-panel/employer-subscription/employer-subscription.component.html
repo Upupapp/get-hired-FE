@@ -1,9 +1,3 @@
-<div class="bg-pink">
-  <div [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
-    <h5 class="text-center title-main">GetHired Premium Pricing</h5>
-  </div>
-</div>
-
-<div class="py-4 px-5" style="margin-top: -140px" [@animate]="{value:'*', params:{ x:'-40px', delay: (250) + 'ms' }}">
-  <app-subscriptions-list [isActiveSubs]="withActiveSubscription == 'true'"></app-subscriptions-list>
+<div class="p-2">
+  <app-subscriptions [isActiveSubs]="withActiveSubscription == 'true'"></app-subscriptions>
 </div>
