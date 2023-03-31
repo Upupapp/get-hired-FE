@@ -16,6 +16,7 @@ export class SubscriptionsListComponent implements OnInit {
   confirmation$: Subscription;
   list$ = this.subscriptionFacade.subscriptionsList$;
   computedDays = 0;
+  targetDate: Date = new Date('04/07/2023 23:59');
 
   constructor(
     private subscriptionFacade: SubscriptionsFacade,
@@ -29,6 +30,7 @@ export class SubscriptionsListComponent implements OnInit {
   }
 
   upgrade(chosenSub) {
+    // TODO add to cart
     const ref = this.dialog.open(SubscriptionSummaryComponent, {
       disableClose: true,
       width: '50vw',
