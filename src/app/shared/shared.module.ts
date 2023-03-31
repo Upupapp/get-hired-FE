@@ -35,6 +35,7 @@ import { LanguageSelectionComponent } from './components/language-selection/lang
 import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
 import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
 import { CountdownTimerComponent } from './components/countdown-timer/countdown-timer.component';
+import { SubscriptionAlertComponent } from './components/subscription-alert/subscription-alert.component';
 
 
 const classesToInclude: any[] = [
@@ -63,7 +64,8 @@ const classesToInclude: any[] = [
   EmptySectionComponent,
   DropdownSearchComponent,
   GoogleAddressSearchComponent,
-  CountdownTimerComponent
+  CountdownTimerComponent,
+  SubscriptionAlertComponent
 ];
 
 @NgModule({

@@ -1,0 +1,16 @@
+<div class="d-flex justify-content-center flex-column w-100">
+  <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+  <div class="fs-1 fw-bold">
+    Oh no!
+  </div>
+  <div class="fs-2 fw-bold">
+    Subscription Limit Exceed
+  </div>
+  <p>
+    We regret to inform you that your current plan can no longer accommodate this action.
+  </p>
+  <button class="btn btn-primary" routerLink="../../subscription" style="height: 3rem">
+    Upgrade Now
+  </button>
+  <span class="fwt-light" (click)="close()">Cancel</span>
+</div>

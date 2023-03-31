@@ -9,6 +9,7 @@ import { Subscription, Subject, takeUntil } from 'rxjs';
 import { CompanyFacade } from '@app-company/state/company.facade';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
 import { TranslateService } from '@ngx-translate/core';
+import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 
 @Component({
   selector: 'app-company-users',
@@ -80,20 +81,37 @@ export class CompanyUsersComponent implements OnInit {
 
   }
 
-  addAccess() {
-    let openDialog = this.dialog.open(
-      ImportAddUserComponent,
+  checkSubs() {
+    let openChecker = this.dialog.open(
+      SubscriptionAlertComponent,
       {
         width: '34vw',
-        data: event,
       }
     );
 
-    openDialog
+    openChecker
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
 
       });
+  }
+
+  addAccess() {
+    this.checkSubs()
+  //   let openDialog = this.dialog.open(
+  //     ImportAddUserComponent,
+  //     {
+  //       width: '34vw',
+  //       data: event,
+  //     }
+  //   );
+
+  //   openDialog
+  //     .afterClosed()
+  //     .pipe(takeUntil(this.unsubscribe$))
+  //     .subscribe(result => {
+
+  //     });
   }
 }
