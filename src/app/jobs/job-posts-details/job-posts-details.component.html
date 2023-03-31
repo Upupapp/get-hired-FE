@@ -59,7 +59,8 @@
         <div class="job-description mb-3">
           <h5 class="title-job-description">
             <strong>Job Description</strong><br>
-            {{selectedJobPost?.jobDescription}}
+            <p [innerHTML]="selectedJobPost?.jobDescription"></p>
+            <!-- {{selectedJobPost?.jobDescription}} -->
           </h5>
         </div>
 
