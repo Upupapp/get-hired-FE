@@ -17,6 +17,7 @@ export interface CompanyState {
   setup: Model.Options[];
   industry: Model.Options[];
   users: Model.CompanyUser[];
+  subs: Model.CompanySubscriptions;
 }
 
 const initialState: CompanyState = {
@@ -28,7 +29,8 @@ const initialState: CompanyState = {
   dashboard: null,
   setup: [],
   industry: [],
-  users: []
+  users: [],
+  subs: null
 };
 
 export const companyReducer = createReducer<CompanyState>(
@@ -101,6 +103,28 @@ export const companyReducer = createReducer<CompanyState>(
     };
   }),
   on(CompanyActions.getCompanyUsersFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(CompanyActions.getCompanySubscription, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(CompanyActions.getCompanySubscriptionSuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      subs: action.subscription
+    };
+  }),
+  on(CompanyActions.getCompanySubscriptionFail, (state, action): CompanyState => {
     return {
       ...state,
       loading: false,

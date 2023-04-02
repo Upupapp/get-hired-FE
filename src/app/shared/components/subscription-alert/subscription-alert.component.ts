@@ -17,6 +17,10 @@ export class SubscriptionAlertComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  redirect() {
+    this.dialogRef.close(1)
+  }
+
   close() {
     this.dialogRef.close()
   }

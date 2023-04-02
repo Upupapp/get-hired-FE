@@ -16,19 +16,23 @@ export class CompanyService {
     private baseService: BaseService
   ) { }
 
-  createCompany(company: Model.Company){
+  checkCompanySubscription(companyId) {
+    return this.baseService.get<any>(`${this.companyUrl}/getsubscriptionrestrictions?companyId=${companyId}`);
+  }
+
+  createCompany(company: Model.Company) {
     return this.baseService.post<Model.Company>(`${this.companyUrl}/createcompany`, company);
   }
 
-  updateCompany(company: Model.Company){
+  updateCompany(company: Model.Company) {
     return this.baseService.put<Model.Company>(`${this.companyUrl}/update`, company);
   }
 
-  getUserCompany(){
+  getUserCompany() {
     return this.baseService.get<Model.Company>(`${this.companyUrl}/usercompany`);
   }
 
-  addUserToCompany(email: string, companyId){
+  addUserToCompany(email: string, companyId) {
     const newUser = {
       email, companyId
     }

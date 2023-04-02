@@ -20,6 +20,7 @@ import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/up
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
+  subscriptions$ = new Subscription();
   @Output() updateCompany: EventEmitter<any> = new EventEmitter();
 
   asyncLocalStorage = {
@@ -224,10 +225,10 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         data: 'Company successfully setup. You can now access other features',
       });
 
-      create
+      this.subscriptions$.add(create
         .afterClosed()
         .pipe()
-        .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route }));
+        .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route })));
     } else if (event == 'updated') {
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
@@ -259,13 +260,14 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       const ref = this.loadingDialog.open(LoadingComponent, {
         disableClose: true,
         data: {
-          selfClose: false,
+          selfClose: true
         },
       });
     } else {
+      console.log('loading in company user form');
       // dont close automatically all modal
       // if (!this.updateSuccess) {
-      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      // setTimeout(() => this.loadingDialog.closeAll(), 3000);
       // }
     }
   }
@@ -282,15 +284,22 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       }
     );
 
-    openDialog
+    this.subscriptions$.add(openDialog
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
         this.updateSuccess = false
-      });
+      }));
   }
 
   ngOnDestroy(): void {
     this.companyFacade.resetStateNotif();
+    if(this.success$) {
+      this.success$.unsubscribe();
+    }
+
+    if(this.loading$) {
+      this.loading$.unsubscribe();
+    }
   }
 }

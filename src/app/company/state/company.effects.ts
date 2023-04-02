@@ -114,6 +114,24 @@ export class CompanyEffects {
     );
   });
 
+  getCompanySubscription$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getCompanySubscription),
+      mergeMap((action) => this.companyService.checkCompanySubscription(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const subscription: Model.CompanySubscriptions = res.data;
+            return CompanyActions.getCompanySubscriptionSuccess({ subscription });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.getCompanySubscriptionFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   companyDashboard$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CompanyActions.companyDashboard),

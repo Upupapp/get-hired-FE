@@ -15,7 +15,10 @@ export class LoadingComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.data.selfClose) {
-      setTimeout(() => this.dialogRef.close(), 3000);
+      setTimeout(() => {
+        console.log('closing na');
+        this.dialogRef.close(), 3000
+      });
     }
 
   }
