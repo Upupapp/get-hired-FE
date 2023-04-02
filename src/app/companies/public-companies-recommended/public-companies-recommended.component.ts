@@ -12,6 +12,7 @@ import { CompaniesFacade } from '../state/companies.facade';
 export class PublicCompaniesRecommendedComponent implements OnInit {
 
   list$ = this.companiesFacade.companyList$;
+  loading$ = this.companiesFacade.loading$;
 
   constructor(
     private companiesFacade: CompaniesFacade
