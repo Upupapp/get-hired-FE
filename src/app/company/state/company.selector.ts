@@ -42,3 +42,8 @@ export const getCompanyUsers = createSelector(
   getCompanyInitState,
   state => state.users
 );
+
+export const getCompanySubscription = createSelector(
+  getCompanyInitState,
+  state => state.subs
+);

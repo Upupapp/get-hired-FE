@@ -15,6 +15,7 @@ export class CompanyFacade {
     users$ = this.store.pipe(select(fromfeature.getCompanyUsers));
     setup$ = this.store.pipe(select(fromfeature.getSetupList));
     industry$ = this.store.pipe(select(fromfeature.getIndustryList));
+    subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));
 
     constructor(
       private store: Store<State>,
@@ -46,6 +47,10 @@ export class CompanyFacade {
 
     getCompanyUsers(companyId: string) {
       this.store.dispatch(CompanyAction.getCompanyUsers({ companyId }));
+    }
+
+    getCompanySubscription(companyId: string) {
+      this.store.dispatch(CompanyAction.getCompanySubscription({ companyId }));
     }
 
     getIndustry() {

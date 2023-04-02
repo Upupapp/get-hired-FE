@@ -12,6 +12,7 @@ export class SubscriptionsComponent implements OnInit {
   @Input() isActiveSubs: boolean;
 
   details$ = this.subscriptionFacade.companySubs$;
+  loading$ = this.subscriptionFacade.loading$;
 
   constructor(
     private subscriptionFacade: SubscriptionsFacade,
