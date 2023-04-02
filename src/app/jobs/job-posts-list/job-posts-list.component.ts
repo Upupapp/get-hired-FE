@@ -30,6 +30,7 @@ export class JobPostsListComponent implements OnInit {
   public listView: boolean = false;
 
   list$ = this.jobsFacade.jobList$;
+  loading$ = this.jobsFacade.loading$;
 
   constructor(
     private jobsFacade: JobsFacade,
