@@ -19,6 +19,7 @@ import { ConfirmationDialogComponent } from '@app-shared/components/confirmation
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { CurrencyPipe } from '@angular/common';
+import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 
 @Component({
   selector: 'app-job-list',
@@ -44,17 +45,17 @@ export class JobListComponent implements OnInit {
     map((list) => {
       return list && list.length != 0
         ? list.map((job) => {
-            return {
-              ...job,
-              status: this.getJobStatusName(job.jobStatusId),
-              salary: this.formatSalary(
-                job.salaryMinimum,
-                job.salaryMaximum,
-                job.rate,
-                job.salaryCurrency
-              ),
-            };
-          })
+          return {
+            ...job,
+            status: this.getJobStatusName(job.jobStatusId),
+            salary: this.formatSalary(
+              job.salaryMinimum,
+              job.salaryMaximum,
+              job.rate,
+              job.salaryCurrency
+            ),
+          };
+        })
         : [];
     })
   );
@@ -65,7 +66,7 @@ export class JobListComponent implements OnInit {
 
   loading$ = this.jobFacade.loading$.pipe().subscribe(this.onLoad.bind(this));
 
-  private req: Subscription;
+  req = new Subscription();
 
   private unsubscribe$ = new Subject<void>();
   public loading: boolean = true;
@@ -96,8 +97,8 @@ export class JobListComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private jobFacade: JobFacade,
-    private currencyPipe:CurrencyPipe
-  ) {}
+    private currencyPipe: CurrencyPipe
+  ) { }
 
   ngOnInit(): void {
     this.asyncLocalStorage.getItem('user').then((res) => {
@@ -117,8 +118,8 @@ export class JobListComponent implements OnInit {
       return `${min
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} - ${max
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (${rate})`;
+          .toString()
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (${rate})`;
     } else {
       return '-';
     }
@@ -137,12 +138,6 @@ export class JobListComponent implements OnInit {
       default:
         return 'Draft';
     }
-  }
-
-  ngOnDestroy(): void {
-    if (this.req) this.req.unsubscribe();
-    this.jobFacade.getBasicList(null);
-    this.dialog.closeAll();
   }
 
   viewMenu(event: any): void {
@@ -198,7 +193,35 @@ export class JobListComponent implements OnInit {
     this.loading = isLoading;
   }
 
-  addJobs() {
-    this.router.navigate(['../create'], { relativeTo: this.route });
+  restrictJobCreation(restriction) {
+    let openChecker = this.dialog.open(
+      SubscriptionAlertComponent,
+      {
+        width: '34vw',
+        data: {
+          isError: restriction
+        }
+      }
+    );
+
+    this.req.add(
+      openChecker
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(result => {
+          if (result == 1) {
+            this.router.navigate(['../../subscription'], { relativeTo: this.route })
+          } else {
+            this.router.navigate(['../create'], { relativeTo: this.route });
+          }
+        })
+    );
+  }
+
+
+  ngOnDestroy(): void {
+    if (this.req) this.req.unsubscribe();
+    this.jobFacade.getBasicList(null);
+    this.dialog.closeAll();
   }
 }

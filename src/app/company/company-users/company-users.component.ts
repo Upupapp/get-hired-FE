@@ -106,6 +106,9 @@ export class CompanyUsersComponent implements OnInit {
       SubscriptionAlertComponent,
       {
         width: '34vw',
+        data: {
+          isError: true
+        }
       }
     );
 

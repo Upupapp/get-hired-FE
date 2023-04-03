@@ -29,6 +29,7 @@ export interface JobState {
   jobLoading: boolean;
   applicants: Model.JobApplicants[],
   applicant: Model.JobApplicantDetails;
+  subs: Model.CompanySubscriptions
 }
 
 const initialState: JobState = {
@@ -51,7 +52,8 @@ const initialState: JobState = {
   job: null,
   jobLoading: false,
   applicants: [],
-  applicant: null
+  applicant: null,
+  subs: null
 }
 
 export const jobReducer = createReducer<JobState>(
@@ -83,6 +85,28 @@ export const jobReducer = createReducer<JobState>(
       loading: false,
       error: action.payload,
       succesMsg: null
+    };
+  }),
+  on(JobActions.getCompanySubscription, (state): JobState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(JobActions.getCompanySubscriptionSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      subs: action.subscription
+    };
+  }),
+  on(JobActions.getCompanySubscriptionFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
     };
   }),
   on(JobActions.saveJob, (state): JobState => {

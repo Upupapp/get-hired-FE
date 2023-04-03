@@ -6,6 +6,10 @@ import * as Model from '../job.model';
 import * as InterviewModel from '@main/interview/interview.model';
 
 enum AllFeatureActionTypes {
+  GetCompanySubscription = '[job] - Get Company Subscription',
+  GetCompanySubscriptionSuccess = '[job] - Get Company Subscription Success',
+  GetCompanySubscriptionFail = '[job] - Get Company Subscription Fail',
+
   GetIndustryList = '[job] - Get Industry List',
   GetIndustryListSuccess = '[job] - Get Industry List Success',
   GetIndustryListFail = '[job] - Get Industry List Fail',
@@ -81,6 +85,21 @@ enum AllFeatureActionTypes {
 
 export const resetSuccessMsg = createAction(
   AllFeatureActionTypes.ResetSuccessMsg
+);
+
+export const getCompanySubscription = createAction(
+  AllFeatureActionTypes.GetCompanySubscription,
+  props<{ companyId: string }>()
+);
+
+export const getCompanySubscriptionSuccess = createAction(
+  AllFeatureActionTypes.GetCompanySubscriptionSuccess,
+  props<{ subscription: Model.CompanySubscriptions }>()
+);
+
+export const getCompanySubscriptionFail = createAction(
+  AllFeatureActionTypes.GetCompanySubscriptionFail,
+  props<{ payload: any }>()
 );
 
 export const updateJobQuestion = createAction(
