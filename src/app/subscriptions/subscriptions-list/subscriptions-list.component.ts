@@ -12,7 +12,7 @@ import { SubscriptionSummaryComponent } from '../subscription-summary/subscripti
   animations: [mainAnimations]
 })
 export class SubscriptionsListComponent implements OnInit {
-  @Input() endDate: Date;
+  @Input() endDate: Date = null;
   confirmation$: Subscription;
   list$ = this.subscriptionFacade.subscriptionsList$;
 

@@ -88,8 +88,14 @@ export class SigninComponent implements OnInit {
           }));
 
           if (user.withCompany) {
-            localStorage.setItem('withActiveSubscription', data.withActiveSubscription);
-            this.router.navigate(['../recruiter/dashboard'], { relativeTo: this.activatedRoute });
+
+            if(user.withActiveSubscription) {
+              localStorage.setItem('withActiveSubscription', data.withActiveSubscription);
+              this.router.navigate(['../recruiter/dashboard'], { relativeTo: this.activatedRoute });
+            } else {
+              this.router.navigate(['../recruiter/subscription'], { relativeTo: this.activatedRoute });
+            }
+
           } else {
             this.router.navigate(['../recruiter/company'], { relativeTo: this.activatedRoute });
           }

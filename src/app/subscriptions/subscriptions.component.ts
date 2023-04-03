@@ -9,8 +9,6 @@ import { SubscriptionsFacade } from './state/subscriptions.facade';
   animations: [mainAnimations]
 })
 export class SubscriptionsComponent implements OnInit {
-  @Input() isActiveSubs: boolean;
-
   details$ = this.subscriptionFacade.companySubs$;
   loading$ = this.subscriptionFacade.loading$;
 
@@ -21,7 +19,7 @@ export class SubscriptionsComponent implements OnInit {
   ngOnInit(): void {
     const user = localStorage.getItem('user');
 
-    if(this.isActiveSubs && user) {
+    if(user) {
       this.subscriptionFacade.getCompanySubs(JSON.parse(user).companyId);
     }
 
