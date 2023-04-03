@@ -1,11 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { AdminService } from '@app-shared/services/auth/admin/admin.service';
-import { Subscription } from 'rxjs';
-import {
-  Router,
-  ActivatedRoute
-} from '@angular/router';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { month } from '@app-shared/mock.data';
 import { TranslateService } from '@ngx-translate/core';

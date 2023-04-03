@@ -61,11 +61,11 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CoreModule,
-    RouterModule.forChild(routes),
     ApplicantModule,
     ReactiveFormsModule,
     ApplicationModule,
-    SharedModule
+    SharedModule,
+    RouterModule.forChild(routes),
     // StoreModule.forFeature('applicant', applicantReducer),
     // EffectsModule.forFeature([ApplicantEffects]),
     // AuthModule
