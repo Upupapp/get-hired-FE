@@ -27,7 +27,7 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
             this.coreService.logout();
             this.snackBar.open(`Your login authorization is already expired. Please login again to continue`,
               '', { duration: 4000, panelClass: ['danger-snackbar'] });
-            this.router.navigateByUrl('/signin');
+            this.router.navigateByUrl('/');
           }
         }
         else {
