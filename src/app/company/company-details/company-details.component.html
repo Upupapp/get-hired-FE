@@ -5,6 +5,12 @@
     <section class="mb-4">
       <app-banner-details [details]="company"></app-banner-details>
     </section>
-    <app-job-posts-list [label]="'Latest Jobs and Careers'" [companyId]="company.companyId"></app-job-posts-list>
+
+    <ng-container *ngIf="company.companyId">
+      <app-job-posts-list [label]="'Latest Jobs and Careers'" [companyId]="company.companyId"></app-job-posts-list>
+    </ng-container>
+
   </div>
+
+
 </div>
