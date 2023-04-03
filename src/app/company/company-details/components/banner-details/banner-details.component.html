@@ -73,7 +73,7 @@
               />
             </p>
 
-            <div class="px-lg-4 details" *ngIf="seeMore == 2">
+            <div class="px-lg-4 details" *ngIf="seeMore == 2 && details?.companyDetails">
               <h5 class="title-verified">
                 {{ details?.companyDetails | slice: 0:50 }}
                 <ng-container *ngIf="details?.companyDetails.length > 50">...</ng-container>
