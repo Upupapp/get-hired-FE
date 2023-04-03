@@ -41,11 +41,12 @@
         [subTitle]="'There is no activity at the momemnt, but we <br>can totally solve that.'" [detailSize]="'large'"
         [search]="false"></app-empty-section>
     </ng-container>
+
+    <ng-container *ngIf="jobLists?.length === 0 && !fromSearch">
+      <app-empty-section title="{{ 'COMPANY_DETAILS.EMPTY_CONTENT_MESSAGE' | translate }}"
+        subTitle="{{ 'COMPANY_DETAILS.EMPTY_CONTENT_SUB' | translate }}" [detailSize]="'large'"
+        [search]="false"></app-empty-section>
+    </ng-container>
   </ng-container>
 
-  <ng-container *ngIf="jobLists?.length === 0 && !fromSearch">
-    <app-empty-section title="{{ 'COMPANY_DETAILS.EMPTY_CONTENT_MESSAGE' | translate }}"
-      subTitle="{{ 'COMPANY_DETAILS.EMPTY_CONTENT_SUB' | translate }}" [detailSize]="'large'"
-      [search]="false"></app-empty-section>
-  </ng-container>
 </div>
