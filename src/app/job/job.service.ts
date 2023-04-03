@@ -17,11 +17,15 @@ export class JobService {
   ) { }
 
   changeJobStatus(status, jobId) {
-    return this.baseService.put<Model.Job>(`${this.jobUrl}/changestatus`, { status, jobId});
+    return this.baseService.put<Model.Job>(`${this.jobUrl}/changestatus`, { status, jobId });
+  }
+
+  checkCompanySubscription(companyId: string) {
+    return this.baseService.get<any>(`${this.jobUrl}/getsubscriptionrestrictions?companyId=${companyId}`);
   }
 
   saveJob(job: Model.Job) {
-    if(job.jobId && job.jobId != '') {
+    if (job.jobId && job.jobId != '') {
       // update
       return this.baseService.put<Model.Job>(`${this.jobUrl}/updatejobs`, job);
     } else {
@@ -52,7 +56,7 @@ export class JobService {
 
   getJobById(jobId: string) {
     const user = localStorage.getItem('user');
-    const uid = user ? JSON.parse(user)._id: null;
+    const uid = user ? JSON.parse(user)._id : null;
 
     return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}&uid=${uid}`);
   }
@@ -69,7 +73,7 @@ export class JobService {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/badges`);
   }
 
-  getJobRoleList(){
+  getJobRoleList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/rolelist`);
   }
 
@@ -81,11 +85,11 @@ export class JobService {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/type`);
   }
 
-  getLevelList(){
+  getLevelList() {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/levels`);
   }
 
-  getCategoryList(){
+  getCategoryList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/categories`);
   }
 }

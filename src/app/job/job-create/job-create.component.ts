@@ -10,6 +10,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 
 @Component({
   selector: 'app-job-create',
@@ -21,6 +22,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
   questions: QuestionModel.InterviewQuestion[];
 
+  isAllowedToPublish: boolean = true;
+  companyId: string;
   mode: string;
   delayControl: boolean = true;
   public jobId: any = null;
@@ -84,6 +87,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     .pipe()
     .subscribe(this.onLoad.bind(this));
 
+  restrictions$ = this.jobFacade.subsRestrictions$
+    .pipe(
+      tap(subs => {
+        if (subs) this.getCompanyRestrictions(subs);
+      })
+    );
+
   constructor(
     private fb: FormBuilder,
     private jobFacade: JobFacade,
@@ -99,6 +109,14 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.asyncLocalStorage.getItem('user')
+      .then(user => {
+        this.companyId = JSON.parse(user).companyId;
+        this.jobFacade.getCompanySubscription(this.companyId);
+      });
+
+
+
     this.screenWidth = window.innerWidth;
     setTimeout(() => this.delayControl = false, 900);
 
@@ -126,7 +144,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.loading = isLoading;
   }
 
-
+  getCompanyRestrictions(subs: Model.CompanySubscriptions) {
+    if (subs.jobPost === subs.jobPostCount) {
+      this.isAllowedToPublish = false;
+    }
+  }
 
   setFormGroup(data?: any) {
     this.jobForm = this.fb.group({
@@ -191,17 +213,21 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .subscribe((status) => {
           this.jobInfoValid = status === 'VALID';
           this.stepperItems[2].disabled = status != 'VALID';
+          this.interviewValid = status === 'VALID';
+          this.stepperItems[3].disabled = status != 'VALID';
+
         })
     );
 
-    this.subscriptions.add(
-      this.jobForm.controls.interview.statusChanges
-        .pipe(distinctUntilChanged())
-        .subscribe((status) => {
-          this.interviewValid = status === 'VALID';
-          this.stepperItems[3].disabled = status != 'VALID';
-        })
-    );
+    // Made Interview Optional
+    // this.subscriptions.add(
+    //   this.jobForm.controls.interview.statusChanges
+    //     .pipe(distinctUntilChanged())
+    //     .subscribe((status) => {
+    //       this.interviewValid = status === 'VALID';
+    //       // this.stepperItems[3].disabled = status != 'VALID';
+    //     })
+    // );
 
     if (data) {
       //set form array
@@ -280,19 +306,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   }
 
-  async getJobById() {
+  getJobById() {
     this.jobFacade.getJobById(this.jobId);
   }
 
   async saveAsDraft() {
-    const job: Model.Job = await this.formatJob(1);
+    const job: Model.Job = this.formatJob(1);
     console.log(job);
 
     this.jobFacade.saveJob(job);
   }
 
-  async publishJobPost() {
-    const job: Model.Job = await this.formatJob(2);
+  publishJobPost() {
+    const job: Model.Job = this.formatJob(2);
     console.log('YOUR JOB')
     console.log(job);
 
@@ -354,8 +380,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  async formatJob(status) {
-    const user = await this.asyncLocalStorage.getItem('user');
+  formatJob(status) {
     console.log(this.jobForm.controls);
 
     const { initialData, jobInfo, interview } = this.jobForm.controls;
@@ -368,7 +393,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         : [],
       interviewQuestions,
       interviewTemplateId,
-      companyId: JSON.parse(user).companyId,
+      companyId: this.companyId,
       jobStatusId: status,
       jobId: this.jobId
     };
@@ -439,6 +464,29 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.jobFacade.saveInterview(bodyInterview.interviewQuestions, bodyInterview.interviewTemplateId)
         break;
     }
+  }
+
+  restrictJobCreation(restriction) {
+    let openChecker = this.dialog.open(
+      SubscriptionAlertComponent,
+      {
+        width: '34vw',
+        data: {
+          isError: restriction
+        }
+      }
+    );
+
+    this.subscriptions.add(
+      openChecker
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(result => {
+          if (result == 1) {
+            this.router.navigate(['../../subscription'], { relativeTo: this.route })
+          }
+        })
+    );
   }
 
   ngOnDestroy() {

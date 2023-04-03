@@ -1,21 +1,19 @@
-<div *ngIf="!loading">
+<div *ngIf="!loading && restrictions$ | async">
   <!-- CONTROLS -->
   <section
     class="bg-upper-gray"
+    style="width:83%"
     [ngStyle]="{
       position: delayControl ? '' : 'fixed',
-      top: delayControl ? '' : '80px',
-      width: delayControl ? '80%' : '83%'
+      top: delayControl ? '' : '80px'
     }"
   >
-    <div class="card card-body py-3">
-      <div>
-        <span class="main-title">{{ jobId ? 'Update':'Create' }} a Job</span>
+    <div class="card card-body py-3 d-flex flex-row justify-content-between">
+        <span class="col-12 col-md-8 main-title">{{ jobId ? 'Update':'Create' }} a Job</span>
 
-        <span [ngClass]="delayControl ? 'd-none' : 'float-end'">
+        <span class="col-12 col-md-4 d-flex align-items-center justify-content-end">
           <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
         </span>
-      </div>
     </div>
 
     <div class="mt-3">
@@ -161,18 +159,17 @@
       <button
         class="btn btn-add-service me-2"
         (click)="publishJobPost()"
-        *ngIf="stepper == 4"
+        *ngIf="stepper == 4" [disabled]="!isAllowedToPublish"
       >
         Publish Job Post
       </button>
+
+      <span *ngIf="!isAllowedToPublish && stepper == 4" class="cursor-pointer" (click)="restrictJobCreation(true)"><i class="bi bi-exclamation-circle text-danger fs-3"></i></span>
+
     </ng-template>
   </div>
 </div>
 
-<!-- LOADING ANIMATION SCREEN -->
-<custom-profile-loader
-  [withSideBar]="false"
-  [fromDetailTab]="true"
-  [loading]="loading"
->
-</custom-profile-loader>
+<div class="mt-5">
+  <app-inline-loading *ngIf="!(!loading && restrictions$ | async)"></app-inline-loading>
+</div>

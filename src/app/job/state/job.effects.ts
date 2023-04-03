@@ -98,6 +98,24 @@ export class JobEffects {
     );
   });
 
+  getCompanySubscription$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getCompanySubscription),
+      mergeMap((action) => this.jobService.checkCompanySubscription(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const subscription: Model.CompanySubscriptions = res.data;
+            return JobActions.getCompanySubscriptionSuccess({ subscription });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getCompanySubscriptionFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   basicList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.getBasicJobList),

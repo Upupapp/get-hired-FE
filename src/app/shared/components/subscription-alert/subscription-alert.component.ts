@@ -11,7 +11,6 @@ export class SubscriptionAlertComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<SubscriptionAlertComponent>,
-
   ) { }
 
   ngOnInit(): void {

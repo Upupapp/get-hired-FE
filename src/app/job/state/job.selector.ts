@@ -8,6 +8,11 @@ export const loading = createSelector(
   state => state.loading
 );
 
+export const getCompanySubscription = createSelector(
+  getJobInitState,
+  state => state.subs
+);
+
 export const getJobList = createSelector(
   getJobInitState,
   state => state.list

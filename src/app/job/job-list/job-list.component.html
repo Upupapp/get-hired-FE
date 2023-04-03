@@ -14,17 +14,17 @@
     </div>
     <br>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">
-      <app-reusable-table 
-        [loading]="loading" 
-        [statusArray]="status" 
-        [statusFilter]="true" 
+      <app-reusable-table
+        [loading]="loading"
+        [statusArray]="status"
+        [statusFilter]="true"
         statusName="Status"
-        (deleteSelectedRow)="deleteRow($event)" 
+        (deleteSelectedRow)="deleteRow($event)"
         (updateSelectedRowDialog)="viewMenu($event)"
-        (viewDetails)="viewMenu($event)" 
-        [componentTitle]="'Company Jobs'" 
+        (viewDetails)="viewMenu($event)"
+        [componentTitle]="'Company Jobs'"
         [displayedColumns]="displayedColumns"
-        [selectedColumns]="selectedColumns" 
+        [selectedColumns]="selectedColumns"
         [selectedColumnsMobile]="selectedColumns"
         [searchSource]="searchSource"
         [maxRows]="10" [listDataSource]="list">

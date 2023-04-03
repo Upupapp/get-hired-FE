@@ -27,6 +27,8 @@ export class JobFacade {
   getJobLoading$ = this.store.pipe(select(fromfeature.jobLoading));
   applicants$ = this.store.pipe(select(fromfeature.getjobApplicants));
   details$ = this.store.pipe(select(fromfeature.getApplicantDetails));
+  subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));
+
   error$: any;
 
   constructor(
@@ -36,6 +38,10 @@ export class JobFacade {
   // getAllJob() {
   //   this.store.dispatch(JobAction.getAlljob());
   // }
+
+  getCompanySubscription(companyId: string) {
+    this.store.dispatch(JobAction.getCompanySubscription({ companyId }));
+  }
 
   getApplicants(jobId: string) {
     this.store.dispatch(JobAction.getJobApplicants({ jobId }));
