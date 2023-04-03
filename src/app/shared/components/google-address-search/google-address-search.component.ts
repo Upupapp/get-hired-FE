@@ -33,10 +33,10 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
     this.addressFormGroup = this.formBuilder.group({
       address: [this.rawAddress ? this.rawAddress.address : null],
       state: [this.rawAddress ? this.rawAddress.state : null],
-      country: [this.rawAddress ? this.rawAddress.country : null, Validators.required],
-      addressOne: [this.rawAddress ? this.rawAddress.addressOne : null, Validators.required],
+      country: [this.rawAddress ? this.rawAddress.country : null],
+      addressOne: [this.rawAddress ? this.rawAddress.addressOne : null],
       town: [this.rawAddress ? this.rawAddress.town : null],
-      city: [this.rawAddress ? this.rawAddress.city : null, Validators.required],
+      city: [this.rawAddress ? this.rawAddress.city : null],
       zipcode: [this.rawAddress ? this.rawAddress.zipcode : null],
       mapUrl: [this.rawAddress ? this.rawAddress.mapUrl : null]
     });
@@ -66,9 +66,9 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       }
     );
 
-    if (this.rawAddress != '') {
-      this.searchElementRef.nativeElement.focus()
-    }
+    // if (this.rawAddress != '') {
+    //   this.searchElementRef.nativeElement.focus()
+    // }
 
     autocomplete.addListener('place_changed', () => {
       const result = autocomplete.getPlace();

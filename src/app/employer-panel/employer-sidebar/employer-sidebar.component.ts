@@ -15,7 +15,7 @@ export class EmployerSidebarComponent implements OnInit {
   @Input() sidebarWidth;
   @Input() user;
   companyName: string;
-
+  withActiveSubscription = localStorage.getItem('withActiveSubscription');
   public location: any = '';
   public screenHeight: number = 300;
   sidebarItems: any[];
@@ -45,17 +45,17 @@ export class EmployerSidebarComponent implements OnInit {
     console.log(this.user);
   }
 
-  subRouteActive(route){
-    if(route.match('jobs') && this.location.match('jobs')
-      && !route.match('expired') && this.location !== '/recruiter/jobs/expired'){
+  subRouteActive(route) {
+    if (route.match('jobs') && this.location.match('jobs')
+      && !route.match('expired') && this.location !== '/recruiter/jobs/expired') {
       return true;
     }
 
-    else if(this.location === '/recruiter/jobs/expired' && route.match('expired')){
+    else if (this.location === '/recruiter/jobs/expired' && route.match('expired')) {
       return true;
     }
 
-    else if(this.location === '/recruiter/' + route && !this.location.match('expired')){
+    else if (this.location === '/recruiter/' + route && !this.location.match('expired')) {
       return true
     }
 
@@ -64,9 +64,24 @@ export class EmployerSidebarComponent implements OnInit {
 
   ngOnChanges(changes) {
     if (changes.user) {
-      console.log('Nagchange');
-      if(this.user.companyName && this.user.companyName != "") {
-        console.log('Meron na dapat');
+      if (!this.user.companyName || this.user.companyName == "") {
+        this.sidebarItems = [
+          {
+            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
+            route: 'company/details'
+          }
+        ];
+      }
+
+      // else if (!this.withActiveSubscription) {
+      //   console.log(this.user.withActiveSubscription)
+      //   this.sidebarItems = [{
+      //     title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+      //     route: 'subscription'
+      //   }]
+      // }
+
+      else {
         this.sidebarItems = [
           {
             title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
@@ -102,18 +117,10 @@ export class EmployerSidebarComponent implements OnInit {
           // {
           //   title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
           // },
-          {
-            title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-            route: 'subscription'
-          },
-          {
-            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
-            route: 'company/details'
-          }
-        ];
-      } else {
-        console.log('wala padin');
-        this.sidebarItems = [
+          // {
+          //   title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+          //   route: 'subscription'
+          // },
           {
             title: 'Employer Branding', icon: 'account.png', class: 'accounts',
             route: 'company/details'

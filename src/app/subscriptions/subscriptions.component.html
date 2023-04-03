@@ -1,10 +1,10 @@
 <app-loading *ngIf="loading$ | async"></app-loading>
 
-<div *ngIf="!(loading$ | async) && details$ | async as companySubs">
+<div *ngIf="!(loading$ | async) && details$ | async as companySubs; else noSubs">
   <ng-container *ngIf="companySubs.length != 0">
 
     <div class="bg-pink">
-      <div [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+      <div [@animate]="{value:'*', params:{ y:'-10px', delay: (50) + 'ms' }}">
         <h5 class="text-center title-main">
           {{ companySubs[0].subscriptionId == 1 ? 'GetHired Premium Pricing': "Your Company's Subscription"}}
         </h5>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="py-4 px-5" style="margin-top: -140px"
-      [@animate]="{value:'*', params:{ x:'-40px', delay: (250) + 'ms' }}">
+      [@animate]="{value:'*', params:{ x:'-40px', delay: (50) + 'ms' }}">
       <ng-container *ngIf="companySubs[0].subscriptionId == 1; else showSubs">
         <app-subscriptions-list [endDate]="companySubs[0].endAt"></app-subscriptions-list>
       </ng-container>
@@ -133,6 +133,20 @@
     </div>
   </ng-container>
 </div>
+
+<ng-template #noSubs>
+  <!-- <div class="bg-pink">
+    <div [@animate]="{value:'*', params:{ y:'-10px', delay: (100) + 'ms' }}">
+      <h5 class="text-center title-main">
+        GetHired Premium Pricing
+      </h5>
+    </div>
+  </div>
+
+  <div class="py-4 px-5" style="margin-top: -140px" [@animate]="{value:'*', params:{ x:'-40px', delay: (100) + 'ms' }}"> -->
+    <app-subscriptions-list></app-subscriptions-list>
+  <!-- </div> -->
+</ng-template>
 
 <ng-template #bar let-max="max" let-value="value" let-label="label">
   <div class="my-1 w-100 d-flex">
