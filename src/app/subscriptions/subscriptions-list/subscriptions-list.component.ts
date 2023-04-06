@@ -25,6 +25,7 @@ export class SubscriptionsListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('I have been called')
     this.subscriptionFacade.getAllSubscriptions();
   }
 

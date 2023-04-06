@@ -52,13 +52,18 @@
             </div>
           </div>
           <!-- TODO bring back for subscription -->
-          <!-- <div class="col-12 col-md-4 d-flex justify-content-center align-items-center"> -->
-            <!-- <app-countdown-timer [dateEnd]="endDate" [textColorClass]="'text-primary-red'"
+          <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
+            <app-countdown-timer [dateEnd]="endDate" [textColorClass]="'text-primary-red'"
               *ngIf="i == 0 && endDate"></app-countdown-timer>
-            <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem">
-              {{ (i == 0 && !endDate) ? 'Start Free trial':'Upgrade to this plan'}}
-            </button> -->
-          <!-- </div> -->
+            <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem"
+            *ngIf="i == 0 && !endDate">
+              Start free Trial
+            </button>
+            <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem"
+            *ngIf="i != 0">
+              Upgrade to this Plan
+            </button>
+          </div>
         </div>
       </div>
     </div>
