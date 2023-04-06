@@ -116,7 +116,7 @@ export class EmployerSidebarComponent implements OnInit {
             title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_EMPLOYER_BRANDING'), icon: 'account.png', class: 'accounts',
             route: 'company/details'
           }
-        ];
+        ]
       }
     ];
   }
