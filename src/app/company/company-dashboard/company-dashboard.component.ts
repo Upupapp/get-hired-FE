@@ -13,6 +13,8 @@ export class CompanyDashboardComponent implements OnInit {
   stat: any;
   charts: any;
 
+  loading$ = this.companyFacade.loading$;
+
   dashboard$ = this.companyFacade.dashboard$
     .pipe(
       map(dash => {
