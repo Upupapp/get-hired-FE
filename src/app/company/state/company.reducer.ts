@@ -87,6 +87,29 @@ export const companyReducer = createReducer<CompanyState>(
       error: action.payload
     };
   }),
+  on(CompanyActions.createInitialCompany, (state): CompanyState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(CompanyActions.createInitialCompanySuccess, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      succesMsg: 'created',
+      selected: action.company
+    };
+  }),
+  on(CompanyActions.createInitialCompanyFail, (state, action): CompanyState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
   on(CompanyActions.getCompanyUsers, (state): CompanyState => {
     return {
       ...state,

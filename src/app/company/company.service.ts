@@ -20,6 +20,12 @@ export class CompanyService {
     return this.baseService.get<any>(`${this.companyUrl}/getsubscriptionrestrictions?companyId=${companyId}`);
   }
 
+  createInitialCompany(companyName: string, companyEmail: string) {
+    return this.baseService.post<Model.Company>(`${this.companyUrl}/createinitial`, {
+      companyName, companyEmail
+    });
+  }
+
   createCompany(company: Model.Company) {
     return this.baseService.post<Model.Company>(`${this.companyUrl}/createcompany`, company);
   }

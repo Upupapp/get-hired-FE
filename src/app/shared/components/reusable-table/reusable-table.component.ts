@@ -45,7 +45,6 @@ export class ReusableTableComponent implements OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @Input() maxRows: number = 5;
-
   @Input() statusFilter: boolean = false;
   @Input() statusArray: any[] = ["Active", "Inactive", "Pending"];
   @Input() statusName: string = "";
@@ -253,7 +252,6 @@ export class ReusableTableComponent implements OnInit {
       data: data
     });
   }
-
 
   /*
     Open dialog component

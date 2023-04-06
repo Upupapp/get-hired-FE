@@ -51,6 +51,10 @@
             Login to Apply
           </button>
 
+          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">
+            Login to Apply
+          </button>
+
           <img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2"
             style="height: 45px; cursor: pointer;" (click)="getShareableLink(selectedJobPost.jobId)">
         </div>

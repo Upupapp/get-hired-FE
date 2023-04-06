@@ -27,13 +27,18 @@
           </div>
         </div>
 
-        <div class="title-container mb-3">
-          <label>{{ 'SKILLS_AND_EXPERIENCE.TIME_PERIOD' | translate }}</label>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" formControlName="noExpiry" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-              {{ 'SKILLS_AND_EXPERIENCE.TIME_PERIOD_TYPE' | translate }}
-            </label>
+
+        <div class="row justify-content-between">
+          <div class="col-12 col-lg-4 align-items-center d-flex">
+            <label class="m-0">{{ 'SKILLS_AND_EXPERIENCE.TIME_PERIOD' | translate }}</label>
+          </div>
+          <div class="col-12 col-lg-8">
+            <div class="form-check row d-flex h-100 align-items-center justify-content-end">
+              <input class="form-check-input col-12 col-lg-4" type="checkbox" formControlName="noExpiry">
+              <label class="form-check-label col-12 col-lg-8 m-0">
+                {{ 'SKILLS_AND_EXPERIENCE.TIME_PERIOD_TYPE' | translate }}
+              </label>
+            </div>
           </div>
         </div>
 

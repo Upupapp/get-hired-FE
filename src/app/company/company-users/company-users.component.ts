@@ -62,7 +62,7 @@ export class CompanyUsersComponent implements OnInit {
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) { }
 
   ngOnInit(): void {

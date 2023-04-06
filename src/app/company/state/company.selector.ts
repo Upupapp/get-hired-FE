@@ -13,6 +13,11 @@ export const getSuccessMsg = createSelector (
   state => state.succesMsg
 );
 
+export const getError = createSelector (
+  getCompanyInitState,
+  state => state.error
+);
+
 export const getCompanyList = createSelector (
   getCompanyInitState,
   state => state.list

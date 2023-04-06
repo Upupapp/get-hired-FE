@@ -65,29 +65,14 @@ export class EmployerSidebarComponent implements OnInit {
   }
 
   ngOnChanges(changes) {
-    if (changes.user) {
-      if (!this.user.companyName || this.user.companyName == "") {
-        this.sidebarItems = [
-          {
-            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
-            route: 'company/details'
-          }
-        ];
-      }
-
-      // else if (!this.withActiveSubscription) {
-      //   console.log(this.user.withActiveSubscription)
-      //   this.sidebarItems = [{
-      //     title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-      //     route: 'subscription'
-      //   }]
-      // }
-
-      else {
-        this.sidebarItems = [
-          {
-            title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
-          },
+    this.sidebarItems = [
+      {
+        title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+      },
+      {
+        title: 'Jobs', icon: 'jobs.png', class: 'jobs',
+        route: 'jobs',
+        sub_routes: [
           {
             title: 'Jobs', icon: 'jobs.png', class: 'jobs',
             route: 'jobs',
@@ -116,9 +101,6 @@ export class EmployerSidebarComponent implements OnInit {
 
             ]
           },
-          // {
-          //   title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
-          // },
           {
             title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
             route: 'subscription'
@@ -136,7 +118,7 @@ export class EmployerSidebarComponent implements OnInit {
           }
         ];
       }
-    }
+    ];
   }
 
   ngOnDestroy(): void {

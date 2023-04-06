@@ -16,6 +16,7 @@ export class CompanyFacade {
     setup$ = this.store.pipe(select(fromfeature.getSetupList));
     industry$ = this.store.pipe(select(fromfeature.getIndustryList));
     subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));
+    error$ = this.store.pipe(select(fromfeature.getError));
 
     constructor(
       private store: Store<State>,
@@ -27,6 +28,10 @@ export class CompanyFacade {
 
     getAllCompany() {
       this.store.dispatch(CompanyAction.getAllcompany());
+    }
+
+    createInitialCompany(companyName: string, companyEmail: string) {
+      this.store.dispatch(CompanyAction.createInitialCompany({ companyName, companyEmail }));
     }
 
     createCompany(company: Model.Company) {

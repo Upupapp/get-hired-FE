@@ -22,6 +22,8 @@ import { CurrencyPipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 
+import * as Model from '../job.model';
+
 @Component({
   selector: 'app-job-list',
   templateUrl: './job-list.component.html',
@@ -66,6 +68,8 @@ export class JobListComponent implements OnInit {
     .subscribe(this.afterChange.bind(this));
 
   loading$ = this.jobFacade.loading$.pipe().subscribe(this.onLoad.bind(this));
+  restrictions$ = this.jobFacade.subsRestrictions$
+    .pipe().subscribe(this.checkJobRestriction.bind(this));
 
   req = new Subscription();
 
@@ -100,6 +104,7 @@ export class JobListComponent implements OnInit {
     };
   };
 
+  isAllowed: boolean = true;
   status: string[] = ['All', 'Draft', 'Published'];
 
   constructor(
@@ -117,10 +122,25 @@ export class JobListComponent implements OnInit {
       if (res) {
         this.user = JSON.parse(res);
         this.jobFacade.getBasicList(this.user.companyId);
+        this.jobFacade.getCompanySubscription(this.user.companyId);
       }
     });
 
     setTimeout(() => (this.loading = false), 1500);
+  }
+
+  checkJobRestriction(subs: Model.CompanySubscriptions) {
+    if (subs && subs.jobPost === subs.jobPostCount) {
+      this.isAllowed = false;
+    }
+  }
+
+  getCompanyRestrictions() {
+    if (this.isAllowed) {
+      this.router.navigate(['../create'], { relativeTo: this.route });
+    } else {
+      this.restrictJobCreation(false);
+    }
   }
 
   formatSalary(salaryMin, salaryMax, rate, currency) {

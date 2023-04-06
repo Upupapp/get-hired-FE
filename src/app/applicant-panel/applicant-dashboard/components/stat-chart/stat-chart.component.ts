@@ -180,7 +180,6 @@ export class StatChartComponent implements OnInit {
 
       });
     }
-
     return graphData;
   }
 

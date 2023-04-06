@@ -198,9 +198,8 @@
 
             </a>
           </div>
-
-          <br>
-          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3" [disabled]="submitting">
+          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3"
+            [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)">
             {{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}
             <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
               *ngIf="submitting">
