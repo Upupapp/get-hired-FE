@@ -1,8 +1,9 @@
 
 <div class="bg-banner" [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 	<div class="p-5 d-flex">
-		<div class="company-logo me-4">
-			<img [src]="details.companyLogoUrl" class="img-fluid company-logo-image">
+		<div class="company-logo me-4" (click)="redirectToEdit()">
+			<img [src]="details.companyLogoUrl" class="img-fluid company-logo-image" *ngIf="details.companyLogoUrl" />
+      <img src="assets/images/img-placeholder.jpg" class="img-fluid company-logo-image" *ngIf="!details.companyLogoUrl" />
 		</div>
 		<div class="mt-1">
 			<h5 class="title-banner mb-3" >{{ details.companyName }}
@@ -11,7 +12,7 @@
 				style="height: 25px; cursor: pointer !important; z-index: 999 !important">
 			</h5>
 
-			<p class="title-banner-description">
+			<p class="title-banner-description" *ngIf="details.companyCity">
 				<img src="/assets/images/placeholder/icons/location-white.png" class="me-1"
 				style="height: 18px;"> {{ details.companyCity }}, {{details.companyCountry }}
 			</p>

@@ -63,71 +63,50 @@ export class EmployerSidebarComponent implements OnInit {
   }
 
   ngOnChanges(changes) {
-    if (changes.user) {
-      if (!this.user.companyName || this.user.companyName == "") {
-        this.sidebarItems = [
+    this.sidebarItems = [
+      {
+        title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+      },
+      {
+        title: 'Jobs', icon: 'jobs.png', class: 'jobs',
+        route: 'jobs',
+        sub_routes: [
           {
-            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
-            route: 'company/details'
-          }
-        ];
+            title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
+          },
+
+          {
+            title: 'Expired Jobs', icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
+          },
+        ]
+      },
+      {
+        title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
+        sub_routes: [
+          {
+            title: 'Contact List', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
+          },
+          {
+            title: 'Contact Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
+          },
+          {
+            title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
+          },
+
+        ]
+      },
+      // {
+      //   title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
+      // },
+      {
+        title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+        route: 'subscription'
+      },
+      {
+        title: 'Employer Branding', icon: 'account.png', class: 'accounts',
+        route: 'company/details'
       }
-
-      // else if (!this.withActiveSubscription) {
-      //   console.log(this.user.withActiveSubscription)
-      //   this.sidebarItems = [{
-      //     title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-      //     route: 'subscription'
-      //   }]
-      // }
-
-      else {
-        this.sidebarItems = [
-          {
-            title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
-          },
-          {
-            title: 'Jobs', icon: 'jobs.png', class: 'jobs',
-            route: 'jobs',
-            sub_routes: [
-              {
-                title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
-              },
-
-              {
-                title: 'Expired Jobs', icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
-              },
-            ]
-          },
-          {
-            title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
-            sub_routes: [
-              {
-                title: 'Contact List', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
-              },
-              {
-                title: 'Contact Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
-              },
-              {
-                title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
-              },
-
-            ]
-          },
-          // {
-          //   title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
-          // },
-          // {
-          //   title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
-          //   route: 'subscription'
-          // },
-          {
-            title: 'Employer Branding', icon: 'account.png', class: 'accounts',
-            route: 'company/details'
-          }
-        ];
-      }
-    }
+    ];
   }
 
   ngOnDestroy(): void {

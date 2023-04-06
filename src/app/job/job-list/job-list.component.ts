@@ -117,7 +117,7 @@ export class JobListComponent implements OnInit {
   }
 
   checkJobRestriction(subs: Model.CompanySubscriptions) {
-    if (subs.jobPost === subs.jobPostCount) {
+    if (subs && subs.jobPost === subs.jobPostCount) {
       this.isAllowed = false;
     }
   }

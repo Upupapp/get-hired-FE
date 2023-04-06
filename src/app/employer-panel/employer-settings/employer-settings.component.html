@@ -1,4 +1,4 @@
-<div class="bg-gray">
+<div class="bg-gray" *ngIf="companyId; else noCompany">
   <div style="position: relative;">
     <!-- STEPPER CONTAINER changeStepper-->
     <div class="bg-upper-gray">
@@ -22,3 +22,8 @@
     </div>
   </div>
 </div>
+
+<ng-template #noCompany>
+  <!-- TODO setup company -->
+</ng-template>
+

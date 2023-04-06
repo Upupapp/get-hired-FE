@@ -42,7 +42,7 @@ export class CompanyEffects {
   //   );
   // });
 
-   createCompany$ = createEffect(() => {
+  createCompany$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CompanyActions.createCompany),
       mergeMap((action) => this.companyService.createCompany(action.company)
@@ -54,6 +54,24 @@ export class CompanyEffects {
           catchError((err) => {
             const { error } = err.error;
             return of(CompanyActions.createCompanyFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  createInitialCompany$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.createInitialCompany),
+      mergeMap((action) => this.companyService.createInitialCompany(action.companyName, action.companyEmail)
+        .pipe(
+          map((res: any) => {
+            const company: Model.Company = res.data;
+            return CompanyActions.createInitialCompanySuccess({ company });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.createInitialCompanyFail({ payload: error }))
           })
         )
       )

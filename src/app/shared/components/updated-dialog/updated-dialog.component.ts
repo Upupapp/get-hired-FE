@@ -17,6 +17,5 @@ export class UpdatedDialogComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
-    console.log('close pls');
   }
 }

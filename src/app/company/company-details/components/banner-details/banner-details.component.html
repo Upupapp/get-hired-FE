@@ -63,7 +63,10 @@
         <div class="row">
           <div class="col-12 col-lg-8 offset-lg-2">
             <h5 class="title-company-description">
-              {{ details.companyName }} ({{ details.companyIndustryName }})
+              {{ details.companyName }}
+            </h5>
+            <h5 class="fs-6" *ngIf="details.companyIndustryName">
+              ({{ details.companyIndustryName }})
             </h5>
             <p class="title-verified">
               Verified employer
