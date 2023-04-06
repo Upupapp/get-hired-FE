@@ -1,21 +1,16 @@
-<nav class="navbar navbar-expand-lg navbar-transparent py-4 fixed-top"
-  [ngClass]="isPublic ? 'shadow': ''">
+<nav class="navbar navbar-expand-lg navbar-transparent py-4 fixed-top" [ngClass]="isPublic ? 'shadow': ''">
   <div class="container-fluid d-flex px-0 px-lg-5">
     <a class="navbar-brand me-3 me-lg-5 d-flex" (click)="navigateToJobs()" *ngIf="isPublic">
       <img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-fluid" style="cursor: pointer">
     </a>
 
-    <button
-    class="navbar-toggler"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#togglerButton"
-    aria-controls="togglerButton" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#togglerButton"
+      aria-controls="togglerButton" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="togglerButton">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
         <!-- <li class="nav-item me-1">
           <div class="search-div">
             <div class="input-group">
@@ -28,37 +23,35 @@
         </li> -->
 
         <li class="nav-item" *ngIf="!isPublic">
-          <button class="btn btn-primary" type="button"
-            (click)="navigateToJobs()" >
-              Jobs
-            </button>
+          <button class="btn btn-primary" type="button" (click)="navigateToJobs()">
+            Jobs
+          </button>
         </li>
 
+        <li class="nav-item w-50">
+          <app-language-selection title="Language"></app-language-selection>
+        </li>
         <li class="nav-item">
           <div class="dropdown d-lg-flex ms-4" *ngIf="!isUserLoggedIn">
-            <button class="btn btn-nav-gradient" type="button"
-            (click)="redirectToRegister()" >
+            <button class="btn btn-nav-gradient" type="button" (click)="redirectToRegister()">
               Login
             </button>
           </div>
 
           <div class="dropdown d-flex" *ngIf="isUserLoggedIn && user">
-            <button class="btn" id="dropdownMenuButton1"
-            style="outline: none !important; border: none !important"
-            data-bs-toggle="dropdown" aria-expanded="false">
-              <div *ngIf="!user.photoUrl" class="img-avatar initial-thumbnail" >
+            <button class="btn" id="dropdownMenuButton1" style="outline: none !important; border: none !important"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <div *ngIf="!user.photoUrl" class="img-avatar initial-thumbnail">
                 {{ initials }}
               </div>
               <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="img-avatar">
             </button>
 
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1"
-            style="position: absolute; left: -140px" >
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="position: absolute; left: -140px">
               <li class="pt-2" (click)="goToDashboard()">
-                <span class="dropdown-item d-flex" >
-                  <img [src]="user.photoUrl"
-                  *ngIf="user.photoUrl" class="img-avatar me-3">
-                  <div *ngIf="!user.photoUrl" class="initial-thumbnail-inner" >
+                <span class="dropdown-item d-flex">
+                  <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="img-avatar me-3">
+                  <div *ngIf="!user.photoUrl" class="initial-thumbnail-inner">
                     {{ initials }}
                   </div>
                   <div routerLink="/company">
@@ -67,11 +60,6 @@
                   </div>
                 </span>
               </li>
-
-              <li>
-                <app-language-selection title="Language"></app-language-selection>
-              </li>
-
               <li class="pb-2">
                 <span class="dropdown-item nav-drop-link" (click)="logout()">Log out</span>
               </li>

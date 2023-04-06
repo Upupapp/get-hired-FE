@@ -8,11 +8,11 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class LanguageSelectionComponent implements OnInit {
 
-  selectedLang: any = 'en' 
+  selectedLang: any = 'en'
 
   public languages: any[] = [
-    {id: "en", name: "English"},
-    {id: "vie", name: "Vietnamese"}
+    {id: "en", name: "English", label: 'EN'},
+    {id: "vie", name: "Vietnamese", label: 'VN'}
   ];
   constructor(
     public translateService: TranslateService
