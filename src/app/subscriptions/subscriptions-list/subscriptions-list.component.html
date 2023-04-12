@@ -7,7 +7,7 @@
 </div> -->
 <div class="py-4 px-5">
   <div *ngIf="list$ | async as subs">
-    <div class="card card-body my-3" *ngFor="let item of subs; let i = index"
+    <div class="card card-body my-3" *ngFor="let item of subs | slice:0:4; let i = index"
       [ngClass]="i == 2 ? 'shadow-lg my-5 bordered p-0':''">
       <div class="w-100">
         <div class="row">
