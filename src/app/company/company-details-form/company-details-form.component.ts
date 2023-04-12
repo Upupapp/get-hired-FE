@@ -158,6 +158,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         mapUrl: companyMapUrl
       }
       this.updateLocalStorage();
+
     }
   }
 
@@ -219,6 +220,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   afterSubmit(event) {
     console.log(event);
+    console.log('dito lang')
+
     if (event == 'created') {
       const create = this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
@@ -240,6 +243,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   updateLocalStorage() {
+    console.log('Update LocalStorage')
     const user = localStorage.getItem('user');
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify({

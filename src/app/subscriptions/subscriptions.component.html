@@ -1,22 +1,17 @@
 <app-loading *ngIf="loading$ | async"></app-loading>
 
-<div *ngIf="!(loading$ | async) && details$ | async as companySubs; else noSubs">
-  <ng-container *ngIf="companySubs.length != 0">
-
-    <div class="bg-pink">
-      <div [@animate]="{value:'*', params:{ y:'-10px', delay: (50) + 'ms' }}">
-        <h5 class="text-center title-main">
-          {{ companySubs[0].subscriptionId == 1 ? 'GetHired Premium Pricing': "Your Company's Subscription"}}
-        </h5>
-      </div>
+<div *ngIf="!(loading$ | async) && details$ | async as companySubs">
+  <div class="bg-pink">
+    <div [@animate]="{value:'*', params:{ y:'-10px', delay: (50) + 'ms' }}">
+      <h5 class="text-center title-main">
+        {{ pageTitle }}
+      </h5>
     </div>
-
+  </div>
+  <ng-container *ngIf="companySubs && companySubs.length != 0; else subList">
     <div class="py-4 px-5" style="margin-top: -140px"
       [@animate]="{value:'*', params:{ x:'-40px', delay: (50) + 'ms' }}">
-      <ng-container *ngIf="companySubs[0].subscriptionId == 1; else showSubs">
-        <app-subscriptions-list [endDate]="companySubs[0].endAt"></app-subscriptions-list>
-      </ng-container>
-      <ng-template #showSubs>
+      <ng-container *ngIf="companySubs[0].subscriptionId != 1; else subList">
         <div class="d-flex w-100">
           <div class="col-12 col-md-7 p-2">
             <div class="card card-body px-4 py-3">
@@ -129,23 +124,13 @@
             </div>
           </div>
         </ng-container>
-      </ng-template>
+      </ng-container>
     </div>
   </ng-container>
 </div>
 
-<ng-template #noSubs>
-  <!-- <div class="bg-pink">
-    <div [@animate]="{value:'*', params:{ y:'-10px', delay: (100) + 'ms' }}">
-      <h5 class="text-center title-main">
-        GetHired Premium Pricing
-      </h5>
-    </div>
-  </div>
-
-  <div class="py-4 px-5" style="margin-top: -140px" [@animate]="{value:'*', params:{ x:'-40px', delay: (100) + 'ms' }}"> -->
-    <app-subscriptions-list></app-subscriptions-list>
-  <!-- </div> -->
+<ng-template #subList>
+  <app-subscriptions-list [endDate]="companySubsEndDate"></app-subscriptions-list>
 </ng-template>
 
 <ng-template #bar let-max="max" let-value="value" let-label="label">

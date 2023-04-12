@@ -51,9 +51,21 @@ export class CompanyBasicComponent implements OnInit {
   afterSubmit(event) {
     this.submitting = false;
 
-    if (event == 'created') {
+    if (event) {
+      this.updateLocalStorage(event)
       this.dialogRef.close(1)
     }
+  }
+
+  updateLocalStorage(companyId) {
+    console.log('Update LocalStorage')
+    const user = localStorage.getItem('user');
+    localStorage.removeItem('user');
+    localStorage.setItem('user', JSON.stringify({
+      ...JSON.parse(user),
+      companyName: this.companyBasicForm.controls.companyName.value,
+      companyId: companyId
+    }));
   }
 
   onError(err: any) {

@@ -18,6 +18,7 @@ export class SubscriptionsFacade {
       ) { }
 
     getAllSubscriptions() {
+      console.log('ilang tawag ba?')
       this.store.dispatch(SubscriptionsAction.getAllsubscriptions());
     }
 

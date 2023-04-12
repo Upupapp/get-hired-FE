@@ -1,12 +1,11 @@
-<div class="bg-pink">
+<!-- <div class="bg-pink">
   <div>
     <h5 class="text-center title-main">
       GetHired Premium Pricing
     </h5>
   </div>
-</div>
-
-<div class="py-4 px-5" style="margin-top: -140px">
+</div> -->
+<div class="py-4 px-5">
   <div *ngIf="list$ | async as subs">
     <div class="card card-body my-3" *ngFor="let item of subs; let i = index"
       [ngClass]="i == 2 ? 'shadow-lg my-5 bordered p-0':''">
@@ -52,13 +51,13 @@
             </div>
           </div>
           <!-- TODO bring back for subscription -->
-          <!-- <div class="col-12 col-md-4 d-flex justify-content-center align-items-center"> -->
-            <!-- <app-countdown-timer [dateEnd]="endDate" [textColorClass]="'text-primary-red'"
+          <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
+            <app-countdown-timer [dateEnd]="endDate" [textColorClass]="'text-primary-red'"
               *ngIf="i == 0 && endDate"></app-countdown-timer>
-            <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem">
+            <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem" *ngIf="!endDate || i !=0 ">
               {{ (i == 0 && !endDate) ? 'Start Free trial':'Upgrade to this plan'}}
-            </button> -->
-          <!-- </div> -->
+            </button>
+          </div>
         </div>
       </div>
     </div>
