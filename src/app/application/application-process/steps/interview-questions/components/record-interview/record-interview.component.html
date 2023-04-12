@@ -22,7 +22,7 @@
           <div class="bg-bottom w-100" *ngIf="!videoBlob">
             <div class="d-flex">
               <div class="me-3 bg-main-question">
-                <p>Question {{index + 1}}</p>
+                <p>{{ 'INTERVIEW_PAGE_SECTION.QUESTIONS' | translate }} {{index + 1}}</p>
                 <h5>
                   {{ interviews[index].question }}
                 </h5>
@@ -32,7 +32,7 @@
                 <button class="btn btn-take-interview me-2 text-truncate" (click)="startRecorder()"
                   *ngIf="!isVideoRecording">
                   <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
-                  Start Recording
+                  {{ 'INTERVIEW_PAGE_SECTION.START_BUTTON' | translate }}
                 </button>
                 <button class="btn btn-settings me-2" (click)="openInterviewSettings()" *ngIf="!isVideoRecording">
                   <img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
@@ -112,14 +112,14 @@
             <input #uploadFile hidden type="file" (change)="uploadVideo($event)"
               accept="video/mp4,video/x-m4v,video/*" />
             <button class="btn btn-upload w-100  text-truncate" (click)="uploadFile.click()" type="button">
-              Upload
+              {{ 'INTERVIEW_PAGE_SECTION.UPLOAD_VIDEO_BUTTON' | translate }}
               <img src="/assets/images/placeholder/icons/interview-upload.png" style="height: 10px" class="ms-2">
             </button>
           </div>
 
           <div class="col-12 col-lg-6">
             <button class="btn btn-skip w-100  text-truncate" (click)="skipInterview()" type="button">
-              Skip Interview
+              {{ 'INTERVIEW_PAGE_SECTION.SKIP_INTERVIEW_BUTTON' | translate }}
               <img src="/assets/images/placeholder/icons/next-interview.png" style="height: 10px" class="ms-2">
             </button>
           </div>

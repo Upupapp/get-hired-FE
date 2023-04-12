@@ -7,10 +7,10 @@
   <div class="p-4">
     <div class="d-flex">
       <label class="title-job-interview text-capitalize me-3" [ngClass]="interviewTab === 'questions' ? 'active' : ''"
-        (click)="interviewTab = 'questions'">Interview Questions</label>
+        (click)="interviewTab = 'questions'">{{ 'INTERVIEW_PAGE_SECTION.QUESTIONS' | translate }}</label>
 
       <label class="title-job-answer text-capitalize" [ngClass]="interviewTab === 'answers' ? 'active' : ''"
-        (click)="interviewTab = 'answers'">Interview Answers</label>
+        (click)="interviewTab = 'answers'">{{ 'INTERVIEW_PAGE_SECTION.ANSWERS' | translate }}</label>
     </div>
 
     <hr style="color: #6e6e6e">

@@ -1,5 +1,5 @@
 <div class="p-4 px-lg-5">
-  <h5 class="title-main ms-4 mt-3">Company Details</h5>
+  <h5 class="title-main ms-4 mt-3">{{ 'COMPANY_DETAILS.COMPANY_DETAILS' | translate }}</h5>
 
   <div class="p-lg-3" *ngIf="details$ | async as details">
     <section class="mb-4">
@@ -31,7 +31,7 @@
                   <h5 class="title-company">
                     {{details?.companyName}} ({{details?.companyIndustry}})
                   </h5>
-                  <p class="title-verified">Verified employer
+                  <p class="title-verified">{{ 'EMPLOYER_BRANDING.VERIFIED_BADGE' | translate }}
                     <img src="/assets/images/placeholder/icons/verified-employer.png"
                       style="height: 40px; margin-top: 5px; margin-left: -10px;">
 
@@ -58,7 +58,7 @@
     </section>
 
     <section class="mt-5">
-      <app-job-posts-list [label]="'Latest Jobs and Careers'"></app-job-posts-list>
+      <app-job-posts-list label="{{ 'COMPANY_DETAILS.JOBS_CAREERS_SECTION' | translate }}"></app-job-posts-list>
     </section>
   </div>
 </div>

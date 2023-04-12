@@ -23,7 +23,7 @@
             [disabled]="!educBgForm.valid"
 
             (click)="addEducationBackground()" *ngIf="controlIndex == 0">
-              Add Item</button> -->
+            {{ 'SKILLS_AND_EXPERIENCE.ADD_ITEM_BUTTON' | translate }}</button>-->
           </div>
 
         </div>
@@ -32,7 +32,7 @@
 
       <div class="col-12 col-lg-6">
         <div class="title-container mb-3">
-          <label>Level of Education</label>
+          <label>{{ 'SKILLS_AND_EXPERIENCE.EDUCATION_LEVEL' | translate }}</label>
           <select class="form-select" formControlName="levelOfEducation">
             <option selected disabled [ngValue]="null">Select Level of Education</option>
             <ng-container *ngFor="let item of levelOfEducation; let i = index">
@@ -44,7 +44,7 @@
         <div class="row">
           <div class="col-12 col-lg-6">
             <div class="title-container mb-3">
-              <label>Start Date</label>
+              <label>{{ 'SKILLS_AND_EXPERIENCE.EDUCATION_START_DATE' | translate }}</label>
               <select class="form-select" formControlName="startMonth">
                 <option selected disabled [ngValue]=null>Select Month</option>
                 <ng-container *ngFor="let item of month; let i = index">
@@ -70,7 +70,7 @@
         <div class="row">
           <div class="col-12 col-lg-6">
             <div class="title-container mb-3">
-              <label>End Date</label>
+              <label>{{ 'SKILLS_AND_EXPERIENCE.EDUCATION_END_DATE' | translate }}</label>
               <select class="form-select" formControlName="endMonth">
                 <option selected disabled [ngValue]=null>Select Month</option>
                 <ng-container *ngFor="let item of month; let i = index">
@@ -96,7 +96,7 @@
 
       <div class="col-12 col-lg-6">
         <div class="title-container mb-3">
-          <label>Field of Study</label>
+          <label>{{ 'SKILLS_AND_EXPERIENCE.FIELD_OF_STUDY' | translate }}</label>
           <div class="form-group">
             <input type="text" class="form-control" formControlName="fieldOfStudy"
               placeholder="i.e. Communication, Engineering, Advertising, Psychology, etc">
@@ -104,7 +104,7 @@
         </div>
 
         <div class="title-container mb-3">
-          <label>School</label>
+          <label>{{ 'SKILLS_AND_EXPERIENCE.SCHOOL' | translate }}</label>
           <div class="form-group">
             <input type="text" class="form-control" formControlName="school"
               placeholder="Name of the University or School">
@@ -112,7 +112,7 @@
         </div>
 
         <div class="title-container mb-3">
-          <label>School Address</label>
+          <label>{{ 'SKILLS_AND_EXPERIENCE.SCHOOL_ADDRESS' | translate }}</label>
           <div class="form-group">
             <input type="text" class="form-control" formControlName="schoolAddress"
               placeholder="School Location or Landmark">

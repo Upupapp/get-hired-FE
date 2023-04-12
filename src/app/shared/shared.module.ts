@@ -29,6 +29,9 @@ import { SuccessDialogComponent } from './components/success-dialog/success-dial
 import { FileViewerComponent } from './components/file-viewer/file-viewer.component';
 import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { LanguageSelectionComponent } from './components/language-selection/language-selection.component';
 import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
 import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
 import { CountdownTimerComponent } from './components/countdown-timer/countdown-timer.component';
@@ -56,6 +59,9 @@ const classesToInclude: any[] = [
   FileViewerComponent,
   VideoPreviewComponent,
   RecordLoadingComponent,
+  ConfirmationDialogComponent,
+  LanguageSelectionComponent,
+  DropdownSearchComponent,
   EmptySectionComponent,
   DropdownSearchComponent,
   GoogleAddressSearchComponent,
@@ -71,7 +77,8 @@ const classesToInclude: any[] = [
     FormsModule,
     ReactiveFormsModule,
     MaterialComponentsModule,
-    NgxDocViewerModule
+    NgxDocViewerModule,
+    TranslateModule
   ],
   entryComponents: [...classesToInclude],
   providers: [
@@ -82,7 +89,8 @@ const classesToInclude: any[] = [
     ...classesToInclude,
     MaterialComponentsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ]
 })
 export class SharedModule { }

@@ -19,7 +19,9 @@ import { ConfirmationDialogComponent } from '@app-shared/components/confirmation
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { CurrencyPipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
+
 import * as Model from '../job.model';
 
 @Component({
@@ -74,7 +76,17 @@ export class JobListComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
   public loading: boolean = true;
   public id;
-  public displayedColumns: TableHeader[] = displayedColumns;
+  public displayedColumns: TableHeader[] = [
+    { col_name: 'jobId', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_ID") },
+    { col_name: 'jobTitle', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_TITLE")  },
+    { col_name: 'createdAt', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_DATE"), type: 'date'  },
+    { col_name: 'jobCity', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_LOCATION")  },
+    { col_name: 'workSetupName', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_SETUP")  },
+    { col_name: 'jobTypeName', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_TYPE")  },
+    { col_name: 'salary', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_SALARY"), type: 'salary'   },
+    { col_name: 'status', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_STATUS")  },
+    { col_name: 'action', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_ACTION") , type: 'menu' },
+  ];
   public jobLists: Job[] = jobLists;
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns;
@@ -101,7 +113,8 @@ export class JobListComponent implements OnInit {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private jobFacade: JobFacade,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe:CurrencyPipe,
+    private translate: TranslateService,
   ) { }
 
   ngOnInit(): void {

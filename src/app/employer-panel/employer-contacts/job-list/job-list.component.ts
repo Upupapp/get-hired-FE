@@ -24,6 +24,7 @@ import {
   JobList,
   candidateJobList
 } from './utils/job-list-model-interface';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-job-list',
@@ -40,7 +41,17 @@ export class JobListComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
   public JobListData$: any;
 
-  public displayedColumns: TableHeader[] = displayedColumns;
+  public displayedColumns: TableHeader[] = [
+    { col_name: 'jobId', title: 'Job Id' },
+    { col_name: 'jobTitle', title: 'Title' },
+    { col_name: 'jobCity', title: 'Location' },
+    { col_name: 'workSetupName', title: 'Work Setup' },
+    { col_name: 'jobTypeName', title: 'Type' },
+    { col_name: 'salaryMinimum', title: this.translate.instant('CONTACTS_CANDIDATES.TABLE_COLUMN_MIN_SALARY') },
+    { col_name: 'salaryMaximum', title: this.translate.instant('CONTACTS_CANDIDATES.TABLE_COLUMN_MAX_SALARY') },
+    { col_name: 'action', title: 'Action' , type: 'menu' },
+  ];
+
   public jobList: JobList[] = [];
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
@@ -55,7 +66,8 @@ export class JobListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private candidateState: Store<StoreState>
+    private candidateState: Store<StoreState>,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {

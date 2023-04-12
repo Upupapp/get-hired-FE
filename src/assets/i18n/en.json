@@ -1,0 +1,349 @@
+{
+    "SIGNIN": {
+        "WELCOME_MESSAGE": "Sign in to your account", 
+        "LOGIN_TEXTBOX": "Login", 
+        "LOGIN_HEADING": "Sign in to your account",
+        "REGISTRATION_PROMPT": "Don't have an account?",
+        "REGISTER": "Register"
+
+    },
+    "CREATE_ACCOUNT": {
+        "CREATE_ACCOUNT_TEXT": "Create Account",
+        "FIRSTNAME_TEXTBOX": "First Name",
+        "LASTNAME_TEXTBOX": "Last Name",
+        "EMAIL_TEXTBOX": "Email Address",
+        "PASSWORD_TEXTBOX": "Password",
+        "CONFIRM_PASSWORD_TEXTBOX": "Confirm Password",
+        "REGISTER_AS":"I want to register as",
+        "ACCEPTANCE_CHECKBOX": "By creating your account, you agree to GetHired's Privacy Policy and Terms of Use.",
+        "LOGIN_PROMPT": "Already have an account? Login",
+        "LOGIN_BUTTON": "Login",
+        "REGISTRATION_TYPE_SELECTOR": "Applicant",
+        "REGISTRATION_TYPE_SELECTOR2": "Company",
+        "REGISTRATION_BUTTON":"Register"
+    },
+    "FORGET_PASSWORD":{
+        "FORGET_PASSWORD_TEXT":"Forget Password",
+        "RESET_PASSWORD_TEXT":"Reset Password",
+        "PW_RESET_CONFIRMATION_TEXT":"We'll send you an email with a link to reset the password to your account",
+        "GET_RESET_LINK_BUTTON":"Get Reset Link",
+        "CANCEL_BUTTON":"Cancel"
+    },
+    "APPLICANT_DASHBOARD":{
+        "DASHBOARD_TEXT":"Dashboard",
+        "SIDEBAR_PROFILE":"Profile",
+        "SIDEBAR_SETTINGS":"Settings",
+        "WIDGET_ACTIVE_APPLICATION":"Active Application",
+        "WIDGET_VIDEO_INTERVIEW":"Video Interview",
+        "POP_UP_MESSAGE":"Stay Up to Date",
+        "UPDATE_PROFILE":"Update your profile to showcase your skills",
+        "TITLE_GRAPH":"Current Activity",
+        "GRAPH_CONTENT":"Profile View",
+        "GRAPH_CONTENT2":"Job Application",
+        "GRAPH_CONTENT3":"Application",
+        "GRAPH_CONTENT4":"Interviewed",
+        "WIDGET_TOTAL_JOB_APPLICATION":"Total Job Application",
+        "UPDATE_PROFILE_BUTTON":"Update Profile"
+    },
+    "PROFILE":{
+        "PUBLIC_VIEW_":"Public View",
+        "EDIT_PROFILE_BUTTON":"Edit Profile",
+        "CONTACT_DETAILS_TEXT":"Contact Details",
+        "STATUS_TEXT":"Available",
+        "EMAIL_ADDRESS_TEXT":"Email Address",
+        "ADDRESS_TEXT":"Address",
+        "MOBILE_NUMBER_TEXT":"Mobile Phone",
+        "DOCUMENTS_TEXT":"Documents",
+        "SHORT_BIO_SECTION":"Short Bio",
+        "SERVICES_SECTION":"Provided Services",
+        "EXPERIENCE_SECTION":"Work Experience",
+        "EDUCATION_QUALIFICATION_SECTION":"Education & Qualification",
+        "AWARDS_CERTIFICATIONS_SECTION":"Awards & Certifications",
+        "SKILLS_SECTION":"Skills"
+    },
+    "SETTINGS":{
+        "ACCOUNT_SETTINGS":"Account Settings",
+        "SUBMIT_CHANGES_BUTTON":"Submit Changes"
+    },
+    "PROFILE_DETAILS":{
+        "PROFILE_DETAILS_TITLE":"Profile Details",
+        "PHOTO_TEXT":"Profile Photo",
+        "UPLOAD_PHOTO_BUTTON":"Select Profile Photo",
+        "CURRENT_JOB_TITLE_TEXT":"Current Job Title",
+        "JOB_TYPE":"Job Type",
+        "JOB_TYPE_SELECTOR":"Full time, Part time, Contractor",
+        "WORK_SETUP":"Preffered Work Setup",
+        "WORK_SETUP_SELECTOR":"Hybrid, On-site, Remote",
+        "EXPERIENCE_LEVEL":"Level of Experience",
+        "EXPERIENCE_LEVEL_SELECTOR":"Intern or Student, Newer or Entry Level, Intermedetate 2 to 3 years of experience, More than 5 years of experience, Belonging to the Board of Directors and senior management personnel",
+        "SALARY_RANGE":"Expected Salary(Month)",
+        "FIRSTNAME_TEXT":"First Name",
+        "LASTNAME_TEXT":"Last Name",
+        "PHONE_TEXT":"Phone",
+        "ADDRESS_TEXT":"Address",
+        "CITY_MUNICIPALITY_TEXT":"City/Municipality",
+        "COUNTRY_TEXT":"Country"
+    },
+    "SKILLS_AND_EXPERIENCE":{
+        "SKILLS_EXPERIENCE_SECTION":"Skills and Experience",
+        "ADD_ITEM_BUTTON":"Add item",
+        "WORK_EXPERIENCE_TITLE":"Work Experience",
+        "JOB_TITLE":"Job title",
+        "LOCATION":"Location",
+        "COMPANY":"Company",
+        "DURATION":"Duration",
+        "DURATION_TYPE":"I currently work here",
+        "START_DATE":"Start Date",
+        "END_DATE":"End Date",
+        "DETAILS":"Details",
+
+        "EDUCATION_BACKGROUND_MODULE":"Education Background",
+        "EDUCATION_LEVEL":"Level of Education",
+        "PRIMAARY":"Primary education",
+        "SECONDARY":"Upper Secondary Education, Bachelor's or equivalent level",
+        "BACHELOR_DEGREE":"Bachelor's or equivalent level",
+        "MASTERS":"Masters or equivalent level",
+        "DOCTORAL":"Doctoral or equivalent level",
+        "EDUCATION_LEVEL_SELECTOR":"Primary education, Upper Secondary Education, Bachelor's or equivalent level, Masters or equivalent level, Doctoral or equivalent level",
+        "EDUCATION_START_DATE":"Start Date",
+        "EDUCATION_END_DATE":"End Date",
+        "FIELD_OF_STUDY":"Field of Study",
+        "SCHOOL":"School",
+        "SCHOOL_ADDRESS":"School Address",
+
+        "SKILLS_SECTION":"Professional Skills",
+
+        "CERTIFICATIONS_AWARDS_MODULE":"Certification/Awards",
+        "TITLE":"Title",
+        "TIME_PERIOD":"Time Period",
+        "TIME_PERIOD_TYPE":"This certification or award does not expire",
+        "CERT_AWARD_DETAILS":"Details"
+    },
+    "DOCUMENTS":{
+        "DOCUMENTS_SECTION":"Documents",
+        "DOCUMENTS_TITLE":"Profile Documents",
+        "PREVIEW_PROFILE":"Profile Preview",
+        "SUBMIT_CHANGES_BUTTON":"Submit Changes",
+        "MESSAGE_GUIDE":"You can upload your CV, resume and other documents that might help you with your jog application",
+        "UPLOAD_BOX":"Upload documents you want to share.",
+        "ACCEPTED_FILES":"We accept: DOCS. DOCX. TXT. PDF.",
+        "FILE_PREVIEW":"Preview File",
+        "VIDEO_INTRODUCTION_MODULE":"Create Video Introduction",
+        "RECORD_VIDEO_BUTTON":"Re-record Video",
+        "UPLOAD_VIDEO_BUTTON":"Upload Video",
+        "DOWNLOAD_VIDEO_BUTTON":"Download Video"
+    },
+    "PUBLIC_PAGE":{
+        "PUBLIC_PAGE":"Public Page",
+        "KEYWORD_TEXTBOX":"Enter Keyword",
+        "WORK_SETUP_SELECTOR":"Work Setup",
+        "JOB_TYPE_SELECTOR":"Job Type",
+        "FIND_JOBS_BUTTON":"Find Jobs",
+        "JOB_POST_SECTION_MESSAGE":"Start your career now, Apply to these Jobs to kick start your career",
+
+        "RESUME_UPLOAD_BOX_MESSAGE":"Let employers find you",
+        "RESUME_UPLOAD_BUTTON":"Upload Your Resume",
+        "PHOTO_MESSAGE_EXAMPLE":"You're Hired",
+        "PHOTO_SUGGESTION_EXAMPLE":"Gain more skills"
+    },
+    "COMPANY_DETAILS":{
+        "COMPANY_DETAILS":"Company Details",
+        "JOBS_CAREERS_SECTION":"Latest Jobs and Careers",
+        "JOBS_CAREERS_MESSAGE":"Apply to these Jobs to kick start your career",
+        "EMPTY_CONTENT_MESSAGE":"No Jobs Created Yet",
+        "EMPTY_CONTENT_SUB": "There is no activity at the moment, but we can totally solve that"
+
+    },
+    "APPLY_PAGE":{
+        "APPLY_NOW_BUTTON":"Apply Now",
+        "DUPLICATE_APPLICATION_MESSAGE":"You already applied to this Job",
+        "NUMBER_OF_EMPLOYEES":"Employees",
+        "COMPANY_REVIEWS":"Rating",
+        "ABOUT_COMPANY":"About Company",
+        "JOB_DATE_POSTED":"Date Posted",
+
+        "JOB_DESCRIPTION":"Job Description",
+        "DUTIES_RESPONSIBILITIES":"Duties and Responsibilities",
+        "REQUIREMENTS":"Requirements",
+        "SKILLS_EXPERIENCE":"Skills & Experience",
+        "BACKGROUND_EDUCATION":"Educational Background",
+        "ADVANTAGES":"Good to have",
+        "INTERVIEW_QUESTIONS":"Interview Questions"
+    },
+    "USER_APPLICATION_PAGE":{
+        "USER_INFORMATION_SECTION":"My details",
+        "EXTRA_DOCUMENTS_SECTION":"Additonal Documents",
+        "INTERVIEW_SECTION":"Interview",
+        "SUMMARY_SECTION":"Summary"
+    },
+    "ADDITIONAL_DOCUMENTS_PAGE_SECTION":{
+        "COVERLETTER_UPLOAD_BOX":"Browse Cover Letter",
+        "RESUME_UPLOAD_BOX":"Browse Resume",
+        "GOV_FILES_UPLOAD_BOX":"Browse Government Files",
+        "FILE_ACCEPT": "We accept",
+        "FILE_PREVIEW":"Preview File",
+        "DOCUMENT_UPLOAD_STATUS":"No Document Uploaded"
+    },
+    "INTERVIEW_PAGE_SECTION":{
+        "POP_UP_MESSAGE":"The Recruiter would like to ask you some questions.",
+        "POP_UP_CONTEXT":"Answering Interviews during your application helps improve your success rate. Please click proceed to continue answering the interview questions. Prepare your camera. Get a good lighting and don't forget to smile. Let's Begin.",
+        "SKIP_BUTTON":"Skip for now",
+        "PROCEED_BUTTON":"Proceed",
+
+        "READY_MESSAGE_RECORDING":"Ready when you are! Click Start recording to answer your video interview",
+        "START_BUTTON":"Start Recording",
+        "UPLOAD_VIDEO_BUTTON":"Upload",
+        "SKIP_INTERVIEW_BUTTON":"Skip Interview",
+        "QUESTIONS":"Interview Questions",
+        "ANSWERS":"Interview Answers",
+        "RECORD_UPLOAD_BUTTON":"Record/Upload Interview"
+    },
+    "SUMMARY_PAGE":{
+        "EVALUATION_SUBMIT_BUTTON":"Submit for Evaluation"
+    },
+    "ADMIN_DASHOBOARD":{
+        "SIDEBAR_CONTACTS":"Contacts",
+        "SIDEBAR_INTERVIEWS":"Interviews",
+        "SIDEBAR_SUBCRIPTIONS":"My Subscription",
+        "SIDEBAR_EMPLOYER_BRANDING":"Employer Branding",
+
+        "WIDGET_ACTIVE_JOBS":"Active Jobs", 
+        "ACTIVE_JOBS_THIS_MONTH":"This Month",
+        "WIDGET_APPLICANTS":"Applicants",
+        "ON_ACTIVE_JOBS":"On Active Jobs",
+        "WIDGET_VIDEO_INTERVIEW":"Video Interviews",
+        "VID_INTERVIEWS_MONTH":"This Month",
+        "WIDGET_CITIES_APPLIED":"Top 5 cities applied from",
+        "WIDGET_CADIDATE":"Candidate Database",
+        "TOTAL_CONTACTS":"Total Contacts"
+    },
+    "JOB_POSTS_PAGE":{
+        "SIDEBAR_JOB_POSTS":"Job Posts",
+        "NEW_JOB_BUTTON":"New Job",
+        "SIDEBAR_EXPIRED_JOBS":"Expired Jobs",
+        "TABLE_COLUMN_ID":"Job Id",
+        "TABLE_COLUMN_TITLE":"Title",
+        "TABLE_COLUMN_DATE":"Date Posted",
+        "TABLE_COLUMN_LOCATION":"Location",
+        "TABLE_COLUMN_SETUP":"Work Setup",
+        "TABLE_COLUMN_TYPE":"Type",
+        "TABLE_COLUMN_SALARY":"Salary",
+        "TABLE_COLUMN_STATUS":"Status",
+        "TABLE_COLUMN_ACTION":"Action"
+    },
+    "RECRUITMENT_MANAGEMENT_TOOLS":{
+        "VIEW_JOB_BUTTON":"View Job Post",
+        "UPDATE_JOB_BUTTON":"Update Job Post",
+        "VIEW_APPLICANTS_BUTTON":"View Applicants",
+        "CREATE_INTERVIEW_BUTTON":"Create Interview",
+        "DELETE_JOB_BUTTON":"Delete Job Post"
+},
+    "EXPIRED_JOBS_PAGE":{
+        "PAGE_TITLE":"Expired Jobs",
+        "LIST_JOBS":"List of Expired Jobs is currently empty",
+        "NEW_JOB_BUTTON":"New Job"
+    },
+    "CONTACT_LIST_PAGE":{
+        "NUMBER_OF_ENTRIES":"Showing 1 to 10 of 17 entries",
+        "ADD_CONTACT_BUTTON":"Add Contact",
+        "TABLE_COLUMN_CREATION_DATE":"Date Created",
+        "TABLE_COLUMN_GROUP_NAME":"Group Name"
+    },
+    "EDIT_CONTACT_FORM":{
+        "TITLE_PAGE":"Edit Contact",
+        "TITLE_TEXT":"Contact Details",
+        "CONTACT_INFORMATION_REQUEST":"Provide the contact details necessary for the person you want to invite",
+        "CLOSE_BUTTON":"Close",
+        "SUBMIT_BUTTON":"Submit"
+    },
+    "DELETE_WARNING":{
+        "DELETE_CONFIRMATION_PROMPT":"Delete Confirmation, Are you sure you want to Delete this data?",
+        "CANCEL_BUTTON":"Cancel",
+        "CONTINUE_BUTTON":"Continue"
+    },
+    "CONTACT_GROUP":{
+        "TABLE_COLUMN_GROUP_ID":"Group ID",
+        "TABLE_COLUMN_GROUP_NAME":"Group Name",
+        "TABLE_COLUMN_NO_MEMBERS":"Number of Members",
+        "TABLE_COLUMN_MEMBERS":"Members",
+        "TABLE_COLUMN_ACTION":"Action",
+        "ADD_GROUP_BUTTON":"Add Group +"
+    },
+    "EDIT_CONTACT_GROUP_FORM":{
+        "GROUP_CONTACTS":"Group of Contacts",
+        "DETAILS_FORM":"Provide the contact groups details necessary for the person you want to add within the group",
+        "GROUP_NAME_FIELD":"Group Name",
+        "LISTS_CONTACT_FIELD":"Lists of contacts",
+        "ERROR_MESSAGE":"No contact email available",
+        "RESET_BUTTON":"Reset",
+        "CLOSE_BUTTON":"Close",
+        "SUBMIT_BUTTON":"Submit"
+    },
+    "CONTACTS_CANDIDATES":{
+        "SIDEBAR_CANDIDATE":"Candidates",
+        "TABLE_COLUMN_MIN_SALARY":"Minimum Salary",
+        "TABLE_COLUMN_MAX_SALARY":"Maximum Salary"
+    },
+    "CANDIDATE_APPLIED_ON_JOB_TABLE":{
+        "CANDIDATE_MANAGEMENT":"Candidate List",
+        "ADD_CANDIDATE_BUTTON":"Add Cnadidate +"
+    },
+    "NEW_CANDIDATE_FORM":{
+        "NEW_CONTACT":"New Contact",
+        "JOB_ID_SELECTOR":"Select Job Id",
+        "GROUP_NAME_FIELD":"Group Name*"
+    },
+    "IMPORT_CANDIDATE_FORM":{
+        "IMPORT_CONTACT":"Import Contact",
+        "CSV_FILE_UPLOAD_TEXT":"Uploading CSV file",
+        "FILE_UPLOAD_TEXT":"Add new contact by uploading .csv file. You can download the template here for reference",
+        "FILE_UPLOAD_INSTRUCTION":"We accept: CSV File Only",
+        "FILE_SELECTOR":"Browse Files"
+    },
+    "EMPLOYER_BRANDING":{
+        "VERIFIED_BADGE":"Verified employer",
+        "CALL_TO_ACTION_BUTTON":"Apply now"   
+    },
+    "EDIT_COMPANY_DETAILS":{
+        "COMPANY_USER_SECTION":"Company Users",
+        "ACCOUNT_SETTINGS":"Account Settings",
+        "COMPANY_LOGO_TEXT":"Company Logo",
+        "COMPANY_NAME_TEXT":"Company Name",
+
+        "COMPANY_DESCRIPTION":"Company Details",
+        "TYPE_INDUSTRY":"Type of Industry",
+        "NUMBER_OF_EMPLOYEES":"Number of Employee",
+
+        "MOBILE_PHONE":"Work Phone",
+        "ADDRESS":"Company Address",
+        "CITY_MUNICIPALITY_TEXT":"City/Municipality",
+        "SUBMIT_BUTTON":"Submit Changes",
+
+        "TYPE_INDUSTRY_SELECTOR_OPTIONS":"Advertising, Beauty And Healthcare, Ecommerce, Education, Engineering, F&B, Finance Services, FMCG, Hospitality, IT/Technology, Logistic, Real Estate, Retail, Sales, Telecom"
+    },
+    "EDIT_COMPANY_USERS":{
+        "TABLE_COLUMN_ID":"Emoployee ID",
+        "TABLE_COLUMN_DATE_ADDED":"Date added",
+        "ADD_NEW_ACCESS_BUTTON":"Add New Access +"
+    },
+    "NEW_USER_ACCESS":{
+        "NEW_USER__ACCESS_FORM":"New User Access",
+        "INSTRUCTION_MESSAGE":"Create new user, one at a time. Input the email of the person you want to add to your team",
+        "EMAIL_TEXT":"Add Email address",
+        "CANCEL_BUTTON":"Cancel",
+        "ADD_EMAIL_BUTTON":"Add Email"
+    },
+    "IMPORT_USERS":{
+        "IMPORT_USERS_FORM":"Import Users",
+        "INSTRUCTION_MESSAGE":"Uploading CSV file. Add new company user by uploading .csv file. You can download the template here for reference",
+        "FILE_UPLOAD_INSTRUCTION":"Choose File We accept: CSV File Only",
+        "FILE_SELECTOR":"Browse Files"
+    },
+    "ACCOUNT_SETTINGS":{
+        "TITLE_TEXT":"Account Settings",
+        "FN_INPUT_FIELD":"First Name",
+        "LN_INPUT_FIELD":"Last Name",
+        "PW_INPUT FIELD":"Password",
+        "SUBMIT_BUTTON":"Submit Changes"
+    }
+}

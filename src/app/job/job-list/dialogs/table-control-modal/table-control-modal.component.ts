@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-table-control-modal',
@@ -17,14 +18,14 @@ export class TableControlModalComponent implements OnInit {
   public tableControls: any[] = [
     {
       id: "view-job",
-      title: "View Job Post",
+      title: this.translate.instant("RECRUITMENT_MANAGEMENT_TOOLS.VIEW_JOB_BUTTON"),
       icon: "/assets/images/icons/client-menu/about-me.png",
       background: "#FEF1FC"
     },
 
     {
       id: "edit-job",
-      title: "Update Job Post",
+      title: this.translate.instant("RECRUITMENT_MANAGEMENT_TOOLS.UPDATE_JOB_BUTTON"),
       icon: "/assets/images/icons/client-menu/service-history.png",
       background: "#dce8fa"
     },
@@ -38,20 +39,20 @@ export class TableControlModalComponent implements OnInit {
 
     {
       id: "view-applicants",
-      title: "View Applicants",
+      title: this.translate.instant("RECRUITMENT_MANAGEMENT_TOOLS.VIEW_APPLICANTS_BUTTON"),
       icon: "/assets/images/icons/client-menu/service-templates.png",
       background: "#f7f2e4"
     },
     {
       id: "create-interview",
-      title: "Create Interview",
+      title: this.translate.instant("RECRUITMENT_MANAGEMENT_TOOLS.CREATE_INTERVIEW_BUTTON"),
       icon: "/assets/images/icons/client-menu/medical-history.png",
       background: "#f2f0fa"
     },
 
     {
       id: "delete",
-      title: "Delete Job Post",
+      title: this.translate.instant("RECRUITMENT_MANAGEMENT_TOOLS.DELETE_JOB_BUTTON"),
       icon: "/assets/images/icons/client-menu/incidents.png",
       background: "#ffe6e6"
     },
@@ -83,7 +84,8 @@ export class TableControlModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data,
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
   ) {
 
   }

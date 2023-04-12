@@ -1,4 +1,4 @@
-<app-loading *ngIf="loading$ | async"></app-loading>
+<app-loading *ngIf="(loading$ | async) && !(details$ | async)"></app-loading>
 
 <div *ngIf="!(loading$ | async) && details$ | async as companySubs">
   <div class="bg-pink">
@@ -34,43 +34,53 @@
 
                   </div>
                 </div>
-                <div class="col-12 col-md-5 p-2 text-center">
-                  <div class="mb-3">
-                    <span class="fs-1 fw-bold">
-                      {{ companySubs[0].price | currency: companySubs[0].priceCurrency }}
-                    </span>
-                    <br>
-                    <span class="fs-6">
-                      {{ companySubs[0].paymentOccurence }}
-                    </span>
-                  </div>
-                  <button class="btn btn-primary" (click)="upgrade(companySubs[0].companyId)" style="height: 3rem"
-                    *ngIf="companySubs[0].subscriptionId < 4">
-                    Upgrade Plan
-                  </button>
+                <div class="mt-4 px-4">
+                  <ng-container *ngIf="companySubs[0].jobPost >= 0" [ngTemplateOutlet]="bar"
+                    [ngTemplateOutletContext]="{max: companySubs[0].jobPost , value: companySubs[0].jobPostCount, label: 'Job Post'}"></ng-container>
+
+                  <ng-container *ngIf="companySubs[0].videoResponse >= 0" [ngTemplateOutlet]="bar"
+                    [ngTemplateOutletContext]="{max: companySubs[0].videoResponse , value: companySubs[0].videoResponseCount, label: 'Video Responses'}"></ng-container>
+
+                  <ng-container *ngIf="companySubs[0].admin >= 0" [ngTemplateOutlet]="bar"
+                    [ngTemplateOutletContext]="{max: companySubs[0].admin , value: companySubs[0].adminCount, label: 'Admin Users'}"></ng-container>
+
                 </div>
+              </div>
+              <div class="col-12 col-md-5 p-2 text-center">
+                <div class="mb-3">
+                  <span class="fs-1 fw-bold">
+                    {{ companySubs[0].price | currency: companySubs[0].priceCurrency }}
+                  </span>
+                  <br>
+                  <span class="fs-6">
+                    {{ companySubs[0].paymentOccurence }}
+                  </span>
+                </div>
+                <button class="btn btn-primary" (click)="upgrade(companySubs[0].companyId)" style="height: 3rem"
+                  *ngIf="companySubs[0].subscriptionId > 1 && companySubs[0].subscriptionId < 4">
+                  Upgrade Plan
+                </button>
               </div>
             </div>
           </div>
-          <div class="col-12 col-md-5 p-2">
-            <div class="card card-body h-100 p-4">
-              <div class="fs-6 fw-light">
-                Next payment on
-              </div>
-              <div class="fs-5 fw-bold">
-                {{ companySubs[0].endAt | date: 'mediumDate' }}
-              </div>
-              <button class="btn btn-outline-primary w-50 mt-auto" (click)="payNow(companySubs[0].companyId)"
-                style="height: 3rem">
-                Pay now
-              </button>
+        </div>
+        <div class="col-12 col-md-5 p-2">
+          <div class="card card-body h-100 p-4">
+            <div class="fs-6 fw-light">
+              Next payment on
             </div>
+            <div class="fs-5 fw-bold">
+              {{ companySubs[0].endAt | date: 'mediumDate' }}
+            </div>
+            <button class="btn btn-outline-primary w-50 mt-auto" (click)="payNow(companySubs[0].companyId)"
+              style="height: 3rem">
+              Pay now
+            </button>
           </div>
         </div>
 
         <ng-container *ngIf="companySubs.length > 1">
           <div class="mt-4">
-
             <h5 class="fs-4">History</h5>
             <div class="card card-body px-4 py-3">
               <div class="d-flex w-100 py-2 text-center bg-primary-light">

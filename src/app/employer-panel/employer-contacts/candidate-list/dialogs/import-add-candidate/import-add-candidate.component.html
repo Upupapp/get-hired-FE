@@ -25,8 +25,8 @@
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 				<div class="row pt-4" *ngIf="importCandidate">
 					<div class="col-12 col-md-12 text-start mb-2">
-						<h4 class="title-add">Uploading CSV file</h4>
-						<h5 class="title-description">Add new candidate by uploading .csv file. You can <a href="../../../../../../../assets/files/import-contact.csv" download="import-candidate.csv">download the Template</a> here for reference</h5>
+						<h4 class="title-add">{{ 'IMPORT_CANDIDATE_FORM.CSV_FILE_UPLOAD_TEXT' | translate }}</h4>
+						<h5 class="title-description"><a href="../../../../../../../assets/files/import-contact.csv" download="import-candidate.csv">{{ 'IMPORT_CANDIDATE_FORM.FILE_UPLOAD_TEXT' | translate }}</a></h5>
 					</div>
 				</div>
 
@@ -65,7 +65,7 @@
 						<div class="form-group mt-3">
 							<label class="mb-2">Job Id <i class="text-danger">*</i></label>
 							<select class="form-select" formControlName="jobId">
-								<option selected disabled hidden value="">Select Job Id </option>
+								<option selected disabled hidden value="">{{ 'NEW_CANDIDATE_FORM.JOB_ID_SELECTOR' | translate }} </option>
 								<ng-container *ngFor="let item of jobList; let i = index">
 									<option [value]="item.jobId">({{item.jobId}}) - {{item.jobTitle}}</option>
 								</ng-container>
@@ -74,7 +74,7 @@
 
 						<div class="form-group mt-4">
 							<mat-form-field style="width: 100%">
-								<input type="text" placeholder="Group Name" aria-label="Text" matInput formControlName="groupName" [matAutocomplete]="auto">
+								<input type="text" placeholder="{{ 'NEW_CANDIDATE_FORM.GROUP_NAME_FIELD' | translate }}" aria-label="Text" matInput formControlName="groupName" [matAutocomplete]="auto">
 								<mat-autocomplete #auto="matAutocomplete">
 								  <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
 									{{ option }}
@@ -119,13 +119,13 @@
 								<div class="row">
 								    <div class="col-8 text-start">
 								        <h6>Choose File</h6>
-								        <span>We accept: <span class="text-document">CSV File Only</span></span>
+								        <span>{{ 'IMPORT_CANDIDATE_FORM.FILE_UPLOAD_INSTRUCTION' | translate }}</span>
 								    </div>
 
 								    <div class="col-4">
 								        <button type="button" class="btn btn-uploader"
 								        [disabled]="document"
-								        (click)="csvReader.click()">Browse Files</button>
+								        (click)="csvReader.click()">{{ 'IMPORT_CANDIDATE_FORM.FILE_SELECTOR' | translate }}</button>
 								    </div>
 								</div>
 							</div>

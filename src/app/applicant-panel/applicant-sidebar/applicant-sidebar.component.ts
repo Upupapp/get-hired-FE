@@ -1,6 +1,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -23,6 +24,7 @@ export class ApplicantSidebarComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private translate: TranslateService
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -36,7 +38,7 @@ export class ApplicantSidebarComponent implements OnInit {
 
   public sidebarItems: any[] = [
     {
-      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
+      title: this.translate.instant('APPLICANT_DASHBOARD.DASHBOARD_TEXT'), icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
     },
 
     // {
@@ -48,11 +50,11 @@ export class ApplicantSidebarComponent implements OnInit {
     // },
 
     {
-      title: 'Profile', icon: 'account.png', class: 'profile', route: 'profile/details'
+      title: this.translate.instant('APPLICANT_DASHBOARD.SIDEBAR_PROFILE'), icon: 'account.png', class: 'profile', route: 'profile/details'
     },
 
     {
-      title: 'Settings', icon: 'expired-jobs.png', class: 'expired', route: 'settings'
+      title: this.translate.instant('APPLICANT_DASHBOARD.SIDEBAR_SETTINGS'), icon: 'expired-jobs.png', class: 'expired', route: 'settings'
     },
   ]
 

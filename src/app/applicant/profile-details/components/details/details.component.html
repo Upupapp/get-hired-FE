@@ -1,7 +1,7 @@
 <div class="card card-body p-5 py-4 mt-2" [@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
   <div class="row">
     <div class="col-12 col-lg-6 mb-3 pe-lg-5">
-      <h5 class="title-main mb-2">Short Bio</h5>
+      <h5 class="title-main mb-2">{{ 'PROFILE.SHORT_BIO_SECTION' | translate }}</h5>
       <p class="title-description">
         {{ user.shortBio }}
       </p>
@@ -39,7 +39,7 @@
 
   <div class="row mt-4" *ngIf="user.servicesProvided">
     <div class="col-12 col-lg-12 mb-3 pe-lg-5">
-      <h5 class="title-main mb-2">Provided Services</h5>
+      <h5 class="title-main mb-2">{{ 'PROFILE.SERVICES_SECTION' | translate }}</h5>
       <p class="title-description">
         {{ user.servicesProvided }}
       </p>
@@ -47,7 +47,7 @@
   </div>
 
   <div>
-    <h5 class="title-main mb-3">Work Experience</h5>
+    <h5 class="title-main mb-3">{{ 'PROFILE.EXPERIENCE_SECTION' | translate }}</h5>
 
     <ng-container *ngFor="let item of user.workExperience; let i = index">
       <hr style="border-color: #909090" *ngIf="i > 0">
@@ -78,7 +78,7 @@
   </div>
 
   <div class="mt-4">
-    <h5 class="title-main mb-3">Education & Qualification</h5>
+    <h5 class="title-main mb-3">{{ 'PROFILE.EDUCATION_QUALIFICATION_SECTION' | translate }}</h5>
 
     <ng-container *ngFor="let item of user.educationalBackground; let i = index">
       <hr style="border-color: #909090" *ngIf="i > 0">
@@ -99,7 +99,7 @@
   </div>
 
   <div class="mt-4">
-    <h5 class="title-main mb-3">Awards & Certifications</h5>
+    <h5 class="title-main mb-3">{{ 'PROFILE.AWARDS_CERTIFICATIONS_SECTION' | translate }}</h5>
 
     <ng-container *ngFor="let item of user.certifications; let i = index">
       <hr style="border-color: #909090" *ngIf="i > 0">
@@ -129,7 +129,7 @@
   </div>
 
   <div class="mt-4">
-    <h5 class="title-main mb-3">Skills</h5>
+    <h5 class="title-main mb-3">{{ 'PROFILE.SKILLS_SECTION' | translate }}</h5>
 
     <div class="row">
       <div class="col-12 col-lg-7">

@@ -5,13 +5,14 @@ import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { CoreService } from '@app-core/services/core.service';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
-import { InterviewNotificationComponent } from '@main/views/home/pages/job-post-details-apply/steps/interview-questions/components/interview-notification/interview-notification.component';
 import { Subject, takeUntil, tap } from 'rxjs';
 import * as JobModel from '@main/job/job.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationFacade } from '../state/application.facade';
 import * as ApplicantModel from '@main/applicant/applicant.model';
 import { RecordLoadingComponent } from '@app-shared/components/record-loading/record-loading.component';
+import { TranslateService } from '@ngx-translate/core';
+import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
 import { environment } from '@environments/environment';
 import { Router } from '@angular/router';
 
@@ -37,24 +38,24 @@ export class ApplicationProcessComponent implements OnInit {
   stepperItems: any[] = [
     {
       id: 1,
-      title: "My Details",
+      title: this.translate.instant('USER_APPLICATION_PAGE.USER_INFORMATION_SECTION'),
       valid: true
     },
     {
       id: 2,
-      title: "Additional Documents",
+      title: this.translate.instant('USER_APPLICATION_PAGE.EXTRA_DOCUMENTS_SECTION'),
       valid: true
     },
 
     {
       id: 3,
-      title: "Interview",
+      title: this.translate.instant('USER_APPLICATION_PAGE.INTERVIEW_SECTION'),
       valid: true
     },
 
     {
       id: 4,
-      title: "Summary",
+      title: this.translate.instant('USER_APPLICATION_PAGE.SUMMARY_SECTION'),
       valid: true
     },
   ];
@@ -119,6 +120,7 @@ export class ApplicationProcessComponent implements OnInit {
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private applicationFacade: ApplicationFacade,
+    private translate: TranslateService,
     private router: Router
   ) { }
 

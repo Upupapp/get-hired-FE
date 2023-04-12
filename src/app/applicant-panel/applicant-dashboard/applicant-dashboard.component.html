@@ -7,8 +7,8 @@
 </section>
 
 <div class="alert" [class.visible]="isVisible" *ngIf="isVisible">
-  <h5>Stay Up to Date</h5>
-  <u (click)="redirectToEdit()" class="cursor-pointer">Update your profile</u><span> to showcase your skills</span>
+  <h5>{{ 'APPLICANT_DASHBOARD.POP_UP_MESSAGE' | translate }}</h5>
+  <u (click)="redirectToEdit()" class="cursor-pointer">{{ 'APPLICANT_DASHBOARD.UPDATE_PROFILE' | translate }}</u>
 
   <button class="btn" (click)="closeSnackbar()"><i class="bi bi-x"></i></button>
 </div>
@@ -16,7 +16,7 @@
 <ng-template #noProfile>
   <section class="text-center p-5 w-100">
     <img src="assets/images/showcase.png" class="w-25" />
-    <h5 class="my-2">Update your profile to showcase your skills</h5>
+    <h5 class="my-2">{{ 'APPLICANT_DASHBOARD.UPDATE_PROFILE' | translate }}</h5>
     <button class="btn btn-primary me-3 hvr-grow" (click)="redirectToEdit()">
       Update Profile</button>
   </section>

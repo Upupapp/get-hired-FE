@@ -64,7 +64,7 @@
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
           <div class="form-group text-start mt-5">
-            <h4 class="main-title m-0">Sign in to your account</h4>
+            <h4 class="main-title m-0">{{ 'SIGNIN.WELCOME_MESSAGE' | translate }}</h4>
             <br>
           </div>
 
@@ -108,7 +108,7 @@
 
           <div class="mt-3">
             <a [routerLink]="'/reset-password'"
-              class="mat-primary text-center forget-password hvr-grow float-end">Forgot your password?</a>
+              class="mat-primary text-center forget-password hvr-grow float-end">{{ 'FORGET_PASSWORD.FORGET_PASSWORD_TEXT' | translate }}?</a>
 
             <a class="mat-primary text-center float-start forget-password ms-2" style="margin-top: 5px;">
               <mat-checkbox class="remember-me">Remember me</mat-checkbox>
@@ -118,14 +118,14 @@
 
           <br>
           <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3" [disabled]="submitting">
-            Login
+            {{ 'SIGNIN.LOGIN_TEXTBOX' | translate }}
             <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
               *ngIf="submitting">
           </button>
 
           <div class="text-center mt-5 join-us">
             <br><br>
-            Don't Have an account? <a [routerLink]="'/signup'" class="register">Register</a>
+            {{ 'SIGNIN.REGISTRATION_PROMPT' | translate }} <a [routerLink]="'/signup'" class="register"> {{ 'SIGNIN.REGISTER' | translate }}</a>
           </div>
         </form>
       </div>

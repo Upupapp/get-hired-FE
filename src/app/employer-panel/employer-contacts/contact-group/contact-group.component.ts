@@ -28,6 +28,7 @@ import { GroupActionTypes } from '@main/shared/store/actions/group.action';
 import { StoreState } from '@main/shared/store/index';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { GroupState } from '@app-shared/store/reducers/group.reducer';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-contact-group',
@@ -45,7 +46,14 @@ export class ContactGroupComponent implements OnInit {
   public localData: any = localStorage.getItem('user');
   public GroupData$: any;
 
-  public displayedColumns: TableHeader[] = displayedColumns;
+  public displayedColumns: TableHeader[] = 
+  [
+    { col_name: 'group_id', title: this.translate.instant('CONTACT_GROUP.TABLE_COLUMN_GROUP_ID') },
+    { col_name: 'group_name', title: this.translate.instant('CONTACT_GROUP.TABLE_COLUMN_NO_MEMBERS') },
+    { col_name: 'members', title: this.translate.instant('CONTACT_GROUP.TABLE_COLUMN_NO_MEMBERS'), type: 'number' },
+    { col_name: 'view_members', title: this.translate.instant('CONTACT_GROUP.TABLE_COLUMN_MEMBERS'), type: 'action_button', button_title: 'View Members', button_class: 'view-group'  },
+    { col_name: 'action', title: this.translate.instant('CONTACT_GROUP.TABLE_COLUMN_ACTION') , type: 'menu' },
+  ];
   public groupList: ContactGroup[] = [];
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
@@ -67,7 +75,8 @@ export class ContactGroupComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private groupState: Store<StoreState>
+    private groupState: Store<StoreState>,
+    private translate: TranslateService
     ) {
 
   }
