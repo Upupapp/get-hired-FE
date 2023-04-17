@@ -14,11 +14,12 @@
     </div>
     <br>
     <div class="card card-body" *ngIf="listView && !loading">
-      <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewContact($event)"
-        (viewDetails)="viewContact($event)" [componentTitle]="'Contacts'" [displayedColumns]="displayedColumns"
+      <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="editContact($event)"
+        (viewDetails)="editContact($event)" [componentTitle]="'Contacts'" [displayedColumns]="displayedColumns"
         [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
         [maxRows]="10" [listDataSource]="contactList"
         (deleteSelectedRow)="deleteRow($event)" 
+        (customButtonEvent)="viewContactGroup($event)"
         (updateSelectedRowDialog)="editContact($event)">
       </app-reusable-table>
     </div>

@@ -143,15 +143,18 @@ export class ContactListComponent implements OnInit {
     // setTimeout(() => this.loading = false, 1500);
   }
 
-
   ngOnDestroy(): void {
     if(this.req) this.req.unsubscribe();
   }
 
 
-  viewContact(event): void {
-    // console.log(event)
-    this.router.navigate(['/onboarding/contacts/details'], {queryParams: {userId: `${event?.data?.owner_id}`}});
+  viewContactGroup(event): void {
+
+    if(Array.isArray(event.data?.groups) && event.data?.groups.length > 0 ){
+      this.router.navigate([`/recruiter/contacts/group-list/${event.data?.groups[0].group_id}`]);
+    }
+    console.log(event)
+    //this.router.navigate(['/onboarding/contacts/details'], {queryParams: {userId: `${event?.data?.owner_id}`}});
   }
 
   addContacts(data?: any){
