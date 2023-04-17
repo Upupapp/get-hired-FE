@@ -1,10 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnInit, Input, ViewChild, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RecordService } from './recorder.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import RecordRTC from "recordrtc";
-import { Observable, Subject } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface RecordedVideoOutput {
   blob: Blob;
@@ -135,6 +133,15 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     this.video.srcObject = null;
     this.video.controls = false;
     this.ref.detectChanges();
+  }
+
+  upload(item) {
+    const file = item.target.files[0];
+    this.recordService.blobToBase64(file)
+      .then(vid => {
+        this.videoBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
+        this.dialogRef.close({ blobUrl: this.videoBlob, file: vid });
+      }).catch(err => console.log(err));
   }
 
   downloadVideoRecordedData() {

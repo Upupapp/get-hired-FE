@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from "@environments/environment";
 import { BaseService } from "@main/core/services/base.service";
 import * as Model from "./job.model";
+import * as InterviewModel from '@main/interview/interview.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,17 +17,29 @@ export class JobService {
   ) { }
 
   changeJobStatus(status, jobId) {
-    return this.baseService.put<Model.Job>(`${this.jobUrl}/changestatus`, { status, jobId});
+    return this.baseService.put<Model.Job>(`${this.jobUrl}/changestatus`, { status, jobId });
+  }
+
+  checkCompanySubscription(companyId: string) {
+    return this.baseService.get<any>(`${this.jobUrl}/getsubscriptionrestrictions?companyId=${companyId}`);
   }
 
   saveJob(job: Model.Job) {
-    if(job.jobId && job.jobId != '') {
+    if (job.jobId && job.jobId != '') {
       // update
       return this.baseService.put<Model.Job>(`${this.jobUrl}/updatejobs`, job);
     } else {
       // create
       return this.baseService.post<Model.Job>(`${this.jobUrl}/create`, job);
     }
+  }
+
+  updateJobInterviewQuestions(interviewQuestion: InterviewModel.InterviewQuestion) {
+    return this.baseService.put<InterviewModel.InterviewQuestion>(`${this.jobUrl}/updatejobinterview`, interviewQuestion);
+  }
+
+  deleteJobInterviewQuestions(questionId: string, jobId: string) {
+    return this.baseService.delete<string>(`${this.jobUrl}/deleteinterviewquestion?questionId=${questionId}&jobId=${jobId}`);
   }
 
   getJobApplicantDetails(jobId: string, userId: string) {
@@ -43,7 +56,7 @@ export class JobService {
 
   getJobById(jobId: string) {
     const user = localStorage.getItem('user');
-    const uid = user ? JSON.parse(user)._id: null;
+    const uid = user ? JSON.parse(user)._id : null;
 
     return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}&uid=${uid}`);
   }
@@ -60,7 +73,7 @@ export class JobService {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/badges`);
   }
 
-  getJobRoleList(){
+  getJobRoleList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/rolelist`);
   }
 
@@ -72,11 +85,11 @@ export class JobService {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/type`);
   }
 
-  getLevelList(){
+  getLevelList() {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/levels`);
   }
 
-  getCategoryList(){
+  getCategoryList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/categories`);
   }
 }

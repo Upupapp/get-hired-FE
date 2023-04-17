@@ -1,0 +1,37 @@
+<ng-container *ngIf="data.isError; else warning">
+  <div class="d-flex justify-content-center align-items-center flex-column w-100">
+    <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+    <div class="fs-1 fw-bold">
+      Oh no!
+    </div>
+    <div class="fs-3 fw-bold text-center">
+      Subscription Limit Exceeded
+    </div>
+    <p class="text-center">
+      We regret to inform you that your current plan can no longer accommodate this action.
+    </p>
+    <button class="btn btn-primary my-3" (click)="redirect()" style="height: 3rem">
+      Upgrade Now
+    </button>
+    <span class="fwt-light text-decoration-underline cursor-pointer" (click)="close()">Cancel</span>
+  </div>
+</ng-container>
+
+<ng-template #warning>
+  <div class="d-flex justify-content-center align-items-center flex-column w-100">
+    <i class="bi bi-info-circle text-info fs-1"></i>
+    <div class="fs-1 fw-light">
+      Important Notice
+    </div>
+    <div class="fs-3 fw-bold text-center">
+      Subscription Limit Exceeded
+    </div>
+    <p class="text-center">
+      You can still continue this action but this won't be viewable on Public.
+    </p>
+    <button class="btn btn-primary my-3" (click)="redirect()" style="height: 3rem">
+      Upgrade Now
+    </button>
+    <span class="fwt-light text-decoration-underline cursor-pointer" (click)="close()">Continue</span>
+  </div>
+</ng-template>

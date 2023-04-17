@@ -28,7 +28,7 @@ export const jobsReducer = createReducer<JobsState>(
   on(JobActions.getPublishedJobList, (state, action): JobsState => {
     return {
       ...state,
-      loading: false,
+      loading: true,
       error: null
     };
   }),

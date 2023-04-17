@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { catchError, map, of } from 'rxjs';
+import { catchError, finalize, map, of } from 'rxjs';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -24,6 +24,7 @@ export class AccountAuthenticationComponent implements OnInit {
   loading: boolean = true;
   isResent: boolean;
   resendLinkForm: FormGroup;
+  manual: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,12 +40,13 @@ export class AccountAuthenticationComponent implements OnInit {
       this.lang = params.lang
       this.role = params.role
       this.email = params.email
+      this.manual = params.manual
     });
   }
 
   ngOnInit(): void {
     this.resendLinkForm = this.fb.group({
-      'email': ['', [Validators.required, Validators.email]]
+      'email': [this.email, [Validators.required, Validators.email]]
     });
 
     switch (this.mode) {
@@ -84,12 +86,20 @@ export class AccountAuthenticationComponent implements OnInit {
         catchError((err: any) => {
           this.loading = false;
           return of(err);
+        }),
+        finalize(() => {
+          console.log('verified na');
+          // if(this.manual) {
+          //   setTimeout(() => {
+          //     window.self.close(), 3000
+          //   });
+          // }
         })
       ).subscribe();
   }
 
   resendVerification() {
-    const userEmail = this.email || this.resendLinkForm.controls.email.value;
+    const userEmail = this.email ? this.email:this.resendLinkForm.controls.email.value;
     this.authService.resendVerification(userEmail)
       .pipe(
         map((result: any) => {
@@ -98,15 +108,17 @@ export class AccountAuthenticationComponent implements OnInit {
             this.isResent = true;
             localStorage.removeItem('loginError');
             localStorage.removeItem('loginMessage');
-            // this.snackBar.open(`Verification link send to your email. Please verify and login again.`,
-            //   '', { duration: 4000, panelClass: ['danger-snackbar'] });
-            // setTimeout(() => this.redirectToLogin(), 3000);
+            this.snackBar.open(`Verification link send to your email. Please verify and login again.`,
+              '', { duration: 4000, panelClass: ['success-snackbar'] });
+            setTimeout(() => this.redirectToLogin(), 3000);
           }
         }),
         catchError((err: any) => {
           this.isResent = false;
           this.loading = false;
           console.log(err);
+          this.snackBar.open(err,
+              '', { duration: 4000, panelClass: ['danger-snackbar'] });
           return of(err);
         })
       ).subscribe();
@@ -114,5 +126,9 @@ export class AccountAuthenticationComponent implements OnInit {
 
   redirectToLogin() {
     this.router.navigate(['../signin']);
+  }
+
+  get email_validators() {
+    return this.resendLinkForm.get('email');
   }
 }

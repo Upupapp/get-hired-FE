@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  projectName: 'gethired',
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
   api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
@@ -12,6 +13,8 @@ export const environment = {
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: true,
+  mapRestrictions: ['sg', 'ph'],
+  apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
     authDomain: 'get-hired-363107.firebaseapp.com',

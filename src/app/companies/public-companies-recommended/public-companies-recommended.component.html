@@ -1,19 +1,21 @@
-<div class="container-fluid" *ngIf="list$ | async as companies" style="min-height: 30vh">
-	<div class="px-lg-5 mt-4 px-2 py-2">
-		<div class="row px-lg-2 bg-light-transparent">
-			<div class="col-12">
-				<h5 class="title-companies text-start pt-3"
-				[@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">
-					Recommended <span class="title-companies-primary">Companies</span>
-				</h5>
-			</div>
+<div class=" container-fluid" style=" min-height: 30vh">
+  <div class="px-lg-5 mt-4 px-2 py-2">
+    <div class="row px-lg-2 bg-light-transparent">
+      <div class="col-12">
+        <h5 class="title-companies text-start pt-3" [@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">
+          Recommended <span class="title-companies-primary">Companies</span>
+        </h5>
+      </div>
 
-			<ng-container *ngFor="let company of companies; let i = index">
-				<div class="col-6 col-md-6 col-lg-2 mb-3"
-				[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 50) + 'ms' }}">
-					<app-company-card [company]="company"></app-company-card>
-				</div>
-			</ng-container>
-		</div>
-	</div>
+      <app-inline-loading *ngIf="loading$ | async"></app-inline-loading>
+      <ng-container *ngIf="list$ | async as companies">
+        <ng-container *ngFor="let company of companies; let i = index">
+          <div class="col-6 col-md-6 col-lg-2 mb-3"
+            [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 50) + 'ms' }}">
+            <app-company-card [company]="company"></app-company-card>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
 </div>

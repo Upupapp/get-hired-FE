@@ -27,6 +27,8 @@ export class JobFacade {
   getJobLoading$ = this.store.pipe(select(fromfeature.jobLoading));
   applicants$ = this.store.pipe(select(fromfeature.getjobApplicants));
   details$ = this.store.pipe(select(fromfeature.getApplicantDetails));
+  subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));
+
   error$: any;
 
   constructor(
@@ -36,6 +38,10 @@ export class JobFacade {
   // getAllJob() {
   //   this.store.dispatch(JobAction.getAlljob());
   // }
+
+  getCompanySubscription(companyId: string) {
+    this.store.dispatch(JobAction.getCompanySubscription({ companyId }));
+  }
 
   getApplicants(jobId: string) {
     this.store.dispatch(JobAction.getJobApplicants({ jobId }));
@@ -53,16 +59,20 @@ export class JobFacade {
     this.store.dispatch(JobAction.resetJobForm());
   }
 
+  resetSuccessMsg() {
+    this.store.dispatch(JobAction.resetSuccessMsg());
+  }
+
   saveJob(job: Model.Job) {
     this.store.dispatch(JobAction.saveJob({ job }));
   }
 
-  changeJobStatus(status:number, jobId: string) {
+  changeJobStatus(status: number, jobId: string) {
     this.store.dispatch(JobAction.changeJobStatus({ status, jobId }));
   }
 
-  saveInterview(interview: InterviewModel.InterviewQuestion[] ) {
-    this.store.dispatch(JobAction.setInterview({ interview }));
+  saveInterview(interview: InterviewModel.InterviewQuestion[], interviewTemplateId: string) {
+    this.store.dispatch(JobAction.setInterview({ interview, interviewTemplateId }));
   }
 
   saveJobInfo(jobInfo: Model.JobInfo) {
@@ -110,7 +120,15 @@ export class JobFacade {
   }
 
   getJobById(jobId) {
-    this.store.dispatch(JobAction.getJob({jobId}));
+    this.store.dispatch(JobAction.getJob({ jobId }));
+  }
+
+  updateJobInterview(interviewQuestion: InterviewModel.InterviewQuestion) {
+    this.store.dispatch(JobAction.updateJobQuestion({ interviewQuestion }));
+  }
+
+  deleteJobInterview(questionId: string, jobId:string) {
+    this.store.dispatch(JobAction.deleteJobQuestion({ questionId, jobId }));
   }
 
   // getfeatureList() {

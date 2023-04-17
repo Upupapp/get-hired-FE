@@ -1,51 +1,46 @@
-<div class="row" *ngIf="list$ | async as jobLists" style="min-height: 30vh">
+<div class="row" style="min-height: 30vh">
   <div class="col-12 mb-3 ps-4">
     <h5 class="title-latest-job" [@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">{{ label }}
-      <!-- <span class="float-end d-flex">
-        <span class="me-3 filter-by">View All</span>
-        <span class="me-3 filter-by">Development</span>
-        <span class="me-3 filter-by">Data Science</span>
-        <span class="me-3 filter-by">Business</span>
-        <span class="me-2 filter-by">Marketing</span>
-        <img src="/assets/images/placeholder/icons/arrow-down.png" class="mt-1" style="width: 12px; height: 12px;">
-      </span> -->
 
-      <button class="btn btn-menu me-3 float-end" 
-      (click)="listView ? listView = false : listView = true">
+      <button class="btn btn-menu me-3 float-end" (click)="listView ? listView = false : listView = true">
         <img src="/assets/images/placeholder/icons/menu-icon.png" [title]="'Grid View'"
           [@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}" *ngIf="listView" width="15px"
           class="img-fluid">
 
         <img src="/assets/images/placeholder/icons/list-icon.png"
-          [@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}" [title]="'List View'"
-          *ngIf="!listView" width="15px"
-          class="img-fluid">
+          [@animate]="{value:'*', params:{ scale:'0.7', delay:'200ms' }}" [title]="'List View'" *ngIf="!listView"
+          width="15px" class="img-fluid">
       </button>
     </h5>
     <p class="title-latest-job-description" [@animate]="{value:'*', params:{ y:'10px', delay: '200ms' }}">
-      
+
 
       <span [innerHtml]="subLabel"></span>
     </p>
   </div>
 
-  <!-- JOB POST LISTS -->
-  <ng-container *ngFor="let data of filterJobList(jobLists); let i = index">
-    <div [ngClass]="listView ? 'col-12 col-md-12 col-lg-6' : 'col-12 col-md-6 col-lg-3'"
-      [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
-      <ng-container *ngIf="!listView">
-        <app-job-card [data]="data" [i]="i"></app-job-card>
-      </ng-container>
+  <app-inline-loading *ngIf="loading$ | async"></app-inline-loading>
 
-      <ng-container *ngIf="listView">
-        <app-job-card-list-view [data]="data" [i]="i"></app-job-card-list-view>
-      </ng-container>
-    </div>
+  <ng-container *ngIf="list$ | async as jobLists">
+
+    <ng-container *ngFor="let data of filterJobList(jobLists); let i = index">
+      <div [ngClass]="listView ? 'col-12 col-md-12 col-lg-6' : 'col-12 col-md-6 col-lg-3'"
+        [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
+        <ng-container *ngIf="!listView">
+          <app-job-card [data]="data" [i]="i"></app-job-card>
+        </ng-container>
+
+        <ng-container *ngIf="listView">
+          <app-job-card-list-view [data]="data" [i]="i"></app-job-card-list-view>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="jobLists?.length === 0 && !fromSearch && !(loading$ | async)">
+      <app-empty-section [title]="'No Jobs Created Yet'"
+        [subTitle]="'There is no activity at the momemnt, but we <br>can totally solve that.'" [detailSize]="'large'"
+        [search]="false"></app-empty-section>
+    </ng-container>
   </ng-container>
 
-  <ng-container *ngIf="jobLists?.length === 0 && !fromSearch">
-    <app-empty-section [title]="'No Jobs Created Yet'"
-      [subTitle]="'There is no activity at the momemnt, but we <br>can totally solve that.'" [detailSize]="'large'"
-      [search]="false"></app-empty-section>
-  </ng-container>
 </div>

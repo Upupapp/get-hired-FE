@@ -13,6 +13,11 @@ export const getSuccessMsg = createSelector (
   state => state.succesMsg
 );
 
+export const getError = createSelector (
+  getCompanyInitState,
+  state => state.error
+);
+
 export const getCompanyList = createSelector (
   getCompanyInitState,
   state => state.list
@@ -41,4 +46,9 @@ export const getIndustryList = createSelector(
 export const getCompanyUsers = createSelector(
   getCompanyInitState,
   state => state.users
+);
+
+export const getCompanySubscription = createSelector(
+  getCompanyInitState,
+  state => state.subs
 );

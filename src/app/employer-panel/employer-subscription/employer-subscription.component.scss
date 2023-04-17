@@ -1,57 +1,5 @@
 @import "src/assets/styles/colors";
 
-.table{
-	//border: solid 1px #D9D9D9 !important;
-
-
-	thead{
-		tr{
-			th{
-				padding: 20px;
-			}
-
-			th:not(:first-child){
-				text-align: center;
-				width: 215px;
-				border-left: 1px solid #D9D9D9 !important;
-			}
-
-			th:nth-child(2){
-				border-left: 1px solid #D9D9D9 !important;
-			}
-		}
-	}
-
-	tbody{
-		tr{
-			td{
-				font-family: 'Manrope';
-				border: 0;
-				padding: 15px;
-				font-style: normal;
-				font-weight: 500;
-				font-size: 17px;
-				line-height: 26px;
-
-				color: #494949;
-			}
-
-			td:first-child{
-				padding-left: 35px !important;
-			}
-
-			td:not(:first-child){
-				text-align: center;
-				width: 215px;
-				border-left: 1px solid #D9D9D9 !important;
-			}
-
-			td:nth-child(2){
-				border-left: 1px solid #D9D9D9 !important;
-			}
-		}
-	}
-}
 
 .btn-get-started{
 	background: $color-global-red-buttons;

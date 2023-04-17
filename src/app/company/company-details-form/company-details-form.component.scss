@@ -363,3 +363,18 @@ label{
 		max-height: 150px;
 	}
 }
+
+input,
+select{
+	// background: rgba(#e7e7e7, 1) !important;
+	// border: none;
+	border: 1px solid #AFBCC6 !important;
+	border-radius: 6px;
+	padding-left: 20px;
+	padding-top: 15px;
+	letter-spacing: 0px !important;
+}
+
+.form-check-input {
+	padding-bottom: 15px;
+}

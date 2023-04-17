@@ -28,6 +28,7 @@ export interface Job {
   bannerFile?: File;
   isInterviewRequired: boolean;
   interviewQuestions?: InterviewModel.InterviewQuestion[];
+  interviewTemplateId?: string;
   requirements?: string[];
   goodToHave?: string[];
   educationalBackground?: string[];
@@ -73,6 +74,7 @@ export interface JobInfo {
   rate?: string;
   salaryMinimum?: number;
   salaryMaximum?: number;
+  salaryCurrency?: string;
   contractStart?: DetailedDate;
   contractEnd?: DetailedDate;
 }
@@ -130,4 +132,24 @@ export interface JobApplicantDetails {
   interviewQuestions: any[],
   profileDocs: any[],
   answers: any[]
+}
+
+export interface CompanySubscriptions {
+  companyId: string;
+  createdAt: Date;
+  isPaid: boolean;
+  paymentDate: Date;
+  subscriptionId: number;
+  jobPost: number;
+  jobPostCount:number;
+  admin: number;
+  adminCount: number;
+  videoResponse: number;
+  videoResponseCount: number;
+  withCustomerCare: boolean;
+  price: number;
+  priceCurrency: string;
+  subscriptionName: string;
+  paymentOccurence: string;
+  endAt: Date;
 }

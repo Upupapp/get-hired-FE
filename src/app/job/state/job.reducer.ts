@@ -23,14 +23,16 @@ export interface JobState {
   category: Model.Options[];
   initialDetails: Model.InitialDetails;
   jobInfo: Model.JobInfo;
-  interview: InterviewModel.InterviewQuestion[],
+  interview: InterviewModel.InterviewQuestion[];
+  interviewTemplateId: string;
   job: Model.Job | null;
   jobLoading: boolean;
   applicants: Model.JobApplicants[],
   applicant: Model.JobApplicantDetails;
+  subs: Model.CompanySubscriptions
 }
 
-const initialState: JobState  = {
+const initialState: JobState = {
   selected: null,
   list: [],
   error: null,
@@ -46,14 +48,22 @@ const initialState: JobState  = {
   initialDetails: null,
   jobInfo: null,
   interview: [],
+  interviewTemplateId: null,
   job: null,
   jobLoading: false,
   applicants: [],
-  applicant: null
+  applicant: null,
+  subs: null
 }
 
 export const jobReducer = createReducer<JobState>(
   initialState,
+  on(JobActions.resetSuccessMsg, (state): JobState => {
+    return {
+      ...state,
+      succesMsg: null
+    };
+  }),
   on(JobActions.changeJobStatus, (state): JobState => {
     return {
       ...state,
@@ -66,7 +76,7 @@ export const jobReducer = createReducer<JobState>(
       ...state,
       selected: action.job,
       loading: false,
-      succesMsg: action.job.jobStatusId == 4 ? 'archived': 'expired'
+      succesMsg: action.job.jobStatusId == 4 ? 'archived' : 'expired'
     };
   }),
   on(JobActions.changeJobStatusFail, (state, action): JobState => {
@@ -75,6 +85,28 @@ export const jobReducer = createReducer<JobState>(
       loading: false,
       error: action.payload,
       succesMsg: null
+    };
+  }),
+  on(JobActions.getCompanySubscription, (state): JobState => {
+    return {
+      ...state,
+      loading: true,
+      error: null,
+      succesMsg: null
+    };
+  }),
+  on(JobActions.getCompanySubscriptionSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      subs: action.subscription
+    };
+  }),
+  on(JobActions.getCompanySubscriptionFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
     };
   }),
   on(JobActions.saveJob, (state): JobState => {
@@ -89,7 +121,7 @@ export const jobReducer = createReducer<JobState>(
       ...state,
       selected: action.job,
       loading: false,
-      succesMsg: action.job.jobStatusId == 1 ? 'asDraft': 'published'
+      succesMsg: action.job.jobStatusId == 1 ? 'asDraft' : 'published'
     };
   }),
   on(JobActions.saveJobFail, (state, action): JobState => {
@@ -100,12 +132,20 @@ export const jobReducer = createReducer<JobState>(
       succesMsg: null
     };
   }),
+  on(JobActions.resetSuccessMsg, (state): JobState => {
+    return {
+      ...state,
+      succesMsg: null,
+      error: null
+    };
+  }),
   on(JobActions.resetJobForm, (state): JobState => {
     return {
       ...state,
       initialDetails: null,
       jobInfo: null,
       interview: null,
+      interviewTemplateId: null,
       succesMsg: null,
       error: null
     };
@@ -131,7 +171,66 @@ export const jobReducer = createReducer<JobState>(
   on(JobActions.setInterview, (state, action): JobState => {
     return {
       ...state,
-      interview: action.interview
+      interview: action.interview,
+      interviewTemplateId: action.interviewTemplateId
+    };
+  }),
+  on(JobActions.deleteJobQuestion, (state): JobState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(JobActions.deleteJobQuestionSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      succesMsg: 'deleted',
+      selected: {
+        ...state.selected,
+        interviewQuestions: action.questions
+      },
+      interview: action.questions
+    };
+  }),
+  on(JobActions.deleteJobQuestionFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(JobActions.updateJobQuestion, (state): JobState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(JobActions.updateJobQuestionSuccess, (state, action): JobState => {
+    const mappedInterviews = state.selected.interviewQuestions.map(question => {
+      if (question.questionId == action.interviewQuestion.questionId) {
+        return action.interviewQuestion
+      }
+      return question;
+    });
+
+    return {
+      ...state,
+      loading: false,
+      selected: {
+        ...state.selected,
+        interviewQuestions: mappedInterviews
+      },
+      interview: mappedInterviews,
+      error: null,
+      succesMsg: 'updated'
+    };
+  }),
+  on(JobActions.updateJobQuestionFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
     };
   }),
   on(JobActions.getBasicJobList, (state): JobState => {
@@ -336,7 +435,7 @@ export const jobReducer = createReducer<JobState>(
       ...state,
       job: action.job,
       jobLoading: false,
-      succesMsg: action.job.jobStatusId == 4 ? 'archived': 'expired'
+      succesMsg: action.job.jobStatusId == 4 ? 'archived' : 'expired'
     };
   }),
   on(JobActions.getJobFail, (state, action): JobState => {

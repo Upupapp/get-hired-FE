@@ -1,0 +1,51 @@
+<div class="text-center p-3">
+  <h1 class="fs-3 mb-0">
+    Welcome to Get<span class="text-primary-red fw-bold">Hired</span>!
+  </h1>
+  <p class="text-center">
+    Setup your company now to start hiring with us.
+  </p>
+
+  <div class="alert alert-danger alert-dismissible fade show error-message"
+    [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
+    <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
+      (click)="onAlertClose()"></button>
+    <span [innerHtml]="error"></span>
+  </div>
+
+
+  <form [formGroup]="companyBasicForm" (ngSubmit)="onSubmit()">
+    <div class="title-container my-3">
+      <label>Company Name</label>
+      <div class="form-group">
+        <input type="text" class="form-control" formControlName="companyName"
+          placeholder="i.e. Google, Apple, Microsoft"
+          [class.is-invalid]="companyName_validators?.invalid && companyName_validators?.touched" />
+
+        <div class="mt-1 ms-4" *ngIf="
+      (companyName_validators?.invalid && companyName_validators?.touched) || companyName_validators?.dirty">
+          <small *ngIf="companyName_validators?.errors?.required" class="text-danger">Name is required</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="title-container mb-3">
+      <label>Company Email <div class="fst-italic fw-light">(Will be publicly viewed)</div></label>
+      <div class="form-group">
+        <input type="email" class="form-control" formControlName="companyEmail" placeholder="i.e. name@email.com"
+          [class.is-invalid]="companyEmail_validators?.invalid && companyEmail_validators?.touched">
+
+        <div class="mt-1 ms-4" *ngIf="
+      (companyEmail_validators?.invalid && companyEmail_validators?.touched) || companyEmail_validators?.dirty">
+          <small *ngIf="companyEmail_validators?.errors?.required" class="text-danger">Email is required</small>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary d-block w-100 float-end mt-4 mb-3" [disabled]="submitting || !companyBasicForm.valid">
+      Create Company
+      <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
+        *ngIf="submitting">
+    </button>
+  </form>
+</div>

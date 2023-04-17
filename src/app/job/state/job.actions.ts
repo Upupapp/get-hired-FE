@@ -6,6 +6,10 @@ import * as Model from '../job.model';
 import * as InterviewModel from '@main/interview/interview.model';
 
 enum AllFeatureActionTypes {
+  GetCompanySubscription = '[job] - Get Company Subscription',
+  GetCompanySubscriptionSuccess = '[job] - Get Company Subscription Success',
+  GetCompanySubscriptionFail = '[job] - Get Company Subscription Fail',
+
   GetIndustryList = '[job] - Get Industry List',
   GetIndustryListSuccess = '[job] - Get Industry List Success',
   GetIndustryListFail = '[job] - Get Industry List Fail',
@@ -65,9 +69,68 @@ enum AllFeatureActionTypes {
 
   GetJobApplicantDetails = '[job] - Get Job Applicant Details',
   GetJobApplicantDetailsSuccess = '[job] -Get Job Applicant Details Success',
-  GetJobApplicantDetailsFail = '[job] - Get Job Applicant Details Fail'
+  GetJobApplicantDetailsFail = '[job] - Get Job Applicant Details Fail',
+
+  UpdateJobQuestion = '[job] - Update Job Question',
+  UpdateJobQuestionSuccess = '[job] - Update Job Question Success',
+  UpdateJobQuestionFail = '[job] - Update Job Question Fail',
+
+  DeleteJobQuestion = '[job] - Delete Job Question',
+  DeleteJobQuestionSuccess = '[job] - Delete Job Question Success',
+  DeleteJobQuestionFail = '[job] - Delete Job Question Fail',
+
+  ResetSuccessMsg = '[job] - Reset Success Message',
 
 };
+
+export const resetSuccessMsg = createAction(
+  AllFeatureActionTypes.ResetSuccessMsg
+);
+
+export const getCompanySubscription = createAction(
+  AllFeatureActionTypes.GetCompanySubscription,
+  props<{ companyId: string }>()
+);
+
+export const getCompanySubscriptionSuccess = createAction(
+  AllFeatureActionTypes.GetCompanySubscriptionSuccess,
+  props<{ subscription: Model.CompanySubscriptions }>()
+);
+
+export const getCompanySubscriptionFail = createAction(
+  AllFeatureActionTypes.GetCompanySubscriptionFail,
+  props<{ payload: any }>()
+);
+
+export const updateJobQuestion = createAction(
+  AllFeatureActionTypes.UpdateJobQuestion,
+  props<{ interviewQuestion: InterviewModel.InterviewQuestion }>()
+);
+
+export const updateJobQuestionSuccess = createAction(
+  AllFeatureActionTypes.UpdateJobQuestionSuccess,
+  props<{ interviewQuestion: InterviewModel.InterviewQuestion }>()
+);
+
+export const updateJobQuestionFail = createAction(
+  AllFeatureActionTypes.UpdateJobQuestionFail,
+  props<{ payload: any }>()
+);
+
+export const deleteJobQuestion = createAction(
+  AllFeatureActionTypes.DeleteJobQuestion,
+  props<{ questionId: string, jobId: string }>()
+);
+
+export const deleteJobQuestionSuccess = createAction(
+  AllFeatureActionTypes.DeleteJobQuestionSuccess,
+  props<{ questions: InterviewModel.InterviewQuestion[] }>()
+);
+
+export const deleteJobQuestionFail = createAction(
+  AllFeatureActionTypes.DeleteJobQuestionFail,
+  props<{ payload: any }>()
+);
 
 export const resetJobForm = createAction(
   AllFeatureActionTypes.ResetJobForm
@@ -85,7 +148,7 @@ export const setJobInfo = createAction(
 
 export const setInterview = createAction(
   AllFeatureActionTypes.SetInterview,
-  props<{ interview: InterviewModel.InterviewQuestion[] }>()
+  props<{ interview: InterviewModel.InterviewQuestion[], interviewTemplateId: string }>()
 );
 
 export const saveJob = createAction(

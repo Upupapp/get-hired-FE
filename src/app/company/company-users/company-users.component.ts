@@ -8,6 +8,9 @@ import { TableHeader } from '@main/views/home/utils/job-list-model-interface';
 import { Subscription, Subject, takeUntil } from 'rxjs';
 import { CompanyFacade } from '@app-company/state/company.facade';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
+import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as Model from '../company.model';
 
 @Component({
   selector: 'app-company-users',
@@ -17,7 +20,7 @@ import { ImportAddUserComponent } from './dialogs/import-add-user.component/impo
 })
 export class CompanyUsersComponent implements OnInit {
   @Input() companyId: string;
-  private req: Subscription;
+  subscriptions$ = new Subscription();
   private unsubscribe$ = new Subject<void>();
 
   public profileDetailsForm!: FormGroup;
@@ -47,12 +50,16 @@ export class CompanyUsersComponent implements OnInit {
   };
 
   users$ = this.companyFacade.users$;
+  restrictions$ = this.companyFacade.subsRestrictions$
+    .pipe().subscribe(this.checkSubs.bind(this));
 
   public loading: boolean = true;
   constructor(
     private companyFacade: CompanyFacade,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router,
     private snackBar: MatSnackBar
   ) { }
 
@@ -78,7 +85,46 @@ export class CompanyUsersComponent implements OnInit {
 
   }
 
+  checkSubs(subs: Model.CompanySubscriptions) {
+    if (subs) {
+      if (subs.adminCount === subs.admin) {
+        this.restrictUserCreation();
+      } else {
+        this.addUserToCompany()
+      }
+    } else {
+      console.log('Haist')
+    }
+  }
+
   addAccess() {
+    this.companyFacade.getCompanySubscription(this.companyId);
+  }
+
+  restrictUserCreation() {
+    let openChecker = this.dialog.open(
+      SubscriptionAlertComponent,
+      {
+        width: '34vw',
+        data: {
+          isError: true
+        }
+      }
+    );
+
+    this.subscriptions$.add(
+      openChecker
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(result => {
+          if (result == 1) {
+            this.router.navigate(['../../subscription'], { relativeTo: this.route })
+          }
+        })
+    );
+  }
+
+  addUserToCompany() {
     let openDialog = this.dialog.open(
       ImportAddUserComponent,
       {
@@ -86,12 +132,11 @@ export class CompanyUsersComponent implements OnInit {
         data: event,
       }
     );
+  }
 
-    openDialog
-      .afterClosed()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(result => {
-
-      });
+  ngOnDestroy(): void {
+    if (this.subscriptions$) {
+      this.subscriptions$.unsubscribe();
+    }
   }
 }

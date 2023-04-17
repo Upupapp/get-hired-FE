@@ -9,6 +9,8 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 })
 export class EmployerSubscriptionComponent implements OnInit {
 
+  withActiveSubscription = localStorage.getItem('withActiveSubscription');
+
   constructor() { }
 
   ngOnInit(): void {

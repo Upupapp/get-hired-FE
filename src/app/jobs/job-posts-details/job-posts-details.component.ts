@@ -22,8 +22,8 @@ export class JobPostsDetailsComponent implements OnInit {
   details$ = this.jobFacade.getJobById$;
   link$: Subscription;
   jobId: string;
-  isLoggedIn: boolean = false;
   userRole: string;
+  currentUrl$: Subscription;
 
   public screenSize: number = 1600;
 
@@ -43,7 +43,7 @@ export class JobPostsDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
     this.coreService.getRole()
-      .then(role => this.userRole = role );
+      .then(role => this.userRole = role);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -55,15 +55,30 @@ export class JobPostsDetailsComponent implements OnInit {
     this.location.back();
   }
 
-  toApply(){
+  toApply() {
     this.apply.emit(true);
+  }
+
+  toLogin() {
+    this.currentUrl$ = this.route.url.subscribe(value => {
+      if (value.length > 0) {
+        let url = '';
+        value.forEach(path => {
+          url = url + '/' + path
+        });
+
+        localStorage.setItem('returnURL', url);
+        this.router.navigateByUrl('signin');
+      }
+    })
+
   }
 
   getShareableLink(jobId: string) {
     this.link$ = this.jobsService.getShareableLink(jobId)
       .pipe(
         tap(res => {
-          if(res.data) {
+          if (res.data) {
             console.log(res.data);
             this.clipboard.copy(res.data.shortLink)
             this.snackBar.open(`Link copied to your clipboard`, '', {
@@ -80,8 +95,12 @@ export class JobPostsDetailsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if(this.link$) {
+    if (this.link$) {
       this.link$.unsubscribe();
+    }
+
+    if (this.currentUrl$) {
+      this.currentUrl$.unsubscribe();
     }
 
   }

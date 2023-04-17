@@ -17,9 +17,17 @@ enum AllCompanyActionTypes {
   GetCompanyUsersSuccess = '[company] - Get Company Users Success',
   GetCompanyUsersFail = '[company] - Get Company Users Fail',
 
+  GetCompanySubscription = '[company] - Get Company Subscription',
+  GetCompanySubscriptionSuccess = '[company] - Get Company Subscription Success',
+  GetCompanySubscriptionFail = '[company] - Get Company Subscription Fail',
+
   CreateCompany = '[company] - Create Company',
   CreateCompanySuccess = '[company] - Create Company Success',
   CreateCompanyFail = '[company] - Create Company Fail',
+
+  CreateInitialCompany = '[company] - Create Initial Company',
+  CreateInitialCompanySuccess = '[company] - Create Initial Company Success',
+  CreateInitialCompanyFail = '[company] - Create Initial Company Fail',
 
   UpdateCompany = '[company] - Update Company',
   UpdateCompanySuccess = '[company] - Update Company Success',
@@ -74,6 +82,21 @@ export const getCompanyUsersFail = createAction(
   props<{ payload: any }>()
 );
 
+export const getCompanySubscription = createAction(
+  AllCompanyActionTypes.GetCompanySubscription,
+  props<{ companyId: string }>()
+);
+
+export const getCompanySubscriptionSuccess = createAction(
+  AllCompanyActionTypes.GetCompanySubscriptionSuccess,
+  props<{ subscription: Model.CompanySubscriptions }>()
+);
+
+export const getCompanySubscriptionFail = createAction(
+  AllCompanyActionTypes.GetCompanySubscriptionFail,
+  props<{ payload: any }>()
+);
+
 export const getCompany = createAction(
   AllCompanyActionTypes.GetCompany,
   props<{ companyId: string }>()
@@ -101,6 +124,21 @@ export const createCompanySuccess = createAction(
 
 export const createCompanyFail = createAction(
   AllCompanyActionTypes.CreateCompanyFail,
+  props<{ payload: any }>()
+);
+
+export const createInitialCompany = createAction(
+  AllCompanyActionTypes.CreateInitialCompany,
+  props<{ companyName: string, companyEmail: string }>()
+);
+
+export const createInitialCompanySuccess = createAction(
+  AllCompanyActionTypes.CreateInitialCompanySuccess,
+  props<{ company: Model.Company }>()
+);
+
+export const createInitialCompanyFail = createAction(
+  AllCompanyActionTypes.CreateInitialCompanyFail,
   props<{ payload: any }>()
 );
 

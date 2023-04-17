@@ -3,6 +3,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Router } from '@angular/router';
 import * as Model from '@main/applicant/applicant.model';
 import { month } from '@app-shared/mock.data';
+import { CoreService } from '@app-core/services/core.service';
 
 @Component({
   selector: 'app-applicant-details',
@@ -12,12 +13,19 @@ import { month } from '@app-shared/mock.data';
 })
 export class DetailsComponent implements OnInit {
   @Input() user: Model.Applicant;
+  @Input() isApplicantView: boolean;
 
   months = month;
+  userRole: string;
 
-  constructor(public router: Router) { }
+  constructor(
+    public router: Router,
+    private coreService: CoreService
+  ) { }
 
   ngOnInit(): void {
+    this.coreService.getRole()
+      .then(role => this.userRole = role);
   }
 
   navigateToEdit(){

@@ -42,7 +42,7 @@ export class CompanyEffects {
   //   );
   // });
 
-   createCompany$ = createEffect(() => {
+  createCompany$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(CompanyActions.createCompany),
       mergeMap((action) => this.companyService.createCompany(action.company)
@@ -54,6 +54,24 @@ export class CompanyEffects {
           catchError((err) => {
             const { error } = err.error;
             return of(CompanyActions.createCompanyFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  createInitialCompany$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.createInitialCompany),
+      mergeMap((action) => this.companyService.createInitialCompany(action.companyName, action.companyEmail)
+        .pipe(
+          map((res: any) => {
+            const company: Model.Company = res.data;
+            return CompanyActions.createInitialCompanySuccess({ company });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.createInitialCompanyFail({ payload: error }))
           })
         )
       )
@@ -108,6 +126,24 @@ export class CompanyEffects {
           catchError((err) => {
             const { error } = err.error;
             return of(CompanyActions.getCompanyUsersFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  getCompanySubscription$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getCompanySubscription),
+      mergeMap((action) => this.companyService.checkCompanySubscription(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const subscription: Model.CompanySubscriptions = res.data;
+            return CompanyActions.getCompanySubscriptionSuccess({ subscription });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(CompanyActions.getCompanySubscriptionFail({ payload: error }))
           })
         )
       )

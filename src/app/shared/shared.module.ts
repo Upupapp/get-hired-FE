@@ -30,6 +30,10 @@ import { FileViewerComponent } from './components/file-viewer/file-viewer.compon
 import { VideoPreviewComponent } from './components/video-preview/video-preview.component';
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
 import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
+import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
+import { CountdownTimerComponent } from './components/countdown-timer/countdown-timer.component';
+import { SubscriptionAlertComponent } from './components/subscription-alert/subscription-alert.component';
+import { InlineLoadingComponent } from './components/inline-loading/inline-loading.component';
 
 
 const classesToInclude: any[] = [
@@ -53,7 +57,11 @@ const classesToInclude: any[] = [
   VideoPreviewComponent,
   RecordLoadingComponent,
   EmptySectionComponent,
-  DropdownSearchComponent
+  DropdownSearchComponent,
+  GoogleAddressSearchComponent,
+  CountdownTimerComponent,
+  SubscriptionAlertComponent,
+  InlineLoadingComponent
 ];
 
 @NgModule({

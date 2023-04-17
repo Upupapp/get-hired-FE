@@ -98,6 +98,24 @@ export class JobEffects {
     );
   });
 
+  getCompanySubscription$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.getCompanySubscription),
+      mergeMap((action) => this.jobService.checkCompanySubscription(action.companyId)
+        .pipe(
+          map((res: any) => {
+            const subscription: Model.CompanySubscriptions = res.data;
+            return JobActions.getCompanySubscriptionSuccess({ subscription });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.getCompanySubscriptionFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   basicList$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.getBasicJobList),
@@ -291,7 +309,7 @@ export class JobEffects {
                 initialDetails: this.getInitialDetailsOfJob(job)
               }),
               JobActions.setJobInfo({ jobInfo: this.getJobInfo(job) }),
-              JobActions.setInterview({ interview: job.interviewQuestions })
+              JobActions.setInterview({ interview: job.interviewQuestions, interviewTemplateId: job.interviewTemplateId })
             ];
           }),
           catchError((err) => {
@@ -339,6 +357,42 @@ export class JobEffects {
     );
   });
 
+  updateJobInterviewQuestions$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.updateJobQuestion),
+      mergeMap((action) => this.jobService.updateJobInterviewQuestions(action.interviewQuestion)
+        .pipe(
+          map((res: any) => {
+            const interviewQuestion: InterviewModel.InterviewQuestion = res.data;
+            return JobActions.updateJobQuestionSuccess({ interviewQuestion });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.updateJobQuestionFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+  deleteJobInterviewQuestions$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.deleteJobQuestion),
+      mergeMap((action) => this.jobService.deleteJobInterviewQuestions(action.questionId, action.jobId)
+        .pipe(
+          map((res: any) => {
+            const questions: InterviewModel.InterviewQuestion[] = res.data;
+            return JobActions.deleteJobQuestionSuccess({ questions });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(JobActions.deleteJobQuestionFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
   getInitialDetailsOfJob(job: Model.Job): Model.InitialDetails {
     return {
       jobTitle: job.jobTitle,
@@ -369,8 +423,7 @@ export class JobEffects {
       rate: job.rate,
       salaryMinimum: job.salaryMinimum,
       salaryMaximum: job.salaryMaximum,
-      // contractStart
-      // contractEnd: DetailedDate;
+      salaryCurrency: job.salaryCurrency
     }
   }
 }

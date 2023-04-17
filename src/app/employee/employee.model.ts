@@ -31,4 +31,10 @@ export interface EmployeeCompany {
   createdAt: Date
   createdBy: string;
   updatedAt: Date;
+  companyState: string;
+  companyTown: string;
+  companyZip: string;
+  companyMapUrl: string;
+  companyAddressOne: string;
+  shownPublicly: boolean;
 }

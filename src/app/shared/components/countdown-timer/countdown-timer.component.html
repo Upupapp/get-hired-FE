@@ -1,0 +1,10 @@
+<div class="timer" *ngIf="(timeLeft$ | async) as t; else sorry" [ngClass]="textColorClass">
+  <span id="days" class="fs-5"> {{t.daysToDday}} </span>Day(s)
+  <span id="hours" class="fs-5"> {{t.hoursToDday}} </span>Hrs
+  <span id="minutes" class="fs-5"> {{t.minutesToDday}} </span>Min
+  <span id="seconds" class="fs-5"> {{t.secondsToDday}} </span>S
+</div>
+
+<ng-template #sorry>
+	Sorry, something went wrong...
+</ng-template>

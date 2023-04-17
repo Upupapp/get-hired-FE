@@ -20,6 +20,7 @@ import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/up
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
+  subscriptions$ = new Subscription();
   @Output() updateCompany: EventEmitter<any> = new EventEmitter();
 
   asyncLocalStorage = {
@@ -33,16 +34,20 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     },
   };
 
-  workSetup$ = this.companyFacade.setup$;
-  industry$ = this.companyFacade.industry$;
 
-  public companyDetailsForm!: FormGroup;
 
+  companyDetailsForm!: FormGroup;
   company: Model.Company;
   companyId: string;
   profileImage: any;
   canView: boolean;
   updateSuccess: boolean = false;
+  rawAddress: any;
+  loading: boolean = true;
+  addressFormValid: boolean = false;
+
+  workSetup$ = this.companyFacade.setup$;
+  industry$ = this.companyFacade.industry$;
 
   success$ = this.companyFacade.success$
     .pipe()
@@ -74,20 +79,29 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
     this.companyDetailsForm = this.formBuilder.group({
       companyEmail: ['', [Validators.required, Validators.email]],
-      companyContactNumber: ['', Validators.required],
-      companyAddress: [''],
-      companyCity: ['', [Validators.required]],
-      companyCountry: ['', [Validators.required]],
+      companyContactNumber: [''],
+      companyAddress: [null],
+      companyCity: [''],
+      companyCountry: [''],
       companyLogoUrl: [''],
       companyName: ['', [Validators.required]],
       companyDetails: [''],
       industryId: [null],
-      workSetupId: [null, [Validators.required]],
+      workSetupId: [null],
       numberOfEmployee: [0],
       companyLogoFile: [],
+      companyState: [],
+      companyAddressOne: [],
+      companyTown: [],
+      companyZip: [],
+      companyMapUrl: [],
+      shownPublicly: []
     });
 
     //this.showSuccessDialog()
+
+    console.log(!this.companyDetailsForm.valid && !this.addressFormValid);
+
   }
 
   setCompany(company: EmployeeCompany) {
@@ -101,11 +115,17 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         companyAddress,
         companyCity,
         companyCountry,
+        companyState,
+        companyTown,
+        companyZip,
+        companyMapUrl,
+        companyAddressOne,
         companyLogoUrl,
         companyDetails,
         industryId,
         workSetupId,
         numberOfEmployee,
+        shownPublicly
       } = company;
 
       this.companyDetailsForm.get('companyName')?.setValue(companyName);
@@ -123,12 +143,38 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         .get('numberOfEmployee')
         ?.setValue(numberOfEmployee);
       this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
+      this.companyDetailsForm.get('shownPublicly').setValue(shownPublicly);
 
       this.profileImage = companyLogoUrl;
       this.canView = true;
-
+      this.rawAddress = {
+        address: companyAddress,
+        state: companyState,
+        country: companyCountry,
+        addressOne: companyAddressOne,
+        town: companyTown,
+        city: companyCity,
+        zipcode: companyZip,
+        mapUrl: companyMapUrl
+      }
       this.updateLocalStorage();
+
     }
+  }
+
+  addressChange(event) {
+    this.companyDetailsForm.get('companyAddress')?.setValue(event.address);
+    this.companyDetailsForm.get('companyCity')?.setValue(event.city);
+    this.companyDetailsForm.get('companyCountry')?.setValue(event.country);
+    this.companyDetailsForm.get('companyState').setValue(event.state);
+    this.companyDetailsForm.get('companyAddressOne').setValue(event.addressOne);
+    this.companyDetailsForm.get('companyTown').setValue(event.town);
+    this.companyDetailsForm.get('companyZip').setValue(event.zipcode);
+    this.companyDetailsForm.get('companyMapUrl').setValue(event.mapUrl);
+  }
+
+  isAddressFormValid(status: boolean) {
+    this.addressFormValid = status;
   }
 
   redirectToPreview() {
@@ -174,16 +220,18 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   afterSubmit(event) {
     console.log(event);
+    console.log('dito lang')
+
     if (event == 'created') {
       const create = this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
         data: 'Company successfully setup. You can now access other features',
       });
 
-      create
-      .afterClosed()
-      .pipe()
-      .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route }));
+      this.subscriptions$.add(create
+        .afterClosed()
+        .pipe()
+        .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route })));
     } else if (event == 'updated') {
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
@@ -195,6 +243,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   updateLocalStorage() {
+    console.log('Update LocalStorage')
     const user = localStorage.getItem('user');
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify({
@@ -210,17 +259,19 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   formLoading(loading: boolean) {
+    this.loading = loading;
     if (loading) {
       const ref = this.loadingDialog.open(LoadingComponent, {
         disableClose: true,
         data: {
-          selfClose: false,
+          selfClose: true
         },
       });
     } else {
+      console.log('loading in company user form');
       // dont close automatically all modal
       // if (!this.updateSuccess) {
-        setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      // setTimeout(() => this.loadingDialog.closeAll(), 3000);
       // }
     }
   }
@@ -237,15 +288,22 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       }
     );
 
-    openDialog
+    this.subscriptions$.add(openDialog
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
         this.updateSuccess = false
-      });
+      }));
   }
 
   ngOnDestroy(): void {
     this.companyFacade.resetStateNotif();
+    if(this.success$) {
+      this.success$.unsubscribe();
+    }
+
+    if(this.loading$) {
+      this.loading$.unsubscribe();
+    }
   }
 }
