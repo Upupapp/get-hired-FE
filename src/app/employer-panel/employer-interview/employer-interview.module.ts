@@ -4,13 +4,33 @@ import { EmployerInterviewComponent } from './employer-interview.component';
 import { SharedModule } from '@app-shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 
+//import { InviteApplicantModalComponent } from './pages/applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
+import { AddInterviewTemplatesComponent } from './pages/add-interview-templates/add-interview-templates.component';
+import { InterviewTemplateStepComponent } from './pages/add-interview-templates/components/interview-template-step/interview-template-step.component';
+import { CreateNewTemplateDialogComponent } from './pages/add-interview-templates/components/create-new-template-dialog/create-new-template-dialog.component';
+
 const routes: Routes = [
-  { path: '', component: EmployerInterviewComponent }
+  {
+    path: '',  
+    children: [
+     {
+       path: '',
+       component: EmployerInterviewComponent
+     },
+     {
+       path: 'create',  
+       component: AddInterviewTemplatesComponent,
+     }
+    ]
+  },
 ]
 
 @NgModule({
   declarations: [
-    EmployerInterviewComponent
+    EmployerInterviewComponent,
+    AddInterviewTemplatesComponent,
+    InterviewTemplateStepComponent,
+    CreateNewTemplateDialogComponent
   ],
   imports: [
     CommonModule,
