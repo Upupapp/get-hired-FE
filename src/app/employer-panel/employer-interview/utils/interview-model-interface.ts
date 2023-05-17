@@ -23,7 +23,7 @@ export interface TableHeader {
 const displayedColumns: TableHeader[] = [
   { col_name: 'id', title: 'ID'  },
   { col_name: 'created_by', title: 'Created By',  },
-  { col_name: 'template_title', title: 'Title'  },
+  { col_name: 'template_title', title: 'Invite List Name'  },
   { col_name: 'date_created', title: 'Date Created', type: 'date'  },
   { col_name: 'status', title: 'Status'  },
   { col_name: 'action', title: 'Action' , type: 'menu' },
@@ -42,7 +42,7 @@ const interviewLists: Interview[] = [
   {
     id: 1001,  
     created_by: "James Marcii",  
-    template_title: "Web Development Interview Questions",
+    template_title: "Web Development Interview",
     date_created: new Date("July 1, 2022"),  
     interview_questions: [
       {
@@ -68,7 +68,7 @@ const interviewLists: Interview[] = [
   {
     id: 1002,  
     created_by: "James Marcii",  
-    template_title: "Business Interview Questions",
+    template_title: "Business Interview",
     date_created: new Date("August 1, 2022"),  
     interview_questions: [
       {
@@ -94,7 +94,7 @@ const interviewLists: Interview[] = [
   {
     id: 1002,  
     created_by: "Julius Caesar",  
-    template_title: "Backend Developer Interview Questions",
+    template_title: "Backend Developer Interview",
     date_created: new Date("August 1, 2022"),   
     interview_questions: [
       {

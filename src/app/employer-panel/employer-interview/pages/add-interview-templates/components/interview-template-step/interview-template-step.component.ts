@@ -8,7 +8,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntil } from 'rxjs/operators';
 import { Job, jobLists } from '@main/views/company-panel/pages/jobs/utils/jobs-model-interface';
-//import { InviteApplicantModalComponent } from '@main/views/company-panel/pages/applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
+import { InviteContactComponent } from '../invite-contact/invite-contact.component';
 import { CreateNewTemplateDialogComponent } from '../create-new-template-dialog/create-new-template-dialog.component';
 import { Subject } from 'rxjs';
 import { Location } from '@angular/common';
@@ -151,8 +151,8 @@ export class InterviewTemplateStepComponent implements OnInit {
   }
 
   inviteInterview(event?: any){
-    /*let openDialog = this.dialog.open(
-      InviteApplicantModalComponent,
+    let openDialog = this.dialog.open(
+      InviteContactComponent,
       { 
         width: '34vw',
         data: {
@@ -168,7 +168,7 @@ export class InterviewTemplateStepComponent implements OnInit {
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
 
-    });*/
+    });
   }
 
   createNewTemplateInterview(){

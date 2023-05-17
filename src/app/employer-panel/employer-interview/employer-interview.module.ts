@@ -4,10 +4,10 @@ import { EmployerInterviewComponent } from './employer-interview.component';
 import { SharedModule } from '@app-shared/shared.module';
 import { RouterModule, Routes } from '@angular/router';
 
-//import { InviteApplicantModalComponent } from './pages/applicants/dialogs/invite-applicant-modal/invite-applicant-modal.component';
 import { AddInterviewTemplatesComponent } from './pages/add-interview-templates/add-interview-templates.component';
 import { InterviewTemplateStepComponent } from './pages/add-interview-templates/components/interview-template-step/interview-template-step.component';
 import { CreateNewTemplateDialogComponent } from './pages/add-interview-templates/components/create-new-template-dialog/create-new-template-dialog.component';
+import { InviteContactComponent } from './pages/add-interview-templates/components/invite-contact/invite-contact.component';
 
 const routes: Routes = [
   {
@@ -30,7 +30,8 @@ const routes: Routes = [
     EmployerInterviewComponent,
     AddInterviewTemplatesComponent,
     InterviewTemplateStepComponent,
-    CreateNewTemplateDialogComponent
+    CreateNewTemplateDialogComponent,
+    InviteContactComponent
   ],
   imports: [
     CommonModule,
