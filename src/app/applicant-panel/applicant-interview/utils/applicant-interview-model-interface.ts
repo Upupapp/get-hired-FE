@@ -4,8 +4,8 @@ export interface Question {
 
 export interface Interview {
   id: any;
-  created_by: string;  
-  date_created: any;  
+  company: string;  
+  date_invited: any;  
   template_title: string;
   interview_questions: Question[];
   status: string;
@@ -22,17 +22,17 @@ export interface TableHeader {
 
 const displayedColumns: TableHeader[] = [
   { col_name: 'id', title: 'ID'  },
-  { col_name: 'created_by', title: 'Created By',  },
-  { col_name: 'template_title', title: 'Invite List Name'  },
-  { col_name: 'date_created', title: 'Date Created', type: 'date'  },
+  { col_name: 'company', title: 'Company',  },
+  { col_name: 'template_title', title: 'Interview Name'  },
+  { col_name: 'date_invited', title: 'Date Invited', type: 'date'  },
   { col_name: 'status', title: 'Status'  },
   { col_name: 'action', title: 'Action' , type: 'menu' },
 ];
 
 const selectedColumns: string[] =  [
   'id',
-  'created_by',
-  'date_created',
+  'company',
+  'date_invited',
   'template_title',
   'status',
   'action'
@@ -41,80 +41,89 @@ const selectedColumns: string[] =  [
 const interviewLists: Interview[] = [
   {
     id: 1001,  
-    created_by: "James Marcii",  
+    company: "Summer Web Tech",  
     template_title: "Web Development Interview",
-    date_created: new Date("July 1, 2022"),  
+    date_invited: new Date("July 1, 2022"),  
     interview_questions: [
       {
+        id: 1,
         question: "How long have you been using Angular 2/4+?", 
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       {
+        id: 2,
         question:  "What is JavaScript and ES6",
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       {
+        id: 3,
         question:"Are you available for full-time or part-time?",  
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       
     ],
-    status: "Active"
+    status: "Pending"
   },
 
   {
     id: 1002,  
-    created_by: "James Marcii",  
+    company: "Shell IT/Dept",  
     template_title: "Business Interview",
-    date_created: new Date("August 1, 2022"),  
+    date_invited: new Date("August 1, 2022"),  
     interview_questions: [
       {
+        id: 1,
         question: "Does your business give back to your community??", 
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
 
       {
+        id: 2,
         question: "What kind of corporation is your business?",
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       {
+        id: 3,
         question:"Which qualities do you look for in new employees?", 
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
     ],
-    status: "Active"
+    status: "Pending"
   },
 
   {
     id: 1003,  
-    created_by: "Julius Caesar",  
+    company: "119 Tech Provider",  
     template_title: "Backend Developer Interview",
-    date_created: new Date("August 1, 2022"),   
+    date_invited: new Date("August 1, 2022"),   
     interview_questions: [
       {
+        id: 1,
         question: "Which technical skills do backend developers need to have?", 
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       {
+        id: 2,
         question: "Which soft skills do backend developers need to be successful?",
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       {
+        id: 3,
         question:"Name the main backend development responsibilities you had in your previous role.",
         number_of_retakes: 5,  
-        duration: 3, 
+        answerDuration: 3, 
       },
       
     ],
-    status: "Active"
+    status: "Answered"
   },
 ];
 

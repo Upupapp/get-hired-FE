@@ -1,0 +1,70 @@
+<div class="p-4">
+	<div>
+		<h5>{{interviewDetails?.company}} </h5>
+		<p>{{interviewDetails?.template_title}} 
+		<span class="mx-3">|</span>
+		{{interviewDetails?.date_invited | date: 'EEE, MMM dd, yyyy'}}</p>
+	</div>
+
+	<!-- RECORD INTERVIEW -->
+	<ng-container *ngIf="interviewDetails?.status != 'Answered'">
+		<app-record-interview [interviews]="interviewDetails?.interview_questions" 
+		[index]="selectedIndex" (next)="changeQuestion($event)"
+		(submitRecord)="submitAnswer($event)"></app-record-interview>
+	</ng-container>
+
+	<!-- INTERVIEW QUESTIONS -->
+	<section class="card card-body my-3">
+	  <div class="p-4">
+	    <div class="d-flex">
+	      <label class="title-job-interview text-capitalize me-3" 
+	      *ngIf="interviewDetails?.status != 'Answered'"
+	      [ngClass]="interviewTab === 'questions' ? 'active' : ''"
+	      (click)="interviewTab = 'questions'">Interview Questions</label>
+
+	      <label class="title-job-answer text-capitalize" 
+	      [ngClass]="interviewTab === 'answers' ? 'active' : ''"
+	      (click)="interviewTab = 'answers'">Interview Answers</label>
+	    </div>
+
+	    <hr style="color: #6e6e6e">
+
+	    <ng-container *ngIf="interviewTab === 'questions'">
+	      <section class="interview-card card-body p-2 px-1 mb-1">
+	        <!-- INTERVIEWS -->
+	        <div *ngFor="let item of interviewDetails?.interview_questions; let i = index">
+	          	<app-view-interview-question [index]="i" [item]="item" *ngIf="i != selectedIndex">
+	         	</app-view-interview-question>
+	        </div> 
+	      </section>
+	    </ng-container>
+
+	    <!--  && interviewAnswers.controls.length > 0 -->
+	    <ng-container *ngIf="interviewTab === 'answers'">
+	      <section class="interview-card card-body p-2 px-1 mb-1" id="interview-list2"
+	        *ngFor="let item of interviewAnswers.controls; let i = index">
+	        <div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}"
+	          (click)="previewVideo(interviews[item.value.index].question, item.value.answerBlob)">
+	          <div class="col-12">
+	            <div class="d-flex">
+	              <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+	                <img src="/assets/images/check-icon.png">
+	              </div>
+
+	              <div class="mt-2">
+	                <p class="title-label-sub">
+	                  <img src="/assets/images/placeholder/icons/interview-logo-3.png" 
+	                  class="me-2" style="height: 20px;">
+	                  Answer<!--  {{item.value.index + 1}} -->
+	                </p>
+	                <h5 class="title-label"><!-- {{interviews[item?.value?.index]?.question}} --></h5>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	      </section>
+	    </ng-container>
+	  </div>
+	</section>
+
+</div>

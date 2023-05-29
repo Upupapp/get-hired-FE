@@ -52,6 +52,10 @@ export class ApplicantSidebarComponent implements OnInit {
     },
 
     {
+      title: 'Interviews', icon: 'create-interview.png', class: 'jobs', route: 'interview'
+    },
+
+    {
       title: 'Settings', icon: 'expired-jobs.png', class: 'expired', route: 'settings'
     },
   ]

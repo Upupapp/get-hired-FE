@@ -18,6 +18,7 @@ import { ApplicantModule } from '@main/applicant/applicant.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApplicationModule } from '@main/application/application.module';
 import { ApplicantJobsComponent } from './applicant-jobs/applicant-jobs.component';
+import { ApplicantInterviewComponent } from './applicant-interview/applicant-interview.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,23 @@ const routes: Routes = [
             (m) => m.ApplicantProfileModule
           ),
       },
+
+      {
+        path: 'profile',
+        loadChildren: () =>
+          import('./applicant-profile/applicant-profile.module').then(
+            (m) => m.ApplicantProfileModule
+          ),
+      },
+
+      {
+        path: 'interview',
+        loadChildren: () =>
+          import('./applicant-interview/applicant-interview.module').then(
+            (m) => m.ApplicantInterviewModule
+          ),
+      },
+
       {
         path: 'settings',
         component: ApplicantSettingsComponent,
@@ -56,6 +74,7 @@ const routes: Routes = [
     ApplicantSidebarComponent,
     ApplicantSettingsComponent,
     ApplicantJobsComponent,
+    ApplicantInterviewComponent,
   ],
   imports: [
     CommonModule,
