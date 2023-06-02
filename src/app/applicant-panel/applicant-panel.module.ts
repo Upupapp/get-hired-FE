@@ -43,6 +43,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'applicant-jobs',
+        loadChildren: () =>
+          import('./applicant-jobs/applicant-jobs.module').then(
+            (m) => m.ApplicantJobsModule
+          ),
+      },
+      {
         path: 'settings',
         component: ApplicantSettingsComponent,
       },

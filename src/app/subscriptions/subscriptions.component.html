@@ -1,22 +1,38 @@
 <app-loading *ngIf="(loading$ | async) && !(details$ | async)"></app-loading>
 
-<div *ngIf="details$ | async as companySubs; else noSubs">
-  <ng-container *ngIf="companySubs.length != 0">
+<div *ngIf="!(loading$ | async) && details$ | async as companySubs">
+  <div class="bg-pink">
+    <div [@animate]="{value:'*', params:{ y:'-10px', delay: (50) + 'ms' }}">
+      <h5 class="text-center title-main">
+        {{ pageTitle }}
+      </h5>
+    </div>
+  </div>
+  <ng-container *ngIf="companySubs && companySubs.length != 0; else subList">
+    <div class="py-4 px-5" style="margin-top: -140px"
+      [@animate]="{value:'*', params:{ x:'-40px', delay: (50) + 'ms' }}">
+      <ng-container *ngIf="companySubs[0].subscriptionId != 1; else subList">
+        <div class="d-flex w-100">
+          <div class="col-12 col-md-7 p-2">
+            <div class="card card-body px-4 py-3">
+              <div class="d-flex w-100">
+                <div class="col-12 col-md-7 p-2">
+                  <div class="fs-5">
+                    <span class="bg-primary-red text-white text-center px-1 py-2 me-1 rounded">
+                      {{ companySubs[0].subscriptionName }}
+                    </span> Plan
+                  </div>
+                  <div class="mt-4 px-4">
+                    <ng-container *ngIf="companySubs[0].jobPost >= 0" [ngTemplateOutlet]="bar"
+                      [ngTemplateOutletContext]="{max: companySubs[0].jobPost , value: companySubs[0].jobPostCount, label: 'Job Post'}"></ng-container>
 
-    <ng-container *ngIf="companySubs[0].subscriptionId == 1; else showSubs">
-      <app-subscriptions-list [endDate]="companySubs[0].endAt"></app-subscriptions-list>
-    </ng-container>
+                    <ng-container *ngIf="companySubs[0].videoResponse >= 0" [ngTemplateOutlet]="bar"
+                      [ngTemplateOutletContext]="{max: companySubs[0].videoResponse , value: companySubs[0].videoResponseCount, label: 'Video Responses'}"></ng-container>
 
-    <ng-template #showSubs>
-      <div class="d-flex w-100">
-        <div class="col-12 col-md-7 p-2">
-          <div class="card card-body px-4 py-3">
-            <div class="d-flex w-100">
-              <div class="col-12 col-md-7 p-2">
-                <div class="fs-5">
-                  <span class="bg-primary-red text-white text-center px-1 py-2 me-1 rounded">
-                    {{ companySubs[0].subscriptionName }}
-                  </span> Plan
+                    <ng-container *ngIf="companySubs[0].admin >= 0" [ngTemplateOutlet]="bar"
+                      [ngTemplateOutletContext]="{max: companySubs[0].admin , value: companySubs[0].adminCount, label: 'Admin Users'}"></ng-container>
+
+                  </div>
                 </div>
                 <div class="mt-4 px-4">
                   <ng-container *ngIf="companySubs[0].jobPost >= 0" [ngTemplateOutlet]="bar"
@@ -62,70 +78,71 @@
             </button>
           </div>
         </div>
-      </div>
+      </ng-container>
+    </div>
 
-      <ng-container *ngIf="companySubs.length > 1">
-        <div class="mt-4">
+    <ng-container *ngIf="companySubs.length > 1">
+      <div class="mt-4">
 
-          <h5 class="fs-4">History</h5>
-          <div class="card card-body px-4 py-3">
-            <div class="d-flex w-100 py-2 text-center bg-primary-light">
-              <div class="col-12 col-md-2">
-                <span class="fs-6 fw-bold">
-                  Invoice Date
-                </span>
-              </div>
-              <div class="col-12 col-md-6">
-                <span class="fs-6 fw-bold">
-                  Details
-                </span>
-              </div>
-              <div class="col-12 col-md-2">
-                <span class="fs-6 fw-bold">
-                  Paid Amount
-                </span>
-              </div>
-              <div class="col-12 col-md-2">
-                <span class="fs-6 fw-bold">
-                  Download
-                </span>
-              </div>
+        <h5 class="fs-4">History</h5>
+        <div class="card card-body px-4 py-3">
+          <div class="d-flex w-100 py-2 text-center bg-primary-light">
+            <div class="col-12 col-md-2">
+              <span class="fs-6 fw-bold">
+                Invoice Date
+              </span>
             </div>
-            <div class="d-flex w-100 mt-1 py-2 text-center" *ngFor="let sub of companySubs | slice: 1">
-              <div class="col-12 col-md-2">
-                <span class="fs-6">
-                  {{ sub.paymentDate | date: 'mediumDate' }}
-                </span>
-              </div>
-              <div class="col-12 col-md-6">
-                <p class="fs-6">
-                  {{ sub.subscriptionName }} Plan for {{ sub.createdAt | date: 'mediumDate' }} up to {{ sub.endAt |
-                  date:
-                  'mediumDate' }}
-                </p>
-              </div>
-              <div class="col-12 col-md-2">
-                <span class="fs-6">
-                  {{ sub.price | currency: sub.priceCurrency: 'symbol': '1.2-2'}}
-                </span>
-              </div>
-              <div class="col-12 col-md-2">
-                <span class="fs-6 cursor-pointer">
-                  <a>
-                    Invoice {{ sub.paymentDate | date: 'MM-y' }}
-                  </a>
-                </span>
-              </div>
+            <div class="col-12 col-md-6">
+              <span class="fs-6 fw-bold">
+                Details
+              </span>
+            </div>
+            <div class="col-12 col-md-2">
+              <span class="fs-6 fw-bold">
+                Paid Amount
+              </span>
+            </div>
+            <div class="col-12 col-md-2">
+              <span class="fs-6 fw-bold">
+                Download
+              </span>
+            </div>
+          </div>
+          <div class="d-flex w-100 mt-1 py-2 text-center" *ngFor="let sub of companySubs | slice: 1">
+            <div class="col-12 col-md-2">
+              <span class="fs-6">
+                {{ sub.paymentDate | date: 'mediumDate' }}
+              </span>
+            </div>
+            <div class="col-12 col-md-6">
+              <p class="fs-6">
+                {{ sub.subscriptionName }} Plan for {{ sub.createdAt | date: 'mediumDate' }} up to {{ sub.endAt |
+                date:
+                'mediumDate' }}
+              </p>
+            </div>
+            <div class="col-12 col-md-2">
+              <span class="fs-6">
+                {{ sub.price | currency: sub.priceCurrency: 'symbol': '1.2-2'}}
+              </span>
+            </div>
+            <div class="col-12 col-md-2">
+              <span class="fs-6 cursor-pointer">
+                <a>
+                  Invoice {{ sub.paymentDate | date: 'MM-y' }}
+                </a>
+              </span>
             </div>
           </div>
         </div>
-      </ng-container>
-    </ng-template>
+      </div>
+    </ng-container>
   </ng-container>
-</div>
 
-<ng-template #noSubs>
-  <app-subscriptions-list></app-subscriptions-list>
+
+
+<ng-template #subList>
+  <app-subscriptions-list [endDate]="companySubsEndDate"></app-subscriptions-list>
 </ng-template>
 
 <ng-template #bar let-max="max" let-value="value" let-label="label">

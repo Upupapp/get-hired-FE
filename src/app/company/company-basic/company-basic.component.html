@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <button type="submit" class="btn btn-primary d-block w-100 float-end mt-4 mb-3" [disabled]="submitting">
+    <button type="submit" class="btn btn-primary d-block w-100 float-end mt-4 mb-3" [disabled]="submitting || !companyBasicForm.valid">
       Create Company
       <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
         *ngIf="submitting">

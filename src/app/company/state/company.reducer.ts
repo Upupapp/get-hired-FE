@@ -99,7 +99,7 @@ export const companyReducer = createReducer<CompanyState>(
     return {
       ...state,
       loading: false,
-      succesMsg: 'created',
+      succesMsg: action.company.companyId,
       selected: action.company
     };
   }),
