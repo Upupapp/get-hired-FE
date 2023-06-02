@@ -3,7 +3,7 @@
     [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
     <!-- EMPLOYMENT DETAILS -->
     <div class="col-12">
-      <h5 class="title-label">Profile Details</h5>
+      <h5 class="title-label">{{'PROFILE_DETAILS.PROFILE_DETAILS_TITLE' | translate}}</h5>
       <hr style="border: dashed 1px #868686">
     </div>
 
@@ -25,14 +25,14 @@
 
     <div class="col-12 col-lg-6" [ngClass]="(profileImage || photo) ? 'mt-3' :''">
       <div class="title-container mb-3">
-        <label>Profile Photo</label>
+        <label>{{'PROFILE_DETAILS.PHOTO_TEXT' | translate}}</label>
 
-        <app-file-upload (upload)="onUpload($event)" label="Select Profile Photo" [labelTop]="false"
+        <app-file-upload (upload)="onUpload($event)" label="{{'PROFILE_DETAILS.UPLOAD_PHOTO_BUTTON' | translate}}" [labelTop]="false"
           [initialVal]="photo"></app-file-upload>
       </div>
 
       <div class="title-container mb-3" *ngIf="profileImage || photo">
-        <label>Current Job title</label>
+        <label>{{'PROFILE_DETAILS.CURRENT_JOB_TITLE_TEXT' | translate}}</label>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle"
             [class.is-invalid]="jobTitle_validators?.invalid && jobTitle_validators?.touched">
@@ -45,7 +45,7 @@
 
     <div class="col-12 col-lg-6">
       <div class="title-container mb-3" *ngIf="!profileImage && !photo">
-        <label>Current Job title</label>
+        <label>{{'PROFILE_DETAILS.CURRENT_JOB_TITLE_TEXT' | translate}}</label>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle"
             [class.is-invalid]="jobTitle_validators?.invalid && jobTitle_validators?.touched">
@@ -90,7 +90,7 @@
 
     <div class="col-12 col-lg-6 mb-3" *ngIf="typeList$ | async as jobType">
       <div class="title-container mb-3">
-        <label>Job Type</label>
+        <label>{{'PROFILE_DETAILS.JOB_TYPE' | translate}}</label>
         <select class="form-select" formControlName="jobTypeId"
           [class.is-invalid]="jobTypeId_validators?.invalid && jobTypeId_validators?.touched">
           <option selected disabled [ngValue]="null">Select Job Type</option>
@@ -104,7 +104,7 @@
       </div>
 
       <div class="title-container mb-3" *ngIf="workSetup$ | async as workSetup">
-        <label>Preffered Work Setup</label>
+        <label>{{'PROFILE_DETAILS.WORK_SETUP' | translate}}</label>
         <select class="form-select" formControlName="workSetupId"
         [class.is-invalid]="workSetupId_validators?.invalid && workSetupId_validators?.touched">
           <option selected disabled [ngValue]="null">Select Work Setup</option>
@@ -122,7 +122,7 @@
 
 
       <div class="title-container mb-3" *ngIf="level$ | async as jobLevel">
-        <label>Level of Experience</label>
+        <label>{{'PROFILE_DETAILS.EXPERIENCE_LEVEL' | translate}}</label>
         <select class="form-select" formControlName="jobLevelId"
           [class.is-invalid]="jobLevelId_validators?.invalid && jobLevelId_validators?.touched">
           <option selected disabled [ngValue]="null">Select Level Experience</option>
@@ -136,7 +136,7 @@
       </div>
 
       <div class="title-container mb-3">
-        <label>Expected Salary (monthly)</label>
+        <label>{{'PROFILE_DETAILS.SALARY_RANGE' | translate}}</label>
 
         <div class="row">
           <div class="col-4 form-group pe-0">
@@ -178,7 +178,7 @@
 
     <div class="col-12 col-lg-6 mb-3">
       <div class="title-container mb-3">
-        <label>First Name</label>
+        <label>{{'PROFILE_DETAILS.FIRSTNAME_TEXT' | translate}}</label>
 
         <div class="form-group">
           <input type="text" class="form-control" placeholder="ex. George" formControlName="firstName">
@@ -186,7 +186,7 @@
       </div>
 
       <div class="title-container mb-3">
-        <label>Last Name</label>
+        <label>{{'PROFILE_DETAILS.LASTNAME_TEXT' | translate}}</label>
 
         <div class="form-group">
           <input type="text" class="form-control" placeholder="ex. Cruz" formControlName="lastName">
@@ -194,7 +194,7 @@
       </div>
 
       <div class="title-container mb-3">
-        <label>Phone</label>
+        <label>{{'PROFILE_DETAILS.PHONE_TEXT' | translate}}</label>
 
         <div class="form-group">
           <input type="text" class="form-control" placeholder="ex. 000-000000" formControlName="contactNumber"
@@ -208,7 +208,7 @@
 
     <div class="col-12 col-lg-6 mb-3">
       <div class="title-container mb-3">
-        <label>Address</label>
+        <label>{{'PROFILE_DETAILS.ADDRESS_TEXT' | translate}}</label>
 
         <div class="form-group">
           <input type="text" class="form-control" placeholder="ex. Subdivision, Street No, Building No, Barangay"
@@ -217,7 +217,7 @@
       </div>
 
       <div class="title-container mb-3">
-        <label>City/Municipality</label>
+        <label>{{'PROFILE_DETAILS.CITY_MUNICIPALITY_TEXT' | translate}}</label>
 
         <div class="form-group">
           <input type="text" class="form-control" placeholder="ex. Manila" formControlName="city" [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
@@ -228,7 +228,7 @@
       </div>
 
       <div class="title-container mb-3">
-        <label>Country</label>
+        <label>{{'PROFILE_DETAILS.COUNTRY_TEXT' | translate}}</label>
 
         <div class="form-group">
           <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country" [class.is-invalid]="country_validators?.invalid && country_validators?.touched">

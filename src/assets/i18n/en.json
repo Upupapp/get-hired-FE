@@ -97,7 +97,7 @@
         "END_DATE":"End Date",
         "DETAILS":"Details",
 
-        "EDUCATION_BACKGROUND_MODULE":"Education Background",
+        "EDUCATION_BACKGROUND_SECTION":"Education Background",
         "EDUCATION_LEVEL":"Level of Education",
         "PRIMAARY":"Primary education",
         "SECONDARY":"Upper Secondary Education, Bachelor's or equivalent level",
@@ -343,7 +343,7 @@
         "TITLE_TEXT":"Account Settings",
         "FN_INPUT_FIELD":"First Name",
         "LN_INPUT_FIELD":"Last Name",
-        "PW_INPUT FIELD":"Password",
+        "PW_INPUT_FIELD":"Password",
         "SUBMIT_BUTTON":"Submit Changes"
     }
 }

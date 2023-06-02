@@ -341,7 +341,7 @@
         "TITLE_TEXT":"Cài đặt tài khoản",
         "FN_INPUT_FIELD":"Tên",
         "LN_INPUT_FIELD":"Họ",
-        "PW_INPUT FIELD":"Mật khẩu",
+        "PW_INPUT_FIELD":"Mật khẩu",
         "SUBMIT_BUTTON":"Lưu hay đổi"
     }
 }

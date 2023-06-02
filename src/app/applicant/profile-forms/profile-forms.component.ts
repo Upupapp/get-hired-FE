@@ -6,6 +6,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { Subscription } from 'rxjs';
 import { ProfileBasicInfoComponent } from './profile-basic-info/profile-basic-info.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-forms',
@@ -28,20 +29,20 @@ export class ProfileFormsComponent implements OnInit {
   stepperItems: any[] = [
     {
       id: 1,
-      title: "Profile Details",
+      title: this.translate.instant('PROFILE_DETAILS.PROFILE_DETAILS_TITLE'),
       formName: 'profileDetailsForm'
 
     },
     {
       id: 2,
-      title: "Skills and Experience",
+      title: this.translate.instant('SKILLS_AND_EXPERIENCE.SKILLS_EXPERIENCE_SECTION'),
       disabled: true,
       formName: 'initialData'
 
     },
     {
       id: 3,
-      title: "Documents",
+      title: this.translate.instant('DOCUMENTS.DOCUMENTS_SECTION'),
       disabled: true,
       formName: ''
     },
@@ -51,6 +52,7 @@ export class ProfileFormsComponent implements OnInit {
     private dialog: MatDialog,
     private applicantFacade: ApplicantFacade,
     private router: Router,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
