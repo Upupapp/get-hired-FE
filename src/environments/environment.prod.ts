@@ -10,6 +10,7 @@ export const environment = {
   isDebug: false,
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   mapRestrictions: ['sg', 'ph'],
+  recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U",
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
     authDomain: 'get-hired-363107.firebaseapp.com',
@@ -17,6 +18,6 @@ export const environment = {
     storageBucket: 'get-hired-363107.appspot.com',
     messagingSenderId: "818317489154",
     appId: "1:818317489154:web:d849afade1105af929631b",
-    measurementId: "G-4C797NXLJF"
+    measurementId: "G-4C797NXLJF",
   }
 };

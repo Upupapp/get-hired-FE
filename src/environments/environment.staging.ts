@@ -8,5 +8,6 @@ export const environment = {
   NgRxMaxAge: 15,
   isDebug: false,
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
-  mapRestrictions: ['sg', 'ph']
+  mapRestrictions: ['sg', 'ph'],
+  recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U"
 };

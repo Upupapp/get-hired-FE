@@ -80,9 +80,9 @@
               placeholder="First Name"
               [class.is-invalid]="firstName_validators?.invalid && firstName_validators?.touched">
 
-              <label class="d-flex">
-                <div>{{ 'CREATE_ACCOUNT.FIRSTNAME_TEXTBOX' | translate }}</div>
-              </label>
+            <label class="d-flex">
+              <div>{{ 'CREATE_ACCOUNT.FIRSTNAME_TEXTBOX' | translate }}</div>
+            </label>
 
             <div class="mt-1 ms-4" *ngIf="
             (firstName_validators?.invalid && firstName_validators?.touched) || firstName_validators?.dirty">
@@ -94,9 +94,9 @@
             <input type="text" class="form-control" formControlName="lastName" name="lastName" placeholder="Last Name"
               [class.is-invalid]="lastName_validators?.invalid && lastName_validators?.touched">
 
-              <label class="d-flex">
-                <div>{{ 'CREATE_ACCOUNT.LASTNAME_TEXTBOX' | translate }}</div>
-              </label>
+            <label class="d-flex">
+              <div>{{ 'CREATE_ACCOUNT.LASTNAME_TEXTBOX' | translate }}</div>
+            </label>
 
 
             <div class="mt-1 ms-4" *ngIf="
@@ -123,9 +123,9 @@
             <input [type]="inputType" class="form-control" id="password" placeholder="********************"
               formControlName="password">
 
-              <label class="d-flex">
-                <div>{{ 'CREATE_ACCOUNT.PASSWORD_TEXTBOX' | translate }}</div>
-              </label>
+            <label class="d-flex">
+              <div>{{ 'CREATE_ACCOUNT.PASSWORD_TEXTBOX' | translate }}</div>
+            </label>
 
             <div>
               <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid me-2 img-plc"
@@ -189,6 +189,8 @@
             </div>
           </div>
 
+          <re-captcha formControlName="recaptcha"></re-captcha>
+
           <div class="mt-4">
             <a class="mat-primary float-start forget-password">
               <mat-checkbox formControlName="agreeToTerms" class="remember-me  mt-1"></mat-checkbox>
@@ -198,6 +200,7 @@
 
             </a>
           </div>
+
           <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3"
             [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)">
             {{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}
@@ -207,7 +210,8 @@
 
           <div class="text-center mt-5 join-us">
             <br><br>
-            {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" class="register">{{ 'CREATE_ACCOUNT.LOGIN_BUTTON' | translate }}</a>
+            {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" class="register">{{
+              'CREATE_ACCOUNT.LOGIN_BUTTON' | translate }}</a>
           </div>
         </form>
 

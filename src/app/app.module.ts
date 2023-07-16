@@ -19,10 +19,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StorePublicModule } from './shared/store/store.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import { RecaptchaModule, RecaptchaFormsModule, RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module, RECAPTCHA_SETTINGS, RecaptchaSettings } from 'ng-recaptcha';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
-} 
+}
 
 @NgModule({
   declarations: [
@@ -36,6 +37,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
+    RecaptchaV3Module,
     StoreModule.forRoot(appReducer),
     EffectsModule.forRoot([AppEffects]),
     StorePublicModule.forRoot(),
@@ -62,6 +66,12 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: UnAuthorizedInterceptor,
       multi: true
+    },
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptchaSiteKey,
+      } as RecaptchaSettings,
     },
   ],
   bootstrap: [AppComponent]
