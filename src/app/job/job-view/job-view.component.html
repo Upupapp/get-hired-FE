@@ -7,8 +7,8 @@
           <p class="title-banner-description mb-2">
             <ng-container *ngIf="selectedJobPost?.industryName">
               {{selectedJobPost?.industryName}} /
-            </ng-container> {{selectedJobPost?.workSetupName}} / PHP {{selectedJobPost?.salaryMinimum |
-            number:'1.0':'en-US' }} - PHP {{selectedJobPost?.salaryMaximum | number:'1.0':'en-US' }}
+            </ng-container> {{selectedJobPost?.workSetupName}} / {{ selectedJobPost.salaryCurrency }} {{selectedJobPost?.salaryMinimum |
+            number:'1.0':'en-US' }} - {{ selectedJobPost.salaryCurrency }} {{selectedJobPost?.salaryMaximum | number:'1.0':'en-US' }}
           </p>
         </div>
       </div>

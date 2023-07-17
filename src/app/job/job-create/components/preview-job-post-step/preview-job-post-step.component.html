@@ -84,8 +84,8 @@
           <h5 class="d-flex title-details me-3 ms-1">
             <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2"
               style="width: 15px; height: 15px; margin-top: 4px;">
-            PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} -
-            PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
+            {{ preview.salaryCurrency }} {{ preview.salaryMinimum | number:'1.0':'en-US' }} -
+            {{ preview.salaryCurrency }} {{ preview.salaryMaximum | number:'1.0':'en-US' }}
             <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
           </h5>
         </div>
