@@ -1,13 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { AdminService } from '@app-shared/services/auth/admin/admin.service';
-import { Subscription } from 'rxjs';
-import {
-  Router,
-  ActivatedRoute
-} from '@angular/router';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { month } from '@app-shared/mock.data';
+import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 
 @Component({
@@ -118,14 +113,15 @@ export class StatChartComponent implements OnInit {
 
   public doughnutChartType: any = 'doughnut';
   public doughnutChartLegend = true;
-  public doughnutChartLabels: string[] = ['Application', 'Interviewed'];
+  public doughnutChartLabels: string[] = [this.translate.instant('APPLICANT_DASHBOARD.GRAPH_CONTENT3'), this.translate.instant('APPLICANT_DASHBOARD.GRAPH_CONTENT4')];
 
   public doughnutChartData: ChartData<'doughnut'> = {
     labels: this.doughnutChartLabels,
     datasets: []
   };
 
-  constructor() { }
+  constructor(
+    private translate: TranslateService) { }
 
   ngOnInit(): void {
     console.log(this.charts);
@@ -151,8 +147,8 @@ export class StatChartComponent implements OnInit {
 
     let formattedLineChartData = this.formatLineGraphVal(sortedProfileView, sortedJobApplication)
 
-    this.lineChartData.datasets[0].data = formattedLineChartData.profileViews; 
-    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplications; 
+    this.lineChartData.datasets[0].data = formattedLineChartData.profileViews;
+    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplications;
     this.lineChartData.labels = formattedLineChartData.labels;
     this.lineChartRendering = false;
 
@@ -184,7 +180,6 @@ export class StatChartComponent implements OnInit {
 
       });
     }
-    
     return graphData;
   }
 

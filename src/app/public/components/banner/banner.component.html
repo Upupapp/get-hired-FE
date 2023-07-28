@@ -22,7 +22,7 @@
 			[@animate]="{value:'*', params:{ y:'10px', delay:'300ms' }}">
 				<div class="d-flex mt-3 py-3 px-3 bg-transparent">
 					<div class="me-3 " [ngClass]="loggedUser ? 'search-key-2' : 'search-key'">
-						<input type="text" class="form-control" placeholder="Enter keyword"
+						<input type="text" class="form-control" placeholder="{{ 'PUBLIC_PAGE.KEYWORD_TEXTBOX' | translate }}"
 						[(ngModel)]="keyword">
 					</div>
 
@@ -30,7 +30,7 @@
 						<div >
 						    <select class="form-select" aria-label="Default select example"
 						    [(ngModel)]="work_setup">
-						      <option selected>Work Setup</option>
+						      <option selected>{{ 'PUBLIC_PAGE.WORK_SETUP_SELECTOR' | translate }}</option>
 						      <option value="Remote">Remote</option>
 						      <option value="Onsite">Onsite</option>
 						      <option value="Hybrid">Hybrid</option>
@@ -42,7 +42,7 @@
 						<div >
 						    <select class="form-select" aria-label="Default select example"
 						    [(ngModel)]="job_type">
-						      <option selected>Job Type</option>
+						      <option selected>{{ 'PUBLIC_PAGE.JOB_TYPE_SELECTOR' | translate }}</option>
 						      <option value="Part-Time">Part-Time</option>
 						      <option value="Full-Time">Full-Time</option>
 						      <option value="Freelance">Freelance</option>
@@ -53,7 +53,7 @@
 					<div class="w-50" style="max-width: 400px">
 						<div >
 						    <button class="btn btn-find-jobs"
-						    (click)="findJobs()">Find Jobs</button>
+						    (click)="findJobs()">{{ 'PUBLIC_PAGE.FIND_JOBS_BUTTON' | translate }}</button>
 						</div>
 					</div>
 				</div>

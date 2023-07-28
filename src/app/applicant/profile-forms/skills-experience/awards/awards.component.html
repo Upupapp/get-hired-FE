@@ -21,21 +21,22 @@
 
       <div class="col-12 col-lg-6">
         <div class="title-container mb-3">
-          <label>Title</label>
+          <label>{{ 'SKILLS_AND_EXPERIENCE.TITLE' | translate }}</label>
           <div class="form-group">
             <input type="text" class="form-control" formControlName="certTitle" placeholder="Award Title">
           </div>
         </div>
 
+
         <div class="row justify-content-between">
           <div class="col-12 col-lg-4 align-items-center d-flex">
-            <label class="m-0">Time Period</label>
+            <label class="m-0">{{ 'SKILLS_AND_EXPERIENCE.TIME_PERIOD' | translate }}</label>
           </div>
           <div class="col-12 col-lg-8">
             <div class="form-check row d-flex h-100 align-items-center justify-content-end">
               <input class="form-check-input col-12 col-lg-4" type="checkbox" formControlName="noExpiry">
               <label class="form-check-label col-12 col-lg-8 m-0">
-                This certification or award does not expire
+                {{ 'SKILLS_AND_EXPERIENCE.TIME_PERIOD_TYPE' | translate }}
               </label>
             </div>
           </div>
@@ -44,7 +45,7 @@
         <div class="row">
           <div class="col-12 col-lg-6">
             <div class="title-container mb-3">
-              <label>Start Date</label>
+              <label>{{ 'SKILLS_AND_EXPERIENCE.START_DATE' | translate }}</label>
               <select class="form-select" formControlName="startMonth">
                 <option selected disabled [ngValue]=null>Select Month</option>
                 <ng-container *ngFor="let item of month; let i = index">
@@ -70,7 +71,7 @@
         <div class="row" *ngIf="!certForm.controls.noExpiry.value">
           <div class="col-12 col-lg-6">
             <div class="title-container mb-3">
-              <label>End Date</label>
+              <label>{{ 'SKILLS_AND_EXPERIENCE.END_DATE' | translate }}</label>
               <select class="form-select" formControlName="endMonth">
                 <option selected disabled [ngValue]=null>Select Month</option>
                 <ng-container *ngFor="let item of month; let i = index">
@@ -96,7 +97,7 @@
 
       <div class="col-12 col-lg-6">
         <div class="title-container mb-3">
-          <label>Details</label>
+          <label>{{ 'SKILLS_AND_EXPERIENCE.CERT_AWARD_DETAILS' | translate }}</label>
           <div class="form-group">
             <textarea type="text" class="form-control" formControlName="details"
               placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided. "

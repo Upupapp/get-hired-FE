@@ -15,7 +15,12 @@
 				<button class="btn btn-add w-100"
 				[ngClass]="importContact ? 'inactive' : ''"
 				(click)="importContact = false">
-					{{!data ? 'New Contact' : 'Edit Contact'}}
+					<span *ngIf="data">
+						{{ 'EDIT_CONTACT_FORM.TITLE_PAGE' | translate }}
+					</span>
+					<span *ngIf="!data">
+						New Contact
+					</span>
 				</button>
 			</div>
 
@@ -44,8 +49,8 @@
 					<form class="px-3"
 					[@animate]="{value:'*', params:{ x:'-10px', delay:'200ms' }}"
 					[formGroup]="contactForm">
-						<h5 class="title-add text-start">Contact Details</h5>
-						<h5 class="title-description text-start">Provide the contact details necessary for the person you want to invite</h5>
+						<h5 class="title-add text-start">{{ 'EDIT_CONTACT_FORM.TITLE_TEXT' | translate }}</h5>
+						<h5 class="title-description text-start">{{ 'EDIT_CONTACT_FORM.CONTACT_INFORMATION_REQUEST' | translate }}</h5>
 						<div class="row">
 							<div class="col-12 col-md-6 form-group mt-3">
 								<label class="mb-2">First Name <i class="text-danger">*</i></label>
@@ -97,11 +102,11 @@
 							<div style="position: relative;" class="mt-2 text-center">
 								<button type="button"
 								class="btn me-3 btn-default "
-								(click)="dialogRef.close()">Close </button>
+								(click)="dialogRef.close()">{{ 'EDIT_CONTACT_FORM.CLOSE_BUTTON' | translate }} </button>
 
 								<button type="button"
 								class="btn me-1 btn-primary"
-								(click)="submitForm()" [disabled]="!contactForm.valid">Submit
+								(click)="submitForm()" [disabled]="!contactForm.valid">{{ 'EDIT_CONTACT_FORM.SUBMIT_BUTTON' | translate }}
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>

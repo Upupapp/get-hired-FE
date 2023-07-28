@@ -6,6 +6,7 @@ import { CompanyBasicComponent } from '@app-company/company-basic/company-basic.
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -30,17 +31,17 @@ export class EmployerSettingsComponent implements OnInit {
   public stepperItems: any[] = [
     {
       id: 1,
-      title: "Company Details",
+      title: this.trannslate.instant('EDIT_COMPANY_DETAILS.COMPANY_DESCRIPTION'),
       disabled: false
     },
     {
       id: 2,
-      title: "Company Users",
+      title: this.trannslate.instant('EDIT_COMPANY_DETAILS.COMPANY_USER_SECTION'),
       disabled: false
     },
     {
       id: 3,
-      title: "Account Settings",
+      title: this.trannslate.instant('EDIT_COMPANY_DETAILS.ACCOUNT_SETTINGS'),
       disabled: false
     },
 
@@ -54,8 +55,9 @@ export class EmployerSettingsComponent implements OnInit {
     private employeeFacade: EmployeeFacade,
     private dialog: MatDialog,
     private router: Router,
+    private cd: ChangeDetectorRef,
+    private trannslate: TranslateService,
     private route: ActivatedRoute,
-    private cd: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {

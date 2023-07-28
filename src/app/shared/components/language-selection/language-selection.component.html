@@ -1,0 +1,6 @@
+<div style="width: 5rem">
+    <select (change)="changeLanguage(lang.value)" [(ngModel)]="selectedLang" #lang class="form-select" aria-label="Default select example">
+        <option value="" selected disabled>{{'NAVIGATION.LANGUAGE' | translate}}</option>
+        <option *ngFor="let lang of languages" [value]="lang.id">{{lang.label}}</option>
+    </select>
+</div>

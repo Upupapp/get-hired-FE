@@ -12,7 +12,6 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { jobLists, Job } from '../../utils/job-list-model-interface';
 import { companyLists, Company } from '../../utils/company-list-model-interface';
 import { Router, ActivatedRoute } from '@angular/router';
-import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
 import {
   Subscription,
   Observable,
@@ -22,6 +21,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
 
 @Component({
   selector: 'app-job-post-details-apply',

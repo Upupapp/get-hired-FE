@@ -14,6 +14,7 @@ import {
   NavigationEnd,
   Router
 } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { filter, map, mergeMap, Subscription } from 'rxjs';
 
 @Component({
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
   constructor(
     public router: Router,
     public route: ActivatedRoute,
+    public translateService: TranslateService
   ) {
     // this.location = this.router.url;
     // this.req = this.router.events.subscribe((event: any) => {
@@ -39,6 +41,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const browserLang: any = this.translateService.getBrowserLang();
+    const selectedLang: any = localStorage.getItem("selectedLang")
+    this.translateService.use(selectedLang ? selectedLang: browserLang.match(/en|vie/) ? browserLang : 'en');
+    this.checkScreenSize();
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),

@@ -1,6 +1,6 @@
 <form [formGroup]="profileDetailsForm" (ngSubmit)="onSubmit()">
   <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-    <button class="btn btn-save me-2" (click)="changePw()">Submit Changes</button>
+    <button class="btn btn-save me-2" (click)="changePw()">{{ 'ACCOUNT_SETTINGS.SUBMIT_BUTTON' | translate }}</button>
   </div>
 
   <div class="card card-body mt-3">
@@ -8,13 +8,13 @@
     <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
       <!-- CONTACT DETAILS -->
       <div class="col-12 mt-2">
-        <h5 class="title-label">Account Settings</h5>
+        <h5 class="title-label">{{ 'ACCOUNT_SETTINGS.TITLE_TEXT' | translate }}</h5>
         <hr style="border: dashed 1px #868686">
       </div>
 
       <div class="col-12 col-lg-6 mb-3">
         <div class="title-container mb-3">
-          <label>First Name</label>
+          <label>{{ 'ACCOUNT_SETTINGS.FN_INPUT_FIELD' | translate }}</label>
 
           <div class="form-group">
             <input type="text" class="form-control" placeholder="George" formControlName="firstName">
@@ -32,7 +32,7 @@
 
       <div class="col-12 col-lg-6 mb-3">
         <div class="title-container mb-3">
-          <label>Last Name</label>
+          <label>{{ 'ACCOUNT_SETTINGS.LN_INPUT_FIELD' | translate }}</label>
 
           <div class="form-group">
             <input type="text" class="form-control" placeholder="Cruz" formControlName="lastName">
@@ -40,7 +40,7 @@
         </div>
 
         <div class="title-container mb-3">
-          <label>Password</label>
+          <label>{{ 'ACCOUNT_SETTINGS.PW_INPUT' | translate }}</label>
 
           <div class="container-input flex-wrap">
             <input type="password" class="form-control" placeholder="***********">

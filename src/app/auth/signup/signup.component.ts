@@ -7,6 +7,7 @@ import { AuthService } from '../auth.service';
 import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
 import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } from 'rxjs';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-signup',
@@ -26,6 +27,7 @@ export class SignupComponent implements OnInit {
   pwPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
   email: string;
   isResent: boolean;
+  siteKey = environment.recaptchaSiteKey;
 
   success$ = this.authFacade.getSuccess$;
   loading$ = this.authFacade.loading$;
@@ -50,6 +52,7 @@ export class SignupComponent implements OnInit {
       firstName: [null, Validators.compose([Validators.required])],
       lastName: [null, Validators.compose([Validators.required])],
       agreeToTerms: [null, Validators.compose([Validators.required])],
+      recaptcha: [null, Validators.required],
       role: [null, Validators.compose([Validators.required])]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
 

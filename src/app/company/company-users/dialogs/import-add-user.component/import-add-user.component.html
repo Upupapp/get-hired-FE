@@ -6,7 +6,7 @@
 				<button class="btn btn-add w-100" 
 				[ngClass]="importEmployee ? 'inactive' : ''"
 				(click)="importEmployee = false">
-					New User Access
+				{{ 'NEW_USER_ACCESS.NEW_USER__ACCESS_FORM' | translate }}
 				</button>
 			</div>
 
@@ -14,7 +14,7 @@
 				<button class="btn btn-add w-100"
 				[ngClass]="!importEmployee ? 'inactive' : ''"
 				(click)="importUserTab()">
-					Import Users
+				{{ 'IMPORT_USERS.IMPORT_USERS_FORM' | translate }}
 				</button>
 			</div>
 		</div>
@@ -26,14 +26,14 @@
 			<div class="row pt-4" *ngIf="importEmployee">
 				<div class="col-12 col-md-12 text-start mb-2">
 					<h4 class="title-add">Uploading CSV file</h4>
-					<h5 class="title-description">Add new company user by uploading .csv file. You can <a href="../../../../../../../assets/files/import-user.csv" download="import-user.csv">download the template</a> here for reference</h5>
+					<h5 class="title-description"><a href="../../../../../../../assets/files/import-user.csv" download="import-user.csv">{{ 'IMPORT_USERS.INSTRUCTION_MESSAGE' | translate }}</a></h5>
 				</div>
 			</div>
 
 				<div class="row pt-2" *ngIf="!importEmployee"
 				[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 					<div class="col-12 mb-4">
-						<h4 class="title-add">Create new user, one at a time.</h4>
+						<h4 class="title-add">{{ 'NEW_USER_ACCESS.INSTRUCTION_MESSAGE' | translate }}</h4>
 						<h5 class="title-description">Input the email of the person you want to add to your team</h5>
 					</div>
 				</div>
@@ -68,7 +68,7 @@
 						[formGroup]="inviteForm" 
 						[@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
 							<div class="form-group mt-2">
-								<label class="mb-2" >Add Email address</label>
+								<label class="mb-2" >{{ 'NEW_USER_ACCESS.EMAIL_TEXT' | translate }}</label>
 
 								<input type="email" class="form-control" formControlName="email" name="email" placeholder="email@mailer.com">
 							</div>
@@ -77,11 +77,11 @@
 								<div style="position: relative;" class="mt-2 text-center">
 									<button type="button" 
 									class="btn me-3 btn-default hvr-grow" 
-									(click)="dialogRef.close()">Cancel </button>
+									(click)="dialogRef.close()">{{ 'NEW_USER_ACCESS.CANCEL_BUTTON' | translate }} </button>
 
 									<button type="button" 
 									class="btn me-1 btn-primary hvr-grow" 
-									(click)="addEmployeeEmail()" [disabled]="!inviteForm.valid || !inviteForm.controls['email'].value">Add Email</button>
+									(click)="addEmployeeEmail()" [disabled]="!inviteForm.valid || !inviteForm.controls['email'].value">{{ 'NEW_USER_ACCESS.ADD_EMAIL_BUTTON' | translate }}</button>
 								</div>
 							</div>
 						</form> 
@@ -95,13 +95,13 @@
 						<div class="row">
 							<div class="col-8 text-start">
 								<h6>Choose File</h6>
-								<span>We accept: <span class="text-document">CSV File Only</span></span>
+								<span>{{ 'IMPORT_USERS.FILE_UPLOAD_INSTRUCTION' | translate }}</span>
 							</div>
 
 							<div class="col-4">
 								<button type="button" class="btn btn-uploader"
 								[disabled]="document"
-								(click)="csvReader.click()">Browse Files</button>
+								(click)="csvReader.click()">{{ 'IMPORT_USERS.FILE_SELECTOR' | translate }}</button>
 							</div>
 						</div>
 					</div>

@@ -64,8 +64,8 @@ export class ImportAddContactComponent implements OnInit {
     this.getJobList();
     this.getGroupList();
     this.contactForm = this.formBuilder.group({
-      firstName: [this.data ? this.data?.first_name : '', [Validators.required]],
-      lastName: [this.data ? this.data?.last_name : '', [Validators.required]],
+      firstName: [this.data ? this.data?.firstname : '', [Validators.required]],
+      lastName: [this.data ? this.data?.lastname : '', [Validators.required]],
       email: [this.data ? this.data?.email : '', [Validators.email, Validators.required]],
       mobileNumber: [this.data ? this.data?.mobile_number : ''],
       address: [this.data ? this.data?.address : ''],

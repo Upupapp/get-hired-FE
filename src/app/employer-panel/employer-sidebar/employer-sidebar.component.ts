@@ -2,6 +2,7 @@ import { Component, Input, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -21,7 +22,8 @@ export class EmployerSidebarComponent implements OnInit {
   sidebarItems: any[];
 
   constructor(
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -68,20 +70,21 @@ export class EmployerSidebarComponent implements OnInit {
         title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
       },
       {
+
         title: 'Jobs', icon: 'jobs.png', class: 'jobs',
         route: 'jobs',
         sub_routes: [
           {
-            title: 'Job Posts', icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
+            title: this.translate.instant('JOB_POSTS_PAGE.SIDEBAR_JOB_POSTS'), icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
           },
 
           {
-            title: 'Expired Jobs', icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
+            title: this.translate.instant('JOB_POSTS_PAGE.SIDEBAR_EXPIRED_JOBS'), icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
           },
         ]
       },
       {
-        title: 'Contacts', icon: 'applicants.png', class: 'applicants', route: 'contacts',
+        title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_CONTACTS'), icon: 'applicants.png', class: 'applicants', route: 'contacts',
         sub_routes: [
           {
             title: 'Contact List', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
@@ -90,23 +93,23 @@ export class EmployerSidebarComponent implements OnInit {
             title: 'Contact Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
           },
           {
-            title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
+            title: this.translate.instant('CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE'), icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
           },
 
         ]
       },
-      // {
-      //   title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
-      // },
       {
-        title: 'My Subscription', icon: 'subscribe.png', class: 'subscription',
+        title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_INTERVIEWS'), icon: 'create-interview.png', class: 'interviews', route: 'interview'
+      },
+      {
+        title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_SUBCRIPTIONS'), icon: 'subscribe.png', class: 'subscription',
         route: 'subscription'
       },
       {
-        title: 'Employer Branding', icon: 'account.png', class: 'accounts',
+        title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_EMPLOYER_BRANDING'), icon: 'account.png', class: 'accounts',
         route: 'company/details'
       }
-    ];
+    ]
   }
 
   ngOnDestroy(): void {

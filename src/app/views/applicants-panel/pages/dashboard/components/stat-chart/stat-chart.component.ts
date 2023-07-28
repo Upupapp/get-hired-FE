@@ -165,7 +165,7 @@ export class StatChartComponent implements OnInit {
     },
 
   ];
-  public doughnutChartLabels: string[] = ['Interviewed', 'Hired', 'Archived'];
+  public doughnutChartLabels: string[] = ['Interviewed'];
 
     
 

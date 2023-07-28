@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { TranslateService } from '@ngx-translate/core';
 import { JobsFacade } from '../state/jobs.facade';
 
 @Component({
@@ -21,7 +22,7 @@ import { JobsFacade } from '../state/jobs.facade';
 export class JobPostsListComponent implements OnInit {
   @Input() fromSearch: boolean = false;
   @Input() label: string;
-  @Input() subLabel: string = `Apply to these Jobs to kick start your career`;
+  @Input() subLabel: string = this.translate.instant('COMPANY_DETAILS.JOBS_CAREERS_MESSAGE');
   @Input() companyId?: string;
   @Input() searchData?: any;
 
@@ -35,7 +36,8 @@ export class JobPostsListComponent implements OnInit {
   constructor(
     private jobsFacade: JobsFacade,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translate: TranslateService
   ) {
     this.route.queryParams.subscribe(params => {
       this.companyId = params.id

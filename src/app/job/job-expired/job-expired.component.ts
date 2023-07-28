@@ -6,6 +6,7 @@ import { Job } from '@app-job/job.model';
 import { TableHeader, displayedColumns, jobLists, selectedColumns } from '@app-job/jobs-model-interface';
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription, map, Subject } from 'rxjs';
 
 @Component({
@@ -45,7 +46,17 @@ export class JobExpiredComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
   public loading: boolean = true;
   public id;
-  public displayedColumns: TableHeader[] = displayedColumns;
+  public displayedColumns: TableHeader[] = [
+    { col_name: 'jobId', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_ID") },
+    { col_name: 'jobTitle', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_TITLE")  },
+    { col_name: 'createdAt', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_DATE"), type: 'date'  },
+    { col_name: 'jobCity', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_LOCATION")  },
+    { col_name: 'workSetupName', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_SETUP")  },
+    { col_name: 'jobTypeName', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_TYPE")  },
+    { col_name: 'salary', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_SALARY"), type: 'salary'   },
+    { col_name: 'status', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_STATUS")  },
+    { col_name: 'action', title: this.translate.instant("JOB_POSTS_PAGE.TABLE_COLUMN_ACTION") , type: 'menu' },
+  ];
   public listView: boolean = true;
   public selectedColumns: string[] = selectedColumns
   public searchSource: any = (el) => {
@@ -69,7 +80,8 @@ export class JobExpiredComponent implements OnInit {
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private jobFacade: JobFacade
+    private jobFacade: JobFacade,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {

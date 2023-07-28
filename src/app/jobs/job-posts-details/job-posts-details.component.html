@@ -39,11 +39,16 @@
             <img src="/assets/images/placeholder/icons/applied.png"
             class="img-fluid me-2 mt-1" style="height: 30px;">
             <span >
-              You already applied<br> to this Job</span>
+              {{ 'APPLY_PAGE.DUPLICATE_APPLICATION_MESSAGE' | translate }}
+            </span>
           </div>
 
           <button class="btn btn-apply-now w-100" (click)="toApply()" *ngIf="userRole == '3' && !selectedJobPost.isApplied">
-            Apply now
+            {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
+          </button>
+
+          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">
+            Login to Apply
           </button>
 
           <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">
@@ -58,21 +63,21 @@
       <div class="col-12 mb-2 mt-2 pe-5 ps-lg-4">
         <div class="job-description mb-3">
           <h5 class="title-job-description">
-            <strong>Job Description</strong><br>
+            <strong> {{ 'APPLY_PAGE.JOB_DESCRIPTION' | translate }}</strong><br>
             {{selectedJobPost?.jobDescription}}
           </h5>
         </div>
 
         <div class="job-description mb-3">
           <h5 class="title-job-description">
-            <strong>Duties and Responsibilities</strong><br>
+            <strong>{{ 'APPLY_PAGE.DUTIES_RESPONSIBILITIES' | translate }}</strong><br>
             {{selectedJobPost?.jobDuties}}
           </h5>
         </div>
 
         <div class="job-requirements mb-3">
           <h5 class="title-job-description">
-            <strong>Requirements</strong>
+            <strong>{{ 'APPLY_PAGE.REQUIREMENTS' | translate }}</strong>
           </h5>
 
           <ul>
@@ -86,7 +91,7 @@
 
         <div class="job-requirements mb-4">
           <h5 class="title-job-description">
-            <strong>Skills & Experience</strong>
+            <strong>{{ 'APPLY_PAGE.SKILLS_EXPERIENCE' | translate }}</strong>
           </h5>
 
           <ul>
@@ -102,7 +107,7 @@
 
         <div class="job-requirements mb-3">
           <h5 class="title-job-description">
-            <strong>Educational Background</strong>
+            <strong>{{ 'APPLY_PAGE.BACKGROUND_EDUCATION' | translate }}</strong>
           </h5>
 
           <ul>
@@ -116,7 +121,7 @@
 
         <div class="job-requirements mb-3">
           <h5 class="title-job-description">
-            <strong>Good to Have</strong>
+            <strong>{{ 'APPLY_PAGE.ADVANTAGES' | translate }}</strong>
           </h5>
 
           <ul>
@@ -155,7 +160,7 @@
 
   <section class="card card-body my-3">
     <div class="p-1">
-      <label class="title-job-interview text-capitalize mb-3">Interview Questions</label>
+      <label class="title-job-interview text-capitalize mb-3">{{ 'APPLY_PAGE.INTERVIEW_QUESTIONS' | translate }}</label>
 
       <section class="p-2 px-1 mb-1">
         <!-- INTERVIEWS -->

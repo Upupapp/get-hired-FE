@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { Subscription, of, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { SubscriptionsFacade } from '../state/subscriptions.facade';
 import { SubscriptionSummaryComponent } from '../subscription-summary/subscription-summary.component';
 
@@ -45,8 +45,6 @@ export class SubscriptionsListComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     if(this.confirmation$) this.confirmation$.unsubscribe();
   }
 

@@ -5,12 +5,12 @@
 
 			<div class="banner-text">
 				<ng-container *ngIf="userRole == '3'">
-					<h5 class="title-banner mb-3" >Let employers find you</h5>
+					<h5 class="title-banner mb-3" >{{ 'PUBLIC_PAGE.RESUME_UPLOAD_BOX_MESSAGE' | translate }}</h5>
 
 					<div class="mt-4">
 						<button class="btn btn-upload" (click)="redirectToCreate('resume')">
-              Upload Your Resume</button>
-					</div>
+							{{ 'PUBLIC_PAGE.RESUME_UPLOAD_BUTTON' | translate }}</button>
+					</div> 
 				</ng-container>
 
 				<ng-container *ngIf="!userRole || userRole != '3'">

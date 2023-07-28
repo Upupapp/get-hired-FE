@@ -17,6 +17,7 @@ import { AuthModule } from '@main/auth/auth.module';
 import { ApplicantModule } from '@main/applicant/applicant.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApplicationModule } from '@main/application/application.module';
+import { SharedModule } from '@app-shared/shared.module';
 import { ApplicantJobsComponent } from './applicant-jobs/applicant-jobs.component';
 
 const routes: Routes = [
@@ -60,10 +61,11 @@ const routes: Routes = [
   imports: [
     CommonModule,
     CoreModule,
-    RouterModule.forChild(routes),
     ApplicantModule,
     ReactiveFormsModule,
-    ApplicationModule
+    ApplicationModule,
+    SharedModule,
+    RouterModule.forChild(routes),
     // StoreModule.forFeature('applicant', applicantReducer),
     // EffectsModule.forFeature([ApplicantEffects]),
     // AuthModule

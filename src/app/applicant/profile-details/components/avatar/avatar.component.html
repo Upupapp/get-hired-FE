@@ -41,24 +41,24 @@
     <div class="col-12 col-md-6 col-lg-4" *ngIf="user?.documents?.length === 0"></div>
 
     <div class="col-12 col-md-6 col-lg-4  mb-3 mt-3">
-      <h5 class="title-contact font-bold">Contact Details</h5>
+      <h5 class="title-contact font-bold">{{ 'PROFILE.CONTACT_DETAILS_TEXT' | translate }}</h5>
 
       <table class="w-100 contact-table">
         <tbody>
           <tr>
-            <td class="title-label">Available</td>
+            <td class="title-label">{{ 'PROFILE.STATUS_TEXT' | translate }}</td>
             <td class="title-details text-end pe-lg-5">{{ user.workSetupName }}</td>
           </tr>
           <tr>
-            <td class="title-label">Email Address</td>
+            <td class="title-label">{{ 'PROFILE.EMAIL_ADDRESS_TEXT' | translate }}</td>
             <td class="title-details text-end pe-lg-5">{{ user.email }}</td>
           </tr>
           <tr>
-            <td class="title-label">Address</td>
+            <td class="title-label">{{ 'PROFILE.ADDRESS_TEXT' | translate }}</td>
             <td class="title-details text-end pe-lg-5">{{ user.city + ', ' + user.country }}</td>
           </tr>
           <tr>
-            <td class="title-label">Mobile Phone</td>
+            <td class="title-label">{{ 'PROFILE.MOBILE_NUMBER_TEXT' | translate }}</td>
             <td class="title-details text-end pe-lg-5">{{ user.contactNumber }}</td>
           </tr>
         </tbody>
@@ -67,7 +67,7 @@
 
 
     <div class="mt-4 col-12 col-md-6 col-lg-4" *ngIf="user.documents && user.documents.length > 0">
-      <h5 class="title-contact font-bold">Documents</h5>
+      <h5 class="title-contact font-bold">{{ 'PROFILE.DOCUMENTS_TEXT' | translate }}</h5>
 
       <table class="w-100 document-table">
         <tbody>
