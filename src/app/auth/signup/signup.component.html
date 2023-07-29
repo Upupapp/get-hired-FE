@@ -189,8 +189,9 @@
             </div>
           </div>
 
-          <re-captcha formControlName="recaptcha"></re-captcha>
-
+          <div class="mt-4" *ngIf="siteKey">
+            <re-captcha (resolved)="resolved($event)" (errored)="onError($event)" errorMode="handled" [siteKey]="siteKey"></re-captcha>
+          </div>
           <div class="mt-4">
             <a class="mat-primary float-start forget-password">
               <mat-checkbox formControlName="agreeToTerms" class="remember-me  mt-1"></mat-checkbox>

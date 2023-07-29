@@ -1,12 +1,12 @@
 <div class="container-fluid" >
 	<div class="row">
 		<div class="col-12 col-md-12 col-lg-6 bg-left">
-			<div class="img-banner text-center" 
+			<div class="img-banner text-center"
 			style="z-index: 999999 !important; position: relative;">
 				<ng-container *ngIf="activeImage === 1">
 					<div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-						<img class="main-logo" 
-						src="/assets/images/placeholder/logo.png"  
+						<img class="main-logo"
+						src="/assets/images/placeholder/logo.png"
 						routerLink="/">
 
 						<h5 class="title-left-main">
@@ -15,43 +15,43 @@
 						<h5 class="title-left-main">in just  3 clicks.</h5>
 					</div>
 
-					<img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" 
+					<img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
 					src="/assets/images/placeholder/login-object-new-2.png" class="img-object">
 				</ng-container>
 
 				<ng-container *ngIf="activeImage === 2">
 					<div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-						<img class="main-logo" 
-						src="/assets/images/placeholder/logo.png"  
+						<img class="main-logo"
+						src="/assets/images/placeholder/logo.png"
 						routerLink="/">
 
 						<h5 class="title-left-main">
-						Interview 
+						Interview
 							<span class="title-left-gradient">ALL </span> your applicants
 						</h5>
-						
+
 						<h4 class="title-left-gradient">AUTOMATICALLY</h4>
 					</div>
 
-					<img src="/assets/images/placeholder/login-object-new-1.png" 
+					<img src="/assets/images/placeholder/login-object-new-1.png"
 						[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
 						class="img-object">
 				</ng-container>
 
 				<ng-container *ngIf="activeImage === 3">
 					<div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-						<img class="main-logo" 
-						src="/assets/images/placeholder/logo.png"  
+						<img class="main-logo"
+						src="/assets/images/placeholder/logo.png"
 						routerLink="/">
 
 						<h5 class="title-left-main">
-						Choose the 
+						Choose the
 							<span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
 						</h5>
-						
+
 						<h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
 					</div>
-					<img src="/assets/images/placeholder/login-object-new-3.png" 
+					<img src="/assets/images/placeholder/login-object-new-3.png"
 						[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
 						class="img-object mt-3">
 				</ng-container>
@@ -69,7 +69,7 @@
 					<div class="alert alert-danger alert-dismissible fade show error-message" [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
 					  	<button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close" (click)="onAlertClose()"></button>
 					  	<span [innerHtml]="error"></span>
-					</div>  
+					</div>
 
 					<div class="form-group">
 						<input type="email" class="form-control" formControlName="email" name="email" placeholder="username@mailer.com">
@@ -88,12 +88,12 @@
 						</label>
 
 						<div>
-							<img src="/assets/images/placeholder/icons/hide-password.png" width="23px" 
+							<img src="/assets/images/placeholder/icons/hide-password.png" width="23px"
 							class="img-fluid me-2 img-plc" *ngIf="inputType === 'password'"
 							(click)="inputType = 'text'"
 							style="margin-top: -15px;">
 
-							<img src="/assets/images/placeholder/icons/show-password.png" width="23px" 
+							<img src="/assets/images/placeholder/icons/show-password.png" width="23px"
 							class="img-fluid me-2 img-plc" *ngIf="inputType === 'text'"
 							(click)="inputType = 'password'"
 							style="margin-top: -15px;">
@@ -113,10 +113,10 @@
 
 					<div class="text-center mt-5 join-us">
 						<br><br>
-						Don't Have an account? <a [routerLink]="'/signup'" 
+						Don't have an account? <a [routerLink]="'/signup'"
 						class="register">Register</a>
 					</div>
-				</form> 
+				</form>
 			</div>
 		</div>
 	</div>

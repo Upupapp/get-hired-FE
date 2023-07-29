@@ -15,6 +15,8 @@ import { AccountAuthenticationComponent } from './account-authentication/account
 import { ErrorNotFoundComponent } from '../views/error-page/error-not-found/error-not-found.component';
 import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
+import { RecaptchaModule, RecaptchaFormsModule, RecaptchaV3Module, RECAPTCHA_V3_SITE_KEY } from 'ng-recaptcha';
+import { environment } from '@environments/environment';
 
 const routes: Routes = [
   {
@@ -44,11 +46,13 @@ const routes: Routes = [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
+    RecaptchaModule, RecaptchaFormsModule,
+    RecaptchaV3Module,
     StoreModule.forFeature('status', authReducer),
     EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)
   ],
-  providers: [AuthFacade],
+  providers: [AuthFacade, { provide: RECAPTCHA_V3_SITE_KEY, useValue: environment.recaptchaSiteKey }],
   exports: [AccountSettingComponent]
 })
 export class AuthModule { }

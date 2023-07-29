@@ -3,7 +3,7 @@
 		<div class="col-12">
 			<h5 class="main-title">Create Interview Questions Template
 				<span class="float-end">
-					<img src="/assets/images/placeholder/icons/remove-gray.png" 
+					<img src="/assets/images/placeholder/icons/remove-gray.png"
 					style="height: 14px; margin-top: -17px; cursor: pointer;" class="me-2"
 					(click)="dialogRef.close()">
 				</span>
@@ -15,7 +15,7 @@
 			<div class="title-container" >
 				<label>Template Name</label>
 				<div class="form-group">
-					<input type="text" class="form-control" 
+					<input type="text" class="form-control"
 					placeholder="Template Name" >
 				</div>
 			</div>
@@ -25,7 +25,7 @@
 			<hr class="my-4" style="border: dashed 1px #868686">
 			<h5 class="title-label mt-4">Question {{interview_questions?.length + 1}}
 				<button class="btn btn-create-interview float-end"
-				[disabled]="!interviewInput?.question" 
+				[disabled]="!interviewInput?.question"
 				(click)="addItem()">Add</button>
 			</h5>
 		</div>
@@ -34,10 +34,10 @@
 			<p class="title-label-sub mb-3">Add interview questions that can be linked to a job posts later</p>
 
 			<div class="form-group d-flex">
-				<textarea type="text" name="search" class="form-control" 
+				<textarea type="text" name="search" class="form-control"
 				[(ngModel)]="interviewInput.question" rows="6"
 				[ngModelOptions]="{standalone: true}"
-				placeholder="i.e. What have been your key as a web designer?">
+				placeholder="i.e. What are your strengths as a professional?">
 				</textarea>
 			</div>
 		</div>
@@ -47,8 +47,8 @@
 				<div class="title-container mb-3" >
 					<label>Answer Duration <i>(In minutes)</i></label>
 					<div class="form-group">
-						<input type="number" min="3" 
-						class="form-control" 
+						<input type="number" min="3"
+						class="form-control"
 						[ngModelOptions]="{standalone: true}"
 						[(ngModel)]="interviewInput.duration"
 						placeholder="Duration in minutes" >
@@ -84,7 +84,7 @@
 				<div class="col-12">
 					<div class="float-end">
 						<div class="text-end">
-							<img src="/assets/images/placeholder/icons/remove-gray.png" 
+							<img src="/assets/images/placeholder/icons/remove-gray.png"
 							style="height: 14px; margin-top: -17px; cursor: pointer;" class="me-2"
 							(click)="removeItem(item, this.interview_questions, 'interview_questions')">
 						</div>

@@ -6,6 +6,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
 import { TranslateService } from '@ngx-translate/core';
+import { RecaptchaErrorParameters } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-signin',

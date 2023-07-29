@@ -8,6 +8,7 @@ import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
 import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } from 'rxjs';
 import { environment } from '@environments/environment';
+import { ReCaptchaV3Service, RecaptchaErrorParameters } from "ng-recaptcha";
 
 @Component({
   selector: 'app-signup',
@@ -27,7 +28,7 @@ export class SignupComponent implements OnInit {
   pwPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
   email: string;
   isResent: boolean;
-  siteKey = environment.recaptchaSiteKey;
+  siteKey: string;
 
   success$ = this.authFacade.getSuccess$;
   loading$ = this.authFacade.loading$;
@@ -40,10 +41,12 @@ export class SignupComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private authService: AuthService,
-    private authFacade: AuthFacade
+    private authFacade: AuthFacade,
+    private recaptchaV3Service: ReCaptchaV3Service
   ) { }
 
   ngOnInit(): void {
+    this.executeImportantAction();
     this.registerForm = this.formBuilder.group({
       email: [null, Validators.compose([Validators.required, Validators.email])],
       password: [null,
@@ -121,6 +124,20 @@ export class SignupComponent implements OnInit {
       }
     };
   }
+
+  resolved(captchaResponse: string): void {
+    console.log(`Resolved captcha with response: ${captchaResponse}`);
+  }
+
+  onError(errorDetails): void {
+    console.log(`reCAPTCHA error encountered; details:`, errorDetails);
+  }
+
+  executeImportantAction(): void {
+    this.recaptchaV3Service.execute('importantAction')
+      .subscribe((token) => console.log(token));
+  }
+
 
   // Clear error message
   onAlertClose(): void {

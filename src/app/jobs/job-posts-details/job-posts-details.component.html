@@ -7,8 +7,8 @@
           <p class="title-banner-description mb-2">
             <ng-container *ngIf="selectedJobPost?.industryId">
               {{selectedJobPost?.industryName}} /
-            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / PHP
-            {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{selectedJobPost?.salaryMaximum |
+            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / {{ selectedJobPost.salaryCurrency }}
+            {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - {{ selectedJobPost.salaryCurrency }} {{selectedJobPost?.salaryMaximum |
             number:'1.0':'en-US' }}
           </p>
         </div>
@@ -45,10 +45,6 @@
 
           <button class="btn btn-apply-now w-100" (click)="toApply()" *ngIf="userRole == '3' && !selectedJobPost.isApplied">
             {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
-          </button>
-
-          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">
-            Login to Apply
           </button>
 
           <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">

@@ -54,8 +54,6 @@ export class AppComponent implements OnInit {
     ).subscribe((event: {[name: string]: any}) => {
 
       this.isSmallScreenAllowed = event['isMobileViewAllowed'] ? event['isMobileViewAllowed']: false;
-
-      console.log(this.isSmallScreenAllowed);
       this.checkScreenSize();
 
     });

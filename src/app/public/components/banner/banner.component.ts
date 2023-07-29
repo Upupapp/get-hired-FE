@@ -6,6 +6,7 @@ import {
   Router,
   ActivatedRoute
 } from '@angular/router';
+import { environment } from "@environments/environment";
 
 @Component({
   selector: 'app-public-banner',
@@ -22,6 +23,7 @@ export class BannerComponent implements OnInit, OnDestroy {
   public keyword: string;
   public work_setup: string = 'Work Setup';
   public job_type: string = 'Job Type';
+  projectName = environment.projectName.toUpperCase();
 
   constructor(private router:Router,
     private activatedRoute: ActivatedRoute,
@@ -61,8 +63,8 @@ export class BannerComponent implements OnInit, OnDestroy {
     }*/
 
     let job_search_data = {
-      keyword: this.keyword,  
-      work_setup: this.work_setup,  
+      keyword: this.keyword,
+      work_setup: this.work_setup,
       job_type: this.job_type
     };
 

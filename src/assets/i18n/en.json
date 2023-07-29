@@ -1,7 +1,7 @@
 {
     "SIGNIN": {
-        "WELCOME_MESSAGE": "Sign in to your account", 
-        "LOGIN_TEXTBOX": "Login", 
+        "WELCOME_MESSAGE": "Sign in to your account",
+        "LOGIN_TEXTBOX": "Login",
         "LOGIN_HEADING": "Sign in to your account",
         "REGISTRATION_PROMPT": "Don't have an account?",
         "REGISTER": "Register"
@@ -139,7 +139,7 @@
         "WORK_SETUP_SELECTOR":"Work Setup",
         "JOB_TYPE_SELECTOR":"Job Type",
         "FIND_JOBS_BUTTON":"Find Jobs",
-        "JOB_POST_SECTION_MESSAGE":"Start your career now, Apply to these Jobs to kick start your career",
+        "JOB_POST_SECTION_MESSAGE":"Start your career now, apply to these jobs to kick start your career",
 
         "RESUME_UPLOAD_BOX_MESSAGE":"Let employers find you",
         "RESUME_UPLOAD_BUTTON":"Upload Your Resume",
@@ -149,7 +149,7 @@
     "COMPANY_DETAILS":{
         "COMPANY_DETAILS":"Company Details",
         "JOBS_CAREERS_SECTION":"Latest Jobs and Careers",
-        "JOBS_CAREERS_MESSAGE":"Apply to these Jobs to kick start your career",
+        "JOBS_CAREERS_MESSAGE":"Find the job that fits your strengths among our wide array of career choices.",
         "EMPTY_CONTENT_MESSAGE":"No Jobs Created Yet",
         "EMPTY_CONTENT_SUB": "There is no activity at the moment, but we can totally solve that"
 
@@ -207,7 +207,7 @@
         "SIDEBAR_SUBCRIPTIONS":"My Subscription",
         "SIDEBAR_EMPLOYER_BRANDING":"Employer Branding",
 
-        "WIDGET_ACTIVE_JOBS":"Active Jobs", 
+        "WIDGET_ACTIVE_JOBS":"Active Jobs",
         "ACTIVE_JOBS_THIS_MONTH":"This Month",
         "WIDGET_APPLICANTS":"Applicants",
         "ON_ACTIVE_JOBS":"On Active Jobs",
@@ -302,7 +302,7 @@
     },
     "EMPLOYER_BRANDING":{
         "VERIFIED_BADGE":"Verified employer",
-        "CALL_TO_ACTION_BUTTON":"Apply now"   
+        "CALL_TO_ACTION_BUTTON":"Apply now"
     },
     "EDIT_COMPANY_DETAILS":{
         "COMPANY_USER_SECTION":"Company Users",
