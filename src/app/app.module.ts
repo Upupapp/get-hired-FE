@@ -63,13 +63,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
       provide: HTTP_INTERCEPTORS,
       useClass: UnAuthorizedInterceptor,
       multi: true
-    },
-    {
-      provide: RECAPTCHA_SETTINGS,
-      useValue: {
-        siteKey: environment.recaptchaSiteKey,
-      } as RecaptchaSettings,
-    },
+    }
   ],
   bootstrap: [AppComponent]
 })

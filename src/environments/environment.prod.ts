@@ -11,6 +11,8 @@ export const environment = {
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   mapRestrictions: ['sg', 'ph'],
   recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U",
+  recaptchaV2SiteKey: '6Ld_FGcnAAAAAPTpT7kuSBgkEYDpGeKNpFt01Fmb',
+  recaptchaV2Secret: '6Ld_FGcnAAAAAKqRg994JIO6VWH42SUweL-zVNF7',
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
     authDomain: 'get-hired-363107.firebaseapp.com',

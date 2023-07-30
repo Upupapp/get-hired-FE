@@ -28,7 +28,7 @@ export class SignupComponent implements OnInit {
   pwPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
   email: string;
   isResent: boolean;
-  siteKey: string;
+  siteKey = environment.recaptchaV2SiteKey;
 
   success$ = this.authFacade.getSuccess$;
   loading$ = this.authFacade.loading$;
@@ -42,11 +42,10 @@ export class SignupComponent implements OnInit {
     private dialog: MatDialog,
     private authService: AuthService,
     private authFacade: AuthFacade,
-    private recaptchaV3Service: ReCaptchaV3Service
   ) { }
 
   ngOnInit(): void {
-    this.executeImportantAction();
+    // this.executeImportantAction();
     this.registerForm = this.formBuilder.group({
       email: [null, Validators.compose([Validators.required, Validators.email])],
       password: [null,
@@ -55,7 +54,6 @@ export class SignupComponent implements OnInit {
       firstName: [null, Validators.compose([Validators.required])],
       lastName: [null, Validators.compose([Validators.required])],
       agreeToTerms: [null, Validators.compose([Validators.required])],
-      recaptcha: [null, Validators.required],
       role: [null, Validators.compose([Validators.required])]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
 
@@ -133,10 +131,10 @@ export class SignupComponent implements OnInit {
     console.log(`reCAPTCHA error encountered; details:`, errorDetails);
   }
 
-  executeImportantAction(): void {
-    this.recaptchaV3Service.execute('importantAction')
-      .subscribe((token) => console.log(token));
-  }
+  // executeImportantAction(): void {
+  //   this.recaptchaV3Service.execute('importantAction')
+  //     .subscribe((token) => console.log(token));
+  // }
 
 
   // Clear error message

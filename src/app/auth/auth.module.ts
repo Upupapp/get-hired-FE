@@ -47,12 +47,11 @@ const routes: Routes = [
     SharedModule,
     ReactiveFormsModule,
     RecaptchaModule, RecaptchaFormsModule,
-    RecaptchaV3Module,
     StoreModule.forFeature('status', authReducer),
     EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)
   ],
-  providers: [AuthFacade, { provide: RECAPTCHA_V3_SITE_KEY, useValue: environment.recaptchaSiteKey }],
+  providers: [AuthFacade],
   exports: [AccountSettingComponent]
 })
 export class AuthModule { }
