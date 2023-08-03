@@ -11,7 +11,7 @@
   <ng-container *ngIf="companySubs && companySubs.length != 0; else subList">
     <div class="py-4 px-5" style="margin-top: -140px"
       [@animate]="{value:'*', params:{ x:'-40px', delay: (50) + 'ms' }}">
-      <ng-container *ngIf="companySubs[0].subscriptionId != 1; else subList">
+      <ng-container *ngIf="companySubs[0].subscriptionId != 1 && companySubs[0].subscriptionId != 5; else subList">
         <div class="d-flex w-100">
           <div class="col-12 col-md-7 p-2">
             <div class="card card-body px-4 py-3">
@@ -64,7 +64,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-5 p-2">
+        <div class="col-12 col-md-5 p-2" *ngIf="companySubs[0].subscriptionName != 'Exemption'">
           <div class="card card-body h-100 p-4">
             <div class="fs-6 fw-light">
               Next payment on
@@ -140,7 +140,8 @@
 </div>
 
 <ng-template #subList>
-  <app-subscriptions-list [endDate]="companySubsEndDate"></app-subscriptions-list>
+  <app-subscriptions-list [endDate]="companySubsEndDate"
+  [isExemption]="companySubs && companySubs.length != 0 && companySubs[0].subscriptionId == 5"></app-subscriptions-list>
 </ng-template>
 
 <ng-template #bar let-max="max" let-value="value" let-label="label">

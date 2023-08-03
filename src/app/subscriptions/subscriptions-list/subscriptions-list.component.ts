@@ -13,6 +13,7 @@ import { SubscriptionSummaryComponent } from '../subscription-summary/subscripti
 })
 export class SubscriptionsListComponent implements OnInit {
   @Input() endDate: Date = null;
+  @Input() isExemption: boolean = false;
   confirmation$: Subscription;
   list$ = this.subscriptionFacade.subscriptionsList$;
   computedDays = 0;

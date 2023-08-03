@@ -12,11 +12,13 @@ import { of, tap } from 'rxjs';
 export class SubscriptionsComponent implements OnInit {
   companySubsEndDate: any;
   pageTitle = "GetHired Premium Pricing";
+  companySubs: any;
 
   details$ = this.subscriptionFacade.companySubs$
     .pipe(
       tap(subs => {
         if (subs) {
+          this.companySubs = subs;
           if (subs.length > 1) {
             this.companySubsEndDate = subs[0].endAt;
             this.pageTitle = "Your Company's Subscription";

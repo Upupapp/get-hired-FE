@@ -51,13 +51,19 @@
             </div>
           </div>
           <!-- TODO bring back for subscription -->
-          <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
+          <div class="col-12 col-md-4 d-flex justify-content-center align-items-center" *ngIf="!isExemption; else onExemption">
             <app-countdown-timer [dateEnd]="endDate" [textColorClass]="'text-primary-red'"
               *ngIf="i == 0 && endDate"></app-countdown-timer>
             <button class="btn btn-primary" (click)="upgrade(item)" style="height: 3rem" *ngIf="!endDate || i !=0 ">
               {{ (i == 0 && !endDate) ? 'Start Free trial':'Upgrade to this plan'}}
             </button>
           </div>
+          <ng-template #onExemption>
+            <div class="col-12 col-md-4 d-flex justify-content-center align-items-center">
+              Currently on Complimentary Plan
+            </div>
+          </ng-template>
+
         </div>
       </div>
     </div>
