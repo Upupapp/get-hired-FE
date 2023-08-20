@@ -99,6 +99,9 @@ export class EmployerSidebarComponent implements OnInit {
         ]
       },
       {
+        title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
+      },
+      {
         title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_INTERVIEWS'), icon: 'create-interview.png', class: 'interviews', route: 'interview'
       },
       {

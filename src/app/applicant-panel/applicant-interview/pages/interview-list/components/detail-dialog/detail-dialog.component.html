@@ -1,0 +1,36 @@
+<div class="side-sub-menu px-0">
+
+	<h6 class="pb-3" style="border-bottom: dashed 1px #d9d9d9;">
+		{{data?.company}} - {{data?.template_title}}
+
+		<span class="close float-end">
+			<img src="/assets/images/placeholder/icons/remove-gray.png"
+			style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
+		</span>
+	</h6>
+
+	<div class="row" *ngIf="!decline">
+		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls; let i = index">
+			<div class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center"
+			[style]="{ background: menu?.background }"
+			(click)="openControlMenu(menu)">
+				<!-- <img [src]="menu?.icon" width="18px"> -->
+				<span class="side-sub-menu-title">{{menu.title}}</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="row" *ngIf="decline">
+		<div class="col-12">
+			<h6>Are you sure you want to decline this interview? You cannot answer this interview anymore after declining. Click Decline to Proceed</h6>
+
+			<hr>
+
+			<div class="text-center">
+				<button class="btn btn-header btn-header-gray me-2">Cancel</button>
+				<button class="btn btn-header btn-danger" (click)="dialogRef.close()">Decline</button>
+			</div>
+		</div>
+	</div>
+</div>
+

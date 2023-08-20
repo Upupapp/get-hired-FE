@@ -52,7 +52,9 @@ export class ApplicantSidebarComponent implements OnInit {
     {
       title: this.translate.instant('APPLICANT_DASHBOARD.SIDEBAR_PROFILE'), icon: 'account.png', class: 'profile', route: 'profile/details'
     },
-
+    {
+      title: 'Interviews', icon: 'create-interview.png', class: 'jobs', route: 'interview'
+    },
     {
       title: this.translate.instant('APPLICANT_DASHBOARD.SIDEBAR_SETTINGS'), icon: 'expired-jobs.png', class: 'expired', route: 'settings'
     },
@@ -66,7 +68,7 @@ export class ApplicantSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.location = this.router.url;
     this.screenHeight = window.innerHeight;
-    if(this.user) {
+    if (this.user) {
       this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
     }
   }

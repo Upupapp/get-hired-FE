@@ -1,0 +1,139 @@
+<section class="card card-body mb-3">
+  <div class="p-4 pb-0">
+    <div class="row">
+      <!-- BANNER LEFT -->
+      <div class="col-12 col-md-12 col-lg-8 mb-4" [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+        <div class="record-container">
+          <div class="get-hired-logo">
+            <img src="/assets/images/placeholder/logo.png">
+          </div>
+
+          <img src="/assets/images/interview-placeholder.png"
+            *ngIf="!isVideoRecording && !previewBlob"
+            class="placeholder-img">
+
+          <video #videoElement class="w-100" height="auto" controls autoplay="autoplay" [src]="videoBlobUrl"
+            *ngIf="isVideoRecording"></video>
+
+          <video #previewElement
+            class="w-100 wala-lang" height="auto" controls autoplay="autoplay" [src]="previewBlob"
+            *ngIf="!isVideoRecording && previewBlob" style="max-height: 380px; border-radius: 16px"></video>
+
+          <div class="bg-bottom w-100" *ngIf="!videoBlob">
+            <div class="d-flex">
+              <div class="me-3 bg-main-question">
+                <p>Question {{index + 1}}</p>
+                <h5>
+                  {{ interviews[index].question }}
+                </h5>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <button class="btn btn-take-interview me-2 text-truncate" (click)="startRecorder()"
+                  *ngIf="!isVideoRecording">
+                  <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+                  Start Recording
+                </button>
+                <button class="btn btn-settings me-2" (click)="openInterviewSettings()" *ngIf="!isVideoRecording">
+                  <img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
+                </button>
+                <button class="btn btn-take-interview text-truncate" (click)="stopRecorder()" *ngIf="isVideoRecording">
+                  <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
+                  Stop Recorder
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-12 col-lg-4 mb-4 text-center question-container"
+        [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
+        <div class="row bg-applicant py-3">
+          <div class="col-12 col-lg-6 d-flex align-items-center">
+            <div class="w-100">
+              <div class="initial-thumbnail-inner mx-auto" *ngIf="fullName">
+                {{ fullName.charAt(0) }}
+              </div>
+              <!-- <div>
+                <img src="/assets/images/face-3.jpg" class="img-avatar">
+              </div> -->
+
+              <div class="mt-2">
+                <h5 class="title-applicant">{{ fullName }}</h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="bg-timer text-center">
+              <div class="mt-2 pb-1">
+                <!-- <div class="progress mt-1 mb-3">
+                    <div class="progress-bar" role="progressbar"
+                    [ngStyle]="{width: timer_value + '%'}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div> -->
+
+                <h5 class="title-timer mt-4">
+                  <img src="/assets/images/placeholder/icons/record.png" style="height:18px" class="me-1">
+                  {{display}}
+                </h5>
+
+                <p class="title-duration">{{ interviews[index].answerDuration }} Minutes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center my-3">
+          <img src="/assets/images/placeholder/icons/interview-type.png" style="height: 35px;" class="me-3">
+          <div>
+            <label for="interview-answer" class="m-0">
+              <strong>Duration:</strong>
+            </label>
+          </div>
+          <div class="px-2">
+            {{ interviews[index].answerDuration }} minutes
+          </div>
+        </div>
+
+        <div class="d-flex bg-question text-start" *ngIf="(index+2) < (interviews.length+1)">
+          <div class="mt-1 w-100">
+            <p class="title-question-number">
+              <img src="/assets/images/placeholder/icons/interview-logo-2.png" style="height: 14px" class="me-1">
+              Next Question ({{index + 2}} /
+              {{interviews.length}})
+            </p>
+            <h5 class="title-question-title">{{interviews[index + 1].question}}</h5>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12 col-lg-6">
+            <input #uploadFile hidden type="file" (change)="uploadVideo($event)"
+              accept="video/mp4,video/x-m4v,video/*" />
+            <button class="btn btn-upload w-100  text-truncate" (click)="uploadFile.click()" type="button">
+              Upload
+              <img src="/assets/images/placeholder/icons/interview-upload.png" style="height: 10px" class="ms-2">
+            </button>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <button class="btn btn-skip w-100  text-truncate" (click)="skipInterview()" type="button">
+              Next Question
+              <img src="/assets/images/placeholder/icons/next-interview.png" style="height: 10px" class="ms-2">
+            </button>
+          </div>
+
+          <div class="col-12 col-lg-12 mt-3">
+            <button class="btn btn-submit w-100 text-start  text-truncate" type="button"
+            *ngIf="previewBlob" (click)="submitRecording(interviews[index].questionId, index)">
+              Submit Recording
+              <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 12px"
+                class="me-2 float-end">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

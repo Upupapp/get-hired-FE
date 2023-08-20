@@ -2,9 +2,14 @@
 [ngStyle]="{ 'min-height' : data.badges.length > 0 ? '500px' : '400px'}"
 [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
 	<div class="banner-thumbnail" style="position: relative;">
-		<img [src]="data.jobBanner ? data.jobBanner: 'assets/images/placeholder/logo-gray.png'"
+		<!-- <img [src]="data.jobBanner ? data.jobBanner: 'assets/images/placeholder/logo-gray.png'"
     [class.p-prct-15]="!data.jobBanner"
-    class="img img-fluid img-banner">
+    class="img img-fluid img-banner"> -->
+		<img [src]="data?.jobBanner" *ngIf="data.jobBanner; else showDefaultBanner" class="img img-fluid img-banner">
+
+		<ng-template #showDefaultBanner>
+			<img src="/assets/images/video-placeholder.png" class="img img-fluid img-banner">
+		</ng-template>
 
 		<div class="d-flex p-2 justify-content-center align-items-center bg-white" *ngIf="data.badges.length > 0" style="position: absolute; bottom: -20px; right: 5px; border-radius: 6px; box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.05); cursor: pointer">
 			<img src="/assets/images/placeholder/icons/{{badge?.icon}}"

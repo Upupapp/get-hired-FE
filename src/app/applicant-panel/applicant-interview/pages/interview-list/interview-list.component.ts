@@ -18,21 +18,21 @@ import {
   TableHeader,
   Interview,
   interviewLists
-} from './utils/interview-model-interface';
+} from '../../utils/applicant-interview-model-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DetailDialogComponent } from './components/detail-dialog/detail-dialog.component';
 
 @Component({
-  selector: 'app-employer-interview',
+  selector: 'app-interview-list',
   animations: [mainAnimations],
-  templateUrl: './employer-interview.component.html',
-  styleUrls: ['./employer-interview.component.scss']
+  templateUrl: './interview-list.component.html',
+  styleUrls: ['./interview-list.component.scss']
 })
-export class EmployerInterviewComponent implements OnInit {
-
-   private req: Subscription;
+export class InterviewListComponent implements OnInit {
+  private req: Subscription;
   private unsubscribe$ = new Subject<void>();
   public routerUrl: any[] = [];
   public loading: boolean = true;
@@ -66,14 +66,25 @@ export class EmployerInterviewComponent implements OnInit {
     setTimeout(() => this.loading = false, 1500);
   }
 
-
   ngOnDestroy(): void {
     if(this.req) this.req.unsubscribe();
   }
 
 
   viewMenu(event): void {
-    
+    let openDialog = this.dialog.open(DetailDialogComponent, {
+      width: '34vw',
+      data: event?.data,
+    });
+
+    openDialog
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        console.log(result);
+        if (result) {
+        }
+      });
   }
 
 

@@ -282,7 +282,7 @@
 	color: #625D5D
 }
 
-.draft, .archived{
+.draft, .archived, .pending{
 	background: rgba(#868686, 0.2);
 	color: #625D5D
 }
@@ -313,7 +313,7 @@
 	//font-weight: 600 !important;
 }
 
-.cancelled, .expired{
+.cancelled, .expired, .declined{
 	background: rgba(#FBCCCC, 0.8);
 	color: #625D5D;
 	//font-weight: 600 !important;
@@ -325,7 +325,7 @@
 	//font-weight: 600 !important;
 }
 
-.active{
+.active, .answered{
 	color: #4D4D4D;
 	background: #E1E4E8;
 	//font-weight: 600 !important;
