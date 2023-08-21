@@ -12,7 +12,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ChangePwComponent } from './change-pw/change-pw.component';
 import { AccountAuthenticationComponent } from './account-authentication/account-authentication.component';
-import { ErrorNotFoundComponent } from '../views/error-page/error-not-found/error-not-found.component';
 import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
 import { RecaptchaModule, RecaptchaFormsModule, RecaptchaV3Module, RECAPTCHA_V3_SITE_KEY } from 'ng-recaptcha';
@@ -39,7 +38,6 @@ const routes: Routes = [
     ResetPasswordComponent,
     ChangePwComponent,
     AccountAuthenticationComponent,
-    ErrorNotFoundComponent,
     AccountSettingComponent
   ],
   imports: [
