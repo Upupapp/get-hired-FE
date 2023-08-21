@@ -1,0 +1,22 @@
+<div class="card card-body" *ngIf="!loading && list$ | async as list">
+  <app-reusable-table
+    [loading]="loading"
+    (updateSelectedRowDialog)="viewMenu($event)"
+    (viewDetails)="viewMenu($event)"
+    [componentTitle]="'Interviews'"
+    [displayedColumns]="displayedColumns"
+    [selectedColumns]="selectedColumns"
+    [selectedColumnsMobile]="selectedColumns"
+    [searchSource]="searchSource"
+    [maxRows]="10"
+    [listDataSource]="interviewLists">
+  </app-reusable-table>
+</div>
+
+
+<!-- LOADING ANIMATION SCREEN -->
+<custom-profile-loader
+  [withSideBar]="false"
+  [fromDetailTab]="true"
+  [loading]="loading">
+</custom-profile-loader>
