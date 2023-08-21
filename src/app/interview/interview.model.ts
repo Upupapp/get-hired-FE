@@ -1,3 +1,18 @@
+export interface GroupInterview {
+  groupInterviewId: string;
+  groupInterviewName: string;
+  interviewTemplateQuestionId: string;
+  jobId?: string;
+  jobName?:string;
+  jobLink?: string;
+  groupRecipientName?: string;
+  recipients: string[];
+  createdAt: Date;
+  createdBy: string;
+  updatedAt: Date;
+  companyId: string;
+}
+
 export interface InterviewQuestion {
   questionId?: string;
   question: string;
@@ -14,4 +29,13 @@ export interface InterviewAnswer {
   createdAt: Date;
   jobId: string;
   applicantId: string;
+}
+
+export interface TableHeader {
+  col_name: string;
+  title: string;
+  type?: string;
+  button_title?: string;
+  button_class?: string;
+  button_logo?: string;
 }

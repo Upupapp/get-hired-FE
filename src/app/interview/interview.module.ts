@@ -5,24 +5,36 @@ import { SharedModule } from '@app-shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ViewInterviewQuestionComponent } from './view-interview-question/view-interview-question.component';
 import { UpdateQuestionComponent } from './update-question/update-question.component';
+import { InterviewListComponent } from './interview-list/interview-list.component';
+import { CreateGroupInterviewComponent } from './create-group-interview/create-group-interview.component';
+import { interviewReducer } from './state/interview.reducer';
+import { InterviewEffects } from './state/interview.effects';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { InterviewFacade } from './state/interview.facade';
 
 const exportedComponents = [
   CreateQuestionComponent,
   ViewInterviewQuestionComponent,
-  UpdateQuestionComponent
+  UpdateQuestionComponent,
+  InterviewListComponent
 ]
 
 @NgModule({
   declarations: [
     ...exportedComponents,
+    CreateGroupInterviewComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    StoreModule.forFeature('interview', interviewReducer),
+    EffectsModule.forFeature([InterviewEffects]),
   ],
   exports: [
     ...exportedComponents
-  ]
+  ],
+  providers: [InterviewFacade]
 })
 export class InterviewModule { }
