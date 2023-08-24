@@ -1,0 +1,21 @@
+
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+	<div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+		<div class="card card-body py-3">
+			<div class="w-100">
+				<span class="main-title mt-3">Question Templates</span>
+
+				<div class="float-end">
+					<button class="btn btn-add-service"
+					(click)="createTemplate()">
+						Create Template
+						<img src="assets/images/placeholder/icons/add-new.png"
+						style="width: 16px;" class="ms-1">
+					</button>
+				</div>
+			</div>
+		</div>
+    <br>
+    <app-template-list></app-template-list>
+	</div>
+</div>

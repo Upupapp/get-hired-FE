@@ -1,0 +1,253 @@
+<div class="card card-body mt-3">
+  <form class="row" [formGroup]="templateForm" (ngSubmit)="submitInterview()"
+    [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+    <div class="row justify-content-end my-2">
+      <div class="col-12 col-lg-8 mb-4"></div>
+      <div class="col-12 col-md-4 text-end">
+        <button class="btn btn-save-draft me-2" (click)="getBack()">Back</button>
+        <button class="btn btn-save me-2" type="submit">View Summary</button>
+      </div>
+    </div>
+
+
+
+    <div class="col-12 col-lg-6 mb-4">
+      <div class="title-container">
+        <label>Group List Name</label>
+        <div class="form-group">
+          <input type="text" formControlName="groupInterviewName" class="form-control"
+            placeholder="Ex. Front End Dev Applicants"
+            [class.is-invalid]="groupInterviewName_validators?.invalid && groupInterviewName_validators?.touched">
+
+          <div class="mt-1 ms-4"
+            *ngIf="
+            (groupInterviewName_validators?.invalid && groupInterviewName_validators?.touched) || groupInterviewName_validators?.dirty">
+            <small *ngIf="groupInterviewName_validators?.errors?.required" class="text-danger">Name is required</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-4"></div>
+
+    <!-- TODO jobs -->
+    <!-- <div class="col-12 col-lg-6 mb-3">
+      <div class="title-container">
+        <label>Published Job List</label>
+        <div class="form-group">
+          <app-dropdown-search placeholder="Select from list" label="Published Job List" formControlName="jobId"
+            [options]="jobLists"></app-dropdown-search>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-3">
+      <div class="d-flex">
+        <div class="me-4 mt-5">
+          or
+        </div>
+
+        <div class="title-container w-100">
+          <label>External Job Link</label>
+          <div class="form-group">
+            <input type="text" class="form-control" formControlName="externalJobLink"
+              placeholder="i.e. www.linkedin.com/jobs-question/34">
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="col-12 col-lg-6 mb-4" *ngIf="!loading && list$ | async as list">
+      <div class="title-container">
+        <label>Interview Questions</label>
+        <div class="form-group">
+          <app-dropdown-search placeholder="Select from list" label="Interview Templates"
+            formControlName="interviewTemplateQuestion" [options]="list"></app-dropdown-search>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-6 mb-4">
+      <div class="d-flex">
+        <div class="me-4 mt-5">
+          or
+        </div>
+
+        <div class="title-container w-100">
+          <button class="btn btn-create-template" style="margin-top: 32px" (click)="createNewTemplateInterview()">Create
+            New Template</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<div class="card card-body mt-3" [@animate]="{value:'*', params:{ y:'50px', delay:'250ms' }}">
+  <div class="row">
+    <!-- EMPLOYMENT DETAILS -->
+    <div class="col-12">
+      <h5 class="title-label">Select Interview Recipient(s)
+        <!-- <span class="float-end">
+          <button class="btn  btn-save" style="margin-top: -15px !important" (click)="inviteInterview()">
+            Invite
+            <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1">
+          </button>
+        </span> -->
+      </h5>
+      <hr style="border: dashed 1px #868686">
+    </div>
+
+    <div class="col-12" *ngIf="!loading && recipients$ | async">
+      <div class="accordion" id="contactListAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+              aria-expanded="true" aria-controls="collapseOne">
+              Group of contacts
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+            data-bs-parent="#contactListAccordion">
+            <div class="accordion-body">
+              <p class="text-muted text-center" *ngIf="!groupContact || groupContact.length == 0; else tableOfGroup">
+                You do not have any Group contacts created
+              </p>
+              <ng-template #tableOfGroup>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th class="d-flex">
+                        <div style="margin-top: 2px !important; margin-left: -20px;">
+                          <!-- <mat-checkbox class="remember-me me-2" [(ngModel)]="selectAllGroup"
+                            (ngModelChange)="selectAll(groupContact, selectAllGroup)">
+                          </mat-checkbox> -->
+                        </div>
+                        <div>
+                          Select
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let item of groupContact">
+                      <td>{{item?.group_name}}</td>
+                      <td>
+                        <input class="form-check-input" type="checkbox"
+                        (change)="getGroupsEmails($event, item)">
+                        <!-- <mat-checkbox [(ngModel)]="item.selected" class="remember-me mt-1">
+                        </mat-checkbox> -->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              List of individual emails
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+            data-bs-parent="#contactListAccordion">
+            <div class="accordion-body">
+              <p class="text-muted text-center"
+                *ngIf="!individualEmails || individualEmails.length == 0; else tableOfIndividuals">
+                You do not have any Contacts added
+              </p>
+              <ng-template #tableOfIndividuals>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th class="d-flex">
+                        <!-- <div style="margin-top: 2px !important; margin-left: -20px;">
+                          <mat-checkbox class="remember-me me-2" [(ngModel)]="selectAllIndividual"
+                            (ngModelChange)="selectAll(individualEmails, selectAllIndividual)">
+                          </mat-checkbox>
+                        </div> -->
+                        <div>
+                          Select
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let item of individualEmails">
+                      <td>{{item?.email}}</td>
+                      <td>
+                        <input class="form-check-input" type="checkbox"
+                        (change)="getIndividualEmails($event, item)">
+                        <!-- <mat-checkbox [(ngModel)]="item.selected" class="remember-me mt-1">
+                        </mat-checkbox> -->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Applicants by latest job application
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+            data-bs-parent="#contactListAccordion">
+            <div class="accordion-body">
+              <p class="text-muted text-center"
+                *ngIf="!emailByJobPost || emailByJobPost.length == 0; else tableOfApplicants">
+                You do not have any Applicants
+              </p>
+              <ng-template #tableOfApplicants>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th class="d-flex">
+                        <div style="margin-top: 2px !important; margin-left: -20px;">
+                          <mat-checkbox class="remember-me me-2" [(ngModel)]="selectAllEmail"
+                            (ngModelChange)="selectAll(emailByJobPost, selectAllEmail)">
+                          </mat-checkbox>
+                        </div>
+                        <div>
+                          Select
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let item of emailByJobPost">
+                      <td>{{item?.email}}</td>
+                      <td>
+                        <input class="form-check-input" type="checkbox"
+                        (change)="getApplicantEmails($event, item)">
+                        <!-- <mat-checkbox [(ngModel)]="item.selected" class="remember-me mt-1">
+                        </mat-checkbox> -->
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-template>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="mt-4 ps-4 pe-4" id="job-order-main-container">
+  <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+    <div class="card card-body py-3">
+      <div class="w-100">
+        <span class="main-title mt-3">Create Interview</span>
+        <div class="float-end" *ngIf="stepper === 2">
+          <button class="btn btn-save-draft me-2" (click)="getBack()">Back</button>
+          <button class="btn btn-save me-2" (click)="publishInterview()">Publish</button>
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <ng-container *ngIf="stepper === 1">
+      <app-create-group-interview (cancel)="getBack()" (next)="showSummary($event)"></app-create-group-interview>
+    </ng-container>
+    <ng-container *ngIf="stepper === 2">
+      <app-group-interview-summary #groupInterviewSummary (cancel)="getBack()" [details]="groupInterview"></app-group-interview-summary>
+    </ng-container>
+  </div>
+</div>

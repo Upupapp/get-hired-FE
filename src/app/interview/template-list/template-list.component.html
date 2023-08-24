@@ -1,0 +1,13 @@
+<div class="card card-body" *ngIf="!loading && list$ | async as list">
+  <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewMenu($event)" (viewDetails)="viewMenu($event)"
+    [componentTitle]="'Interview Templates'" [displayedColumns]="displayedColumns" [selectedColumns]="selectedColumns"
+    [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource" [maxRows]="10" [listDataSource]="list">
+  </app-reusable-table>
+</div>
+
+
+<!-- LOADING ANIMATION SCREEN -->
+<ng-container *ngIf="loading">
+  <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
+  </custom-profile-loader>
+</ng-container>

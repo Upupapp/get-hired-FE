@@ -1,89 +1,7 @@
-<div class="text-end submit-container" 
+<div class="text-end submit-container"
 [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
 	<button class="btn btn-save-draft me-2" (click)="getBack()">Back</button>
 	<button class="btn btn-save me-2">Publish</button>
-</div>
-
-<div class="card card-body mt-3">
-	<form class="row" [formGroup]="templateForm"
-	[@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-		<!-- INTERVIEW DETAILS
-		<div class="col-12">
-			<h5 class="title-label">Create Interview</h5>
-			<hr style="border: dashed 1px #868686">
-		</div>
- 		-->
-		
-		<div class="col-12 col-lg-6 mb-4">
-			<div class="title-container" >
-				<label>Invite List Name</label>
-				<div class="form-group">
-					<input type="text" formControlName="template_title"
-					class="form-control" placeholder="Default invite email" >
-				</div>
-			</div>
-		</div>
-
-		<div class="col-12 col-lg-6 mb-4"></div>
-
-		<div class="col-12 col-lg-6 mb-3">
-			<div class="title-container" >
-				<label>Published Job List</label>
-				<div class="form-group">
-					<app-dropdown-search
-					placeholder="Select from list"
-					label="Published Job List" 
-					formControlName="job_id" 
-					[options]="jobLists"></app-dropdown-search>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-12 col-lg-6 mb-3">
-			<div class="d-flex">
-				<div class="me-4 mt-5">
-					or
-				</div>
-
-				<div class="title-container w-100" >
-					<label>External Job Link</label>
-					<div class="form-group">
-						<input type="text"  class="form-control" placeholder="i.e. www.linkedin.com/jobs-question/34" >
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-12 col-lg-6 mb-4">
-			<div class="title-container" >
-				<label>Interview Questions</label>
-				<div class="form-group">
-					<app-dropdown-search
-					placeholder="Select from list"
-					label="Interview Questions" 
-					formControlName="interview_template" 
-					[options]="interview_questions"></app-dropdown-search>
-				</div>
-			</div>
-		</div>
-
-		<div class="col-12 col-lg-6 mb-4">
-			<div class="d-flex">
-				<div class="me-4 mt-5">
-					or
-				</div>
-
-				<div class="title-container w-100" >
-					<button class="btn btn-create-template" style="margin-top: 32px"
-					(click)="createNewTemplateInterview()">Create New Template</button>
-				</div>
-			</div>
-		</div>
-	</form>
-
-
-
-
 </div>
 
 
@@ -94,10 +12,10 @@
 		<div class="col-12">
 			<h5 class="title-label">Share with others
 				<span class="float-end">
-					<button class="btn  btn-save" style="margin-top: -15px !important" 
+					<button class="btn  btn-save" style="margin-top: -15px !important"
 					(click)="inviteInterview()">
 						Invite
-						<img src="/assets/images/placeholder/icons/add-new.png" 
+						<img src="/assets/images/placeholder/icons/add-new.png"
 						style="width: 16px;" class="ms-1">
 					</button>
 				</span>

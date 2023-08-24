@@ -12,18 +12,22 @@ import { InterviewEffects } from './state/interview.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { InterviewFacade } from './state/interview.facade';
+import { TemplateListComponent } from './template-list/template-list.component';
+import { GroupInterviewSummaryComponent } from './group-interview-summary/group-interview-summary.component';
 
 const exportedComponents = [
   CreateQuestionComponent,
   ViewInterviewQuestionComponent,
   UpdateQuestionComponent,
+  CreateGroupInterviewComponent,
+  TemplateListComponent,
+  GroupInterviewSummaryComponent,
   InterviewListComponent
 ]
 
 @NgModule({
   declarations: [
     ...exportedComponents,
-    CreateGroupInterviewComponent,
   ],
   imports: [
     CommonModule,

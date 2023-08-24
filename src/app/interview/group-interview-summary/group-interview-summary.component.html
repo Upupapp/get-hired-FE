@@ -1,0 +1,72 @@
+<div class="p-0" style="overflow-x: hidden;" id="banner">
+  <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
+    <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
+      <h5 class="title-banner">{{ details.groupInterviewName }}</h5>
+      <p class="title-banner-description mb-2">
+        Angular Developer
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="p-4" style="margin-top: -130px;">
+  <section class="card card-body my-3">
+    <div class="p-1">
+      <label class="title-job-interview text-capitalize mb-3">{{ 'APPLY_PAGE.INTERVIEW_QUESTIONS' | translate }}</label>
+
+      <section class="p-2 px-1 mb-1" *ngIf="templateQuestions$ | async as interviewQuestions">
+        <!-- INTERVIEWS -->
+        <div class="row">
+          <div class="col-12 col-lg-6" *ngFor="let item of interviewQuestions; let i = index"
+            [@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
+            <!-- <div class="float-end">
+              <div class="mt-3 me-2">
+                <button class="btn btn-upload me-2">Upload</button>
+
+                <button class="btn btn-record"
+                routerLink="/job-post/answer-interview/{{selectedJobPost?.id}}/{{i + 1}}"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record Interview</button>
+              </div>
+            </div> -->
+            <div class="interview-card card-body " id="interview-list">
+              <div class="d-flex">
+                <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+                  <img src="/assets/images/placeholder/icons/interview-logo-4.png">
+                </div>
+
+                <div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
+                  <img src="/assets/images/placeholder/icons/interview-logo-4-active.png">
+                </div>
+
+                <div class="mt-2">
+                  <p class="title-label-sub">
+                    <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
+                    Question {{i + 1}}
+                  </p>
+                  <h5 class="title-label">{{item.question}}</h5>
+                  <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{item.answerDuration }} minutes
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <div class="card card-body mt-3" *ngIf="details.recipients.length > 0">
+    <div class="row">
+      <div class="col-12">
+        <div class="job-requirements mb-3">
+          <h5 class="title-job-description mb-0 mt-3 d-flex">
+            <strong class="me-3 mt-1">Email Recipients</strong>
+          </h5>
+          <div class="tags mt-2">
+            <div class="title-tags me-2 mb-2" *ngFor="let email of recipientDisplay">{{email}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

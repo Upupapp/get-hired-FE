@@ -44,10 +44,10 @@ export class DropdownSearchComponent implements OnInit {
 
   constructor(
     @Optional() @Host() @SkipSelf() private controlContainer: ControlContainer,
-  ) { 
+  ) {
 
   }
-  
+
 
   onPanelClose() {
       this.filterControl.setValue('');
@@ -93,10 +93,11 @@ export class DropdownSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.options)
     this.optionSearch = this.options;
     this.initialVal = this.isMultiple ? [] : "";
     this.control = this.formControlName ? this.controlContainer?.control.get(this.formControlName) : this.controlContainer?.control;
-  
+
     // check subscription
     this.filteredOptions = this.filterControl.valueChanges
     .subscribe((value) => {

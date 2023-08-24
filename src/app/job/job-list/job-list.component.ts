@@ -221,7 +221,7 @@ export class JobListComponent implements OnInit {
     setTimeout(() => this.dialog.closeAll(), 2000);
   }
 
-  onLoad(isLoading) {
+  onLoad(isLoading: boolean) {
     this.loading = isLoading;
   }
 

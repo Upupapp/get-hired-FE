@@ -15,6 +15,22 @@ export class InterviewService {
   ) { }
 
   getInterview(companyId: string) {
-        return this.baseService.get<Model.GroupInterview[]>(`${this.interviewUrl}/getall?companyId=${companyId}`);
+    return this.baseService.get<Model.GroupInterview[]>(`${this.interviewUrl}/getall?companyId=${companyId}`);
+  }
+
+  getInterviewTemplates(companyId: string) {
+    return this.baseService.get<Model.InterviewQuestionTemplate[]>(`${this.interviewUrl}/getalltemplates?companyId=${companyId}`);
+  }
+
+  getInterviewRecipient(companyId: string) {
+    return this.baseService.get<Model.InterviewRecipients>(`${this.interviewUrl}/getallrecipients?companyId=${companyId}`);
+  }
+
+  getInterviewTemplateQuestions(templateId: string) {
+    return this.baseService.get<Model.InterviewQuestion[]>(`${this.interviewUrl}/gettemplatequestions?templateId=${templateId}`);
+  }
+
+  saveGroupInterview(interview: Model.GroupInterview) {
+    return this.baseService.post<Model.GroupInterview>(`${this.interviewUrl}/savegroupinterview`, interview);
   }
 }

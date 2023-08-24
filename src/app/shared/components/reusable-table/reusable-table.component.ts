@@ -91,15 +91,18 @@ export class ReusableTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.listDataSource = [];
     //this.filterByStatus(); // filter client list by status
     this.dataSource.data = [...this.listDataSource].slice(0, this.maxRows);
     this.pageNumbers = Math.ceil([...this.listDataSource].length / this.maxRows);
     this.paginate = Array(this.pageNumbers).fill(0).map((el, i) => i + 1);
+    console.log(this.listDataSource)
+    console.log(this.displayedColumns)
+
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
+
   }
 
   repaginate(list: any[]): void{

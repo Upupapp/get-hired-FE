@@ -1,16 +1,18 @@
 export interface GroupInterview {
-  groupInterviewId: string;
+  groupInterviewId?: string;
   groupInterviewName: string;
   interviewTemplateQuestionId: string;
+  interviewTemplateQuestionName?: string;
   jobId?: string;
-  jobName?:string;
-  jobLink?: string;
-  groupRecipientName?: string;
+  jobName?: string;
+  externalJobLink?: string;
   recipients: string[];
-  createdAt: Date;
-  createdBy: string;
-  updatedAt: Date;
+  groupIds: string[];
+  createdAt?: Date;
+  createdBy?: string;
+  updatedAt?: Date;
   companyId: string;
+  groups?: any[];
 }
 
 export interface InterviewQuestion {
@@ -19,6 +21,22 @@ export interface InterviewQuestion {
   answerDuration: number;
   retakes: number;
   sequence: number;
+}
+
+export interface InterviewQuestionTemplate {
+  jobInterviewTemplateId: string;
+  jobInterviewTemplateName: string;
+  createdAt: Date;
+  updatedAt: Date;
+  jobId?: string;
+  numberOfQuestions: number;
+  jobTitle? : string;
+}
+
+export interface InterviewRecipients {
+  groupContact: any[];
+  emailByJobPost: any[];
+  individualEmails: any[];
 }
 
 export interface InterviewAnswer {

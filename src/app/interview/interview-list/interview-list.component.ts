@@ -15,17 +15,16 @@ export class InterviewListComponent implements OnInit {
   interviewLists: Model.GroupInterview[] = [];
   displayedColumns: Model.TableHeader[];
   selectedColumns: string[] =  [
-    'id',
-    'interviewGroupName',
+    'groupInterviewId',
+    'groupInterviewName',
     'createdAt',
-    'numberOfRecipient',
-    'action'
+    'numberOfRecipient'
   ];
 
   searchSource: any = (el) => {
     return {
-      id: el.groupInterviewId,
-      interviewGroupName: el.interviewGroupName
+      groupInterviewId: el.groupInterviewId,
+      groupInterviewName: el.groupInterviewName
     };
   };
 
@@ -53,11 +52,11 @@ export class InterviewListComponent implements OnInit {
     }
 
     this.displayedColumns = [
-      { col_name: 'id', title: 'ID'  },
+      { col_name: 'groupInterviewId', title: 'ID'  },
       { col_name: 'groupInterviewName', title: 'Invite List Name'  },
       { col_name: 'createdAt', title: 'Date Sent', type: 'date'  },
       { col_name: 'numberOfRecipient', title: 'Number Of Recipient'  },
-      { col_name: 'action', title: 'Action' , type: 'menu' },
+      // TODO { col_name: 'action', title: 'Action' , type: 'menu' },
     ];
   }
 

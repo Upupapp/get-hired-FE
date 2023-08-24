@@ -1,7 +1,7 @@
-import { 
+import {
   Component,
-  OnInit, 
-  Input 
+  OnInit,
+  Input
 } from '@angular/core';
 import { mainAnimations } from '../../animations/main-animations';
 
@@ -21,6 +21,7 @@ export class CustomProfileLoaderComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.loading)
   }
 
 }

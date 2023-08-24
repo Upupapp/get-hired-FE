@@ -70,14 +70,12 @@ export class EmployerSidebarComponent implements OnInit {
         title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
       },
       {
-
         title: 'Jobs', icon: 'jobs.png', class: 'jobs',
         route: 'jobs',
         sub_routes: [
           {
             title: this.translate.instant('JOB_POSTS_PAGE.SIDEBAR_JOB_POSTS'), icon: 'jobs.png', class: 'jobs', route: 'jobs/list',
           },
-
           {
             title: this.translate.instant('JOB_POSTS_PAGE.SIDEBAR_EXPIRED_JOBS'), icon: 'expired-jobs.png', class: 'expired', route: 'jobs/expired'
           },
@@ -99,10 +97,15 @@ export class EmployerSidebarComponent implements OnInit {
         ]
       },
       {
-        title: 'Interviews', icon: 'create-interview.png', class: 'interviews', route: 'interview'
-      },
-      {
-        title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_INTERVIEWS'), icon: 'create-interview.png', class: 'interviews', route: 'interview'
+        title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_INTERVIEWS'), icon: 'create-interview.png', class: 'interviews', route: 'interview',
+        sub_routes: [
+          {
+            title: "Interview List", icon: 'create-interview.png', class: 'interviews', route: 'interview/list',
+          },
+          {
+            title: "Question Templates", icon: 'create-interview.png', class: 'interviews', route: 'interview/templates'
+          },
+        ]
       },
       {
         title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_SUBCRIPTIONS'), icon: 'subscribe.png', class: 'subscription',

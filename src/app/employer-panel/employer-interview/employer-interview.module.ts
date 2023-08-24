@@ -10,6 +10,8 @@ import { CreateNewTemplateDialogComponent } from './pages/add-interview-template
 import { InviteContactComponent } from './pages/add-interview-templates/components/invite-contact/invite-contact.component';
 import { EmployerInterviewListComponent } from './employer-interview-list/employer-interview-list.component';
 import { InterviewModule } from '@main/interview/interview.module';
+import { CreateEmployerInterviewComponent } from './create-employer-interview/create-employer-interview.component';
+import { EmployerInterviewQuestionTemplatesComponent } from './employer-interview-question-templates/employer-interview-question-templates.component';
 
 const routes: Routes = [
   {
@@ -22,7 +24,11 @@ const routes: Routes = [
      },
      {
        path: 'create',
-       component: AddInterviewTemplatesComponent,
+       component: CreateEmployerInterviewComponent,
+     },
+     {
+       path: 'templates',
+       component: EmployerInterviewQuestionTemplatesComponent,
      },
      { path: '', redirectTo: 'list', pathMatch: 'full' }
     ]
@@ -33,10 +39,12 @@ const routes: Routes = [
   declarations: [
     EmployerInterviewListComponent,
     EmployerInterviewComponent,
+    CreateEmployerInterviewComponent,
     AddInterviewTemplatesComponent,
     InterviewTemplateStepComponent,
     CreateNewTemplateDialogComponent,
-    InviteContactComponent
+    InviteContactComponent,
+    EmployerInterviewQuestionTemplatesComponent
   ],
   imports: [
     CommonModule,

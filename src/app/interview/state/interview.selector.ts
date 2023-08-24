@@ -13,6 +13,21 @@ export const getInterviewList = createSelector(
   state => state.list
 );
 
+export const getInterviewTemplatesList = createSelector(
+  getInterviewInitState,
+  state => state.templateList
+);
+
+export const getInterviewRecipientList = createSelector(
+  getInterviewInitState,
+  state => state.recipientList
+);
+
+export const getInterviewTemplateQuestions = createSelector(
+  getInterviewInitState,
+  state => state.templateQuestions
+);
+
 export const success = createSelector(
   getInterviewInitState,
   state => state.succesMsg

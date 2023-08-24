@@ -22,23 +22,23 @@ import { Location } from '@angular/common';
 export class InterviewTemplateStepComponent implements OnInit {
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
-  
+
   public templateForm!: FormGroup;
   public interview_questions: any[] = [
     {
-      name: "Web Development Interview Questions",  
-      number_of_interview: 5,  
+      name: "Web Development Interview Questions",
+      number_of_interview: 5,
     },
 
     {
-      name: "Business Management Interview Questions",  
-      number_of_interview: 5,  
-    },   
+      name: "Business Management Interview Questions",
+      number_of_interview: 5,
+    },
 
     {
-      name: "Backend Developer Interview Sets",  
-      number_of_interview: 5,  
-    }, 
+      name: "Backend Developer Interview Sets",
+      number_of_interview: 5,
+    },
   ];
   public jobLists: Job[] = jobLists;
 
@@ -131,7 +131,7 @@ export class InterviewTemplateStepComponent implements OnInit {
     this.templateForm = this.formBuilder.group({
       template_title: ['',/* [Validators.required]*/],
       job_id: [''],
-      external_job_link: [''], 
+      external_job_link: [''],
       interview_template: ['']
     });
 
@@ -153,10 +153,10 @@ export class InterviewTemplateStepComponent implements OnInit {
   inviteInterview(event?: any){
     let openDialog = this.dialog.open(
       InviteContactComponent,
-      { 
+      {
         width: '34vw',
         data: {
-          ...event,  
+          ...event,
           title: "User",
           sub_title: "user"
         },
@@ -174,7 +174,7 @@ export class InterviewTemplateStepComponent implements OnInit {
   createNewTemplateInterview(){
     let openDialog = this.dialog.open(
       CreateNewTemplateDialogComponent,
-      { 
+      {
         minWidth: '74vw',
         minHeight: '85vh',
         maxHeight: '95vh',

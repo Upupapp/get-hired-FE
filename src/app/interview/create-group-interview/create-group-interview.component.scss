@@ -364,3 +364,32 @@ label{
 		color: $color-global-red;
 	}
 }
+
+.btn-save-draft{
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 27px;
+
+	color: #a9a9a9;
+	background: #FFFFFF;
+	border: 1px solid #a9a9a9;
+	border-radius: 7px;
+	padding: 7px 20px !important;
+}
+
+.btn-save{
+	background: $color-global-red-buttons;
+	border-radius: 7px;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 27px;
+
+	color: #FFFFFF;
+	padding: 7px 20px !important;
+
+	&:hover{
+		background: rgba(#FF7062, 0.8);
+	}
+}
