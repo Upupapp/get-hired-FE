@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -6,6 +6,9 @@ import { Subject, map, takeUntil, tap } from 'rxjs';
 import { CreateQuestionComponent } from '../create-question/create-question.component';
 import { CreateNewTemplateDialogComponent } from '@main/employer-panel/employer-interview/pages/add-interview-templates/components/create-new-template-dialog/create-new-template-dialog.component';
 import { InterviewFacade } from '../state/interview.facade';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-create-group-interview',
@@ -20,6 +23,9 @@ export class CreateGroupInterviewComponent implements OnInit {
   templateForm!: FormGroup;
   loading: boolean = true;
   companyId: string;
+  searchInGroups: string;
+  searchInIndividual: string;
+  searchInApplicant: string;
 
   selectAllEmail: boolean = false;
   selectAllGroup: boolean = false;
@@ -30,9 +36,10 @@ export class CreateGroupInterviewComponent implements OnInit {
   selectedGroups = [];
 
 
-  groupContact = [];
-  individualEmails = [];
-  emailByJobPost = [];
+  // groupContact = [];
+  // individualEmails = [];
+  // emailByJobPost = [];
+  allRecipientObj: any;
   jobLists = [] // TODO get job list
   private unsubscribe$ = new Subject<void>();
 
@@ -52,10 +59,15 @@ export class CreateGroupInterviewComponent implements OnInit {
   recipients$ = this.interviewFacade.interviewRecipientList$
     .pipe(
       tap(recipients => {
-        if(recipients) {
-          this.groupContact = recipients.groupContact;
-          this.individualEmails = recipients.individualEmails;
-          this.emailByJobPost = recipients.emailByJobPost;
+        if (recipients) {
+          // this.groupContact = recipients.groupContact;
+          // this.individualEmails = recipients.individualEmails;
+          // this.emailByJobPost = recipients.emailByJobPost;
+          this.allRecipientObj = {
+            groupContact: recipients.groupContact,
+            individualEmails: recipients.individualEmails,
+            emailByJobPost: recipients.emailByJobPost
+          }
         }
       })
     );
@@ -82,6 +94,17 @@ export class CreateGroupInterviewComponent implements OnInit {
     });
   }
 
+  searchDataSource(arr, searchModel, key?): any[] {
+    if (!searchModel || searchModel == '') {
+      return this.allRecipientObj[arr];
+    } else {
+      return this.allRecipientObj[arr].filter((item) => {
+        return key ? item[key].toLowerCase().includes(searchModel.toLowerCase()) : item.toLowerCase().includes(searchModel.toLowerCase());
+      });
+    }
+
+  }
+
   createNewTemplateInterview() {
     let openDialog = this.dialog.open(
       CreateNewTemplateDialogComponent,
@@ -104,24 +127,34 @@ export class CreateGroupInterviewComponent implements OnInit {
     this.loading = isLoading;
   }
 
-  selectAll(arr, selection) {
-    return arr.forEach((el) => {
-      el.selected = selection;
-    });
+  // selectAll(arr, selection) {
+  //   return arr.forEach((el) => {
+  //     el.selected = selection;
+  //   });
+  // }
+
+  selectAll(arr, selection, event) {
+    if(event.target.checked) {
+      this[selection] = arr;
+    } else {
+      this[selection] = [];
+    }
   }
 
   getApplicantEmails(event, applicant) {
     const isSelected = event.target.checked;
-    if(isSelected) {
+    if (isSelected) {
       this.selectedApplicants.push(applicant.email);
     } else {
       this.selectedApplicants = this.selectedApplicants.filter(email => email != applicant.email)
     }
+
+    console.log(this.selectedApplicants);
   }
 
   getIndividualEmails(event, individual) {
     const isSelected = event.target.checked;
-    if(isSelected) {
+    if (isSelected) {
       this.selectedIndividuals.push(individual.email);
     } else {
       this.selectedIndividuals = this.selectedIndividuals.filter(email => email != individual.email)
@@ -132,7 +165,7 @@ export class CreateGroupInterviewComponent implements OnInit {
 
   getGroupsEmails(event, group) {
     const isSelected = event.target.checked;
-    if(isSelected) {
+    if (isSelected) {
       this.selectedGroups.push(group);
     } else {
       this.selectedGroups = this.selectedGroups.filter(selectedGroup => selectedGroup.group_id != group.group_id)
@@ -142,9 +175,7 @@ export class CreateGroupInterviewComponent implements OnInit {
   }
 
   submitInterview() {
-    if(this.templateForm.valid) {
-      console.log(this.templateForm.value);
-      console.log(this.individualEmails)
+    if (this.templateForm.valid) {
       const { name, value } = this.templateForm.controls.interviewTemplateQuestion?.value;
 
       const flattenRecipient = this.getFlattenRecipient();
@@ -165,19 +196,23 @@ export class CreateGroupInterviewComponent implements OnInit {
 
   getFlattenRecipient() {
     let allEmails = [];
-    if(this.selectAllEmail) {
-      allEmails.push(...this.emailByJobPost);
+    if (this.selectAllEmail) {
+      allEmails.push(...this.allRecipientObj.emailByJobPost);
     } else {
       allEmails.push(...this.selectedApplicants)
     }
 
-    if(this.selectAllIndividual) {
-      allEmails.push(...this.individualEmails);
+    if (this.selectAllIndividual) {
+      allEmails.push(...this.allRecipientObj.individualEmails);
     } else {
       allEmails.push(...this.selectedIndividuals)
     }
 
     return allEmails;
+  }
+
+  isChecked(item, arr, key?) {
+    return key ? arr.includes(item[key]) : arr.includes(item);
   }
 
   getBack() {

@@ -2,12 +2,24 @@ export const environment = {
   production: true,
   server: 'https://ssr-back.herokuapp.com',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
-  api_url: 'https://staging-api-dot-get-hired-363107.et.r.appspot.com/api',
+  api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
   app_url: 'http://web.gethiredonline.com.ph',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: false,
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   mapRestrictions: ['sg', 'ph'],
-  recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U"
+  projectName: 'gethired',
+  recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U",
+  recaptchaV2SiteKey: '6Ld_FGcnAAAAAPTpT7kuSBgkEYDpGeKNpFt01Fmb',
+  recaptchaV2Secret: '6Ld_FGcnAAAAAKqRg994JIO6VWH42SUweL-zVNF7',
+  firebase: {
+    apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
+    authDomain: 'get-hired-363107.firebaseapp.com',
+    projectId: 'get-hired-363107',
+    storageBucket: 'get-hired-363107.appspot.com',
+    messagingSenderId: "818317489154",
+    appId: "1:818317489154:web:d849afade1105af929631b",
+    measurementId: "G-4C797NXLJF",
+  }
 };

@@ -13,6 +13,9 @@ export interface GroupInterview {
   updatedAt?: Date;
   companyId: string;
   groups?: any[];
+  recipientOpened?: string[];
+  recipientAnswered?: string[];
+  numberOfRecipient?: number;
 }
 
 export interface InterviewQuestion {

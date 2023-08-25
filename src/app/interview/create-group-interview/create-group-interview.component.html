@@ -98,19 +98,29 @@
       <hr style="border: dashed 1px #868686">
     </div>
 
+
+
     <div class="col-12" *ngIf="!loading && recipients$ | async">
       <div class="accordion" id="contactListAccordion">
         <div class="accordion-item">
-          <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-              aria-expanded="true" aria-controls="collapseOne">
-              Group of contacts
+          <div class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target=".onGroupTarget"
+              aria-expanded="false" aria-controls="collapseOne">
+              <span class="w-75 py-1">
+                Group of contacts
+              </span>
+
+              <input type="text" class="form-control w-25 collapse py-1 onGroupTarget" placeholder="Search"
+                aria-label="Search" [(ngModel)]="searchInGroups"
+                (ngModelChange)="searchDataSource('groupContact', searchInGroups, 'group_name')"
+                (click)="$event.stopPropagation();" data-bs-toggle="collapse" data-bs-target>
             </button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-            data-bs-parent="#contactListAccordion">
+          </div>
+
+          <div id="collapseOne" class="accordion-collapse collapse onGroupTarget" aria-labelledby="headingOne">
             <div class="accordion-body">
-              <p class="text-muted text-center" *ngIf="!groupContact || groupContact.length == 0; else tableOfGroup">
+              <p class="text-muted text-center"
+                *ngIf="!allRecipientObj.groupContact || allRecipientObj.groupContact.length == 0; else tableOfGroup">
                 You do not have any Group contacts created
               </p>
               <ng-template #tableOfGroup>
@@ -120,9 +130,11 @@
                       <th>Name</th>
                       <th class="d-flex">
                         <div style="margin-top: 2px !important; margin-left: -20px;">
-                          <!-- <mat-checkbox class="remember-me me-2" [(ngModel)]="selectAllGroup"
-                            (ngModelChange)="selectAll(groupContact, selectAllGroup)">
-                          </mat-checkbox> -->
+                          <div style="margin-top: 2px !important; margin-left: -20px;">
+                            <input class="form-check-input remember-me me-2" type="checkbox"
+                              (change)="selectAll(allRecipientObj.groupContact, 'selectedGroups', $event)"
+                              [(ngModel)]="selectAllGroup">
+                          </div>
                         </div>
                         <div>
                           Select
@@ -132,13 +144,11 @@
                   </thead>
 
                   <tbody>
-                    <tr *ngFor="let item of groupContact">
+                    <tr *ngFor="let item of searchDataSource('groupContact', searchInGroups, 'group_name')">
                       <td>{{item?.group_name}}</td>
                       <td>
-                        <input class="form-check-input" type="checkbox"
-                        (change)="getGroupsEmails($event, item)">
-                        <!-- <mat-checkbox [(ngModel)]="item.selected" class="remember-me mt-1">
-                        </mat-checkbox> -->
+                        <input class="form-check-input" type="checkbox" (change)="getGroupsEmails($event, item)"
+                          [checked]="isChecked(item, selectedGroups)">
                       </td>
                     </tr>
                   </tbody>
@@ -147,19 +157,25 @@
             </div>
           </div>
         </div>
-
         <div class="accordion-item">
           <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-              List of individual emails
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+              data-bs-target=".onIndividualTarget" aria-expanded="false" aria-controls="collapseTwo">
+
+              <span class="w-75 py-1">
+                List of individual emails
+              </span>
+
+              <input type="text" class="form-control w-25 collapse py-1 onIndividualTarget" placeholder="Search"
+                (click)="$event.stopPropagation();" data-bs-toggle="collapse" data-bs-target aria-label="Search"
+                [(ngModel)]="searchInIndividual"
+                (ngModelChange)="searchDataSource('individualEmails',searchInIndividual, 'email')">
             </button>
           </h2>
-          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-            data-bs-parent="#contactListAccordion">
+          <div id="collapseTwo" class="accordion-collapse collapse onIndividualTarget" aria-labelledby="headingTwo">
             <div class="accordion-body">
               <p class="text-muted text-center"
-                *ngIf="!individualEmails || individualEmails.length == 0; else tableOfIndividuals">
+                *ngIf="!allRecipientObj.individualEmails || allRecipientObj.individualEmails.length == 0; else tableOfIndividuals">
                 You do not have any Contacts added
               </p>
               <ng-template #tableOfIndividuals>
@@ -168,11 +184,11 @@
                     <tr>
                       <th>Email</th>
                       <th class="d-flex">
-                        <!-- <div style="margin-top: 2px !important; margin-left: -20px;">
-                          <mat-checkbox class="remember-me me-2" [(ngModel)]="selectAllIndividual"
-                            (ngModelChange)="selectAll(individualEmails, selectAllIndividual)">
-                          </mat-checkbox>
-                        </div> -->
+                        <div style="margin-top: 2px !important; margin-left: -20px;">
+                          <input class="form-check-input remember-me me-2" type="checkbox"
+                            (change)="selectAll(allRecipientObj.individualEmails, 'selectedIndividuals', $event)"
+                            [(ngModel)]="selectAllIndividual">
+                        </div>
                         <div>
                           Select
                         </div>
@@ -181,13 +197,11 @@
                   </thead>
 
                   <tbody>
-                    <tr *ngFor="let item of individualEmails">
+                    <tr *ngFor="let item of searchDataSource('individualEmails',searchInIndividual, 'email')">
                       <td>{{item?.email}}</td>
                       <td>
-                        <input class="form-check-input" type="checkbox"
-                        (change)="getIndividualEmails($event, item)">
-                        <!-- <mat-checkbox [(ngModel)]="item.selected" class="remember-me mt-1">
-                        </mat-checkbox> -->
+                        <input class="form-check-input" type="checkbox" (change)="getIndividualEmails($event, item)"
+                          [checked]="isChecked(item, selectedIndividuals, 'email')">
                       </td>
                     </tr>
                   </tbody>
@@ -197,19 +211,26 @@
             </div>
           </div>
         </div>
-
         <div class="accordion-item">
           <h2 class="accordion-header" id="headingThree">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-              data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-              Applicants by latest job application
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target=".onApplicantTarget"
+              aria-expanded="false" aria-controls="collapseThree">
+
+
+              <span class="w-75 py-1">
+                Applicants by latest job application
+              </span>
+
+              <input type="text" class="form-control w-25 collapse py-1 onApplicantTarget" placeholder="Search"
+                (click)="$event.stopPropagation();" data-bs-toggle="collapse" data-bs-target aria-label="Search"
+                [(ngModel)]="searchInApplicant"
+                (ngModelChange)="searchDataSource('emailByJobPost', searchInApplicant, 'email')">
             </button>
           </h2>
-          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-            data-bs-parent="#contactListAccordion">
+          <div id="collapseThree" class="accordion-collapse collapse onApplicantTarget" aria-labelledby="headingThree">
             <div class="accordion-body">
               <p class="text-muted text-center"
-                *ngIf="!emailByJobPost || emailByJobPost.length == 0; else tableOfApplicants">
+                *ngIf="!allRecipientObj.emailByJobPost || allRecipientObj.emailByJobPost.length == 0; else tableOfApplicants">
                 You do not have any Applicants
               </p>
               <ng-template #tableOfApplicants>
@@ -219,9 +240,9 @@
                       <th>Email</th>
                       <th class="d-flex">
                         <div style="margin-top: 2px !important; margin-left: -20px;">
-                          <mat-checkbox class="remember-me me-2" [(ngModel)]="selectAllEmail"
-                            (ngModelChange)="selectAll(emailByJobPost, selectAllEmail)">
-                          </mat-checkbox>
+                          <input class="form-check-input remember-me me-2" type="checkbox"
+                            (change)="selectAll(allRecipientObj.emailByJobPost, 'selectedApplicants', $event)"
+                            [(ngModel)]="selectAllEmail">
                         </div>
                         <div>
                           Select
@@ -231,19 +252,16 @@
                   </thead>
 
                   <tbody>
-                    <tr *ngFor="let item of emailByJobPost">
+                    <tr *ngFor="let item of searchDataSource('emailByJobPost', searchInApplicant, 'email')">
                       <td>{{item?.email}}</td>
                       <td>
-                        <input class="form-check-input" type="checkbox"
-                        (change)="getApplicantEmails($event, item)">
-                        <!-- <mat-checkbox [(ngModel)]="item.selected" class="remember-me mt-1">
-                        </mat-checkbox> -->
+                        <input class="form-check-input" type="checkbox" (change)="getApplicantEmails($event, item)"
+                          [checked]="isChecked(item, selectedApplicants, 'email')">
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </ng-template>
-
             </div>
           </div>
         </div>

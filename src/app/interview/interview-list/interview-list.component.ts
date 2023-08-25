@@ -14,11 +14,13 @@ export class InterviewListComponent implements OnInit {
   loading: boolean = true;
   interviewLists: Model.GroupInterview[] = [];
   displayedColumns: Model.TableHeader[];
-  selectedColumns: string[] =  [
+  selectedColumns: string[] = [
     'groupInterviewId',
     'groupInterviewName',
     'createdAt',
-    'numberOfRecipient'
+    'numberOfRecipient',
+    'recipientOpened',
+    'recipientAnswered'
   ];
 
   searchSource: any = (el) => {
@@ -35,7 +37,9 @@ export class InterviewListComponent implements OnInit {
         return interviews.map(interview => {
           return {
             ...interview,
-            numberOfRecipient: interview.recipients.length
+            numberOfRecipient: interview.numberOfRecipient || 0,
+            recipientOpened: interview.recipientOpened.length,
+            recipientAnswered: interview.recipientAnswered.length
           }
         })
       })
@@ -47,15 +51,17 @@ export class InterviewListComponent implements OnInit {
 
   ngOnInit(): void {
     const user = JSON.parse(localStorage.getItem('user'));
-    if(user.companyId) {
+    if (user.companyId) {
       this.interviewFacade.getInterviewList(user.companyId);
     }
 
     this.displayedColumns = [
-      { col_name: 'groupInterviewId', title: 'ID'  },
-      { col_name: 'groupInterviewName', title: 'Invite List Name'  },
-      { col_name: 'createdAt', title: 'Date Sent', type: 'date'  },
-      { col_name: 'numberOfRecipient', title: 'Number Of Recipient'  },
+      { col_name: 'groupInterviewId', title: 'ID' },
+      { col_name: 'groupInterviewName', title: 'Invite List Name' },
+      { col_name: 'createdAt', title: 'Date Sent', type: 'date' },
+      { col_name: 'numberOfRecipient', title: 'Number Of Recipient' },
+      { col_name: 'recipientOpened', title: 'Recipient Opened' },
+      { col_name: 'recipientAnswered', title: 'Recipient Answered' },
       // TODO { col_name: 'action', title: 'Action' , type: 'menu' },
     ];
   }

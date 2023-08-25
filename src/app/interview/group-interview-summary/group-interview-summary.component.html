@@ -2,9 +2,9 @@
   <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
     <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
       <h5 class="title-banner">{{ details.groupInterviewName }}</h5>
-      <p class="title-banner-description mb-2">
+      <!-- <p class="title-banner-description mb-2">
         Angular Developer
-      </p>
+      </p> -->
     </div>
   </div>
 </div>
@@ -62,7 +62,10 @@
             <strong class="me-3 mt-1">Email Recipients</strong>
           </h5>
           <div class="tags mt-2">
-            <div class="title-tags me-2 mb-2" *ngFor="let email of recipientDisplay">{{email}}</div>
+            <div class="title-tags me-2 mb-2 group" *ngFor="let group of details.groups">
+              {{group.group_name}}
+            </div>
+            <div class="title-tags me-2 mb-2 individual" *ngFor="let email of details.recipients">{{email}}</div>
           </div>
         </div>
       </div>

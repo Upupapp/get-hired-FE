@@ -37,12 +37,6 @@ export class GroupInterviewSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.details && this.details.interviewTemplateQuestionId) {
-      if (this.details.groups.length != 0) {
-        this.details.groups.forEach(group => this.recipientsEmail.push(group.group_name));
-        this.recipientDisplay = [...this.recipientsEmail, ...this.details.recipients]
-      } else {
-        this.recipientDisplay = this.details.recipients;
-      }
       this.interviewFacade.getInterviewTemplateQuestions(this.details.interviewTemplateQuestionId)
     }
 
@@ -65,8 +59,8 @@ export class GroupInterviewSummaryComponent implements OnInit {
   }
 
   afterSubmit(event) {
-    console.log('who called');
     if (event == 'created') {
+      this.interview = null;
       this.snackBar.open(`Your group interview has been sent`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],

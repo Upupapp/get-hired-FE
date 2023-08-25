@@ -4,7 +4,7 @@
       <div class="w-100">
         <span class="main-title mt-3">Create Interview</span>
         <div class="float-end" *ngIf="stepper === 2">
-          <button class="btn btn-save-draft me-2" (click)="getBack()">Back</button>
+          <button class="btn btn-save-draft me-2" (click)="stepper = 1">Back</button>
           <button class="btn btn-save me-2" (click)="publishInterview()">Publish</button>
         </div>
       </div>
