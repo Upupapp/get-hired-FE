@@ -9,6 +9,7 @@ import { InterviewFacade } from '../state/interview.facade';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { CreateInterviewComponent } from '../create-interview/create-interview.component';
 
 @Component({
   selector: 'app-create-group-interview',
@@ -19,6 +20,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class CreateGroupInterviewComponent implements OnInit {
   @Output() cancel = new EventEmitter();
   @Output() next = new EventEmitter();
+  @Output() newTemplateInterview = new EventEmitter();
 
   templateForm!: FormGroup;
   loading: boolean = true;
@@ -90,7 +92,7 @@ export class CreateGroupInterviewComponent implements OnInit {
       groupInterviewName: [null, Validators.required],
       jobId: [null],
       externalJobLink: [null],
-      interviewTemplateQuestion: [null]
+      interviewTemplateQuestion: [null, Validators.required]
     });
   }
 
@@ -106,21 +108,7 @@ export class CreateGroupInterviewComponent implements OnInit {
   }
 
   createNewTemplateInterview() {
-    let openDialog = this.dialog.open(
-      CreateNewTemplateDialogComponent,
-      {
-        minWidth: '74vw',
-        minHeight: '85vh',
-        maxHeight: '95vh',
-      }
-    );
-
-    openDialog
-      .afterClosed()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(result => {
-
-      });
+    this.newTemplateInterview.emit()
   }
 
   onLoad(isLoading: boolean) {
@@ -221,6 +209,10 @@ export class CreateGroupInterviewComponent implements OnInit {
 
   get groupInterviewName_validators() {
     return this.templateForm.get('groupInterviewName');
+  }
+
+  get interviewTemplateQuestion_validators() {
+    return this.templateForm.get('interviewTemplateQuestion');
   }
 
 }

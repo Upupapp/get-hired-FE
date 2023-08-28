@@ -5,37 +5,49 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { GroupInterviewSummaryComponent } from '@main/interview/group-interview-summary/group-interview-summary.component';
 
 @Component({
-  selector: 'app-create-employer-interview',
-  templateUrl: './create-employer-interview.component.html',
-  styleUrls: ['./create-employer-interview.component.scss'],
+  selector: 'app-employer-inter-view-basic-info',
+  templateUrl: './employer-inter-view-basic-info.component.html',
+  styleUrls: ['./employer-inter-view-basic-info.component.scss'],
   animations: [mainAnimations]
 })
-export class CreateEmployerInterviewComponent implements OnInit {
+export class EmployerInterViewBasicInfoComponent implements OnInit {
   @ViewChild('groupInterviewSummary') groupInterviewSummary: GroupInterviewSummaryComponent;
-  stepper = 1;
 
+  stepper = '1';
   groupInterview: any;
 
   constructor(
     private router: Router,
-    private dialog: MatDialog,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if(params.step == 2 && !this.groupInterview) {
+        this.router.navigate(['.'], { relativeTo: this.route, queryParams: { step: 1 } })
+      } else {
+        this.stepper = params.step;
+      }
+    });
   }
 
   getBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
   }
 
+  goToTemplate() {
+    console.log('anyare')
+    this.router.navigate(['../question-template'], { relativeTo: this.route })
+  }
+
   showSummary(interview) {
-    this.stepper = 2
     this.groupInterview = interview;
+    this.router.navigate(['.'], { relativeTo: this.route, queryParams: { step: 2 } })
   }
 
   publishInterview() {
     this.groupInterviewSummary.publishInterview();
   }
+
 
 }

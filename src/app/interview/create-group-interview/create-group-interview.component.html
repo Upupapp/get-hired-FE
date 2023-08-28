@@ -63,6 +63,12 @@
         <div class="form-group">
           <app-dropdown-search placeholder="Select from list" label="Interview Templates"
             formControlName="interviewTemplateQuestion" [options]="list"></app-dropdown-search>
+
+            <div class="mt-1 ms-4"
+            *ngIf="
+            (interviewTemplateQuestion_validators?.invalid && interviewTemplateQuestion_validators?.touched) || interviewTemplateQuestion_validators?.dirty">
+            <small *ngIf="interviewTemplateQuestion_validators?.errors?.required" class="text-danger">Select or Create Template Question</small>
+          </div>
         </div>
       </div>
     </div>
@@ -74,8 +80,10 @@
         </div>
 
         <div class="title-container w-100">
-          <button class="btn btn-create-template" style="margin-top: 32px" (click)="createNewTemplateInterview()">Create
-            New Template</button>
+          <button class="btn btn-create-template" style="margin-top: 32px" type="button"
+          (click)="createNewTemplateInterview()">
+            Create New Template
+          </button>
         </div>
       </div>
     </div>

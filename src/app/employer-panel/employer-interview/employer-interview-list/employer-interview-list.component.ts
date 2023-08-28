@@ -22,7 +22,7 @@ export class EmployerInterviewListComponent implements OnInit {
 
   addInterviews(){
     console.log('Hala siya')
-    this.router.navigate(['../create'], { relativeTo: this.route })
+    this.router.navigate(['../create'], { relativeTo: this.route, queryParams: { step: 1 } })
   }
 
 }

@@ -10,27 +10,29 @@ import { CreateNewTemplateDialogComponent } from './pages/add-interview-template
 import { InviteContactComponent } from './pages/add-interview-templates/components/invite-contact/invite-contact.component';
 import { EmployerInterviewListComponent } from './employer-interview-list/employer-interview-list.component';
 import { InterviewModule } from '@main/interview/interview.module';
-import { CreateEmployerInterviewComponent } from './create-employer-interview/create-employer-interview.component';
 import { EmployerInterviewQuestionTemplatesComponent } from './employer-interview-question-templates/employer-interview-question-templates.component';
+import { EmployerInterViewBasicInfoComponent } from './employer-inter-view-basic-info/employer-inter-view-basic-info.component';
+import { EmployerInterviewCreateTemplateComponent } from './employer-interview-create-template/employer-interview-create-template.component';
 
 const routes: Routes = [
   {
     path: '',
     component: EmployerInterviewComponent,
     children: [
-     {
-       path: 'list',
-       component: EmployerInterviewListComponent
-     },
-     {
-       path: 'create',
-       component: CreateEmployerInterviewComponent,
-     },
-     {
-       path: 'templates',
-       component: EmployerInterviewQuestionTemplatesComponent,
-     },
-     { path: '', redirectTo: 'list', pathMatch: 'full' }
+      {
+        path: 'list',
+        component: EmployerInterviewListComponent
+      },
+      {
+        path: 'create',
+        component: EmployerInterViewBasicInfoComponent,
+      },
+      { path: 'question-template', component: EmployerInterviewCreateTemplateComponent },
+      {
+        path: 'templates',
+        component: EmployerInterviewQuestionTemplatesComponent,
+      },
+      { path: '', redirectTo: 'list', pathMatch: 'full' }
     ]
   },
 ]
@@ -39,12 +41,13 @@ const routes: Routes = [
   declarations: [
     EmployerInterviewListComponent,
     EmployerInterviewComponent,
-    CreateEmployerInterviewComponent,
     AddInterviewTemplatesComponent,
     InterviewTemplateStepComponent,
     CreateNewTemplateDialogComponent,
     InviteContactComponent,
-    EmployerInterviewQuestionTemplatesComponent
+    EmployerInterviewQuestionTemplatesComponent,
+    EmployerInterViewBasicInfoComponent,
+    EmployerInterviewCreateTemplateComponent
   ],
   imports: [
     CommonModule,

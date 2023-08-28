@@ -14,6 +14,7 @@ import { StoreModule } from '@ngrx/store';
 import { InterviewFacade } from './state/interview.facade';
 import { TemplateListComponent } from './template-list/template-list.component';
 import { GroupInterviewSummaryComponent } from './group-interview-summary/group-interview-summary.component';
+import { CreateInterviewComponent } from './create-interview/create-interview.component';
 
 const exportedComponents = [
   CreateQuestionComponent,
@@ -22,7 +23,8 @@ const exportedComponents = [
   CreateGroupInterviewComponent,
   TemplateListComponent,
   GroupInterviewSummaryComponent,
-  InterviewListComponent
+  InterviewListComponent,
+  CreateInterviewComponent
 ]
 
 @NgModule({

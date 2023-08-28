@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-employer-interview-question-templates',
@@ -9,13 +10,16 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 })
 export class EmployerInterviewQuestionTemplatesComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    public route: ActivatedRoute,
+  ) { }
 
   ngOnInit(): void {
   }
 
   createTemplate() {
-
+    this.router.navigate(['../question-template'], { relativeTo: this.route })
   }
 
 }
