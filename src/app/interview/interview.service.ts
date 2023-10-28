@@ -33,4 +33,16 @@ export class InterviewService {
   saveGroupInterview(interview: Model.GroupInterview) {
     return this.baseService.post<Model.GroupInterview>(`${this.interviewUrl}/savegroupinterview`, interview);
   }
+
+  saveQuestionTemplate(questionTemplate: Model.QuestionTemplate) {
+    if (questionTemplate.interviewTemplateId) {
+      // TODO update
+    } else {
+      return this.baseService.post<Model.QuestionTemplate>(`${this.interviewUrl}/savequestiontemplate`, questionTemplate);
+    }
+  }
+
+  updateJobInterviewQuestions(interviewQuestion: Model.InterviewQuestion) {
+    return this.baseService.put<Model.InterviewQuestion>(`${this.interviewUrl}/updatejobinterview`, interviewQuestion);
+  }
 }

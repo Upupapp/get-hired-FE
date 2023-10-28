@@ -411,20 +411,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .afterClosed()
         .pipe()
         .subscribe(() => this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route }));
-
-
-    } else if (event == 'published') {
-      const published = this.dialog.open(UpdatedDialogComponent, {
-        disableClose: true,
-        data: 'Job successfully Published.',
-      });
-
-      published
-        .afterClosed()
-        .pipe()
-        .subscribe(() => this.router.navigateByUrl('recruiter/jobs/list'));
     }
+  }
 
+  afterSubmitUpdate(event) {
+    this.jobFacade.updateJobInterview(event);
+  }
+
+  removeInterview(event) {
+    this.jobFacade.deleteJobInterview(event.questionId, event.this.jobId);
   }
 
   formatBadgesGetId(rawBadges) {

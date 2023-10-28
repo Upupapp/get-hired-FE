@@ -200,13 +200,33 @@ export const jobReducer = createReducer<JobState>(
       error: action.payload
     };
   }),
-  on(JobActions.updateJobQuestion, (state): JobState => {
-    return {
-      ...state,
-      loading: true
-    };
-  }),
-  on(JobActions.updateJobQuestionSuccess, (state, action): JobState => {
+  // on(JobActions.updateJobQuestion, (state): JobState => {
+  //   return {
+  //     ...state,
+  //     loading: true
+  //   };
+  // }),
+  // on(JobActions.updateJobQuestionSuccess, (state, action): JobState => {
+  //   const mappedInterviews = state.selected.interviewQuestions.map(question => {
+  //     if (question.questionId == action.interviewQuestion.questionId) {
+  //       return action.interviewQuestion
+  //     }
+  //     return question;
+  //   });
+
+  //   return {
+  //     ...state,
+  //     loading: false,
+  //     selected: {
+  //       ...state.selected,
+  //       interviewQuestions: mappedInterviews
+  //     },
+  //     interview: mappedInterviews,
+  //     error: null,
+  //     succesMsg: 'updated'
+  //   };
+  // }),
+  on(JobActions.updateJobQuestion, (state, action): JobState => {
     const mappedInterviews = state.selected.interviewQuestions.map(question => {
       if (question.questionId == action.interviewQuestion.questionId) {
         return action.interviewQuestion
@@ -223,16 +243,16 @@ export const jobReducer = createReducer<JobState>(
       },
       interview: mappedInterviews,
       error: null,
-      succesMsg: 'updated'
+      succesMsg: null
     };
   }),
-  on(JobActions.updateJobQuestionFail, (state, action): JobState => {
-    return {
-      ...state,
-      loading: false,
-      error: action.payload
-    };
-  }),
+  // on(JobActions.updateJobQuestionFail, (state, action): JobState => {
+  //   return {
+  //     ...state,
+  //     loading: false,
+  //     error: action.payload
+  //   };
+  // }),
   on(JobActions.getBasicJobList, (state): JobState => {
     return {
       ...state,

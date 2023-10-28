@@ -19,7 +19,13 @@ enum AllFeatureActionTypes {
   GetInterviewTemplateQuestionsFail = '[interview] - Get Interview Template Questions Fail',
   SaveGroupInterview = '[interview] - Save Group Interview',
   SaveGroupInterviewSuccess = '[interview] - Save Group Interview Succss',
-  SaveGroupInterviewFail  = '[interview] - Save Group Interview Fail',
+  SaveGroupInterviewFail = '[interview] - Save Group Interview Fail',
+  CreateQuestionTemplate = '[interview] - Create Interview Template',
+  CreateQuestionTemplateSuccess = '[interview] - Create Interview Template Success',
+  CreateQuestionTemplatewFail = '[interview] - Create Interview Template Fail',
+  UpdateJobQuestion = '[job] - Update Job Question',
+  UpdateJobQuestionSuccess = '[job] - Update Job Question Success',
+  UpdateJobQuestionFail = '[job] - Update Job Question Fail',
 };
 
 export const getInterviewList = createAction(
@@ -95,5 +101,35 @@ export const saveGroupInterviewSuccess = createAction(
 
 export const saveGroupInterviewFail = createAction(
   AllFeatureActionTypes.SaveGroupInterviewFail,
+  props<{ payload: any }>()
+);
+
+export const createQuestionTemplate = createAction(
+  AllFeatureActionTypes.CreateQuestionTemplate,
+  props<{ questionTemplate: Model.QuestionTemplate }>()
+);
+
+export const createQuestionTemplateSuccess = createAction(
+  AllFeatureActionTypes.CreateQuestionTemplateSuccess,
+  props<{ questionTemplate: Model.QuestionTemplate }>()
+);
+
+export const createQuestionTemplateFail = createAction(
+  AllFeatureActionTypes.CreateQuestionTemplatewFail,
+  props<{ payload: any }>()
+);
+
+export const updateJobQuestion = createAction(
+  AllFeatureActionTypes.UpdateJobQuestion,
+  props<{ interviewQuestion: Model.InterviewQuestion }>()
+);
+
+export const updateJobQuestionSuccess = createAction(
+  AllFeatureActionTypes.UpdateJobQuestionSuccess,
+  props<{ interviewQuestion: Model.InterviewQuestion }>()
+);
+
+export const updateJobQuestionFail = createAction(
+  AllFeatureActionTypes.UpdateJobQuestionFail,
   props<{ payload: any }>()
 );

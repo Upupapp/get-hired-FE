@@ -34,9 +34,9 @@ export class JobService {
     }
   }
 
-  updateJobInterviewQuestions(interviewQuestion: InterviewModel.InterviewQuestion) {
-    return this.baseService.put<InterviewModel.InterviewQuestion>(`${this.jobUrl}/updatejobinterview`, interviewQuestion);
-  }
+  // updateJobInterviewQuestions(interviewQuestion: InterviewModel.InterviewQuestion) {
+  //   return this.baseService.put<InterviewModel.InterviewQuestion>(`${this.jobUrl}/updatejobinterview`, interviewQuestion);
+  // }
 
   deleteJobInterviewQuestions(questionId: string, jobId: string) {
     return this.baseService.delete<string>(`${this.jobUrl}/deleteinterviewquestion?questionId=${questionId}&jobId=${jobId}`);

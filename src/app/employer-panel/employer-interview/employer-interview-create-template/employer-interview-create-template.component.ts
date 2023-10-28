@@ -22,4 +22,9 @@ export class EmployerInterviewCreateTemplateComponent implements OnInit {
   getBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
   }
+
+  redirect() {
+    window.history.back()
+    // this.router.navigate(['../create'], { relativeTo: this.route, queryParams: { step: '1' }})
+  }
 }

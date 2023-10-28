@@ -13,6 +13,7 @@ export interface InterviewState {
   templateList: Model.InterviewQuestionTemplate[];
   recipientList: Model.InterviewRecipients;
   templateQuestions: Model.InterviewQuestion[];
+  interviewQuestions: Model.InterviewQuestion;
   error: any;
   succesMsg: string;
   loading: boolean;
@@ -24,6 +25,7 @@ const initialState: InterviewState = {
   templateList: [],
   recipientList: null,
   templateQuestions: [],
+  interviewQuestions: null,
   error: null,
   succesMsg: null,
   loading: false,
@@ -131,6 +133,50 @@ export const interviewReducer = createReducer<InterviewState>(
     };
   }),
   on(InterviewActions.saveGroupInterviewFail, (state, action): InterviewState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+  on(InterviewActions.createQuestionTemplate, (state): InterviewState => {
+    return {
+      ...state,
+      loading: true,
+      error: null
+    };
+  }),
+  on(InterviewActions.createQuestionTemplateSuccess, (state, action): InterviewState => {
+    return {
+      ...state,
+      loading: false,
+      succesMsg: 'created'
+    };
+  }),
+  on(InterviewActions.createQuestionTemplateFail, (state, action): InterviewState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload
+    };
+  }),
+    on(InterviewActions.updateJobQuestion, (state): InterviewState => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
+  on(InterviewActions.updateJobQuestionSuccess, (state, action): InterviewState => {
+    return {
+      ...state,
+      loading: false,
+      interviewQuestions: action.interviewQuestion,
+      error: null,
+      succesMsg: 'updated'
+    };
+  }),
+
+  on(InterviewActions.updateJobQuestionFail, (state, action): InterviewState => {
     return {
       ...state,
       loading: false,

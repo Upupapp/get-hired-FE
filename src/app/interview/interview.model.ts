@@ -26,6 +26,16 @@ export interface InterviewQuestion {
   sequence: number;
 }
 
+export interface QuestionTemplate {
+  interviewQuestions: InterviewQuestion[];
+  interviewTemplateId?: string;
+  templateName: string;
+  createdAt?: Date;
+  createdBy?: string;
+  updatedAt?: Date;
+  companyId: string;
+}
+
 export interface InterviewQuestionTemplate {
   jobInterviewTemplateId: string;
   jobInterviewTemplateName: string;
@@ -33,7 +43,7 @@ export interface InterviewQuestionTemplate {
   updatedAt: Date;
   jobId?: string;
   numberOfQuestions: number;
-  jobTitle? : string;
+  jobTitle?: string;
 }
 
 export interface InterviewRecipients {

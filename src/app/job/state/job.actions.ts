@@ -72,8 +72,8 @@ enum AllFeatureActionTypes {
   GetJobApplicantDetailsFail = '[job] - Get Job Applicant Details Fail',
 
   UpdateJobQuestion = '[job] - Update Job Question',
-  UpdateJobQuestionSuccess = '[job] - Update Job Question Success',
-  UpdateJobQuestionFail = '[job] - Update Job Question Fail',
+  // UpdateJobQuestionSuccess = '[job] - Update Job Question Success',
+  // UpdateJobQuestionFail = '[job] - Update Job Question Fail',
 
   DeleteJobQuestion = '[job] - Delete Job Question',
   DeleteJobQuestionSuccess = '[job] - Delete Job Question Success',
@@ -107,15 +107,15 @@ export const updateJobQuestion = createAction(
   props<{ interviewQuestion: InterviewModel.InterviewQuestion }>()
 );
 
-export const updateJobQuestionSuccess = createAction(
-  AllFeatureActionTypes.UpdateJobQuestionSuccess,
-  props<{ interviewQuestion: InterviewModel.InterviewQuestion }>()
-);
+// export const updateJobQuestionSuccess = createAction(
+//   AllFeatureActionTypes.UpdateJobQuestionSuccess,
+//   props<{ interviewQuestion: InterviewModel.InterviewQuestion }>()
+// );
 
-export const updateJobQuestionFail = createAction(
-  AllFeatureActionTypes.UpdateJobQuestionFail,
-  props<{ payload: any }>()
-);
+// export const updateJobQuestionFail = createAction(
+//   AllFeatureActionTypes.UpdateJobQuestionFail,
+//   props<{ payload: any }>()
+// );
 
 export const deleteJobQuestion = createAction(
   AllFeatureActionTypes.DeleteJobQuestion,

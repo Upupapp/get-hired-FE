@@ -40,4 +40,12 @@ export class InterviewFacade {
     this.store.dispatch(InterviewAction.saveGroupInterview({ interview }));
   }
 
+  saveQuestionTemplate(questionTemplate: Model.QuestionTemplate) {
+    this.store.dispatch(InterviewAction.createQuestionTemplate({ questionTemplate }));
+  }
+
+  updateJobInterview(interviewQuestion: Model.InterviewQuestion) {
+    this.store.dispatch(InterviewAction.updateJobQuestion({ interviewQuestion }));
+  }
+
 }

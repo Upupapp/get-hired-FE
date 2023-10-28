@@ -68,6 +68,9 @@
             [questions]="questions"
             [jobId]="jobId"
             formGroupName="interview"
+            [forJob]="true"
+            (onDelete)="removeInterview($event)"
+            (onUpdate)="afterSubmitUpdate($event)"
           ></app-create-interview-questions>
         </ng-container>
 

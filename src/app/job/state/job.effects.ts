@@ -357,24 +357,6 @@ export class JobEffects {
     );
   });
 
-  updateJobInterviewQuestions$ = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(JobActions.updateJobQuestion),
-      mergeMap((action) => this.jobService.updateJobInterviewQuestions(action.interviewQuestion)
-        .pipe(
-          map((res: any) => {
-            const interviewQuestion: InterviewModel.InterviewQuestion = res.data;
-            return JobActions.updateJobQuestionSuccess({ interviewQuestion });
-          }),
-          catchError((err) => {
-            const { error } = err.error;
-            return of(JobActions.updateJobQuestionFail({ payload: error }))
-          })
-        )
-      )
-    );
-  });
-
   deleteJobInterviewQuestions$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.deleteJobQuestion),

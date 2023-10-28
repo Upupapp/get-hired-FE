@@ -114,4 +114,40 @@ export class InterviewEffects {
     );
   });
 
+  createQuestionTemplate$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(InterviewActions.createQuestionTemplate),
+      mergeMap((action) => this.interviewService.saveQuestionTemplate(action.questionTemplate)
+        .pipe(
+          map((res: any) => {
+            const questionTemplate: Model.QuestionTemplate = res.data;
+            return InterviewActions.createQuestionTemplateSuccess({ questionTemplate });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(InterviewActions.createQuestionTemplateFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
+    updateJobInterviewQuestions$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(InterviewActions.updateJobQuestion),
+      mergeMap((action) => this.interviewService.updateJobInterviewQuestions(action.interviewQuestion)
+        .pipe(
+          map((res: any) => {
+            const interviewQuestion: Model.InterviewQuestion = res.data;
+            return InterviewActions.updateJobQuestionSuccess({ interviewQuestion });
+          }),
+          catchError((err) => {
+            const { error } = err.error;
+            return of(InterviewActions.updateJobQuestionFail({ payload: error }))
+          })
+        )
+      )
+    );
+  });
+
 }

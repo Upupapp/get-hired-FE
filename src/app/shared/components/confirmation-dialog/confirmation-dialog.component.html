@@ -6,7 +6,7 @@
 
       <div class="ms-3">
         <h5 class="title-label">{{ data.action }} Confirmation</h5>
-        <p>
+        <p *ngIf="data.action != 'Delete'">
           Would you like to save your progress in {{ data.action }} ?
         </p>
       </div>

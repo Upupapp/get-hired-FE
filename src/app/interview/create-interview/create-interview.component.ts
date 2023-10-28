@@ -2,12 +2,12 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } fro
 import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { UpdateQuestionComponent } from '@main/interview/update-question/update-question.component';
-import { Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as InterviewModel from '@main/interview/interview.model';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { InterviewFacade } from '../state/interview.facade';
 
 @Component({
   selector: 'app-create-interview-questions',
@@ -20,9 +20,13 @@ export class CreateInterviewComponent implements OnInit {
   @Input() jobId: string;
   @Input() questions: InterviewModel.InterviewQuestion[];
   @Input() allowedToEdit: boolean = true;
-  @Input() forJob: boolean = false;
+  @Input() forJob: boolean = true;
   @Output() publishChanges = new EventEmitter();
   @Output() cancel = new EventEmitter();
+  @Output() created = new EventEmitter();
+  @Output() onDelete = new EventEmitter();
+  @Output() onUpdate = new EventEmitter();
+
 
   questionsContainer = [];
   tempFormArray = new FormArray([]);
@@ -30,19 +34,24 @@ export class CreateInterviewComponent implements OnInit {
   interviewForm: FormGroup;
 
   editDialogSubs$: Subscription;
-  success$ = this.jobFacade.success$
+  // TODO for job create
+  // success$ = this.jobFacade.success$
+  //   .pipe().subscribe(this.afterSubmit.bind(this))
+
+  success$ = this.interviewFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this))
 
   constructor(
     private rootFormGroup: FormGroupDirective,
     private dialog: MatDialog,
-    private jobFacade: JobFacade,
     private snackBar: MatSnackBar,
     private fb: FormBuilder,
+    private interviewFacade: InterviewFacade
   ) { }
 
   ngOnInit(): void {
-    if(this.formGroupName) {
+    console.log(this.forJob)
+    if (this.formGroupName) {
       this.interviewForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
     } else {
       this.interviewForm = this.fb.group({
@@ -52,7 +61,7 @@ export class CreateInterviewComponent implements OnInit {
       });
     }
     this.interviewQuestions = this.interviewForm.get('interviewQuestions') as FormArray;
-    this.questionsContainer = this.questions ? [...this.questions]: [...this.interviewQuestions.value]
+    this.questionsContainer = this.questions ? [...this.questions] : [...this.interviewQuestions.value]
   }
 
   addQuestion(item) {
@@ -72,7 +81,7 @@ export class CreateInterviewComponent implements OnInit {
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
-        action: 'Step 3',
+        action: this.forJob ? 'Step 3' : 'Delete',
       },
     });
 
@@ -81,16 +90,14 @@ export class CreateInterviewComponent implements OnInit {
       .pipe()
       .subscribe((result) => {
         if (result == 1) {
-          this.jobFacade.deleteJobInterview(questionId, this.jobId);
-
           this.questionsContainer.splice(index, 1);
           controlArray.removeAt(index);
-          // this.publishChanges.emit();
+
+          if (this.forJob) {
+            this.onDelete.emit({ questionId, jobId: this.jobId });
+          }
         }
       });
-
-      // console.log(this.interviewQuestions);
-
   }
 
   editItem(index: number) {
@@ -108,16 +115,29 @@ export class CreateInterviewComponent implements OnInit {
       .subscribe((result) => {
         if (result) {
           console.log(result);
-          this.jobFacade.updateJobInterview(result);
+          if (this.forJob) {
+            this.interviewFacade.updateJobInterview(result);
+          } else {
+            // TODO
+          }
         }
       });
+
 
   }
 
   afterSubmit(event) {
-    if (event == 'updated') {
-      this.questionsContainer = [...this.questions];
+    if (event == 'created') {
+      this.snackBar.open(`Interview Question successfully created`, '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
 
+      this.created.emit();
+    } else if (event == 'updated') {
+      this.questionsContainer = [...this.questions];
       this.snackBar.open(`Interview Question successfully updated`, '', {
         duration: 4000,
         panelClass: ['success-snackbar'],
@@ -125,9 +145,10 @@ export class CreateInterviewComponent implements OnInit {
         horizontalPosition: 'right'
       });
 
-      this.jobFacade.resetSuccessMsg();
+      if (this.forJob) {
+        this.onUpdate.emit();
+      }
     }
-
   }
 
   getBack() {
@@ -135,9 +156,13 @@ export class CreateInterviewComponent implements OnInit {
   }
 
   submitForm() {
-    if(this.interviewForm.valid) {
+    if (this.interviewForm.valid) {
+      const user = JSON.parse(localStorage.getItem('user'));
       console.log(this.interviewForm.value);
-      // TODO Submit form
+      this.interviewFacade.saveQuestionTemplate({
+        ...this.interviewForm.value,
+        companyId: user.companyId
+      });
     } else {
       this.interviewForm.markAllAsTouched();
     }
@@ -146,11 +171,11 @@ export class CreateInterviewComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    if(this.editDialogSubs$) {
+    if (this.editDialogSubs$) {
       this.editDialogSubs$.unsubscribe();
     }
 
-    if(this.success$) {
+    if (this.success$) {
       this.success$.unsubscribe();
     }
   }
