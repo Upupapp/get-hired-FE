@@ -83,4 +83,8 @@ export class ApplicationPreviewComponent implements OnInit {
     });
 
   }
+
+  onFileClick(fileUrl) {
+    window.open(fileUrl, "_blank")
+  }
 }

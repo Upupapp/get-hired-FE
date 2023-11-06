@@ -22,16 +22,16 @@
     <div class="row w-100">
       <div class="col-md-4">
         <h5 class="title-main mb-3">Resume</h5>
-        <ng-container *ngFor="let item of resume; let i = index">
-          <img src="assets/images/file-icon.png" class="col-md-2" />
-
-          <div class="row w-100">
-
-            <div class="col-12 col-md-9" *ngIf="!item.createdAt">
-              {{ item.filename }}
+        <ng-container *ngFor="let item of resume; else noFile let i = index">
+          <div class="row w-100" (click)="onFileClick(item.fileurl)">
+            <div class="col-12 col-md-12 cursor-pointer">
+              <img src="assets/images/file-icon.png" class="w-25" />
             </div>
+            <!-- <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div> -->
             <div class="col-12 col-md-9" *ngIf="item.createdAt">
-             Uploaded At: {{ item.createdAt | date: 'short' }}
+              Uploaded At: {{ item.createdAt | date: 'short' }}
             </div>
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
@@ -41,35 +41,38 @@
       </div>
       <div class="col-md-4">
         <h5 class="title-main mb-3">Cover Letter</h5>
-        <ng-container *ngFor="let item of coverLetter; let i = index">
-          <img src="assets/images/file-icon.png" class="col-md-2" />
-
-          <div class="row w-100">
-
-            <div class="col-12 col-md-9" *ngIf="!item.createdAt">
-              {{ item.filename }}
+        <ng-container *ngFor="let item of coverLetter; else noFile; let i = index">
+          <div class="row w-100" (click)="onFileClick(item.fileurl)">
+            <div class="col-12 col-md-12 cursor-pointer">
+              <img src="assets/images/file-icon.png" class="w-25" />
             </div>
+            <!-- <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div> -->
             <div class="col-12 col-md-9" *ngIf="item.createdAt">
-             Uploaded At: {{ item.createdAt | date: 'short' }}
+              Uploaded At: {{ item.createdAt | date: 'short' }}
             </div>
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
           </div>
         </ng-container>
+        <ng-template #noFile>
+          <h1>--</h1>
+         </ng-template>
       </div>
       <div class="col-md-4">
         <h5 class="title-main mb-3">Government Files</h5>
-        <ng-container *ngFor="let item of govFiles; let i = index">
-          <img src="assets/images/file-icon.png" class="col-md-2" />
-
-          <div class="row w-100">
-
-            <div class="col-12 col-md-9" *ngIf="!item.createdAt">
-              {{ item.filename }}
+        <ng-container *ngFor="let item of govFiles; else noFile;let i = index">
+          <div class="row w-100" (click)="onFileClick(item.fileurl)">
+            <div class="col-12 col-md-12 cursor-pointer">
+              <img src="assets/images/file-icon.png" class="w-25" />
             </div>
+            <!-- <div class="col-12 col-md-9">
+              {{ item.filename }}
+            </div> -->
             <div class="col-12 col-md-9" *ngIf="item.createdAt">
-             Uploaded At: {{ item.createdAt | date: 'short' }}
+              Uploaded At: {{ item.createdAt | date: 'short' }}
             </div>
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
