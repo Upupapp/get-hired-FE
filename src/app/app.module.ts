@@ -14,7 +14,7 @@ import { AppEffects } from './state/app.effects';
 import { appReducer } from '@main/app.state';
 import { AuthInterceptor } from './core/interceptor/authentication.interceptor';
 import { UnAuthorizedInterceptor } from './core/interceptor/unauthorize.interceptor';
-import { NgxSpinnerModule } from 'ngx-spinner';
+// import { NgxSpinnerModule } from 'ngx-spinner';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StorePublicModule } from './shared/store/store.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -33,7 +33,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
-    NgxSpinnerModule,
+    // NgxSpinnerModule,
     BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,

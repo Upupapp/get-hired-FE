@@ -1,21 +1,21 @@
-import { 
-  Component, 
-  OnInit, 
-  OnDestroy 
+import {
+  Component,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
-import { 
-  Router, 
-  ActivatedRoute 
+import {
+  Router,
+  ActivatedRoute
 } from '@angular/router';
-import { 
-  FormBuilder, 
-  FormGroup, 
-  Validators 
+import {
+  FormBuilder,
+  FormGroup,
+  Validators
 } from '@angular/forms';
 import { AdminService } from '../../../../shared/services/auth/admin/admin.service'
 import { mainAnimations } from '../../../../shared/animations/main-animations';
 import { Subscription } from 'rxjs';
-import { NgxSpinnerService } from "ngx-spinner";
+// import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-applicant-signup',
@@ -33,32 +33,32 @@ export class ApplicantSignupComponent implements OnInit {
   public error : any = localStorage.getItem('loginError');
   public inputType: string = 'password';
   public submitting: boolean = false;
-  public activeImage: number = 1;  
-  
-  constructor(private router:Router, 
+  public activeImage: number = 1;
+
+  constructor(private router:Router,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private spinner: NgxSpinnerService,
-    private adminService: AdminService) { 
+    // private spinner: NgxSpinnerService,
+    private adminService: AdminService) {
     this.adminLoginForm = this.formBuilder.group({
       first_name: [
-        null, 
+        null,
         Validators.compose([Validators.required])
       ],
       last_name: [
-        null, 
+        null,
         Validators.compose([Validators.required])
       ],
       email: [
-        null, 
+        null,
         Validators.compose([Validators.required, Validators.email])
       ],
       password: [
-        null, 
+        null,
         Validators.compose([Validators.required, Validators.minLength(6)])
       ],
       confirm_password: [
-        null, 
+        null,
         Validators.compose([Validators.required, Validators.minLength(6)])
       ],
     });
@@ -68,11 +68,11 @@ export class ApplicantSignupComponent implements OnInit {
     this.createForm();
 
     setInterval(() => {
-      if(this.activeImage <= 2) this.activeImage = this.activeImage + 1;  
-      else this.activeImage = 1;  
+      if(this.activeImage <= 2) this.activeImage = this.activeImage + 1;
+      else this.activeImage = 1;
 
       console.log(this.activeImage)
-    }, 5000) 
+    }, 5000)
   }
 
   ngOnDestroy(): void {
@@ -94,7 +94,7 @@ export class ApplicantSignupComponent implements OnInit {
     //get value from form controls
     this.admin_email = this.adminLoginForm?.get('email')?.value;
     this.admin_password = this.adminLoginForm?.get('password')?.value;
-    
+
     // initialize inputs
     let body  = {
       email: this.admin_email,
@@ -105,7 +105,7 @@ export class ApplicantSignupComponent implements OnInit {
     this.postReq = this.adminService
     .postLogin(body)
     .subscribe((result: any) => {
-      // if error then throw error result 
+      // if error then throw error result
       if(result.error){
         window.scroll(0, 0);
         localStorage.setItem('loginError', result.error);
@@ -113,7 +113,7 @@ export class ApplicantSignupComponent implements OnInit {
         this.error = localStorage.getItem('loginError');
         //this.spinner.hide();
         this.router.navigate(['/login']);
-      } 
+      }
 
       // if no error, execute login validation
       else {
@@ -134,21 +134,21 @@ export class ApplicantSignupComponent implements OnInit {
         this.message = localStorage.getItem('loginMessage');
         this.adminService.setAdminLogin(true);
 
-        // spinner ends after 2 seconds 
+        // spinner ends after 2 seconds
         setTimeout(() => {
           this.router.navigate(['/applicant/dashboard']);
         }, 1000);
       }
 
       this.submitting = false;
-    
+
     },
     // If error in server/api temporary navigate to error page
     (err: any) => {
       this.submitting = false;
       localStorage.setItem('sessionError', err);
       localStorage.setItem('sessionUrl', this.router.url);
-    });    
+    });
   }
 
   // Clear error message
