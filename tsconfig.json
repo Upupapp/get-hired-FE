@@ -11,7 +11,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
+    "target": "ES2022",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -22,16 +22,33 @@
       "esnext"
     ],
     "paths": {
-      "@app-applicant/*": ["app/applicant/*"],
-      "@app-application/*": ["app/application/*"],
-      "@app-core/*": ["app/core/*"],
-      "@environments/*": ["environments/*"],
-      "@app-shared/*": ["app/shared/*"],
-      "@app-job/*": ["app/job/*"],
-      "@app-company/*": ["app/company/*"],
-      "@main/*": ["app/*"]
+      "@app-applicant/*": [
+        "app/applicant/*"
+      ],
+      "@app-application/*": [
+        "app/application/*"
+      ],
+      "@app-core/*": [
+        "app/core/*"
+      ],
+      "@environments/*": [
+        "environments/*"
+      ],
+      "@app-shared/*": [
+        "app/shared/*"
+      ],
+      "@app-job/*": [
+        "app/job/*"
+      ],
+      "@app-company/*": [
+        "app/company/*"
+      ],
+      "@main/*": [
+        "app/*"
+      ]
     },
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
