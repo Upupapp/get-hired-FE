@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NgChartsModule } from 'ng2-charts';
-import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
+// import { NgxMatTimepickerModule } from 'ngx-mat-timepicker';
 // import { NgxOrgChartModule } from 'ngx-org-chart';
 import { CompanyPanelRoutes } from './company-panel.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -61,7 +61,7 @@ import { ViewGroupsComponent } from './pages/contact-list/dialogs/view-groups/vi
     ReactiveFormsModule,
     MaterialComponentsModule,
     NgChartsModule,
-    NgxMatTimepickerModule,
+    // NgxMatTimepickerModule,
     // NgxOrgChartModule,
     SharedModule,
     RouterModule.forChild(CompanyPanelRoutes)
