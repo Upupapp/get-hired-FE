@@ -40,50 +40,53 @@ i{
             //background: red !important;
             color: #BDBDBD !important;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         .mat-select-disabled {
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
             ::ng-deep .mat-select-value {
               color: #4d4d4d; /*!important*/;
             }
         }
 
-        .mat-form-field {
+        .mat-mdc-form-field {
             width: 100%;
             font-family: 'Manrope' !important;
             padding-top: 0px !important;
-
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
             .mat-form-field-wrapper {
                 border-radius: 6px !important;
                 margin: 0px !important;
                 padding-bottom: 0px;
-
-
+                /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
                 .mat-form-field-infix {
                     padding: 21px 25px 22px 0px !important;
                     position: relative !important;
                 }
             }
 
-            .mat-select{
+            .mat-mdc-select{
                 position: absolute !important;
                 margin-top: -10px !important;
                 font-family: 'Manrope' !important;
                 font-size: 15px !important;
             }
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         .mat-select-arrow{
             margin-top: 8px;
         }
 
         /* ARROW DOWN IMAGE CHANGE */
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         .mat-select-arrow-wrapper{
           display: table-cell;
           vertical-align: bottom;
           background: none;
           background-repeat: no-repeat;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         .mat-select-arrow {
           border-left: 11px solid transparent !important;
           border-right: none !important;
@@ -91,18 +94,19 @@ i{
           border-image-source: url('/assets/images/placeholder/caret-down.png') !important;
           border-image-repeat: stretch !important;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
         .mat-form-field-outline{
             //border: none;
             border-radius: 6px;
             color: #AFBCC6;
         }
 
-        .mat-option{
+        .mat-mdc-option{
             overflow-x: hidden !important;
         }
 
         .error {
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
             .mat-form-field-outline{
                 border: none;
                 border-radius: 5px;
@@ -111,6 +115,7 @@ i{
         }
 
         /* OUTLINE HOVER */
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
         .mat-form-field-appearance-outline .mat-form-field-outline-thick {
             color:  #494949 !important;
         }

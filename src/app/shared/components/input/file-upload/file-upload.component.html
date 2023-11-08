@@ -31,12 +31,12 @@
 
             <div class="upload-chips" *ngIf="uploadedFile" style="max-width: 300px;">
                 <div class="d-flex" >
-                    <mat-chip-list>
-                    <mat-chip class="mat-chip-height" [class.disabled]="disabled">
+                    <mat-chip-listbox>
+                    <mat-chip-option class="mat-chip-height" [class.disabled]="disabled">
                         <span class="chip-text">{{uploadedFile.name || uploadedFile.filename}}</span>
                         <mat-icon (click)="removeImage()" matChipRemove>close</mat-icon>
-                    </mat-chip>
-                    </mat-chip-list>
+                    </mat-chip-option>
+                    </mat-chip-listbox>
                 </div>
             </div>
             <p *ngIf="isTouched" class="error-msg">*Empty Field</p>
@@ -67,12 +67,12 @@
 
                 <div class="upload-chips" *ngIf="uploadedFile">
                     <div class="d-flex">
-                        <mat-chip-list>
-                        <mat-chip class="mat-chip-height" [class.disabled]="disabled">
+                        <mat-chip-listbox>
+                        <mat-chip-option class="mat-chip-height" [class.disabled]="disabled">
                             <span class="chip-text truncate">{{uploadedFile.name}}</span>
                             <mat-icon (click)="removeImage()" matChipRemove>close</mat-icon>
-                        </mat-chip>
-                        </mat-chip-list>
+                        </mat-chip-option>
+                        </mat-chip-listbox>
                     </div>
                 </div>
                 <p *ngIf="isTouched" class="error-msg">*Empty Field</p>
