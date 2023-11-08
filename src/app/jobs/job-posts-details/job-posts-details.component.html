@@ -7,8 +7,10 @@
           <p class="title-banner-description mb-2">
             <ng-container *ngIf="selectedJobPost?.industryId">
               {{selectedJobPost?.industryName}} /
-            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / {{ selectedJobPost.salaryCurrency }}
-            {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - {{ selectedJobPost.salaryCurrency }} {{selectedJobPost?.salaryMaximum |
+            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / {{
+            selectedJobPost.salaryCurrency }}
+            {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - {{ selectedJobPost.salaryCurrency }}
+            {{selectedJobPost?.salaryMaximum |
             number:'1.0':'en-US' }}
           </p>
         </div>
@@ -34,16 +36,15 @@
         <div class="d-flex justify-content-end align-items-end mb-3" title="Share now!">
 
 
-          <div class="bg-applied d-flex"
-          *ngIf="userRole == '3' && selectedJobPost.isApplied">
-            <img src="/assets/images/placeholder/icons/applied.png"
-            class="img-fluid me-2 mt-1" style="height: 30px;">
-            <span >
+          <div class="bg-applied d-flex" *ngIf="userRole == '3' && selectedJobPost.isApplied">
+            <img src="/assets/images/placeholder/icons/applied.png" class="img-fluid me-2 mt-1" style="height: 30px;">
+            <span>
               {{ 'APPLY_PAGE.DUPLICATE_APPLICATION_MESSAGE' | translate }}
             </span>
           </div>
 
-          <button class="btn btn-apply-now w-100" (click)="toApply()" *ngIf="userRole == '3' && !selectedJobPost.isApplied">
+          <button class="btn btn-apply-now w-100" (click)="toApply()"
+            *ngIf="userRole == '3' && !selectedJobPost.isApplied">
             {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
           </button>
 
@@ -60,6 +61,7 @@
         <div class="job-description mb-3">
           <h5 class="title-job-description">
             <strong> {{ 'APPLY_PAGE.JOB_DESCRIPTION' | translate }}</strong><br>
+
             {{selectedJobPost?.jobDescription}}
           </h5>
         </div>
@@ -67,7 +69,9 @@
         <div class="job-description mb-3">
           <h5 class="title-job-description">
             <strong>{{ 'APPLY_PAGE.DUTIES_RESPONSIBILITIES' | translate }}</strong><br>
-            {{selectedJobPost?.jobDuties}}
+            <quill-view-html [content]="selectedJobPost?.jobDuties" theme="snow"></quill-view-html>
+
+            <!-- {{selectedJobPost?.jobDuties}} -->
           </h5>
         </div>
 
@@ -82,6 +86,7 @@
                 {{item}}
               </h5>
             </li>
+            <br>
           </ul>
         </div>
 

@@ -13,6 +13,7 @@ import { JobCardListViewComponent } from './job-card-list-view/job-card-list-vie
 import { JobPostsDetailsComponent } from './job-posts-details/job-posts-details.component';
 import { JobModule } from '@app-job/job.module';
 import { JobDetailsSidecardComponent } from './job-details-sidecard/job-details-sidecard.component';
+import { QuillModule } from 'ngx-quill';
 
 const exportedComponents = [
   JobsComponent,
@@ -31,6 +32,7 @@ const exportedComponents = [
     CommonModule,
     SharedModule,
     JobModule,
+    QuillModule,
     StoreModule.forFeature('jobs', jobsReducer),
     EffectsModule.forFeature([JobsEffects]),
   ],

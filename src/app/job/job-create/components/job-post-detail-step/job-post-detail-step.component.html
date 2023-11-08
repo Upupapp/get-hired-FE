@@ -145,7 +145,7 @@
           <h5 class="title-label">Job Description</h5>
           <div class="form-group">
             <textarea name="job-title" class="form-control" rows="6"
-              placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi u"
+              placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent.."
               formControlName="jobDescription"></textarea>
           </div>
         </div>
@@ -153,9 +153,12 @@
         <div class="title-container mb-3" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
           <h5 class="title-label">Duties & Responsibilities</h5>
           <div class="form-group">
-            <textarea name="job-title" class="form-control" rows="6"
+            <quill-editor class="w-100" #editor
+            [sanitize]="true" formControlName="jobDuties" [classes]="'form-control'"
+            [styles]="{height: '200px', padding: 0}"></quill-editor>
+            <!-- <textarea name="job-title" class="form-control" rows="6"
               placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. "
-              formControlName="jobDuties"></textarea>
+              formControlName="jobDuties"></textarea> -->
           </div>
         </div>
 

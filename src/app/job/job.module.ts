@@ -24,6 +24,7 @@ import { ApplicationModule } from '@main/application/application.module';
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { JobAppliedComponent } from './job-applied/job-applied.component';
+import { QuillModule } from 'ngx-quill';
 
 // const routes: Routes = [
   // { path: 'expired', component: JobExpiredComponent },
@@ -62,6 +63,7 @@ const exportedComponents = [
     InterviewModule,
     ApplicationModule,
     ApplicantModule,
+    QuillModule,
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),
   ],
