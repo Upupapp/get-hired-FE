@@ -5,7 +5,7 @@ import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { CoreService } from '@app-core/services/core.service';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, Subscription, takeUntil, tap } from 'rxjs';
 import * as JobModel from '@main/job/job.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApplicationFacade } from '../state/application.facade';
@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
 import { environment } from '@environments/environment';
 import { Router } from '@angular/router';
+import { SuccessDialogComponent } from '@app-shared/components/success-dialog/success-dialog.component';
 
 @Component({
   selector: 'app-application-process',
@@ -25,6 +26,7 @@ import { Router } from '@angular/router';
 export class ApplicationProcessComponent implements OnInit {
   @Input() job: JobModel.Job;
   @Output() apply = new EventEmitter();
+  subscriptions$ = new Subscription();
 
   env = environment;
 
@@ -121,7 +123,8 @@ export class ApplicationProcessComponent implements OnInit {
     private snackBar: MatSnackBar,
     private applicationFacade: ApplicationFacade,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private successDialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -179,12 +182,30 @@ export class ApplicationProcessComponent implements OnInit {
     if (event == 'submitted') {
       this.isSubmitting = false;
 
-      this.snackBar.open(`You have successfully applied to this job`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-      });
+      let openDialog = this.successDialog.open(
+        SuccessDialogComponent,
+        {
+          width: '29vw',
+          data: {
+            title: 'Congratulations!',
+            subtitle: 'You have successfully applied to this job'
+          },
+        }
+      );
 
-      this.apply.emit(false);
+      this.subscriptions$.add(openDialog
+        .afterClosed()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(() => {
+          this.apply.emit(false);
+          this.router.navigateByUrl('/jobs')
+        }));
+
+      // this.snackBar.open(`You have successfully applied to this job`, '', {
+      //   duration: 4000,
+      //   panelClass: ['success-snackbar'],
+      // });
+
     }
   }
 
