@@ -40,14 +40,16 @@
           <div class="job-description mb-3">
             <h5 class="title-job-description">
               <strong>Job Description</strong><br>
-              {{selectedJobPost?.jobDescription}}
+              <quill-view-html [content]="selectedJobPost?.jobDescription" theme="snow"></quill-view-html>
+              <!-- {{selectedJobPost?.jobDescription}} -->
             </h5>
           </div>
 
           <div class="job-description mb-3">
             <h5 class="title-job-description">
               <strong>Duties and Responsibilities</strong><br>
-              {{selectedJobPost?.jobDuties}}
+              <quill-view-html [content]="selectedJobPost?.jobDuties" theme="snow"></quill-view-html>
+              <!-- {{selectedJobPost?.jobDuties}} -->
             </h5>
           </div>
 

@@ -95,7 +95,9 @@
         <div class="job-description mb-3">
           <h5 class="title-job-description">
             <strong>Job Description</strong><br>
-            {{ preview.jobDescription == '' ? "None": preview.jobDescription }}
+            <quill-view-html [content]="preview.jobDescription" theme="snow"></quill-view-html>
+
+            <!-- {{ preview.jobDescription == '' ? "None": preview.jobDescription }} -->
           </h5>
         </div>
 
