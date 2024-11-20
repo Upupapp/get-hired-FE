@@ -61,8 +61,8 @@
         <div class="job-description mb-3">
           <h5 class="title-job-description">
             <strong> {{ 'APPLY_PAGE.JOB_DESCRIPTION' | translate }}</strong><br>
-
-            {{selectedJobPost?.jobDescription}}
+            <quill-view-html [content]="selectedJobPost?.jobDescription" theme="snow"></quill-view-html>
+            <!-- {{selectedJobPost?.jobDescription}} -->
           </h5>
         </div>
 
