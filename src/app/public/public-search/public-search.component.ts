@@ -42,9 +42,13 @@ export class PublicSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.screenSize = window.innerWidth;
-    this.keyword = this.keyword != 'undefined' ? this.keyword : '';
-    this.work_setup = this.work_setup != 'undefined' ? this.work_setup : '';
-    this.job_type = this.job_type != 'undefined' ? this.job_type : '';
+    // GH-ACT-021 fix: pre-fill the search/filter inputs from the active
+    // search instead of always rendering blank -- previously these fields
+    // never reflected `jobSearch`, so re-opening this page (or re-searching
+    // from it) silently lost the user's current keyword/work setup/job type.
+    this.keyword = this.jobSearch?.keyword ?? '';
+    this.work_setup = this.jobSearch?.work_setup ?? 'Work Setup';
+    this.job_type = this.jobSearch?.job_type ?? 'Job Type';
     this.getUserRole();
   }
 
@@ -57,35 +61,27 @@ export class PublicSearchComponent implements OnInit {
     this.screenSize = window.innerWidth;
   }
 
-  findJobs(){
-    let init_route = `/job-post/${this.keyword}`;
-    let work_setup = this.work_setup !== 'Work Setup' ? init_route.concat(`/${this.work_setup?.toLowerCase()}`) : init_route;
-    let job_type = this.job_type !== 'Job Type' ? work_setup.concat(`/${this.job_type?.toLowerCase()}`) : work_setup;
-
-    /*if(this.keyword){
-      console.log(job_type)
-      this.router.navigate([job_type]);
-    }
-
-    else if(!this.keyword && (this.work_setup !== 'Work Setup' || this.job_type !== 'Job Type')) {
-      init_route = `/job-post`;
-      work_setup = this.work_setup !== 'Work Setup' ? init_route.concat(`/${this.work_setup?.toLowerCase()}`) : init_route;
-      job_type = this.job_type !== 'Job Type' ? work_setup.concat(`/${this.job_type?.toLowerCase()}`) : work_setup;
-
-      this.router.navigate([job_type]);
-    }*/
-
-    let job_search_data = {
-      keyword: this.keyword,  
-      work_setup: this.work_setup,  
-      job_type: this.job_type
+  findJobs() {
+    // GH-ACT-021 fix: the previous implementation relied on a fragile
+    // navigate-away-then-back round trip (`/jobs` then `jobs/search/:kw`)
+    // purely to force this component to re-construct and re-read
+    // sessionStorage in its field initializer -- and even then, the
+    // work_setup/job_type values were captured but never actually used by
+    // JobPostsListComponent's filter (see job-posts-list.component.ts fix).
+    // Updating `jobSearch` directly lets the existing
+    // [searchData]="jobSearch" binding take effect immediately, with no
+    // navigation trick required.
+    const jobSearchData = {
+      keyword: this.keyword || '',
+      work_setup: this.work_setup,
+      job_type: this.job_type,
     };
 
-    this.router.navigate([`/jobs`]).then(() => this.router.navigate([`jobs/search/${this.keyword}`]))
+    this.jobSearch = jobSearchData;
+    sessionStorage.setItem('job-search', JSON.stringify(jobSearchData));
 
-    sessionStorage.setItem('job-search', JSON.stringify(job_search_data));
-
-    console.log(job_search_data)
-
+    // Keep the URL shareable/bookmarkable without forcing a re-navigation
+    // round trip.
+    this.router.navigate([`/jobs/search/${this.keyword || ''}`]);
   }
 }

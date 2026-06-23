@@ -27,9 +27,9 @@
 						    <select class="form-select" aria-label="Default select example"
 						    [(ngModel)]="job_type">
 						      <option selected>Job Type</option>
-						      <option value="part-time">Part-Time</option>
-						      <option value="full-time">Full-Time</option>
-						      <option value="freelance">Freelance</option>
+						      <option value="Part time">Part-time</option>
+						      <option value="Full time">Full-time</option>
+						      <option value="Contractor">Contractor</option>
 						    </select>
 						</div>
 					</div>
@@ -52,6 +52,7 @@
   <div class="mt-5 px-lg-5">
     <app-job-posts-list [label]="'Jobs Search Result'"
     [searchData]="jobSearch"
+    [fromSearch]="true"
     [subLabel]="'List of available jobs based on current search keywords'"></app-job-posts-list>
   </div>
 </div>

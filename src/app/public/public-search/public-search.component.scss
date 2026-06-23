@@ -170,6 +170,22 @@
 	max-height: 76px;
 	border-radius: 15px;
 
+	/* GH-ACT step 15 (mobile polish): same fix as banner.component.scss --
+	this row had no flex-wrap and overflowed horizontally on phone
+	viewports. */
+	@media (max-width: 767px) {
+		flex-wrap: wrap;
+		max-height: none !important;
+
+		> div {
+			width: 100% !important;
+			max-width: 100% !important;
+			min-width: 0 !important;
+			margin-right: 0 !important;
+			margin-bottom: 8px;
+		}
+	}
+
 	input{
 		background: white !important;
 		font-family: 'Manrope';

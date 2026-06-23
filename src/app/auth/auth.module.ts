@@ -12,22 +12,34 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { ChangePwComponent } from './change-pw/change-pw.component';
 import { AccountAuthenticationComponent } from './account-authentication/account-authentication.component';
-import { ErrorNotFoundComponent } from '../views/error-page/error-not-found/error-not-found.component';
 import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
+import { UnauthGuard } from '@app-shared/guard/unauth.guard';
 
 const routes: Routes = [
   {
+    // canActivate moved here from the lazy-module mount point in
+    // app.routing.module.ts -- see the comment there for why. Preserves
+    // the exact same protection (redirect already-logged-in users away
+    // from these pages) at the leaf level instead of the parent.
     path: 'signin', component: SigninComponent,
+    canActivate: [UnauthGuard],
     data: {
       isMobileViewAllowed: true
     }
   },
-  { path: 'signup', component: SignupComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
-  { path: 'change-password', component: ChangePwComponent },
-  { path: 'verify', component: AccountAuthenticationComponent },
-  { path: '', redirectTo: 'signin', pathMatch: 'full' },
+  { path: 'signup', component: SignupComponent, canActivate: [UnauthGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [UnauthGuard] },
+  { path: 'change-password', component: ChangePwComponent, canActivate: [UnauthGuard] },
+  { path: 'verify', component: AccountAuthenticationComponent, canActivate: [UnauthGuard] },
+  // No `path: ''` entry here on purpose: AuthModule is mounted at the
+  // root path in app.routing.module.ts alongside PublicModule. A bare
+  // '' -> redirectTo: 'signin' here used to hijack every guest visit to
+  // '/' before PublicModule's MainPortalComponent (the information
+  // portal) ever got a chance to match -- guests always landed on
+  // /signin instead of the portal. Removing it lets unmatched '' fall
+  // through to PublicModule's own '' route. /signin and /signup remain
+  // fully reachable directly, unchanged.
 ];
 
 @NgModule({
@@ -37,7 +49,6 @@ const routes: Routes = [
     ResetPasswordComponent,
     ChangePwComponent,
     AccountAuthenticationComponent,
-    ErrorNotFoundComponent,
     AccountSettingComponent
   ],
   imports: [

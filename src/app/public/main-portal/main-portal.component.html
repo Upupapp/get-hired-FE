@@ -1,0 +1,207 @@
+<section class="portal-hero portal-hero--upgraded">
+  <div class="portal-hero-glow portal-hero-glow--one" aria-hidden="true"></div>
+  <div class="portal-hero-glow portal-hero-glow--two" aria-hidden="true"></div>
+
+  <div class="portal-hero-inner portal-hero-inner--split">
+    <div class="portal-hero-copy">
+      <h1 class="portal-hero-title">Find your next job. Build your next team.</h1>
+      <p class="portal-hero-subtitle">
+        GetHired Online connects job seekers and employers through a modern platform for job search,
+        applications, video answers, structured profiles, and hiring.
+      </p>
+
+      <div class="portal-hero-cta-group">
+        <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
+        <button type="button" class="btn-cta-outline gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
+      </div>
+
+      <div class="portal-hero-proof">
+        <app-talent-proof-badge variant="pill" placement="main_portal_hero"></app-talent-proof-badge>
+      </div>
+
+      <div class="portal-role-secondary portal-hero-secondary">
+        <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</button>
+        <span class="portal-role-divider" aria-hidden="true">|</span>
+        <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+      </div>
+    </div>
+
+    <div class="portal-hero-visual" aria-hidden="true">
+      <div class="hero-mock-card hero-mock-card--seeker">
+        <div class="hero-mock-card-header">
+          <span class="hero-mock-avatar">JD</span>
+          <div>
+            <div class="hero-mock-line hero-mock-line--strong"></div>
+            <div class="hero-mock-line hero-mock-line--soft"></div>
+          </div>
+        </div>
+        <div class="hero-mock-chip hero-mock-chip--teal">Application submitted</div>
+        <div class="hero-mock-progress">
+          <span class="hero-mock-progress-fill"></span>
+        </div>
+      </div>
+
+      <div class="hero-mock-connector">
+        <span class="hero-mock-connector-dot"></span>
+        <span class="hero-mock-connector-dot"></span>
+        <span class="hero-mock-connector-dot"></span>
+      </div>
+
+      <div class="hero-mock-card hero-mock-card--employer">
+        <div class="hero-mock-card-header">
+          <span class="hero-mock-avatar hero-mock-avatar--coral">CO</span>
+          <div>
+            <div class="hero-mock-line hero-mock-line--strong"></div>
+            <div class="hero-mock-line hero-mock-line--soft"></div>
+          </div>
+        </div>
+        <div class="hero-mock-chip hero-mock-chip--coral">3 new applicants</div>
+        <div class="hero-mock-rows">
+          <span class="hero-mock-row"></span>
+          <span class="hero-mock-row"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="portal-role-selector" aria-label="Choose your path">
+  <div class="portal-role-grid">
+    <div class="portal-role-card-wrap portal-role-card-wrap--seeker">
+      <app-role-card
+        icon="/assets/images/placeholder/icons/card-applicant-icon.png"
+        title="I'm looking for a job"
+        description="Build one profile with CV, skills, applications, and video answers."
+        ctaLabel="Continue as Job Seeker"
+        ariaLabel="Continue as Job Seeker"
+        (activated)="goToJobSeekerPortal()">
+      </app-role-card>
+      <button type="button" class="btn-link-cta portal-role-card-secondary" (click)="goToJobs()">Browse jobs</button>
+    </div>
+
+    <div class="portal-role-card-wrap portal-role-card-wrap--employer">
+      <app-role-card
+        icon="/assets/images/placeholder/icons/card-interview-icon.png"
+        title="I'm hiring"
+        description="Review profiles, CVs, video responses, and compatibility signals in one hiring workspace."
+        ctaLabel="Continue as Employer"
+        ariaLabel="Continue as Employer"
+        (activated)="goToEmployerPortal()">
+      </app-role-card>
+      <button type="button" class="btn-link-cta portal-role-card-secondary" (click)="goToEmployerPortal()">Start hiring</button>
+    </div>
+  </div>
+
+  <!-- GETHIRED 500K TALENT PROOF SYSTEM -- trust strip, additive to the
+       hero badge above; shows the claim alongside other real, safe
+       feature chips rather than repeating the same badge a third time. -->
+  <div class="portal-trust-strip">
+    <app-talent-proof-badge variant="pill" placement="main_portal_role_card"></app-talent-proof-badge>
+    <span class="portal-trust-chip">Structured profiles</span>
+    <span class="portal-trust-chip">Application tracking</span>
+    <span class="portal-trust-chip">Employer dashboard</span>
+  </div>
+</section>
+
+<!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- the 4 strongest,
+     code-verified differentiators (see GETHIRED_PUBLIC_PORTAL_WOW_USP_FEATURE_TRUTH_AUDIT.md),
+     each with a small local SVG (no external assets, no stock photos). -->
+<section class="portal-usp" aria-label="Why GetHired is different">
+  <h2 class="portal-section-title">Not just a job board</h2>
+  <p class="portal-usp-subtitle">Structured profiles, video answers, and explainable signals help both sides decide with more confidence.</p>
+  <div class="portal-usp-grid">
+    <div class="portal-usp-card" *ngFor="let item of uspPillars">
+      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true">
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="portal-differentiators" aria-label="What GetHired offers">
+  <h2 class="portal-section-title">What GetHired does</h2>
+  <div class="portal-bento-grid">
+    <div class="portal-bento-card" *ngFor="let item of differentiators">
+      <span class="portal-bento-icon" aria-hidden="true">{{ item.icon }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="portal-journey" aria-label="For job seekers">
+  <h2 class="portal-section-title">For job seekers: build your profile once, apply with confidence.</h2>
+  <ol class="portal-journey-steps portal-journey-steps--seeker">
+    <li class="portal-journey-step" *ngFor="let step of jobSeekerJourney; let i = index">
+      <span class="portal-journey-step-number">{{ i + 1 }}</span>
+      <div>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.description }}</p>
+      </div>
+    </li>
+  </ol>
+  <div class="portal-journey-cta">
+    <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
+  </div>
+</section>
+
+<section class="portal-journey portal-journey--employer" aria-label="For employers">
+  <h2 class="portal-section-title">For employers: post jobs and manage hiring in one workspace.</h2>
+  <ol class="portal-journey-steps portal-journey-steps--employer">
+    <li class="portal-journey-step" *ngFor="let step of employerJourney; let i = index">
+      <span class="portal-journey-step-number portal-journey-step-number--employer">{{ i + 1 }}</span>
+      <div>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.description }}</p>
+      </div>
+    </li>
+  </ol>
+  <p class="portal-journey-proof">
+    <app-talent-proof-badge variant="strip" placement="main_portal_role_card"></app-talent-proof-badge>
+  </p>
+  <div class="portal-journey-cta">
+    <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
+    <button type="button" class="btn-link-cta" (click)="goToEmployerPortal()">Learn more for employers</button>
+  </div>
+</section>
+
+<section class="portal-how-it-works" aria-label="How GetHired works">
+  <h2 class="portal-section-title">How it works</h2>
+  <div class="portal-how-it-works-grid">
+    <div class="portal-how-it-works-col portal-how-it-works-col--seeker">
+      <h3>Job seekers</h3>
+      <ol>
+        <li>Build profile</li>
+        <li>Search jobs</li>
+        <li>Apply</li>
+        <li>Track applications</li>
+      </ol>
+    </div>
+    <div class="portal-how-it-works-col portal-how-it-works-col--employer">
+      <h3>Employers</h3>
+      <ol>
+        <li>Post job</li>
+        <li>Review applicants</li>
+        <li>Use video answers / match signals</li>
+        <li>Manage hiring</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="portal-final-cta-wrap">
+  <div class="portal-final-cta-glow" aria-hidden="true"></div>
+  <app-portal-cta-band
+    title="Ready to get started?"
+    description="Choose your path and start moving forward with GetHired."
+    primaryLabel="Find jobs"
+    secondaryLabel="Start hiring"
+    (primaryClick)="goToJobs()"
+    (secondaryClick)="goToEmployerPortal()">
+  </app-portal-cta-band>
+  <div class="portal-role-secondary">
+    <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</button>
+    <span class="portal-role-divider" aria-hidden="true">|</span>
+    <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+  </div>
+</section>

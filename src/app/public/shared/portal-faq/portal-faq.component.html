@@ -1,0 +1,16 @@
+<div class="portal-faq">
+  <div class="portal-faq-item" *ngFor="let item of items; let i = index">
+    <button
+      type="button"
+      class="portal-faq-question"
+      [attr.aria-expanded]="openIndex === i"
+      [attr.aria-controls]="'faq-answer-' + i"
+      (click)="toggle(i)">
+      <span>{{ item.question }}</span>
+      <span class="portal-faq-icon" aria-hidden="true" [class.open]="openIndex === i">+</span>
+    </button>
+    <div class="portal-faq-answer" [id]="'faq-answer-' + i" *ngIf="openIndex === i" role="region">
+      <p>{{ item.answer }}</p>
+    </div>
+  </div>
+</div>

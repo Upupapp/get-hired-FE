@@ -1,0 +1,480 @@
+@import "src/assets/styles/colors";
+@import "~assets/styles/motion";
+@import "../shared/portal-common";
+
+.portal-role-selector {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.portal-role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-role-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.portal-role-card-secondary {
+  font-size: 13px;
+}
+
+.portal-role-secondary {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.portal-role-proof {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.portal-trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.portal-trust-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.portal-differentiators {
+  max-width: 1100px;
+  margin: 48px auto 0;
+  padding: 0 24px;
+}
+
+.portal-bento-icon {
+  display: block;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+// ── Hero upgrade ─────────────────────────────────────────────────────
+
+.portal-hero--upgraded {
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  padding: 72px 24px 56px;
+}
+
+.portal-hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+
+  &--one {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(254, 111, 97, 0.5), transparent 70%);
+    top: -80px;
+    right: 10%;
+  }
+
+  &--two {
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(124, 131, 253, 0.35), transparent 70%);
+    bottom: -60px;
+    left: 5%;
+  }
+}
+
+.portal-hero-inner--split {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+
+  @media (max-width: 991px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.portal-hero-copy {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: portal-hero-reveal 280ms $motion-ease-standard forwards;
+}
+
+.portal-hero-cta-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+
+  @media (max-width: 991px) {
+    justify-content: center;
+  }
+}
+
+.btn-cta-outline {
+  background: transparent;
+  color: $color-global-red-buttons;
+  border: 2px solid $color-global-red-buttons;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible {
+    background: rgba(255, 112, 98, 0.08);
+  }
+}
+
+.portal-hero-proof {
+  margin-top: 18px;
+
+  @media (max-width: 991px) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.portal-hero-secondary {
+  margin-top: 14px;
+  text-align: left;
+
+  @media (max-width: 991px) {
+    text-align: center;
+  }
+}
+
+// ── Hero product visual (CSS-only, no images/external assets) ───────
+
+.portal-hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: portal-hero-reveal 280ms $motion-ease-standard 80ms forwards;
+
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+
+.hero-mock-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  width: 180px;
+  flex-shrink: 0;
+
+  &--seeker {
+    transform: rotate(-3deg);
+  }
+
+  &--employer {
+    transform: rotate(3deg);
+  }
+}
+
+.hero-mock-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hero-mock-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2dd4bf;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &--coral {
+    background: $color-global-red-buttons;
+  }
+}
+
+.hero-mock-line {
+  height: 6px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  margin-bottom: 4px;
+
+  &--strong {
+    width: 70px;
+  }
+
+  &--soft {
+    width: 50px;
+    background: #f3f4f6;
+  }
+}
+
+.hero-mock-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+
+  &--teal {
+    background: rgba(45, 212, 191, 0.15);
+    color: #0d9488;
+  }
+
+  &--coral {
+    background: rgba(254, 111, 97, 0.12);
+    color: $color-global-red-buttons;
+  }
+}
+
+.hero-mock-progress {
+  height: 6px;
+  border-radius: 4px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.hero-mock-progress-fill {
+  display: block;
+  height: 100%;
+  width: 65%;
+  background: #2dd4bf;
+  border-radius: 4px;
+}
+
+.hero-mock-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hero-mock-row {
+  height: 14px;
+  border-radius: 6px;
+  background: #f3f4f6;
+}
+
+.hero-mock-connector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 6px;
+
+  @media (max-width: 575px) {
+    flex-direction: row;
+    padding: 6px 0;
+  }
+}
+
+.hero-mock-connector-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(254, 111, 97, 0.4);
+}
+
+@keyframes portal-hero-reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Journey sections ──────────────────────────────────────────────────
+
+.portal-journey {
+  max-width: 1100px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+
+  &--employer {
+    background: linear-gradient(135deg, #FFF8F6 0%, #FFFFFF 100%);
+    padding: 40px 24px;
+    border-radius: 24px;
+  }
+}
+
+.portal-journey-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+
+  &--employer {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+.portal-journey-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: #1a1a1a;
+  }
+
+  p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.portal-journey-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(45, 212, 191, 0.15);
+  color: #0d9488;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+
+  &--employer {
+    background: rgba(254, 111, 97, 0.15);
+    color: $color-global-red-buttons;
+  }
+}
+
+.portal-journey-proof {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.portal-journey-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+// ── How it works ──────────────────────────────────────────────────────
+
+.portal-how-it-works {
+  max-width: 1100px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+}
+
+.portal-how-it-works-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-how-it-works-col {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 24px;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+  }
+
+  ol {
+    margin: 0;
+    padding-left: 20px;
+    color: #4b5563;
+    font-size: 14px;
+
+    li {
+      margin-bottom: 6px;
+    }
+  }
+
+  &--seeker h3 {
+    color: #0d9488;
+  }
+
+  &--employer h3 {
+    color: $color-global-red-buttons;
+  }
+}
+
+// ── Final CTA wrap ────────────────────────────────────────────────────
+
+.portal-final-cta-wrap {
+  position: relative;
+  max-width: 1100px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+}
+
+.portal-final-cta-glow {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(254, 111, 97, 0.25), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+// ── Reduced motion ────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-hero-copy,
+  .portal-hero-visual {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

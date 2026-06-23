@@ -1,0 +1,65 @@
+<section class="portal-hero">
+  <div class="portal-hero-inner">
+    <h1 class="portal-hero-title">Hire faster with a structured hiring workspace.</h1>
+    <p class="portal-hero-subtitle">
+      Post jobs, review applicants, use video answers and match signals, and manage hiring in one
+      organized platform.
+    </p>
+
+    <!-- GETHIRED 500K TALENT PROOF SYSTEM v1 -- placed directly beside
+         the primary employer conversion action. -->
+    <app-talent-proof-badge variant="card" placement="employer_portal_hero"></app-talent-proof-badge>
+
+    <div class="portal-hero-actions-primary">
+      <button type="button" class="btn-cta-primary gh-pressable" (click)="startHiring()">Start hiring</button>
+    </div>
+
+    <div class="portal-hero-actions">
+      <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+    </div>
+  </div>
+</section>
+
+<!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- scoped addition,
+     reuses the same local SVG assets and approved-safe copy as /home. -->
+<section class="portal-usp" aria-label="Why employers choose GetHired">
+  <div class="portal-usp-grid portal-usp-grid--employer">
+    <div class="portal-usp-card" *ngFor="let item of employerUspPillars">
+      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true">
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="portal-pain-points" aria-label="Common hiring challenges">
+  <h2 class="portal-section-title">Hiring shouldn't be this scattered</h2>
+  <div class="portal-bento-grid">
+    <div class="portal-bento-card" *ngFor="let item of painPoints">
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="portal-benefits" aria-label="How GetHired helps employers">
+  <h2 class="portal-section-title">How GetHired helps you hire</h2>
+  <div class="portal-bento-grid">
+    <div class="portal-bento-card" *ngFor="let item of benefits">
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.description }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="portal-faq-section" aria-label="Frequently asked questions">
+  <h2 class="portal-section-title">Frequently asked questions</h2>
+  <app-portal-faq [items]="faqItems"></app-portal-faq>
+</section>
+
+<app-portal-cta-band
+  title="Ready to start hiring?"
+  description="Create your employer account and post your first job."
+  primaryLabel="Create employer account"
+  (primaryClick)="startHiring()">
+</app-portal-cta-band>

@@ -1,0 +1,71 @@
+@import "src/assets/styles/colors";
+@import "~assets/styles/motion";
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: 28px 24px;
+  cursor: pointer;
+  transition: transform 180ms $motion-ease-standard, box-shadow 180ms $motion-ease-standard, border-color 180ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(254, 111, 97, 0.18);
+    border-color: $color-global-red-buttons;
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+.role-card-icon-img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 12px;
+  object-fit: contain;
+}
+
+.role-card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+}
+
+.role-card-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+.role-card-cta {
+  margin-top: auto;
+  font-weight: 600;
+  font-size: 14px;
+  color: $color-global-red-buttons;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.role-card-cta-arrow {
+  transition: transform 160ms $motion-ease-standard;
+  @include motion-safe;
+}
+
+.role-card:hover .role-card-cta-arrow,
+.role-card:focus-visible .role-card-cta-arrow {
+  transform: translateX(4px);
+}

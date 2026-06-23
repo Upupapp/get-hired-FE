@@ -1,0 +1,49 @@
+@import "src/assets/styles/colors";
+
+.portal-faq {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.portal-faq-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.portal-faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-align: left;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+.portal-faq-icon {
+  font-size: 20px;
+  color: $color-global-red-buttons;
+  transition: transform 160ms ease;
+
+  &.open {
+    transform: rotate(45deg);
+  }
+}
+
+.portal-faq-answer {
+  padding: 0 4px 18px 4px;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+
+  p { margin: 0; }
+}

@@ -1,0 +1,233 @@
+// Shared styling for the 3 GetHired Public Information Portal pages
+// (main-portal, job-seeker-portal, employer-portal) -- avoids tripling the
+// same hero/section/bento-grid/link-button rules across each page's SCSS.
+@import "src/assets/styles/colors";
+@import "~assets/styles/motion";
+
+.portal-hero {
+  text-align: center;
+  padding: 64px 24px 32px;
+  background: linear-gradient(135deg, #FFF8F6 0%, #FFFFFF 100%);
+}
+
+.portal-hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.portal-hero-title {
+  font-size: 34px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 16px 0;
+  line-height: 1.25;
+
+  @media (max-width: 575px) {
+    font-size: 24px;
+  }
+}
+
+.portal-hero-subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+}
+
+.portal-hero-actions {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.btn-link-cta {
+  background: none;
+  border: none;
+  color: $color-global-red-buttons;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+.portal-role-divider {
+  color: #d1d5db;
+  margin: 0 4px;
+}
+
+.portal-section-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 28px;
+}
+
+.portal-benefits,
+.portal-pain-points,
+.portal-jobs-preview,
+.portal-faq-section,
+.portal-privacy-note,
+.portal-workflow {
+  max-width: 1100px;
+  margin: 48px auto 0;
+  padding: 0 24px;
+}
+
+.portal-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: 991px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 575px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-bento-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  padding: 20px;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #1a1a1a;
+  }
+
+  p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.portal-jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-jobs-fallback,
+.portal-jobs-cta {
+  text-align: center;
+  padding: 24px;
+  color: #6b7280;
+}
+
+.portal-privacy-note {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+  padding: 16px 24px;
+}
+
+.portal-quick-search {
+  display: flex;
+  gap: 8px;
+  max-width: 480px;
+  margin: 0 auto 12px auto;
+
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+
+  input {
+    flex: 1;
+  }
+}
+
+.btn-cta-primary {
+  background: linear-gradient(99.75deg, $color-global-red 24.68%, #FF4D3C 91.74%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible {
+    transform: translateY(-2px);
+  }
+}
+
+// ── USP section (GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE) --
+// shared across /home and /employers so the same cards/icons/copy style
+// don't get duplicated per-page. ───────────────────────────────────────
+
+.portal-usp {
+  max-width: 1100px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+}
+
+.portal-usp-subtitle {
+  text-align: center;
+  color: #6b7280;
+  font-size: 15px;
+  max-width: 600px;
+  margin: -12px auto 28px auto;
+}
+
+.portal-usp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  &--employer {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 991px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 575px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-usp-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 18px;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: transform 160ms $motion-ease-standard, box-shadow 160ms $motion-ease-standard;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 12px 0 6px 0;
+    color: #1a1a1a;
+  }
+
+  p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.portal-usp-icon {
+  width: 48px;
+  height: 48px;
+}

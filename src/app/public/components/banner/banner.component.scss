@@ -168,6 +168,24 @@
 	max-height: 76px;
 	border-radius: 15px;
 
+	/* GH-ACT step 15 (mobile polish): this row had no flex-wrap and its
+	children used fixed px max-widths (some inline, requiring !important to
+	override) that never shrank below ~200px each -- on a real phone
+	viewport the search input + 2 selects + button overflowed horizontally.
+	Stack vertically below 767px instead. */
+	@media (max-width: 767px) {
+		flex-wrap: wrap;
+		max-height: none !important;
+
+		> div {
+			width: 100% !important;
+			max-width: 100% !important;
+			min-width: 0 !important;
+			margin-right: 0 !important;
+			margin-bottom: 8px;
+		}
+	}
+
 	input{
 		background: white !important;
 		font-family: 'Manrope';

@@ -1,0 +1,12 @@
+<section class="portal-cta-band">
+  <h2 class="portal-cta-band-title">{{ title }}</h2>
+  <p class="portal-cta-band-description" *ngIf="description">{{ description }}</p>
+  <div class="portal-cta-band-actions">
+    <button type="button" class="btn btn-cta-primary gh-pressable" (click)="primaryClick.emit()">
+      {{ primaryLabel }}
+    </button>
+    <button type="button" class="btn btn-cta-secondary gh-pressable" *ngIf="secondaryLabel" (click)="secondaryClick.emit()">
+      {{ secondaryLabel }}
+    </button>
+  </div>
+</section>

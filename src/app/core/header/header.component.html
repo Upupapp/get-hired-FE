@@ -28,6 +28,18 @@
           </button>
         </li>
 
+        <!-- GETHIRED_JOB_SEEKERS_PORTAL_WORLD_CLASS_WOW_USP_UPGRADE_V3 --
+             upper-right "Browse jobs" CTA for guest/public visitors,
+             reusing the same existing navigateToJobs() method already
+             proven safe above (just a different visible branch: public
+             vs dashboard). Additive only -- the !isPublic branch above
+             is untouched. -->
+        <li class="nav-item me-2" *ngIf="isPublic">
+          <button class="btn btn-primary gh-pressable" type="button" (click)="navigateToJobs()">
+            Browse jobs
+          </button>
+        </li>
+
         <li class="nav-item w-50">
           <app-language-selection title="Language"></app-language-selection>
         </li>

@@ -43,9 +43,13 @@
 						    <select class="form-select" aria-label="Default select example"
 						    [(ngModel)]="job_type">
 						      <option selected>{{ 'PUBLIC_PAGE.JOB_TYPE_SELECTOR' | translate }}</option>
-						      <option value="Part-Time">Part-Time</option>
-						      <option value="Full-Time">Full-Time</option>
-						      <option value="Freelance">Freelance</option>
+						      <!-- Values must match gethired.job_type.job_type_name exactly -- the
+						      old values (Part-Time/Full-Time/Freelance) never matched real job
+						      data ("Full time"/"Part time"/"Contractor"), so this filter was
+						      silently broken (GH-ACT-021). -->
+						      <option value="Part time">Part-time</option>
+						      <option value="Full time">Full-time</option>
+						      <option value="Contractor">Contractor</option>
 						    </select>
 						</div>
 					</div>
@@ -77,71 +81,14 @@
 			>
 		</div>
 
-		<!-- APPLICANT HOME STAT -->
-		<div class="col-12 col-lg-2 ps-4 row" *ngIf="loggedUser && loggedUserData?.applicant">
-			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0 pe-lg-0">
-				<div class="card-application green mb-2 mt-md-3 mt-lg-0"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-					<h5 class="title-card">Application
-						<img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
-					</h5>
-					<h3 class="title-stat">34</h3>
-				</div>
-			</div>
-
-			<div class="col-6 col-lg-12 mt-md-4 mt-lg-0 pe-lg-0">
-				<div class="orange mb-2 card-application-interview"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-					<h5 class="title-card">Interview
-						<br *ngIf="screenSize > 990">Schedule
-						<img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
-					</h5>
-					<h3 class="title-stat">122</h3>
-				</div>
-			</div>
-
-			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0  pe-lg-0">
-				<div class="card-application yellow mb-2"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-					<h5 class="title-card">Video Interview
-						<img src="/assets/images/placeholder/icons/card-video-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
-					</h5>
-					<h3 class="title-stat">223</h3>
-				</div>
-			</div>
-		</div>
-
-		<!-- EMPLOYER HOME STAT -->
-		<div class="col-12 col-lg-2 ps-4 row" *ngIf="loggedUser && loggedUserData?.employer">
-			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0 pe-lg-0">
-				<div class="card-application green mb-2 mt-md-3 mt-lg-0"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-					<h5 class="title-card">Active Jobs
-						<img src="/assets/images/placeholder/icons/card-applicant-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
-					</h5>
-					<h3 class="title-stat">34</h3>
-				</div>
-			</div>
-
-			<div class="col-6 col-lg-12 mt-md-4 mt-lg-0 pe-lg-0">
-				<div class="orange mb-2 card-application"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-					<h5 class="title-card">Applicants
-						<img src="/assets/images/placeholder/icons/card-interview-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
-					</h5>
-					<h3 class="title-stat">122</h3>
-				</div>
-			</div>
-
-			<div class="col-6 col-lg-12 mt-md-2 mt-lg-0  pe-lg-0">
-				<div class="card-application yellow mb-2"
-				[@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
-					<h5 class="title-card">Video Interview
-						<img src="/assets/images/placeholder/icons/card-video-icon.png" class="card-img" style="width: 30px; margin-top: -5px;">
-					</h5>
-					<h3 class="title-stat">223</h3>
-				</div>
-			</div>
-		</div>
+		<!-- GH-ACT-021: removed the "APPLICANT HOME STAT"/"EMPLOYER HOME STAT"
+		blocks that lived here -- they rendered hardcoded fake numbers
+		(34/122/223 for every user, every time), gated behind a
+		`loggedUserData?.applicant`/`.employer` check that could only ever be
+		true via a `localStorage['userData']` key that was, in turn, only
+		ever set by a dead, unreferenced duplicate signin component
+		(src/app/views/auth/, deleted this pass). Mission rule: never show
+		fabricated activity data; real per-user stats would need a real
+		dashboard-stats API call, out of this redesign's scope. -->
 	</div>
 </div>
