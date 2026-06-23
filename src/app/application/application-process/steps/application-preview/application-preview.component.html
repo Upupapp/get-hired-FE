@@ -14,6 +14,22 @@
   </button>
 </div>
 
+<!-- GH-EMP-B01 -- Match Signals, employer-view only (matchSignals is
+     never passed by the applicant's own application-flow usage of this
+     component). -->
+<div class="card card-body mt-3" *ngIf="matchSignals">
+  <h5>Match Signals</h5>
+  <hr style="border: dashed 1px #969696">
+  <p class="match-signals-label"><strong>{{ matchSignals.label }}</strong></p>
+  <p *ngIf="matchSignals.matchedRequiredSkills?.length" class="mb-1">
+    <strong>Matched required skills:</strong> {{ matchSignals.matchedRequiredSkills.join(', ') }}
+  </p>
+  <p *ngIf="matchSignals.missingRequiredSkills?.length" class="mb-1">
+    <strong>Missing or unclear:</strong> {{ matchSignals.missingRequiredSkills.join(', ') }}
+  </p>
+  <p class="match-signals-disclaimer">{{ matchSignals.disclaimer }}</p>
+</div>
+
 <div id="profile-document">
   <div class="card card-body mt-3">
     <h5>Documents</h5>

@@ -19,6 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ApplicationModule } from '@main/application/application.module';
 import { SharedModule } from '@app-shared/shared.module';
 import { ApplicantJobsComponent } from './applicant-jobs/applicant-jobs.component';
+import { ApplicantApplicationsComponent } from './applicant-applications/applicant-applications.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,14 @@ const routes: Routes = [
             (m) => m.ApplicantProfileModule
           ),
       },
+      // GH-ACT applicant-experience: real navigation entry per the
+      // requested Tab/Subtab map, with an honest empty/error state -- see
+      // GETHIRED_APPLICANT_DATA_MODEL_AUDIT.md for why this can't show
+      // populated data yet (job_applicants table doesn't exist).
+      {
+        path: 'applications',
+        component: ApplicantApplicationsComponent,
+      },
       {
         path: 'settings',
         component: ApplicantSettingsComponent,
@@ -57,6 +66,7 @@ const routes: Routes = [
     ApplicantSidebarComponent,
     ApplicantSettingsComponent,
     ApplicantJobsComponent,
+    ApplicantApplicationsComponent,
   ],
   imports: [
     CommonModule,

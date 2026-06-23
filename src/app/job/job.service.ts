@@ -50,6 +50,14 @@ export class JobService {
     return this.baseService.get<Model.JobApplicants[]>(`${this.jobUrl}/applicants?id=${jobId}`);
   }
 
+  /** Employer Portal v3 -- MATCH v5's Employer Applicant Fit Signals.
+   * Separate, additive call alongside getJobApplicantsByJobId -- never
+   * replaces it, so this endpoint failing/being slow can't break the
+   * existing applicant list. */
+  getJobApplicantSignals(jobId: string) {
+    return this.baseService.get<any>(`${this.jobUrl}/applicants/signals?id=${jobId}`);
+  }
+
   getJobBasicList(companyId: string) {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
   }

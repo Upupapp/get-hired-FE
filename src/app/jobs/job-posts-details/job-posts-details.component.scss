@@ -1,4 +1,38 @@
 @import "src/assets/styles/colors";
+
+.job-signal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signal-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.job-detail-error-state {
+  max-width: 480px;
+  margin: 48px auto;
+  text-align: center;
+  padding: 32px 24px;
+
+  h5 {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  p {
+    color: #6b7280;
+    margin-bottom: 16px;
+  }
+}
+
 .btn-save-draft{
 	font-style: normal;
 	font-weight: 500;

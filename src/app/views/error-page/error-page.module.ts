@@ -15,8 +15,9 @@ import { ErrorNotFoundComponent } from './error-not-found/error-not-found.compon
     RouterModule.forChild(ErrorPageRoutes)
   ],
   declarations: [
-
-    // ErrorNotFoundComponent
+    // BRAND fix: this component was imported but never actually declared,
+    // so the module would have failed to render it even once routed to.
+    ErrorNotFoundComponent
   ]
 })
 export class ErrorPageModule{ }

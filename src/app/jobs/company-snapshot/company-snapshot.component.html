@@ -1,0 +1,28 @@
+<div class="company-snapshot" *ngIf="job">
+  <div class="company-snapshot-header" (click)="viewCompany()" role="button" tabindex="0"
+    (keyup.enter)="viewCompany()">
+    <img
+      *ngIf="job.companyLogo"
+      [src]="job.companyLogo"
+      [alt]="job.companyName + ' logo'"
+      class="company-snapshot-logo">
+    <div class="company-snapshot-logo company-snapshot-logo-fallback" *ngIf="!job.companyLogo">
+      {{ job.companyName?.charAt(0) }}
+    </div>
+
+    <div class="company-snapshot-name-block">
+      <h5 class="company-snapshot-name">{{ job.companyName }}</h5>
+      <p class="company-snapshot-location" *ngIf="locationLine">{{ locationLine }}</p>
+    </div>
+  </div>
+
+  <p class="company-snapshot-details" *ngIf="job.companyDetails">{{ job.companyDetails }}</p>
+
+  <p class="company-snapshot-size" *ngIf="job.companyNumberOfEmployee">
+    {{ job.companyNumberOfEmployee }} employees
+  </p>
+
+  <button type="button" class="company-snapshot-link" (click)="viewCompany()">
+    View company profile
+  </button>
+</div>

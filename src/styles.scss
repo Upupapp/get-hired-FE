@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~assets/styles/colors";
+@import "~assets/styles/motion";
 @import "~@angular/material/theming";
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 @include mat-core();

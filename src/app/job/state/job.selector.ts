@@ -102,6 +102,16 @@ export const jobLoading = createSelector(
   state => state.jobLoading
 );
 
+// GH-ACT-013 (job detail error state): state.error was already tracked by
+// the reducer on getJobFail but never exposed via a selector -- the public
+// job detail page had no way to distinguish "still loading" from "failed to
+// load" from "loaded successfully," so a failed fetch just rendered a blank
+// page forever.
+export const jobError = createSelector(
+  getJobInitState,
+  state => state.error
+);
+
 export const getjobApplicants = createSelector(
   getJobInitState,
   state => state.applicants

@@ -1,5 +1,39 @@
 @import "src/assets/styles/colors";
 
+.match-v3-matchability-card {
+  border-left: 3px solid $color-global-red-buttons;
+}
+
+.match-v3-matchability-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.match-v3-matchability-label {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.match-v3-matchability-score {
+  font-weight: 700;
+  color: $color-global-red-buttons;
+}
+
+.match-v3-matchability-copy {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+}
+
+.match-v3-matchability-actions {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  padding-left: 18px;
+}
+
 .optional {
   color: #918e8e;
     font-style: italic;

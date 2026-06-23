@@ -11,6 +11,11 @@
           </button>
         </div>
       </div>
+      <!-- GETHIRED 500K TALENT PROOF SYSTEM -- persistent, low-key
+           reminder for returning employers, not tied to any specific
+           empty/non-empty state (no tailored dashboard states exist in
+           this codebase to safely detect -- see placement log). -->
+      <app-talent-proof-badge variant="pill" placement="employer_dashboard_job_list"></app-talent-proof-badge>
     </div>
     <br>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">

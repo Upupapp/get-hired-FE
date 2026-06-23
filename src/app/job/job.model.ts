@@ -1,5 +1,24 @@
 import * as InterviewModel from '@main/interview/interview.model';
 
+/**
+ * GETHIRED JOB CERTIFICATION REQUIREMENTS v1 -- structured, additive to
+ * the existing free-text requirements/goodToHave fields. Free-text first:
+ * canonicalKey is nullable and unused until a future MATCH pass builds
+ * comparison/taxonomy logic against it (see
+ * GETHIRED_MATCH_CERTIFICATION_LICENSE_DISCOVERY.md). Not consumed by
+ * JobCompatibilityService in this pass -- display/data-model only.
+ */
+export interface JobCertificationRequirement {
+  id?: string;
+  name: string;
+  type: 'certification' | 'license' | 'permit' | 'eligibility' | 'other';
+  importance: 'required' | 'preferred';
+  issuingAuthority?: string | null;
+  expiryRequired?: boolean;
+  verificationRequired?: boolean;
+  canonicalKey?: string | null;
+}
+
 export interface Job {
   jobId?: string;
   jobBanner?: string;
@@ -32,6 +51,7 @@ export interface Job {
   requirements?: string[];
   goodToHave?: string[];
   educationalBackground?: string[];
+  certificationRequirements?: JobCertificationRequirement[];
   badges?: Options[];
   skills?: string[];
   tags?: string[];
@@ -63,6 +83,7 @@ export interface InitialDetails {
   requirements?: string[];
   goodToHave?: string[];
   educationalBackground?: string[];
+  certificationRequirements?: JobCertificationRequirement[];
   jobCategoryId?: number;
 }
 

@@ -1,59 +1,96 @@
-<div class="card card-body mb-3"
-[ngStyle]="{ 'min-height' : data.badges.length > 0 ? '500px' : '400px'}"
-[@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
-	<div class="banner-thumbnail" style="position: relative;">
-		<img [src]="data.jobBanner" class="img img-fluid img-banner">
+<article
+  class="job-card"
+  [@animate]="{value:'*', params:{ y:'-10px', delay: animationDelayMs + 'ms' }}"
+  [attr.aria-label]="(normalized?.title || 'Job') + ' at ' + (normalized?.companyName || 'company')"
+>
+  <div class="job-card__banner">
+    <img
+      *ngIf="normalized?.companyLogo; else bannerFallback"
+      [src]="normalized.companyLogo"
+      [alt]="normalized.companyName + ' logo'"
+      class="job-card__logo"
+    />
+    <ng-template #bannerFallback>
+      <div class="job-card__logo job-card__logo--fallback" aria-hidden="true">
+        {{ (normalized?.companyName || '?').charAt(0) }}
+      </div>
+    </ng-template>
 
-		<div class="d-flex p-2 justify-content-center align-items-center bg-white" *ngIf="data.badges.length > 0" style="position: absolute; bottom: -20px; right: 5px; border-radius: 6px; box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.05); cursor: pointer">
-			<img src="/assets/images/placeholder/icons/{{badge?.icon}}"
-			[title]="badge?.name" class="mx-2"
-			*ngFor="let badge of data?.badges; let i = index"
-			style="width: 30px">
-		</div>
-	</div>
+    <div class="job-card__icon-badges" *ngIf="data?.badges?.length > 0">
+      <img
+        *ngFor="let badge of data?.badges"
+        [src]="'/assets/images/placeholder/icons/' + badge?.icon"
+        [title]="badge?.name"
+        [alt]="badge?.name"
+        class="job-card__icon-badge"
+      />
+    </div>
+  </div>
 
-	<div class="p-3 py-3 mt-3">
+  <div class="job-card__body">
+    <div class="job-card__signal-row" *ngIf="signals?.primaryBadges?.length > 0">
+      <span class="job-card__signal-badge" *ngFor="let badge of signals.primaryBadges" [ngClass]="'badge-' + badge.id">
+        {{ badge.label }}
+      </span>
+    </div>
 
+    <h3 class="job-card__title">{{ normalized?.title }}</h3>
+    <button type="button" class="job-card__company" (click)="companyRedirect($event)">
+      {{ normalized?.companyName }}
+    </button>
 
+    <div class="job-card__facts">
+      <span class="job-card__fact" *ngIf="normalized?.jobType">
+        <i class="bi bi-briefcase" aria-hidden="true"></i> {{ normalized.jobType }}
+      </span>
+      <span class="job-card__fact" *ngIf="normalized?.workSetup">
+        <i class="bi bi-laptop" aria-hidden="true"></i> {{ normalized.workSetup }}
+      </span>
+      <span class="job-card__fact">
+        <i class="bi bi-geo-alt" aria-hidden="true"></i>
+        {{ normalized?.location || 'Location not specified' }}
+      </span>
+      <span class="job-card__fact" [class.job-card__fact--muted]="!normalized?.hasSalary">
+        <i class="bi bi-cash" aria-hidden="true"></i> {{ normalized?.salaryDisplay }}
+      </span>
+    </div>
 
-		<h5 class="title-job-title">{{data?.jobTitle}}</h5>
-		<p class="title-company cursor-pointer" (click)="companyRedirect()">{{data?.companyName}}</p>
+    <div class="job-card__tags" *ngIf="normalized?.tags?.length > 0">
+      <span class="job-card__tag" *ngFor="let tag of normalized.tags.slice(0, 5)">{{ tag }}</span>
+    </div>
 
-		<div class="d-flex">
-			<h5 class="d-flex title-details me-3 ms-1">
-				<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-				{{data?.jobTypeName}}
-			</h5>
+    <div class="job-card__secondary-badges" *ngIf="signals?.secondaryBadges?.length > 0">
+      <span class="job-card__secondary-badge" *ngFor="let badge of signals.secondaryBadges" [ngClass]="'badge-' + badge.id">
+        {{ badge.label }}
+      </span>
+    </div>
 
-			<h5 class="d-flex title-details me-2">
-				<img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-				{{data?.workSetupName}}
-			</h5>
-		</div>
+    <!-- Match area — see job-card.component.ts header comment for why this
+         is intentionally lightweight rather than a fabricated per-card score. -->
+    <div class="job-card__match-area">
+      <app-locked-match-teaser
+        *ngIf="!isLoggedIn"
+        variant="card"
+        context="job_card"
+        [jobId]="normalized?.jobId"
+      ></app-locked-match-teaser>
 
-		<div class="d-flex mt-1">
-			<h5 class="d-flex title-details me-3 ms-1">
-				<img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;">
-				{{data?.jobCity}}, {{data?.jobCountry}}
-			</h5>
+      <a
+        *ngIf="isApplicantRole"
+        class="job-card__full-match-link"
+        (click)="viewDetails()"
+      >
+        See your full match on this job &rarr;
+      </a>
+    </div>
 
-		</div>
-
-		<div class="d-flex mt-1">
-			<h5 class="d-flex title-details me-3 ms-1">
-				<img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-				<!-- PHP {{data?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{data?.salaryMaximum | number:'1.0':'en-US' }} -->
-        {{data?.salaryMinimum | currency: data.salaryCurrency: 'symbol' }} - {{data?.salaryMaximum | currency: data.salaryCurrency: 'symbol' }}
-			</h5>
-		</div>
-
-		<div class="tags mt-2">
-			<div class="title-tags me-2 mb-2" *ngFor="let tag of data?.tags">{{tag}}</div>
-		</div>
-
-		<div class="w-100" [ngClass]="data?.tags?.length < 3 ? 'mt-2' : 'mt-2'">
-			<button class="btn btn-primary d-block w-100 hvr-grow"
-			(click)="applyNow(data)"> {{ 'EMPLOYER_BRANDING.CALL_TO_ACTION_BUTTON' | translate }}</button>
-		</div>
-	</div>
-</div>
+    <button
+      type="button"
+      class="btn btn-primary job-card__apply-btn"
+      (click)="applyNow()"
+      [attr.aria-label]="'View and apply for ' + normalized?.title"
+    >
+      {{ 'EMPLOYER_BRANDING.CALL_TO_ACTION_BUTTON' | translate }}
+    </button>
+  </div>
+</article>

@@ -11,6 +11,8 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
+import { TalentProofService } from '@main/public/services/talent-proof.service';
+import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 
 @Component({
   selector: 'app-job-create',
@@ -101,7 +103,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private talentProof: TalentProofService,
+    private talentProofAnalytics: PublicPortalAnalyticsService
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -169,6 +173,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         requirements: new FormArray([]),
         goodToHave: new FormArray([]),
         educationalBackground: new FormArray([]),
+        certificationRequirements: new FormArray([]),
         requirementsTxt: [null],
         goodToHaveTxt: [null],
         educationalBackgroundTxt: [null]
@@ -261,6 +266,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       if (data.hasOwnProperty('educationalBackground') && data?.educationalBackground.length > 0) {
         data.educationalBackground.forEach(element => {
           educationalBackground.push(new FormControl(element));
+        })
+      }
+
+      // GETHIRED JOB CERTIFICATION REQUIREMENTS v1 -- structured items,
+      // so each is its own FormGroup (mirrors the badges pattern above),
+      // not a plain FormControl<string> like requirements/goodToHave.
+      let certificationRequirements = this.jobForm.controls.initialData.get('certificationRequirements') as FormArray;
+      if (data.hasOwnProperty('certificationRequirements') && data?.certificationRequirements?.length > 0) {
+        data.certificationRequirements.forEach(element => {
+          certificationRequirements.push(new FormGroup({
+            id: new FormControl(element.id),
+            name: new FormControl(element.name, Validators.required),
+            type: new FormControl(element.type || 'certification'),
+            importance: new FormControl(element.importance || 'required'),
+            issuingAuthority: new FormControl(element.issuingAuthority),
+            expiryRequired: new FormControl(!!element.expiryRequired),
+            verificationRequired: new FormControl(!!element.verificationRequired),
+          }));
         })
       }
 
@@ -422,7 +445,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       published
         .afterClosed()
         .pipe()
-        .subscribe(() => this.router.navigateByUrl('recruiter/jobs/list'));
+        .subscribe(() => {
+          // GETHIRED 500K TALENT PROOF SYSTEM -- publish-success proof,
+          // added as a snackbar (not a second modal) so it never repeats
+          // or stacks with the existing UpdatedDialogComponent (9 other
+          // call sites use that dialog -- not modified here, see
+          // GETHIRED_TALENT_PROOF_500K_PUBLISH_SUCCESS_JOB_DASHBOARD_LOG.md).
+          this.snackBar.open(
+            `Your job is published and ready to be discovered by ${this.talentProof.getDisplayCopy('short')}.`,
+            '', { duration: 5000, panelClass: ['success-snackbar'] }
+          );
+          this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
+          this.router.navigateByUrl('recruiter/jobs/list');
+        });
     }
 
   }

@@ -37,6 +37,8 @@ import { GoogleAddressSearchComponent } from './components/google-address-search
 import { CountdownTimerComponent } from './components/countdown-timer/countdown-timer.component';
 import { SubscriptionAlertComponent } from './components/subscription-alert/subscription-alert.component';
 import { InlineLoadingComponent } from './components/inline-loading/inline-loading.component';
+import { LockedMatchTeaserComponent } from './components/locked-match-teaser/locked-match-teaser.component';
+import { TalentProofBadgeComponent } from './components/talent-proof-badge/talent-proof-badge.component';
 
 
 const classesToInclude: any[] = [
@@ -67,7 +69,9 @@ const classesToInclude: any[] = [
   GoogleAddressSearchComponent,
   CountdownTimerComponent,
   SubscriptionAlertComponent,
-  InlineLoadingComponent
+  InlineLoadingComponent,
+  LockedMatchTeaserComponent,
+  TalentProofBadgeComponent
 ];
 
 @NgModule({

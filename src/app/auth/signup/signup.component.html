@@ -187,6 +187,14 @@
             (role_validators?.invalid && role_validators?.touched) || role_validators?.dirty">
               <small *ngIf="role_validators?.errors?.required" class="text-danger">Role is required</small>
             </div>
+
+            <!-- GETHIRED 500K TALENT PROOF SYSTEM -- shown only once the
+                 employer role (2) is selected, never for applicant
+                 signup (role 3), so job seekers never see employer-
+                 facing reach messaging during their own signup. -->
+            <div class="mt-2" *ngIf="role_validators?.value === 2">
+              <app-talent-proof-badge variant="pill" placement="employer_signup"></app-talent-proof-badge>
+            </div>
           </div>
 
           <re-captcha formControlName="recaptcha"></re-captcha>

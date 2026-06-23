@@ -7,6 +7,9 @@ import { BannerComponent } from './components/banner/banner.component';
 import { ApplicantDashboardComponent } from './applicant-dashboard.component';
 import { NgChartsModule } from 'ng2-charts';
 import { RouterModule, Routes } from '@angular/router';
+import { ProfileReadinessPanelComponent } from './components/profile-readiness-panel/profile-readiness-panel.component';
+import { RecommendedJobsComponent } from './components/recommended-jobs/recommended-jobs.component';
+import { JobsModule } from '@main/jobs/jobs.module';
 
 const routes: Routes = [
   { path: '', component: ApplicantDashboardComponent }
@@ -17,13 +20,16 @@ const routes: Routes = [
     StatChartComponent,
     StatTotalComponent,
     BannerComponent,
-    ApplicantDashboardComponent
+    ApplicantDashboardComponent,
+    ProfileReadinessPanelComponent,
+    RecommendedJobsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     NgChartsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    JobsModule
   ]
 })
 export class ApplicantDashboardModule { }

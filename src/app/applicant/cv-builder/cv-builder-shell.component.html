@@ -1,0 +1,57 @@
+<div class="cv-builder-shell">
+  <h1 class="cv-builder-title">CV Builder &amp; Match Coach</h1>
+  <p class="cv-builder-subtitle">Know what to improve before you apply.</p>
+
+  <nav class="cv-builder-tabs" role="tablist" aria-label="CV Builder sections">
+    <button type="button" role="tab" [attr.aria-selected]="activeTab === 'overview'" (click)="setTab('overview')" class="cv-builder-tab" [class.active]="activeTab === 'overview'">Overview</button>
+    <button type="button" role="tab" [attr.aria-selected]="activeTab === 'upload'" (click)="setTab('upload')" class="cv-builder-tab" [class.active]="activeTab === 'upload'">Upload CV</button>
+    <button type="button" role="tab" *ngFor="let tab of comingSoonTabs" [attr.aria-selected]="activeTab === 'unavailable'" (click)="setTab('unavailable')" class="cv-builder-tab" [class.active]="activeTab === 'unavailable'">{{ tab.label }}</button>
+    <button type="button" role="tab" [attr.aria-selected]="activeTab === 'privacy'" (click)="setTab('privacy')" class="cv-builder-tab" [class.active]="activeTab === 'privacy'">Privacy &amp; Data Use</button>
+  </nav>
+
+  <div class="cv-builder-panel" role="tabpanel">
+    <ng-container *ngIf="activeTab === 'overview'">
+      <div class="cv-builder-empty">
+        <h2>Start with your CV</h2>
+        <p>Upload a PDF or DOCX CV to see your CV Health, missing signals, and target-job readiness.</p>
+        <button type="button" class="btn-cv-primary" (click)="startUpload()">Upload CV</button>
+        <button type="button" class="btn-link-cta" (click)="goToProfile()">Use my profile first</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === 'upload'">
+      <div class="cv-builder-upload">
+        <p class="cv-builder-privacy-note">Your CV stays private. Employers cannot see your CV Health or private recommendations.</p>
+        <label class="cv-builder-dropzone">
+          <input type="file" accept=".pdf,.docx" (change)="onFileSelected($event)" [disabled]="uploading" />
+          <span *ngIf="!uploading">Choose a PDF or DOCX file</span>
+          <span *ngIf="uploading">Uploading…</span>
+        </label>
+
+        <div class="cv-builder-result" *ngIf="uploadResult" [class.error]="!uploadResult.success" role="status">
+          <p>{{ uploadResult.message }}</p>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === 'unavailable'">
+      <div class="cv-builder-empty">
+        <h2>This part of CV Builder isn't ready yet</h2>
+        <p>We're still setting this up. Check back soon, or upload your CV now so it's ready when this feature launches.</p>
+        <button type="button" class="btn-cv-primary" (click)="setTab('upload')">Upload CV</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeTab === 'privacy'">
+      <div class="cv-builder-privacy">
+        <h2>Privacy &amp; Data Use</h2>
+        <p>CVCOACH uses your CV to give you applicant-side feedback only.</p>
+        <ul>
+          <li>Employers cannot see your CV Health or private recommendations.</li>
+          <li>Your CV is never made public or shared with third-party AI services.</li>
+          <li>You can delete your CV at any time once this feature is fully available.</li>
+        </ul>
+      </div>
+    </ng-container>
+  </div>
+</div>

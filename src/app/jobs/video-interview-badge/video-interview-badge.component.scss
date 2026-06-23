@@ -1,0 +1,40 @@
+@import "src/assets/styles/colors";
+
+.video-interview-badge {
+  margin-bottom: 12px;
+}
+
+.video-interview-badge-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(124, 58, 237, 0.08);
+  color: #7c3aed;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.video-interview-badge-icon {
+  font-size: 10px;
+}
+
+.video-interview-badge-explainer {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: #f9fafb;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.video-interview-badge-explainer p {
+  margin: 0 0 6px 0;
+}
+
+.video-interview-badge-explainer p:last-child {
+  margin-bottom: 0;
+}

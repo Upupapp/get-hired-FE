@@ -1,0 +1,16 @@
+<div class="recommended-jobs" role="region" aria-label="Recommended jobs">
+  <h3 class="recommended-jobs-title">Recommended for you</h3>
+
+  <div class="recommended-jobs-loading" *ngIf="loading" role="status">Finding jobs that fit your profile…</div>
+
+  <div class="recommended-jobs-empty" *ngIf="!loading && ranked.length === 0">
+    <p>We don't have enough profile information yet to recommend jobs. Add your skills and preferences to get personalized recommendations.</p>
+  </div>
+
+  <div class="recommended-jobs-list" *ngIf="!loading && ranked.length > 0">
+    <div class="recommended-job-item" *ngFor="let item of ranked; let i = index">
+      <span class="recommended-job-badge">{{ item.label }}</span>
+      <app-job-card [data]="item.raw" [i]="i"></app-job-card>
+    </div>
+  </div>
+</div>

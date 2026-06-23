@@ -45,9 +45,11 @@ export class ApplicantSidebarComponent implements OnInit {
     //   title: 'Jobs Opening', icon: 'jobs.png', class: 'jobs', route: 'jobs'
     // },
 
-    // {
-    //   title: 'Inbox', icon: 'applicants.png', class: 'inbox', route: 'inbox'
-    // },
+    // GH-ACT applicant-experience: real nav entry for the new
+    // /user/applications page (was previously unreachable from any menu).
+    {
+      title: 'My Applications', icon: 'applicants.png', class: 'applications', route: 'applications'
+    },
 
     {
       title: this.translate.instant('APPLICANT_DASHBOARD.SIDEBAR_PROFILE'), icon: 'account.png', class: 'profile', route: 'profile/details'

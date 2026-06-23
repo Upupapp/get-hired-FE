@@ -1,4 +1,10 @@
 <section style="transition: all 0.4s ease !important;">
+  <!-- GETHIRED 500K TALENT PROOF SYSTEM -- non-blocking helper card,
+       never a modal, never interrupts typing/form completion. -->
+  <div class="mb-3">
+    <app-talent-proof-badge variant="strip" placement="job_builder_sidebar"></app-talent-proof-badge>
+  </div>
+
   <!-- TITLE -->
   <!-- <div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <h5 class="main-title">Job Details</h5>
@@ -242,6 +248,82 @@
                 </h5>
               </ng-container>
             </div>
+          </div>
+        </div>
+
+        <hr class="my-4" style="border-style: dashed">
+
+        <!-- CERTIFICATIONS & LICENSES -->
+        <div class="mt-2 row" formArrayName="certificationRequirements"
+          [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
+          <div class="col-12">
+            <h5 class="title-label">Certifications & Licenses</h5>
+            <p class="title-label-sub mb-3">
+              Add certifications, licenses, permits, eligibility, or board exam requirements that applicants should have for this role. (You can add up to 10 items)
+            </p>
+          </div>
+
+          <div class="col-12 mb-3" *ngFor="let item of certificationRequirements.controls; let i = index"
+            [formGroupName]="i">
+            <div class="row align-items-end cert-requirement-item p-3">
+              <div class="col-12 col-md-4 mb-2">
+                <label>Requirement Name</label>
+                <input type="text" class="form-control" placeholder="ex, Registered Nurse License"
+                  formControlName="name" [class.is-invalid]="item.get('name').invalid && item.get('name').touched"
+                  (blur)="item.get('name').markAsTouched()">
+                <small class="text-danger" *ngIf="item.get('name').invalid && item.get('name').touched">
+                  Requirement name is needed -- this item won't be saved without it.
+                </small>
+              </div>
+
+              <div class="col-12 col-md-2 mb-2">
+                <label>Type</label>
+                <select class="form-select" formControlName="type">
+                  <option value="certification">Certification</option>
+                  <option value="license">License</option>
+                  <option value="permit">Permit</option>
+                  <option value="eligibility">Eligibility</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="col-12 col-md-2 mb-2">
+                <label>Importance</label>
+                <select class="form-select" formControlName="importance">
+                  <option value="required">Required</option>
+                  <option value="preferred">Preferred</option>
+                </select>
+              </div>
+
+              <div class="col-12 col-md-3 mb-2">
+                <label>Issuing Authority</label>
+                <input type="text" class="form-control" placeholder="ex, PRC" formControlName="issuingAuthority">
+              </div>
+
+              <div class="col-12 col-md-1 mb-2 text-end">
+                <mat-icon class="close" style="cursor: pointer" (click)="removeCertificationRequirement(i)">close</mat-icon>
+              </div>
+
+              <div class="col-12 col-md-6 mb-1">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input me-1" formControlName="expiryRequired">
+                  Expiry required (valid/unexpired document required)
+                </label>
+              </div>
+
+              <div class="col-12 col-md-6 mb-1">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input me-1" formControlName="verificationRequired">
+                  Verification required
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <button class="btn btn-add-now" type="button" (click)="addCertificationRequirement()">
+              + Add certification/license requirement
+            </button>
           </div>
         </div>
       </section>

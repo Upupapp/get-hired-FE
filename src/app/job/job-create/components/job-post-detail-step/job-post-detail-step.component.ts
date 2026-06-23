@@ -21,8 +21,11 @@ export class JobPostDetailStepComponent implements OnInit {
   requirements: FormArray;
   goodToHave: FormArray;
   educationalBackground: FormArray;
+  certificationRequirements: FormArray;
   bannerSelected: FormArray;
   bannerUrl: string;
+
+  certificationTypes = ['certification', 'license', 'permit', 'eligibility', 'other'];
 
   workSetup$ = this.jobFacade.setup$;
   typeList$ = this.jobFacade.typeList$;
@@ -50,6 +53,7 @@ export class JobPostDetailStepComponent implements OnInit {
     this.requirements = this.initialDetailsForm.get('requirements') as FormArray;
     this.goodToHave = this.initialDetailsForm.get('goodToHave') as FormArray;
     this.educationalBackground = this.initialDetailsForm.get('educationalBackground') as FormArray;
+    this.certificationRequirements = this.initialDetailsForm.get('certificationRequirements') as FormArray;
     this.bannerSelected = this.initialDetailsForm.get('bannerFile') as FormArray;
     this.workSetupSelected = this.initialDetailsForm.get('workSetupId').value;
     this.bannerUrl = this.initialDetailsForm.get('jobBanner').value;
@@ -131,6 +135,33 @@ export class JobPostDetailStepComponent implements OnInit {
 
   removeItem(index: number, controlArray: FormArray) {
     controlArray.removeAt(index);
+  }
+
+  // GETHIRED JOB CERTIFICATION REQUIREMENTS v1 -- structured items need
+  // their own add/remove (a FormGroup per item, not a single string
+  // value like addItem/removeItem above). Required validation applies
+  // only to the requirement name, per the command's explicit scope --
+  // every other field is optional so a minimal entry never produces a
+  // broken payload.
+  addCertificationRequirement() {
+    if (this.certificationRequirements.length >= 10) {
+      this.snackBar.open(`You are only allowed to add up to 10 certification/license requirements`,
+        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      return;
+    }
+    this.certificationRequirements.push(new FormGroup({
+      id: new FormControl(null),
+      name: new FormControl(null, Validators.required),
+      type: new FormControl('certification'),
+      importance: new FormControl('required'),
+      issuingAuthority: new FormControl(null),
+      expiryRequired: new FormControl(false),
+      verificationRequired: new FormControl(false),
+    }));
+  }
+
+  removeCertificationRequirement(index: number) {
+    this.certificationRequirements.removeAt(index);
   }
 
 }

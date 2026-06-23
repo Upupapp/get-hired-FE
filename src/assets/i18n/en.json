@@ -167,6 +167,11 @@
         "REQUIREMENTS":"Requirements",
         "SKILLS_EXPERIENCE":"Skills & Experience",
         "BACKGROUND_EDUCATION":"Educational Background",
+        "CERTIFICATIONS_LICENSES":"Certifications & Licenses",
+        "REQUIRED_LABEL":"Required",
+        "PREFERRED_LABEL":"Preferred",
+        "VERIFICATION_REQUIRED_LABEL":"Verification required",
+        "EXPIRY_REQUIRED_LABEL":"Valid/unexpired document required",
         "ADVANTAGES":"Good to have",
         "INTERVIEW_QUESTIONS":"Interview Questions"
     },

@@ -1,16 +1,27 @@
+<app-inline-loading *ngIf="(loading$ | async) && !(details$ | async)"></app-inline-loading>
+
+<div class="job-detail-error-state" *ngIf="(jobError$ | async) && !(loading$ | async) && !(details$ | async)" role="alert">
+  <h5>This job isn't available</h5>
+  <p>It may have expired, been removed, or the link may be incorrect.</p>
+  <button type="button" class="btn btn-apply-now" (click)="goToJobsList()">Browse all jobs</button>
+</div>
+
 <section *ngIf="details$ | async as selectedJobPost">
   <div class="p-0" style="overflow-x: hidden;" id="banner" *ngIf="withBanner">
     <div class="row">
       <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
         <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
           <h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
-          <p class="title-banner-description mb-2">
+          <p class="title-banner-description mb-2" *ngIf="normalizedJob$ | async as nJob">
             <ng-container *ngIf="selectedJobPost?.industryId">
               {{selectedJobPost?.industryName}} /
-            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} / PHP
-            {{selectedJobPost?.salaryMinimum | number:'1.0':'en-US' }} - PHP {{selectedJobPost?.salaryMaximum |
-            number:'1.0':'en-US' }}
+            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} /
+            {{nJob.salaryDisplay}}
           </p>
+
+          <div class="job-signal-badges mt-2" *ngIf="jobSignals$ | async as signals">
+            <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{badge.label}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -19,7 +30,7 @@
 
   <div class="card card-body" style="min-height: 400px;" [@animate]="{value:'*', params:{ y:'10px', delay:'400ms' }}">
     <div class="row">
-      <div class="col-9 d-flex flex-row">
+      <div class="col-12 col-md-9 d-flex flex-row flex-wrap">
         <div class="mb-3 pe-lg-2" *ngFor="let badge of selectedJobPost?.badges; let i = index">
           <div class="d-flex badge-card" [ngClass]="'badge-' + i">
             <img src="/assets/images/placeholder/icons/{{badge?.icon}}" [title]="badge?.name" style="height:30px"
@@ -30,8 +41,8 @@
         </div>
       </div>
 
-      <div class="col-3">
-        <div class="d-flex justify-content-end align-items-end mb-3" title="Share now!">
+      <div class="col-12 col-md-3">
+        <div class="d-flex justify-content-end align-items-end mb-3 flex-wrap" title="Share now!">
 
 
           <div class="bg-applied d-flex"
@@ -58,6 +69,12 @@
           <img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2"
             style="height: 45px; cursor: pointer;" (click)="getShareableLink(selectedJobPost.jobId)">
         </div>
+      </div>
+
+      <div class="col-12 mb-3" *ngIf="normalizedJob$ | async as nJob">
+        <app-video-interview-badge [job]="nJob"></app-video-interview-badge>
+        <app-job-match-panel [job]="nJob" (applyClicked)="toApply()"></app-job-match-panel>
+        <app-company-snapshot [job]="nJob"></app-company-snapshot>
       </div>
 
       <div class="col-12 mb-2 mt-2 pe-5 ps-lg-4">
@@ -119,6 +136,31 @@
           </ul>
         </div>
 
+        <!-- GETHIRED JOB CERTIFICATION REQUIREMENTS v1 -- hides cleanly
+             when the job has no certification/license requirements
+             (existing jobs created before this feature shipped). -->
+        <div class="job-requirements mb-3" *ngIf="selectedJobPost?.certificationRequirements?.length > 0">
+          <h5 class="title-job-description">
+            <strong>{{ 'APPLY_PAGE.CERTIFICATIONS_LICENSES' | translate }}</strong>
+          </h5>
+
+          <ul>
+            <li *ngFor="let item of selectedJobPost?.certificationRequirements">
+              <h5 class="title-requirements">
+                {{item.name}}
+                <span class="badge" [ngClass]="item.importance === 'required' ? 'bg-danger' : 'bg-secondary'">
+                  {{ (item.importance === 'required' ? 'APPLY_PAGE.REQUIRED_LABEL' : 'APPLY_PAGE.PREFERRED_LABEL') | translate }}
+                </span>
+                <span class="text-muted ms-1" *ngIf="item.type">({{item.type | titlecase}})</span>
+                <br>
+                <small class="text-muted" *ngIf="item.issuingAuthority">{{item.issuingAuthority}}</small>
+                <small class="text-muted d-block" *ngIf="item.verificationRequired">{{ 'APPLY_PAGE.VERIFICATION_REQUIRED_LABEL' | translate }}</small>
+                <small class="text-muted d-block" *ngIf="item.expiryRequired">{{ 'APPLY_PAGE.EXPIRY_REQUIRED_LABEL' | translate }}</small>
+              </h5>
+            </li>
+          </ul>
+        </div>
+
         <div class="job-requirements mb-3">
           <h5 class="title-job-description">
             <strong>{{ 'APPLY_PAGE.ADVANTAGES' | translate }}</strong>
@@ -136,7 +178,7 @@
     </div>
   </div>
 
-  <div class="card card-body mt-3" *ngIf="selectedJobPost?.tags.length > 0">
+  <div class="card card-body mt-3" *ngIf="selectedJobPost?.tags?.length > 0">
     <div class="row">
       <div class="col-12">
         <div class="job-requirements mb-3">

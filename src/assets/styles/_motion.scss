@@ -1,0 +1,79 @@
+// Motion tokens + reduced-motion utilities for the public portal redesign.
+// See PUBLIC_JOB_PORTAL_REDESIGN.md Phase 19 — durations match the mission
+// spec exactly (microinteraction 120-200ms, card enter 180-280ms, drawer/
+// dialog 200-300ms, match meter fill 500-800ms once, ambient hero slow).
+
+$motion-duration-micro: 160ms;
+$motion-duration-card: 220ms;
+$motion-duration-drawer: 260ms;
+$motion-duration-meter-fill: 650ms;
+$motion-duration-ambient: 6000ms;
+
+$motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+$motion-ease-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1);
+
+// Apply to any element whose transition/animation should be skipped
+// entirely for users who've requested reduced motion. Usage:
+//   .my-element { @include motion-safe; transition: transform 200ms; }
+@mixin motion-safe {
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+// Apply to ambient/continuous motion specifically (hero gradient drift,
+// shimmer, etc.) — these are removed entirely under reduced motion, never
+// just slowed down, per the mission's accessibility rules.
+@mixin ambient-motion-safe {
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
+}
+
+// Utility classes for templates that can't easily reach a component SCSS
+// mixin (e.g. inline-styled legacy markup).
+.motion-safe-transition {
+  transition-duration: $motion-duration-micro;
+  @include motion-safe;
+}
+
+.motion-safe-ambient {
+  @include ambient-motion-safe;
+}
+
+// ── BRAND additions ─────────────────────────────────────────────────────
+// Extends (does not replace) the tokens above. Scale/distance tokens and
+// a few additional semantic classes for the state-experience system
+// (loading/error/empty/success). Not yet widely applied -- see
+// GETHIRED_BRAND_MOTION_TOKENS.md for adoption status per class.
+
+$gh-scale-press: 0.985;
+$gh-shift-sm: 4px;
+$gh-lift: -2px;
+
+.gh-pressable {
+  transition: transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:active {
+    transform: scale($gh-scale-press);
+  }
+}
+
+.gh-error-panel,
+.gh-fallback-page {
+  // Calm, not alarming -- intentionally no animation by default.
+  // Reserved for future error/fallback page styling consistency.
+}
+
+.gh-success-pulse {
+  animation: gh-success-pulse-kf 400ms $motion-ease-decelerate;
+  @include motion-safe;
+}
+
+@keyframes gh-success-pulse-kf {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}

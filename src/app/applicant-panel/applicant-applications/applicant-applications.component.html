@@ -1,0 +1,26 @@
+<div class="applications-page">
+  <h1 class="applications-title">My Applications</h1>
+
+  <app-inline-loading *ngIf="loading"></app-inline-loading>
+
+  <div class="applications-error" *ngIf="error && !loading" role="alert">
+    <p>We couldn't load your applications right now.</p>
+    <button type="button" class="btn-link-cta" (click)="retry()">Try again</button>
+  </div>
+
+  <ng-container *ngIf="!loading && !error">
+    <div class="applications-list" *ngIf="applications.length > 0">
+      <div class="application-row" *ngFor="let app of applications">
+        <h3>{{ app.jobTitle }}</h3>
+        <p>{{ app.companyName }}</p>
+        <span class="application-status">{{ app.applicantStatusName || 'Submitted' }}</span>
+      </div>
+    </div>
+
+    <div class="applications-empty" *ngIf="applications.length === 0">
+      <h2>No applications yet</h2>
+      <p>Find a job that fits your profile and start your first application.</p>
+      <button type="button" class="btn-cta-primary" (click)="goToJobs()">Find jobs</button>
+    </div>
+  </ng-container>
+</div>

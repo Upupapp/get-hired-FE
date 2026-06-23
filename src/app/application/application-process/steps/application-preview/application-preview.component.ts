@@ -16,6 +16,10 @@ export class ApplicationPreviewComponent implements OnInit {
   @Input() interviews: InterviewModel.InterviewQuestion[];
   @Input() docs: any;
   @Input() applicantAnswers: any;
+  /** GH-EMP-B01 -- optional, employer-view-only. The applicant's own
+   * application-flow usage of this shared component never passes this,
+   * so the template's *ngIf keeps that path completely unaffected. */
+  @Input() matchSignals: any;
 
   govFiles = [];
   resume = [];

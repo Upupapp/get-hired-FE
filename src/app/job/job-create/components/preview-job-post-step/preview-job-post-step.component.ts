@@ -3,6 +3,8 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { combineLatest, Subscription } from 'rxjs';
 import * as Model from '../../../job.model';
+import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
+import { JobMatchabilityService, JobMatchabilityResult } from '@main/public/services/job-matchability.service';
 
 @Component({
   selector: 'app-preview-job-post-step',
@@ -38,6 +40,11 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
   levels: Model.Options[] = [];
   loading: boolean = true;
 
+  /** MATCH v3 -- Job Post Matchability (Layer 1). Computed from the same
+   * draft data already assembled for the preview below; never blocks
+   * publishing, purely informational. */
+  matchability: JobMatchabilityResult | null = null;
+
   info$ = this.jobFacade.info$;
   initial$ = this.jobFacade.initial$;
   interview$ = this.jobFacade.interview$;
@@ -57,10 +64,14 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
       console.log('PREVIEW: ');
       console.log(this.preview)
 
+      this.matchability = this.matchabilityService.evaluate(this.normalizer.normalize(this.preview));
+
     });
 
   constructor(
-    private jobFacade: JobFacade
+    private jobFacade: JobFacade,
+    private normalizer: PublicJobNormalizerService,
+    private matchabilityService: JobMatchabilityService,
   ) { }
 
   ngOnInit(): void {

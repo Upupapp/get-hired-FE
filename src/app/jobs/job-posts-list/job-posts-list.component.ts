@@ -49,11 +49,33 @@ export class JobPostsListComponent implements OnInit {
     this.screenSize = window.innerWidth;
   }
 
-  filterJobList(jobLists: any[]){
-    if(this.searchData)
-      return jobLists.filter((el: any) => JSON.stringify(el).toLowerCase().match(this.searchData?.keyword.toLowerCase()));
+  // GH-ACT-021: previously only `keyword` was ever applied -- the
+  // work-setup/job-type select inputs in the hero/search bar were visible
+  // and bound, but silently ignored here, so choosing "Remote" or
+  // "Full-Time" had no effect on results. Also crashed if `searchData`
+  // existed but `keyword` was undefined (`undefined.toLowerCase()`).
+  filterJobList(jobLists: any[]) {
+    if (!this.searchData || !jobLists) {
+      return jobLists;
+    }
 
-    return jobLists
+    const keyword = (this.searchData.keyword ?? '').toLowerCase().trim();
+    const workSetup = this.normalizeFilterValue(this.searchData.work_setup, 'Work Setup');
+    const jobType = this.normalizeFilterValue(this.searchData.job_type, 'Job Type');
+
+    return jobLists.filter((job: any) => {
+      const matchesKeyword = !keyword || JSON.stringify(job).toLowerCase().includes(keyword);
+      const matchesWorkSetup = !workSetup || (job.workSetupName ?? '').toLowerCase() === workSetup;
+      const matchesJobType = !jobType || (job.jobTypeName ?? '').toLowerCase() === jobType;
+      return matchesKeyword && matchesWorkSetup && matchesJobType;
+    });
+  }
+
+  private normalizeFilterValue(value: string | undefined, placeholder: string): string {
+    if (!value || value === placeholder) {
+      return '';
+    }
+    return value.toLowerCase();
   }
 
   @HostListener('window:resize', ['$event'])

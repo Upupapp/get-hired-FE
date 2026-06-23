@@ -56,6 +56,15 @@ export class SignupComponent implements OnInit {
       role: [null, Validators.compose([Validators.required])]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
 
+    // Public-portal CTAs can pre-select role via ?role=2|3 (e.g. "Continue
+    // as Employer" -> /signup?role=2) so visitors don't have to pick it
+    // again. Falls back to the existing required-field behavior if absent
+    // or not one of the two valid values.
+    const requestedRole = this.activatedRoute.snapshot.queryParamMap.get('role');
+    if (requestedRole === '2' || requestedRole === '3') {
+      this.registerForm.patchValue({ role: Number(requestedRole) });
+    }
+
     this.req$ = combineLatest([this.success$, this.loading$]).pipe(
       map(([success, loading]) => {
         if (success && !loading) {

@@ -165,6 +165,11 @@
         "REQUIREMENTS":"Yêu cầu công việc",
         "SKILLS_EXPERIENCE":"Kỹ năng và kinh nghiệm",
         "BACKGROUND_EDUCATION":"Trình độ học vấn",
+        "CERTIFICATIONS_LICENSES":"Chứng chỉ & Giấy phép",
+        "REQUIRED_LABEL":"Bắt buộc",
+        "PREFERRED_LABEL":"Ưu tiên",
+        "VERIFICATION_REQUIRED_LABEL":"Yêu cầu xác minh",
+        "EXPIRY_REQUIRED_LABEL":"Yêu cầu giấy tờ còn hiệu lực",
         "ADVANTAGES":"Lợi thế",
         "INTERVIEW_QUESTIONS":"Câu hỏi phỏng vấn"
     },

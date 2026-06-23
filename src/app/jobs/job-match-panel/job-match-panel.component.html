@@ -1,0 +1,40 @@
+<ng-container *ngIf="role === null">
+  <app-locked-match-teaser variant="detail" context="job_detail" [jobId]="job?.jobId"></app-locked-match-teaser>
+</ng-container>
+
+<div class="match-panel" *ngIf="role === '3'" role="status" aria-live="polite">
+  <div class="match-panel-loading" *ngIf="loading">
+    Checking your match for this role&hellip;
+  </div>
+
+  <ng-container *ngIf="!loading && compatibility && readiness">
+    <div class="match-score-row">
+      <div class="match-score-ring" [attr.data-label]="compatibility.label">
+        <span class="match-score-value">{{ compatibility.score }}%</span>
+      </div>
+      <div class="match-score-copy">
+        <h4 class="match-score-label">{{ compatibility.label }}</h4>
+        <p class="match-score-explanation">{{ compatibility.explanation }}</p>
+      </div>
+    </div>
+
+    <ul class="match-factors" *ngIf="compatibility.suggestions.length > 0">
+      <li *ngFor="let suggestion of compatibility.suggestions">{{ suggestion }}</li>
+    </ul>
+
+    <div class="readiness-row" [ngClass]="'readiness-' + readiness.state">
+      <h5 class="readiness-label">{{ readiness.label }}</h5>
+      <p class="readiness-description">{{ readiness.description }}</p>
+      <ul class="readiness-reasons" *ngIf="readiness.reasons.length > 0">
+        <li *ngFor="let reason of readiness.reasons">{{ reason }}</li>
+      </ul>
+      <button
+        type="button"
+        class="readiness-cta"
+        *ngIf="readiness.state === 'ready' || readiness.state === 'almost_ready' || readiness.state === 'video_answer_required'"
+        (click)="onApplyClicked()">
+        {{ readiness.ctaLabel }}
+      </button>
+    </div>
+  </ng-container>
+</div>

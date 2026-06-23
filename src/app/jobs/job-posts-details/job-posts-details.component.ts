@@ -1,14 +1,18 @@
-import { Component, HostListener, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { environment } from "@environments/environment";
-import { catchError, of, Subscription, tap } from 'rxjs';
+import { catchError, map, of, Subscription, tap } from 'rxjs';
 import { JobsService } from '../jobs.service';
 import { CoreService } from '@app-core/services/core.service';
+import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
+import { JobSignalsService } from '@main/public/services/job-signals.service';
+import { JobStructuredDataService } from '@main/public/services/job-structured-data.service';
 
 @Component({
   selector: 'app-job-posts-details',
@@ -16,10 +20,24 @@ import { CoreService } from '@app-core/services/core.service';
   styleUrls: ['./job-posts-details.component.scss'],
   animations: [mainAnimations]
 })
-export class JobPostsDetailsComponent implements OnInit {
+export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   @Input() withBanner: boolean = true;
   @Output() apply = new EventEmitter();
   details$ = this.jobFacade.getJobById$;
+  // Normalized, defensively-typed view of the same data for the new
+  // match panel / signal badges -- read-only, does not change the
+  // facade's own fetch contract. GH-ACT-020 (job detail redesign).
+  normalizedJob$ = this.details$.pipe(
+    map(job => job ? this.normalizer.normalize(job) : null)
+  );
+  jobSignals$ = this.normalizedJob$.pipe(
+    map(job => job ? this.jobSignals.compute(job) : null)
+  );
+  // GH-ACT-013 (job detail error/loading states): previously a failed fetch
+  // (expired/deleted/invalid job id) rendered nothing at all -- a silent
+  // blank page with no explanation and no way to recover.
+  loading$ = this.jobFacade.getJobLoading$;
+  jobError$ = this.jobFacade.jobError$;
   link$: Subscription;
   jobId: string;
   userRole: string;
@@ -35,15 +53,32 @@ export class JobPostsDetailsComponent implements OnInit {
     private clipboard: Clipboard,
     private snackBar: MatSnackBar,
     private jobsService: JobsService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    private normalizer: PublicJobNormalizerService,
+    private jobSignals: JobSignalsService,
+    private titleService: Title,
+    private structuredData: JobStructuredDataService
   ) {
     this.jobId = this.route.snapshot.params['id']
   }
+
+  private normalizedJobSub: Subscription;
 
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
     this.coreService.getRole()
       .then(role => this.userRole = role);
+
+    // GH-ACT step 17 (SEO): set a real per-job page title and inject
+    // schema.org JobPosting structured data once the job loads. No
+    // page-title/structured-data management existed anywhere in this
+    // codebase before this (confirmed via repo-wide search).
+    this.normalizedJobSub = this.normalizedJob$.subscribe(job => {
+      if (job) {
+        this.titleService.setTitle(`${job.title} at ${job.companyName} | GetHired`);
+        this.structuredData.apply(job);
+      }
+    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -53,6 +88,10 @@ export class JobPostsDetailsComponent implements OnInit {
 
   goBack() {
     this.location.back();
+  }
+
+  goToJobsList(): void {
+    this.router.navigateByUrl('/jobs');
   }
 
   toApply() {
@@ -103,6 +142,15 @@ export class JobPostsDetailsComponent implements OnInit {
       this.currentUrl$.unsubscribe();
     }
 
+    if (this.normalizedJobSub) {
+      this.normalizedJobSub.unsubscribe();
+    }
+
+    this.structuredData.remove();
+    // Reset to the site default rather than leaving a stale job title
+    // visible on whatever page the user navigates to next -- no app-wide
+    // title management exists today to restore a "previous" title instead.
+    this.titleService.setTitle('Get Hired - Hire experts or be hired for any job, any time.');
   }
 
 }

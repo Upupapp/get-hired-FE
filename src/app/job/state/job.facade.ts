@@ -25,6 +25,7 @@ export class JobFacade {
   interview$ = this.store.pipe(select(fromfeature.getJobInterview));
   getJobById$ = this.store.pipe(select(fromfeature.getJobById));
   getJobLoading$ = this.store.pipe(select(fromfeature.jobLoading));
+  jobError$ = this.store.pipe(select(fromfeature.jobError));
   applicants$ = this.store.pipe(select(fromfeature.getjobApplicants));
   details$ = this.store.pipe(select(fromfeature.getApplicantDetails));
   subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));

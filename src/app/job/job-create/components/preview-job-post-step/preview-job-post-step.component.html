@@ -4,6 +4,17 @@
     <h5 class="main-title">Job Post Preview</h5>
   </div>
 
+  <section class="card card-body mb-3 match-v3-matchability-card" *ngIf="matchability" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+    <div class="match-v3-matchability-header">
+      <span class="match-v3-matchability-label">{{ matchability.label }}</span>
+      <span class="match-v3-matchability-score">{{ matchability.score }}/100</span>
+    </div>
+    <p class="match-v3-matchability-copy">This score reflects how clear your job post is for matching, not how good your job is. Add clearer requirements to improve match signals.</p>
+    <ul class="match-v3-matchability-actions" *ngIf="matchability.topActions?.length">
+      <li *ngFor="let action of matchability.topActions">{{ action }}</li>
+    </ul>
+  </section>
+
   <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <div class="banner-container">
       <div class="bg-opacity" style="height:360px; overflow: hidden;
@@ -148,6 +159,25 @@
             <li *ngFor="let item of preview.educationalBackground">
               <h5 class="title-requirements">
                 {{item}}
+              </h5>
+            </li>
+          </ul>
+        </div>
+
+        <!-- CERTIFICATIONS & LICENSES (GETHIRED JOB CERTIFICATION REQUIREMENTS v1) -->
+        <div class="job-requirements mb-3" *ngIf="preview.certificationRequirements && preview.certificationRequirements.length > 0">
+          <h5 class="title-job-description">
+            <strong>Certifications & Licenses</strong>
+          </h5>
+
+          <ul>
+            <li *ngFor="let item of preview.certificationRequirements">
+              <h5 class="title-requirements">
+                {{item.name}}
+                <span class="badge" [ngClass]="item.importance === 'required' ? 'bg-danger' : 'bg-secondary'">
+                  {{item.importance === 'required' ? 'Required' : 'Preferred'}}
+                </span>
+                <span class="text-muted ms-1" *ngIf="item.type">({{item.type | titlecase}})</span>
               </h5>
             </li>
           </ul>

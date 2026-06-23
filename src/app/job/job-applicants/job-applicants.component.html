@@ -39,6 +39,13 @@
 
   <!-- TODO add status -->
   <div *ngIf="!showProfile && applicants$ | async as applicants" class="px-4 mt-2">
+    <!-- GH-EMP-B02: Match Signals disclaimer. Shown whenever at least one
+         row has a real signal, so it's never displayed for a job with no
+         applicants or where signals are entirely unavailable. -->
+    <div class="match-signals-disclaimer" *ngIf="hasAnyMatchSignal(applicants)" role="note">
+      Match Signals are decision-support indicators based on the job post and submitted applicant information. Review the full application before making hiring decisions. Match Signals should not be used as the sole basis for hiring decisions.
+    </div>
+
     <div class="card card-body" *ngIf="!loading">
       <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewMenu($event)"
         (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'" [displayedColumns]="displayedColumns"
@@ -58,6 +65,7 @@
     [applicantAnswers]="details.answers"
     [docs]="details.profileDocs"
     [profile]="details.profile"
-    [interviews]="details.interviewQuestions"></app-application-preview>
+    [interviews]="details.interviewQuestions"
+    [matchSignals]="details.matchSignals"></app-application-preview>
   </div>
 </section>
