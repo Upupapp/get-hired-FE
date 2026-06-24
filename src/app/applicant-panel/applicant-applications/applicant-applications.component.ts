@@ -63,6 +63,10 @@ export class ApplicantApplicationsComponent implements OnInit {
     return this.snapshotsMap.get(applicationId) ?? null;
   }
 
+  trackByTipReason(_index: number, tip: any): string {
+    return tip?.reason ?? String(_index);
+  }
+
   goToJobs(): void {
     this.router.navigateByUrl('/jobs');
   }

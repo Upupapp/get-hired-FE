@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 .applications-page {
   padding: 24px;
@@ -78,27 +79,63 @@
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-// Loading skeleton
+// Loading skeleton: 3-element layout mirrors the loaded score + badge shape
+// so the visual weight is consistent between loading and revealed states.
 .app-snapshot-skeleton {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
   padding: 4px 0;
 }
 
-@keyframes gh-shimmer {
-  0%   { background-position: -200px 0; }
-  100% { background-position: calc(200px + 100%) 0; }
+// Shimmer keyframe (scoped name avoids conflict with employer-side gh-shimmer)
+@keyframes gh-app-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+// Shared shimmer base — applied to both line and badge placeholders
+%app-skeleton-base {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: gh-app-shimmer 1.4s ease-in-out infinite;
+  border-radius: 4px;
+  // Ambient motion removed for users who prefer reduced motion
+  @include ambient-motion-safe;
 }
 
 .app-skeleton-line {
+  @extend %app-skeleton-base;
   height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200px 100%;
-  animation: gh-shimmer 1.4s ease-in-out infinite;
 
-  &--short { width: 140px; }
+  &--short  { width: 45%; }  // matches disclaimer width
+  &--medium { width: 60%; }  // matches label + score row width
+}
+
+.app-skeleton-badges {
+  display: flex;
+  gap: 8px;
+}
+
+.app-skeleton-badge {
+  @extend %app-skeleton-base;
+  height: 20px;
+  width: 52px;       // percentage score badge
+  border-radius: 10px;
+
+  &--wide { width: 80px; }  // level label badge ("Excellent" / "Getting started")
+}
+
+// Score reveal: fade + slight upward drift on transition from skeleton to data.
+// Mirrors .gh-snapshot-reveal on the employer card for visual consistency.
+@keyframes app-snapshot-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.app-snapshot-reveal {
+  animation: app-snapshot-fadein $motion-duration-card $motion-ease-decelerate both;
+  @include motion-safe;
 }
 
 // Score row
@@ -135,6 +172,9 @@
 }
 
 // Tip lists
+// Colors: amber (#f59e0b / #fff7ed) and sky (#38bdf8 / #f0f9ff) are industry-
+// standard for "required" and "optional" signals. They sit outside the brand
+// red and do not compete with action buttons — intentional contrast.
 .app-snapshot-tips {
   margin: 8px 0;
   padding: 8px 10px;
@@ -172,8 +212,16 @@
   }
 }
 
-// Empty / no-snapshot
+// Empty / no-snapshot (pre-deployment application)
 .app-snapshot-empty {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+  font-style: italic;
+}
+
+// Fetch-failed state: soft unavailable message — visible but not alarming
+.app-snapshot-unavailable {
   font-size: 12px;
   color: #9ca3af;
   margin: 0;

@@ -16,9 +16,15 @@
         <span class="application-status">{{ app.applicantStatusName || 'Submitted' }}</span>
 
         <!-- Completeness snapshot: loaded after the applications list resolves -->
-        <div class="app-snapshot" *ngIf="app.jobApplicationId" aria-label="Application completeness">
-          <!-- Skeleton while snapshots are in-flight -->
+        <div class="app-snapshot" *ngIf="app.jobApplicationId" role="region" aria-label="Application completeness snapshot"
+             aria-live="polite" aria-atomic="true">
+          <!-- Skeleton while snapshots are in-flight: 3 elements hint at score + badge shape -->
           <div class="app-snapshot-skeleton" *ngIf="!snapshotsLoaded" role="status" aria-label="Loading application snapshot">
+            <div class="app-skeleton-line app-skeleton-line--medium"></div>
+            <div class="app-skeleton-badges">
+              <div class="app-skeleton-badge"></div>
+              <div class="app-skeleton-badge app-skeleton-badge--wide"></div>
+            </div>
             <div class="app-skeleton-line app-skeleton-line--short"></div>
           </div>
 
@@ -26,12 +32,12 @@
             <ng-container *ngIf="snapshotFor(app.jobApplicationId) as snap; else snapSilent">
               <!-- No snapshot captured (pre-deployment application) -->
               <p class="app-snapshot-empty" *ngIf="!snap.hasSnapshot">
-                Snapshot not available — this application was submitted before completeness tracking was enabled.
+                Completeness details aren't available for this application — it was submitted before this feature was introduced.
               </p>
 
-              <!-- Snapshot data -->
+              <!-- Snapshot data: fade-in on reveal using motion token -->
               <ng-container *ngIf="snap.hasSnapshot">
-                <div class="app-snapshot-score" role="region" aria-label="Completeness score">
+                <div class="app-snapshot-score app-snapshot-reveal" role="region" aria-label="Completeness score">
                   <span class="app-snapshot-label">Application completeness</span>
                   <div class="app-snapshot-score-row">
                     <strong class="app-snapshot-pct">{{ snap.completenessScore }}%</strong>
@@ -41,31 +47,33 @@
                         'bg-success': snap.completenessLevel === 'excellent' || snap.completenessLevel === 'strong',
                         'bg-warning text-dark': snap.completenessLevel === 'basic',
                         'bg-secondary': snap.completenessLevel === 'incomplete'
-                      }">{{ snap.completenessLevel | titlecase }}</span>
+                      }">{{ snap.completenessLevel === 'incomplete' ? 'Getting started' : (snap.completenessLevel | titlecase) }}</span>
                   </div>
                 </div>
 
                 <!-- Required improvements -->
                 <div class="app-snapshot-tips app-snapshot-tips--required" *ngIf="snap.missingRequired?.length > 0">
-                  <p class="app-snapshot-tips-heading">Complete your profile to strengthen future applications:</p>
+                  <p class="app-snapshot-tips-heading">What was missing when you applied — add these now for stronger future applications:</p>
                   <ul>
-                    <li *ngFor="let tip of snap.missingRequired">{{ tip.reason }}</li>
+                    <li *ngFor="let tip of snap.missingRequired; trackBy: trackByTipReason">{{ tip.reason }}</li>
                   </ul>
                 </div>
 
                 <!-- Recommended improvements -->
                 <div class="app-snapshot-tips app-snapshot-tips--recommended" *ngIf="snap.missingRecommended?.length > 0">
-                  <p class="app-snapshot-tips-heading">Optional ways to stand out:</p>
+                  <p class="app-snapshot-tips-heading">Extra details that can help you stand out (not required):</p>
                   <ul>
-                    <li *ngFor="let tip of snap.missingRecommended">{{ tip.reason }}</li>
+                    <li *ngFor="let tip of snap.missingRecommended; trackBy: trackByTipReason">{{ tip.reason }}</li>
                   </ul>
                 </div>
 
                 <p class="app-snapshot-disclaimer">{{ snap.disclaimerNote }}</p>
               </ng-container>
             </ng-container>
-            <!-- Snapshot fetch failed silently — show nothing, don't alarm the user -->
-            <ng-template #snapSilent></ng-template>
+            <!-- Snapshot fetch failed: soft unavailable message — not silent, not alarming -->
+            <ng-template #snapSilent>
+              <p class="app-snapshot-unavailable">Snapshot unavailable right now.</p>
+            </ng-template>
           </ng-container>
         </div>
 
