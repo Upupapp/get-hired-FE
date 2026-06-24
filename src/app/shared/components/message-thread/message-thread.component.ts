@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ChatMessage, MessageService } from '@app-shared/services/message.service';
 import { Subject, interval, switchMap, takeUntil, catchError, of } from 'rxjs';
 
@@ -13,13 +13,20 @@ import { Subject, interval, switchMap, takeUntil, catchError, of } from 'rxjs';
  * Polls for new messages every 8s while open rather than a websocket --
  * no realtime infrastructure exists anywhere in this app yet, and a
  * lightweight poll is consistent in scope with the rest of this pass.
+ *
+ * Uses ngOnChanges (not ngOnInit) to open the thread, so this component
+ * stays correct even if a future caller keeps one instance alive across
+ * different (jobId, applicantUid) pairs instead of destroying/recreating
+ * it -- found during a post-deploy SWEEP pass tracing the actual current
+ * call sites (currently safe by coincidence of how *ngIf is structured
+ * in both callers, not by the component's own design; this closes that gap).
  */
 @Component({
   selector: 'app-message-thread',
   templateUrl: './message-thread.component.html',
   styleUrls: ['./message-thread.component.scss'],
 })
-export class MessageThreadComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class MessageThreadComponent implements OnChanges, OnDestroy, AfterViewChecked {
   @Input() jobId!: string;
   @Input() applicantUid?: string;
   @Input() otherPartyLabel = 'this conversation';
@@ -35,11 +42,40 @@ export class MessageThreadComponent implements OnInit, OnDestroy, AfterViewCheck
   newBody = '';
 
   private destroy$ = new Subject<void>();
+  private pollDestroy$ = new Subject<void>();
   private shouldScroll = false;
 
   constructor(private messageService: MessageService) {}
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.jobId) return;
+    if (!changes['jobId'] && !changes['applicantUid']) return;
+    this.resetForNewThread();
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.shouldScroll && this.scrollAnchor) {
+      this.scrollAnchor.nativeElement.scrollIntoView({ block: 'end' });
+      this.shouldScroll = false;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private resetForNewThread(): void {
+    // Stop any poll from the previous (jobId, applicantUid) pair before
+    // starting a new one -- without this, switching conversations on a
+    // reused instance would leave two pollers running against two threads.
+    this.pollDestroy$.next();
+    this.threadId = null;
+    this.messages = [];
+    this.loading = true;
+    this.error = null;
+    this.newBody = '';
+
     this.messageService.openThread(this.jobId, this.applicantUid).subscribe({
       next: (thread) => {
         this.threadId = thread?.id ?? null;
@@ -56,18 +92,6 @@ export class MessageThreadComponent implements OnInit, OnDestroy, AfterViewCheck
         this.error = 'Could not open this conversation. Please try again.';
       },
     });
-  }
-
-  ngAfterViewChecked(): void {
-    if (this.shouldScroll && this.scrollAnchor) {
-      this.scrollAnchor.nativeElement.scrollIntoView({ block: 'end' });
-      this.shouldScroll = false;
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private loadMessages(): void {
@@ -91,10 +115,12 @@ export class MessageThreadComponent implements OnInit, OnDestroy, AfterViewCheck
   }
 
   private startPolling(): void {
+    const threadIdAtStart = this.threadId;
     interval(8000)
       .pipe(
         takeUntil(this.destroy$),
-        switchMap(() => this.messageService.getThreadMessages(this.threadId as string)),
+        takeUntil(this.pollDestroy$),
+        switchMap(() => this.messageService.getThreadMessages(threadIdAtStart as string)),
         catchError(() => of(null)),
       )
       .subscribe((msgs) => {
@@ -125,5 +151,12 @@ export class MessageThreadComponent implements OnInit, OnDestroy, AfterViewCheck
 
   isOwnMessage(msg: ChatMessage): boolean {
     return msg.sender_role === this.currentUserRole;
+  }
+
+  /** Without this, *ngFor re-renders every bubble on every 8s poll tick
+   * even when nothing changed, since `messages` gets a new array
+   * reference each time -- found during an OPTIMIZE pass. */
+  trackByMessageId(_index: number, msg: ChatMessage): string {
+    return msg.id;
   }
 }

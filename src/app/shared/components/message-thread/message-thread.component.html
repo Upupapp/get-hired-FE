@@ -14,7 +14,7 @@
       No messages yet. Say hello to get the conversation started.
     </div>
 
-    <div *ngFor="let msg of messages"
+    <div *ngFor="let msg of messages; trackBy: trackByMessageId"
          class="msg-bubble-row"
          [class.msg-bubble-row--own]="isOwnMessage(msg)">
       <div class="msg-bubble" [class.msg-bubble--own]="isOwnMessage(msg)">
