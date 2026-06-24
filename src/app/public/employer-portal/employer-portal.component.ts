@@ -26,6 +26,14 @@ export class EmployerPortalComponent {
     { title: 'Use video answers', description: 'Ask applicants for video answers when useful.' },
     { title: 'See match signals', description: 'Explainable decision-support, never a hidden ranking.' },
     { title: 'Manage hiring status', description: 'Track every applicant\'s stage in one workspace.' },
+    // GETHIRED_JOB_SEEKERS_INFORMATION_PORTAL_VISUAL_UPGRADE -- SWEEP
+    // finding: "Message applicants" was removed from this page for the
+    // same reason "Reply to employers" was removed from /job-seekers --
+    // no messaging frontend existed. That gap closed (app-message-thread
+    // is now wired into job-applicants.component.html's applicant detail
+    // view, verified end-to-end via a live smoke test). Restoring the
+    // symmetric claim here now that it's true on both sides.
+    { title: 'Message applicants', description: 'Keep candidate conversations connected to the hiring process.' },
     { title: 'Track every job', description: 'See open jobs, new applicants, and next steps.' },
   ];
 
