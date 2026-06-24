@@ -60,6 +60,10 @@ export class CompanyDashboardComponent implements OnInit {
   pipelineError = false;
   byStage: PipelineStage[] = [];
   needsReview: NeedsReviewItem[] = [];
+  /** OPTIMIZE: cached once when pipeline data arrives, not recomputed per
+   * change-detection tick. Both values are used 3–6 times in the template. */
+  needsReviewCount = 0;
+  pipelineBarMax = 1;
 
   constructor(
     private companyFacade: CompanyFacade,
@@ -79,6 +83,10 @@ export class CompanyDashboardComponent implements OnInit {
       next: (res: any) => {
         this.byStage = res?.data?.byStage || [];
         this.needsReview = res?.data?.needsReview || [];
+        this.needsReviewCount =
+          (this.byStage.find(s => s.statusId === 1)?.count || 0) +
+          (this.byStage.find(s => s.statusId === 3)?.count || 0);
+        this.pipelineBarMax = Math.max(1, ...this.byStage.map(s => s.count));
         this.pipelineLoading = false;
       },
       error: () => {
@@ -90,16 +98,6 @@ export class CompanyDashboardComponent implements OnInit {
 
   retryPipelineOverview(): void {
     this.loadPipelineOverview();
-  }
-
-  totalNeedsReview(): number {
-    const pendingReview = this.byStage.find(s => s.statusId === 1)?.count || 0;
-    const underReview = this.byStage.find(s => s.statusId === 3)?.count || 0;
-    return pendingReview + underReview;
-  }
-
-  pipelineMax(): number {
-    return Math.max(1, ...this.byStage.map(s => s.count));
   }
 
   goToCreateJob(): void {

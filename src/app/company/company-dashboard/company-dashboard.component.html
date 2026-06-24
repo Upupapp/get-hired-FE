@@ -13,7 +13,7 @@
           {{ dashboard.charts?.applicants || 0 }} applicant{{ dashboard.charts?.applicants === 1 ? '' : 's' }} this month
         </p>
         <div class="emp-dash-hero-chips" *ngIf="!pipelineLoading && !pipelineError">
-          <span class="emp-dash-chip" *ngIf="totalNeedsReview() > 0">{{ totalNeedsReview() }} applicant{{ totalNeedsReview() === 1 ? '' : 's' }} to review</span>
+          <span class="emp-dash-chip" *ngIf="needsReviewCount > 0">{{ needsReviewCount }} applicant{{ needsReviewCount === 1 ? '' : 's' }} to review</span>
         </div>
         <div class="emp-dash-hero-cta">
           <button type="button" class="btn-cta-primary gh-pressable" (click)="goToCreateJob()">Post a job</button>
@@ -23,7 +23,8 @@
     </div>
   </section>
 
-  <!-- Action Center -->
+  <!-- Action Center — use ng-container *ngIf to compute profile missing-fields
+       once per dashboard render rather than calling the method 3× per tick -->
   <section class="emp-dash-actions" aria-label="Action center">
     <h2 class="emp-dash-section-title">Action center</h2>
 
@@ -36,46 +37,50 @@
       <button type="button" class="btn-link" (click)="retryPipelineOverview()">Retry</button>
     </div>
 
-    <div class="emp-dash-action-grid" *ngIf="!pipelineLoading && !pipelineError">
-      <button type="button" class="emp-dash-action-card emp-dash-action-card--urgent gh-pressable"
-        *ngIf="totalNeedsReview() > 0"
-        (click)="goToApplicants(needsReview[0]?.jobId)">
-        <span class="emp-dash-action-icon" aria-hidden="true">
-          <img src="/assets/brand/gethired-wow/candidate-profile-card.svg" alt="">
-        </span>
-        <span class="emp-dash-action-body">
-          <span class="emp-dash-action-title">Review new applicants</span>
-          <span class="emp-dash-action-desc">{{ totalNeedsReview() }} applicant{{ totalNeedsReview() === 1 ? '' : 's' }} waiting for your review.</span>
-        </span>
-        <span class="emp-dash-action-count">{{ totalNeedsReview() }}</span>
-      </button>
+    <ng-container *ngIf="!pipelineLoading && !pipelineError">
+      <ng-container *ngIf="companyProfileMissingFields(dashboard.company) as missingFields">
+        <div class="emp-dash-action-grid">
+          <button type="button" class="emp-dash-action-card emp-dash-action-card--urgent gh-pressable"
+            *ngIf="needsReviewCount > 0"
+            (click)="goToApplicants(needsReview[0]?.jobId)">
+            <span class="emp-dash-action-icon" aria-hidden="true">
+              <img src="/assets/brand/gethired-wow/candidate-profile-card.svg" alt="">
+            </span>
+            <span class="emp-dash-action-body">
+              <span class="emp-dash-action-title">Review new applicants</span>
+              <span class="emp-dash-action-desc">{{ needsReviewCount }} applicant{{ needsReviewCount === 1 ? '' : 's' }} waiting for your review.</span>
+            </span>
+            <span class="emp-dash-action-count">{{ needsReviewCount }}</span>
+          </button>
 
-      <button type="button" class="emp-dash-action-card gh-pressable" (click)="goToJobsList()">
-        <span class="emp-dash-action-icon" aria-hidden="true">
-          <img src="/assets/brand/gethired-wow/hiring-pipeline-lines.svg" alt="">
-        </span>
-        <span class="emp-dash-action-body">
-          <span class="emp-dash-action-title">Manage your jobs</span>
-          <span class="emp-dash-action-desc">View, edit, and publish your job posts.</span>
-        </span>
-      </button>
+          <button type="button" class="emp-dash-action-card gh-pressable" (click)="goToJobsList()">
+            <span class="emp-dash-action-icon" aria-hidden="true">
+              <img src="/assets/brand/gethired-wow/hiring-pipeline-lines.svg" alt="">
+            </span>
+            <span class="emp-dash-action-body">
+              <span class="emp-dash-action-title">Manage your jobs</span>
+              <span class="emp-dash-action-desc">View, edit, and publish your job posts.</span>
+            </span>
+          </button>
 
-      <button type="button" class="emp-dash-action-card gh-pressable"
-        *ngIf="companyProfileMissingFields(dashboard.company).length > 0"
-        (click)="goToCompanyProfile()">
-        <span class="emp-dash-action-icon" aria-hidden="true">
-          <img src="/assets/brand/gethired-wow/trust-shield-glow.svg" alt="">
-        </span>
-        <span class="emp-dash-action-body">
-          <span class="emp-dash-action-title">Complete your company profile</span>
-          <span class="emp-dash-action-desc">Missing: {{ companyProfileMissingFields(dashboard.company).join(', ') }}.</span>
-        </span>
-      </button>
+          <button type="button" class="emp-dash-action-card gh-pressable"
+            *ngIf="missingFields.length > 0"
+            (click)="goToCompanyProfile()">
+            <span class="emp-dash-action-icon" aria-hidden="true">
+              <img src="/assets/brand/gethired-wow/trust-shield-glow.svg" alt="">
+            </span>
+            <span class="emp-dash-action-body">
+              <span class="emp-dash-action-title">Complete your company profile</span>
+              <span class="emp-dash-action-desc">Missing: {{ missingFields.join(', ') }}.</span>
+            </span>
+          </button>
 
-      <div class="emp-dash-action-empty" *ngIf="totalNeedsReview() === 0 && companyProfileMissingFields(dashboard.company).length === 0">
-        <p>You're all caught up. No applicants are waiting for review right now.</p>
-      </div>
-    </div>
+          <div class="emp-dash-action-empty" *ngIf="needsReviewCount === 0 && missingFields.length === 0">
+            <p>You're all caught up. No applicants are waiting for review right now.</p>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
   </section>
 
   <!-- KPI Summary -->
@@ -93,7 +98,7 @@
       <span class="emp-dash-kpi-label">Video answers this month</span>
     </button>
     <button type="button" class="emp-dash-kpi-card gh-pressable" *ngIf="!pipelineLoading && !pipelineError" (click)="goToJobsList()">
-      <span class="emp-dash-kpi-value">{{ totalNeedsReview() }}</span>
+      <span class="emp-dash-kpi-value">{{ needsReviewCount }}</span>
       <span class="emp-dash-kpi-label">Needs review</span>
     </button>
   </section>
@@ -121,7 +126,7 @@
         <button type="button" class="emp-dash-pipeline-stage gh-pressable" role="listitem"
           *ngFor="let stage of byStage" (click)="goToJobsList()"
           [attr.aria-label]="stage.label + ': ' + stage.count + ' applicants'">
-          <span class="emp-dash-pipeline-bar" [style.height.%]="(stage.count / pipelineMax()) * 100"></span>
+          <span class="emp-dash-pipeline-bar" [style.height.%]="(stage.count / pipelineBarMax) * 100"></span>
           <span class="emp-dash-pipeline-count">{{ stage.count }}</span>
           <span class="emp-dash-pipeline-label">{{ stage.label }}</span>
         </button>

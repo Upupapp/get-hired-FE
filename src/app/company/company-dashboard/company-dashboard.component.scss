@@ -96,7 +96,7 @@
   white-space: nowrap;
 
   &:hover, &:focus-visible {
-    background: darken(#FF7062, 6%);
+    background: darken($color-global-red-buttons, 6%);
     outline: 2px solid $color-global-red-buttons;
     outline-offset: 2px;
   }
