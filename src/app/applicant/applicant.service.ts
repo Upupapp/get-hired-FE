@@ -100,4 +100,13 @@ export class ApplicantService {
   userProfile(userId: string) {
     return this.baseService.get<any>(`${this.applicantUrl}/userprofile?id=${userId}`);
   }
+
+  /** PROFILE -- server-computed profile completeness score, always for
+   * the authenticated caller's own profile (uid derived server-side, no
+   * params needed). This is the canonical scoring source MATCH's
+   * employer-side signals also read from -- frontend consumers should
+   * call this instead of reimplementing the scoring logic client-side. */
+  getProfileCompleteness() {
+    return this.baseService.get<any>(`${this.applicantUrl}/profile/completeness`);
+  }
 }

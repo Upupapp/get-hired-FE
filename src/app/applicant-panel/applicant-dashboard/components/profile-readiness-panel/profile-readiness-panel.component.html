@@ -13,14 +13,18 @@
     </div>
   </div>
 
-  <div class="readiness-next-action" *ngIf="nextBestAction">
+  <div class="readiness-next-action" *ngIf="loadingProfileQuality">
+    <p class="readiness-next-action-text">Checking your profile readiness…</p>
+  </div>
+
+  <div class="readiness-next-action" *ngIf="!loadingProfileQuality && nextBestAction">
     <p class="readiness-next-action-label">Next best action</p>
     <p class="readiness-next-action-text">{{ nextBestAction }}</p>
     <button type="button" class="btn btn-readiness-primary" (click)="goToProfile()">Update profile</button>
     <button type="button" class="btn-link-cta" (click)="goToCvBuilder()">Check CV readiness</button>
   </div>
 
-  <div class="readiness-next-action" *ngIf="!nextBestAction">
+  <div class="readiness-next-action" *ngIf="!loadingProfileQuality && !nextBestAction">
     <p class="readiness-next-action-text">Your profile looks complete. Find jobs that match your profile.</p>
     <button type="button" class="btn btn-readiness-primary" (click)="goToJobs()">Find jobs</button>
   </div>
