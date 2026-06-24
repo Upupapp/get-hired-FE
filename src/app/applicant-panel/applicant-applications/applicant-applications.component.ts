@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApplicantApplicationsService } from '@app-applicant/applicant-applications.service';
@@ -21,6 +21,7 @@ export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
   snapshotsLoaded = false;
 
   private appsSub: Subscription | null = null;
+  private snapshotsSub: Subscription | null = null;
 
   constructor(
     private applicationsService: ApplicantApplicationsService,
@@ -52,11 +53,25 @@ export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.applicationService.getApplicationSnapshots(ids).pipe(
-      map((res: any) => res?.data?.snapshots ?? {}),
-      catchError(() => of({})),
-    ).subscribe((snapshots: Record<string, any>) => {
-      Object.entries(snapshots).forEach(([id, data]) => this.snapshotsMap.set(id, data));
+    // The batch endpoint accepts a maximum of 50 IDs per call.
+    // Chunk the list and fan out in parallel; merge all results into snapshotsMap.
+    const BATCH_LIMIT = 50;
+    const chunks: string[][] = [];
+    for (let i = 0; i < ids.length; i += BATCH_LIMIT) {
+      chunks.push(ids.slice(i, i + BATCH_LIMIT));
+    }
+
+    const batchRequests = chunks.map(chunk =>
+      this.applicationService.getApplicationSnapshots(chunk).pipe(
+        map((res: any) => res?.data?.snapshots ?? {}),
+        catchError(() => of({} as Record<string, any>)),
+      )
+    );
+
+    this.snapshotsSub = forkJoin(batchRequests).subscribe((results: Record<string, any>[]) => {
+      results.forEach(snapshots =>
+        Object.entries(snapshots).forEach(([id, data]) => this.snapshotsMap.set(id, data))
+      );
       this.snapshotsLoaded = true;
     });
   }
@@ -79,6 +94,7 @@ export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
 
   retry(): void {
     this.appsSub?.unsubscribe();
+    this.snapshotsSub?.unsubscribe();
     this.loading = true;
     this.error = false;
     this.snapshotsMap.clear();
@@ -88,5 +104,6 @@ export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.appsSub?.unsubscribe();
+    this.snapshotsSub?.unsubscribe();
   }
 }

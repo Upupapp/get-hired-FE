@@ -215,13 +215,20 @@
 // "Update your profile" CTA inside the required tips block
 .app-snapshot-cta {
   display: inline-block;
-  margin-top: 6px;
+  margin-top: 8px;  // was 6px — extra 2px separates from the last <li> above
   font-size: 12px;
   font-weight: 600;
   color: $color-global-red-buttons;
   text-decoration: none;
+  border-radius: 2px;
 
   &:hover { text-decoration: underline; }
+
+  // Visible keyboard focus ring — meets WCAG 2.4.7
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
 }
 
 // Empty / no-snapshot (pre-deployment application)
@@ -246,4 +253,11 @@
   font-size: 10px;
   color: #9ca3af;
   line-height: 1.4;
+
+  // Privacy note: additional top spacing so two consecutive disclaimers don't
+  // sit flush, and a lighter tone to subordinate it below the main disclaimer.
+  &--privacy {
+    margin-top: 4px;
+    color: #b0b7c3;
+  }
 }
