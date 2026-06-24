@@ -46,6 +46,17 @@ export class EmployerPortalComponent {
     { icon: '/assets/brand/gethired-wow/match-signal-rings.svg', title: 'Understand fit faster', description: 'Use explainable compatibility signals to guide review without hiding decisions.' },
   ];
 
+  /** GETHIRED_EMPLOYER_INFORMATION_PORTAL_VISUAL_UPGRADE -- genuinely new
+   * section (confirmed via the current-state audit that no how-it-works
+   * section existed on this page before, unlike /home and /job-seekers'
+   * equivalent story sections). */
+  howItWorksSteps = [
+    { title: 'Post your job', description: 'Create and publish your job in a guided workspace.' },
+    { title: 'Receive applicants', description: 'Applicants can discover your role and submit their profiles.' },
+    { title: 'Review and interview', description: 'Review profiles, video answers, and hiring signals in one place.' },
+    { title: 'Hire with confidence', description: 'Move candidates forward with a clearer hiring process.' },
+  ];
+
   faqItems: PortalFaqItem[] = [
     {
       question: 'Can I create an employer account quickly?',
@@ -89,5 +100,13 @@ export class EmployerPortalComponent {
 
   onFaqOpened(question: string): void {
     this.analytics.trackPortalFaqOpened('employers', question);
+  }
+
+  onTrustStripViewed(): void {
+    this.analytics.trackTrustStripViewed('employers');
+  }
+
+  onHowItWorksViewed(): void {
+    this.analytics.trackHowItWorksSectionViewed('employers');
   }
 }

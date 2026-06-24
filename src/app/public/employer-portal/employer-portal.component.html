@@ -1,24 +1,106 @@
 <section class="portal-hero portal-hero--upgraded">
   <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="portal-hero-mesh" aria-hidden="true">
-  <div class="portal-hero-inner">
-    <h1 class="portal-hero-title">Hire faster with a structured hiring workspace.</h1>
-    <p class="portal-hero-subtitle">
-      Post jobs, review applicants, use video answers and match signals, and manage hiring in one
-      organized platform.
-    </p>
+  <div class="portal-hero-glow portal-hero-glow--one" aria-hidden="true"></div>
+  <div class="portal-hero-glow portal-hero-glow--two" aria-hidden="true"></div>
 
-    <!-- GETHIRED 500K TALENT PROOF SYSTEM v1 -- placed directly beside
-         the primary employer conversion action. -->
-    <app-talent-proof-badge variant="card" placement="employer_portal_hero"></app-talent-proof-badge>
+  <div class="portal-hero-inner portal-hero-inner--split">
+    <div class="portal-hero-copy">
+      <h1 class="portal-hero-title">Hire smarter. Build winning teams.</h1>
+      <p class="portal-hero-subtitle">
+        The all-in-one hiring workspace to post jobs, review applicants, use video answers and match
+        signals, and manage hiring in one organized platform.
+      </p>
 
-    <div class="portal-hero-actions-primary">
-      <button type="button" class="btn-cta-primary gh-pressable" (click)="startHiring()">Start hiring</button>
+      <!-- GETHIRED 500K TALENT PROOF SYSTEM v1 -- placed directly beside
+           the primary employer conversion action. -->
+      <app-talent-proof-badge variant="card" placement="employer_portal_hero"></app-talent-proof-badge>
+
+      <div class="portal-hero-cta-group">
+        <button type="button" class="btn-cta-primary gh-pressable" (click)="startHiring()">Start hiring</button>
+        <button type="button" class="btn-cta-outline gh-pressable" (click)="goToSignin()">Sign in</button>
+      </div>
     </div>
 
-    <div class="portal-hero-actions">
-      <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+    <!-- Product dashboard mockup -- CSS/HTML only, no external images, no
+         real people, no fabricated production metrics. Labels are generic
+         UI illustration ("Open jobs", "Pipeline", initials-only candidate
+         cards) per this command's explicit "no fake numbers" rule. -->
+    <div class="employer-mockup" aria-hidden="true">
+      <div class="employer-mockup-shell">
+        <div class="employer-mockup-topbar">
+          <span class="employer-mockup-dot"></span>
+          <span class="employer-mockup-dot"></span>
+          <span class="employer-mockup-dot"></span>
+          <span class="employer-mockup-title">Hiring workspace</span>
+        </div>
+        <div class="employer-mockup-body">
+          <div class="employer-mockup-sidebar">
+            <span class="employer-mockup-sidebar-item employer-mockup-sidebar-item--active"></span>
+            <span class="employer-mockup-sidebar-item"></span>
+            <span class="employer-mockup-sidebar-item"></span>
+            <span class="employer-mockup-sidebar-item"></span>
+          </div>
+          <div class="employer-mockup-main">
+            <div class="employer-mockup-header-row">
+              <span class="employer-mockup-header-label">Open jobs</span>
+              <span class="employer-mockup-post-btn">Post a job</span>
+            </div>
+            <div class="employer-mockup-pipeline">
+              <div class="employer-mockup-stage">
+                <span class="employer-mockup-stage-label">Applied</span>
+                <span class="employer-mockup-card employer-mockup-card--coral">JD</span>
+              </div>
+              <div class="employer-mockup-stage">
+                <span class="employer-mockup-stage-label">Screening</span>
+                <span class="employer-mockup-card employer-mockup-card--teal">MR</span>
+              </div>
+              <div class="employer-mockup-stage">
+                <span class="employer-mockup-stage-label">Interview</span>
+                <span class="employer-mockup-card employer-mockup-card--violet">AS</span>
+              </div>
+              <div class="employer-mockup-stage">
+                <span class="employer-mockup-stage-label">Offer</span>
+                <span class="employer-mockup-card employer-mockup-card--coral">KP</span>
+              </div>
+              <div class="employer-mockup-stage">
+                <span class="employer-mockup-stage-label">Hired</span>
+                <span class="employer-mockup-card employer-mockup-card--teal">RL</span>
+              </div>
+            </div>
+            <div class="employer-mockup-bottom-row">
+              <div class="employer-mockup-chart">
+                <svg viewBox="0 0 100 32" preserveAspectRatio="none">
+                  <polyline points="0,28 15,22 30,24 45,14 60,16 75,8 100,10" fill="none" stroke="#FE6F61" stroke-width="2"/>
+                </svg>
+                <span class="employer-mockup-chart-label">Applicants</span>
+              </div>
+              <div class="employer-mockup-source-card">
+                <span class="employer-mockup-source-label">Recent applicants</span>
+                <span class="employer-mockup-chip employer-mockup-chip--video">Video answer</span>
+                <span class="employer-mockup-chip employer-mockup-chip--match">Match signal</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Talent Proof card overlapping the mockup corner. -->
+      <div class="employer-mockup-floating-proof">
+        <app-talent-proof-badge variant="pill" placement="employer_portal_hero_mockup"></app-talent-proof-badge>
+      </div>
     </div>
   </div>
+</section>
+
+<!-- Trust strip -- safe items only, no unverified counts. -->
+<section class="portal-trust-strip" aria-label="Why employers trust GetHired" appViewedOnce (viewedOnce)="onTrustStripViewed()">
+  <div class="portal-trust-strip-item">
+    <app-talent-proof-badge variant="pill" placement="employer_portal_trust_strip"></app-talent-proof-badge>
+  </div>
+  <span class="portal-trust-chip">Structured hiring</span>
+  <span class="portal-trust-chip">Candidate pipeline</span>
+  <span class="portal-trust-chip">Secure workspace</span>
+  <span class="portal-trust-chip">Employer dashboard</span>
 </section>
 
 <!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- scoped addition,
@@ -54,14 +136,27 @@
   </div>
 </section>
 
+<section class="employer-how-it-works" aria-label="How it works" appViewedOnce (viewedOnce)="onHowItWorksViewed()">
+  <h2 class="portal-section-title">How it works</h2>
+  <div class="employer-how-it-works-steps">
+    <div class="employer-how-it-works-step" *ngFor="let step of howItWorksSteps; let i = index">
+      <span class="employer-how-it-works-number">{{ i + 1 }}</span>
+      <h3>{{ step.title }}</h3>
+      <p>{{ step.description }}</p>
+    </div>
+  </div>
+</section>
+
 <section class="portal-faq-section" aria-label="Frequently asked questions">
   <h2 class="portal-section-title">Frequently asked questions</h2>
   <app-portal-faq [items]="faqItems" (itemOpened)="onFaqOpened($event)"></app-portal-faq>
 </section>
 
 <app-portal-cta-band
-  title="Ready to start hiring?"
-  description="Create your employer account and post your first job."
-  primaryLabel="Create employer account"
-  (primaryClick)="startHiring()">
+  title="Ready to build your next team?"
+  description="Post your job and reach registered job seekers across the Philippines."
+  primaryLabel="Start hiring"
+  secondaryLabel="Sign in"
+  (primaryClick)="startHiring()"
+  (secondaryClick)="goToSignin()">
 </app-portal-cta-band>

@@ -135,4 +135,13 @@ export class PublicPortalAnalyticsService {
   trackPortalFaqOpened(page: string, question: string): void {
     this.track('portal_faq_opened', { page, question });
   }
+
+  // GETHIRED_EMPLOYER_INFORMATION_PORTAL_VISUAL_UPGRADE
+  trackTrustStripViewed(page: string): void {
+    this.track('trust_strip_viewed', { page });
+  }
+
+  trackHowItWorksSectionViewed(page: string): void {
+    this.track('how_it_works_section_viewed', { page });
+  }
 }
