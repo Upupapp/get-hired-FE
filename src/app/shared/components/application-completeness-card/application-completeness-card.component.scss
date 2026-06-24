@@ -33,6 +33,29 @@
   width: 55%;
 }
 
+// Mirrors the small timestamp line below the label
+.acdc-sk-timestamp {
+  @extend %acdc-skeleton-base;
+  height: 9px;
+  width: 30%;
+  margin-top: 2px;
+}
+
+// Mirrors the score row: large percentage number + badge pill side-by-side
+.acdc-sk-score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.acdc-sk-score-pct {
+  @extend %acdc-skeleton-base;
+  height: 20px;
+  width: 42px;
+  border-radius: 3px;
+}
+
 .acdc-sk-badge {
   @extend %acdc-skeleton-base;
   height: 20px;
@@ -112,6 +135,10 @@
 }
 
 // ── Progress bar ──────────────────────────────────────────────────────────
+@keyframes acdc-progress-enter {
+  from { width: 0 !important; }
+}
+
 .acdc-progress-track {
   height: 6px;
   background: #f3f4f6;
@@ -122,6 +149,10 @@
 .acdc-progress-fill {
   height: 100%;
   border-radius: 3px;
+  // Animate from 0 → final value on first render (650ms, once).
+  // The `animation` forces the starting point to 0, then the `transition`
+  // handles any subsequent width changes (e.g. re-fetch).
+  animation: acdc-progress-enter $motion-duration-meter-fill $motion-ease-decelerate both;
   transition: width $motion-duration-meter-fill $motion-ease-decelerate;
   @include motion-safe;
 }
@@ -145,6 +176,12 @@
 }
 
 // ── Positive state ────────────────────────────────────────────────────────
+@keyframes acdc-positive-pop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  60%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
 .acdc-positive {
   display: flex;
   align-items: flex-start;
@@ -158,6 +195,9 @@
 .acdc-positive-icon {
   flex-shrink: 0;
   margin-top: 1px;
+  // Rewarding spring-in on reveal — signals success distinctly from neutral states
+  animation: acdc-positive-pop 320ms $motion-ease-decelerate both;
+  @include motion-safe;
 }
 
 .acdc-positive-msg {

@@ -1,9 +1,15 @@
 <div class="acdc-card" role="region" aria-label="Application completeness details">
 
   <!-- ── 1. Loading skeleton ─────────────────────────────────────────── -->
+  <!-- 7 elements mirror the real content shape: label / timestamp / score-row
+       (pct number + badge) / progress / tips heading / tips body×2           -->
   <div class="acdc-skeleton" *ngIf="loading" role="status" aria-label="Loading application completeness">
     <div class="acdc-sk-label"></div>
-    <div class="acdc-sk-badge"></div>
+    <div class="acdc-sk-timestamp"></div>
+    <div class="acdc-sk-score-row">
+      <div class="acdc-sk-score-pct"></div>
+      <div class="acdc-sk-badge"></div>
+    </div>
     <div class="acdc-sk-progress"></div>
     <div class="acdc-sk-line acdc-sk-line--wide"></div>
     <div class="acdc-sk-line acdc-sk-line--medium"></div>
@@ -67,10 +73,10 @@
 
         <!-- ── Positive: nothing missing ──────────────────────────────── -->
         <div class="acdc-positive" *ngIf="isComplete">
-          <svg class="acdc-positive-icon" aria-hidden="true" width="16" height="16"
-               viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="8" cy="8" r="7.5" stroke="#04A08B" stroke-width="1"/>
-            <path d="M5 8l2 2 4-4" stroke="#04A08B" stroke-width="1.5"
+          <svg class="acdc-positive-icon" aria-hidden="true" width="18" height="18"
+               viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9" cy="9" r="8" fill="#e6faf7" stroke="#04A08B" stroke-width="1.5"/>
+            <path d="M5.5 9l2.5 2.5 4.5-5" stroke="#04A08B" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <p class="acdc-positive-msg">

@@ -26,6 +26,7 @@ const routes: Routes = [
   {
     path: '',
     component: ApplicantPanelComponent,
+    canActivate: [ApplicantGuard],
     children: [
       // {
       //   path: 'apply', component: ApplicantApplicationComponent

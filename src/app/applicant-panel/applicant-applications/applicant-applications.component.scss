@@ -138,16 +138,19 @@
 }
 
 // "View full details" link inside the expanded snapshot section
+// Rendered after the card content — separated by a top border to anchor it
+// visually as a "footer action" rather than inline card text.
 .app-detail-link {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 11px;
+  display: block;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 12px;
   font-weight: 600;
   color: $color-global-red-buttons;
   text-decoration: none;
-  opacity: 0.75;
 
-  &:hover { text-decoration: underline; opacity: 1; }
+  &:hover { text-decoration: underline; }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; border-radius: 2px; }
 }
 

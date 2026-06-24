@@ -57,7 +57,7 @@ export class ApplicationCompletenessBadgeComponent {
   /** Accessible label for aria-label attribute */
   get accessibleLabel(): string {
     if (this.loading) return 'Loading application completeness';
-    if (!this.level && this.score === null) return 'Application completeness: unavailable';
+    if (!this.level && this.score === null) return 'Application completeness: Snapshot unavailable';
     const level = this.displayLevel;
     const score = this.score !== null ? `, ${this.score} percent` : '';
     return `Application completeness: ${level}${score}`;
