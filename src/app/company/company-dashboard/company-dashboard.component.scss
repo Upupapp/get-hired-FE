@@ -1,1 +1,551 @@
 @import "src/assets/styles/colors";
+@import "~assets/styles/motion";
+
+// ─── Layout wrapper ──────────────────────────────────────────────────────────
+.emp-dash {
+  background: #f8f9fb;
+  min-height: 100vh;
+}
+
+// ─── Command Center Hero Header ──────────────────────────────────────────────
+.emp-dash-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1830 0%, #2a2348 60%, #1e1b3a 100%);
+  padding: 40px 32px 52px;
+  margin-bottom: 0;
+}
+
+.emp-dash-hero-mesh {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.emp-dash-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  animation: emp-hero-reveal 0.5s $motion-ease-standard both;
+}
+
+.emp-dash-hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(254, 111, 97, 0.85);
+  margin: 0 0 8px;
+}
+
+.emp-dash-hero-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.emp-dash-hero-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 16px;
+}
+
+.emp-dash-hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.emp-dash-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(254, 111, 97, 0.18);
+  border: 1px solid rgba(254, 111, 97, 0.4);
+  color: #FE6F61;
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.emp-dash-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+// ─── Shared button styles ─────────────────────────────────────────────────────
+.btn-cta-primary {
+  background: $color-global-red-buttons;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible {
+    background: darken(#FF7062, 6%);
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+.btn-cta-outline {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  .emp-dash-review-cta & {
+    color: $color-global-red-buttons;
+    border-color: $color-global-red-buttons;
+
+    &:hover, &:focus-visible {
+      background: rgba(255, 112, 98, 0.08);
+    }
+  }
+
+  &:hover, &:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+    outline: 2px solid rgba(255,255,255,0.4);
+    outline-offset: 2px;
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: $color-global-red-buttons;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+}
+
+// ─── Section layout ───────────────────────────────────────────────────────────
+.emp-dash-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1830;
+  margin: 0 0 16px;
+}
+
+.emp-dash-actions,
+.emp-dash-kpis,
+.emp-dash-pipeline,
+.emp-dash-review,
+.emp-dash-analytics {
+  padding: 28px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+// ─── Action Center ────────────────────────────────────────────────────────────
+.emp-dash-action-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emp-dash-action-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+  width: 100%;
+
+  &--urgent {
+    border-color: rgba(254, 111, 97, 0.4);
+    background: linear-gradient(135deg, #fff 60%, rgba(254, 111, 97, 0.04) 100%);
+
+    .emp-dash-action-title { color: $color-global-red-buttons; }
+  }
+
+  &:hover, &:focus-visible {
+    box-shadow: 0 4px 20px rgba(26, 24, 48, 0.1);
+    transform: translateY(-2px);
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+.emp-dash-action-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img { width: 36px; height: 36px; object-fit: contain; }
+}
+
+.emp-dash-action-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.emp-dash-action-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1830;
+}
+
+.emp-dash-action-desc {
+  font-size: 13px;
+  color: #6b6887;
+}
+
+.emp-dash-action-count {
+  background: $color-global-red-buttons;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  flex-shrink: 0;
+}
+
+.emp-dash-action-empty {
+  padding: 16px 20px;
+  background: #f3f2f9;
+  border-radius: 12px;
+  color: #6b6887;
+  font-size: 14px;
+}
+
+.emp-dash-action-error {
+  padding: 16px 20px;
+  background: #fff3f2;
+  border: 1px solid rgba(254, 111, 97, 0.25);
+  border-radius: 12px;
+  color: #6b6887;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  p { margin: 0; }
+}
+
+// ─── KPI Cards ────────────────────────────────────────────────────────────────
+.emp-dash-kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 0;
+}
+
+.emp-dash-kpi-card {
+  flex: 1 1 180px;
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 14px;
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+  text-align: left;
+
+  &:hover, &:focus-visible {
+    box-shadow: 0 4px 20px rgba(26, 24, 48, 0.1);
+    transform: translateY(-2px);
+    outline: 2px solid rgba(124, 131, 253, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+.emp-dash-kpi-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1830;
+  line-height: 1;
+}
+
+.emp-dash-kpi-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b6887;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// ─── Hiring Pipeline ──────────────────────────────────────────────────────────
+.emp-dash-pipeline {
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 24px 4px;
+}
+
+.emp-dash-pipeline-rail {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 120px;
+  padding-top: 12px;
+}
+
+.emp-dash-pipeline-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  min-width: 0;
+
+  &:hover .emp-dash-pipeline-bar,
+  &:focus-visible .emp-dash-pipeline-bar {
+    background: $color-global-red-buttons;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+.emp-dash-pipeline-bar {
+  width: 100%;
+  min-height: 8px;
+  background: rgba(124, 131, 253, 0.5);
+  border-radius: 6px 6px 0 0;
+  transition: background 0.18s ease, min-height 0.3s ease;
+}
+
+.emp-dash-pipeline-count {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1830;
+}
+
+.emp-dash-pipeline-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b6887;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+// ─── Applicants Needing Review ────────────────────────────────────────────────
+.emp-dash-review {
+  padding-top: 8px;
+}
+
+.emp-dash-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emp-dash-review-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 14px;
+  padding: 14px 18px;
+  animation: emp-card-reveal 0.35s $motion-ease-standard both;
+}
+
+.emp-dash-review-initials {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c83fd, #2dd4bf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.emp-dash-review-body {
+  flex: 1;
+  min-width: 0;
+
+  p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+.emp-dash-review-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1830;
+}
+
+.emp-dash-review-meta {
+  font-size: 12px;
+  color: #6b6887;
+  margin-top: 2px !important;
+}
+
+.emp-dash-review-stage {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(124, 131, 253, 0.12);
+  color: #7c83fd;
+  border-radius: 100px;
+  padding: 3px 10px;
+}
+
+.emp-dash-review-cta {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+// ─── Analytics section wrapper (pre-existing sub-components) ─────────────────
+.emp-dash-analytics {
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 16px;
+  margin: 0 24px 28px;
+  padding: 24px;
+  max-width: 1100px;
+}
+
+// ─── Skeleton loaders ─────────────────────────────────────────────────────────
+@keyframes emp-shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+%skeleton-base {
+  background: linear-gradient(90deg, #f0edf8 25%, #e8e4f4 50%, #f0edf8 75%);
+  background-size: 1200px 100%;
+  animation: emp-shimmer 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+.emp-dash-hero-skeleton {
+  @extend %skeleton-base;
+  height: 180px;
+  margin-bottom: 24px;
+}
+
+.emp-dash-action-skeleton {
+  @extend %skeleton-base;
+  height: 72px;
+  margin-bottom: 12px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.emp-dash-pipeline-skeleton {
+  @extend %skeleton-base;
+  height: 140px;
+}
+
+// ─── Accessibility ─────────────────────────────────────────────────────────────
+.emp-dash-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ─── Animations ───────────────────────────────────────────────────────────────
+@keyframes emp-hero-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes emp-card-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 767px) {
+  .emp-dash-hero { padding: 28px 20px 40px; }
+  .emp-dash-hero-title { font-size: 22px; }
+  .emp-dash-hero-cta { flex-direction: column; align-items: flex-start; }
+
+  .emp-dash-actions,
+  .emp-dash-review,
+  .emp-dash-analytics { padding: 20px 16px; }
+
+  .emp-dash-kpis { padding: 12px 16px 0; gap: 10px; }
+  .emp-dash-kpi-card { flex: 1 1 calc(50% - 5px); padding: 16px 14px 12px; }
+  .emp-dash-kpi-value { font-size: 22px; }
+
+  .emp-dash-pipeline {
+    margin: 0 16px 4px;
+    padding: 18px 16px;
+  }
+
+  .emp-dash-analytics { margin: 0 16px 20px; padding: 18px 16px; }
+
+  .emp-dash-review-stage { display: none; }
+  .emp-dash-review-card { flex-wrap: wrap; }
+  .emp-dash-review-cta { width: 100%; justify-content: center; margin-top: 8px; display: flex; }
+
+  .emp-dash-pipeline-label { font-size: 9px; }
+}
+
+@media (max-width: 575px) {
+  .emp-dash-kpi-card { flex: 1 1 100%; }
+}
+
+// ─── Reduced motion ───────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .emp-dash-hero-inner { animation: none; }
+  .emp-dash-review-card { animation: none; }
+  .emp-dash-action-skeleton,
+  .emp-dash-hero-skeleton,
+  .emp-dash-pipeline-skeleton { animation: none; background: #f0edf8; }
+  .emp-dash-action-card,
+  .emp-dash-kpi-card,
+  .emp-dash-pipeline-stage { transition: none; }
+}

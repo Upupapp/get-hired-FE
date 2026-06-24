@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { CompanyComponent } from './company.component';
 import { CompanyFacade } from './state/company.facade';
 import { CompanyEffects } from './state/company.effects';
@@ -44,6 +45,7 @@ const exportedComponents = [
   ],
   imports: [
     CommonModule,
+    RouterModule,
     ReactiveFormsModule,
     SharedModule,
     MatDialogModule,

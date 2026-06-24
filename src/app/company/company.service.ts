@@ -53,6 +53,14 @@ export class CompanyService {
     return this.baseService.get<Model.Dashboard>(`${this.companyUrl}/dashboard`);
   }
 
+  /** GETHIRED_EMPLOYER_DASHBOARD_WORLD_CLASS_TECHY_REDESIGN_V2 -- real
+   * applicant-stage counts + a "needs review" shortlist, scoped to the
+   * caller's own company server-side. Fetched independently from
+   * getDashboardDetails() so one failing call doesn't blank both widgets. */
+  getDashboardPipelineOverview() {
+    return this.baseService.get<any>(`${this.companyUrl}/dashboard/pipeline-overview`);
+  }
+
   getSetupList() {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/setuplist`);
   }
