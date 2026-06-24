@@ -31,6 +31,12 @@ const reusable = animation([
 		}
 	});
 
+// NOTE: Angular 13 does not support @media queries directly inside trigger()
+// definitions. Reduced-motion safety for @animate and @fadeInOut is therefore
+// handled by the global CSS utility in _motion.scss (.motion-safe-transition,
+// .gh-pressable @include motion-safe) rather than inside these triggers.
+// Any component that uses @animate or @fadeInOut should also include the
+// motion-safe mixin or gh-pressable class where appropriate.
 export const mainAnimations = [
 	trigger('animate', [transition('void => *', [useAnimation(reusable)])]),
 

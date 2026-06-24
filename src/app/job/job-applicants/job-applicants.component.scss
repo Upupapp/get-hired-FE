@@ -1,5 +1,36 @@
 @import "src/assets/styles/colors";
-@import "src/assets/styles/motion";
+@import "~assets/styles/motion";
+
+// Accessible breadcrumb link (was a plain clickable span).
+.gh-breadcrumb-link {
+  cursor: pointer;
+  color: $color-global-red-buttons;
+  text-decoration: underline;
+  outline: none;
+  &:focus-visible {
+    outline: 2px solid rgba(255, 112, 98, 0.8);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  @include motion-safe;
+}
+
+.gh-applicant-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  .gh-applicant-empty-inner {
+    max-width: 360px;
+    margin: 0 auto;
+    @media (prefers-reduced-motion: no-preference) {
+      animation: gh-empty-reveal 280ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
+    }
+  }
+}
+
+@keyframes gh-empty-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 .match-signals-disclaimer {
 	font-size: 12px;

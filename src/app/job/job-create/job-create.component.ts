@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 import { TalentProofService } from '@main/public/services/talent-proof.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
+import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 
 @Component({
   selector: 'app-job-create',
@@ -105,7 +106,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private cd: ChangeDetectorRef,
     private talentProof: TalentProofService,
-    private talentProofAnalytics: PublicPortalAnalyticsService
+    private talentProofAnalytics: PublicPortalAnalyticsService,
+    private haptics: HapticFeedbackService
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -396,9 +398,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         missingJob += 'Company Id ';
       }
 
+      this.haptics.warning();
       this.snackBar.open(`Job not ready to be Published. Missing: ${missingJob}`, '', {
         duration: 5000,
-        panelClass: ['success-snackbar'],
+        panelClass: ['danger-snackbar'],
       });
     }
   }
@@ -451,6 +454,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           // or stacks with the existing UpdatedDialogComponent (9 other
           // call sites use that dialog -- not modified here, see
           // GETHIRED_TALENT_PROOF_500K_PUBLISH_SUCCESS_JOB_DASHBOARD_LOG.md).
+          this.haptics.jobPublished();
           this.snackBar.open(
             `Your job is published and ready to be discovered by ${this.talentProof.getDisplayCopy('short')}.`,
             '', { duration: 5000, panelClass: ['success-snackbar'] }

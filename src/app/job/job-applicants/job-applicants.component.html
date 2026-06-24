@@ -1,8 +1,12 @@
 <section *ngIf="job$ | async as job">
   <div class="px-4 mt-4 ms-1">
     <p class="breadcrumb-label">
-      <img src="/assets/images/placeholder/icons/home.png" style="height: 14px; margin-top: -3px;" class="me-2">
-      <span (click)="redirectTo('recruiter/jobs/list')">Jobs</span> /
+      <img src="/assets/images/placeholder/icons/home.png" style="height: 14px; margin-top: -3px;" class="me-2" aria-hidden="true">
+      <span role="button" tabindex="0" class="gh-breadcrumb-link"
+        (click)="redirectTo('recruiter/jobs/list')"
+        (keydown.enter)="redirectTo('recruiter/jobs/list')"
+        (keydown.space)="redirectTo('recruiter/jobs/list')"
+        aria-label="Back to jobs list">Jobs</span> /
       <span>{{job?.jobId}}</span> /
       Applicants  <span *ngIf="applicantProfileId"> / {{applicantProfileId}} </span>
     </p>
@@ -20,7 +24,7 @@
           </div> -->
 
           <div class="float-end me-2">
-            <button class="btn btn-save-draft" (click)="goBack()">Back</button>
+            <button class="btn btn-save-draft gh-pressable" (click)="goBack()">Back</button>
           </div>
 
           <span class="main-title mt-3 mb-0">
@@ -47,11 +51,34 @@
     </div>
 
     <div class="card card-body" *ngIf="!loading">
-      <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewMenu($event)"
-        (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'" [displayedColumns]="displayedColumns"
-        [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
-        [maxRows]="10" [listDataSource]="applicants" (actionOfButton)="viewCv($event)">
-      </app-reusable-table>
+      <!-- Empty applicant state: guides employer toward improving job visibility
+           rather than leaving them with a blank table and no next action. -->
+      <ng-container *ngIf="applicants.length === 0; else applicantTable">
+        <div class="gh-applicant-empty" role="status" aria-label="No applicants yet">
+          <div class="gh-applicant-empty-inner">
+            <img src="/assets/brand/gethired-wow/candidate-profile-card.svg" alt="" aria-hidden="true"
+              style="width:64px;height:64px;opacity:0.65;margin-bottom:1.25rem;">
+            <h4 style="font-family:Manrope,sans-serif;font-weight:700;font-size:1.1rem;color:#222;margin-bottom:0.5rem;">
+              No applicants yet
+            </h4>
+            <p style="font-family:Manrope,sans-serif;font-size:0.9rem;color:#666;margin-bottom:1.25rem;">
+              This job has no applicants yet. Make sure the job is published so applicants can find it.
+            </p>
+            <button type="button" class="btn btn-save-draft gh-pressable"
+              (click)="redirectTo('recruiter/jobs/list')"
+              aria-label="Back to your jobs list">
+              Back to jobs
+            </button>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #applicantTable>
+        <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewMenu($event)"
+          (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'" [displayedColumns]="displayedColumns"
+          [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
+          [maxRows]="10" [listDataSource]="applicants" (actionOfButton)="viewCv($event)">
+        </app-reusable-table>
+      </ng-template>
     </div>
 
     <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">

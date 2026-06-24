@@ -2,10 +2,16 @@
   <div class="row bg-details">
     <div class="col-12 col-lg-12 d-flex flex-column justify-content-center">
       <h5 class="title-company-description">
-        A Company has to be set up in order to use most of the App functionality
+        Complete your company profile to start posting jobs and reviewing applicants.
       </h5>
-      <button class="btn btn-review text-center mt-2"
-      (click)="redirectToSetup()">Setup Company</button>
+      <p class="mb-3" style="color: #666; font-size: 0.9rem; font-family: Manrope, sans-serif;">
+        A company profile is required to use the hiring features on GetHired.
+      </p>
+      <button class="btn btn-review text-center mt-2 gh-pressable"
+      (click)="redirectToSetup()"
+      aria-label="Complete company profile — go to company setup">
+        Complete company profile
+      </button>
     </div>
   </div>
 </div>

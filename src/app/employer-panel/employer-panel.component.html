@@ -1,4 +1,4 @@
-<section id="body-main-container" *ngIf="employee$ | async as employee">
+<section id="body-main-container" *ngIf="employee$ | async as employee; else panelLoading">
   <div class="d-flex" id="body-row">
 
     <div class="d-none d-md-block" id="sidebar-container">
@@ -18,8 +18,19 @@
   </div>
 </section>
 
-<div *ngIf="loading$ | async">
-  <div style="margin-top: 30vh">
+<!-- Panel loading fallback: shown while employee profile is being fetched
+     (employee$ has not emitted yet). Without this, the entire panel section
+     is hidden (ngIf false) and the employer sees a blank screen. -->
+<ng-template #panelLoading>
+  <div *ngIf="loading$ | async; else panelError" style="margin-top: 30vh">
     <app-loading></app-loading>
   </div>
-</div>
+  <ng-template #panelError>
+    <div class="gh-fallback-page" role="alert" style="margin-top: 30vh; text-align: center; padding: 2rem;">
+      <p style="font-family: Manrope, sans-serif; font-size: 1rem; color: #444;">
+        We couldn't load your profile. Please refresh the page or
+        <a href="/signin" style="color: #FF7062;">sign in again</a>.
+      </p>
+    </div>
+  </ng-template>
+</ng-template>

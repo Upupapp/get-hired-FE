@@ -1,36 +1,46 @@
-<div class="sidebar-details">
+<nav class="sidebar-details" role="navigation" aria-label="Employer panel navigation">
 	<div style="position: relative; height: 100vh;">
 		<div class="card card-body bg-logo text-center d-flex align-items-center"
 		style="height: 120px; cursor: pointer;">
 			<img src="assets/images/placeholder/logo.png" class="hvr-grow img-logo img-fluid"
-			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}" routerLink="/jobs">
+			[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}" routerLink="/jobs"
+			alt="GetHired — go to jobs" role="link" tabindex="0"
+			(keydown.enter)="changeRoute('/jobs')" (keydown.space)="changeRoute('/jobs')">
 		</div>
 
 		<div class="card card-body p-3 mt-3 bg-menu"
 		[@animate]="{value:'*', params:{ scale: '0.95', delay:'200ms' }}">
 
 			<ng-container *ngFor="let item of sidebarItems">
-				<div class="w-100 d-flex mb-3"
+				<!-- Converted from div to a role=button element for keyboard accessibility.
+				     tabindex=0 makes it focusable; keydown.enter/space handle keyboard activation. -->
+				<div class="w-100 d-flex mb-3 gh-sidebar-item"
+				role="button"
+				[attr.tabindex]="0"
+				[attr.aria-current]="subRouteActive(item?.route) ? 'page' : null"
+				[attr.aria-label]="item?.title"
 				[ngClass]="location?.match(item?.route)
 				? 'sidebar-title-active'
 				: location?.match('expired') && item?.route === 'jobs/expired'
 				? 'sidebar-title-active'
 				: ''"
-
-				(click)="changeRoute('/recruiter/' + item?.route)">
+				(click)="changeRoute('/recruiter/' + item?.route)"
+				(keydown.enter)="changeRoute('/recruiter/' + item?.route)"
+				(keydown.space)="changeRoute('/recruiter/' + item?.route)">
 					<div class="sidebar-icon ms-lg-3" style="width: 20px">
 						<img [src]="'assets/images/placeholder/icons/company-panel-' + item?.icon"
-						[ngClass]="item?.class">
+						[ngClass]="item?.class" aria-hidden="true">
 					</div>
 					<h5 class="sidebar-title">{{item?.title}}
-						<img src="/assets/images/placeholder/icons/caret-white.png" 
+						<img src="/assets/images/placeholder/icons/caret-white.png"
 						*ngIf="item?.sub_routes?.length > 0"
-						[ngClass]="location?.match(item?.route) ? 'active-caret' : 'inactive-caret'">
+						[ngClass]="location?.match(item?.route) ? 'active-caret' : 'inactive-caret'"
+						aria-hidden="true">
 					</h5>
 				</div>
 
 				<ng-container *ngIf="item?.sub_routes?.length > 0 && location?.match(item?.route)">
-					<ul class="tree text-start p-0" 
+					<ul class="tree text-start p-0"
 					[@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
 					style=" list-style-type: none;">
 					  	<li>
@@ -38,7 +48,12 @@
 						    	<li *ngFor="let sub_route of item?.sub_routes">
 						    		<span class="tree_label">
 						    			<span class="sub-label hvr-grow"
-						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"	
+						    			role="button"
+						    			[attr.tabindex]="0"
+						    			[attr.aria-current]="subRouteActive(sub_route?.route) ? 'page' : null"
+						    			(click)="changeRoute('/recruiter/' + sub_route?.route)"
+						    			(keydown.enter)="changeRoute('/recruiter/' + sub_route?.route)"
+						    			(keydown.space)="changeRoute('/recruiter/' + sub_route?.route)"
 						    			[ngClass]="subRouteActive(sub_route?.route) ? 'sub-label-active' : ''" >{{sub_route?.title}}</span>
 						    		</span>
 						    	</li>
@@ -46,27 +61,15 @@
 					  	</li>
 
 					</ul>
-
-					<!-- <ng-container *ngFor="let sub_route of item?.sub_routes">
-						<div [@animate]="{value:'*', params:{ scale:'0.95', delay:'200ms' }}"
-						[ngClass]="location === ('/recruiter/' + sub_route?.route) ? 'active-sub-route' : 'inactive-sub-route'"
-						style="margin-top: -10px; margin-bottom: 19px;">
-							<button class="btn btn-sub-route"
-							(click)="changeRoute('/recruiter/' + sub_route?.route)">
-								{{sub_route?.title}}
-							</button>
-						</div>
-					</ng-container> -->
 				</ng-container>
 			</ng-container>
 		</div>
 
 		<div class="px-2" style="background: $color-global-gray-cancel;">
-			<div class="card card-body pb-3 bg-user" style="padding-top: 10px" 
+			<div class="card card-body pb-3 bg-user" style="padding-top: 10px"
 			[@animate]="{value:'*', params:{ y: '-10px', delay:'200ms' }}">
 				<div class="d-flex" *ngIf="screenHeight > 685">
-					<!-- <img src="assets/images/face-6.jpg" class="img-avatar me-2">-->
-					<div class="initial-thumbnail-inner text-uppercase">
+					<div class="initial-thumbnail-inner text-uppercase" aria-hidden="true">
 						{{ user.firstName.substr(0,1) }}{{ user.lastName.substr(0,1) }}
 					</div>
 
@@ -76,7 +79,7 @@
 					</div>
 				</div>
 
-				<button class="btn img-avatar-button mt-2" routerLink="/recruiter/company/settings">Settings</button>
+				<button class="btn img-avatar-button mt-2 gh-pressable" routerLink="/recruiter/company/settings">Settings</button>
 			</div>
 
 			<h5 class="text-center copy-right mt-1">
@@ -84,4 +87,4 @@
 			</h5>
 		</div>
 	</div>
-</div>
+</nav>

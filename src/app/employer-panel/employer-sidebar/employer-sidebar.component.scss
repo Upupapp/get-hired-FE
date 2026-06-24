@@ -1,4 +1,30 @@
 @import "src/assets/styles/colors";
+@import "~assets/styles/motion";
+
+// Keyboard focus ring for sidebar items (previously divs, now role=button).
+// Only shown on keyboard navigation (:focus-visible), not on mouse click.
+.gh-sidebar-item {
+  outline: none;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 112, 98, 0.8);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  @include motion-safe;
+  transition: background 120ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sub-label {
+  outline: none;
+  &:focus-visible {
+    outline: 2px solid rgba(255, 112, 98, 0.8);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
 
 .initial-thumbnail {
   font-size: 14px;

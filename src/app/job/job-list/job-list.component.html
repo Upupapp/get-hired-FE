@@ -5,9 +5,9 @@
         <span class="main-title mt-3">{{ 'JOB_POSTS_PAGE.SIDEBAR_JOB_POSTS' | translate }}</span>
 
         <div class="float-end">
-          <button class="btn btn-add-service" (click)="getCompanyRestrictions()">
+          <button class="btn btn-add-service gh-pressable" (click)="getCompanyRestrictions()">
             {{ 'JOB_POSTS_PAGE.NEW_JOB_BUTTON' | translate }}
-            <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1">
+            <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1" aria-hidden="true">
           </button>
         </div>
       </div>
@@ -19,21 +19,44 @@
     </div>
     <br>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">
-      <app-reusable-table
-        [loading]="loading"
-        [statusArray]="status"
-        [statusFilter]="true"
-        statusName="Status"
-        (deleteSelectedRow)="deleteRow($event)"
-        (updateSelectedRowDialog)="viewMenu($event)"
-        (viewDetails)="viewMenu($event)"
-        [componentTitle]="'Company Jobs'"
-        [displayedColumns]="displayedColumns"
-        [selectedColumns]="selectedColumns"
-        [selectedColumnsMobile]="selectedColumns"
-        [searchSource]="searchSource"
-        [maxRows]="10" [listDataSource]="list">
-      </app-reusable-table>
+      <!-- Empty state: when no jobs exist, guide the employer to post their first job
+           rather than showing a blank table. -->
+      <ng-container *ngIf="list.length === 0; else jobTable">
+        <div class="gh-job-list-empty" role="status" aria-label="No jobs yet">
+          <div class="gh-job-list-empty-inner">
+            <img src="/assets/brand/gethired-wow/hiring-pipeline-lines.svg" alt="" aria-hidden="true"
+              class="gh-job-list-empty-icon">
+            <h4 class="gh-job-list-empty-title">No jobs yet</h4>
+            <p class="gh-job-list-empty-desc">
+              Post your first job to start receiving applicants.
+            </p>
+            <button class="btn btn-add-service gh-pressable gh-job-list-empty-cta"
+              (click)="getCompanyRestrictions()"
+              aria-label="Post your first job">
+              Post your first job
+              <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1" aria-hidden="true">
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #jobTable>
+        <app-reusable-table
+          [loading]="loading"
+          [statusArray]="status"
+          [statusFilter]="true"
+          statusName="Status"
+          (deleteSelectedRow)="deleteRow($event)"
+          (updateSelectedRowDialog)="viewMenu($event)"
+          (viewDetails)="viewMenu($event)"
+          [componentTitle]="'Company Jobs'"
+          [displayedColumns]="displayedColumns"
+          [selectedColumns]="selectedColumns"
+          [selectedColumnsMobile]="selectedColumns"
+          [searchSource]="searchSource"
+          [maxRows]="10" [listDataSource]="list">
+        </app-reusable-table>
+      </ng-template>
     </div>
 
     <!-- LOADING ANIMATION SCREEN -->

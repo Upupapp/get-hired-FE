@@ -23,9 +23,13 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
         if (err instanceof HttpErrorResponse) {
           // localStorage.setItem('returnURL', this.router.url);
 
-          if ((err.status === 403)) {
+          if (err.status === 401 || err.status === 403) {
+            // Both 401 (unauthenticated) and 403 (forbidden/expired token) should
+            // redirect to sign-in. Previously only 403 was caught -- a 401 from
+            // a truly expired session would silently show API errors with no
+            // guidance to re-authenticate.
             this.coreService.logout();
-            this.snackBar.open(`Your login authorization is already expired. Please login again to continue`,
+            this.snackBar.open(`Your session has expired. Please sign in again to continue.`,
               '', { duration: 4000, panelClass: ['danger-snackbar'] });
             this.router.navigateByUrl('/signin');
           }

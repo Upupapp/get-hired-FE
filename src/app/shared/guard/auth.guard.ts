@@ -57,7 +57,12 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
     if (logged == 'true') {
       const userRole = await this.coreService.getRole();
       if (route.data.role && route.data.role.indexOf(userRole) === -1) {
+        // Wrong role: redirect to the correct panel and deny access to this route.
+        // Previously returned true here, which let a wrong-role user past the guard.
+        this.snackBar.open(`You don't have access to that area. Redirecting you now.`,
+          '', { duration: 3000, panelClass: ['danger-snackbar'] });
         this.navigateToUserRole(userRole);
+        return false;
       }
       return true;
     } else {
