@@ -58,6 +58,12 @@ export class JobService {
     return this.baseService.get<any>(`${this.jobUrl}/applicants/signals?id=${jobId}`);
   }
 
+  /** Application snapshot summary for the employer applicant detail panel.
+   * Additive — never replaces existing applicant detail data. */
+  getApplicantSnapshotSummary(applicationId: string) {
+    return this.baseService.get<any>(`${environment.api_url}/job/applicant/snapshot-summary?applicationId=${encodeURIComponent(applicationId)}`);
+  }
+
   getJobBasicList(companyId: string) {
     return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
   }

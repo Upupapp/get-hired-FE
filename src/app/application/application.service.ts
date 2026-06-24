@@ -18,6 +18,11 @@ export class ApplicationService {
     return this.baseService.post<Model.Application>(`${this.applicationUrl}/apply`, application);
   }
 
+  /** Returns the applicant's own application snapshot + completeness. */
+  getApplicationSnapshot(applicationId: string) {
+    return this.baseService.get<any>(`${environment.api_url}/applicant/application/snapshot?applicationId=${encodeURIComponent(applicationId)}`);
+  }
+
   // getPublishedApplication(companyId?: string) {
   //   const params = companyId ? `?id=${companyId}`: '';
   //   return this.baseService.get<Model.BasicJob[]>(`${this.applicationUrl}/published${params}`);

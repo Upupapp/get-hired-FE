@@ -5,7 +5,7 @@ import { Location, formatDate, DatePipe } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
-import { map, takeUntil, tap, BehaviorSubject, combineLatest, catchError, of, Observable } from 'rxjs';
+import { map, takeUntil, tap, BehaviorSubject, combineLatest, catchError, of, Observable, switchMap } from 'rxjs';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
 import { ApplicantActionModalComponent } from './applicant-action-modal/applicant-action-modal.component';
 import * as InterviewModel from '@main/interview/interview.model';
@@ -45,6 +45,11 @@ export class JobApplicantsComponent implements OnInit {
    * uses, without a second HTTP call. Public: also read directly from the
    * template by the message-thread panel (GH-EMP-B04 frontend). */
   selectedApplicantUserId: string | null = null;
+
+  /** Application snapshot summary for the currently viewed applicant.
+   * Loaded best-effort when the employer opens an applicant detail panel. */
+  snapshotSummary: any = null;
+  snapshotSummaryLoading: boolean = false;
 
   /** Employer Portal v3 -- MATCH v5 Employer Applicant Fit Signals.
    * Fetched separately from the existing applicants$/details$ streams,
@@ -176,6 +181,20 @@ export class JobApplicantsComponent implements OnInit {
       });
   }
 
+  private loadSnapshotSummary(applicationId: string): void {
+    this.snapshotSummary = null;
+    this.snapshotSummaryLoading = true;
+    this.jobService.getApplicantSnapshotSummary(applicationId)
+      .pipe(
+        map((res: any) => res?.data),
+        catchError(() => of(null))
+      )
+      .subscribe((data) => {
+        this.snapshotSummary = data;
+        this.snapshotSummaryLoading = false;
+      });
+  }
+
   /** GH-EMP-B02 -- only show the disclaimer when there's an actual signal
    * to disclaim; a row's fallback label ("Match signals unavailable") has
    * nothing for the disclaimer to apply to. */
@@ -249,6 +268,11 @@ export class JobApplicantsComponent implements OnInit {
         this.selectedApplicantUserId = result.data.data.userId;
         this.jobFacade.getApplicantsDetails(this.jobId, result.data.data.userId);
         this.showProfile = true;
+
+        const appId = result.data.data.applicationId;
+        if (appId) {
+          this.loadSnapshotSummary(appId);
+        }
       }
     });
   }
