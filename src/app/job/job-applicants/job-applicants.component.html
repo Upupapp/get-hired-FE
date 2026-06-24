@@ -62,42 +62,59 @@
     <app-applicant-avatar [user]="details.profile"></app-applicant-avatar>
 
     <!-- Application snapshot summary: completeness + match level at submission time -->
-    <div class="card card-body mt-3" *ngIf="snapshotSummaryLoading || snapshotSummary" role="region" aria-label="Application snapshot">
+    <div class="card card-body mt-3 gh-snapshot-card" *ngIf="snapshotSummaryLoading || snapshotSummary" role="region" aria-label="Application snapshot summary">
       <h6 class="mb-2" style="font-weight:600;">Application Snapshot</h6>
-      <div *ngIf="snapshotSummaryLoading" class="text-muted small">Loading snapshot...</div>
-      <ng-container *ngIf="!snapshotSummaryLoading && snapshotSummary">
-        <div *ngIf="!snapshotSummary.hasSnapshot" class="text-muted small">No snapshot available for this application.</div>
-        <ng-container *ngIf="snapshotSummary.hasSnapshot">
-          <div class="d-flex flex-wrap gap-3 mb-2">
-            <div *ngIf="snapshotSummary.completenessScore != null">
-              <span class="text-muted small">Completeness</span>
-              <div>
-                <strong>{{ snapshotSummary.completenessScore }}%</strong>
-                <span class="ms-1 badge"
-                  [ngClass]="{
-                    'bg-success': snapshotSummary.completenessLevel === 'excellent' || snapshotSummary.completenessLevel === 'strong',
-                    'bg-warning text-dark': snapshotSummary.completenessLevel === 'basic',
-                    'bg-secondary': snapshotSummary.completenessLevel === 'incomplete'
-                  }">{{ snapshotSummary.completenessLevel }}</span>
-              </div>
-            </div>
-            <div *ngIf="snapshotSummary.matchLevel">
-              <span class="text-muted small">Match level at submission</span>
-              <div>
-                <span class="badge"
-                  [ngClass]="{
-                    'bg-success': snapshotSummary.matchLevel === 'strong',
-                    'bg-info text-dark': snapshotSummary.matchLevel === 'possible',
-                    'bg-secondary': snapshotSummary.matchLevel === 'low' || !snapshotSummary.matchLevel
-                  }">{{ snapshotSummary.matchLevel || 'limited data' }}</span>
-              </div>
-            </div>
+      <!-- aria-live wraps ALL snapshot content so screen readers announce both
+           the loading state and the final revealed content atomically. -->
+      <div aria-live="polite" aria-atomic="true">
+        <!-- Skeleton loading state (replaces plain text spinner) -->
+        <div *ngIf="snapshotSummaryLoading" class="gh-snapshot-skeleton" role="status" aria-label="Loading application snapshot">
+          <div class="gh-skeleton-line gh-skeleton-line--short"></div>
+          <div class="gh-skeleton-badges d-flex gap-2 mt-2">
+            <div class="gh-skeleton-badge"></div>
+            <div class="gh-skeleton-badge"></div>
           </div>
-          <p class="text-muted" style="font-size:0.75rem; margin-bottom:0;">
-            {{ snapshotSummary.matchDisclaimer }}
-          </p>
+          <div class="gh-skeleton-line gh-skeleton-line--long mt-2"></div>
+        </div>
+
+        <ng-container *ngIf="!snapshotSummaryLoading && snapshotSummary">
+          <div *ngIf="!snapshotSummary.hasSnapshot" class="text-muted small gh-snapshot-empty">
+            No snapshot was captured for this application. Snapshots are recorded at submission time.
+          </div>
+          <ng-container *ngIf="snapshotSummary.hasSnapshot">
+            <div class="d-flex flex-wrap gap-3 mb-2 gh-snapshot-reveal">
+              <div *ngIf="snapshotSummary.completenessScore != null">
+                <span class="text-muted small">Completeness</span>
+                <div>
+                  <strong>{{ snapshotSummary.completenessScore }}%</strong>
+                  <span class="ms-1 badge gh-snapshot-badge"
+                    [attr.aria-label]="'Completeness level: ' + snapshotSummary.completenessLevel"
+                    [ngClass]="{
+                      'bg-success': snapshotSummary.completenessLevel === 'excellent' || snapshotSummary.completenessLevel === 'strong',
+                      'bg-warning text-dark': snapshotSummary.completenessLevel === 'basic',
+                      'bg-secondary': snapshotSummary.completenessLevel === 'incomplete'
+                    }">{{ snapshotSummary.completenessLevel }}</span>
+                </div>
+              </div>
+              <div *ngIf="snapshotSummary.matchLevel">
+                <span class="text-muted small">Signal strength at submission</span>
+                <div>
+                  <span class="badge gh-snapshot-badge"
+                    [attr.aria-label]="'Match signal strength: ' + (snapshotSummary.matchLevel === 'strong' ? 'Strong' : snapshotSummary.matchLevel === 'possible' ? 'Partial' : snapshotSummary.matchLevel === 'low' ? 'Limited' : 'Limited data')"
+                    [ngClass]="{
+                      'bg-success': snapshotSummary.matchLevel === 'strong',
+                      'bg-info text-dark': snapshotSummary.matchLevel === 'possible',
+                      'bg-secondary': snapshotSummary.matchLevel === 'low' || !snapshotSummary.matchLevel
+                    }">{{ snapshotSummary.matchLevel === 'strong' ? 'Strong' : snapshotSummary.matchLevel === 'possible' ? 'Partial' : snapshotSummary.matchLevel === 'low' ? 'Limited' : 'Limited data' }}</span>
+                </div>
+              </div>
+            </div>
+            <p class="text-muted gh-snapshot-disclaimer" style="font-size:0.75rem; margin-bottom:0;">
+              {{ snapshotSummary.matchDisclaimer }}
+            </p>
+          </ng-container>
         </ng-container>
-      </ng-container>
+      </div>
     </div>
 
     <app-application-preview

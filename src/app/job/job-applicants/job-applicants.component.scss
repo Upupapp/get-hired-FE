@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 .match-signals-disclaimer {
 	font-size: 12px;
@@ -94,4 +95,79 @@
 	cursor: pointer;
 	margin-top: 8px !important;
 	font-size: 12px !important;
+}
+
+// ── Application Snapshot card ────────────────────────────────────────────────
+
+// Fade-in on reveal: applies when card transitions from loading → content.
+// CSS-only; uses motion token from _motion.scss. Respects reduced-motion.
+.gh-snapshot-card {
+  // No extra layout changes — the existing .card styles handle padding/radius.
+}
+
+.gh-snapshot-reveal {
+  animation: gh-snapshot-fadein $motion-duration-card $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+@keyframes gh-snapshot-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Empty/null state: calm, not alarming.
+.gh-snapshot-empty {
+  color: #6b7280;
+  font-size: 0.8125rem;
+  padding: 4px 0 2px;
+}
+
+// Badge polish: capitalize label text so "excellent", "strong", "basic",
+// "incomplete", "possible", "low" render consistently regardless of API case.
+// Keep font-size consistent with surrounding small text in the card.
+.gh-snapshot-badge {
+  text-transform: capitalize;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+// ── Skeleton loading state ───────────────────────────────────────────────────
+// Pure CSS shimmer — no animation library. Replaces "Loading snapshot..." text.
+// @include ambient-motion-safe removes shimmer under prefers-reduced-motion,
+// leaving only the static gray placeholder (still readable as "loading").
+
+@keyframes gh-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+%gh-skeleton-base {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: gh-shimmer 1.4s infinite linear;
+  border-radius: 4px;
+  @include ambient-motion-safe;
+}
+
+.gh-snapshot-skeleton {
+  padding: 2px 0;
+}
+
+.gh-skeleton-line {
+  @extend %gh-skeleton-base;
+  height: 12px;
+
+  &--short  { width: 45%; }
+  &--long   { width: 80%; }
+}
+
+.gh-skeleton-badges {
+  // flex container provided by Bootstrap d-flex gap-2 in template
+}
+
+.gh-skeleton-badge {
+  @extend %gh-skeleton-base;
+  height: 20px;
+  width: 64px;
+  border-radius: 12px;
 }

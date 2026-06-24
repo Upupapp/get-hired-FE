@@ -14,9 +14,66 @@
         <h3>{{ app.jobTitle }}</h3>
         <p>{{ app.companyName }}</p>
         <span class="application-status">{{ app.applicantStatusName || 'Submitted' }}</span>
-        <button type="button" class="btn-link-cta" (click)="toggleMessages(app.jobId)">
-          {{ expandedJobId === app.jobId ? 'Hide messages' : 'Message employer' }}
-        </button>
+
+        <!-- Completeness snapshot: loaded after the applications list resolves -->
+        <div class="app-snapshot" *ngIf="app.jobApplicationId" aria-label="Application completeness">
+          <!-- Skeleton while snapshots are in-flight -->
+          <div class="app-snapshot-skeleton" *ngIf="!snapshotsLoaded" role="status" aria-label="Loading application snapshot">
+            <div class="app-skeleton-line app-skeleton-line--short"></div>
+          </div>
+
+          <ng-container *ngIf="snapshotsLoaded">
+            <ng-container *ngIf="snapshotFor(app.jobApplicationId) as snap; else snapSilent">
+              <!-- No snapshot captured (pre-deployment application) -->
+              <p class="app-snapshot-empty" *ngIf="!snap.hasSnapshot">
+                Snapshot not available — this application was submitted before completeness tracking was enabled.
+              </p>
+
+              <!-- Snapshot data -->
+              <ng-container *ngIf="snap.hasSnapshot">
+                <div class="app-snapshot-score" role="region" aria-label="Completeness score">
+                  <span class="app-snapshot-label">Application completeness</span>
+                  <div class="app-snapshot-score-row">
+                    <strong class="app-snapshot-pct">{{ snap.completenessScore }}%</strong>
+                    <span class="badge app-snapshot-badge"
+                      [attr.aria-label]="'Completeness level: ' + snap.completenessLevel"
+                      [ngClass]="{
+                        'bg-success': snap.completenessLevel === 'excellent' || snap.completenessLevel === 'strong',
+                        'bg-warning text-dark': snap.completenessLevel === 'basic',
+                        'bg-secondary': snap.completenessLevel === 'incomplete'
+                      }">{{ snap.completenessLevel | titlecase }}</span>
+                  </div>
+                </div>
+
+                <!-- Required improvements -->
+                <div class="app-snapshot-tips app-snapshot-tips--required" *ngIf="snap.missingRequired?.length > 0">
+                  <p class="app-snapshot-tips-heading">Complete your profile to strengthen future applications:</p>
+                  <ul>
+                    <li *ngFor="let tip of snap.missingRequired">{{ tip.reason }}</li>
+                  </ul>
+                </div>
+
+                <!-- Recommended improvements -->
+                <div class="app-snapshot-tips app-snapshot-tips--recommended" *ngIf="snap.missingRecommended?.length > 0">
+                  <p class="app-snapshot-tips-heading">Optional ways to stand out:</p>
+                  <ul>
+                    <li *ngFor="let tip of snap.missingRecommended">{{ tip.reason }}</li>
+                  </ul>
+                </div>
+
+                <p class="app-snapshot-disclaimer">{{ snap.disclaimerNote }}</p>
+              </ng-container>
+            </ng-container>
+            <!-- Snapshot fetch failed silently — show nothing, don't alarm the user -->
+            <ng-template #snapSilent></ng-template>
+          </ng-container>
+        </div>
+
+        <div class="app-row-actions">
+          <button type="button" class="btn-link-cta" (click)="toggleMessages(app.jobId)">
+            {{ expandedJobId === app.jobId ? 'Hide messages' : 'Message employer' }}
+          </button>
+        </div>
 
         <div class="application-row-messages" *ngIf="expandedJobId === app.jobId">
           <app-message-thread

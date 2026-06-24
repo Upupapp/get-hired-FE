@@ -269,6 +269,11 @@ export class JobApplicantsComponent implements OnInit {
         this.jobFacade.getApplicantsDetails(this.jobId, result.data.data.userId);
         this.showProfile = true;
 
+        // Always clear the previous applicant's snapshot card before loading
+        // the next one. Without this reset, a previously loaded snapshot
+        // persists if the next applicant has no applicationId (STITCH Fix F2).
+        this.snapshotSummary = null;
+        this.snapshotSummaryLoading = false;
         const appId = result.data.data.applicationId;
         if (appId) {
           this.loadSnapshotSummary(appId);
