@@ -22,6 +22,13 @@ export class JobSeekerPortalComponent implements OnInit {
     { title: 'Answer video questions', description: 'Some jobs include video questions so you can explain experience in your own words.' },
     { title: 'Understand fit', description: 'Explainable compatibility signals help you understand how your profile relates to a role.' },
     { title: 'Track applications', description: 'Follow your applications from submitted to next steps.' },
+    // GETHIRED_JOB_SEEKERS_INFORMATION_PORTAL_VISUAL_UPGRADE -- previously
+    // deliberately omitted from this list because the messaging feature
+    // had no frontend UI (see the GH1 checkpoint's Feature Truth Audit).
+    // A real frontend now exists end-to-end (shared/components/message-thread,
+    // wired into the applicant's My Applications page, verified via a
+    // live end-to-end smoke test) -- safe to claim truthfully now.
+    { title: 'Reply to employers', description: 'Keep employer conversations connected to your applications.' },
     { title: 'Stay in control', description: 'Private preparation stays with you unless you submit it with an application.' },
   ];
 
