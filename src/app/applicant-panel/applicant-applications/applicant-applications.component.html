@@ -10,73 +10,49 @@
 
   <ng-container *ngIf="!loading && !error">
     <div class="applications-list" *ngIf="applications.length > 0">
-      <div class="application-row" *ngFor="let app of applications">
-        <h3>{{ app.jobTitle }}</h3>
-        <p>{{ app.companyName }}</p>
-        <span class="application-status">{{ app.applicantStatusName || 'Submitted' }}</span>
-
-        <!-- Completeness snapshot: loaded after the applications list resolves -->
-        <div class="app-snapshot" *ngIf="app.jobApplicationId" role="region" aria-label="Application completeness snapshot"
-             aria-live="polite" aria-atomic="true">
-          <!-- Skeleton while snapshots are in-flight: 3 elements hint at score + badge shape -->
-          <div class="app-snapshot-skeleton" *ngIf="!snapshotsLoaded" role="status" aria-label="Loading application snapshot">
-            <div class="app-skeleton-line app-skeleton-line--medium"></div>
-            <div class="app-skeleton-badges">
-              <div class="app-skeleton-badge"></div>
-              <div class="app-skeleton-badge app-skeleton-badge--wide"></div>
-            </div>
-            <div class="app-skeleton-line app-skeleton-line--short"></div>
+      <div class="application-row" *ngFor="let app of applications; trackBy: trackByAppId">
+        <div class="application-row-header">
+          <div class="application-row-info">
+            <h3>{{ app.jobTitle }}</h3>
+            <p>{{ app.companyName }}</p>
+            <span class="application-status">{{ app.applicantStatusName || 'Submitted' }}</span>
           </div>
 
-          <ng-container *ngIf="snapshotsLoaded">
-            <ng-container *ngIf="snapshotFor(app.jobApplicationId) as snap; else snapSilent">
-              <!-- No snapshot captured (pre-deployment application) -->
-              <p class="app-snapshot-empty" *ngIf="!snap.hasSnapshot">
-                Completeness details aren't available for this application — it was submitted before this feature was introduced.
-              </p>
+          <!-- Completeness badge: compact pill shown in the list row -->
+          <div class="application-row-badge" *ngIf="app.jobApplicationId">
+            <button type="button"
+                    class="app-completeness-toggle"
+                    [attr.aria-expanded]="expandedSnapshotId === app.jobApplicationId"
+                    [attr.aria-controls]="'completeness-' + app.jobApplicationId"
+                    (click)="toggleSnapshot(app.jobApplicationId)"
+                    title="View application completeness details">
+              <app-application-completeness-badge
+                [level]="snapshotsLoaded ? snapshotFor(app.jobApplicationId)?.completenessLevel ?? null : null"
+                [score]="snapshotsLoaded ? snapshotFor(app.jobApplicationId)?.completenessScore ?? null : null"
+                [loading]="!snapshotsLoaded"
+                [compact]="true">
+              </app-application-completeness-badge>
+              <span class="app-completeness-toggle-chevron"
+                    [class.app-completeness-toggle-chevron--open]="expandedSnapshotId === app.jobApplicationId"
+                    aria-hidden="true">&#8250;</span>
+            </button>
+          </div>
+        </div>
 
-              <!-- Snapshot data: fade-in on reveal using motion token -->
-              <ng-container *ngIf="snap.hasSnapshot">
-                <div class="app-snapshot-score app-snapshot-reveal" role="region" aria-label="Completeness score">
-                  <span class="app-snapshot-label">Application completeness</span>
-                  <div class="app-snapshot-score-row">
-                    <strong class="app-snapshot-pct">{{ snap.completenessScore }}%</strong>
-                    <span class="badge app-snapshot-badge"
-                      [attr.aria-label]="'Completeness level: ' + snap.completenessLevel"
-                      [ngClass]="{
-                        'bg-success': snap.completenessLevel === 'excellent' || snap.completenessLevel === 'strong',
-                        'bg-warning text-dark': snap.completenessLevel === 'basic',
-                        'bg-secondary': snap.completenessLevel === 'incomplete'
-                      }">{{ snap.completenessLevel === 'incomplete' ? 'Getting started' : (snap.completenessLevel | titlecase) }}</span>
-                  </div>
-                </div>
-
-                <!-- Required improvements -->
-                <div class="app-snapshot-tips app-snapshot-tips--required" *ngIf="snap.missingRequired?.length > 0">
-                  <p class="app-snapshot-tips-heading">What was missing when you applied — add these now for stronger future applications:</p>
-                  <ul>
-                    <li *ngFor="let tip of snap.missingRequired; trackBy: trackByTipReason">{{ tip.reason }}</li>
-                  </ul>
-                  <a class="app-snapshot-cta" routerLink="/user/profile/edit">Update your profile <span aria-hidden="true">→</span></a>
-                </div>
-
-                <!-- Recommended improvements -->
-                <div class="app-snapshot-tips app-snapshot-tips--recommended" *ngIf="snap.missingRecommended?.length > 0">
-                  <p class="app-snapshot-tips-heading">Extra details that can help you stand out (not required):</p>
-                  <ul>
-                    <li *ngFor="let tip of snap.missingRecommended; trackBy: trackByTipReason">{{ tip.reason }}</li>
-                  </ul>
-                </div>
-
-                <p class="app-snapshot-disclaimer">{{ snap.disclaimerNote }}</p>
-                <p class="app-snapshot-disclaimer app-snapshot-disclaimer--privacy" *ngIf="snap.privacyNote">{{ snap.privacyNote }}</p>
-              </ng-container>
-            </ng-container>
-            <!-- Snapshot fetch failed: soft unavailable message — not silent, not alarming -->
-            <ng-template #snapSilent>
-              <p class="app-snapshot-unavailable">Snapshot unavailable right now.</p>
-            </ng-template>
-          </ng-container>
+        <!-- Expandable completeness detail card -->
+        <div class="app-snapshot"
+             *ngIf="app.jobApplicationId && expandedSnapshotId === app.jobApplicationId"
+             [id]="'completeness-' + app.jobApplicationId"
+             role="region"
+             aria-label="Application completeness details"
+             aria-live="polite"
+             aria-atomic="false">
+          <app-application-completeness-card
+            [snapshot]="snapshotsLoaded ? snapshotFor(app.jobApplicationId) : null"
+            [loading]="!snapshotsLoaded"
+            [error]="snapshotsError"
+            (retryClick)="onSnapshotRetry()">
+          </app-application-completeness-card>
         </div>
 
         <div class="app-row-actions">

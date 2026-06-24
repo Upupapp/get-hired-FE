@@ -1,0 +1,304 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
+
+// ── ApplicationCompletenessCardComponent styles ───────────────────────────
+// @keyframes names: acdc-* prefix (acdc = "app completeness detail card")
+// to avoid collision with global or badge component keyframes.
+// ─────────────────────────────────────────────────────────────────────────
+
+// ── Skeleton shimmer ──────────────────────────────────────────────────────
+@keyframes acdc-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+%acdc-skeleton-base {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: acdc-shimmer 1.4s ease-in-out infinite;
+  border-radius: 4px;
+  @include ambient-motion-safe;
+}
+
+.acdc-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.acdc-sk-label {
+  @extend %acdc-skeleton-base;
+  height: 11px;
+  width: 55%;
+}
+
+.acdc-sk-badge {
+  @extend %acdc-skeleton-base;
+  height: 20px;
+  width: 90px;
+  border-radius: 999px;
+}
+
+.acdc-sk-progress {
+  @extend %acdc-skeleton-base;
+  height: 6px;
+  width: 100%;
+  border-radius: 3px;
+}
+
+.acdc-sk-line {
+  @extend %acdc-skeleton-base;
+  height: 11px;
+  &--wide   { width: 75%; }
+  &--medium { width: 45%; }
+}
+
+// ── Content reveal ────────────────────────────────────────────────────────
+@keyframes acdc-fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.acdc-reveal {
+  animation: acdc-fadein $motion-duration-card $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+// ── Card wrapper ──────────────────────────────────────────────────────────
+.acdc-card {
+  // No border or background — the parent .app-snapshot in the list provides
+  // the bordered container. This keeps the card usable in other contexts too.
+}
+
+// ── Content ───────────────────────────────────────────────────────────────
+.acdc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// ── Score header ──────────────────────────────────────────────────────────
+.acdc-score-header {
+  margin-bottom: 2px;
+}
+
+.acdc-score-label {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.acdc-score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acdc-score-pct {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+// ── Progress bar ──────────────────────────────────────────────────────────
+.acdc-progress-track {
+  height: 6px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.acdc-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width $motion-duration-meter-fill $motion-ease-decelerate;
+  @include motion-safe;
+}
+
+// Fill colors match level semantics (same palette as badge)
+.acdc-progress--excellent,
+.acdc-progress--strong {
+  background: #04A08B; // $color-green-secondary
+}
+
+.acdc-progress--basic {
+  background: #f59e0b;
+}
+
+.acdc-progress--incomplete {
+  background: $color-global-red;
+}
+
+.acdc-progress--unavailable {
+  background: #d1d5db;
+}
+
+// ── Positive state ────────────────────────────────────────────────────────
+.acdc-positive {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #e6faf7;
+  border-left: 3px solid #04A08B;
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px;
+}
+
+.acdc-positive-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.acdc-positive-msg {
+  margin: 0;
+  font-size: 12px;
+  color: #065f46; // deep teal — WCAG AA on #e6faf7
+  font-weight: 500;
+}
+
+// ── Tip blocks ────────────────────────────────────────────────────────────
+.acdc-tips {
+  padding: 8px 10px;
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+
+  &--required {
+    background: #fff7ed;
+    border-left: 3px solid #f59e0b;
+  }
+
+  &--recommended {
+    background: #f0f9ff;
+    border-left: 3px solid #38bdf8;
+  }
+}
+
+.acdc-tips-heading {
+  margin: 0 0 2px 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.acdc-tips-sub {
+  margin: 0 0 6px 0;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.acdc-tips ul {
+  margin: 0 0 8px 0;
+  padding-left: 16px;
+  color: #374151;
+
+  li {
+    margin-bottom: 2px;
+    &:last-child { margin-bottom: 0; }
+  }
+}
+
+// ── CTA link ──────────────────────────────────────────────────────────────
+.acdc-cta {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-global-red-buttons;
+  text-decoration: none;
+  border-radius: 2px;
+
+  &:hover { text-decoration: underline; }
+
+  // WCAG 2.4.7 — visible focus ring for keyboard users
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+// ── Error state ───────────────────────────────────────────────────────────
+.acdc-error {
+  background: #fff1f0;
+  border-left: 3px solid $color-global-red;
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.acdc-error-msg {
+  margin: 0;
+  font-size: 12px;
+  color: #374151;
+  flex: 1;
+}
+
+.acdc-retry-btn {
+  background: none;
+  border: none;
+  color: $color-global-red-buttons;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// ── Pre-deployment note ───────────────────────────────────────────────────
+.acdc-predeployment {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+  background: #f9fafb;
+  border-left: 3px solid #e5e7eb;
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px;
+}
+
+// ── Unavailable note ──────────────────────────────────────────────────────
+.acdc-unavailable {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+// ── Disclaimer ────────────────────────────────────────────────────────────
+.acdc-disclaimer {
+  margin: 2px 0 0;
+  font-size: 10px;
+  color: #9ca3af;
+  line-height: 1.4;
+
+  &--privacy {
+    color: #b0b7c3;
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .acdc-score-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .acdc-score-pct {
+    font-size: 16px;
+  }
+
+  .acdc-tips {
+    font-size: 12px;
+  }
+}

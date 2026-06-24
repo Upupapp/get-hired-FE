@@ -40,6 +40,8 @@ import { InlineLoadingComponent } from './components/inline-loading/inline-loadi
 import { LockedMatchTeaserComponent } from './components/locked-match-teaser/locked-match-teaser.component';
 import { TalentProofBadgeComponent } from './components/talent-proof-badge/talent-proof-badge.component';
 import { MessageThreadComponent } from './components/message-thread/message-thread.component';
+import { ApplicationCompletenessBadgeComponent } from './components/application-completeness-badge/application-completeness-badge.component';
+import { ApplicationCompletenessCardComponent } from './components/application-completeness-card/application-completeness-card.component';
 import { ViewedOnceDirective } from './directives/viewed-once.directive';
 
 
@@ -74,7 +76,9 @@ const classesToInclude: any[] = [
   InlineLoadingComponent,
   LockedMatchTeaserComponent,
   TalentProofBadgeComponent,
-  MessageThreadComponent
+  MessageThreadComponent,
+  ApplicationCompletenessBadgeComponent,
+  ApplicationCompletenessCardComponent
 ];
 
 @NgModule({
@@ -85,7 +89,8 @@ const classesToInclude: any[] = [
     ReactiveFormsModule,
     MaterialComponentsModule,
     NgxDocViewerModule,
-    TranslateModule
+    TranslateModule,
+    RouterModule
   ],
   entryComponents: [...classesToInclude],
   providers: [
@@ -98,7 +103,8 @@ const classesToInclude: any[] = [
     MaterialComponentsModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule
+    TranslateModule,
+    RouterModule
   ]
 })
 export class SharedModule { }

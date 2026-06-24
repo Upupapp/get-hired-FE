@@ -1,0 +1,21 @@
+<!-- Loading skeleton pill -->
+<span class="acb-skeleton"
+      *ngIf="loading"
+      role="status"
+      [attr.aria-label]="accessibleLabel">
+</span>
+
+<!-- Unavailable: no snapshot data and not loading -->
+<span class="acb acb-level--unavailable acb-reveal"
+      *ngIf="!loading && level === null && score === null"
+      [attr.aria-label]="accessibleLabel">
+  Unavailable
+</span>
+
+<!-- Score badge: level + optional percentage -->
+<span class="acb acb-reveal"
+      *ngIf="!loading && level !== null"
+      [ngClass]="levelClass"
+      [attr.aria-label]="accessibleLabel">
+  {{ displayLevel }}<ng-container *ngIf="score !== null"> &middot; {{ score }}%</ng-container>
+</span>

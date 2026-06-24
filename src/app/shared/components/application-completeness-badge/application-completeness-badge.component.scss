@@ -1,0 +1,83 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
+
+// ── ApplicationCompletenessBadgeComponent styles ──────────────────────────
+// @keyframes names: acb-* prefix (acb = "application completeness badge")
+// to avoid any collision with global or other component keyframes.
+// ─────────────────────────────────────────────────────────────────────────
+
+// ── Skeleton shimmer ──────────────────────────────────────────────────────
+@keyframes acb-shimmer {
+  0%   { background-position: -300px 0; }
+  100% { background-position: 300px 0; }
+}
+
+.acb-skeleton {
+  display: inline-block;
+  width: 90px;
+  height: 20px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 600px 100%;
+  animation: acb-shimmer 1.4s ease-in-out infinite;
+  vertical-align: middle;
+
+  // Ambient shimmer is removed entirely under prefers-reduced-motion
+  @include ambient-motion-safe;
+}
+
+// ── Reveal animation ──────────────────────────────────────────────────────
+@keyframes acb-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.acb-reveal {
+  animation: acb-fadein $motion-duration-micro $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+// ── Badge base ────────────────────────────────────────────────────────────
+.acb {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+// ── Level color modifiers ─────────────────────────────────────────────────
+// Colors chosen for semantic meaning and WCAG AA contrast against white text
+// or near-black text as specified per level.
+
+.acb-level--excellent,
+.acb-level--strong {
+  // Teal: $color-green-secondary (#04A08B) — brand green used for positive signals
+  background: #e6faf7;
+  color: #04A08B;
+}
+
+.acb-level--basic {
+  // Amber: distinct from brand red/coral, industry-standard for "partial"
+  // Text uses dark amber (#b45309) for WCAG AA contrast on #fff7ed background
+  background: #fff7ed;
+  color: #b45309;
+}
+
+.acb-level--incomplete {
+  // Coral: maps to $color-global-red — used softly (bg tinted, not saturated)
+  // so it doesn't alarm; "Getting started" copy reinforces positive framing
+  background: #fff1f0;
+  color: $color-global-red;
+}
+
+.acb-level--unavailable {
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-style: italic;
+}

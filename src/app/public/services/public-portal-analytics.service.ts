@@ -144,4 +144,16 @@ export class PublicPortalAnalyticsService {
   trackHowItWorksSectionViewed(page: string): void {
     this.track('how_it_works_section_viewed', { page });
   }
+
+  // APPLICANT APPLICATION COMPLETENESS BADGE/NUDGES -- track meaningful
+  // completeness UI interactions only. Payload never contains score values,
+  // profile content, or employer identifiers -- only application IDs and
+  // action labels, per this file's standing privacy rule.
+  trackApplicationCompletenessViewed(applicationId: string): void {
+    this.track('application_completeness_viewed', { applicationId });
+  }
+
+  trackApplicationCompletenessCtaClicked(applicationId: string, ctaLabel: string): void {
+    this.track('application_completeness_cta_clicked', { applicationId, ctaLabel });
+  }
 }

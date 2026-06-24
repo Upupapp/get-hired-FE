@@ -43,15 +43,29 @@
   margin-top: 12px;
 }
 
+// ── Application list row ────────────────────────────────────────────────
+
 .application-row {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 10px;
   padding: 16px;
   margin-bottom: 12px;
+}
+
+.application-row-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.application-row-info {
+  flex: 1;
+  min-width: 0;
 
   h3 { margin: 0 0 4px 0; font-size: 15px; }
-  p { margin: 0 0 6px 0; color: #6b7280; font-size: 13px; }
+  p  { margin: 0 0 6px 0; color: #6b7280; font-size: 13px; }
 }
 
 .application-status {
@@ -63,6 +77,58 @@
   font-weight: 600;
 }
 
+// ── Completeness toggle button (wraps badge pill + chevron) ─────────────
+
+.application-row-badge {
+  flex-shrink: 0;
+}
+
+.app-completeness-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 2px 4px 2px 0;
+  cursor: pointer;
+  border-radius: 4px;
+
+  // Keyboard focus ring — meets WCAG 2.4.7
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+
+  &:hover .app-completeness-toggle-chevron {
+    color: $color-global-red-buttons;
+  }
+}
+
+.app-completeness-toggle-chevron {
+  display: inline-block;
+  font-size: 14px;
+  color: #9ca3af;
+  transform: rotate(90deg);
+  transition: transform $motion-duration-micro $motion-ease-standard,
+              color $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &--open {
+    transform: rotate(270deg);
+    color: $color-global-red-buttons;
+  }
+}
+
+// ── Expanded completeness detail section ────────────────────────────────
+
+.app-snapshot {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+// ── Row actions ─────────────────────────────────────────────────────────
+
 .application-row-messages {
   margin-top: 12px;
 }
@@ -71,193 +137,19 @@
   margin-top: 10px;
 }
 
-// ── Completeness snapshot section ──────────────────────────────────────────
+// ── Responsive ──────────────────────────────────────────────────────────
 
-.app-snapshot {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-// Loading skeleton: 3-element layout mirrors the loaded score + badge shape
-// so the visual weight is consistent between loading and revealed states.
-.app-snapshot-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 4px 0;
-}
-
-// Shimmer keyframe (scoped name avoids conflict with employer-side gh-shimmer)
-@keyframes gh-app-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-
-// Shared shimmer base — applied to both line and badge placeholders
-%app-skeleton-base {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
-  background-size: 800px 100%;
-  animation: gh-app-shimmer 1.4s ease-in-out infinite;
-  border-radius: 4px;
-  // Ambient motion removed for users who prefer reduced motion
-  @include ambient-motion-safe;
-}
-
-.app-skeleton-line {
-  @extend %app-skeleton-base;
-  height: 12px;
-
-  &--short  { width: 45%; }  // matches disclaimer width
-  &--medium { width: 60%; }  // matches label + score row width
-}
-
-.app-skeleton-badges {
-  display: flex;
-  gap: 8px;
-}
-
-.app-skeleton-badge {
-  @extend %app-skeleton-base;
-  height: 20px;
-  width: 52px;       // percentage score badge
-  border-radius: 10px;
-
-  &--wide { width: 80px; }  // level label badge ("Excellent" / "Getting started")
-}
-
-// Score reveal: fade + slight upward drift on transition from skeleton to data.
-// Mirrors .gh-snapshot-reveal on the employer card for visual consistency.
-@keyframes app-snapshot-fadein {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.app-snapshot-reveal {
-  animation: app-snapshot-fadein $motion-duration-card $motion-ease-decelerate both;
-  @include motion-safe;
-}
-
-// Score row
-.app-snapshot-score {
-  margin-bottom: 8px;
-}
-
-.app-snapshot-label {
-  display: block;
-  font-size: 11px;
-  color: #6b7280;
-  margin-bottom: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.app-snapshot-score-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.app-snapshot-pct {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111827;
-}
-
-.app-snapshot-badge {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: capitalize;
-  letter-spacing: 0.02em;
-}
-
-// Tip lists
-// Colors: amber (#f59e0b / #fff7ed) and sky (#38bdf8 / #f0f9ff) are industry-
-// standard for "required" and "optional" signals. They sit outside the brand
-// red and do not compete with action buttons — intentional contrast.
-.app-snapshot-tips {
-  margin: 8px 0;
-  padding: 8px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-
-  &--required {
-    background: #fff7ed;
-    border-left: 3px solid #f59e0b;
+@media (max-width: 480px) {
+  .applications-page {
+    padding: 16px;
   }
 
-  &--recommended {
-    background: #f0f9ff;
-    border-left: 3px solid #38bdf8;
+  .application-row-header {
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .app-snapshot-tips-heading {
-    margin: 0 0 4px 0;
-    font-size: 11px;
-    font-weight: 600;
-    color: #374151;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  ul {
-    margin: 0;
-    padding-left: 16px;
-    color: #374151;
-
-    li {
-      margin-bottom: 2px;
-      &:last-child { margin-bottom: 0; }
-    }
-  }
-}
-
-// "Update your profile" CTA inside the required tips block
-.app-snapshot-cta {
-  display: inline-block;
-  margin-top: 8px;  // was 6px — extra 2px separates from the last <li> above
-  font-size: 12px;
-  font-weight: 600;
-  color: $color-global-red-buttons;
-  text-decoration: none;
-  border-radius: 2px;
-
-  &:hover { text-decoration: underline; }
-
-  // Visible keyboard focus ring — meets WCAG 2.4.7
-  &:focus-visible {
-    outline: 2px solid $color-global-red-buttons;
-    outline-offset: 2px;
-  }
-}
-
-// Empty / no-snapshot (pre-deployment application)
-.app-snapshot-empty {
-  font-size: 12px;
-  color: #9ca3af;
-  margin: 0;
-  font-style: italic;
-}
-
-// Fetch-failed state: soft unavailable message — visible but not alarming
-.app-snapshot-unavailable {
-  font-size: 12px;
-  color: #9ca3af;
-  margin: 0;
-  font-style: italic;
-}
-
-// Disclaimer
-.app-snapshot-disclaimer {
-  margin: 6px 0 0;
-  font-size: 10px;
-  color: #9ca3af;
-  line-height: 1.4;
-
-  // Privacy note: additional top spacing so two consecutive disclaimers don't
-  // sit flush, and a lighter tone to subordinate it below the main disclaimer.
-  &--privacy {
-    margin-top: 4px;
-    color: #b0b7c3;
+  .application-row-badge {
+    align-self: flex-start;
   }
 }

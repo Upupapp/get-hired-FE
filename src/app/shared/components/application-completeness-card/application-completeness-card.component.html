@@ -1,0 +1,120 @@
+<div class="acdc-card" role="region" aria-label="Application completeness details">
+
+  <!-- ── 1. Loading skeleton ─────────────────────────────────────────── -->
+  <div class="acdc-skeleton" *ngIf="loading" role="status" aria-label="Loading application completeness">
+    <div class="acdc-sk-label"></div>
+    <div class="acdc-sk-badge"></div>
+    <div class="acdc-sk-progress"></div>
+    <div class="acdc-sk-line acdc-sk-line--wide"></div>
+    <div class="acdc-sk-line acdc-sk-line--medium"></div>
+  </div>
+
+  <!-- ── 2. Error state ──────────────────────────────────────────────── -->
+  <div class="acdc-error" *ngIf="!loading && error" role="alert">
+    <p class="acdc-error-msg">Couldn't load completeness details right now.</p>
+    <button type="button" class="acdc-retry-btn" (click)="onRetry()">Try again</button>
+  </div>
+
+  <!-- ── 3. Null snapshot (batch returned no entry for this application) -->
+  <p class="acdc-unavailable" *ngIf="!loading && !error && snapshot === null">
+    Completeness details unavailable right now.
+  </p>
+
+  <ng-container *ngIf="!loading && !error && snapshot !== null">
+
+    <!-- ── 4. Pre-deployment application (no snapshot captured) ──────── -->
+    <p class="acdc-predeployment" *ngIf="!snapshot.hasSnapshot">
+      This application was submitted before completeness tracking was introduced. Completeness
+      details are available for new applications going forward.
+    </p>
+
+    <!-- ── 5. Full snapshot view ──────────────────────────────────────── -->
+    <ng-container *ngIf="snapshot.hasSnapshot">
+      <div class="acdc-content acdc-reveal">
+
+        <!-- Score header: label + badge -->
+        <div class="acdc-score-header">
+          <span class="acdc-score-label">Application completeness when submitted</span>
+          <div class="acdc-score-row">
+            <strong class="acdc-score-pct" *ngIf="snapshot.completenessScore !== null">
+              {{ snapshot.completenessScore }}%
+            </strong>
+            <app-application-completeness-badge
+              [level]="snapshot.completenessLevel"
+              [score]="null"
+              [loading]="false"
+              [compact]="true">
+            </app-application-completeness-badge>
+          </div>
+        </div>
+
+        <!-- Progress bar: visual score representation -->
+        <div class="acdc-progress-track"
+             *ngIf="snapshot.completenessScore !== null"
+             role="progressbar"
+             [attr.aria-valuenow]="snapshot.completenessScore"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             [attr.aria-label]="'Application completeness: ' + snapshot.completenessScore + ' percent'">
+          <div class="acdc-progress-fill"
+               [ngClass]="progressLevelClass"
+               [style.width.%]="snapshot.completenessScore">
+          </div>
+        </div>
+
+        <!-- ── Positive: nothing missing ──────────────────────────────── -->
+        <div class="acdc-positive" *ngIf="isComplete">
+          <svg class="acdc-positive-icon" aria-hidden="true" width="16" height="16"
+               viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="7.5" stroke="#04A08B" stroke-width="1"/>
+            <path d="M5 8l2 2 4-4" stroke="#04A08B" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p class="acdc-positive-msg">
+            Your profile was complete when you applied. Keep it updated for future applications.
+          </p>
+        </div>
+
+        <!-- ── Required missing items ─────────────────────────────────── -->
+        <div class="acdc-tips acdc-tips--required"
+             *ngIf="snapshot.missingRequired?.length > 0">
+          <p class="acdc-tips-heading">What was missing when you applied</p>
+          <p class="acdc-tips-sub">Add these now to strengthen future applications:</p>
+          <ul>
+            <li *ngFor="let tip of snapshot.missingRequired; trackBy: trackByReason">
+              {{ tip.reason }}
+            </li>
+          </ul>
+          <a class="acdc-cta" routerLink="/user/profile/edit">
+            Update your profile <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <!-- ── Recommended missing items ──────────────────────────────── -->
+        <div class="acdc-tips acdc-tips--recommended"
+             *ngIf="snapshot.missingRecommended?.length > 0">
+          <p class="acdc-tips-heading">Nice-to-haves (not required)</p>
+          <p class="acdc-tips-sub">Extra details that help you stand out:</p>
+          <ul>
+            <li *ngFor="let tip of snapshot.missingRecommended; trackBy: trackByReason">
+              {{ tip.reason }}
+            </li>
+          </ul>
+          <a class="acdc-cta" routerLink="/user/profile/edit">
+            Add to your profile <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <!-- ── Disclaimer ──────────────────────────────────────────────── -->
+        <p class="acdc-disclaimer" *ngIf="snapshot.disclaimerNote">
+          {{ snapshot.disclaimerNote }}
+        </p>
+        <p class="acdc-disclaimer acdc-disclaimer--privacy" *ngIf="snapshot.privacyNote">
+          {{ snapshot.privacyNote }}
+        </p>
+
+      </div>
+    </ng-container>
+  </ng-container>
+
+</div>
