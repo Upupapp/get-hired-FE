@@ -317,12 +317,12 @@ export const getJob = createAction(
 );
 
 export const getJobSuccess = createAction(
-  AllFeatureActionTypes.ChangeJobStatusSuccess,
+  AllFeatureActionTypes.GetJobSuccess,
   props<{ job: Model.Job }>()
 );
 
 export const getJobFail = createAction(
-  AllFeatureActionTypes.ChangeJobStatusFail,
+  AllFeatureActionTypes.GetJobFail,
   props<{ payload: any }>()
 );
 

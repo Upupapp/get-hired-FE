@@ -10,7 +10,7 @@
     [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
     <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
       (click)="onAlertClose()"></button>
-    <span [innerHtml]="error"></span>
+    <span>{{ error }}</span>
   </div>
 
 

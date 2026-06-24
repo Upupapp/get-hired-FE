@@ -324,6 +324,7 @@
 
 
 
+// Merged: V5 motion tokens replace original all-transition to allow gh-pressable micro-scale.
 .btn-submit{
 	border-radius: 18px;
 	padding: 13px 10px;
@@ -333,16 +334,19 @@
 	font-weight: 500;
 	font-size: 15px;
 	line-height: 27px;
-	transition: all 0.4s ease !important;
+	transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease, color 0.1s ease;
 	color: #FFFFFF;
+
+	@media (prefers-reduced-motion: reduce) {
+	  transition: background 0.4s ease, color 0.1s ease;
+	}
 
 	&:hover{
 	  border: solid 2px #FF4D3C !important;
 	  color: #FF4D3C;
-	  transition: all 0.1s ease !important;
 	  background: transparent !important;
 	  padding-bottom: 9px !important;
-	  padding-top: 13px 10px !important;
+	  padding-top: 13px !important;
 	}
 }
 
@@ -459,3 +463,13 @@ input.ng-invalid.ng-dirty.ng-touched {
 	border-radius: 15px !important;
 	margin-bottom: 30px;
 }
+
+// V5: Employer-specific subtitle shown when ?role=2 is pre-selected
+.gh-signup-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #6b6887;
+  margin: 6px 0 0;
+}
+
+// V5: btn-submit motion tokens merged into base block above.

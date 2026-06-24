@@ -65,14 +65,25 @@
         <!-- Error Message -->
         <form class="" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
           <div class="form-group text-start">
-            <h4 class="main-title m-0"> {{ 'CREATE_ACCOUNT.CREATE_ACCOUNT_TEXT' | translate }}</h4>
+            <!-- V5: Employer-specific title when role=2 is pre-selected via ?role=2 query param.
+                 Falls back to generic title for applicant signup (role=3) or when no role is set. -->
+            <h4 class="main-title m-0"
+              *ngIf="role_validators?.value === 2; else genericTitle">
+              Create your employer account
+            </h4>
+            <ng-template #genericTitle>
+              <h4 class="main-title m-0"> {{ 'CREATE_ACCOUNT.CREATE_ACCOUNT_TEXT' | translate }}</h4>
+            </ng-template>
+            <p class="gh-signup-subtitle" *ngIf="role_validators?.value === 2">
+              Start hiring in minutes. Post your first job and reach qualified candidates.
+            </p>
           </div>
 
           <div class="alert alert-danger alert-dismissible fade show error-message"
             [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
             <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
               (click)="onAlertClose()"></button>
-            <span [innerHtml]="error"></span>
+            <span>{{ error }}</span>
           </div>
 
           <div class="form-group mt-4">
@@ -209,24 +220,40 @@
             </a>
           </div>
 
-          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3"
-            [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)">
-            {{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}
+          <!-- V5: Employer-specific CTA text when role=2 is selected.
+               gh-pressable provides micro-scale press feedback. -->
+          <button type="submit"
+            class="btn btn-submit d-block w-100 float-end mt-4 mb-3 gh-pressable"
+            [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)"
+            [attr.aria-busy]="submitting ? 'true' : null">
+            <ng-container *ngIf="role_validators?.value === 2; else genericSubmit">
+              <ng-container *ngIf="!submitting">Create employer account</ng-container>
+              <ng-container *ngIf="submitting">Creating account...</ng-container>
+            </ng-container>
+            <ng-template #genericSubmit>
+              <ng-container *ngIf="!submitting">{{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}</ng-container>
+              <ng-container *ngIf="submitting">Creating account...</ng-container>
+            </ng-template>
             <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
-              *ngIf="submitting">
+              *ngIf="submitting" aria-hidden="true">
           </button>
 
           <div class="text-center mt-5 join-us">
             <br><br>
-            {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" class="register">{{
-              'CREATE_ACCOUNT.LOGIN_BUTTON' | translate }}</a>
+            <ng-container *ngIf="role_validators?.value === 2">
+              Already have an employer account? <a [routerLink]="'/signin'" class="register">Sign in</a>
+            </ng-container>
+            <ng-container *ngIf="role_validators?.value !== 2">
+              {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" class="register">{{
+                'CREATE_ACCOUNT.LOGIN_BUTTON' | translate }}</a>
+            </ng-container>
           </div>
         </form>
 
         <div *ngIf="isResent" class="text-center">
           <img src="assets/images/success.gif" class="w-25" />
           <h5 class="title-sub px-5">
-            Verification link send to your email. Redirecting to Login ...
+            Verification link sent to your email. Redirecting to login...
           </h5>
         </div>
       </div>

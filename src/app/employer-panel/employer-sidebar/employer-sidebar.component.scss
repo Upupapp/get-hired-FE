@@ -240,6 +240,14 @@
 	margin-left: -2px;
 }
 
+// B01 — Messages sidebar icon (reuses jobs icon dimensions since there is
+// no dedicated messages icon asset yet; dimensions are identical to jobs).
+.messages{
+	width: 14px !important;
+	height: 17px !important;
+	margin-top: -2px;
+}
+
 .interviews{
 	width: 16px !important;
 	height: 16px !important;

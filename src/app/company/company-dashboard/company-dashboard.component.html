@@ -75,6 +75,22 @@
             </span>
           </button>
 
+          <!-- B01: Messages inbox quick-link card. Always shown in action center
+               so recruiters can reach /recruiter/messages from the dashboard.
+               No fake unread count — copy is honest about what the inbox does. -->
+          <button type="button" class="emp-dash-action-card gh-pressable" (click)="goToMessages()">
+            <span class="emp-dash-action-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                width="28" height="28" aria-hidden="true" focusable="false">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </span>
+            <span class="emp-dash-action-body">
+              <span class="emp-dash-action-title">Messages</span>
+              <span class="emp-dash-action-desc">View all candidate conversations in one place.</span>
+            </span>
+          </button>
+
           <div class="emp-dash-action-empty" *ngIf="needsReviewCount === 0 && missingFields.length === 0">
             <p>You're all caught up. No applicants are waiting for review right now.</p>
           </div>
@@ -124,7 +140,7 @@
     <ng-container *ngIf="!pipelineLoading && !pipelineError && byStage.length > 0">
       <div class="emp-dash-pipeline-rail" role="list">
         <button type="button" class="emp-dash-pipeline-stage gh-pressable" role="listitem"
-          *ngFor="let stage of byStage" (click)="goToJobsList()"
+          *ngFor="let stage of byStage; trackBy: trackByStageId" (click)="goToJobsList()"
           [attr.aria-label]="stage.label + ': ' + stage.count + ' applicants'">
           <span class="emp-dash-pipeline-bar" [style.height.%]="(stage.count / pipelineBarMax) * 100"></span>
           <span class="emp-dash-pipeline-count">{{ stage.count }}</span>
@@ -142,8 +158,8 @@
   <section class="emp-dash-review" aria-label="Applicants needing review" *ngIf="!pipelineLoading && !pipelineError && needsReview.length > 0">
     <h2 class="emp-dash-section-title">Applicants needing review</h2>
     <div class="emp-dash-review-list">
-      <div class="emp-dash-review-card" *ngFor="let applicant of needsReview">
-        <span class="emp-dash-review-initials" aria-hidden="true">{{ applicant.candidateName.charAt(0) }}</span>
+      <div class="emp-dash-review-card" *ngFor="let applicant of needsReview; trackBy: trackByApplicationId">
+        <span class="emp-dash-review-initials" aria-hidden="true">{{ applicant.candidateName?.charAt(0) || '?' }}</span>
         <div class="emp-dash-review-body">
           <p class="emp-dash-review-name">{{ applicant.candidateName }}</p>
           <p class="emp-dash-review-meta">{{ applicant.jobTitle }} &middot; {{ applicant.submittedDate | date:'mediumDate' }}</p>
@@ -152,6 +168,44 @@
         <button type="button" class="btn-cta-outline emp-dash-review-cta gh-pressable" (click)="goToApplicants(applicant.jobId)">Review</button>
       </div>
     </div>
+  </section>
+
+  <!-- V5: Employer Onboarding Checklist — shown only when there are
+       incomplete setup steps. Driven entirely by real data (company fields +
+       job counts). No fake progress or fake counts. Collapses automatically
+       when all steps are complete.
+       Reduced-motion: checklist items use CSS transitions gated by
+       prefers-reduced-motion via the motion.scss mixin.
+       OPTIMIZE V5: uses cachedOnboardingSteps (a component property) instead
+       of calling onboardingSteps() twice per CD cycle. Cache is refreshed via
+       tap in dashboard$ and after pipeline data arrives. -->
+  <section class="emp-dash-onboarding" aria-label="Getting started checklist"
+    *ngIf="!pipelineLoading && cachedOnboardingSteps.length > 0">
+    <h2 class="emp-dash-section-title">Getting started</h2>
+    <p class="emp-dash-onboarding-intro">Complete these steps to get the most out of GetHired.</p>
+    <ol class="emp-dash-onboarding-list" role="list">
+      <li class="emp-dash-onboarding-step"
+        *ngFor="let step of cachedOnboardingSteps; trackBy: trackOnboardingStep"
+        [class.emp-dash-onboarding-step--done]="step.done"
+        role="listitem">
+        <span class="emp-dash-onboarding-check" aria-hidden="true">
+          <svg *ngIf="step.done" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+            stroke-width="2.5" aria-hidden="true" focusable="false">
+            <path d="M3 8l3.5 3.5 6.5-7"/>
+          </svg>
+        </span>
+        <span class="emp-dash-onboarding-step-label">
+          <span class="emp-dash-onboarding-step-title">{{ step.title }}</span>
+          <span class="emp-dash-onboarding-step-desc">{{ step.desc }}</span>
+        </span>
+        <button *ngIf="!step.done" type="button"
+          class="emp-dash-onboarding-step-cta gh-pressable"
+          (click)="step.action()">
+          {{ step.cta }}
+        </button>
+        <span *ngIf="step.done" class="emp-dash-onboarding-step-done-label" aria-label="Completed">Done</span>
+      </li>
+    </ol>
   </section>
 
   <!-- Existing charts/statistics, kept and restyled wrapper -->

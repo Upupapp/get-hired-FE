@@ -16,6 +16,81 @@
       </div>
     </div>
   </div>
+
+  <!-- B02 V5 + B01: Mobile bottom nav bar — visible only on screens narrower than md
+       breakpoint (768px). Provides keyboard-accessible, touch-friendly navigation
+       to the 5 most-used employer panel destinations.
+       B01: "Post Job" replaced by "Messages" — Post Job is reachable from dashboard
+       and Jobs list. Messages is a new primary destination that benefits from
+       persistent bottom-nav presence for recruiter workflow.
+       Reduced-motion: no animations, only color/border state changes. -->
+  <nav class="gh-mobile-nav d-flex d-md-none" aria-label="Mobile employer navigation" role="navigation">
+    <a routerLink="/recruiter/dashboard" routerLinkActive="gh-mobile-nav-item--active"
+      class="gh-mobile-nav-item" aria-label="Dashboard">
+      <svg class="gh-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" aria-hidden="true" focusable="false">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+      </svg>
+      <span class="gh-mobile-nav-label">Dashboard</span>
+    </a>
+    <a routerLink="/recruiter/jobs/list" routerLinkActive="gh-mobile-nav-item--active"
+      class="gh-mobile-nav-item" aria-label="Jobs">
+      <svg class="gh-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" aria-hidden="true" focusable="false">
+        <rect x="2" y="7" width="20" height="14" rx="2"/>
+        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+      </svg>
+      <span class="gh-mobile-nav-label">Jobs</span>
+    </a>
+    <a routerLink="/recruiter/contacts" routerLinkActive="gh-mobile-nav-item--active"
+      class="gh-mobile-nav-item" aria-label="Candidates">
+      <svg class="gh-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" aria-hidden="true" focusable="false">
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        <path d="M21 21v-2a4 4 0 0 0-3-3.87"/>
+      </svg>
+      <span class="gh-mobile-nav-label">Candidates</span>
+    </a>
+    <!-- B01: Messages tab replaces Post Job in bottom nav.
+         Post Job remains accessible via dashboard CTA and Jobs > Job Posts. -->
+    <a routerLink="/recruiter/messages" routerLinkActive="gh-mobile-nav-item--active"
+      class="gh-mobile-nav-item" aria-label="Messages">
+      <svg class="gh-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" aria-hidden="true" focusable="false">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span class="gh-mobile-nav-label">Messages</span>
+    </a>
+    <a routerLink="/recruiter/company/details" routerLinkActive="gh-mobile-nav-item--active"
+      class="gh-mobile-nav-item" aria-label="Company">
+      <svg class="gh-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" aria-hidden="true" focusable="false">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span class="gh-mobile-nav-label">Company</span>
+    </a>
+  </nav>
+  <!-- NEW-03: Subscription accessible on mobile — Option C.
+       A compact billing bar sits below the 5-item bottom nav so the nav
+       layout is not disturbed. Only visible on mobile (d-flex d-md-none).
+       Uses .gh-billing-bar + .gh-billing-bar-link — styled in component SCSS
+       with brand variables, hover state, and focus-visible ring. -->
+  <div class="d-flex d-md-none justify-content-center align-items-center gh-billing-bar">
+    <a routerLink="/recruiter/subscription"
+      class="gh-billing-bar-link"
+      aria-label="Subscription and Billing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        width="13" height="13" aria-hidden="true" focusable="false">
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+        <line x1="1" y1="10" x2="23" y2="10"/>
+      </svg>
+      Subscription &amp; Billing
+    </a>
+  </div>
 </section>
 
 <!-- Panel loading fallback: shown while employee profile is being fetched

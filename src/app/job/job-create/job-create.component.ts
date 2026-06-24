@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
-import { distinctUntilChanged, Subject, Subscription } from 'rxjs';
+import { distinctUntilChanged, Subject, Subscription, take } from 'rxjs';
 import * as Model from '../job.model';
 import * as QuestionModel from '@main/interview/interview.model';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -32,6 +32,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   public jobId: any = null;
   public screenWidth: number = 1200;
   subscriptions = new Subscription();
+  // QA8 FIX-10: separate bag for the form-status subscriptions added inside
+  // setFormGroup(). Replaced on every call so multiple editJob$ emissions
+  // don't accumulate duplicate statusChanges listeners across the lifetime of
+  // the component. Unsubscribed in ngOnDestroy via the main subscriptions bag.
+  private formSubs = new Subscription();
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -68,7 +73,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
     {
       id: 3,
-      title: "Create Interview",
+      title: "Create Interview (Optional)",
       disabled: !this.jobInfoValid,
       formName: 'interview'
     },
@@ -86,9 +91,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     })
   );
 
-  loading$ = this.jobFacade.getJobLoading$
-    .pipe()
-    .subscribe(this.onLoad.bind(this));
+  // QA7 FIX-9: tracked below in ngOnInit to ensure unsubscribe on destroy.
+  loading$: any;
 
   restrictions$ = this.jobFacade.subsRestrictions$
     .pipe(
@@ -121,18 +125,31 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.jobFacade.getCompanySubscription(this.companyId);
       });
 
+    // FIX-02: success$ subscribed exactly once here (not inside setFormGroup,
+    // which is called every time editJob$ emits, causing multiple subscribers
+    // and therefore multiple dialogs on a single save-success event).
+    this.subscriptions.add(
+      this.jobFacade.success$
+        .pipe().subscribe(this.afterSubmit.bind(this))
+    );
 
+    // QA7 FIX-9: track loading$ in the subscriptions bag so it is cleaned up on destroy.
+    this.subscriptions.add(
+      this.jobFacade.getJobLoading$.pipe().subscribe(this.onLoad.bind(this))
+    );
 
     this.screenWidth = window.innerWidth;
     setTimeout(() => this.delayControl = false, 900);
 
-    this.editJob$.subscribe((data: any) => {
-      if (data) {
-        console.log(data);
-        this.setFormGroup(data);
-        this.status = data.jobStatusId;
-      }
-    });
+    // QA7 FIX-9: track editJob$ subscription in the subscriptions bag.
+    this.subscriptions.add(
+      this.editJob$.subscribe((data: any) => {
+        if (data) {
+          this.setFormGroup(data);
+          this.status = data.jobStatusId;
+        }
+      })
+    );
 
     if (this.jobId) {
       this.getJobById()
@@ -200,12 +217,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       })
     });
 
-    this.subscriptions.add(
-      this.jobFacade.success$
-        .pipe().subscribe(this.afterSubmit.bind(this))
-    );
+    // QA8 FIX-10: unsubscribe any previous statusChanges listeners before
+    // creating new ones — prevents accumulation when editJob$ emits repeatedly.
+    this.formSubs.unsubscribe();
+    this.formSubs = new Subscription();
 
-    this.subscriptions.add(
+    this.formSubs.add(
       this.jobForm.controls.initialData.statusChanges
         .pipe(distinctUntilChanged())
         .subscribe((status) => {
@@ -214,7 +231,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         })
     );
 
-    this.subscriptions.add(
+    this.formSubs.add(
       this.jobForm.controls.jobInfo.statusChanges
         .pipe(distinctUntilChanged())
         .subscribe((status) => {
@@ -317,7 +334,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         });
 
         this.questions = [...interviewQuestions.value]
-        console.log(this.questions)
         this.cd.detectChanges();
       }
     }
@@ -337,25 +353,26 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   async saveAsDraft() {
     const job: Model.Job = this.formatJob(1);
-    console.log(job);
-
     this.jobFacade.saveJob(job);
   }
 
   publishJobPost() {
     const job: Model.Job = this.formatJob(2);
-    console.log('YOUR JOB')
-    console.log(job);
 
-    this.isReadyToPublish =
+    // B04 V5: Interview questions are now optional for publish.
+    // Required fields: jobTypeId, jobLevelId, jobCity, jobCountry,
+    // jobDescription, workSetupId, banner (file or URL), companyId.
+    // Interview questions are encouraged but not blocking.
+    this.isReadyToPublish = !!(
       job.jobTypeId &&
       job.jobLevelId &&
-      job.jobCity != '' &&
-      job.jobCountry != '' &&
-      job.jobDescription != '' &&
+      job.jobCity != null && job.jobCity !== '' &&
+      job.jobCountry != null && job.jobCountry !== '' &&
+      job.jobDescription != null && job.jobDescription !== '' &&
       job.workSetupId &&
       (job.bannerFile[0] || job.jobBanner != "") &&
-      job.interviewQuestions.length != 0
+      job.companyId
+    )
 
     if (this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
@@ -375,31 +392,27 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       }
 
       if (job.jobCountry == "") {
-        missingJob += 'job jobCountry ';
+        missingJob += 'job country ';
       }
 
       if (job.jobDescription == "") {
-        missingJob += 'job Description ';
+        missingJob += 'job description ';
       }
 
       if (!job.workSetupId) {
-        missingJob += 'Work Setup Id ';
-      }
-
-      if (job.interviewQuestions.length == 0) {
-        missingJob += 'Interview Questions ';
+        missingJob += 'work setup ';
       }
 
       if (!job.bannerFile[0] && job.jobBanner == "") {
-        missingJob += 'Job Banner ';
+        missingJob += 'job banner ';
       }
 
-      if (job.companyId == '') {
-        missingJob += 'Company Id ';
+      if (!job.companyId) {
+        missingJob += 'company ';
       }
 
       this.haptics.warning();
-      this.snackBar.open(`Job not ready to be Published. Missing: ${missingJob}`, '', {
+      this.snackBar.open(`Your job post can't be published yet. Missing: ${missingJob.trim()}.`, '', {
         duration: 5000,
         panelClass: ['danger-snackbar'],
       });
@@ -407,8 +420,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   formatJob(status) {
-    console.log(this.jobForm.controls);
-
     const { initialData, jobInfo, interview } = this.jobForm.controls;
     const { interviewQuestions, interviewTemplateId } = interview.value;
     return {
@@ -426,7 +437,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   afterSubmit(event) {
-    console.log(event);
     if (event == 'asDraft') {
       const draft = this.dialog.open(UpdatedDialogComponent, {
         disableClose: true,
@@ -460,7 +470,22 @@ export class JobCreateComponent implements OnInit, OnDestroy {
             '', { duration: 5000, panelClass: ['success-snackbar'] }
           );
           this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
-          this.router.navigateByUrl('recruiter/jobs/list');
+          // B05 V5: Navigate to job-specific applicant view after publish so
+          // the employer can immediately monitor applicants for their new post.
+          // For new jobs (this.jobId is null), read the newly created job's ID
+          // from the store (saveJobSuccess stores it in state.selected).
+          // Falls back to jobs list if no jobId can be resolved.
+          if (this.jobId) {
+            this.router.navigate(['/recruiter/jobs/applicants'], { queryParams: { id: this.jobId } });
+          } else {
+            this.jobFacade.jobDetails$.pipe(take(1)).subscribe(job => {
+              if (job && job.jobId) {
+                this.router.navigate(['/recruiter/jobs/applicants'], { queryParams: { id: job.jobId } });
+              } else {
+                this.router.navigateByUrl('/recruiter/jobs');
+              }
+            });
+          }
         });
     }
 
@@ -491,7 +516,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     switch (formCtrl) {
       case 'initialData':
         const bodyInitial = this.jobForm.controls[formCtrl].value;
-        console.log(bodyInitial);
         this.jobFacade.saveInitialForm(bodyInitial);
         break;
       case 'jobInfo':
@@ -531,5 +555,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.jobFacade.resetFormState();
     this.subscriptions.unsubscribe();
+    this.formSubs.unsubscribe(); // QA8 FIX-10: clean up form-status subscriptions
   }
 }

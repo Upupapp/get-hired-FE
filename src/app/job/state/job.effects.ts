@@ -90,8 +90,11 @@ export class JobEffects {
             return JobActions.saveJobSuccess({ job });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(JobActions.saveJobFail({ payload: error }))
+            // BE 403 uses { message: "..." }; other BE errors use { error: "..." }.
+            // Normalise so the reducer and UI always receive a string.
+            const body = (err && err.error) || {};
+            const payload: string = body.error || body.message || 'Unable to save your job. Please try again.';
+            return of(JobActions.saveJobFail({ payload }))
           })
         )
       )
@@ -162,8 +165,12 @@ export class JobEffects {
             return JobActions.changeJobStatusSuccess({ job });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(JobActions.changeJobStatusFail({ payload: error }))
+            // BE 403 uses { message: "..." }; other BE errors use { error: "..." }.
+            // Normalise so the reducer and UI always receive a string, and so a
+            // 403 with { message: "..." } never causes a destructure crash.
+            const body = (err && err.error) || {};
+            const payload: string = body.error || body.message || 'Unable to update job status. Please try again.';
+            return of(JobActions.changeJobStatusFail({ payload }))
           })
         )
       )

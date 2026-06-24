@@ -209,7 +209,7 @@
     "ADMIN_DASHOBOARD":{
         "SIDEBAR_CONTACTS":"Contacts",
         "SIDEBAR_INTERVIEWS":"Interviews",
-        "SIDEBAR_SUBCRIPTIONS":"My Subscription",
+        "SIDEBAR_SUBCRIPTIONS":"Subscription & Billing",
         "SIDEBAR_EMPLOYER_BRANDING":"Employer Branding",
 
         "WIDGET_ACTIVE_JOBS":"Active Jobs", 

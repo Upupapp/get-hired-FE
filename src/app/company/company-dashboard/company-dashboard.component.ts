@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CompanyFacade } from '../state/company.facade';
 import { CompanyService } from '../company.service';
 import * as Model from '../company.model';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 interface PipelineStage {
   statusId: number;
@@ -50,6 +50,15 @@ export class CompanyDashboardComponent implements OnInit {
             }
           }
         }
+      }),
+      // OPTIMIZE V5: cache company/charts for the onboarding step cache refresh.
+      // tap does not alter the emitted value seen by the template's async pipe.
+      tap(dash => {
+        if (dash) {
+          this._lastDashboardCompany = dash.company;
+          this._lastDashboardCharts = dash.charts;
+          this._refreshOnboardingCache();
+        }
       })
     );
 
@@ -64,6 +73,14 @@ export class CompanyDashboardComponent implements OnInit {
    * change-detection tick. Both values are used 3–6 times in the template. */
   needsReviewCount = 0;
   pipelineBarMax = 1;
+
+  /** OPTIMIZE V5: cached result of onboardingSteps() so the template can
+   * reference cachedOnboardingSteps directly instead of calling the method
+   * twice per change-detection cycle (once for *ngIf, once for *ngFor).
+   * Refreshed whenever dashboard$ emits or pipeline data arrives. */
+  cachedOnboardingSteps: Array<{
+    title: string; desc: string; cta: string; done: boolean; action: () => void;
+  }> = [];
 
   constructor(
     private companyFacade: CompanyFacade,
@@ -88,6 +105,9 @@ export class CompanyDashboardComponent implements OnInit {
           (this.byStage.find(s => s.statusId === 3)?.count || 0);
         this.pipelineBarMax = Math.max(1, ...this.byStage.map(s => s.count));
         this.pipelineLoading = false;
+        // OPTIMIZE V5: refresh cached steps now that needsReviewCount is known.
+        // Must be done after pipelineLoading=false or the section stays hidden.
+        this._refreshOnboardingCache();
       },
       error: () => {
         this.pipelineLoading = false;
@@ -95,6 +115,18 @@ export class CompanyDashboardComponent implements OnInit {
       }
     });
   }
+
+  /** OPTIMIZE V5: called from ngOnInit (after dashboard$ emits via tap) and
+   * from loadPipelineOverview so the cache is always fresh when either data
+   * source updates. Reads this.lastDashboardCompany/Charts set by dashboard$. */
+  private _refreshOnboardingCache(): void {
+    this.cachedOnboardingSteps = this.onboardingSteps(
+      this._lastDashboardCompany, this._lastDashboardCharts
+    );
+  }
+
+  private _lastDashboardCompany: any = null;
+  private _lastDashboardCharts: any = null;
 
   retryPipelineOverview(): void {
     this.loadPipelineOverview();
@@ -120,6 +152,11 @@ export class CompanyDashboardComponent implements OnInit {
     this.router.navigate(['/recruiter/company/details']);
   }
 
+  // B01: Messages inbox CTA from dashboard action center
+  goToMessages(): void {
+    this.router.navigate(['/recruiter/messages']);
+  }
+
   /** Real, derived from already-fetched company fields -- not a fake
    * score. Mirrors the applicant-side completeness pattern but kept
    * client-side/lightweight since no backend equivalent exists yet. */
@@ -130,5 +167,58 @@ export class CompanyDashboardComponent implements OnInit {
     if (!company.companyDetails) { missing.push('company description'); }
     if (!company.companyCity) { missing.push('location'); }
     return missing;
+  }
+
+  // ── OPTIMIZE V5: trackBy functions ─────────────────────────────────────────
+  trackByStageId(_index: number, stage: PipelineStage): number {
+    return stage.statusId;
+  }
+
+  trackByApplicationId(_index: number, item: NeedsReviewItem): string {
+    return item.applicationId;
+  }
+
+  trackOnboardingStep(index: number): number {
+    return index;
+  }
+
+  /** V5 B07: Onboarding checklist steps derived from real company/job data.
+   * Returns only incomplete steps when all are complete the section hides.
+   * Safe: no fake progress. Charts.activeJobs === 0 means no published jobs. */
+  onboardingSteps(company: Model.Company, charts: any): Array<{
+    title: string; desc: string; cta: string; done: boolean; action: () => void;
+  }> {
+    const hasLogo = !!(company?.companyLogoUrl);
+    const hasDescription = !!(company?.companyDetails);
+    const hasLocation = !!(company?.companyCity);
+    const hasActiveJob = (charts?.activeJobs || 0) > 0;
+
+    const steps = [
+      {
+        title: 'Complete your company profile',
+        desc: 'Add your logo, description, and location so candidates know who is hiring.',
+        cta: 'Complete profile',
+        done: hasLogo && hasDescription && hasLocation,
+        action: () => this.goToCompanyProfile()
+      },
+      {
+        title: 'Post your first job',
+        desc: 'Create a job post to start receiving applications from qualified candidates.',
+        cta: 'Post a job',
+        done: hasActiveJob,
+        action: () => this.goToCreateJob()
+      },
+      {
+        title: 'Review your first applicants',
+        desc: 'Once candidates apply, review their profiles and video answers here.',
+        cta: 'View applicants',
+        done: (this.byStage.reduce((sum, s) => sum + s.count, 0) || 0) > 0,
+        action: () => this.goToApplicants()
+      }
+    ];
+
+    // Return all steps when at least one is incomplete (collapses when all done)
+    const allDone = steps.every(s => s.done);
+    return allDone ? [] : steps;
   }
 }

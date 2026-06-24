@@ -435,7 +435,7 @@ export const jobReducer = createReducer<JobState>(
       ...state,
       job: action.job,
       jobLoading: false,
-      succesMsg: action.job.jobStatusId == 4 ? 'archived' : 'expired'
+      succesMsg: null  // QA7 FIX-8: loading a job must not pollute succesMsg with a stale status string
     };
   }),
   on(JobActions.getJobFail, (state, action): JobState => {

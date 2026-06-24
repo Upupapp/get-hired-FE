@@ -12,6 +12,8 @@ import { InternalEmployerGuard } from './employer-internal-authguard';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CompanyModule } from '@main/company/company.module';
+// B01: Global recruiter messages inbox
+import { RecruiterMessagesComponent } from './recruiter-messages/recruiter-messages.component';
 
 const routes: Routes = [
   {
@@ -44,6 +46,12 @@ const routes: Routes = [
         path: 'subscription',
         loadChildren: () => import('./employer-subscription/employer-subscription.module').then(m => m.EmployerSubscriptionModule)
       },
+      // B01: Global recruiter inbox — guarded by the parent EmployerPanelComponent's
+      // EmployerGuard. A non-employer arriving here is redirected by the parent guard.
+      {
+        path: 'messages',
+        component: RecruiterMessagesComponent,
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
@@ -54,6 +62,8 @@ const routes: Routes = [
     EmployerPanelComponent,
     EmployerDashboardComponent,
     EmployerSidebarComponent,
+    // B01
+    RecruiterMessagesComponent,
   ],
   imports: [
     CommonModule,

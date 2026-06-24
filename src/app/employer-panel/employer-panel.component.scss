@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 #body-main-container{
   z-index: 1 !important;
@@ -19,7 +20,7 @@
   position: relative !important;
   background-color: $color-global-sidebar-applicant-gray !important;
   overflow-x: hidden !important;
-  overflow-y: none !important;
+  overflow-y: hidden !important;
   margin-bottom: 30px !important;
 }
 
@@ -32,7 +33,7 @@
   background-color: inherit !important;
   min-height: 70vh;
   margin-bottom: 0 !important;
-  overflow-y: none !important;
+  overflow-y: hidden !important;
 }
 
 #sidebar-container {
@@ -90,5 +91,120 @@
   display: inline;
   text-align: right;
   padding-left: 10px;
+}
+
+// ─── B02 V5: Mobile bottom nav bar ──────────────────────────────────────────
+// Visible only below the Bootstrap md breakpoint (768px).
+// Reduced-motion: no transition/animation applied here — only color and border
+// state changes which are always safe. gh-pressable is NOT applied here because
+// the bottom bar needs to stay stable during thumb navigation on mobile.
+
+.gh-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: $color-global-sidebar-employer-user-menu;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 0 env(safe-area-inset-bottom, 0px);
+  justify-content: space-around;
+  align-items: center;
+
+  &-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 112, 98, 0.85);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      color: $color-global-red-buttons;
+    }
+
+    &--create {
+      color: $color-global-red-buttons;
+      background: rgba(255, 112, 98, 0.15);
+    }
+  }
+
+  &-icon {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
+  }
+
+  &-label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+  }
+}
+
+// Push page content up above mobile nav on small screens.
+// QA8 FIX-11: use calc() to add env(safe-area-inset-bottom) so the content
+// clears both the billing bar (16px) and the nav bar (56px) stack on notched
+// iPhones. Flat total without a notch remains 72px (env() resolves to 0px).
+@media (max-width: 767px) {
+  #sub-company-component {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+// ─── NEW-03: Subscription & Billing mobile bar ───────────────────────────────
+// Positioned above the 56px bottom nav (bottom: 56px). Only visible on mobile
+// (d-md-none applied in HTML). Uses brand variables, not hardcoded hex.
+// Hover: opacity shift. Focus-visible: brand-red ring matching nav items.
+// Reduced-motion: transition removed via @include motion-safe.
+
+.gh-billing-bar {
+  position: fixed;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: $color-global-sidebar-applicant-gray;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 6px 0;
+}
+
+.gh-billing-bar-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: $color-global-red-buttons;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 1;
+  transition: opacity $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    opacity: 0.75;
+    text-decoration: none;
+    color: $color-global-red-buttons;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 112, 98, 0.85);
+    outline-offset: 2px;
+  }
 }
 

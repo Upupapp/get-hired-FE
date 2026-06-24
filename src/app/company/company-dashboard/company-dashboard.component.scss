@@ -279,7 +279,7 @@
   &:hover, &:focus-visible {
     box-shadow: 0 4px 20px rgba(26, 24, 48, 0.1);
     transform: translateY(-2px);
-    outline: 2px solid rgba(124, 131, 253, 0.5);
+    outline: 2px solid rgba($color-pipeline-accent, 0.5);
     outline-offset: 2px;
   }
 }
@@ -345,9 +345,12 @@
 .emp-dash-pipeline-bar {
   width: 100%;
   min-height: 8px;
-  background: rgba(124, 131, 253, 0.5);
+  background: rgba($color-pipeline-accent, 0.5);
   border-radius: 6px 6px 0 0;
-  transition: background 0.18s ease, min-height 0.3s ease;
+  // OPTIMIZE V5: removed `min-height` from transition — height-based
+  // transitions trigger layout/reflow on every frame. Background-only
+  // transition is compositable and sufficient for the hover state change.
+  transition: background 0.18s ease;
 }
 
 .emp-dash-pipeline-count {
@@ -386,7 +389,7 @@
   border: 1.5px solid #ede9f7;
   border-radius: 14px;
   padding: 14px 18px;
-  animation: emp-card-reveal 0.35s $motion-ease-standard both;
+  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
 }
 
 .emp-dash-review-initials {
@@ -394,7 +397,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7c83fd, #2dd4bf);
+  background: linear-gradient(135deg, $color-pipeline-accent, $color-teal-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -427,8 +430,8 @@
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 600;
-  background: rgba(124, 131, 253, 0.12);
-  color: #7c83fd;
+  background: rgba($color-pipeline-accent, 0.12);
+  color: $color-pipeline-accent;
   border-radius: 100px;
   padding: 3px 10px;
 }
@@ -538,14 +541,138 @@
   .emp-dash-kpi-card { flex: 1 1 100%; }
 }
 
+// ─── V5: Onboarding Checklist ─────────────────────────────────────────────────
+.emp-dash-onboarding {
+  padding: 28px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.emp-dash-onboarding-intro {
+  font-size: 14px;
+  color: #6b6887;
+  margin: -8px 0 16px;
+}
+
+.emp-dash-onboarding-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emp-dash-onboarding-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 14px;
+  padding: 16px 20px;
+  // CSS-only reveal animation; gated by reduced-motion below
+  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
+
+  &--done {
+    background: #f6fff6;
+    border-color: rgba(4, 160, 139, 0.25);
+    opacity: 0.8;
+
+    .emp-dash-onboarding-check {
+      background: $color-green-secondary;
+      border-color: $color-green-secondary;
+      color: #fff;
+    }
+
+    .emp-dash-onboarding-step-title {
+      text-decoration: line-through;
+      color: #999;
+    }
+  }
+}
+
+.emp-dash-onboarding-check {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #c5c0d4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.emp-dash-onboarding-step-label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.emp-dash-onboarding-step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1830;
+}
+
+.emp-dash-onboarding-step-desc {
+  font-size: 12px;
+  color: #6b6887;
+}
+
+.emp-dash-onboarding-step-cta {
+  flex-shrink: 0;
+  background: $color-global-red-buttons;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible {
+    background: darken($color-global-red-buttons, 6%);
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+.emp-dash-onboarding-step-done-label {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-green-secondary;
+  background: rgba(4, 160, 139, 0.1);
+  border-radius: 100px;
+  padding: 4px 10px;
+}
+
+@media (max-width: 767px) {
+  .emp-dash-onboarding { padding: 20px 16px; }
+  .emp-dash-onboarding-step { flex-wrap: wrap; }
+  .emp-dash-onboarding-step-cta { width: 100%; margin-top: 8px; }
+}
+
 // ─── Reduced motion ───────────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
   .emp-dash-hero-inner { animation: none; }
   .emp-dash-review-card { animation: none; }
+  .emp-dash-onboarding-step { animation: none; }
   .emp-dash-action-skeleton,
   .emp-dash-hero-skeleton,
   .emp-dash-pipeline-skeleton { animation: none; background: #f0edf8; }
   .emp-dash-action-card,
   .emp-dash-kpi-card,
   .emp-dash-pipeline-stage { transition: none; }
+  // OPTIMIZE V5: pipeline bar background transition was missing from this block
+  .emp-dash-pipeline-bar { transition: none; }
+  .emp-dash-onboarding-step-cta { transition: none; }
 }
