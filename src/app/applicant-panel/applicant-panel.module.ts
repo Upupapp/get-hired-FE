@@ -20,6 +20,7 @@ import { ApplicationModule } from '@main/application/application.module';
 import { SharedModule } from '@app-shared/shared.module';
 import { ApplicantJobsComponent } from './applicant-jobs/applicant-jobs.component';
 import { ApplicantApplicationsComponent } from './applicant-applications/applicant-applications.component';
+import { ApplicantApplicationDetailComponent } from './applicant-application-detail/applicant-application-detail.component';
 
 const routes: Routes = [
   {
@@ -52,6 +53,10 @@ const routes: Routes = [
         component: ApplicantApplicationsComponent,
       },
       {
+        path: 'applications/:id',
+        component: ApplicantApplicationDetailComponent,
+      },
+      {
         path: 'settings',
         component: ApplicantSettingsComponent,
       },
@@ -67,6 +72,7 @@ const routes: Routes = [
     ApplicantSettingsComponent,
     ApplicantJobsComponent,
     ApplicantApplicationsComponent,
+    ApplicantApplicationDetailComponent,
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 
 /**
  * ApplicationCompletenessCardComponent
@@ -41,10 +42,20 @@ export class ApplicationCompletenessCardComponent {
   @Input() snapshot: any = null;
   @Input() loading: boolean = false;
   @Input() error: boolean = false;
+  /** Pass the applicationId so CTA clicks can be tracked in analytics. */
+  @Input() applicationId: string = '';
   @Output() retryClick = new EventEmitter<void>();
+
+  constructor(private analytics: PublicPortalAnalyticsService) {}
 
   onRetry(): void {
     this.retryClick.emit();
+  }
+
+  onCtaClick(label: string): void {
+    if (this.applicationId) {
+      this.analytics.trackApplicationCompletenessCtaClicked(this.applicationId, label);
+    }
   }
 
   /** Display label for the completeness level */

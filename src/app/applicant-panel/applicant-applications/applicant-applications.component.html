@@ -51,8 +51,14 @@
             [snapshot]="snapshotsLoaded ? snapshotFor(app.jobApplicationId) : null"
             [loading]="!snapshotsLoaded"
             [error]="snapshotsError"
+            [applicationId]="app.jobApplicationId"
             (retryClick)="onSnapshotRetry()">
           </app-application-completeness-card>
+          <a class="app-detail-link"
+             [routerLink]="['/user/applications', app.jobApplicationId]"
+             [state]="{ jobTitle: app.jobTitle, companyName: app.companyName, status: app.applicantStatusName }">
+            View full details <span aria-hidden="true">→</span>
+          </a>
         </div>
 
         <div class="app-row-actions">

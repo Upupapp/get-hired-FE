@@ -32,9 +32,12 @@
     <ng-container *ngIf="snapshot.hasSnapshot">
       <div class="acdc-content acdc-reveal">
 
-        <!-- Score header: label + badge -->
+        <!-- Score header: label + badge + optional submission timestamp -->
         <div class="acdc-score-header">
           <span class="acdc-score-label">Application completeness when submitted</span>
+          <span class="acdc-timestamp" *ngIf="snapshot.snapshotCreatedAt">
+            Captured {{ snapshot.snapshotCreatedAt | date:'mediumDate' }}
+          </span>
           <div class="acdc-score-row">
             <strong class="acdc-score-pct" *ngIf="snapshot.completenessScore !== null">
               {{ snapshot.completenessScore }}%
@@ -85,7 +88,8 @@
               {{ tip.reason }}
             </li>
           </ul>
-          <a class="acdc-cta" routerLink="/user/profile/edit">
+          <a class="acdc-cta" routerLink="/user/profile/edit"
+             (click)="onCtaClick('Update your profile')">
             Update your profile <span aria-hidden="true">→</span>
           </a>
         </div>
@@ -100,7 +104,8 @@
               {{ tip.reason }}
             </li>
           </ul>
-          <a class="acdc-cta" routerLink="/user/profile/edit">
+          <a class="acdc-cta" routerLink="/user/profile/edit"
+             (click)="onCtaClick('Add to your profile')">
             Add to your profile <span aria-hidden="true">→</span>
           </a>
         </div>
