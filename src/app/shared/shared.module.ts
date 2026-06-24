@@ -39,6 +39,8 @@ import { SubscriptionAlertComponent } from './components/subscription-alert/subs
 import { InlineLoadingComponent } from './components/inline-loading/inline-loading.component';
 import { LockedMatchTeaserComponent } from './components/locked-match-teaser/locked-match-teaser.component';
 import { TalentProofBadgeComponent } from './components/talent-proof-badge/talent-proof-badge.component';
+import { MessageThreadComponent } from './components/message-thread/message-thread.component';
+import { ViewedOnceDirective } from './directives/viewed-once.directive';
 
 
 const classesToInclude: any[] = [
@@ -71,7 +73,8 @@ const classesToInclude: any[] = [
   SubscriptionAlertComponent,
   InlineLoadingComponent,
   LockedMatchTeaserComponent,
-  TalentProofBadgeComponent
+  TalentProofBadgeComponent,
+  MessageThreadComponent
 ];
 
 @NgModule({
@@ -88,9 +91,10 @@ const classesToInclude: any[] = [
   providers: [
   { provide: MAT_DIALOG_DATA, useValue: {} },
   { provide: MatDialogRef, useValue: {} }],
-  declarations: classesToInclude,
+  declarations: [...classesToInclude, ViewedOnceDirective],
   exports: [
     ...classesToInclude,
+    ViewedOnceDirective,
     MaterialComponentsModule,
     FormsModule,
     ReactiveFormsModule,

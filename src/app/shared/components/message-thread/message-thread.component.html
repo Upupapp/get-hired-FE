@@ -1,0 +1,47 @@
+<div class="msg-thread">
+  <div class="msg-thread-header">
+    <span class="msg-thread-title">Messages with {{ otherPartyLabel }}</span>
+  </div>
+
+  <div class="msg-thread-body" role="log" aria-live="polite" aria-label="Message history">
+    <div *ngIf="loading" class="msg-thread-loading">Loading conversation…</div>
+
+    <div *ngIf="!loading && error && messages.length === 0" class="msg-thread-error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="!loading && !error && messages.length === 0" class="msg-thread-empty">
+      No messages yet. Say hello to get the conversation started.
+    </div>
+
+    <div *ngFor="let msg of messages"
+         class="msg-bubble-row"
+         [class.msg-bubble-row--own]="isOwnMessage(msg)">
+      <div class="msg-bubble" [class.msg-bubble--own]="isOwnMessage(msg)">
+        <p class="msg-bubble-body">{{ msg.body }}</p>
+        <span class="msg-bubble-time">{{ msg.created_at | date: 'short' }}</span>
+      </div>
+    </div>
+
+    <div #scrollAnchor></div>
+  </div>
+
+  <p *ngIf="error && messages.length > 0" class="msg-thread-inline-error">{{ error }}</p>
+
+  <form class="msg-thread-composer" (ngSubmit)="send()">
+    <label for="msg-thread-input" class="visually-hidden">Write a message</label>
+    <textarea
+      id="msg-thread-input"
+      [(ngModel)]="newBody"
+      name="newBody"
+      rows="2"
+      maxlength="4000"
+      placeholder="Write a message…"
+      [disabled]="!threadId || sending"
+      (keydown.enter)="$event.preventDefault(); send()"
+    ></textarea>
+    <button type="submit" class="msg-thread-send-btn" [disabled]="!threadId || sending || !newBody.trim()">
+      {{ sending ? 'Sending…' : 'Send' }}
+    </button>
+  </form>
+</div>

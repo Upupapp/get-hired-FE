@@ -42,8 +42,9 @@ export class JobApplicantsComponent implements OnInit {
 
   /** GH-EMP-B01 -- tracks which applicant's detail is open so the detail
    * view can look up the same already-fetched signals the list column
-   * uses, without a second HTTP call. */
-  private selectedApplicantUserId: string | null = null;
+   * uses, without a second HTTP call. Public: also read directly from the
+   * template by the message-thread panel (GH-EMP-B04 frontend). */
+  selectedApplicantUserId: string | null = null;
 
   /** Employer Portal v3 -- MATCH v5 Employer Applicant Fit Signals.
    * Fetched separately from the existing applicants$/details$ streams,

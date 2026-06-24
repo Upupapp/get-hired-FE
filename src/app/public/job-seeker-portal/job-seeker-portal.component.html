@@ -1,4 +1,5 @@
 <section class="portal-hero portal-hero--upgraded portal-hero--seeker">
+  <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="portal-hero-mesh" aria-hidden="true">
   <div class="portal-hero-glow portal-hero-glow--one" aria-hidden="true"></div>
   <div class="portal-hero-glow portal-hero-glow--two" aria-hidden="true"></div>
 
@@ -55,7 +56,8 @@
 
 <!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- scoped addition,
      reuses the same local SVG assets and approved-safe copy as /home. -->
-<section class="portal-usp" aria-label="Why job seekers choose GetHired">
+<section class="portal-usp" aria-label="Why job seekers choose GetHired" appViewedOnce (viewedOnce)="onUspSectionViewed()">
+  <img src="/assets/brand/gethired-wow/gethired-connection-bridge.svg" alt="" class="portal-usp-bridge" aria-hidden="true">
   <div class="portal-usp-grid portal-usp-grid--employer">
     <div class="portal-usp-card" *ngFor="let item of jobSeekerUspPillars">
       <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true">
@@ -68,7 +70,7 @@
 <!-- GETHIRED_JOB_SEEKERS_PORTAL_WORLD_CLASS_WOW_USP_UPGRADE_V3 -- video
      answers story section. Copy strictly limited to the approved-safe
      list; no AI/face/voice/emotion claims anywhere. -->
-<section class="portal-video-story" aria-label="Recorded video answers">
+<section class="portal-video-story" aria-label="Recorded video answers" appViewedOnce (viewedOnce)="onVideoAnswersSectionViewed()">
   <div class="portal-video-story-copy">
     <h2 class="portal-section-title portal-section-title--left">Let employers understand your story.</h2>
     <p class="portal-video-story-subtitle">
@@ -91,7 +93,7 @@
 </section>
 
 <!-- Match signals story section. -->
-<section class="portal-match-story" aria-label="Explainable compatibility signals">
+<section class="portal-match-story" aria-label="Explainable compatibility signals" appViewedOnce (viewedOnce)="onMatchSignalsSectionViewed()">
   <div class="portal-match-story-visual" aria-hidden="true">
     <img src="/assets/brand/gethired-wow/match-signal-rings.svg" alt="" class="match-story-rings">
     <div class="match-story-chips">
@@ -110,7 +112,7 @@
 </section>
 
 <!-- Profile / CV / application tracker workspace section. -->
-<section class="portal-workspace" aria-label="Your GetHired workspace">
+<section class="portal-workspace" aria-label="Your GetHired workspace" appViewedOnce (viewedOnce)="onWorkspaceSectionViewed()">
   <div class="portal-workspace-copy">
     <h2 class="portal-section-title portal-section-title--left">Everything you need before and after you apply.</h2>
     <p class="portal-video-story-subtitle">
@@ -201,7 +203,7 @@
 
 <section class="portal-faq-section" aria-label="Frequently asked questions">
   <h2 class="portal-section-title">Frequently asked questions</h2>
-  <app-portal-faq [items]="faqItems"></app-portal-faq>
+  <app-portal-faq [items]="faqItems" (itemOpened)="onFaqOpened($event)"></app-portal-faq>
 </section>
 
 <app-portal-cta-band

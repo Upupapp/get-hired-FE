@@ -108,4 +108,31 @@ export class PublicPortalAnalyticsService {
   trackTalentProofBannerDismissed(placement: string): void {
     this.track('talent_proof_banner_dismissed', { placement });
   }
+
+  // GH1 WOW portal upgrade -- header/USP/story-section engagement. Payload
+  // is always route/section/ctaId metadata only, never user input or PII,
+  // per this file's standing rule.
+  trackBrowseJobsHeaderClicked(route: string): void {
+    this.track('browse_jobs_header_clicked', { route });
+  }
+
+  trackUspSectionViewed(page: string): void {
+    this.track('usp_section_viewed', { page });
+  }
+
+  trackVideoAnswersSectionViewed(page: string): void {
+    this.track('video_answers_section_viewed', { page });
+  }
+
+  trackMatchSignalsSectionViewed(page: string): void {
+    this.track('match_signals_section_viewed', { page });
+  }
+
+  trackProfileWorkspaceSectionViewed(page: string): void {
+    this.track('profile_workspace_section_viewed', { page });
+  }
+
+  trackPortalFaqOpened(page: string, question: string): void {
+    this.track('portal_faq_opened', { page, question });
+  }
 }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
+import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 
 /** GetHired Public Information Portal -- employer page (/employers). */
 @Component({
@@ -60,6 +61,7 @@ export class EmployerPortalComponent {
     private router: Router,
     private titleService: Title,
     private haptics: HapticFeedbackService,
+    private analytics: PublicPortalAnalyticsService,
   ) {
     this.titleService.setTitle('Hire Employees Online | GetHired for Employers');
   }
@@ -71,5 +73,13 @@ export class EmployerPortalComponent {
 
   goToSignin(): void {
     this.router.navigateByUrl('/signin');
+  }
+
+  onUspSectionViewed(): void {
+    this.analytics.trackUspSectionViewed('employers');
+  }
+
+  onFaqOpened(question: string): void {
+    this.analytics.trackPortalFaqOpened('employers', question);
   }
 }

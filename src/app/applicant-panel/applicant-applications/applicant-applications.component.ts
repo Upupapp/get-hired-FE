@@ -5,12 +5,12 @@ import { ApplicantApplicationsService } from '@app-applicant/applicant-applicati
 /**
  * "My Applications" page (GH-ACT applicant-experience work).
  *
- * Honest by design: the backing tables (job_applicants/job_applicant_status)
- * do not exist in the live schema today (confirmed via a direct database
- * query) -- so this will currently always show either the empty state or
- * the error-fallback state for every real user, never populated data. That
- * is correct, not a bug: the page is built and ready, the data layer isn't.
- * See GETHIRED_APPLICANT_DATA_MODEL_AUDIT.md.
+ * Update: the backing tables (job_applicants/job_applicant_status) were
+ * restored by the Applicant Data Foundation v2 migration
+ * (db/applicant_application_ddl.sql) and confirmed to exist in the live
+ * local schema -- this comment previously said they didn't (true at the
+ * time it was written) and is corrected here. The page now genuinely
+ * populates with real data for an applicant who has applied to jobs.
  */
 @Component({
   selector: 'app-applicant-applications',
@@ -21,6 +21,9 @@ export class ApplicantApplicationsComponent implements OnInit {
   loading = true;
   error = false;
   applications: any[] = [];
+  /** Which application's message panel is currently expanded, if any --
+   * GH-EMP-B04 frontend, one panel open at a time keeps this simple. */
+  expandedJobId: string | null = null;
 
   constructor(
     private applicationsService: ApplicantApplicationsService,
@@ -44,6 +47,10 @@ export class ApplicantApplicationsComponent implements OnInit {
 
   goToJobs(): void {
     this.router.navigateByUrl('/jobs');
+  }
+
+  toggleMessages(jobId: string): void {
+    this.expandedJobId = this.expandedJobId === jobId ? null : jobId;
   }
 
   retry(): void {

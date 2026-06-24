@@ -14,6 +14,17 @@
         <h3>{{ app.jobTitle }}</h3>
         <p>{{ app.companyName }}</p>
         <span class="application-status">{{ app.applicantStatusName || 'Submitted' }}</span>
+        <button type="button" class="btn-link-cta" (click)="toggleMessages(app.jobId)">
+          {{ expandedJobId === app.jobId ? 'Hide messages' : 'Message employer' }}
+        </button>
+
+        <div class="application-row-messages" *ngIf="expandedJobId === app.jobId">
+          <app-message-thread
+            [jobId]="app.jobId"
+            [otherPartyLabel]="app.companyName || 'the employer'"
+            currentUserRole="applicant">
+          </app-message-thread>
+        </div>
       </div>
     </div>
 

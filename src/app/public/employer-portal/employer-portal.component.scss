@@ -1,6 +1,27 @@
 @import "src/assets/styles/colors";
 @import "../shared/portal-common";
 
+.portal-hero--upgraded {
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-hero-mesh {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.portal-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
 .portal-hero-actions-primary {
   margin-bottom: 8px;
 }

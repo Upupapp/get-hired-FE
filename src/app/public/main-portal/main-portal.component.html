@@ -1,4 +1,5 @@
 <section class="portal-hero portal-hero--upgraded">
+  <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="portal-hero-mesh" aria-hidden="true">
   <div class="portal-hero-glow portal-hero-glow--one" aria-hidden="true"></div>
   <div class="portal-hero-glow portal-hero-glow--two" aria-hidden="true"></div>
 
@@ -106,9 +107,10 @@
 <!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- the 4 strongest,
      code-verified differentiators (see GETHIRED_PUBLIC_PORTAL_WOW_USP_FEATURE_TRUTH_AUDIT.md),
      each with a small local SVG (no external assets, no stock photos). -->
-<section class="portal-usp" aria-label="Why GetHired is different">
+<section class="portal-usp" aria-label="Why GetHired is different" appViewedOnce (viewedOnce)="onUspSectionViewed()">
   <h2 class="portal-section-title">Not just a job board</h2>
   <p class="portal-usp-subtitle">Structured profiles, video answers, and explainable signals help both sides decide with more confidence.</p>
+  <img src="/assets/brand/gethired-wow/gethired-connection-bridge.svg" alt="" class="portal-usp-bridge" aria-hidden="true">
   <div class="portal-usp-grid">
     <div class="portal-usp-card" *ngFor="let item of uspPillars">
       <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true">

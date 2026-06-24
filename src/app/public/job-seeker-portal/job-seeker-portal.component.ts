@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
 import { JobsFacade } from '@main/jobs/state/jobs.facade';
+import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 
 /** GetHired Public Information Portal -- job seeker page (/job-seekers). */
 @Component({
@@ -68,6 +69,7 @@ export class JobSeekerPortalComponent implements OnInit {
     private titleService: Title,
     private haptics: HapticFeedbackService,
     private jobsFacade: JobsFacade,
+    private analytics: PublicPortalAnalyticsService,
   ) {
     this.titleService.setTitle('Find Jobs Online | GetHired Online');
   }
@@ -97,5 +99,25 @@ export class JobSeekerPortalComponent implements OnInit {
 
   goToSignin(): void {
     this.router.navigateByUrl('/signin');
+  }
+
+  onUspSectionViewed(): void {
+    this.analytics.trackUspSectionViewed('job_seekers');
+  }
+
+  onVideoAnswersSectionViewed(): void {
+    this.analytics.trackVideoAnswersSectionViewed('job_seekers');
+  }
+
+  onMatchSignalsSectionViewed(): void {
+    this.analytics.trackMatchSignalsSectionViewed('job_seekers');
+  }
+
+  onWorkspaceSectionViewed(): void {
+    this.analytics.trackProfileWorkspaceSectionViewed('job_seekers');
+  }
+
+  onFaqOpened(question: string): void {
+    this.analytics.trackPortalFaqOpened('job_seekers', question);
   }
 }

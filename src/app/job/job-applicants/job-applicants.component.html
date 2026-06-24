@@ -67,5 +67,14 @@
     [profile]="details.profile"
     [interviews]="details.interviewQuestions"
     [matchSignals]="details.matchSignals"></app-application-preview>
+
+    <div class="card card-body mt-3" *ngIf="selectedApplicantUserId">
+      <app-message-thread
+        [jobId]="jobId"
+        [applicantUid]="selectedApplicantUserId"
+        [otherPartyLabel]="(details.profile?.firstName || '') + ' ' + (details.profile?.lastName || '')"
+        currentUserRole="employer">
+      </app-message-thread>
+    </div>
   </div>
 </section>

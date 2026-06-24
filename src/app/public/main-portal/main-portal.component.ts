@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { CoreService } from '@app-core/services/core.service';
+import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 
 /**
  * GetHired Public Information Portal -- main role-selection page (GETHIRED
@@ -69,6 +70,7 @@ export class MainPortalComponent implements OnInit {
     private titleService: Title,
     private haptics: HapticFeedbackService,
     private coreService: CoreService,
+    private analytics: PublicPortalAnalyticsService,
   ) {
     this.titleService.setTitle('GetHired Online | Jobs and Hiring Platform');
   }
@@ -101,5 +103,9 @@ export class MainPortalComponent implements OnInit {
 
   goToSignin(): void {
     this.router.navigateByUrl('/signin');
+  }
+
+  onUspSectionViewed(): void {
+    this.analytics.trackUspSectionViewed('home');
   }
 }
