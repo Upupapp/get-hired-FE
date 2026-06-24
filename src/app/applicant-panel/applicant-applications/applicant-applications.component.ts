@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { ApplicantApplicationsService } from '@app-applicant/applicant-applications.service';
 import { ApplicationService } from '@app-application/application.service';
 
@@ -10,7 +11,7 @@ import { ApplicationService } from '@app-application/application.service';
   templateUrl: './applicant-applications.component.html',
   styleUrls: ['./applicant-applications.component.scss'],
 })
-export class ApplicantApplicationsComponent implements OnInit {
+export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
   loading = true;
   error = false;
   applications: any[] = [];
@@ -19,6 +20,8 @@ export class ApplicantApplicationsComponent implements OnInit {
   snapshotsMap = new Map<string, any>();
   snapshotsLoaded = false;
 
+  private appsSub: Subscription | null = null;
+
   constructor(
     private applicationsService: ApplicantApplicationsService,
     private applicationService: ApplicationService,
@@ -26,7 +29,7 @@ export class ApplicantApplicationsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.applicationsService.getMyApplications().subscribe({
+    this.appsSub = this.applicationsService.getMyApplications().subscribe({
       next: (response: any) => {
         this.applications = response?.data ?? response ?? [];
         this.loading = false;
@@ -40,21 +43,20 @@ export class ApplicantApplicationsComponent implements OnInit {
   }
 
   private loadSnapshots(): void {
-    const appsWithIds = this.applications.filter(app => !!app.jobApplicationId);
-    if (appsWithIds.length === 0) {
+    const ids = this.applications
+      .map(app => app.jobApplicationId)
+      .filter(Boolean) as string[];
+
+    if (ids.length === 0) {
       this.snapshotsLoaded = true;
       return;
     }
 
-    const calls = appsWithIds.map(app =>
-      this.applicationService.getApplicationSnapshot(app.jobApplicationId).pipe(
-        map((res: any) => ({ id: app.jobApplicationId, data: res?.data ?? null })),
-        catchError(() => of({ id: app.jobApplicationId, data: null }))
-      )
-    );
-
-    forkJoin(calls).subscribe(results => {
-      results.forEach(({ id, data }) => this.snapshotsMap.set(id, data));
+    this.applicationService.getApplicationSnapshots(ids).pipe(
+      map((res: any) => res?.data?.snapshots ?? {}),
+      catchError(() => of({})),
+    ).subscribe((snapshots: Record<string, any>) => {
+      Object.entries(snapshots).forEach(([id, data]) => this.snapshotsMap.set(id, data));
       this.snapshotsLoaded = true;
     });
   }
@@ -76,10 +78,15 @@ export class ApplicantApplicationsComponent implements OnInit {
   }
 
   retry(): void {
+    this.appsSub?.unsubscribe();
     this.loading = true;
     this.error = false;
     this.snapshotsMap.clear();
     this.snapshotsLoaded = false;
     this.ngOnInit();
+  }
+
+  ngOnDestroy(): void {
+    this.appsSub?.unsubscribe();
   }
 }

@@ -18,9 +18,16 @@ export class ApplicationService {
     return this.baseService.post<Model.Application>(`${this.applicationUrl}/apply`, application);
   }
 
-  /** Returns the applicant's own application snapshot + completeness. */
+  /** Returns the applicant's own application snapshot + completeness (single). */
   getApplicationSnapshot(applicationId: string) {
     return this.baseService.get<any>(`${environment.api_url}/applicant/application/snapshot?applicationId=${encodeURIComponent(applicationId)}`);
+  }
+
+  /** Batch completeness snapshots for up to 50 applicationIds in a single request.
+   *  Returns { snapshots: { [applicationId]: { hasSnapshot, completenessScore, ... } } }. */
+  getApplicationSnapshots(applicationIds: string[]) {
+    const ids = applicationIds.map(id => encodeURIComponent(id)).join(',');
+    return this.baseService.get<any>(`${environment.api_url}/applicant/application/snapshots?applicationIds=${ids}`);
   }
 
   // getPublishedApplication(companyId?: string) {

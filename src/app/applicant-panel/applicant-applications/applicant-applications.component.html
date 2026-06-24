@@ -57,6 +57,7 @@
                   <ul>
                     <li *ngFor="let tip of snap.missingRequired; trackBy: trackByTipReason">{{ tip.reason }}</li>
                   </ul>
+                  <a class="app-snapshot-cta" routerLink="/user/profile/edit">Update your profile →</a>
                 </div>
 
                 <!-- Recommended improvements -->
@@ -68,6 +69,7 @@
                 </div>
 
                 <p class="app-snapshot-disclaimer">{{ snap.disclaimerNote }}</p>
+                <p class="app-snapshot-disclaimer" *ngIf="snap.privacyNote">{{ snap.privacyNote }}</p>
               </ng-container>
             </ng-container>
             <!-- Snapshot fetch failed: soft unavailable message — not silent, not alarming -->

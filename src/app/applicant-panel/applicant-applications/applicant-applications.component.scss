@@ -212,6 +212,18 @@
   }
 }
 
+// "Update your profile" CTA inside the required tips block
+.app-snapshot-cta {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-global-red-buttons;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
 // Empty / no-snapshot (pre-deployment application)
 .app-snapshot-empty {
   font-size: 12px;
