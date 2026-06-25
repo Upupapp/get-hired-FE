@@ -254,8 +254,9 @@
   </div>
 
   <!-- NAVIGATOR DETAILS -->
+  <!-- BL-013: pagination-info and pagination-controls get stacked on xs via global styles.scss rule -->
   <div class="flex-wrap px-2 pt-2" *ngIf="listDataSource?.length > 0" style="border-top: solid 1px #c9c9c9;">
-    <p class="float-start mt-2">Showing 1 to {{maxRows}} of {{listDataSource?.length}} entries
+    <p class="pagination-info float-start mt-2">Showing 1 to {{maxRows}} of {{listDataSource?.length}} entries
       <span class="ms-5" *ngIf="multipleSelect">
         <strong style="color: #8C7FF9">{{selectedRows?.length}}</strong>
         Rows selected
@@ -263,7 +264,7 @@
     </p>
 
     <!-- PAGINATOR -->
-    <p class="float-end paginator" *ngIf="paginate.length > 1">
+    <p class="pagination-controls float-end paginator" *ngIf="paginate.length > 1">
       <span class="text-black" (click)="page !== 1 ? changePage(page-1): ''">
         <img src="/assets/images/placeholder/icons/caret-left.png" class="img-fluid" width="7px">
       </span>

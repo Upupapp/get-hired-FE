@@ -9,6 +9,34 @@
   transition: all 1s ease-in-out-back !important;
 }
 
+// ─── MOBILEVIEW Pass 2: Public job detail mobile improvements ─────────────────
+@media (max-width: 767px) {
+  // Banner: prevent text overflow
+  .bg-banner {
+    height: auto !important;
+    min-height: 200px;
+    padding: 24px 16px !important;
+    background-position: center !important;
+  }
+
+  .title-banner {
+    font-size: 22px !important;
+    line-height: 28px !important;
+    overflow-wrap: break-word;
+  }
+
+  .title-banner-description {
+    font-size: 13px !important;
+    line-height: 20px !important;
+  }
+
+  // Sidebar: stack above content at mobile (Bootstrap col-12 handles layout,
+  // but we override z-order so sidebar floats above the content on small screens)
+  .container-fluid.px-3 .row {
+    flex-direction: column;
+  }
+}
+
 .item {
   &--primary {
     @include center-v;

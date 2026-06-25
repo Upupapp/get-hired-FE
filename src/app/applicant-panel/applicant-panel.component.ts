@@ -20,6 +20,8 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
   mobileNavOpen = false;
 
   @ViewChild('firstApDrawerLink') firstApDrawerLinkRef: ElementRef<HTMLAnchorElement>;
+  // BL-002: focus return target — the hamburger button
+  @ViewChild('mobileMenuBtn') mobileMenuBtn: ElementRef;
 
   private routerSub: Subscription;
 
@@ -54,8 +56,11 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
   }
 
   // MOBILEVIEW: Close applicant mobile nav drawer
+  // BL-002: after closing, return focus to hamburger button so screen-reader
+  // users land in a predictable, logical position (WCAG 2.4.3).
   closeMobileNav(): void {
     this.mobileNavOpen = false;
+    setTimeout(() => this.mobileMenuBtn?.nativeElement?.focus(), 50);
   }
 
   // MOBILEVIEW: Close drawer on Escape key

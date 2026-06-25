@@ -513,7 +513,18 @@
 @media (max-width: 767px) {
   .emp-dash-hero { padding: 28px 20px 40px; }
   .emp-dash-hero-title { font-size: 22px; }
-  .emp-dash-hero-cta { flex-direction: column; align-items: flex-start; }
+  // MOBILEVIEW Pass 2: CTA buttons stack and go full-width on mobile
+  .emp-dash-hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .emp-dash-hero-cta .btn-cta-primary,
+  .emp-dash-hero-cta .btn-cta-outline {
+    width: 100%;
+    text-align: center;
+    min-height: 44px;
+  }
 
   .emp-dash-actions,
   .emp-dash-review,

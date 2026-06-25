@@ -479,6 +479,39 @@
   pointer-events: none;
 }
 
+// ── MOBILEVIEW Pass 2: hero CTA full-width on small screens ──────────
+
+@media (max-width: 575px) {
+  .portal-hero--upgraded {
+    padding: 48px 16px 40px;
+  }
+
+  // Full-width CTA buttons at mobile
+  .portal-hero-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .portal-hero-cta-group .btn-cta-primary,
+  .portal-hero-cta-group .btn-cta-outline {
+    width: 100%;
+    text-align: center;
+    min-height: 44px;
+  }
+
+  // Journey CTA buttons also full-width
+  .portal-journey-cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .portal-journey-cta .btn-cta-primary,
+  .portal-journey-cta .btn-link-cta {
+    width: 100%;
+    text-align: center;
+    min-height: 44px;
+  }
+}
+
 // ── Reduced motion ────────────────────────────────────────────────────
 
 @media (prefers-reduced-motion: reduce) {

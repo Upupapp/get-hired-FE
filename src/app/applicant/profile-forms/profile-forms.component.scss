@@ -44,3 +44,37 @@
 	border-radius: 7px;
 	padding: 7px 20px !important;
 }
+
+// ─── MOBILEVIEW Pass 2 BL-008: Sticky save bar at bottom on mobile ────────────
+@media (max-width: 767px) {
+  .bg-upper-gray {
+    position: sticky !important;
+    top: 0 !important;
+    width: 100% !important;
+    z-index: 110 !important;
+    padding: 10px 12px !important;
+  }
+
+  // Move save/next buttons to a sticky bar at bottom so they're always reachable
+  .submit-container {
+    position: fixed !important;
+    bottom: 80px !important; // above bottom nav
+    right: 12px !important;
+    top: auto !important;
+    left: 12px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    background: white !important;
+    padding: 10px 12px !important;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    z-index: 110 !important;
+  }
+
+  .btn-save,
+  .btn-save-draft {
+    min-height: 44px !important;
+    flex: 1;
+  }
+}

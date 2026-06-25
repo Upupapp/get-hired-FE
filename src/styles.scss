@@ -49,6 +49,56 @@ img, video, iframe {
   min-height: 44px;
 }
 
+// ─── MOBILEVIEW Pass 2 BL-001: Form control touch targets ───────────────────
+@media (max-width: 767px) {
+  .form-control,
+  .mat-form-field-infix input,
+  .mat-select-trigger {
+    min-height: 44px;
+  }
+}
+
+// ─── MOBILEVIEW Pass 2 BL-004: Snackbar above bottom nav ────────────────────
+@media (max-width: 767px) {
+  .mat-snack-bar-container {
+    margin-bottom: 80px !important;
+  }
+}
+
+// ─── MOBILEVIEW Pass 2 BL-009: Dropdown touch targets ───────────────────────
+@media (max-width: 767px) {
+  .dropdown-item {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .mat-option {
+    min-height: 48px;
+  }
+}
+
+// ─── MOBILEVIEW Pass 2 BL-013: Pagination controls stack on mobile ───────────
+@media (max-width: 575px) {
+  .dataTables_info,
+  .dataTables_paginate,
+  .pagination-info,
+  .pagination-controls {
+    display: block;
+    text-align: center;
+    float: none !important;
+    width: 100%;
+  }
+}
+
+// ─── MOBILEVIEW Pass 2 BL-014: Profile tabs overflow at mobile ───────────────
+@media (max-width: 767px) {
+  .mat-tab-header {
+    overflow-x: auto;
+  }
+  .mat-tab-label-container {
+    overflow: visible;
+  }
+}
+
 // ─── MOBILEVIEW: Global card hover/tap behavior ──────────────────────────────
 // Desktop: subtle lift on hover. Mobile: scale compress on :active (haptic feel).
 // Reduced-motion: transforms disabled, tint only.

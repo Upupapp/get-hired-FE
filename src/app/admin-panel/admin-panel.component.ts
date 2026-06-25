@@ -19,6 +19,8 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   mobileNavOpen = false;
 
   @ViewChild('firstAdminDrawerLink') firstAdminDrawerLinkRef: ElementRef<HTMLAnchorElement>;
+  // BL-003: focus return target — the hamburger button
+  @ViewChild('mobileMenuBtn') mobileMenuBtn: ElementRef;
 
   private routerSub: Subscription;
 
@@ -53,8 +55,10 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   }
 
   // MOBILEVIEW: Close admin mobile nav drawer
+  // BL-003: after closing, return focus to hamburger button (WCAG 2.4.3).
   closeMobileNav(): void {
     this.mobileNavOpen = false;
+    setTimeout(() => this.mobileMenuBtn?.nativeElement?.focus(), 50);
   }
 
   // MOBILEVIEW: Close drawer on Escape key
