@@ -21,11 +21,8 @@ type InboxFilter = 'all' | 'needs-reply';
  * - Thread detail is rendered inline (two-pane desktop, list-first mobile)
  *   using the existing app-message-thread component, which handles
  *   polling, send, and error states itself.
- * - Applicant name is NOT available in the thread summary (the schema stores
- *   applicant_uid, not a name, and joining to user_credentials for display
- *   names requires a separate profile call). The UI shows a safe "Candidate"
- *   label with the uid truncated for reference. A backlog item tracks adding
- *   the name enrichment query.
+ * - Applicant name is joined from the users table in listRecruiterThreads()
+ *   (B01 BACKLOG-02). Falls back to "Candidate <uid-suffix>" when null.
  */
 @Component({
   selector: 'app-recruiter-messages',
@@ -124,10 +121,15 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
     return `Conversation ${job}${when}${t.needsReply ? ', needs your reply' : ''}`;
   }
 
-  /** Short display label for the applicant (uid only — name enrichment deferred). */
   applicantLabel(t: RecruiterThreadSummary): string {
+    if (t.applicantName) return t.applicantName;
     if (!t.applicantUid) return 'Candidate';
     return 'Candidate ' + t.applicantUid.slice(-6).toUpperCase();
+  }
+
+  avatarInitial(t: RecruiterThreadSummary): string {
+    if (t.applicantName) return t.applicantName.charAt(0).toUpperCase();
+    return 'C';
   }
 
   /** Snippet with safe truncation for display. */

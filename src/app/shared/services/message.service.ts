@@ -31,6 +31,8 @@ export interface ChatMessage {
 export interface RecruiterThreadSummary {
   threadId: string;
   applicantUid: string;
+  applicantName: string | null;
+  applicantPhotoUrl: string | null;
   jobId: string;
   jobTitle: string | null;
   lastMessageSnippet: string | null;

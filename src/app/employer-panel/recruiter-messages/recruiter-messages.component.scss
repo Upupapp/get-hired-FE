@@ -220,6 +220,14 @@
   font-size: 14px;
   font-weight: 700;
   margin-top: 2px;
+  overflow: hidden;
+}
+
+.rm-thread-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .rm-thread-body {

@@ -95,7 +95,9 @@
 
             <!-- Avatar -->
             <span class="rm-thread-avatar" aria-hidden="true">
-              {{ applicantLabel(t).charAt(0) }}
+              <img *ngIf="t.applicantPhotoUrl" [src]="t.applicantPhotoUrl"
+                alt="" class="rm-thread-avatar-img" loading="lazy">
+              <span *ngIf="!t.applicantPhotoUrl">{{ avatarInitial(t) }}</span>
             </span>
 
             <div class="rm-thread-body">
