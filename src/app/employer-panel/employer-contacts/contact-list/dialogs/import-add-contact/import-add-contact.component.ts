@@ -86,10 +86,41 @@ export class ImportAddContactComponent implements OnInit {
         this.isLoading = false;
         this.submitting = false;
 
-        this.snackBar.open("Successfully added contact", "" , {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        // NOTIFY-P2: determine outcome from response shape before showing toast.
+        // Multi-contact: response has summary.successCount.
+        // Single contact: response has status field ('ADDED' or 'DUPLICATE_CONTACT').
+        const res = onboard.contactRes;
+        const hasSummary = res && res.summary;
+        let toastMsg = 'Contact added.';
+        let toastClass = 'success-snackbar';
+        let toastDuration = 4000;
+        if (hasSummary) {
+          const { successCount = 0, duplicateCount = 0, failureCount = 0 } = res.summary;
+          if (successCount > 0 && failureCount === 0) {
+            toastMsg = successCount === 1 ? 'Contact added.' : `${successCount} contacts added.`;
+          } else if (successCount > 0 && failureCount > 0) {
+            toastMsg = `${successCount} added. ${failureCount} couldn't be added.`;
+            toastClass = 'warning-snackbar';
+            toastDuration = 6000;
+          } else if (duplicateCount > 0) {
+            toastMsg = 'No new contacts were added. These contacts are already in your list.';
+            toastClass = 'info-snackbar';
+            toastDuration = 6000;
+          } else {
+            toastMsg = 'No contacts were added.';
+            toastClass = 'danger-snackbar';
+            toastDuration = 6000;
+          }
+        } else {
+          // Single contact — check status field added by NOTIFY-P2 BE patch.
+          const isDuplicate = res && res.status === 'DUPLICATE_CONTACT';
+          if (isDuplicate) {
+            toastMsg = 'This contact is already in your list.';
+            toastClass = 'info-snackbar';
+            toastDuration = 5000;
+          }
+        }
+        this.snackBar.open(toastMsg, '', { duration: toastDuration, panelClass: toastClass });
 
         if(!this.importContact){
           this.contactState.dispatch({

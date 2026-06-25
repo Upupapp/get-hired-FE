@@ -87,10 +87,40 @@ export class ImportAddCandidateComponent implements OnInit {
         this.isLoading = false;
         this.submitting = false;
 
-        this.snackBar.open("Successfully added contact", "" , {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        // NOTIFY-P2: check outcome before showing toast — never claim success
+        // when candidateRes is a duplicate message object (status DUPLICATE_CANDIDATE).
+        const res = onboard.candidateRes;
+        const hasSummary = res && res.summary;
+        let toastMsg = 'Candidate added.';
+        let toastClass = 'success-snackbar';
+        let toastDuration = 4000;
+        if (hasSummary) {
+          const { successCount = 0, duplicateCount = 0, failureCount = 0 } = res.summary;
+          if (successCount > 0 && failureCount === 0) {
+            toastMsg = successCount === 1 ? 'Candidate added.' : `${successCount} candidates added.`;
+          } else if (successCount > 0 && failureCount > 0) {
+            toastMsg = `${successCount} added. ${failureCount} couldn't be added.`;
+            toastClass = 'warning-snackbar';
+            toastDuration = 6000;
+          } else if (duplicateCount > 0) {
+            toastMsg = 'No new candidates were added. These candidates are already in your list.';
+            toastClass = 'info-snackbar';
+            toastDuration = 6000;
+          } else {
+            toastMsg = 'No candidates were added.';
+            toastClass = 'danger-snackbar';
+            toastDuration = 6000;
+          }
+        } else {
+          // Single candidate — check status field added by NOTIFY-P2 BE patch.
+          const isDuplicate = res && res.status === 'DUPLICATE_CANDIDATE';
+          if (isDuplicate) {
+            toastMsg = 'This candidate is already in your list.';
+            toastClass = 'info-snackbar';
+            toastDuration = 5000;
+          }
+        }
+        this.snackBar.open(toastMsg, '', { duration: toastDuration, panelClass: toastClass });
 
         if(!this.importCandidate){
           this.candidateState.dispatch({

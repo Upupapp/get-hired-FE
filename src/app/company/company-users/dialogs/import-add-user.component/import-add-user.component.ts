@@ -59,15 +59,26 @@ export class ImportAddUserComponent implements OnInit {
       this.loading = invite.pending;
       console.log(this.loading, "loading");
       if(invite.companyUserRes){
-        if(invite.companyUserRes.emails.length > 0){
-          this.invitedUsersList = invite.companyUserRes.emails;
+        const emails: any[] = invite.companyUserRes.emails || [];
+        if(emails.length > 0){
+          // NOTIFY-P2: check per-email status — backend returns all submitted
+          // emails in the array regardless of whether they failed. A "failed"
+          // status means the invite was NOT sent (e.g. email already a user).
+          const successCount = emails.filter((e: any) => e.status !== 'failed').length;
+          const failureCount = emails.length - successCount;
+          this.invitedUsersList = emails;
           this.isLoading = false;
           this.submitting = true;
-          console.log(this.invitedUsersList, "list of invited users");
-          this.snackBar.open("Successfully added contact", "" , {
-            duration: 4000,
-            panelClass:'success-snackbar'
-          });
+
+          if (successCount > 0 && failureCount === 0) {
+            const msg = successCount === 1 ? 'Invite sent.' : `${successCount} invites sent.`;
+            this.snackBar.open(msg, '', { duration: 4000, panelClass: 'success-snackbar' });
+          } else if (successCount > 0 && failureCount > 0) {
+            this.snackBar.open(`${successCount} sent. ${failureCount} couldn't be added.`, '', { duration: 6000, panelClass: 'warning-snackbar' });
+          } else {
+            // successCount === 0 — all failed; never show a success toast
+            this.snackBar.open('No contacts were added.', '', { duration: 6000, panelClass: 'danger-snackbar' });
+          }
         }
         // this.company.dispatch({
         //   type: CompanyActionTypes.SAVE_COMPANY_USER_SUCCESS,

@@ -250,6 +250,17 @@ body {
   color: #ffffff;
 }
 
+// NOTIFY-P2: outcome-specific toast classes for partial success and no-op results.
+.warning-snackbar {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+
+.info-snackbar {
+  background-color: #6b7280;
+  color: #ffffff;
+}
+
 .text-primary-red {
   color: #ff7062;
 }
