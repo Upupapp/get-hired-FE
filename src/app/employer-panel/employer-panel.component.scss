@@ -93,6 +93,327 @@
   padding-left: 10px;
 }
 
+// ─── B02: Mobile top bar ─────────────────────────────────────────────────────
+// Visible only below md breakpoint (d-flex d-md-none applied in HTML).
+// Sticky so it stays visible when the user scrolls the main content area.
+// Height 56px matches bottom nav height for visual symmetry.
+
+.gh-mobile-topbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  height: 56px;
+  background: $color-global-sidebar-employer-user-menu;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  // Subtle shadow to separate from content
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.gh-mobile-topbar-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  flex: 1;
+}
+
+// ─── B02: Hamburger / X menu button ──────────────────────────────────────────
+// 44×44px tap target (WCAG 2.5.5 AAA). No default button border.
+// Press scale haptic via .gh-pressable pattern.
+
+.gh-mobile-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.93);
+    background: rgba(255, 255, 255, 0.15);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+}
+
+// Hamburger SVG lines — animated to X when drawer is open
+.gh-menu-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  .gh-menu-line {
+    transition: transform $motion-duration-drawer $motion-ease-decelerate,
+                opacity $motion-duration-micro $motion-ease-standard;
+    transform-origin: center;
+    @include motion-safe;
+  }
+
+  // Animate to X when open
+  &--open {
+    .gh-menu-line--top {
+      transform: rotate(45deg) translate(4px, 6px);
+    }
+    .gh-menu-line--mid {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .gh-menu-line--bot {
+      transform: rotate(-45deg) translate(4px, -6px);
+    }
+  }
+}
+
+// ─── B02: Scrim overlay ───────────────────────────────────────────────────────
+// Fixed full-viewport overlay behind the drawer.
+// opacity 0 + pointer-events none by default; toggled by --visible class.
+// z-index 1000: above bottom nav (999) but below drawer (1001).
+
+.gh-mobile-scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.48);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity $motion-duration-drawer $motion-ease-standard;
+  @include motion-safe;
+
+  &--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+// ─── B02: Mobile drawer ───────────────────────────────────────────────────────
+// Fixed overlay drawer from the left. Width 280px.
+// Slides from translateX(-100%) to translateX(0) on open.
+// z-index 1001: above scrim (1000).
+// Background matches desktop sidebar.
+
+.gh-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  z-index: 1001;
+  background: $color-global-sidebar-employer-user-menu;
+  transform: translateX(-100%);
+  transition: transform $motion-duration-drawer $motion-ease-decelerate;
+  @include motion-safe;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.28);
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  // Hide on desktop — drawer is mobile-only
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+// ─── Drawer header ───────────────────────────────────────────────────────────
+
+.gh-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 64px;
+}
+
+.gh-drawer-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.gh-drawer-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.9);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+}
+
+// ─── Drawer nav list ─────────────────────────────────────────────────────────
+
+.gh-drawer-nav {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  flex: 1;
+}
+
+// ─── Drawer nav item ─────────────────────────────────────────────────────────
+// 52px height for generous tap target.
+// Left border rail (3px) on active — matching design system.
+// Transition: background + transform for tap haptic.
+
+.gh-drawer-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 20px;
+  height: 52px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              color $motion-duration-micro $motion-ease-standard,
+              border-color $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: -2px;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    background: rgba($color-global-red-buttons, 0.1);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+
+  // Active / current route state
+  &--active,
+  &[aria-current="page"] {
+    background: $color-global-sidebar-employer-route-active;
+    border-left-color: $color-global-red-buttons;
+    color: #ffffff;
+    font-weight: 600;
+  }
+}
+
+.gh-drawer-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
+.gh-drawer-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Drawer footer ───────────────────────────────────────────────────────────
+
+.gh-drawer-footer {
+  padding: 12px 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.gh-drawer-settings-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  padding: 10px 4px;
+  border-radius: 8px;
+  outline: none;
+  transition: color $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+}
+
 // ─── B02 V5: Mobile bottom nav bar ──────────────────────────────────────────
 // Visible only below the Bootstrap md breakpoint (768px).
 // Reduced-motion: no transition/animation applied here — only color and border
@@ -158,9 +479,15 @@
 // QA8 FIX-11: use calc() to add env(safe-area-inset-bottom) so the content
 // clears both the billing bar (16px) and the nav bar (56px) stack on notched
 // iPhones. Flat total without a notch remains 72px (env() resolves to 0px).
+// B02: Add padding-top for mobile top bar (56px) so content is not hidden behind it.
 @media (max-width: 767px) {
   #sub-company-component {
     padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  // Push body content below the sticky mobile top bar
+  #body-main-container {
+    padding-top: 56px;
   }
 }
 
@@ -207,4 +534,3 @@
     outline-offset: 2px;
   }
 }
-
