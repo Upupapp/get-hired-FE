@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from "@environments/environment";
 import { BaseService } from "@main/core/services/base.service";
-import RecordRTC from 'recordRtc';
+import RecordRTC from 'recordrtc';
 import moment from "moment";
 import { Observable, Subject } from 'rxjs';
 
