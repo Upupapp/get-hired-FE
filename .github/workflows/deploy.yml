@@ -52,9 +52,9 @@ jobs:
             -v \
             "$LINODE_USER@$LINODE_HOST" "echo SSH_OK" 2>&1 | tail -30
 
-          echo "--- Syncing dist/ ---"
+          echo "--- Syncing dist/get-hired/ ---"
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
-            dist/ \
-            "$LINODE_USER@$LINODE_HOST:/var/www/get-hired-FE/dist/"
+            dist/get-hired/ \
+            "$LINODE_USER@$LINODE_HOST:/var/www/gethired/dist/get-hired/"
           echo "Deploy complete."
