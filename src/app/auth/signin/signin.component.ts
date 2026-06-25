@@ -124,8 +124,9 @@ export class SigninComponent implements OnInit {
 
   showError(err: any) {
     if (err) {
+      // NOTIFY QA11: normalised copy — lowercase "verify your email", clearer instruction
       if (err == 'Please Verify Email with the link sent to your registered email address.') {
-        this.error = 'Please Verify Email with the link sent to your registered email address.';
+        this.error = 'Please verify your email address. Check your inbox for the verification link we sent.';
         this.verify = true;
       } else {
         this.error = localStorage.getItem('loginError');
