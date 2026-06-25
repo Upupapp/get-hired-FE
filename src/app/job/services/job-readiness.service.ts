@@ -165,10 +165,10 @@ export class JobReadinessService {
 
     // ── Optional items (never block, purely informational) ──
     const optionalItems: JobReadinessItem[] = [
-      { key: 'videoQuestions',   label: 'Video questions optional',   kind: 'optional', icon: 'camera-video' },
-      { key: 'brandDetails',     label: 'Brand details optional',     kind: 'optional', icon: 'palette' },
-      { key: 'certifications',   label: 'Certifications optional',    kind: 'optional', icon: 'patch-check' },
-      { key: 'benefits',         label: 'Benefits optional',          kind: 'optional', icon: 'heart' },
+      { key: 'videoQuestions',   label: 'Video questions',   kind: 'optional', icon: 'camera-video' },
+      { key: 'brandDetails',     label: 'Brand details',     kind: 'optional', icon: 'palette' },
+      { key: 'certifications',   label: 'Certifications',    kind: 'optional', icon: 'patch-check' },
+      { key: 'benefits',         label: 'Benefits',          kind: 'optional', icon: 'heart' },
     ];
 
     // ── Totals and percentages ──

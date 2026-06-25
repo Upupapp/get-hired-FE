@@ -34,13 +34,24 @@ $cp-shadow: 0 4px 22px rgba(0,0,0,.07);
   100% { transform: scale(1); }
 }
 
-// Reduced-motion override for every animation in this component
+// Reduced-motion: disable only animated elements — scoped, not blanket.
+// A blanket *{ transition:none } would kill focus rings and color transitions.
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
+  .cp-subtab-btn {
     transition: none !important;
+  }
+
+  .cp-subtab-underline {
+    transition: none !important;
+  }
+
+  .cp-empty-state--reveal {
+    animation: none !important;
+  }
+
+  .cp-skeleton {
+    animation: none !important;
+    background: #eeeeee;
   }
 }
 
@@ -314,6 +325,29 @@ $cp-shadow: 0 4px 22px rgba(0,0,0,.07);
     outline: 2px solid $cp-tab-active;
     outline-offset: 2px;
     border-radius: 2px;
+  }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@media (max-width: 576px) {
+  .cp-subtab-nav {
+    padding: 0 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cp-subtab-btn {
+    font-size: 13px;
+    padding: 12px 14px 10px;
+    white-space: nowrap;
+  }
+
+  .cp-tab-panel {
+    padding: 0 12px;
+  }
+
+  .card {
+    padding: 16px 16px !important;
   }
 }
 

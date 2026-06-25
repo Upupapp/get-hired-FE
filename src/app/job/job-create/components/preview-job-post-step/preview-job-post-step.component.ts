@@ -66,9 +66,6 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
         bannerPosition: this.dragPosition
       }
 
-      console.log('PREVIEW: ');
-      console.log(this.preview)
-
       this.matchability = this.matchabilityService.evaluate(this.normalizer.normalize(this.preview));
 
       // B13: Also compute readiness for the preview summary card.
@@ -110,6 +107,9 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
       behavior: 'smooth'
     });
 
+    // FIX: preview$ is a field-level combineLatest subscription; add it to
+    // the subscriptions bag so it is cleaned up in ngOnDestroy.
+    this.subscriptions.add(this.preview$);
 
     this.subscriptions.add(
       this.jobFacade.loading$
@@ -194,7 +194,7 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
 
     // temporary save to local storage
     sessionStorage.setItem('job-post-banner-position', JSON.stringify(dragPosition))
-    console.log(dragPosition, imageSourceFile?.scrollHeight)
+    //console.log(dragPosition, imageSourceFile?.scrollHeight);
     //console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));
   }
 

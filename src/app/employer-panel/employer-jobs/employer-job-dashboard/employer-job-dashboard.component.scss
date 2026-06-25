@@ -51,10 +51,14 @@
   &.status-published {
     background: rgba(4, 160, 139, 0.12);
     color: #04A08B;
-    // Subtle glow for Published/Live state
+    // One-shot glow on first render — signals live state without looping
     box-shadow: 0 0 0 3px rgba(4, 160, 139, 0.15);
-    @include motion-safe;
-    animation: jd-status-glow 2.8s ease-in-out infinite alternate;
+    animation: jd-status-glow 600ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      box-shadow: 0 0 0 3px rgba(4, 160, 139, 0.18);
+    }
   }
 
   &.status-draft {
@@ -74,15 +78,8 @@
 }
 
 @keyframes jd-status-glow {
-  0%   { box-shadow: 0 0 0 2px rgba(4, 160, 139, 0.10); }
-  100% { box-shadow: 0 0 0 5px rgba(4, 160, 139, 0.22); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .status-published {
-    animation: none !important;
-    box-shadow: 0 0 0 3px rgba(4, 160, 139, 0.18);
-  }
+  from { box-shadow: 0 0 0 0px rgba(4, 160, 139, 0.0); }
+  to   { box-shadow: 0 0 0 3px rgba(4, 160, 139, 0.15); }
 }
 
 // ─── Meta row ─────────────────────────────────────────────────────────────────
@@ -279,7 +276,7 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 100ms $motion-ease-standard;
   @include motion-safe;
 
   &:hover {
@@ -288,6 +285,10 @@
 
   &:active {
     transform: scale(0.97);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
   }
 }
 

@@ -43,9 +43,12 @@
         <div class="float-end">
           <div class="mt-2">
             <button class="btn btn-upload me-2" type="button"
+              [attr.aria-label]="'Delete question ' + (i + 1)"
               (click)="removeItem(i, this.interviewQuestions)">Delete</button>
 
-            <button class="btn btn-record" (click)="editItem(i)">Edit</button>
+            <button class="btn btn-record"
+              [attr.aria-label]="'Edit question ' + (i + 1)"
+              (click)="editItem(i)">Edit</button>
           </div>
         </div>
 

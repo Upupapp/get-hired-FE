@@ -14,6 +14,8 @@
       [class.cp-subtab-btn--active]="activeTab === tab.id"
       (click)="selectTab(tab.id)"
       [attr.aria-selected]="activeTab === tab.id"
+      [attr.aria-controls]="'cp-tabpanel-' + tab.id"
+      [id]="'cp-tab-' + tab.id"
       role="tab"
       type="button">
       <span class="cp-subtab-label">{{ tab.label }}</span>
@@ -30,7 +32,8 @@
     class="cp-tab-panel"
     *ngIf="activeTab === 1"
     role="tabpanel"
-    aria-label="Company Profile"
+    id="cp-tabpanel-1"
+    aria-labelledby="cp-tab-1"
     [@animate]="{value:'*', params:{ y:'12px', delay:'40ms' }}">
 
     <div class="cp-tab-intro">
@@ -51,7 +54,8 @@
     class="cp-tab-panel"
     *ngIf="activeTab === 2"
     role="tabpanel"
-    aria-label="Employer Brand"
+    id="cp-tabpanel-2"
+    aria-labelledby="cp-tab-2"
     [@animate]="{value:'*', params:{ y:'12px', delay:'40ms' }}">
 
     <ng-container *ngIf="company$ | async as company; else brandLoading">
@@ -135,7 +139,7 @@
           <span class="cp-empty-icon" aria-hidden="true">&#128161;</span>
           <p class="cp-empty-text">Coming soon</p>
           <p class="cp-empty-hint">
-            A dedicated "Why work with us" field is on our roadmap.
+            A dedicated "Why work with us" field is planned for a future update.
             Highlight this in your Company Overview in the meantime.
           </p>
         </div>
@@ -145,7 +149,7 @@
 
     <!-- Brand loading skeleton -->
     <ng-template #brandLoading>
-      <div class="cp-skeleton-wrap">
+      <div class="cp-skeleton-wrap" aria-busy="true" aria-label="Loading brand details">
         <div class="cp-skeleton cp-skeleton--title"></div>
         <div class="cp-skeleton cp-skeleton--body"></div>
         <div class="cp-skeleton cp-skeleton--body cp-skeleton--short"></div>
@@ -160,7 +164,8 @@
     class="cp-tab-panel"
     *ngIf="activeTab === 3"
     role="tabpanel"
-    aria-label="Benefits and Culture"
+    id="cp-tabpanel-3"
+    aria-labelledby="cp-tab-3"
     [@animate]="{value:'*', params:{ y:'12px', delay:'40ms' }}">
 
     <ng-container *ngIf="company$ | async as company; else benefitsLoading">
@@ -249,7 +254,7 @@
         <div class="cp-empty-state cp-empty-state--reveal">
           <span class="cp-empty-icon" aria-hidden="true">&#128197;</span>
           <p class="cp-empty-text">Coming soon</p>
-          <p class="cp-empty-hint">Leave, flexible hours, and remote work details are on the roadmap.</p>
+          <p class="cp-empty-hint">Leave, flexible hours, and remote work details are planned for a future update.</p>
         </div>
       </div>
 
@@ -270,7 +275,7 @@
 
     <!-- Benefits loading skeleton -->
     <ng-template #benefitsLoading>
-      <div class="cp-skeleton-wrap">
+      <div class="cp-skeleton-wrap" aria-busy="true" aria-label="Loading benefits details">
         <div class="cp-skeleton cp-skeleton--title"></div>
         <div class="cp-skeleton cp-skeleton--body"></div>
         <div class="cp-skeleton cp-skeleton--body cp-skeleton--short"></div>

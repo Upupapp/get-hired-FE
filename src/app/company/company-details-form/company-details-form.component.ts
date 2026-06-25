@@ -235,7 +235,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     } else if (event == 'updated') {
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
-        data: 'Company successfully Updated',
+        data: 'Company successfully updated',
       });
       this.loadingDialog.closeAll();
       this.showSuccessDialog();

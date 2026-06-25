@@ -81,7 +81,7 @@
         *ngFor="let item of result.optionalItems; trackBy: trackByKey"
         class="jrc-chip jrc-chip--optional"
         role="listitem"
-        [attr.aria-label]="item.label"
+        [attr.aria-label]="item.label + ' — optional for publishing'"
       >
         <i class="bi bi-{{ item.icon }} jrc-chip-icon" aria-hidden="true"></i>
         <span class="jrc-chip-text">{{ item.label }}</span>
