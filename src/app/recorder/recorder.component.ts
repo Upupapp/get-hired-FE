@@ -23,6 +23,8 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   isPlaying = false;
   displayControls = true;
   isVideoRecording = false;
+  isVideoInitialising = false;
+  videoRecordingError: string | null = null;
   videoRecordedTime;
   videoBlobUrl;
   videoBlob;
@@ -47,6 +49,8 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   ) {
     this.recordService.recordingFailed().subscribe(() => {
       this.isVideoRecording = false;
+      this.isVideoInitialising = false;
+      this.videoRecordingError = 'Could not start recording. Please check camera permissions and try again.';
       this.ref.detectChanges();
     });
 
@@ -86,19 +90,25 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     this.videoConf = { video: { deviceId: this.videoSrc, facingMode: "user", width: 320 }, audio: { deviceId: this.audioSrc } }
 
     this.videoConf['video'].deviceId = this.videoSrc;
-    if (!this.isVideoRecording) {
+    if (!this.isVideoRecording && !this.isVideoInitialising) {
       this.video.controls = false;
       this.video.muted = true;
       this.video.volume = 0;
-      this.isVideoRecording = true;
+      this.videoRecordingError = null;
+      this.isVideoInitialising = true;
+      this.ref.detectChanges();
       this.recordService.startRecording(this.videoConf)
         .then(stream => {
-          // this.video.src = window.URL.createObjectURL(stream);
+          this.isVideoInitialising = false;
+          this.isVideoRecording = true;
           this.video.srcObject = stream;
           this.video.play();
+          this.ref.detectChanges();
         })
-        .catch(function (err) {
-          console.log(err.name + ": " + err.message);
+        .catch((err) => {
+          this.isVideoInitialising = false;
+          this.videoRecordingError = 'Could not access camera. Please check permissions.';
+          this.ref.detectChanges();
         });
     }
   }
@@ -122,9 +132,6 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   previewVideoRecording() {
-    console.log(this.videoFile);
-    console.log(this.videoBlob);
-    console.log(this.videoBlobUrl);
     this.dialogRef.close({ blobUrl: this.videoBlobUrl, file: this.videoFile });
   }
 

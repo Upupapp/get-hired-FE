@@ -26,6 +26,7 @@ export class RecordService {
 
   private stream;
   private recorder;
+  private isStarting = false;
   private interval;
   private startTime;
   private _basefile = new Subject<File>();
@@ -72,18 +73,27 @@ export class RecordService {
 
   startRecording(conf: any): Promise<any> {
     var browser = <any>navigator;
-    if (this.recorder) {
-      // It means recording is already started or it is already recording something
+    if (this.recorder || this.isStarting) {
       return;
     }
+    this.isStarting = true;
 
     this._recordingTime.next('00:00');
     return new Promise((resolve, reject) => {
       browser.mediaDevices.getUserMedia(conf).then(async stream => {
         this.stream = stream;
-        await this.record();
+        try {
+          await this.record();
+        } catch (err) {
+          this.isStarting = false;
+          this._recordingFailed.next(null);
+          reject(err);
+          return;
+        }
+        this.isStarting = false;
         resolve(this.stream);
       }).catch(error => {
+        this.isStarting = false;
         this._recordingFailed.next(null);
         reject(error);
       });
@@ -156,7 +166,6 @@ export class RecordService {
       if (this.stream) {
         this.stream.getAudioTracks().forEach(track => track.stop());
         this.stream.getVideoTracks().forEach(track => track.stop());
-        this.stream.stop();
         this.stream = null;
       }
     }
