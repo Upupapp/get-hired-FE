@@ -3,7 +3,7 @@ export const environment = {
   projectName: 'gethired',
   server: 'https://ssr-back.herokuapp.com',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
-  api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
+  api_url: 'https://api.gethiredonline.app/api',
   app_url: 'https://gethiredonline.app',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
