@@ -8,6 +8,7 @@ import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
 import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } from 'rxjs';
 import { environment } from '@environments/environment';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-signup',
@@ -40,10 +41,20 @@ export class SignupComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private authService: AuthService,
-    private authFacade: AuthFacade
+    private authFacade: AuthFacade,
+    private seoService: SeoService,
   ) { }
 
   ngOnInit(): void {
+    // SEO Phase 5 V4: signup is not a public indexable page — noindex + nofollow.
+    // robots.txt already disallows /signup; this adds defense-in-depth at the
+    // component level so Googlebot cannot mistake a JS-rendered page for indexable.
+    this.seoService.setPageMeta({
+      title: 'Create Account | GetHired Online',
+      description: 'Create your GetHired Online account to start applying for jobs or posting vacancies in the Philippines.',
+      robots: 'noindex, nofollow',
+    });
+
     this.registerForm = this.formBuilder.group({
       email: [null, Validators.compose([Validators.required, Validators.email])],
       password: [null,

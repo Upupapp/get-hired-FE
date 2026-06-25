@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { catchError, map, of } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-change-pw',
@@ -26,7 +27,8 @@ export class ChangePwComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private seoService: SeoService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.code = params.oobCode;
@@ -37,6 +39,13 @@ export class ChangePwComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // SEO Phase 5 V4: change-password is not a public indexable page.
+    this.seoService.setPageMeta({
+      title: 'Change Password | GetHired Online',
+      description: 'Set a new password for your GetHired Online account.',
+      robots: 'noindex, nofollow',
+    });
+
     this.pwForm = this.formBuilder.group({
       newPassword: ['', [Validators.required, Validators.pattern(this.pwPattern)]],
       confirmPassword: ['', [Validators.required, Validators.pattern(this.pwPattern)]],

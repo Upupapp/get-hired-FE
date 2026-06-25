@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { catchError, finalize, map, of } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-account-authentication',
@@ -31,7 +32,8 @@ export class AccountAuthenticationComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private seoService: SeoService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.mode = params.mode;
@@ -45,6 +47,13 @@ export class AccountAuthenticationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // SEO Phase 5 V4: email verify is not a public indexable page.
+    this.seoService.setPageMeta({
+      title: 'Verify Account | GetHired Online',
+      description: 'Verify your GetHired Online account email address.',
+      robots: 'noindex, nofollow',
+    });
+
     this.resendLinkForm = this.fb.group({
       'email': [this.email, [Validators.required, Validators.email]]
     });

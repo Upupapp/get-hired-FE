@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { map, catchError, of } from 'rxjs';
 import { AuthService } from '../auth.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -27,10 +28,18 @@ export class ResetPasswordComponent implements OnInit {
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private seoService: SeoService,
   ) { }
 
   ngOnInit(): void {
+    // SEO Phase 5 V4: reset-password is not a public indexable page.
+    this.seoService.setPageMeta({
+      title: 'Reset Password | GetHired Online',
+      description: 'Reset your GetHired Online account password.',
+      robots: 'noindex, nofollow',
+    });
+
     this.onAlertClose(); // Reset all errors
     this.pwForm = this.formBuilder.group({
       email: [null, Validators.compose([Validators.required, Validators.email])]

@@ -1,5 +1,5 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -54,6 +54,7 @@ export class SeoService {
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,
+    @Inject(DOCUMENT) private doc: Document,
     private titleService: Title,
     private meta: Meta,
     private router: Router,
@@ -128,17 +129,17 @@ export class SeoService {
   // ─────────────────────────────────────────────────────────────────────────
 
   setCanonical(url: string): void {
-    if (!this.isBrowser) {
-      // SSR: cannot use document directly; Angular Universal injects tags
-      // via TransferState / renderModule — skip in server context.
-      return;
-    }
-    const doc = document;
-    let link: HTMLLinkElement = doc.querySelector('link[rel="canonical"]');
+    // V4 FIX: use Angular's injected DOCUMENT token (safe on SSR + browser).
+    // Previously used the bare `document` global — that fails on the server
+    // because Angular Universal's renderModule has no globalThis.document.
+    // The DOCUMENT injection token is provided by @angular/common and resolves
+    // to the server-side DOM stub under Angular Universal, so canonical tags
+    // are now emitted in the SSR-rendered HTML seen by Googlebot.
+    let link: HTMLLinkElement = this.doc.querySelector('link[rel="canonical"]');
     if (!link) {
-      link = doc.createElement('link');
+      link = this.doc.createElement('link');
       link.setAttribute('rel', 'canonical');
-      doc.head.appendChild(link);
+      this.doc.head.appendChild(link);
     }
     link.setAttribute('href', url);
   }
@@ -149,8 +150,8 @@ export class SeoService {
    * canonical from the previously visited route.
    */
   clearCanonical(): void {
-    if (!this.isBrowser) return;
-    const link = document.querySelector('link[rel="canonical"]');
+    // V4 FIX: use injected DOCUMENT token — SSR-safe, same as setCanonical.
+    const link = this.doc.querySelector('link[rel="canonical"]');
     if (link) link.remove();
   }
 
@@ -188,22 +189,27 @@ export class SeoService {
    * Safe to call on every navigation — replaces in-place if already present.
    */
   setJsonLd(id: string, data: object): void {
-    if (!this.isBrowser) return;
-    const doc = document;
-    let script: HTMLScriptElement = doc.getElementById(id) as HTMLScriptElement;
+    // V4 FIX: use injected DOCUMENT token so JSON-LD is emitted by SSR too.
+    // Previously guarded with `if (!this.isBrowser) return`, which meant the
+    // server-rendered HTML never contained JobPosting/Organization/WebSite LD+JSON.
+    // Googlebot fetches the SSR output directly — omitting structured data from
+    // it means Google's Rich Results are entirely dependent on client-side JS
+    // execution, which is unreliable. Using `this.doc` fixes this without
+    // breaking anything browser-side (browser DOCUMENT resolves normally).
+    let script: HTMLScriptElement = this.doc.getElementById(id) as HTMLScriptElement;
     if (!script) {
-      script = doc.createElement('script');
+      script = this.doc.createElement('script');
       script.id = id;
       script.type = 'application/ld+json';
-      doc.head.appendChild(script);
+      this.doc.head.appendChild(script);
     }
     script.text = JSON.stringify(data);
   }
 
   /** Remove a previously injected JSON-LD block by id. */
   clearJsonLd(id: string): void {
-    if (!this.isBrowser) return;
-    const el = document.getElementById(id);
+    // V4 FIX: use injected DOCUMENT token — SSR-safe.
+    const el = this.doc.getElementById(id);
     if (el) el.remove();
   }
 
@@ -411,7 +417,7 @@ export class SeoService {
     // parsing tags or firing inline event handlers (onerror/onload do NOT
     // execute on textarea.innerHTML — unlike div.innerHTML which can fire
     // onerror handlers on <img> tags even when detached from the DOM).
-    const ta = document.createElement('textarea');
+    const ta = this.doc.createElement('textarea');
     ta.innerHTML = html;
     return ta.value.replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, ' ').trim();
   }
