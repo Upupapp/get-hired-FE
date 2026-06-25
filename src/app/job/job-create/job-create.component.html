@@ -44,6 +44,28 @@
   <!-- FORM -->
   <div class="py-4" style="position: relative">
     <form [formGroup]="jobForm">
+      <!-- B13: Job Readiness Bar — visible on all steps, updates on form changes -->
+      <div
+        class="jrc-builder-readiness-panel"
+        [ngStyle]="{ 'margin-top': delayControl ? '0' : '150px' }"
+        style="padding-left: 25px; padding-right: 45px"
+        *ngIf="stepper !== 4"
+      >
+        <div class="card card-body py-3 jrc-readiness-card">
+          <div class="jrc-readiness-card-header">
+            <span class="jrc-readiness-card-title">
+              <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
+              Job readiness
+            </span>
+          </div>
+          <app-job-readiness-bar [result]="readinessResult"></app-job-readiness-bar>
+          <app-job-readiness-chips
+            [result]="readinessResult"
+            (jumpToSection)="onReadinessJumpToSection($event)"
+          ></app-job-readiness-chips>
+        </div>
+      </div>
+
       <section
         class="py-3"
         id="job-create-forms"

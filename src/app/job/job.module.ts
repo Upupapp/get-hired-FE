@@ -24,6 +24,9 @@ import { ApplicationModule } from '@main/application/application.module';
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { JobAppliedComponent } from './job-applied/job-applied.component';
+// B13: Job Readiness Bar + Chips
+import { JobReadinessBarComponent } from './components/job-readiness-bar/job-readiness-bar.component';
+import { JobReadinessChipsComponent } from './components/job-readiness-chips/job-readiness-chips.component';
 
 // const routes: Routes = [
   // { path: 'expired', component: JobExpiredComponent },
@@ -44,7 +47,10 @@ const exportedComponents = [
   TableControlModalComponent,
   JobViewComponent,
   JobApplicantsComponent,
-  ApplicantActionModalComponent
+  ApplicantActionModalComponent,
+  // B13: Job Readiness
+  JobReadinessBarComponent,
+  JobReadinessChipsComponent,
 ]
 
 @NgModule({

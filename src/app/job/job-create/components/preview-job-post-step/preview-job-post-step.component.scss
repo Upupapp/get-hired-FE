@@ -1,5 +1,23 @@
 @import "src/assets/styles/colors";
 
+// B13: Job Readiness in preview step
+.jrc-preview-readiness-card {
+  border-left: 3px solid #10B981;
+}
+
+.jrc-preview-readiness-header {
+  margin-bottom: 8px;
+}
+
+.jrc-preview-readiness-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  align-items: center;
+}
+
 .match-v3-matchability-card {
   border-left: 3px solid $color-global-red-buttons;
 }

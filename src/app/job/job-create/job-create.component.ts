@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
-import { distinctUntilChanged, Subject, Subscription, take } from 'rxjs';
+import { distinctUntilChanged, Subject, Subscription, take, debounceTime } from 'rxjs';
 import * as Model from '../job.model';
 import * as QuestionModel from '@main/interview/interview.model';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -14,6 +14,8 @@ import { SubscriptionAlertComponent } from '@app-shared/components/subscription-
 import { TalentProofService } from '@main/public/services/talent-proof.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
+// B13: Job Readiness
+import { JobReadinessService, JobReadinessResult } from '../services/job-readiness.service';
 
 @Component({
   selector: 'app-job-create',
@@ -55,6 +57,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   interviewValid: boolean = false;
   isReadyToPublish: boolean;
   loading: boolean = true;
+  // B13: Job Readiness
+  readinessResult: JobReadinessResult | null = null;
   initial$: any;
   info$: any;
   status: any = 1;
@@ -111,7 +115,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private talentProof: TalentProofService,
     private talentProofAnalytics: PublicPortalAnalyticsService,
-    private haptics: HapticFeedbackService
+    private haptics: HapticFeedbackService,
+    // B13: Job Readiness
+    private jobReadiness: JobReadinessService
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -242,6 +248,31 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
         })
     );
+
+    // B13: Job Readiness — recompute on any form value change, debounced 300ms.
+    // companyId is sourced from local storage (set in ngOnInit).
+    this.formSubs.add(
+      this.jobForm.valueChanges
+        .pipe(debounceTime(300))
+        .subscribe(() => {
+          const v = this.jobForm.value;
+          this.readinessResult = this.jobReadiness.evaluate({
+            ...v.initialData,
+            ...v.jobInfo,
+            interviewQuestions: v.interview?.interviewQuestions,
+            companyId: this.companyId,
+          });
+          this.cd.markForCheck();
+        })
+    );
+    // Compute immediately so the bar shows on load
+    const iv = this.jobForm.value;
+    this.readinessResult = this.jobReadiness.evaluate({
+      ...iv.initialData,
+      ...iv.jobInfo,
+      interviewQuestions: iv.interview?.interviewQuestions,
+      companyId: this.companyId,
+    });
 
     // Made Interview Optional
     // this.subscriptions.add(
@@ -507,6 +538,14 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   cancel() {
     this.jobFacade.resetFormState();
     this.router.navigate(['../'], { relativeTo: this.route });
+  }
+
+  /** B13: Scroll to a section anchor when the user clicks a readiness chip */
+  onReadinessJumpToSection(sectionId: string): void {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   changeStep(event) {

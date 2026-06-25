@@ -5,6 +5,8 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Subject } from 'rxjs';
 import { takeUntil, take } from 'rxjs/operators';
+// B13: Job Readiness — compact optional improvements indicator
+import { JobReadinessService, JobReadinessResult } from '@app-job/services/job-readiness.service';
 
 /**
  * RecruiterJobDashboardComponent — job-level command center.
@@ -34,11 +36,22 @@ export class EmployerJobDashboardComponent implements OnInit, OnDestroy {
 
   job$ = this.jobFacade.getJobById$;
 
+  /** B13: Computed once when job data arrives — shows optional improvements chip */
+  dashboardReadiness: JobReadinessResult | null = null;
+  /** Only show improvements chip if published job has recommended gaps */
+  get hasOptionalImprovements(): boolean {
+    return !!(this.dashboardReadiness &&
+      this.dashboardReadiness.canPublish &&
+      this.dashboardReadiness.recommendationItems.length > 0);
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
     private jobFacade: JobFacade,
+    // B13
+    private jobReadiness: JobReadinessService,
   ) {
     this.route.queryParams
       .pipe(takeUntil(this.destroy$))
@@ -78,6 +91,32 @@ export class EmployerJobDashboardComponent implements OnInit, OnDestroy {
           }
         });
     }
+
+    // B13: Compute readiness once job data arrives (published jobs only)
+    this.jobFacade.getJobById$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(job => {
+        if (job) {
+          this.dashboardReadiness = this.jobReadiness.evaluate({
+            jobTitle:       job.jobTitle,
+            jobTypeId:      job.jobTypeId,
+            jobLevelId:     job.jobLevelId,
+            jobCity:        job.jobCity,
+            jobCountry:     job.jobCountry,
+            jobDescription: job.jobDescription,
+            jobDuties:      job.jobDuties,
+            workSetupId:    job.workSetupId,
+            jobBanner:      job.jobBanner,
+            companyId:      job.companyId,
+            skills:         job.skills,
+            requirements:   job.requirements,
+            companyLogoUrl: job.companyLogoUrl,
+            companyDetails: job.companyDetails,
+            interviewQuestions: job.interviewQuestions,
+            educationalBackground: job.educationalBackground,
+          });
+        }
+      });
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

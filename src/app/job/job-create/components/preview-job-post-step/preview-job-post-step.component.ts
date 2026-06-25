@@ -5,6 +5,8 @@ import { combineLatest, Subscription } from 'rxjs';
 import * as Model from '../../../job.model';
 import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
 import { JobMatchabilityService, JobMatchabilityResult } from '@main/public/services/job-matchability.service';
+// B13: Job Readiness
+import { JobReadinessService, JobReadinessResult } from '../../../services/job-readiness.service';
 
 @Component({
   selector: 'app-preview-job-post-step',
@@ -45,6 +47,9 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
    * publishing, purely informational. */
   matchability: JobMatchabilityResult | null = null;
 
+  /** B13: Job Readiness summary — shown in the preview step only */
+  previewReadiness: JobReadinessResult | null = null;
+
   info$ = this.jobFacade.info$;
   initial$ = this.jobFacade.initial$;
   interview$ = this.jobFacade.interview$;
@@ -66,12 +71,36 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
 
       this.matchability = this.matchabilityService.evaluate(this.normalizer.normalize(this.preview));
 
+      // B13: Also compute readiness for the preview summary card.
+      // companyId comes from the preview object (set from local storage above).
+      this.previewReadiness = this.readinessService.evaluate({
+        jobTitle:       this.preview.jobTitle,
+        jobTypeId:      this.preview.jobTypeId,
+        jobLevelId:     this.preview.jobLevelId,
+        jobCity:        this.preview.jobCity,
+        jobCountry:     this.preview.jobCountry,
+        jobDescription: this.preview.jobDescription,
+        jobDuties:      this.preview.jobDuties,
+        workSetupId:    this.preview.workSetupId,
+        jobBanner:      this.preview.jobBanner,
+        bannerFile:     (this.preview as any).bannerFile,
+        companyId:      this.preview.companyId,
+        skills:         this.preview.skills,
+        requirements:   this.preview.requirements,
+        companyLogoUrl: this.preview.companyLogoUrl,
+        companyDetails: this.preview.companyDetails,
+        interviewQuestions: this.preview.interviewQuestions,
+        educationalBackground: this.preview.educationalBackground,
+      });
+
     });
 
   constructor(
     private jobFacade: JobFacade,
     private normalizer: PublicJobNormalizerService,
     private matchabilityService: JobMatchabilityService,
+    // B13: Job Readiness
+    private readinessService: JobReadinessService,
   ) { }
 
   ngOnInit(): void {

@@ -1,0 +1,201 @@
+// B13 — JobReadinessChipsComponent styles
+// All animations guarded with prefers-reduced-motion.
+
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+// ── Color tokens ──────────────────────────────────────────────────────────────
+$jrc-red:    #EF4444;
+$jrc-amber:  #F59E0B;
+$jrc-green:  #10B981;
+$jrc-grey:   #8D8D8D;
+
+$jrc-red-bg:    rgba($jrc-red,   0.08);
+$jrc-amber-bg:  rgba($jrc-amber, 0.08);
+$jrc-green-bg:  rgba($jrc-green, 0.08);
+$jrc-grey-bg:   rgba($jrc-grey,  0.07);
+
+// ── Wrapper ───────────────────────────────────────────────────────────────────
+.jrc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+// ── Group ─────────────────────────────────────────────────────────────────────
+.jrc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &.jrc-group--optional {
+    opacity: 0.80;
+  }
+}
+
+.jrc-group-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Manrope', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.jrc-group-label--blocking   { color: $jrc-red; }
+  &.jrc-group-label--recommended { color: $jrc-amber; }
+  &.jrc-group-label--complete    { color: $jrc-green; }
+  &.jrc-group-label--optional    { color: $jrc-grey; }
+}
+
+// ── Chip row ─────────────────────────────────────────────────────────────────
+.jrc-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+// ── Base chip ────────────────────────────────────────────────────────────────
+.jrc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Manrope', sans-serif;
+  border: none;
+  cursor: default;
+  outline: none;
+  // Enter animation
+  animation: jrc-chip-enter 200ms $motion-ease-decelerate both;
+  @include ambient-motion-safe;
+
+  // Accessible focus ring
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+@keyframes jrc-chip-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Blocking chip ─────────────────────────────────────────────────────────────
+.jrc-chip--blocking {
+  background: $jrc-red-bg;
+  color: $jrc-red;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($jrc-red, 0.14);
+    transform: scale(1.03);
+    @include motion-safe;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    @include motion-safe;
+  }
+
+  // One-shot nudge shake on entry
+  animation: jrc-chip-enter 200ms $motion-ease-decelerate both,
+             jrc-blocking-nudge 400ms 250ms $motion-ease-standard both;
+  @include ambient-motion-safe;
+}
+
+@keyframes jrc-blocking-nudge {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-3px); }
+  40%  { transform: translateX(3px); }
+  60%  { transform: translateX(-2px); }
+  80%  { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+// ── Recommended chip ─────────────────────────────────────────────────────────
+.jrc-chip--recommended {
+  background: $jrc-amber-bg;
+  color: darken($jrc-amber, 10%);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($jrc-amber, 0.14);
+    transform: scale(1.03);
+    @include motion-safe;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    @include motion-safe;
+  }
+}
+
+// ── Complete chip ─────────────────────────────────────────────────────────────
+.jrc-chip--complete {
+  background: $jrc-green-bg;
+  color: darken($jrc-green, 8%);
+  cursor: default;
+}
+
+// ── Optional chip ─────────────────────────────────────────────────────────────
+.jrc-chip--optional {
+  background: $jrc-grey-bg;
+  color: $jrc-grey;
+  cursor: default;
+}
+
+// ── Chip internals ────────────────────────────────────────────────────────────
+.jrc-chip-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.jrc-chip-text {
+  white-space: nowrap;
+}
+
+.jrc-chip-arrow {
+  font-size: 11px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+// ── All complete panel ────────────────────────────────────────────────────────
+.jrc-all-complete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: $jrc-green-bg;
+  color: darken($jrc-green, 8%);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Manrope', sans-serif;
+  animation: jrc-chip-enter 250ms $motion-ease-decelerate both;
+  @include ambient-motion-safe;
+}
+
+.jrc-all-complete-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.jrc-all-complete-text {}
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+@media (max-width: 576px) {
+  .jrc-chips-row {
+    gap: 5px;
+  }
+
+  .jrc-chip {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+}

@@ -72,6 +72,31 @@
       <span class="jd-success-text">Your job is published.</span>
     </div>
 
+    <!-- B13: Optional improvements chip (compact, published jobs only)
+         Full readiness bar is NOT shown for already-published jobs per spec.
+         Only shown when there are recommended gaps to fill. -->
+    <div
+      class="jd-optional-improvements"
+      *ngIf="hasOptionalImprovements"
+      [@animate]="{value:'*', params:{ y:'8px', delay:'80ms' }}"
+      role="status"
+      aria-live="polite"
+    >
+      <i class="bi bi-lightbulb jd-opt-icon" aria-hidden="true"></i>
+      <span class="jd-opt-text">
+        Optional improvements available —
+        <button
+          class="jd-opt-link"
+          (click)="editJob()"
+          type="button"
+          aria-label="Edit your job post to add optional improvements"
+        >Add details to help candidates decide</button>
+      </span>
+      <span class="jd-opt-count" [attr.aria-label]="(dashboardReadiness?.recommendationItems?.length || 0) + ' optional improvements'">
+        {{ dashboardReadiness?.recommendationItems?.length }}
+      </span>
+    </div>
+
     <!-- ── APPLICANT PIPELINE PANEL ── -->
     <div class="jd-section jd-applicant-panel" [@animate]="{value:'*', params:{ y:'10px', delay:'120ms' }}">
       <h2 class="jd-section-title">Applicants</h2>

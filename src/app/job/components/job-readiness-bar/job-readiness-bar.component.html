@@ -1,0 +1,63 @@
+<!-- B13 — Job Readiness Bar
+     Skeleton while result is null; full bar once computed.
+     ARIA: role="progressbar" so screen readers announce progress.
+     Reduced-motion: transitions/animations are suppressed in .scss
+     via @media (prefers-reduced-motion: reduce).
+-->
+
+<!-- SKELETON (while readiness is computing) -->
+<div class="jrb-skeleton-wrap" *ngIf="!result" aria-busy="true" aria-label="Computing job readiness">
+  <div class="jrb-skeleton jrb-skeleton-label"></div>
+  <div class="jrb-skeleton jrb-skeleton-bar"></div>
+  <div class="jrb-skeleton jrb-skeleton-sub"></div>
+</div>
+
+<!-- READINESS BAR -->
+<div class="jrb-wrap" *ngIf="result">
+  <!-- Level chip -->
+  <div class="jrb-header">
+    <span
+      class="jrb-level-chip"
+      [ngClass]="[levelClass, glowActive ? 'jrb-level-chip--glow' : '']"
+      [attr.aria-label]="'Job readiness: ' + levelLabel"
+    >
+      <!-- Icon: not color-only; icon + text -->
+      <span class="jrb-level-icon" aria-hidden="true">
+        <ng-container [ngSwitch]="result.readinessLevel">
+          <i *ngSwitchCase="'draft'"     class="bi bi-pencil-square"></i>
+          <i *ngSwitchCase="'basic'"     class="bi bi-check-circle"></i>
+          <i *ngSwitchCase="'strong'"    class="bi bi-star"></i>
+          <i *ngSwitchCase="'excellent'" class="bi bi-star-fill"></i>
+        </ng-container>
+      </span>
+      <span class="jrb-level-text">{{ levelLabel }}</span>
+    </span>
+
+    <span class="jrb-percent" aria-hidden="true">{{ result.readinessPercent }}%</span>
+  </div>
+
+  <!-- Progress bar -->
+  <div
+    class="jrb-bar-track"
+    role="progressbar"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="100"
+    [attr.aria-valuenow]="result.readinessPercent"
+    [attr.aria-label]="'Job readiness ' + result.readinessPercent + ' percent'"
+  >
+    <div
+      class="jrb-bar-fill"
+      [ngClass]="levelClass"
+      [style.width.%]="result.readinessPercent"
+    ></div>
+  </div>
+
+  <!-- Sub-label -->
+  <p class="jrb-sublabel">{{ sublabel }}</p>
+
+  <!-- Next best action (non-null when there's a clear next step) -->
+  <div class="jrb-next-action" *ngIf="result.nextBestAction">
+    <i class="bi bi-arrow-right-circle jrb-next-icon" aria-hidden="true"></i>
+    <span class="jrb-next-text">{{ result.nextBestAction.label }}</span>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<!-- B13 — Job Readiness Chips
+     Chip groups: blocking → recommended → complete → optional.
+     All chips are <button> elements for keyboard accessibility.
+     Icons + text: never color-only.
+     Reduced-motion: enter transition, shake, and scale suppressed in scss.
+-->
+
+<div class="jrc-wrap" *ngIf="result" aria-label="Job readiness details">
+
+  <!-- ── BLOCKING CHIPS (red) ── -->
+  <div class="jrc-group" *ngIf="result.blockingItems.length > 0">
+    <span class="jrc-group-label jrc-group-label--blocking" aria-hidden="true">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      Required to publish
+    </span>
+    <div class="jrc-chips-row" role="list">
+      <button
+        *ngFor="let item of result.blockingItems; trackBy: trackByKey"
+        class="jrc-chip jrc-chip--blocking"
+        role="listitem"
+        [attr.aria-label]="item.label + ' — required to publish. Click to go to this section.'"
+        (click)="onChipClick(item)"
+        type="button"
+      >
+        <i class="bi bi-{{ item.icon }} jrc-chip-icon" aria-hidden="true"></i>
+        <span class="jrc-chip-text">{{ item.label }}</span>
+        <i class="bi bi-arrow-right jrc-chip-arrow" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── RECOMMENDED CHIPS (amber) ── -->
+  <div class="jrc-group" *ngIf="result.recommendationItems.length > 0">
+    <span class="jrc-group-label jrc-group-label--recommended" aria-hidden="true">
+      <i class="bi bi-lightbulb-fill"></i>
+      Recommended improvements
+    </span>
+    <div class="jrc-chips-row" role="list">
+      <button
+        *ngFor="let item of result.recommendationItems; trackBy: trackByKey"
+        class="jrc-chip jrc-chip--recommended"
+        role="listitem"
+        [attr.aria-label]="item.label + ' — recommended. Click to go to this section.'"
+        (click)="onChipClick(item)"
+        type="button"
+      >
+        <i class="bi bi-{{ item.icon }} jrc-chip-icon" aria-hidden="true"></i>
+        <span class="jrc-chip-text">{{ item.label }}</span>
+        <i class="bi bi-arrow-right jrc-chip-arrow" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── COMPLETE CHIPS (green) ── -->
+  <div class="jrc-group" *ngIf="result.completedItems.length > 0">
+    <span class="jrc-group-label jrc-group-label--complete" aria-hidden="true">
+      <i class="bi bi-check-circle-fill"></i>
+      Complete
+    </span>
+    <div class="jrc-chips-row" role="list">
+      <div
+        *ngFor="let item of result.completedItems; trackBy: trackByKey"
+        class="jrc-chip jrc-chip--complete"
+        role="listitem"
+        [attr.aria-label]="item.label + ' — complete'"
+      >
+        <i class="bi bi-check2 jrc-chip-icon" aria-hidden="true"></i>
+        <span class="jrc-chip-text">{{ item.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTIONAL CHIPS (grey) ── -->
+  <div class="jrc-group jrc-group--optional" *ngIf="result.optionalItems.length > 0">
+    <span class="jrc-group-label jrc-group-label--optional" aria-hidden="true">
+      <i class="bi bi-info-circle-fill"></i>
+      Optional for publishing
+    </span>
+    <div class="jrc-chips-row" role="list">
+      <div
+        *ngFor="let item of result.optionalItems; trackBy: trackByKey"
+        class="jrc-chip jrc-chip--optional"
+        role="listitem"
+        [attr.aria-label]="item.label"
+      >
+        <i class="bi bi-{{ item.icon }} jrc-chip-icon" aria-hidden="true"></i>
+        <span class="jrc-chip-text">{{ item.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PUBLISH READY (when canPublish and all recommended done) ── -->
+  <div
+    class="jrc-all-complete"
+    *ngIf="result.canPublish && result.recommendationItems.length === 0"
+    role="status"
+    aria-live="polite"
+  >
+    <i class="bi bi-patch-check-fill jrc-all-complete-icon" aria-hidden="true"></i>
+    <span class="jrc-all-complete-text">Ready to publish — all sections complete</span>
+  </div>
+
+</div>
