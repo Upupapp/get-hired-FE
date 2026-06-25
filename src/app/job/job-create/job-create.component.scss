@@ -178,6 +178,129 @@
   to { transform: rotate(360deg); }
 }
 
+// ── F-08: Job Update UX — haptics / modern effects ───────────────────────────
+
+// Draft-save button: shares micro-scale tap with btn-add-service above
+.btn-draft-save {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  &:active {
+    transform: scale(0.97);
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+}
+
+// Back/Cancel button: tap compression on mobile
+.btn-back-cancel {
+  transition: transform 0.1s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+  &:active {
+    transform: scale(0.96);
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+}
+
+// Draft-save spinner (identical pattern to publish-spinner)
+.btn-draft-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.draft-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(80, 80, 80, 0.25);
+  border-top-color: #555;
+  border-radius: 50%;
+  animation: draft-spin 0.7s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    border-color: rgba(80, 80, 80, 0.5);
+  }
+}
+
+@keyframes draft-spin {
+  to { transform: rotate(360deg); }
+}
+
+// Success pulse: brief green check after backend success
+.save-success-pulse {
+  display: inline-flex;
+  align-items: center;
+  color: #22c55e;
+  font-size: 18px;
+  margin-left: 4px;
+  animation: success-pulse 0.4s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes success-pulse {
+  0%   { opacity: 0; transform: scale(0.6); }
+  60%  { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+// Error alert: unauthorized/not-found shown below action buttons
+.save-error-alert {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #fff5f5;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+  font-size: 13px;
+  font-family: 'Manrope', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: error-reveal 0.25s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes error-reveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// Focus-visible glow on action buttons (keyboard navigation)
+.btn-draft-save:focus-visible,
+.btn-back-cancel:focus-visible,
+.btn-publish-post:focus-visible {
+  outline: 2px solid #e02020;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(224, 32, 32, 0.18);
+}
+
+// Mobile tap target: ensure minimum 44px touch target on small screens
+@media (max-width: 768px) {
+  .btn-draft-save,
+  .btn-back-cancel,
+  .btn-publish-post {
+    min-height: 44px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 // ── B13: Job Readiness panel (inside the builder) ────────────────────────────
 .jrc-builder-readiness-panel {
   position: relative;

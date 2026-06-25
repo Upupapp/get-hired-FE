@@ -34,6 +34,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   public jobId: any = null;
   public screenWidth: number = 1200;
   subscriptions = new Subscription();
+  // F-08 UX: track save-as-draft loading state separately from publish loading
+  savingDraft: boolean = false;
+  // F-08 UX: success pulse flag (shown briefly after backend success)
+  saveSuccessPulse: boolean = false;
+  // F-08 UX: error message from backend (403/404/500) — cleared on next attempt
+  saveErrorMsg: string | null = null;
   // QA8 FIX-10: separate bag for the form-status subscriptions added inside
   // setFormGroup(). Replaced on every call so multiple editJob$ emissions
   // don't accumulate duplicate statusChanges listeners across the lifetime of
@@ -137,6 +143,37 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.jobFacade.success$
         .pipe().subscribe(this.afterSubmit.bind(this))
+    );
+
+    // F-08 UX: subscribe to job error stream to surface 403/404/500 messages.
+    // Clears the loading/saving-draft spinner on any error so the user can retry.
+    // jobError$ is state.error, set by saveJobFail/getJobFail/changeJobStatusFail.
+    // We only act when we know a save was in-flight (savingDraft or loading).
+    this.subscriptions.add(
+      this.jobFacade.jobError$
+        .pipe()
+        .subscribe(err => {
+          if (err && (this.savingDraft || this.loading)) {
+            this.savingDraft = false;
+            // Map common error strings to user-safe copy (no security internals exposed)
+            const errStr = typeof err === 'string' ? err.toLowerCase() : '';
+            if (errStr.includes('permission') || errStr.includes('access') || errStr.includes('not found')) {
+              this.saveErrorMsg = "We couldn't update this job. It may no longer exist or you may not have access.";
+            } else if (errStr.includes('review') || errStr.includes('missing') || errStr.includes('required') || errStr.includes('field')) {
+              this.saveErrorMsg = "Please review the highlighted fields.";
+            } else if (errStr.includes('session') || errStr.includes('token') || errStr.includes('expired') || errStr.includes('unauthorized') || errStr.includes('401')) {
+              this.saveErrorMsg = "Your session has expired. Please sign in again.";
+            } else {
+              this.saveErrorMsg = "We couldn't update this job. Try again.";
+            }
+            this.cd.markForCheck();
+          } else if (!err) {
+            // Error cleared — reset message only if not still showing success
+            if (!this.saveSuccessPulse) {
+              this.saveErrorMsg = null;
+            }
+          }
+        })
     );
 
     // QA7 FIX-9: track loading$ in the subscriptions bag so it is cleaned up on destroy.
@@ -383,11 +420,18 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   async saveAsDraft() {
+    // F-08 UX: set draft-saving spinner, clear prior error before attempt
+    this.savingDraft = true;
+    this.saveErrorMsg = null;
+    this.saveSuccessPulse = false;
     const job: Model.Job = this.formatJob(1);
     this.jobFacade.saveJob(job);
   }
 
   publishJobPost() {
+    // F-08 UX: clear prior error before each publish attempt
+    this.saveErrorMsg = null;
+    this.saveSuccessPulse = false;
     const job: Model.Job = this.formatJob(2);
 
     // B04 V5: Interview questions are now optional for publish.
@@ -468,6 +512,14 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   afterSubmit(event) {
+    // F-08 UX: clear any pending loading/error state on backend success
+    this.savingDraft = false;
+    this.saveErrorMsg = null;
+    if (event) {
+      // Brief success pulse — clears automatically after 2s
+      this.saveSuccessPulse = true;
+      setTimeout(() => { this.saveSuccessPulse = false; this.cd.markForCheck(); }, 2000);
+    }
     if (event == 'asDraft') {
       const draft = this.dialog.open(UpdatedDialogComponent, {
         disableClose: true,

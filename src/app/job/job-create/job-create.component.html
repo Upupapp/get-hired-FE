@@ -20,17 +20,36 @@
       <div class="mt-2" [ngClass]="delayControl ? 'd-none' : 'adjust-flex'">
         <!-- <span class="text-primary-red cursor-pointer me-2"
         (click)="saveAsDraft()" *ngIf="initialFormValid && status === 1">Save as Draft</span> -->
+        <!-- F-08 UX: draft button shows spinner while saving, disabled to prevent duplicate clicks -->
         <button
             *ngIf="initialFormValid && status === 1"
-            class="btn btn-create-interview me-2"
+            class="btn btn-create-interview btn-draft-save me-2"
             (click)="saveAsDraft()"
+            [disabled]="savingDraft || loading"
+            [attr.aria-label]="savingDraft ? 'Saving draft...' : 'Save as Draft'"
           >
-            Save as Draft
+            <span *ngIf="!savingDraft">Save as Draft</span>
+            <span *ngIf="savingDraft" class="btn-draft-loading" aria-live="polite">
+              <span class="draft-spinner" aria-hidden="true"></span>
+              Saving...
+            </span>
           </button>
 
-          <button class="btn btn-create-interview me-2" (click)="cancel()">
+          <button class="btn btn-create-interview me-2 btn-back-cancel" (click)="cancel()"
+            [attr.aria-label]="'Cancel and go back'">
             Cancel
           </button>
+
+          <!-- F-08 UX: success pulse — brief green check shown after backend success -->
+          <span *ngIf="saveSuccessPulse" class="save-success-pulse" role="status" aria-live="polite" aria-label="Saved successfully">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+          </span>
+
+          <!-- F-08 UX: error message for 403/404/500 — never shows security internals -->
+          <div *ngIf="saveErrorMsg" class="save-error-alert" role="alert" aria-live="assertive">
+            <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+            {{ saveErrorMsg }}
+          </div>
       </div>
 
       <app-main-stepper
