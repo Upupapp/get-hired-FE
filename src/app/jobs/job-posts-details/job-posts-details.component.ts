@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, OnDestroy, Input, Output, EventEmitter, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
@@ -57,7 +58,8 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     private normalizer: PublicJobNormalizerService,
     private jobSignals: JobSignalsService,
     private titleService: Title,
-    private structuredData: JobStructuredDataService
+    private structuredData: JobStructuredDataService,
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.jobId = this.route.snapshot.params['id']
   }
@@ -83,7 +85,9 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    this.screenSize = window.innerWidth;
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenSize = window.innerWidth;
+    }
   }
 
   goBack() {

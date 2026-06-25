@@ -3,13 +3,15 @@
 <div class="job-detail-error-state" *ngIf="(jobError$ | async) && !(loading$ | async) && !(details$ | async)" role="alert" aria-live="assertive">
   <ng-container *ngIf="(jobError$ | async) as errMsg">
     <h5>{{ errMsg === 'Unable to load this job for the current session.' ? 'Session required' : 'This job isn\'t available' }}</h5>
-    <p>{{ errMsg === 'Unable to load this job for the current session.' ? 'We couldn\'t load this job for your current session. Please sign in again.' : 'It may have expired, been removed, or the link may be incorrect.' }}</p>
-    <a *ngIf="errMsg === 'Unable to load this job for the current session.'" routerLink="/signin" class="btn btn-apply-now me-2">Sign In</a>
-    <button type="button" class="btn btn-apply-now" (click)="goToJobsList()">Browse all jobs</button>
+    <p>{{ errMsg === 'Unable to load this job for the current session.' ? 'Sign in to view this job.' : 'It may have expired, been removed, or the link may be incorrect.' }}</p>
+    <div class="gh-error-cta-row">
+      <a *ngIf="errMsg === 'Unable to load this job for the current session.'" routerLink="/signin" class="btn btn-apply-now">Sign In</a>
+      <button type="button" class="btn btn-outline-secondary" (click)="goToJobsList()">Browse all jobs</button>
+    </div>
   </ng-container>
 </div>
 
-<section *ngIf="details$ | async as selectedJobPost">
+<section *ngIf="details$ | async as selectedJobPost" class="gh-job-content-reveal">
   <div class="p-0" style="overflow-x: hidden;" id="banner" *ngIf="withBanner">
     <div class="row">
       <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">

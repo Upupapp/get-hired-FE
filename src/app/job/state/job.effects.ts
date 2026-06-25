@@ -321,8 +321,11 @@ export class JobEffects {
             ];
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(JobActions.getJobFail({ payload: error }))
+            // BE 403/401 use { message: "..." }; other BE errors use { error: "..." }.
+            // Normalise so the reducer and UI always receive a string.
+            const body = (err && err.error) || {};
+            const payload: string = body.error || body.message || 'Unable to load this job. Please try again.';
+            return of(JobActions.getJobFail({ payload }))
           })
         )
       )

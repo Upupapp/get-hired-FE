@@ -29,11 +29,10 @@
   animation: gh-job-detail-reveal $motion-duration-card $motion-ease-decelerate both;
 }
 
-.bg-applied {
-  animation: gh-applied-chip-reveal $motion-duration-micro $motion-ease-standard both;
-}
+// (bg-applied animation merged into the existing .bg-applied block below)
 
 .btn-apply-now {
+  min-height: 44px;
   &:active {
     transform: scale($gh-scale-press);
     transition: transform $motion-duration-micro $motion-ease-standard;
@@ -48,6 +47,7 @@
 .gh-job-skeleton {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 800px 100%;
+  will-change: background-position;
   animation: gh-skeleton-shimmer 1.4s infinite linear;
   border-radius: 6px;
   height: 20px;
@@ -98,6 +98,7 @@
   margin: 48px auto;
   text-align: center;
   padding: 32px 24px;
+  animation: gh-error-banner-reveal $motion-duration-micro $motion-ease-standard both;
 
   h5 {
     font-weight: 700;
@@ -107,6 +108,13 @@
   p {
     color: #6b7280;
     margin-bottom: 16px;
+  }
+
+  .gh-error-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
   }
 }
 
@@ -131,7 +139,8 @@
 	font-style: 'Manrope';
 	font-size: 12px;
 	font-weight: 500;
-	color: #464646
+	color: #464646;
+	animation: gh-applied-chip-reveal $motion-duration-micro $motion-ease-standard both;
 }
 
 #banner{
