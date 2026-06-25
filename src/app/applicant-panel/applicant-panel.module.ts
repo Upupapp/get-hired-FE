@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 import { ApplicantPanelComponent } from './applicant-panel.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ApplicantDashboardComponent } from './applicant-dashboard/applicant-dashboard.component';
@@ -77,6 +78,7 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    A11yModule,
     CoreModule,
     ApplicantModule,
     ReactiveFormsModule,

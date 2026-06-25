@@ -23,5 +23,10 @@ Disallow: /reset-password
 Disallow: /change-password
 Disallow: /verify
 
+# Prevent indexing paginated/filtered search result pages (duplicate content).
+# The meta-robots noindex in PublicSearchComponent is a JS-rendered fallback;
+# this Disallow rule ensures crawl budget is not spent on search result pages.
+Disallow: /jobs/search/
+
 # Sitemap location
 Sitemap: https://gethiredonline.app/sitemap.xml

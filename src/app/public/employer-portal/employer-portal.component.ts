@@ -86,7 +86,7 @@ export class EmployerPortalComponent implements OnInit {
   ngOnInit(): void {
     // SEO: employer portal page metadata
     this.seoService.setPageMeta({
-      title: 'Post Jobs and Hire Online in the Philippines | GetHired Online',
+      title: 'Post Jobs and Hire in the Philippines | GetHired Online',
       description: 'Post jobs, review structured applicants, and manage your hiring process with GetHired Online — the modern hiring platform for the Philippines.',
       canonical: 'https://gethiredonline.app/employers',
       robots: 'index, follow',

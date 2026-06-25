@@ -34,7 +34,9 @@
        class="gh-admin-mobile-drawer"
        [class.gh-admin-mobile-drawer--open]="mobileNavOpen"
        role="navigation"
-       aria-label="Admin navigation">
+       aria-label="Admin navigation"
+       cdkTrapFocus
+       [cdkTrapFocusAutoCapture]="mobileNavOpen">
 
     <div class="gh-admin-drawer-header">
       <img src="assets/images/placeholder/logo.png"
@@ -91,23 +93,7 @@
         </a>
       </li>
       <li role="listitem">
-        <a routerLink="/admin/jobs"
-           routerLinkActive="gh-admin-drawer-nav-item--active"
-           [routerLinkActiveOptions]="{exact:false}"
-           #rla2="routerLinkActive"
-           [attr.aria-current]="rla2.isActive ? 'page' : null"
-           class="gh-admin-drawer-nav-item"
-           (click)="closeMobileNav()">
-          <svg class="gh-admin-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <rect x="2" y="7" width="20" height="14" rx="2"/>
-            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-          </svg>
-          <span class="gh-admin-drawer-nav-label">Jobs</span>
-        </a>
-      </li>
-      <li role="listitem">
-        <a routerLink="/admin/companies"
+        <a routerLink="/admin/users"
            routerLinkActive="gh-admin-drawer-nav-item--active"
            [routerLinkActiveOptions]="{exact:false}"
            #rla3="routerLinkActive"
@@ -116,27 +102,12 @@
            (click)="closeMobileNav()">
           <svg class="gh-admin-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
-          <span class="gh-admin-drawer-nav-label">Companies</span>
-        </a>
-      </li>
-      <li role="listitem">
-        <a routerLink="/admin/reports"
-           routerLinkActive="gh-admin-drawer-nav-item--active"
-           [routerLinkActiveOptions]="{exact:false}"
-           #rla4="routerLinkActive"
-           [attr.aria-current]="rla4.isActive ? 'page' : null"
-           class="gh-admin-drawer-nav-item"
-           (click)="closeMobileNav()">
-          <svg class="gh-admin-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <line x1="18" y1="20" x2="18" y2="10"/>
-            <line x1="12" y1="20" x2="12" y2="4"/>
-            <line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-          <span class="gh-admin-drawer-nav-label">Reports</span>
+          <span class="gh-admin-drawer-nav-label">Users</span>
         </a>
       </li>
     </ul>
@@ -182,34 +153,6 @@
         <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
       </svg>
       <span class="gh-admin-mobile-nav-label">Users</span>
-    </a>
-    <a routerLink="/admin/jobs" routerLinkActive="gh-admin-mobile-nav-item--active"
-      class="gh-admin-mobile-nav-item" aria-label="Jobs">
-      <svg class="gh-admin-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" aria-hidden="true" focusable="false">
-        <rect x="2" y="7" width="20" height="14" rx="2"/>
-        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-      </svg>
-      <span class="gh-admin-mobile-nav-label">Jobs</span>
-    </a>
-    <a routerLink="/admin/companies" routerLinkActive="gh-admin-mobile-nav-item--active"
-      class="gh-admin-mobile-nav-item" aria-label="Companies">
-      <svg class="gh-admin-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" aria-hidden="true" focusable="false">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
-      </svg>
-      <span class="gh-admin-mobile-nav-label">Companies</span>
-    </a>
-    <a routerLink="/admin/reports" routerLinkActive="gh-admin-mobile-nav-item--active"
-      class="gh-admin-mobile-nav-item" aria-label="Reports">
-      <svg class="gh-admin-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" aria-hidden="true" focusable="false">
-        <line x1="18" y1="20" x2="18" y2="10"/>
-        <line x1="12" y1="20" x2="12" y2="4"/>
-        <line x1="6" y1="20" x2="6" y2="14"/>
-      </svg>
-      <span class="gh-admin-mobile-nav-label">Reports</span>
     </a>
   </nav>
 

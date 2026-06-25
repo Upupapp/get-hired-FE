@@ -22,7 +22,7 @@
   position: relative !important;
   background-color: $color-global-sidebar-applicant-gray !important;
   overflow-x: hidden !important;
-  overflow-y: none !important;
+  overflow-y: visible !important;
   margin-bottom: 30px !important;
 }
 
@@ -35,7 +35,7 @@
   background-color: inherit !important;
   min-height: 70vh;
   margin-bottom: 0 !important;
-  overflow-y: none !important;
+  overflow-y: visible !important;
 }
 
 #sidebar-container {
@@ -226,7 +226,7 @@
     color: rgba(255,255,255,0.55); text-decoration: none;
     min-width: 44px; min-height: 44px; padding: 4px 8px;
     border-radius: 8px; cursor: pointer; outline: none;
-    &:focus-visible { outline: 2px solid rgba(255,112,98,0.85); outline-offset: 2px; }
+    &:focus-visible { outline: 2px solid rgba($color-global-red-buttons, 0.85); outline-offset: 2px; }
     &--active { color: $color-global-red-buttons; }
   }
   &-icon { width: 22px; height: 22px; margin-bottom: 2px; }

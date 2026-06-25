@@ -49,30 +49,36 @@ img, video, iframe {
   min-height: 44px;
 }
 
-// ─── MOBILEVIEW Pass 2 BL-001: Form control touch targets ───────────────────
+// ─── MOBILEVIEW Pass 2: Mobile utility fixes (BL-001, BL-004, BL-009, BL-014) ─
+// Merged from four separate 767px blocks to reduce CSS parse overhead.
 @media (max-width: 767px) {
+  // BL-001: Form control touch targets
   .form-control,
   .mat-form-field-infix input,
   .mat-select-trigger {
     min-height: 44px;
   }
-}
 
-// ─── MOBILEVIEW Pass 2 BL-004: Snackbar above bottom nav ────────────────────
-@media (max-width: 767px) {
+  // BL-004: Snackbar above bottom nav
   .mat-snack-bar-container {
     margin-bottom: 80px !important;
   }
-}
 
-// ─── MOBILEVIEW Pass 2 BL-009: Dropdown touch targets ───────────────────────
-@media (max-width: 767px) {
+  // BL-009: Dropdown touch targets
   .dropdown-item {
     padding-top: 12px;
     padding-bottom: 12px;
   }
   .mat-option {
     min-height: 48px;
+  }
+
+  // BL-014: Profile tabs overflow at mobile
+  .mat-tab-header {
+    overflow-x: auto;
+  }
+  .mat-tab-label-container {
+    overflow: visible;
   }
 }
 
@@ -86,16 +92,6 @@ img, video, iframe {
     text-align: center;
     float: none !important;
     width: 100%;
-  }
-}
-
-// ─── MOBILEVIEW Pass 2 BL-014: Profile tabs overflow at mobile ───────────────
-@media (max-width: 767px) {
-  .mat-tab-header {
-    overflow-x: auto;
-  }
-  .mat-tab-label-container {
-    overflow: visible;
   }
 }
 
@@ -283,7 +279,6 @@ body {
 .btn-outline-primary {
   border: solid 2px $color-global-red-buttons;
   color: $color-global-red-buttons;
-  transition: all 0.1s ease;
   background: transparent;
   border-radius: 1232px;
 	padding: 10px;

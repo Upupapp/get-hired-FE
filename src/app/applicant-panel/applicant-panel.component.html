@@ -35,7 +35,9 @@
        class="gh-ap-mobile-drawer"
        [class.gh-ap-mobile-drawer--open]="mobileNavOpen"
        role="navigation"
-       aria-label="Applicant navigation">
+       aria-label="Applicant navigation"
+       cdkTrapFocus
+       [cdkTrapFocusAutoCapture]="mobileNavOpen">
 
     <div class="gh-ap-drawer-header">
       <img src="assets/images/placeholder/logo.png"
@@ -92,7 +94,7 @@
         </a>
       </li>
       <li role="listitem">
-        <a routerLink="/user/jobs"
+        <a routerLink="/jobs"
            routerLinkActive="gh-ap-drawer-nav-item--active"
            [routerLinkActiveOptions]="{exact:false}"
            #rla2="routerLinkActive"
@@ -121,22 +123,6 @@
             <polyline points="14 2 14 8 20 8"/>
           </svg>
           <span class="gh-ap-drawer-nav-label">Applications</span>
-        </a>
-      </li>
-      <li role="listitem">
-        <a routerLink="/user/video-answers"
-           routerLinkActive="gh-ap-drawer-nav-item--active"
-           [routerLinkActiveOptions]="{exact:false}"
-           #rla4="routerLinkActive"
-           [attr.aria-current]="rla4.isActive ? 'page' : null"
-           class="gh-ap-drawer-nav-item"
-           (click)="closeMobileNav()">
-          <svg class="gh-ap-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <polygon points="23 7 16 12 23 17 23 7"/>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-          </svg>
-          <span class="gh-ap-drawer-nav-label">Video Answers</span>
         </a>
       </li>
     </ul>
@@ -178,7 +164,7 @@
   <!-- MOBILEVIEW: Applicant mobile bottom nav bar -->
   <nav class="gh-ap-mobile-nav d-flex d-md-none" aria-label="Mobile applicant navigation" role="navigation">
     <a routerLink="/user/dashboard" routerLinkActive="gh-ap-mobile-nav-item--active"
-      class="gh-ap-mobile-nav-item" aria-label="Dashboard">
+      class="gh-ap-mobile-nav-item" aria-label="Home">
       <svg class="gh-ap-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2" aria-hidden="true" focusable="false">
         <rect x="3" y="3" width="7" height="7"/>
@@ -188,8 +174,8 @@
       </svg>
       <span class="gh-ap-mobile-nav-label">Home</span>
     </a>
-    <a routerLink="/user/jobs" routerLinkActive="gh-ap-mobile-nav-item--active"
-      class="gh-ap-mobile-nav-item" aria-label="Find Jobs">
+    <a routerLink="/jobs" routerLinkActive="gh-ap-mobile-nav-item--active"
+      class="gh-ap-mobile-nav-item" aria-label="Jobs">
       <svg class="gh-ap-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2" aria-hidden="true" focusable="false">
         <rect x="2" y="7" width="20" height="14" rx="2"/>
@@ -198,7 +184,7 @@
       <span class="gh-ap-mobile-nav-label">Jobs</span>
     </a>
     <a routerLink="/user/applications" routerLinkActive="gh-ap-mobile-nav-item--active"
-      class="gh-ap-mobile-nav-item" aria-label="Applications">
+      class="gh-ap-mobile-nav-item" aria-label="Applied">
       <svg class="gh-ap-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2" aria-hidden="true" focusable="false">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -214,15 +200,6 @@
         <path d="M5.5 21a8.38 8.38 0 0 1 13 0"/>
       </svg>
       <span class="gh-ap-mobile-nav-label">Profile</span>
-    </a>
-    <a routerLink="/user/video-answers" routerLinkActive="gh-ap-mobile-nav-item--active"
-      class="gh-ap-mobile-nav-item" aria-label="Video Answers">
-      <svg class="gh-ap-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" aria-hidden="true" focusable="false">
-        <polygon points="23 7 16 12 23 17 23 7"/>
-        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-      </svg>
-      <span class="gh-ap-mobile-nav-label">Video</span>
     </a>
   </nav>
 </section>

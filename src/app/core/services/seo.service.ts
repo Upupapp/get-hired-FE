@@ -31,7 +31,7 @@ const BASE_URL = 'https://gethiredonline.app';
 const SITE_NAME = 'GetHired Online';
 const DEFAULT_DESCRIPTION =
   'Find jobs, build your profile, post jobs, and manage hiring with GetHired Online — the modern hiring platform for the Philippines.';
-const DEFAULT_OG_IMAGE = `${BASE_URL}/assets/brand/gethired-og-default.png`;
+const DEFAULT_OG_IMAGE = `${BASE_URL}/assets/images/logo.png`;
 
 /**
  * Centralized SEO service for GetHired Online.
@@ -104,9 +104,13 @@ export class SeoService {
       this.meta.updateTag({ name: 'twitter:image', content: ogImage });
     }
 
-    // Canonical link element
+    // Canonical link element — set when provided, clear when omitted
+    // so that noindex pages (signin, 404, search results) never carry
+    // a stale canonical from the previous route.
     if (canonical) {
       this.setCanonical(canonical);
+    } else {
+      this.clearCanonical();
     }
   }
 
@@ -137,6 +141,17 @@ export class SeoService {
       doc.head.appendChild(link);
     }
     link.setAttribute('href', url);
+  }
+
+  /** Remove the canonical <link> element entirely.
+   * Called automatically by setPageMeta() when no canonical URL is supplied,
+   * so noindex pages (signin, 404, search results) do not inherit a stale
+   * canonical from the previously visited route.
+   */
+  clearCanonical(): void {
+    if (!this.isBrowser) return;
+    const link = document.querySelector('link[rel="canonical"]');
+    if (link) link.remove();
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -392,9 +407,13 @@ export class SeoService {
       // use the result in JSON-LD text, not re-rendered HTML.
       return html.replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, ' ').trim();
     }
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || div.innerText || '';
+    // SECURE-V3 S1 FIX: Use <textarea> to decode HTML entities without
+    // parsing tags or firing inline event handlers (onerror/onload do NOT
+    // execute on textarea.innerHTML — unlike div.innerHTML which can fire
+    // onerror handlers on <img> tags even when detached from the DOM).
+    const ta = document.createElement('textarea');
+    ta.innerHTML = html;
+    return ta.value.replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, ' ').trim();
   }
 
   private mapEmploymentType(jobTypeName: string | undefined): string | null {

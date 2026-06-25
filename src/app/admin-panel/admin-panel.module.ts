@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 import { AdminPanelComponent } from './admin-panel.component';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminSidebarComponent } from './admin-sidebar/admin-sidebar.component';
@@ -34,6 +35,7 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    A11yModule,
     CoreModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature('admin', adminReducer),
