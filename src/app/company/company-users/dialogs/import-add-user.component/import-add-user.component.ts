@@ -77,7 +77,7 @@ export class ImportAddUserComponent implements OnInit {
             this.snackBar.open(`${successCount} sent. ${failureCount} couldn't be added.`, '', { duration: 6000, panelClass: 'warning-snackbar' });
           } else {
             // successCount === 0 — all failed; never show a success toast
-            this.snackBar.open('No contacts were added.', '', { duration: 6000, panelClass: 'danger-snackbar' });
+            this.snackBar.open('No invites were sent.', '', { duration: 6000, panelClass: 'danger-snackbar' });
           }
         }
         // this.company.dispatch({

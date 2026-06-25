@@ -240,6 +240,7 @@ body {
 
 .success-snackbar {
   background-color: $color-global-red-buttons;
+  color: #ffffff;
 }
 
 // QA8 BRAND FIX-A: danger-snackbar was used in 13 files as a panelClass but
@@ -251,13 +252,16 @@ body {
 }
 
 // NOTIFY-P2: outcome-specific toast classes for partial success and no-op results.
+// BRAND-FIX: #f59e0b (amber-400) had only 2.15:1 contrast vs white — WCAG AA fail.
+// Replaced with $color-warning-amber (#b45309, amber-800) = 5.02:1 — WCAG AA pass.
+// $color-info-gray (#6b7280) = 4.83:1 — already passes WCAG AA, now tokenized.
 .warning-snackbar {
-  background-color: #f59e0b;
+  background-color: $color-warning-amber;
   color: #ffffff;
 }
 
 .info-snackbar {
-  background-color: #6b7280;
+  background-color: $color-info-gray;
   color: #ffffff;
 }
 

@@ -131,6 +131,8 @@ export class CompanyUsersComponent implements OnInit {
       ImportAddUserComponent,
       {
         width: '34vw',
+        maxWidth: '100vw',    // MOBILEVIEW: prevent overflow on small screens
+        maxHeight: '90vh',    // MOBILEVIEW: ensure dialog scrolls on mobile
         data: event,
       }
     );

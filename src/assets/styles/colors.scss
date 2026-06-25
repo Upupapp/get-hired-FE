@@ -24,3 +24,10 @@ $color-global-sidebar-applicant-gray: #F6F7FB;
 $color-pipeline-accent: #7c83fd;   // pipeline bar accent / avatar gradient
 $color-teal-accent: #2dd4bf;       // avatar gradient teal
 
+// NOTIFY-P2 toast semantic tokens
+// #b45309 = Tailwind amber-800: 5.02:1 contrast vs white (WCAG AA pass).
+// Original #f59e0b (amber-400) only achieves 2.15:1 — fails WCAG AA.
+$color-warning-amber: #b45309;
+// #6b7280 = Tailwind gray-500: 4.83:1 contrast vs white (WCAG AA pass).
+$color-info-gray: #6b7280;
+
