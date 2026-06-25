@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 .verify {
   text-decoration: underline;
@@ -391,3 +392,63 @@ input.ng-invalid.ng-dirty.ng-touched {
   height: auto;
   width: 100%;
 }
+
+// ─── BL-012: Signin carousel mobile fix ──────────────────────────────────────
+// The carousel lives in .bg-left which has min-height:100vh.  Below lg the
+// Bootstrap grid stacks columns, so the carousel panel fills the viewport
+// before the form is ever seen.  The carousel column is hidden via
+// d-none d-lg-block in the template; the rules below handle remaining risks.
+
+// Form column: full height on mobile, centered content, safe-area padding.
+.gh-signin-form-col {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+
+  // Prevent form from extending beyond viewport width on narrow screens.
+  max-width: 100%;
+  overflow-x: hidden;
+
+  @media (max-width: 575px) {
+    padding-left: 16px;
+    padding-right: 16px;
+    // iOS safe-area insets (notch / home indicator)
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+}
+
+// Carousel Bootstrap slide transition: respect reduced-motion.
+// Bootstrap's own transition uses .carousel-item, .active, .carousel-item-start, etc.
+// The global styles.scss already zeroes animation-duration/transition-duration under
+// prefers-reduced-motion; this is belt-and-suspenders for the carousel specifically.
+.carousel-item {
+  @include motion-safe;
+}
+
+// ── Form card: subtle entrance reveal ───────────────────────────────────────
+// Layered on top of the existing @animate Angular animation.
+// Reduced-motion: animation removed; element appears at rest immediately.
+@keyframes gh-trust-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Applied to the form card wrapper inside .gh-signin-form-col.
+// The Angular @animate trigger fires on void => *, this CSS animation
+// targets the card itself on first paint (applies once, fill-mode forwards).
+.gh-signin-form-col .card {
+  animation: gh-trust-reveal 0.3s ease-out both;
+  @include motion-safe;
+}
+
+// ── Sign-in CTA button: tap compression ──────────────────────────────────────
+// gh-pressable (from _motion.scss) already provides scale(0.985) on :active
+// with motion-safe fallback.  The btn-submit hover style is preserved below.
+// No additional overrides needed — gh-pressable is applied in the template.
+

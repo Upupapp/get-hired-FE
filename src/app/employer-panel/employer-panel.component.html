@@ -41,11 +41,17 @@
        role=navigation + aria-label gives screen readers the landmark.
        Escape is handled globally via @HostListener in the component.
        id=gh-mobile-drawer is referenced by aria-controls on the button. -->
+  <!-- BL-011: cdkTrapFocus keeps keyboard/screen-reader focus inside the drawer
+       while it is open. cdkTrapFocusAutoCapture=true moves focus into the drawer
+       as soon as mobileNavOpen becomes true (without requiring manual setTimeout).
+       Focus is returned to the hamburger button by closeMobileNav() in the TS. -->
   <nav id="gh-mobile-drawer"
        class="gh-mobile-drawer"
        [class.gh-mobile-drawer--open]="mobileNavOpen"
        role="navigation"
-       aria-label="Employer navigation">
+       aria-label="Employer navigation"
+       cdkTrapFocus
+       [cdkTrapFocusAutoCapture]="mobileNavOpen">
 
     <!-- Drawer header: branding + close button -->
     <div class="gh-drawer-header">

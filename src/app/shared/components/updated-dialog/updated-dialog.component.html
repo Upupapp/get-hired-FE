@@ -2,7 +2,8 @@
   <i class="bi bi-check-circle fa-lg"></i>
   <h5 class="fs-5">{{ data }}</h5>
   <div class="w-100 my-4">
-    <button type="button" (click)="closeDialog()" class="btn btn-primary px-4">
+    <!-- BL-011: cdkFocusInitial — focus lands on the only action button on dialog open. -->
+    <button type="button" (click)="closeDialog()" class="btn btn-primary px-4" cdkFocusInitial>
       Close
     </button>
   </div>

@@ -12,12 +12,15 @@
             *ngIf="!isVideoRecording && !previewBlob"
             class="placeholder-img">
 
-          <video #videoElement class="w-100" height="auto" controls autoplay="autoplay" [src]="videoBlobUrl"
-            *ngIf="isVideoRecording"></video>
+          <div class="gh-recorder-preview" *ngIf="isVideoRecording">
+            <video #videoElement class="w-100" height="auto" controls autoplay="autoplay" [src]="videoBlobUrl"></video>
+          </div>
 
-          <video #previewElement
-            class="w-100 wala-lang" height="auto" controls autoplay="autoplay" [src]="previewBlob"
-            *ngIf="!isVideoRecording && previewBlob" style="max-height: 380px; border-radius: 16px"></video>
+          <div class="gh-recorder-preview" *ngIf="!isVideoRecording && previewBlob">
+            <video #previewElement
+              class="w-100 wala-lang" height="auto" controls autoplay="autoplay" [src]="previewBlob"
+              style="border-radius: 16px"></video>
+          </div>
 
           <div class="bg-bottom w-100" *ngIf="!videoBlob">
             <div class="d-flex">
@@ -28,16 +31,16 @@
                 </h5>
               </div>
 
-              <div class="d-flex align-items-center">
-                <button class="btn btn-take-interview me-2 text-truncate" (click)="startRecorder()"
+              <div class="d-flex align-items-center gh-recorder-controls">
+                <button class="btn btn-take-interview me-2 text-truncate gh-recorder-btn-primary" (click)="startRecorder()"
                   *ngIf="!isVideoRecording">
                   <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
                   {{ 'INTERVIEW_PAGE_SECTION.START_BUTTON' | translate }}
                 </button>
-                <button class="btn btn-settings me-2" (click)="openInterviewSettings()" *ngIf="!isVideoRecording">
+                <button class="btn btn-settings me-2 gh-recorder-btn-secondary" (click)="openInterviewSettings()" *ngIf="!isVideoRecording">
                   <img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
                 </button>
-                <button class="btn btn-take-interview text-truncate" (click)="stopRecorder()" *ngIf="isVideoRecording">
+                <button class="btn btn-take-interview text-truncate gh-recorder-btn-primary gh-recorder-recording-pulse" (click)="stopRecorder()" *ngIf="isVideoRecording">
                   <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
                   Stop Recorder
                 </button>
@@ -111,21 +114,21 @@
           <div class="col-12 col-lg-6">
             <input #uploadFile hidden type="file" (change)="uploadVideo($event)"
               accept="video/mp4,video/x-m4v,video/*" />
-            <button class="btn btn-upload w-100  text-truncate" (click)="uploadFile.click()" type="button">
+            <button class="btn btn-upload w-100 text-truncate gh-recorder-btn-secondary" (click)="uploadFile.click()" type="button">
               {{ 'INTERVIEW_PAGE_SECTION.UPLOAD_VIDEO_BUTTON' | translate }}
               <img src="/assets/images/placeholder/icons/interview-upload.png" style="height: 10px" class="ms-2">
             </button>
           </div>
 
           <div class="col-12 col-lg-6">
-            <button class="btn btn-skip w-100  text-truncate" (click)="skipInterview()" type="button">
+            <button class="btn btn-skip w-100 text-truncate gh-recorder-btn-secondary" (click)="skipInterview()" type="button">
               {{ 'INTERVIEW_PAGE_SECTION.SKIP_INTERVIEW_BUTTON' | translate }}
               <img src="/assets/images/placeholder/icons/next-interview.png" style="height: 10px" class="ms-2">
             </button>
           </div>
 
           <div class="col-12 col-lg-12 mt-3">
-            <button class="btn btn-submit w-100 text-start  text-truncate" type="button"
+            <button class="btn btn-submit w-100 text-start text-truncate gh-recorder-btn-secondary" type="button"
             *ngIf="previewBlob" (click)="submitRecording(interviews[index].questionId, index)">
               Submit Recording
               <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 12px"

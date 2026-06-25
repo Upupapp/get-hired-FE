@@ -197,60 +197,126 @@
     </table>
   </div>
 
-  <!-- TABLE DATA MOBILE -->
-  <div id="table-container-mobile" class="d-block d-md-none">
-    <table class="table mt-0 pt-0" mat-table matSort [dataSource]="dataSource" *ngIf="!loading">
-      <ng-container *ngFor="let header of displayedColumns; index as cindex" [matColumnDef]="header?.col_name">
-        <tr class="w-100" *matCellDef="let data">
-          <td class="w-100">
-            <span class="flex-wrap ms-2" *ngIf="header?.col_name === 'first_name'
-						&& header?.col_name !== 'icon'
-						&& header?.col_name !== 'action'
-						&& header?.col_name !== 'profile_image'">
-              {{ data.first_name }} {{data.last_name}}
-            </span>
+  <!-- TABLE DATA MOBILE
+       BL-006/BL-007 FIX: Replaced the broken second mat-table (which caused a
+       MatSort conflict, used *matCellDef on <tr> instead of <td>, and hid action
+       buttons) with a pure *ngFor card list that reads from dataSource.data.
+       - No duplicate Angular Material directives = no ViewChild conflict.
+       - All columns, actions (menu/delete), status buttons, and action_button
+         columns are rendered — same data visible as on desktop.
+       - Pagination and search operate on dataSource.data (driven by the component
+         logic that already updates dataSource.data), so cards stay in sync.
+       - gh-mobile-card animation + tap compression applied per haptic spec.
+  -->
+  <div id="table-container-mobile" class="d-block d-md-none" *ngIf="!loading && listDataSource?.length > 0">
+    <div class="gh-mobile-card"
+         *ngFor="let data of dataSource.data"
+         (click)="selectRows(data)"
+         (dblclick)="viewDetailDialog(data)"
+         [ngClass]="selectedRows.indexOf(data) > -1 ? 'gh-mobile-card--selected' : ''">
 
-            <ng-container>
-              <span *ngIf="header?.col_name !== 'profile_image'
-							 && header?.col_name !== 'icon'
-							 && header?.col_name !== 'action'
-							 && header?.type !== 'date'
-							 && header?.col_name !== 'status'
-               && header?.col_name !== 'members'" [ngClass]="header?.type === 'hash_code' ? 'order-number' : ''">
-                <!-- TRUE | FALSE VALUE CONVERT TO YES OR NO -->
+      <!-- Profile image (avatar row) if the column exists -->
+      <div class="gh-mobile-card__avatar" *ngIf="hasColumn('profile_image')">
+        <img [src]="data?.profile_image" alt="Profile" class="gh-mobile-avatar-img">
+      </div>
 
-                {{header?.title}}:
+      <!-- First name + last name as card title when the column exists -->
+      <div class="gh-mobile-card__title" *ngIf="hasColumn('first_name')">
+        {{ data.first_name }} {{ data.last_name }}
+      </div>
+
+      <!-- Status badge -->
+      <div class="gh-mobile-card__status" *ngIf="hasColumn('status') && data['status']">
+        <button class="btn btn-status"
+                [ngClass]="data['status']?.split(' ').join('-').toLowerCase()">
+          {{ data['status'] }}
+        </button>
+      </div>
+
+      <!-- Data fields: render all columns that are not special types -->
+      <div class="gh-mobile-card__fields">
+        <ng-container *ngFor="let header of displayedColumns">
+          <!-- Skip columns rendered separately or non-displayable on mobile -->
+          <ng-container *ngIf="header?.col_name !== 'profile_image'
+                              && header?.col_name !== 'first_name'
+                              && header?.col_name !== 'icon'
+                              && header?.col_name !== 'action'
+                              && header?.col_name !== 'delete'
+                              && header?.col_name !== 'status'
+                              && header?.col_name !== 'members'
+                              && header?.col_name !== 'groups'
+                              && header?.type !== 'action_button'">
+
+            <div class="gh-mobile-card__field" *ngIf="header?.type !== 'date'">
+              <span class="gh-mobile-card__label">{{ header?.title }}:</span>
+              <span [ngClass]="header?.type === 'hash_code' ? 'order-number' : 'gh-mobile-card__value'">
                 <ng-container *ngIf="header?.type === 'currency'">$</ng-container>
                 {{
-                (
-                data[header?.col_name] === true ? 'Yes'
-                : data[header?.col_name] === false ? 'No'
-                : data[header?.col_name]
-                ) || '-'
+                  (
+                    data[header?.col_name] === true ? 'Yes'
+                    : data[header?.col_name] === false ? 'No'
+                    : data[header?.col_name]
+                  ) || '-'
                 }}
               </span>
+            </div>
 
-              <span *ngIf="header?.type === 'date'">
-                {{header?.title}}: {{ data[header?.col_name] | date: 'dd-MM-yyyy' || '-'}}
-              </span>
+            <div class="gh-mobile-card__field" *ngIf="header?.type === 'date'">
+              <span class="gh-mobile-card__label">{{ header?.title }}:</span>
+              <span class="gh-mobile-card__value">{{ data[header?.col_name] | date: 'dd-MM-yyyy' }}</span>
+            </div>
+          </ng-container>
 
-              <span *ngIf="header?.col_name === 'status'">
-                <button class="btn btn-status" [ngClass]="data[header?.col_name]?.split(' ').join('-').toLowerCase()">
-                  {{ data[header?.col_name] }} </button>
-              </span>
+          <!-- members column -->
+          <div class="gh-mobile-card__field" *ngIf="header?.col_name === 'members'">
+            <span class="gh-mobile-card__label">{{ header?.title }}:</span>
+            <button class="btn btn-member" (click)="redirectTo(data); $event.stopPropagation()">
+              {{ data['members'] }}
+            </button>
+          </div>
 
-              <span *ngIf="header?.col_name == 'profile_image'" class="table_img">
-                <img [src]="data?.profile_image">
-              </span>
-            </ng-container>
-          </td>
-        </tr>
-      </ng-container>
+          <!-- groups column -->
+          <div class="gh-mobile-card__field" *ngIf="header?.col_name === 'groups'">
+            <span class="gh-mobile-card__label">{{ header?.title }}:</span>
+            <div>
+              <p class="group--label mb-0" *ngFor="let g of data['groups']">
+                <span>{{ g.group_name }}</span>
+              </p>
+            </div>
+          </div>
 
-      <!-- <tr mat-header-row *matHeaderRowDef="selectedColumns"></tr> -->
-      <tr mat-row *matRowDef="let row; let i = index; columns: selectedColumnsMobile;" (click)="selectRows(row)"
-        (dblclick)="viewDetailDialog(row)" [ngClass]="selectedRows.indexOf(row) > -1 ? 'bg-selected': ''"></tr>
-    </table>
+          <!-- action_button column -->
+          <div class="gh-mobile-card__field" *ngIf="header?.type === 'action_button'">
+            <button class="btn d-flex" (click)="customButtonFunction(data); $event.stopPropagation()"
+                    [ngClass]="header?.button_class">
+              <img [src]="header?.button_logo" style="height: 21px" *ngIf="header?.button_logo" class="me-1" aria-hidden="true">
+              <ng-container *ngIf="header?.col_name === 'view_group'">
+                <div class="group-number">{{ data['groups']?.length }}</div>
+              </ng-container>
+              {{ header?.button_title }}
+            </button>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Action buttons (menu / delete) — critical actions preserved on mobile -->
+      <div class="gh-mobile-card__actions"
+           *ngIf="hasColumn('action') || hasColumn('icon')">
+        <button type="button" class="gh-mobile-card__action-btn"
+                aria-label="Open menu"
+                (click)="openDialog('menu', data); $event.stopPropagation()">
+          <img src="/assets/images/placeholder/icons/menu.png"
+               class="menu-image" alt="Menu" style="width:28px;">
+        </button>
+        <button type="button" class="gh-mobile-card__action-btn gh-mobile-card__action-btn--delete"
+                aria-label="Delete"
+                *ngIf="data.status != 'Archived'"
+                (click)="openDialog('delete', data); $event.stopPropagation()">
+          <img src="/assets/images/placeholder/icons/delete-circle-red.png"
+               class="delete-image" alt="Delete" style="width:30px;">
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- NAVIGATOR DETAILS -->

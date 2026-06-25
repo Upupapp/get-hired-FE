@@ -286,6 +286,13 @@ export class ReusableTableComponent implements OnInit {
     });
   }
 
+  /** BL-006/BL-007: Helper used by the mobile card template to check whether
+   *  a given column name exists in the displayedColumns configuration.
+   *  Avoids repeated *ngFor scanning inside the template. */
+  hasColumn(colName: string): boolean {
+    return this.displayedColumns.some(h => h?.col_name === colName);
+  }
+
   redirectTo(rowData:any) {
     this.router.navigate([`recruiter/contacts/group-list/${rowData.group_id}`]);
   }

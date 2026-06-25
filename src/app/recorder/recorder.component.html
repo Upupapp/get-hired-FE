@@ -47,13 +47,13 @@
         </div>
       </div>
 
-      <div style="position: absolute; right: 0; top: 0">
-        <button class="btn btn-take-interview text-truncate my-2" (click)="startVideoRecording()"
+      <div class="gh-recorder-controls" style="position: absolute; right: 0; top: 0">
+        <button class="btn btn-take-interview text-truncate my-2 gh-recorder-btn-primary" (click)="startVideoRecording()"
           *ngIf="!isVideoRecording">
           <img src="/assets/images/placeholder/icons/record.png" class="h-100 me-1">
           Start Recording
         </button>
-        <button class="btn btn-take-interview my-2 text-truncate" (click)="stopVideoRecording()"
+        <button class="btn btn-take-interview my-2 text-truncate gh-recorder-btn-primary gh-recorder-recording-pulse" (click)="stopVideoRecording()"
           *ngIf="isVideoRecording">
           <img src="/assets/images/stop.png" class="h-100 me-1">
           Stop Recorder
@@ -67,12 +67,12 @@
       <app-recorder-setting></app-recorder-setting>
     </div>
 
-    <div class="mt-2">
-      <button class="btn btn-primary my-1 w-100" (click)="previewVideoRecording()" [disabled]="!videoBlob">
+    <div class="mt-2 gh-recorder-controls" style="flex-direction: column; align-items: stretch;">
+      <button class="btn btn-primary my-1 w-100 gh-recorder-btn-secondary" (click)="previewVideoRecording()" [disabled]="!videoBlob">
         View Recording
       </button>
       <input #uploadFile hidden type="file" (change)="upload($event)" accept="video/mp4,video/x-m4v,video/*" />
-      <button class="btn btn-primary w-100 btn-block mb-3" (click)="uploadFile.click()">
+      <button class="btn btn-primary w-100 btn-block mb-3 gh-recorder-btn-secondary" (click)="uploadFile.click()">
         <i class="bi bi-cloud-upload me-3"></i>
         Upload Video Instead
       </button>

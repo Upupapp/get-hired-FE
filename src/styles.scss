@@ -458,14 +458,73 @@ label {
   //position: absolute !important;
 }
 
-@media only screen and (max-width: 768px) {
+// ─── BL-010: Mobile dialog → bottom-sheet CSS conversion ─────────────────────
+// On screens ≤767px ALL simple dialogs (confirm/cancel, success, subscription
+// alerts, action menus) slide up from the bottom like a bottom sheet.
+// Desktop always keeps the centred MatDialog behaviour (unchanged).
+//
+// Transformation rules applied here:
+//   - Simple confirm/cancel     → bottom-sheet on mobile (CSS only, no TS change)
+//   - Short selection/action    → bottom-sheet on mobile (CSS only, no TS change)
+//   - Complex forms/media       → full-screen mobile dialog (NOT converted here)
+//
+// Animation: 220ms decelerate curve per _motion.scss tokens.
+// Reduced-motion: instant appearance, no transform.
+
+@keyframes gh-sheet-reveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media only screen and (max-width: 767px) {
+  // Position the CDK overlay pane flush to the bottom of the viewport.
+  // !important needed because MatDialog injects inline styles.
+  .cdk-overlay-pane {
+    max-width: 100vw !important;
+    width: 100% !important;
+  }
+
+  // Slide the container up from the bottom (bottom-sheet pattern).
   .mat-dialog-container,
   .dialog-responsive {
     width: 100% !important;
+    max-width: 100vw !important;
     margin: 0 !important;
-    padding: 0 !important;
-    height: auto;
-    overflow: auto !important;
+    padding: 16px !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    // Bottom-sheet shape: rounded top corners only
+    border-radius: 16px 16px 0 0 !important;
+    // Entry animation
+    @media (prefers-reduced-motion: no-preference) {
+      animation: gh-sheet-reveal 0.22s cubic-bezier(0.0, 0.0, 0.2, 1) both;
+    }
+  }
+
+  // Ensure the overlay backdrop aligns properly when dialog is at bottom
+  .cdk-global-overlay-wrapper {
+    align-items: flex-end !important;
+    justify-content: center !important;
+  }
+}
+
+// Reduced-motion: skip the sheet-reveal animation entirely.
+@media (prefers-reduced-motion: reduce) {
+  .mat-dialog-container,
+  .mat-bottom-sheet-container {
+    animation: none !important;
+  }
+}
+
+// ─── BL-010: Fix hardcoded min-width on action/control modals ─────────────────
+// table-control-modal and applicant-action-modal have component-level SCSS that
+// forces min-width: 660px even on mobile. Override that here globally so these
+// modals don't clip off-screen at narrow viewports.
+@media only screen and (max-width: 767px) {
+  .dialog-responsive .mat-dialog-container {
+    min-width: unset !important;
+    width: 100% !important;
   }
 }
 

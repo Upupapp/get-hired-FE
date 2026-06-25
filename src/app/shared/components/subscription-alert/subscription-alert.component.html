@@ -10,10 +10,11 @@
     <p class="text-center">
       We regret to inform you that your current plan can no longer accommodate this action.
     </p>
-    <button class="btn btn-primary my-3" (click)="redirect()" style="height: 3rem">
+    <!-- BL-011: cdkFocusInitial — primary CTA receives focus on dialog open. -->
+    <button class="btn btn-primary my-3" (click)="redirect()" style="height: 3rem" cdkFocusInitial>
       Upgrade Now
     </button>
-    <span class="fwt-light text-decoration-underline cursor-pointer" (click)="close()">Cancel</span>
+    <span class="fwt-light text-decoration-underline cursor-pointer" (click)="close()" role="button" tabindex="0">Cancel</span>
   </div>
 </ng-container>
 
@@ -29,9 +30,10 @@
     <p class="text-center">
       You can still continue this action but this won't be viewable on Public.
     </p>
-    <button class="btn btn-primary my-3" (click)="redirect()" style="height: 3rem">
+    <!-- BL-011: cdkFocusInitial — primary CTA receives focus on dialog open. -->
+    <button class="btn btn-primary my-3" (click)="redirect()" style="height: 3rem" cdkFocusInitial>
       Upgrade Now
     </button>
-    <span class="fwt-light text-decoration-underline cursor-pointer" (click)="close()">Continue</span>
+    <span class="fwt-light text-decoration-underline cursor-pointer" (click)="close()" role="button" tabindex="0">Continue</span>
   </div>
 </ng-template>

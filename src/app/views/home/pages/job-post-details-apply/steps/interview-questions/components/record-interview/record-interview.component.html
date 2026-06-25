@@ -9,10 +9,12 @@
 						<img src="/assets/images/placeholder/logo.png">
 					</div>
 
-					<img src="/assets/images/placeholder/record-interview-placeholder.png" class="placeholder-img">
+					<div class="gh-recorder-preview">
+						<img src="/assets/images/placeholder/record-interview-placeholder.png" class="placeholder-img">
+					</div>
 
 					<div class="bg-bottom">
-						<div class="d-flex">
+						<div class="d-flex gh-recorder-controls">
 							<div class="me-3 bg-main-question">
 								<p>Question 1</p>
 								<h5>
@@ -20,14 +22,14 @@
 								</h5>
 							</div>
 
-							<button class="btn btn-take-interview mt-5 me-2 text-truncate" (click)="startRecorder()"> 
+							<button class="btn btn-take-interview me-2 text-truncate gh-recorder-btn-primary" (click)="startRecorder()">
 								<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
 
 								Start Recording
-								
+
 							</button>
 
-							<button class="btn btn-settings mt-5 me-2" (click)="openInterviewSettings()"> 
+							<button class="btn btn-settings me-2 gh-recorder-btn-secondary" (click)="openInterviewSettings()">
 								<img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
 							</button>
 						</div>
@@ -40,18 +42,18 @@
 					</div>
 
 					<div class="bg-bottom">
-						<div class="d-flex">
+						<div class="d-flex gh-recorder-controls">
 							<div class="me-3 bg-main-question">
 								<p>Question 1</p>
 								<h5>
 									{{interview_answers}}
 								</h5>
 							</div>
-							<button class="btn btn-take-interview mt-4 text-truncate" (click)="stopRecorder()"> 
+							<button class="btn btn-take-interview text-truncate gh-recorder-btn-primary gh-recorder-recording-pulse" (click)="stopRecorder()">
 								<img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
 
 								Stop Recorder
-								
+
 							</button>
 						</div>
 					</div>
@@ -133,24 +135,24 @@
 
 				<div class="row mt-4">
 					<div class="col-12 col-lg-6">
-						<button class="btn btn-upload w-100  text-truncate">Upload
-							<img src="/assets/images/placeholder/icons/interview-upload.png" 
+						<button class="btn btn-upload w-100 text-truncate gh-recorder-btn-secondary">Upload
+							<img src="/assets/images/placeholder/icons/interview-upload.png"
 							style="height: 10px" class="ms-2">
 						</button>
 					</div>
 
 					<div class="col-12 col-lg-6">
-						<button class="btn btn-skip w-100  text-truncate">Skip Interview
-							<img src="/assets/images/placeholder/icons/next-interview.png" 
+						<button class="btn btn-skip w-100 text-truncate gh-recorder-btn-secondary">Skip Interview
+							<img src="/assets/images/placeholder/icons/next-interview.png"
 							style="height: 10px" class="ms-2">
 						</button>
 					</div>
-					
+
 					<div class="col-12 col-lg-12 mt-3">
-						<button class="btn btn-submit w-100 text-start  text-truncate" 
+						<button class="btn btn-submit w-100 text-start text-truncate gh-recorder-btn-secondary"
 						*ngIf="startRecording || recordedData">
 							Submit Recording
-							<img src="/assets/images/placeholder/icons/arrow-right-white.png" 
+							<img src="/assets/images/placeholder/icons/arrow-right-white.png"
 							style="height: 12px" class="me-2 float-end">
 						</button>
 					</div>

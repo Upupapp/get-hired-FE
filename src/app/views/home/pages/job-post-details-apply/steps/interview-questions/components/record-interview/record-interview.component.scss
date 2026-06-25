@@ -329,5 +329,89 @@
 	border: 1px solid #AFBCC6 !important;
 }
 
+// ─── BL-015: Mobile touch targets & layout ───────────────────────────────────
 
+// Haptic press effect (all screen sizes, honours reduced-motion)
+.gh-recorder-btn-primary:active {
+  transform: scale(0.93);
+  transition: transform 0.08s ease;
+}
 
+// Recording pulse animation
+.gh-recorder-recording-pulse {
+  animation: gh-rec-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gh-rec-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-recorder-recording-pulse { animation: none; }
+  .gh-recorder-btn-primary:active { transform: none; }
+}
+
+@media (max-width: 767px) {
+  // Primary record/stop button: WCAG 2.5.5 minimum 56×56
+  .gh-recorder-btn-primary {
+    min-height: 56px;
+    min-width: 56px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Secondary controls: minimum 44×44
+  .gh-recorder-btn-secondary {
+    min-height: 44px;
+    padding: 0 20px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  // Video preview locked to 16:9
+  .gh-recorder-preview {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+
+    video,
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  // Control row: centred, wrappable, gapped
+  .gh-recorder-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+
+  // Prevent question overlay from clipping off-screen at 320px
+  .record-container .bg-bottom {
+    position: static;
+    padding: 12px 12px 4px 12px;
+    bottom: unset;
+    left: unset;
+  }
+
+  .record-container .bg-main-question {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  // Ensure record container expands to fit content on mobile
+  .record-container {
+    min-height: unset;
+    height: auto;
+  }
+}

@@ -961,16 +961,146 @@ tr:last-child{
 	}
 }
 
-// ─── MOBILEVIEW: Table responsive card override ───────────────────────────────
-// Applied when the table wrapper has class .gh-responsive-table.
-// At mobile, hide header row and display each mat-row as a card with
-// data-label based cell labels for visual context.
+// ─── MOBILEVIEW BL-006/BL-007: Mobile card list for reusable-table ──────────
+// Replaces the broken second mat-table. Cards are pure Angular (*ngFor over
+// dataSource.data), no Angular Material directives, no MatSort conflict.
+// Reveal animation + tap compression per haptic spec. Reduced-motion safe.
+
+@keyframes gh-card-reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#table-container-mobile {
+  padding: 4px 0;
+
+  .gh-mobile-card {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    animation: gh-card-reveal 220ms ease-out both;
+
+    // Tap compression haptic
+    &:active {
+      transform: scale(0.985);
+      transition: transform 0.1s;
+    }
+
+    // Selected state
+    &--selected {
+      background: rgba($color-blue-primary, 0.06);
+      border-color: rgba($color-blue-primary, 0.25);
+    }
+
+    &__avatar {
+      margin-bottom: 10px;
+
+      .gh-mobile-avatar-img {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+
+    &__title {
+      font-weight: 700;
+      font-size: 14px;
+      color: #222;
+      margin-bottom: 6px;
+    }
+
+    &__status {
+      margin-bottom: 8px;
+    }
+
+    &__fields {
+      margin-bottom: 8px;
+    }
+
+    &__field {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      padding: 3px 0;
+      font-size: 13px;
+      color: #404040;
+      flex-wrap: wrap;
+    }
+
+    &__label {
+      font-weight: 600;
+      color: #5a5a5a;
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    &__value {
+      color: #404040;
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      margin-top: 6px;
+    }
+
+    &__action-btn {
+      background: none;
+      border: none;
+      padding: 6px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      transition: background 120ms ease;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $color-blue-primary;
+        outline-offset: 2px;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+
+      &--delete:active {
+        background: rgba(#FBCCCC, 0.6);
+      }
+    }
+  }
+
+  // Reduced-motion: disable card-reveal animation and tap compression transforms
+  @media (prefers-reduced-motion: reduce) {
+    .gh-mobile-card {
+      animation: none;
+
+      &:active {
+        transform: none;
+      }
+
+      .gh-mobile-card__action-btn:active {
+        transform: none;
+      }
+    }
+  }
+}
+
 @media (max-width: 767px) {
   section { overflow-x: hidden; }
-
-  .gh-table-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-  }
 }

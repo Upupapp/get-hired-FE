@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 import { EmployerPanelComponent } from './employer-panel.component';
 import { RouterModule, Routes } from '@angular/router';
 import { EmployerDashboardComponent } from './employer-dashboard/employer-dashboard.component';
@@ -67,6 +68,7 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    A11yModule,
     CoreModule,
     MatDialogModule,
     SharedModule,
