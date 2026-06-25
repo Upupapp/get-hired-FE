@@ -74,8 +74,11 @@ export class JobService {
     return this.baseService.get<any>(`${environment.api_url}/job/applicant/snapshot-summary?applicationId=${encodeURIComponent(applicationId)}`);
   }
 
-  getJobBasicList(companyId: string) {
-    return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist?id=${companyId}`);
+  // P2-01 FIX: removed dead ?id= param — BE now derives company from the
+  // authenticated caller's JWT (getUserCompany(req.user.uid)) and ignores
+  // any caller-supplied id. Sending it was harmless but misleading.
+  getJobBasicList(_companyId?: string) {
+    return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/basiclist`);
   }
 
   getJobById(jobId: string) {
@@ -85,8 +88,9 @@ export class JobService {
     return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}&uid=${uid}`);
   }
 
-  getJobExpiredList(companyId: string) {
-    return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/expiredlist?id=${companyId}`);
+  // P2-01 FIX: removed dead ?id= param — BE now derives company from JWT.
+  getJobExpiredList(_companyId?: string) {
+    return this.baseService.get<Model.BasicList[]>(`${this.jobUrl}/expiredlist`);
   }
 
   getIndustryList() {

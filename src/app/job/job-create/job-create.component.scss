@@ -23,7 +23,14 @@
 	z-index: 99 !important;
 	padding: 20px 20px 10px 25px;
 	min-height: 170px;
-	transition: all 0.4s ease !important;
+	// BRAND AUDIT FIX-1: scope the transition to only the properties that
+	// actually change (position+top via [ngStyle]) and guard it for
+	// prefers-reduced-motion. "transition: all" was triggering on every
+	// change-detection cycle for unrelated properties.
+	transition: top 0.3s ease, opacity 0.3s ease;
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
 }
 
 .bg-gray{
@@ -138,6 +145,9 @@
 }
 
 // B04: Publish button micro-scale press effect (reduced-motion-safe)
+// BRAND AUDIT FIX-2: merged into single rule block below to avoid overrides.
+// The duplicate definition above (line 65) keeps hover/shape styles; this
+// block adds only the interaction tokens.
 .btn-add-service {
   transition: transform 0.1s ease, background 0.15s ease;
   @media (prefers-reduced-motion: reduce) {
@@ -145,6 +155,9 @@
   }
   &:active {
     transform: scale(0.97);
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
   }
 }
 

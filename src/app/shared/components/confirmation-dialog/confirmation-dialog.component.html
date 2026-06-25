@@ -1,8 +1,10 @@
 <div class="card card-body">
-  <div class="border-solid">
+  <!-- BRAND AUDIT FIX-4/5: destructive border when caller sets data.destructive=true
+       (e.g. permanent job deletion). Falls back to standard border for all other callers. -->
+  <div [ngClass]="data.destructive ? 'border-solid-destructive' : 'border-solid'">
     <div class="d-flex p-1">
       <img src="/assets/images/placeholder/icons/info-red.png" class="mt-1"
-      style="height: 34px">
+      style="height: 34px" aria-hidden="true">
 
       <div class="ms-3">
         <h5 class="title-label">{{ data.action }} Confirmation</h5>
@@ -21,8 +23,11 @@
         {{ 'DELETE_WARNING.CANCEL_BUTTON' | translate }}
       </button>
 
+      <!-- BRAND AUDIT FIX-4: use btn-destructive class when data.destructive=true
+           to signal irreversibility clearly. Standard btn-primary for all other callers. -->
       <button type="button" (click)="submit(1)"
-      class="btn btn-primary px-2 me-2">
+      [ngClass]="data.destructive ? 'btn btn-destructive px-2 me-2' : 'btn btn-primary px-2 me-2'"
+      [attr.aria-label]="data.destructive ? 'Confirm permanent deletion' : null">
         {{ 'DELETE_WARNING.CONTINUE_BUTTON' | translate }}
       </button>
     </div>
