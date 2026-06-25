@@ -270,6 +270,7 @@ label {
 // ─── SEO Phase 21 — Skeleton loading (public job list / job detail) ──────────
 // Shimmer animation respects prefers-reduced-motion: disabled entirely when
 // the user has requested reduced motion (no slow-down, full removal).
+// Tokens from _motion.scss are in scope via the @import above.
 
 @keyframes gh-skeleton-shimmer {
   0%   { background-position: -400px 0; }
@@ -282,9 +283,12 @@ label {
   animation: gh-skeleton-shimmer 1.4s infinite linear;
   border-radius: 4px;
   display: block;
+  // BRAND-FIX: use ambient-motion-safe mixin (consistent with _motion.scss pattern)
+  @include ambient-motion-safe;
 
+  // Static fallback when motion is disabled — neutral grey, still communicates
+  // "loading" without any visual movement.
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
     background: #ececec;
   }
 }
@@ -327,19 +331,27 @@ label {
   }
 }
 
-// Job card hover lift — public /jobs page
-// Reduced-motion: lift is skipped; still gets a subtle background tint.
+// Job card hover lift utility — for card types that don't have component-level
+// hover defined. Note: .job-card already has a better implementation in its
+// own component SCSS using $motion-duration-card and @include motion-safe.
+// BRAND-FIX: now uses motion tokens + motion-safe mixin for consistency.
 .gh-job-card-hover {
-  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform $motion-duration-micro $motion-ease-standard,
+              box-shadow $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY($gh-lift);           // -2px from token
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    // Tint fallback is applied in reduced-motion block below
+    background-color: rgba(0, 0, 0, 0.02);    // nearly invisible — hover signal only
   }
 
   @media (prefers-reduced-motion: reduce) {
     transition: background-color 120ms;
-    &:hover { transform: none; }
+    &:hover {
+      transform: none;
+      background-color: rgba(0, 0, 0, 0.04);  // slightly stronger tint as the only feedback
+    }
   }
 }

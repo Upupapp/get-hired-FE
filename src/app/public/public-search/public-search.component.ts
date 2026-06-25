@@ -62,8 +62,8 @@ export class PublicSearchComponent implements OnInit {
         ? `"${kw}" Jobs in the Philippines | GetHired Online`
         : 'Job Search Results | GetHired Online',
       description: kw
-        ? `Search results for "${kw}" jobs in the Philippines on GetHired Online.`
-        : 'Search and browse job opportunities in the Philippines on GetHired Online.',
+        ? `Find "${kw}" jobs in the Philippines on GetHired Online. Browse matching roles, filter by work setup and job type, and apply online.`
+        : 'Search and filter thousands of job opportunities in the Philippines on GetHired Online. Browse by role, work setup, and job type.',
       canonical: 'https://gethiredonline.app/jobs',
       robots: 'noindex, follow',
     });

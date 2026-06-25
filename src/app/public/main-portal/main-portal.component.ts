@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { CoreService } from '@app-core/services/core.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
@@ -68,14 +67,11 @@ export class MainPortalComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private titleService: Title,
     private haptics: HapticFeedbackService,
     private coreService: CoreService,
     private analytics: PublicPortalAnalyticsService,
     private seoService: SeoService,
-  ) {
-    this.titleService.setTitle('GetHired Online | Jobs and Hiring Platform');
-  }
+  ) { }
 
   ngOnInit(): void {
     // SEO: set canonical metadata, OG tags, structured data for homepage

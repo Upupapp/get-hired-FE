@@ -221,9 +221,13 @@ export class SeoService {
       title: job.jobTitle || '',
       description: this.stripHtml(job.jobDescription || ''),
       datePosted: this.toIso(job.createdAt),
+      // FIX: API returns company_name (snake_case); match the same fallback
+      // chain used in public-details.component.ts line 41.
+      // companyDetails is a bio/description field — only use as last resort.
       hiringOrganization: {
         '@type': 'Organization',
-        name: job.companyName || job.companyDetails || '',
+        name: (job as any).company_name || job.companyName || (job as any).companyDetails || '',
+        ...(job.companyLogoUrl ? { logo: job.companyLogoUrl } : {}),
       },
       jobLocation: {
         '@type': 'Place',
@@ -234,6 +238,17 @@ export class SeoService {
         },
       },
       url: `${BASE_URL}/jobs/details/${job.jobId}`,
+      // directApply: true signals that users can apply without leaving this site,
+      // enabling the "Apply on site" badge in Google for Jobs.
+      directApply: true,
+      // identifier helps Google deduplicate this posting across job boards.
+      ...(job.jobId ? {
+        identifier: {
+          '@type': 'PropertyValue',
+          name: 'GetHired Online',
+          value: job.jobId,
+        },
+      } : {}),
     };
 
     // Only include validThrough if an expirationDate exists
@@ -249,6 +264,17 @@ export class SeoService {
 
     // Salary: only include when both min and max are present and non-zero
     if (job.salaryMinimum && job.salaryMaximum && job.salaryCurrency) {
+      // FIX: normalize job.rate to valid Schema.org QuantitativeValue unitText.
+      // job.rate may be 'monthly', 'hourly', etc. — not Schema.org-valid as-is.
+      // .toUpperCase() alone gives 'HOURLY' which is NOT a valid value; must map.
+      const RATE_MAP: Record<string, string> = {
+        hourly: 'HOUR', hour: 'HOUR',
+        daily: 'DAY', day: 'DAY',
+        weekly: 'WEEK', week: 'WEEK',
+        monthly: 'MONTH', month: 'MONTH',
+        annual: 'YEAR', annually: 'YEAR', yearly: 'YEAR', year: 'YEAR',
+      };
+      const unitText = RATE_MAP[(job.rate || '').toLowerCase()] || 'MONTH';
       ld.baseSalary = {
         '@type': 'MonetaryAmount',
         currency: job.salaryCurrency,
@@ -256,7 +282,7 @@ export class SeoService {
           '@type': 'QuantitativeValue',
           minValue: job.salaryMinimum,
           maxValue: job.salaryMaximum,
-          unitText: job.rate ? job.rate.toUpperCase() : 'MONTH',
+          unitText,
         },
       };
     }
@@ -376,10 +402,13 @@ export class SeoService {
     const n = jobTypeName.toLowerCase();
     if (n.includes('full')) return 'FULL_TIME';
     if (n.includes('part')) return 'PART_TIME';
-    if (n.includes('contract')) return 'CONTRACTOR';
+    // intern check must precede 'contract' to avoid intern matching 'contract'
     if (n.includes('internship') || n.includes('intern')) return 'INTERN';
-    if (n.includes('freelance')) return 'CONTRACTOR';
+    if (n.includes('contract') || n.includes('freelance')) return 'CONTRACTOR';
     if (n.includes('temporary') || n.includes('temp')) return 'TEMPORARY';
-    return null;
+    if (n.includes('volunteer')) return 'VOLUNTEER';
+    // Return OTHER so the field is always present for known-but-unmapped types.
+    // Omitting employmentType entirely reduces Google for Jobs eligibility.
+    return 'OTHER';
   }
 }

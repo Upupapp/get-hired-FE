@@ -51,7 +51,7 @@ export class PublicCompanyDetailsComponent implements OnInit {
     ).subscribe((company: any) => {
       this.seoService.setPageMeta({
         title: `${company.companyName} | GetHired Online`,
-        description: `Learn about ${company.companyName} and view their open jobs on GetHired Online.`,
+        description: `Explore ${company.companyName} on GetHired Online — view their company profile and open job positions in the Philippines.`,
         canonical: `https://gethiredonline.app/companies/details?id=${this.companyId}`,
         robots: 'index, follow',
       });
@@ -108,10 +108,11 @@ export class PublicCompanyDetailsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    // Clear company-specific breadcrumb structured data when leaving this page
+    this.seoService.clearBreadcrumbJsonLd();
     if(this.link$) {
       this.link$.unsubscribe();
     }
-
   }
 
 }

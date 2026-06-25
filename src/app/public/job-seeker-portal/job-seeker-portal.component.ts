@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
 import { JobsFacade } from '@main/jobs/state/jobs.facade';
@@ -74,14 +73,11 @@ export class JobSeekerPortalComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private titleService: Title,
     private haptics: HapticFeedbackService,
     private jobsFacade: JobsFacade,
     private analytics: PublicPortalAnalyticsService,
     private seoService: SeoService,
-  ) {
-    this.titleService.setTitle('Find Jobs Online | GetHired Online');
-  }
+  ) { }
 
   ngOnInit(): void {
     this.jobsFacade.getPublishedList(undefined);

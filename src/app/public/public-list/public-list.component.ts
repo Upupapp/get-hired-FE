@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { SeoService } from '@app-core/services/seo.service';
   templateUrl: './public-list.component.html',
   styleUrls: ['./public-list.component.scss']
 })
-export class PublicListComponent implements OnInit {
+export class PublicListComponent implements OnInit, OnDestroy {
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -42,6 +42,11 @@ export class PublicListComponent implements OnInit {
 
   async getUserRole() {
     this.userRole = await this.asyncLocalStorage.getItem('role') || null;
+  }
+
+  ngOnDestroy(): void {
+    // Clear list-page breadcrumb when navigating away to avoid stale JSON-LD
+    this.seoService.clearBreadcrumbJsonLd();
   }
 
   @HostListener('window:resize', ['$event'])

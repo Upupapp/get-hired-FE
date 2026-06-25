@@ -42,7 +42,7 @@ export class SigninComponent implements OnInit {
     // SEO Phase 5: sign-in is not a public indexable page
     this.seoService.setPageMeta({
       title: 'Sign In | GetHired Online',
-      description: 'Sign in to your GetHired Online account.',
+      description: 'Sign in to your GetHired Online account to access your dashboard, manage applications, and continue your job search.',
       robots: 'noindex, nofollow',
     });
     this.onAlertClose();

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
@@ -79,13 +78,10 @@ export class EmployerPortalComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private titleService: Title,
     private haptics: HapticFeedbackService,
     private analytics: PublicPortalAnalyticsService,
     private seoService: SeoService,
-  ) {
-    this.titleService.setTitle('Hire Employees Online | GetHired for Employers');
-  }
+  ) { }
 
   ngOnInit(): void {
     // SEO: employer portal page metadata
