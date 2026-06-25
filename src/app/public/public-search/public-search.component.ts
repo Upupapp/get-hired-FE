@@ -2,10 +2,11 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
-import { 
-  Router, 
-  ActivatedRoute 
+import {
+  Router,
+  ActivatedRoute
 } from '@angular/router';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-public-search',
@@ -25,9 +26,11 @@ export class PublicSearchComponent implements OnInit {
   public work_setup: string = 'Work Setup';  
   public job_type: string = 'Job Type';
 
-  constructor(private router:Router, 
-    private activatedRoute: ActivatedRoute,) { 
-  }
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private seoService: SeoService,
+  ) { }
 
   asyncLocalStorage = {
     setItem: async function (key, value) {
@@ -50,6 +53,20 @@ export class PublicSearchComponent implements OnInit {
     this.work_setup = this.jobSearch?.work_setup ?? 'Work Setup';
     this.job_type = this.jobSearch?.job_type ?? 'Job Type';
     this.getUserRole();
+
+    // SEO Phase 8: search results — canonical points to /jobs (no query params).
+    // Use noindex on paginated/filtered search results to avoid duplicate content.
+    const kw = this.keyword;
+    this.seoService.setPageMeta({
+      title: kw
+        ? `"${kw}" Jobs in the Philippines | GetHired Online`
+        : 'Job Search Results | GetHired Online',
+      description: kw
+        ? `Search results for "${kw}" jobs in the Philippines on GetHired Online.`
+        : 'Search and browse job opportunities in the Philippines on GetHired Online.',
+      canonical: 'https://gethiredonline.app/jobs',
+      robots: 'noindex, follow',
+    });
   }
 
   async getUserRole() {

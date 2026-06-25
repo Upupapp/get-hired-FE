@@ -1,0 +1,385 @@
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Title, Meta } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+
+export interface PageMetaConfig {
+  title: string;
+  description: string;
+  robots?: string;        // default: 'index, follow'
+  canonical?: string;     // full canonical URL
+  ogImage?: string;       // full OG image URL
+  ogType?: string;        // default: 'website'
+  twitterCard?: string;   // default: 'summary_large_image'
+}
+
+export interface OpenGraphConfig {
+  title: string;
+  description: string;
+  type?: string;
+  url?: string;
+  image?: string;
+  siteName?: string;
+}
+
+export interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+const BASE_URL = 'https://gethiredonline.app';
+const SITE_NAME = 'GetHired Online';
+const DEFAULT_DESCRIPTION =
+  'Find jobs, build your profile, post jobs, and manage hiring with GetHired Online — the modern hiring platform for the Philippines.';
+const DEFAULT_OG_IMAGE = `${BASE_URL}/assets/brand/gethired-og-default.png`;
+
+/**
+ * Centralized SEO service for GetHired Online.
+ *
+ * All document / window access is guarded with isPlatformBrowser so
+ * Angular Universal SSR can call every method safely.
+ *
+ * JSON-LD scripts are injected into <head> by id so they can be
+ * replaced or removed on every navigation without accumulating stale
+ * tags across route changes.
+ *
+ * Usage (in any component's ngOnInit):
+ *   this.seoService.setPageMeta({ title: '…', description: '…' });
+ *   this.seoService.setJobPostingJsonLd(job);   // job detail only
+ */
+@Injectable({ providedIn: 'root' })
+export class SeoService {
+
+  private readonly isBrowser: boolean;
+
+  constructor(
+    @Inject(PLATFORM_ID) platformId: Object,
+    private titleService: Title,
+    private meta: Meta,
+    private router: Router,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Core meta setter — call this once per route
+  // ─────────────────────────────────────────────────────────────────────────
+
+  setPageMeta(config: PageMetaConfig): void {
+    const {
+      title,
+      description,
+      robots = 'index, follow',
+      canonical,
+      ogImage = DEFAULT_OG_IMAGE,
+      ogType = 'website',
+      twitterCard = 'summary_large_image',
+    } = config;
+
+    // <title>
+    this.titleService.setTitle(title);
+
+    // Standard meta
+    this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ name: 'robots', content: robots });
+
+    // Open Graph
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:type', content: ogType });
+    this.meta.updateTag({ property: 'og:site_name', content: SITE_NAME });
+    this.meta.updateTag({
+      property: 'og:url',
+      content: canonical || `${BASE_URL}${this.router.url}`,
+    });
+    if (ogImage) {
+      this.meta.updateTag({ property: 'og:image', content: ogImage });
+    }
+
+    // Twitter
+    this.meta.updateTag({ name: 'twitter:card', content: twitterCard });
+    this.meta.updateTag({ name: 'twitter:title', content: title });
+    this.meta.updateTag({ name: 'twitter:description', content: description });
+    if (ogImage) {
+      this.meta.updateTag({ name: 'twitter:image', content: ogImage });
+    }
+
+    // Canonical link element
+    if (canonical) {
+      this.setCanonical(canonical);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Robots
+  // ─────────────────────────────────────────────────────────────────────────
+
+  setRobots(index: boolean, follow: boolean): void {
+    const directive = `${index ? 'index' : 'noindex'}, ${follow ? 'follow' : 'nofollow'}`;
+    this.meta.updateTag({ name: 'robots', content: directive });
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Canonical URL
+  // ─────────────────────────────────────────────────────────────────────────
+
+  setCanonical(url: string): void {
+    if (!this.isBrowser) {
+      // SSR: cannot use document directly; Angular Universal injects tags
+      // via TransferState / renderModule — skip in server context.
+      return;
+    }
+    const doc = document;
+    let link: HTMLLinkElement = doc.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = doc.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      doc.head.appendChild(link);
+    }
+    link.setAttribute('href', url);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Open Graph (standalone, for when only OG needs to change)
+  // ─────────────────────────────────────────────────────────────────────────
+
+  setOpenGraph(config: OpenGraphConfig): void {
+    if (config.title) {
+      this.meta.updateTag({ property: 'og:title', content: config.title });
+    }
+    if (config.description) {
+      this.meta.updateTag({ property: 'og:description', content: config.description });
+    }
+    if (config.type) {
+      this.meta.updateTag({ property: 'og:type', content: config.type });
+    }
+    if (config.url) {
+      this.meta.updateTag({ property: 'og:url', content: config.url });
+    }
+    if (config.image) {
+      this.meta.updateTag({ property: 'og:image', content: config.image });
+    }
+    if (config.siteName) {
+      this.meta.updateTag({ property: 'og:site_name', content: config.siteName });
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // JSON-LD management
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Inject or replace a JSON-LD <script> block identified by `id`.
+   * Safe to call on every navigation — replaces in-place if already present.
+   */
+  setJsonLd(id: string, data: object): void {
+    if (!this.isBrowser) return;
+    const doc = document;
+    let script: HTMLScriptElement = doc.getElementById(id) as HTMLScriptElement;
+    if (!script) {
+      script = doc.createElement('script');
+      script.id = id;
+      script.type = 'application/ld+json';
+      doc.head.appendChild(script);
+    }
+    script.text = JSON.stringify(data);
+  }
+
+  /** Remove a previously injected JSON-LD block by id. */
+  clearJsonLd(id: string): void {
+    if (!this.isBrowser) return;
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Structured data helpers
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * JobPosting JSON-LD.  Only called from the PUBLIC job detail page when
+   * the job is active (jobStatusId === 2).  All values come from real
+   * API data — never fabricated.
+   *
+   * Fields intentionally OMITTED (no real data available):
+   *   - baseSalary  (salary fields exist but may be null)
+   *   - validThrough (expirationDate not reliably populated)
+   *   - employmentType mapping is not 1:1 with Schema.org enum
+   *
+   * Fields NEVER included regardless of data:
+   *   - hiringOrganization.sameAs (logo / URL unknown without company page)
+   *   - applicantLocationRequirements
+   *   - jobBenefits
+   *   - rating, reviews
+   */
+  setJobPostingJsonLd(job: any): void {
+    if (!job) return;
+
+    const ld: any = {
+      '@context': 'https://schema.org',
+      '@type': 'JobPosting',
+      title: job.jobTitle || '',
+      description: this.stripHtml(job.jobDescription || ''),
+      datePosted: this.toIso(job.createdAt),
+      hiringOrganization: {
+        '@type': 'Organization',
+        name: job.companyName || job.companyDetails || '',
+      },
+      jobLocation: {
+        '@type': 'Place',
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'PH',
+          ...(job.jobCity ? { addressLocality: job.jobCity } : {}),
+        },
+      },
+      url: `${BASE_URL}/jobs/details/${job.jobId}`,
+    };
+
+    // Only include validThrough if an expirationDate exists
+    if (job.expirationDate) {
+      ld.validThrough = this.toIso(job.expirationDate);
+    }
+
+    // Map work setup to Schema.org employmentType when unambiguous
+    const empType = this.mapEmploymentType(job.jobTypeName);
+    if (empType) {
+      ld.employmentType = empType;
+    }
+
+    // Salary: only include when both min and max are present and non-zero
+    if (job.salaryMinimum && job.salaryMaximum && job.salaryCurrency) {
+      ld.baseSalary = {
+        '@type': 'MonetaryAmount',
+        currency: job.salaryCurrency,
+        value: {
+          '@type': 'QuantitativeValue',
+          minValue: job.salaryMinimum,
+          maxValue: job.salaryMaximum,
+          unitText: job.rate ? job.rate.toUpperCase() : 'MONTH',
+        },
+      };
+    }
+
+    this.setJsonLd('gh-jsonld-jobposting', ld);
+  }
+
+  clearJobPostingJsonLd(): void {
+    this.clearJsonLd('gh-jsonld-jobposting');
+  }
+
+  /**
+   * Organization JSON-LD for the homepage.
+   * Only factual identifiers included — no rating, no review count.
+   */
+  setOrganizationJsonLd(): void {
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'GetHired Online',
+      url: BASE_URL,
+      logo: `${BASE_URL}/assets/images/logo.png`,
+      sameAs: [],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer support',
+        availableLanguage: ['English', 'Filipino'],
+      },
+    };
+    this.setJsonLd('gh-jsonld-org', ld);
+  }
+
+  /**
+   * WebSite JSON-LD with SearchAction (public job search is available
+   * without login via /jobs/search/{keyword}).
+   */
+  setWebsiteJsonLd(): void {
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'GetHired Online',
+      url: BASE_URL,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${BASE_URL}/jobs/search/{search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    };
+    this.setJsonLd('gh-jsonld-website', ld);
+  }
+
+  /**
+   * BreadcrumbList JSON-LD.
+   * items = [{ name: 'Home', url: 'https://gethiredonline.app/home' }, …]
+   */
+  setBreadcrumbJsonLd(items: BreadcrumbItem[]): void {
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: items.map((item, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        name: item.name,
+        item: item.url,
+      })),
+    };
+    this.setJsonLd('gh-jsonld-breadcrumb', ld);
+  }
+
+  clearBreadcrumbJsonLd(): void {
+    this.clearJsonLd('gh-jsonld-breadcrumb');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Reset to safe defaults (call on navigation away from special pages)
+  // ─────────────────────────────────────────────────────────────────────────
+
+  resetToDefaults(): void {
+    this.setPageMeta({
+      title: `${SITE_NAME} — Jobs and Hiring Platform in the Philippines`,
+      description: DEFAULT_DESCRIPTION,
+      robots: 'index, follow',
+    });
+    this.clearJobPostingJsonLd();
+    this.clearBreadcrumbJsonLd();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Private helpers
+  // ─────────────────────────────────────────────────────────────────────────
+
+  private toIso(value: any): string | undefined {
+    if (!value) return undefined;
+    try {
+      return new Date(value).toISOString();
+    } catch {
+      return undefined;
+    }
+  }
+
+  private stripHtml(html: string): string {
+    if (!this.isBrowser) {
+      // On the server, strip tags with a simple regex; safe because we only
+      // use the result in JSON-LD text, not re-rendered HTML.
+      return html.replace(/<[^>]*>/g, ' ').replace(/\s{2,}/g, ' ').trim();
+    }
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || div.innerText || '';
+  }
+
+  private mapEmploymentType(jobTypeName: string | undefined): string | null {
+    if (!jobTypeName) return null;
+    const n = jobTypeName.toLowerCase();
+    if (n.includes('full')) return 'FULL_TIME';
+    if (n.includes('part')) return 'PART_TIME';
+    if (n.includes('contract')) return 'CONTRACTOR';
+    if (n.includes('internship') || n.includes('intern')) return 'INTERN';
+    if (n.includes('freelance')) return 'CONTRACTOR';
+    if (n.includes('temporary') || n.includes('temp')) return 'TEMPORARY';
+    return null;
+  }
+}

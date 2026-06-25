@@ -266,3 +266,80 @@ label {
     overflow: auto !important;
   }
 }
+
+// ─── SEO Phase 21 — Skeleton loading (public job list / job detail) ──────────
+// Shimmer animation respects prefers-reduced-motion: disabled entirely when
+// the user has requested reduced motion (no slow-down, full removal).
+
+@keyframes gh-skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.gh-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: gh-skeleton-shimmer 1.4s infinite linear;
+  border-radius: 4px;
+  display: block;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: #ececec;
+  }
+}
+
+.gh-skeleton-card {
+  border-radius: 12px;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+
+  .gh-skeleton-title {
+    @extend .gh-skeleton;
+    height: 20px;
+    width: 60%;
+    margin-bottom: 10px;
+  }
+
+  .gh-skeleton-subtitle {
+    @extend .gh-skeleton;
+    height: 14px;
+    width: 40%;
+    margin-bottom: 8px;
+  }
+
+  .gh-skeleton-line {
+    @extend .gh-skeleton;
+    height: 14px;
+    width: 90%;
+    margin-bottom: 6px;
+  }
+
+  .gh-skeleton-tag {
+    @extend .gh-skeleton;
+    height: 24px;
+    width: 80px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-right: 8px;
+  }
+}
+
+// Job card hover lift — public /jobs page
+// Reduced-motion: lift is skipped; still gets a subtle background tint.
+.gh-job-card-hover {
+  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 160ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 120ms;
+    &:hover { transform: none; }
+  }
+}

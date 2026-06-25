@@ -6,7 +6,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { environment } from "@environments/environment";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CompaniesService } from '../companies.service';
-import { catchError, of, Subscription, tap } from 'rxjs';
+import { catchError, of, Subscription, tap, filter, take } from 'rxjs';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-public-company-details',
@@ -32,7 +33,8 @@ export class PublicCompanyDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private clipboard: Clipboard,
     private snackBar: MatSnackBar,
-    private companiesService: CompaniesService
+    private companiesService: CompaniesService,
+    private seoService: SeoService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.companyId = params.id;
@@ -41,6 +43,24 @@ export class PublicCompanyDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.companiesFacade.getCompany(this.companyId);
+
+    // SEO: set company page metadata once data loads
+    this.details$.pipe(
+      filter(company => !!company && !!(company as any).companyName),
+      take(1),
+    ).subscribe((company: any) => {
+      this.seoService.setPageMeta({
+        title: `${company.companyName} | GetHired Online`,
+        description: `Learn about ${company.companyName} and view their open jobs on GetHired Online.`,
+        canonical: `https://gethiredonline.app/companies/details?id=${this.companyId}`,
+        robots: 'index, follow',
+      });
+      this.seoService.setBreadcrumbJsonLd([
+        { name: 'Home', url: 'https://gethiredonline.app/home' },
+        { name: 'Companies', url: 'https://gethiredonline.app/companies' },
+        { name: company.companyName, url: `https://gethiredonline.app/companies/details?id=${this.companyId}` },
+      ]);
+    });
 
     if(this.companyId){
 

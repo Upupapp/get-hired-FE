@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { CoreService } from '@app-core/services/core.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 /**
  * GetHired Public Information Portal -- main role-selection page (GETHIRED
@@ -71,11 +72,22 @@ export class MainPortalComponent implements OnInit {
     private haptics: HapticFeedbackService,
     private coreService: CoreService,
     private analytics: PublicPortalAnalyticsService,
+    private seoService: SeoService,
   ) {
     this.titleService.setTitle('GetHired Online | Jobs and Hiring Platform');
   }
 
   ngOnInit(): void {
+    // SEO: set canonical metadata, OG tags, structured data for homepage
+    this.seoService.setPageMeta({
+      title: 'GetHired Online — Jobs and Hiring Platform in the Philippines',
+      description: 'Find jobs, build your profile, post jobs, and manage hiring with GetHired Online — the modern hiring platform for the Philippines.',
+      canonical: 'https://gethiredonline.app/home',
+      robots: 'index, follow',
+    });
+    this.seoService.setOrganizationJsonLd();
+    this.seoService.setWebsiteJsonLd();
+
     if (this.coreService.isLoggedIn()) {
       this.coreService.getRole().then((role: string) => {
         switch (role) {

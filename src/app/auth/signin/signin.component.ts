@@ -6,6 +6,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
 import { TranslateService } from '@ngx-translate/core';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-signin',
@@ -33,10 +34,17 @@ export class SigninComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private authFacade: AuthFacade
+    private authFacade: AuthFacade,
+    private seoService: SeoService,
   ) { }
 
   ngOnInit(): void {
+    // SEO Phase 5: sign-in is not a public indexable page
+    this.seoService.setPageMeta({
+      title: 'Sign In | GetHired Online',
+      description: 'Sign in to your GetHired Online account.',
+      robots: 'noindex, nofollow',
+    });
     this.onAlertClose();
 
     this.loginForm = this.formBuilder.group({

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 /** GetHired Public Information Portal -- employer page (/employers). */
 @Component({
@@ -11,7 +12,7 @@ import { PublicPortalAnalyticsService } from '@main/public/services/public-porta
   templateUrl: './employer-portal.component.html',
   styleUrls: ['./employer-portal.component.scss'],
 })
-export class EmployerPortalComponent {
+export class EmployerPortalComponent implements OnInit {
   painPoints = [
     { title: 'Hiring is scattered', description: 'Applications, messages, and documents spread across channels.' },
     { title: 'Hard to compare applicants', description: 'Unstructured submissions make review slow.' },
@@ -81,8 +82,19 @@ export class EmployerPortalComponent {
     private titleService: Title,
     private haptics: HapticFeedbackService,
     private analytics: PublicPortalAnalyticsService,
+    private seoService: SeoService,
   ) {
     this.titleService.setTitle('Hire Employees Online | GetHired for Employers');
+  }
+
+  ngOnInit(): void {
+    // SEO: employer portal page metadata
+    this.seoService.setPageMeta({
+      title: 'Post Jobs and Hire Online in the Philippines | GetHired Online',
+      description: 'Post jobs, review structured applicants, and manage your hiring process with GetHired Online — the modern hiring platform for the Philippines.',
+      canonical: 'https://gethiredonline.app/employers',
+      robots: 'index, follow',
+    });
   }
 
   startHiring(): void {

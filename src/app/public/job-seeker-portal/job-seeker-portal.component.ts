@@ -5,6 +5,7 @@ import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/hapt
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
 import { JobsFacade } from '@main/jobs/state/jobs.facade';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 /** GetHired Public Information Portal -- job seeker page (/job-seekers). */
 @Component({
@@ -77,12 +78,21 @@ export class JobSeekerPortalComponent implements OnInit {
     private haptics: HapticFeedbackService,
     private jobsFacade: JobsFacade,
     private analytics: PublicPortalAnalyticsService,
+    private seoService: SeoService,
   ) {
     this.titleService.setTitle('Find Jobs Online | GetHired Online');
   }
 
   ngOnInit(): void {
     this.jobsFacade.getPublishedList(undefined);
+
+    // SEO: job seeker portal page metadata
+    this.seoService.setPageMeta({
+      title: 'Find Jobs in the Philippines | GetHired Online',
+      description: 'Discover job opportunities in the Philippines. Build a profile, upload your CV, and apply for jobs with GetHired Online.',
+      canonical: 'https://gethiredonline.app/job-seekers',
+      robots: 'index, follow',
+    });
   }
 
   searchJobs(): void {

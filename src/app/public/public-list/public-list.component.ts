@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
+import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
   selector: 'app-public-list',
@@ -20,11 +21,23 @@ export class PublicListComponent implements OnInit {
   userRole: string;
   screenSize: number = 1600;
 
-  constructor() { }
+  constructor(private seoService: SeoService) { }
 
   ngOnInit(): void {
     this.screenSize = window.innerWidth;
     this.getUserRole();
+
+    // SEO: canonical jobs list page (no query params in canonical)
+    this.seoService.setPageMeta({
+      title: 'Browse Jobs in the Philippines | GetHired Online',
+      description: 'Search thousands of job opportunities in the Philippines. Apply online and track your applications with GetHired Online.',
+      canonical: 'https://gethiredonline.app/jobs',
+      robots: 'index, follow',
+    });
+    this.seoService.setBreadcrumbJsonLd([
+      { name: 'Home', url: 'https://gethiredonline.app/home' },
+      { name: 'Jobs', url: 'https://gethiredonline.app/jobs' },
+    ]);
   }
 
   async getUserRole() {
