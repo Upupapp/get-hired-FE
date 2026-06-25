@@ -103,6 +103,12 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
           },
         ]
       },
+      // B03: Interviews hub — links to /recruiter/interview.
+      // Added after Candidates so the recruiter pipeline flows naturally:
+      // Dashboard → Jobs → Candidates → Interviews → Messages → Company → Subscription.
+      {
+        title: 'Interviews', icon: 'applicants.png', class: 'interviews', route: 'interview'
+      },
       // B01: Global messages inbox. Uses a chat-bubble icon image. Falls back
       // gracefully if the icon file is absent — the text label is always visible.
       {

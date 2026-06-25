@@ -1,0 +1,149 @@
+<div class="ih-page">
+
+  <!-- Page header -->
+  <div class="ih-header">
+    <div class="ih-header-text">
+      <h1 class="ih-title">Interviews</h1>
+      <p class="ih-subtitle">
+        Review candidates who applied to your jobs and submitted video responses.
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div *ngIf="loading" class="ih-skeleton" aria-busy="true" aria-label="Loading interview activity">
+    <div class="ih-skeleton-filters">
+      <span class="ih-skeleton-chip"></span>
+      <span class="ih-skeleton-chip"></span>
+      <span class="ih-skeleton-chip"></span>
+    </div>
+    <div class="ih-skeleton-cards">
+      <div class="ih-skeleton-card" *ngFor="let n of [1,2,3]">
+        <div class="ih-skeleton-line ih-skeleton-line--name"></div>
+        <div class="ih-skeleton-line ih-skeleton-line--job"></div>
+        <div class="ih-skeleton-line ih-skeleton-line--meta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && error" class="ih-error" role="alert">
+    <div class="ih-error-inner">
+      <p class="ih-error-heading">We couldn't load interview activity.</p>
+      <p class="ih-error-body">
+        This might be a temporary issue. Try again or return to your dashboard.
+      </p>
+      <div class="ih-error-actions">
+        <button class="ih-btn ih-btn--primary" (click)="retry()">
+          Try again
+        </button>
+        <a class="ih-btn ih-btn--ghost" routerLink="/recruiter/dashboard">
+          Back to dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && !error && items.length === 0" class="ih-empty">
+    <div class="ih-empty-inner">
+      <div class="ih-empty-icon" aria-hidden="true">&#9654;</div>
+      <h2 class="ih-empty-heading">No interview activity yet</h2>
+      <p class="ih-empty-body">
+        Candidates will appear here when they apply to your jobs or submit
+        video responses to your interview questions.
+      </p>
+      <div class="ih-empty-actions">
+        <a class="ih-btn ih-btn--primary" routerLink="/recruiter/contacts/candidates">
+          Review applicants
+        </a>
+        <a class="ih-btn ih-btn--ghost" routerLink="/recruiter/jobs">
+          View jobs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content: filter chips + card list -->
+  <div *ngIf="!loading && !error && items.length > 0" class="ih-content">
+
+    <!-- Filter chips -->
+    <div class="ih-filters" role="group" aria-label="Filter interview activity">
+      <button
+        *ngFor="let f of filters"
+        class="ih-filter-chip"
+        [class.ih-filter-chip--active]="activeFilter === f.key"
+        [attr.aria-pressed]="activeFilter === f.key"
+        (click)="setFilter(f.key)">
+        {{ f.label }}
+        <span
+          *ngIf="f.key === 'has-video'"
+          class="ih-filter-count"
+          aria-hidden="true">
+          {{ videoAnswerCount }}
+        </span>
+      </button>
+    </div>
+
+    <!-- No results for current filter -->
+    <div *ngIf="getFilteredItems().length === 0" class="ih-filter-empty">
+      <p>No candidates match this filter.</p>
+    </div>
+
+    <!-- Card list -->
+    <div class="ih-list" role="list" aria-label="Interview activity list">
+      <div
+        *ngFor="let item of getFilteredItems(); trackBy: trackByApplicationId"
+        class="ih-card"
+        role="listitem">
+
+        <div class="ih-card-header">
+          <span class="ih-applicant-name">{{ getDisplayName(item) }}</span>
+          <span
+            class="ih-status-chip"
+            [class]="'ih-status-chip ih-status--' + item.applicationStatusId">
+            {{ item.applicationStatus }}
+          </span>
+        </div>
+
+        <div class="ih-card-job">
+          <span class="ih-card-job-label" aria-label="Job">&#128188;</span>
+          {{ item.jobTitle }}
+        </div>
+
+        <div class="ih-card-meta">
+          <span *ngIf="item.hasVideoAnswers" class="ih-video-badge" aria-label="Video answers submitted">
+            &#9654;
+            {{ item.videoAnswerCount }}
+            video {{ item.videoAnswerCount === 1 ? 'response' : 'responses' }}
+          </span>
+          <span class="ih-date">
+            Applied {{ item.dateApplied | date:'mediumDate' }}
+          </span>
+        </div>
+
+        <div class="ih-card-actions">
+          <a
+            [routerLink]="getCandidateRoute(item)"
+            class="ih-action ih-action--primary">
+            View applicants
+          </a>
+          <a
+            *ngIf="item.hasVideoAnswers"
+            [routerLink]="getVideoReviewRoute(item)"
+            class="ih-action ih-action--secondary">
+            Review responses
+          </a>
+          <a
+            routerLink="/recruiter/messages"
+            class="ih-action ih-action--ghost">
+            Message
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

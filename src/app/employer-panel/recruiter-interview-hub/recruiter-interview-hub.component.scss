@@ -1,0 +1,452 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+// ─── Layout ────────────────────────────────────────────────────────────────
+
+.ih-page {
+  padding: 24px 28px;
+  max-width: 900px;
+}
+
+// ─── Header ────────────────────────────────────────────────────────────────
+
+.ih-header {
+  margin-bottom: 28px;
+  animation: ih-fadein $motion-duration-card $motion-ease-decelerate both;
+  @include ambient-motion-safe;
+}
+
+.ih-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $color-black;
+  margin: 0 0 4px;
+}
+
+.ih-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+@keyframes ih-fadein {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Loading skeleton ───────────────────────────────────────────────────────
+
+.ih-skeleton-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.ih-skeleton-chip {
+  display: inline-block;
+  width: 110px;
+  height: 34px;
+  border-radius: 20px;
+  background: #e5e7eb;
+  animation: ih-shimmer 1.4s ease-in-out infinite;
+  @include ambient-motion-safe;
+}
+
+.ih-skeleton-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ih-skeleton-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+}
+
+.ih-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  animation: ih-shimmer 1.4s ease-in-out infinite;
+  @include ambient-motion-safe;
+
+  &--name  { width: 45%; }
+  &--job   { width: 65%; }
+  &--meta  { width: 30%; }
+}
+
+@keyframes ih-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+// ─── Error state ────────────────────────────────────────────────────────────
+
+.ih-error {
+  padding: 40px 0;
+}
+
+.ih-error-inner {
+  max-width: 420px;
+}
+
+.ih-error-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $color-black;
+  margin: 0 0 8px;
+}
+
+.ih-error-body {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+
+.ih-error-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+// ─── Empty state ────────────────────────────────────────────────────────────
+
+.ih-empty {
+  padding: 60px 0;
+  text-align: center;
+}
+
+.ih-empty-inner {
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.ih-empty-icon {
+  font-size: 2.5rem;
+  color: $color-blue-primary;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.ih-empty-heading {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: $color-black;
+  margin: 0 0 10px;
+}
+
+.ih-empty-body {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.ih-empty-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+// ─── Shared buttons ─────────────────────────────────────────────────────────
+
+.ih-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: transform $motion-duration-micro $motion-ease-standard,
+              background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:active {
+    transform: scale(0.96);
+    @include motion-safe;
+  }
+
+  &--primary {
+    background: $color-blue-primary;
+    color: #fff;
+
+    &:hover {
+      background: $color-blue-dark;
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: $color-black;
+
+    &:hover {
+      background: #f3f4f6;
+    }
+  }
+}
+
+// ─── Filters ────────────────────────────────────────────────────────────────
+
+.ih-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.ih-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              color $motion-duration-micro $motion-ease-standard,
+              border-color $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &--active {
+    background: $color-blue-primary;
+    border-color: $color-blue-primary;
+    color: #fff;
+  }
+
+  &:not(&--active):hover {
+    background: #f3f4f6;
+    border-color: $color-blue-primary;
+  }
+}
+
+.ih-filter-count {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  .ih-filter-chip:not(.ih-filter-chip--active) & {
+    background: $color-blue-light;
+    color: $color-blue-dark;
+  }
+}
+
+.ih-filter-empty {
+  color: #6b7280;
+  font-size: 0.875rem;
+  padding: 20px 0;
+}
+
+// ─── Card list ──────────────────────────────────────────────────────────────
+
+.ih-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ih-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px 20px;
+  transition: transform $motion-duration-card $motion-ease-standard,
+              box-shadow $motion-duration-card $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    transform: translateY($gh-lift);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+    @include motion-safe;
+  }
+
+  &:active {
+    transform: scale(0.99);
+    @include motion-safe;
+  }
+}
+
+.ih-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ih-applicant-name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: $color-black;
+}
+
+// ─── Status chip ────────────────────────────────────────────────────────────
+
+.ih-status-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+
+  // Status ID 1 — Pending Review
+  &.ih-status--1 {
+    background: #fef9c3;
+    color: #854d0e;
+    border-bottom-color: #f59e0b;
+  }
+  // Status ID 2 — Applied
+  &.ih-status--2 {
+    background: #dbeafe;
+    color: #1e40af;
+    border-bottom-color: $color-blue-primary;
+  }
+  // Status ID 3 — Under Review (video answers submitted)
+  &.ih-status--3 {
+    background: #f0fdf4;
+    color: #166534;
+    border-bottom-color: $color-green-secondary;
+  }
+  // Status ID 4 — Shortlisted
+  &.ih-status--4 {
+    background: #faf5ff;
+    color: #581c87;
+    border-bottom-color: $color-pipeline-accent;
+  }
+  // Status ID 5 — Rejected
+  &.ih-status--5 {
+    background: #fef2f2;
+    color: #991b1b;
+    border-bottom-color: $color-global-red;
+  }
+  // Status ID 6 — Hired
+  &.ih-status--6 {
+    background: #f0fdf4;
+    color: #166534;
+    border-bottom-color: $color-green-secondary;
+  }
+}
+
+// ─── Card body ──────────────────────────────────────────────────────────────
+
+.ih-card-job {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 10px;
+
+  .ih-card-job-label {
+    margin-right: 4px;
+  }
+}
+
+.ih-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.ih-video-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: $color-blue-light;
+  color: $color-blue-dark;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.ih-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+// ─── Card actions ───────────────────────────────────────────────────────────
+
+.ih-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ih-action {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:active {
+    transform: scale(0.96);
+    @include motion-safe;
+  }
+
+  &--primary {
+    background: $color-blue-primary;
+    color: #fff;
+
+    &:hover { background: $color-blue-dark; }
+  }
+
+  &--secondary {
+    background: $color-blue-light;
+    color: $color-blue-dark;
+
+    &:hover { background: darken($color-blue-light, 5%); }
+  }
+
+  &--ghost {
+    background: transparent;
+    border: 1px solid #d1d5db;
+    color: #374151;
+
+    &:hover { background: #f3f4f6; }
+  }
+}
+
+// ─── Responsive ─────────────────────────────────────────────────────────────
+
+@media (max-width: 600px) {
+  .ih-page {
+    padding: 16px;
+  }
+
+  .ih-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ih-card-actions {
+    flex-direction: column;
+  }
+
+  .ih-action {
+    width: 100%;
+    justify-content: center;
+  }
+}
