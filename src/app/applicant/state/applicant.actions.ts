@@ -185,9 +185,10 @@ export const applicantDashboardFail = createAction(
   props<{ payload: any }>()
 );
 
+// SEC-01 FIX: no userId prop — identity is resolved server-side from the JWT.
+// Callers dispatch this with no payload; the backend never receives a uid.
 export const getUserProfile = createAction(
-  AllFeatureActionTypes.GetUserProfile,
-  props<{ userId: string }>()
+  AllFeatureActionTypes.GetUserProfile
 );
 
 export const getUserProfileSuccess = createAction(

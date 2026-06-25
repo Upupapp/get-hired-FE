@@ -33,7 +33,10 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
-    this.applicantFacade.getUser(this.local._id);
+    // SEC-01 FIX: no longer passes local._id. The backend derives identity
+    // from the verified Firebase JWT (Authorization header), not from a
+    // client-supplied userId param. Sending a uid was the IDOR vector.
+    this.applicantFacade.getUser();
 
     // MOBILEVIEW: Close mobile drawer on every successful navigation
     this.routerSub = this.router.events

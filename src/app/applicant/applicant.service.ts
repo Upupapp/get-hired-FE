@@ -97,8 +97,13 @@ export class ApplicantService {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/levels`);
   }
 
-  userProfile(userId: string) {
-    return this.baseService.get<any>(`${this.applicantUrl}/userprofile?id=${userId}`);
+  // SEC-01 FIX: removed uid query param (?id=userId). The backend now derives
+  // the requester identity exclusively from the verified Firebase JWT
+  // (Authorization: Bearer <token>), which the existing HTTP interceptor
+  // attaches to every request automatically. Sending a uid query was the IDOR
+  // vector — any caller could change the param and read another user's profile.
+  userProfile() {
+    return this.baseService.get<any>(`${this.applicantUrl}/userprofile`);
   }
 
   /** PROFILE -- server-computed profile completeness score, always for

@@ -283,18 +283,32 @@ export class ApplicantEffects {
   //   );
   // });
 
+    // SEC-01 FIX: userProfile() no longer takes a userId param.
+    // Identity comes from the verified Firebase JWT via the HTTP interceptor.
+    // 401 → session expired, 403 → session mismatch, 404/error → safe onboarding.
     user$ = createEffect(() => {
       return this.actions$.pipe(
         ofType(ApplicantActions.getUserProfile),
-        mergeMap((action) => this.applicantService.userProfile(action.userId)
+        mergeMap(() => this.applicantService.userProfile()
           .pipe(
             map((res: any) => {
               const user: Model.User = res.data;
               return ApplicantActions.getUserProfileSuccess({ user });
             }),
             catchError((err) => {
-              const { error } = err.error;
-              return of(ApplicantActions.getUserProfileFail({ payload: error }))
+              // Build a safe, user-friendly error message per status code.
+              const httpStatus = err?.status;
+              let safeMessage: string;
+              if (httpStatus === 401) {
+                safeMessage = 'Your session has expired. Please sign in again.';
+              } else if (httpStatus === 403) {
+                safeMessage = "We couldn't load this profile for your current session.";
+              } else if (httpStatus === 404) {
+                safeMessage = "Let's finish setting up your profile.";
+              } else {
+                safeMessage = "We couldn't load your profile. Please try again.";
+              }
+              return of(ApplicantActions.getUserProfileFail({ payload: safeMessage }))
             })
           )
         )

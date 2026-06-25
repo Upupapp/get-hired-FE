@@ -71,8 +71,10 @@ export class ApplicantFacade {
     this.store.dispatch(ApplicantAction.applicantDashboard());
   }
 
-  getUser(userId: string) {
-    this.store.dispatch(ApplicantAction.getUserProfile({ userId }));
+  // SEC-01 FIX: no userId arg. The action carries no uid — identity is
+  // resolved server-side from the verified Firebase JWT.
+  getUser() {
+    this.store.dispatch(ApplicantAction.getUserProfile());
   }
 
   getApplicantById(applicantId: string) {
