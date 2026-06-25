@@ -1,9 +1,12 @@
 <app-inline-loading *ngIf="(loading$ | async) && !(details$ | async)"></app-inline-loading>
 
-<div class="job-detail-error-state" *ngIf="(jobError$ | async) && !(loading$ | async) && !(details$ | async)" role="alert">
-  <h5>This job isn't available</h5>
-  <p>It may have expired, been removed, or the link may be incorrect.</p>
-  <button type="button" class="btn btn-apply-now" (click)="goToJobsList()">Browse all jobs</button>
+<div class="job-detail-error-state" *ngIf="(jobError$ | async) && !(loading$ | async) && !(details$ | async)" role="alert" aria-live="assertive">
+  <ng-container *ngIf="(jobError$ | async) as errMsg">
+    <h5>{{ errMsg === 'Unable to load this job for the current session.' ? 'Session required' : 'This job isn\'t available' }}</h5>
+    <p>{{ errMsg === 'Unable to load this job for the current session.' ? 'We couldn\'t load this job for your current session. Please sign in again.' : 'It may have expired, been removed, or the link may be incorrect.' }}</p>
+    <a *ngIf="errMsg === 'Unable to load this job for the current session.'" routerLink="/signin" class="btn btn-apply-now me-2">Sign In</a>
+    <button type="button" class="btn btn-apply-now" (click)="goToJobsList()">Browse all jobs</button>
+  </ng-container>
 </div>
 
 <section *ngIf="details$ | async as selectedJobPost">

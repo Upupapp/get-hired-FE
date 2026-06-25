@@ -82,10 +82,10 @@ export class JobService {
   }
 
   getJobById(jobId: string) {
-    const user = localStorage.getItem('user');
-    const uid = user ? JSON.parse(user)._id : null;
-
-    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}&uid=${uid}`);
+    // SEC-02 FIX: uid query param removed. The auth interceptor sends the
+    // Firebase token as Authorization Bearer when the user is logged in.
+    // The backend derives viewerContext from the verified token only.
+    return this.baseService.get<Model.Job[]>(`${this.jobUrl}/details?id=${jobId}`);
   }
 
   // P2-01 FIX: removed dead ?id= param — BE now derives company from JWT.

@@ -1,4 +1,81 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
+
+// SEC-02 haptics/effects — job detail loading, content reveal, applied chip,
+// CTA tap compression, error state, session-expired banner, focus rings.
+// All animations respect prefers-reduced-motion.
+
+@keyframes gh-job-detail-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gh-applied-chip-reveal {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes gh-error-banner-reveal {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gh-skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.gh-job-content-reveal {
+  animation: gh-job-detail-reveal $motion-duration-card $motion-ease-decelerate both;
+}
+
+.bg-applied {
+  animation: gh-applied-chip-reveal $motion-duration-micro $motion-ease-standard both;
+}
+
+.btn-apply-now {
+  &:active {
+    transform: scale($gh-scale-press);
+    transition: transform $motion-duration-micro $motion-ease-standard;
+  }
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 3px;
+    border-radius: 5px;
+  }
+}
+
+.gh-job-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: gh-skeleton-shimmer 1.4s infinite linear;
+  border-radius: 6px;
+  height: 20px;
+  margin-bottom: 12px;
+}
+
+.job-detail-session-banner {
+  padding: 12px 16px;
+  background: #fff8f0;
+  border: 1px solid #f97316;
+  border-radius: 8px;
+  color: #b45309;
+  font-size: 14px;
+  animation: gh-error-banner-reveal $motion-duration-micro $motion-ease-standard both;
+  margin-bottom: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-job-content-reveal,
+  .bg-applied,
+  .job-detail-session-banner,
+  .gh-job-skeleton {
+    animation: none;
+  }
+  .btn-apply-now:active {
+    transform: none;
+  }
+}
 
 .job-signal-badges {
   display: flex;
