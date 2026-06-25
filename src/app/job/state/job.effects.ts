@@ -4,6 +4,7 @@ import {
 } from 'rxjs';
 import {
   catchError,
+  exhaustMap,
   map,
   mergeMap,
   switchMap
@@ -404,10 +405,14 @@ export class JobEffects {
   // returns the caller's updated job list (ownership-scoped). On failure the
   // BE returns 404 { error: "..." } or 403 { message: "..." }; both are
   // normalised to a string so the reducer and UI always receive readable copy.
+  // OPTIMIZE: exhaustMap (not mergeMap) so rapid double-taps on "Delete" cannot
+  // fire a second HTTP DELETE while the first is still in-flight. A second tap
+  // is silently dropped, which is exactly the desired behaviour for a
+  // destructive, non-idempotent operation.
   deleteJob$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(JobActions.deleteJob),
-      mergeMap((action) => this.jobService.deleteJobPost(action.jobId)
+      exhaustMap((action) => this.jobService.deleteJobPost(action.jobId)
         .pipe(
           map((res: any) => {
             const basicList: Model.BasicList[] = res.data || [];

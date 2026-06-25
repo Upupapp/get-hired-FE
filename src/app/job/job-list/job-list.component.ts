@@ -63,17 +63,10 @@ export class JobListComponent implements OnInit, OnDestroy {
     })
   );
 
-  success$ = this.jobFacade.success$
-    .pipe()
-    .subscribe(this.afterChange.bind(this));
-
-  loading$ = this.jobFacade.loading$.pipe().subscribe(this.onLoad.bind(this));
-
-  // QA9 FIX-13: removed duplicate class-field error$ subscription to jobError$.
-  // The authoritative subscription is in ngOnInit (uses req.add + takeUntil for
-  // proper cleanup, danger-snackbar, 4s). Keeping both caused double toasts.
-  restrictions$ = this.jobFacade.subsRestrictions$
-    .pipe().subscribe(this.checkJobRestriction.bind(this));
+  // OPTIMIZE: success$, loading$, restrictions$ moved into ngOnInit so they
+  // are tracked in req and cleaned up in ngOnDestroy. Class-field subscriptions
+  // (the former auto-subscribe pattern used here) have no unsubscribe path and
+  // leak on every component destroy (route change, tab switch, etc.).
 
   req = new Subscription();
 
@@ -129,6 +122,25 @@ export class JobListComponent implements OnInit, OnDestroy {
         this.jobFacade.getCompanySubscription(this.user.companyId);
       }
     });
+
+    // OPTIMIZE: wired into req so they are cleaned up in ngOnDestroy.
+    this.req.add(
+      this.jobFacade.success$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(this.afterChange.bind(this))
+    );
+
+    this.req.add(
+      this.jobFacade.loading$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(this.onLoad.bind(this))
+    );
+
+    this.req.add(
+      this.jobFacade.subsRestrictions$
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(this.checkJobRestriction.bind(this))
+    );
 
     // QA8 BRAND FIX-B: surface changeJobStatusFail and deleteJobFail errors.
     // P2 FIX: deleteJobFail also writes to jobError$ with the normalised
@@ -219,11 +231,15 @@ export class JobListComponent implements OnInit, OnDestroy {
   deleteRow(event) {
     const jobId = event.hasOwnProperty('data') ? event.data.jobId : event.jobId;
 
+    // BRAND AUDIT FIX-4: pass destructive:true so the dialog renders the
+    // danger-red CTA instead of the standard brand-red btn-primary. This
+    // signals irreversibility visually without a second warning modal.
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
         action: 'Delete job',
         message: 'This action cannot be undone.',
+        destructive: true,
       },
     });
 
