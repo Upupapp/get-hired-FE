@@ -25,29 +25,36 @@ jobs:
       - name: Build production
         run: npx ng build --configuration production
 
-      - name: Test SSH connection
+      - name: Deploy to server
         env:
           LINODE_HOST: ${{ secrets.LINODE_HOST }}
           LINODE_USER: ${{ secrets.LINODE_USER }}
           LINODE_SSH_KEY: ${{ secrets.LINODE_SSH_KEY }}
         run: |
+          set -e
           mkdir -p ~/.ssh
-          echo "$LINODE_SSH_KEY" | base64 -d > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$LINODE_HOST" >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$LINODE_USER@$LINODE_HOST" "echo SSH connection successful"
+          chmod 700 ~/.ssh
 
-      - name: Copy dist to server
-        env:
-          LINODE_HOST: ${{ secrets.LINODE_HOST }}
-          LINODE_USER: ${{ secrets.LINODE_USER }}
-          LINODE_SSH_KEY: ${{ secrets.LINODE_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
+          echo "--- Decoding SSH key ---"
           echo "$LINODE_SSH_KEY" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$LINODE_HOST" >> ~/.ssh/known_hosts
+          echo "Key file size: $(wc -c < ~/.ssh/deploy_key) bytes"
+          head -1 ~/.ssh/deploy_key
+
+          echo "--- Scanning host key ---"
+          ssh-keyscan -v -H "$LINODE_HOST" >> ~/.ssh/known_hosts 2>&1
+          echo "known_hosts entries: $(wc -l < ~/.ssh/known_hosts)"
+
+          echo "--- Testing SSH connection ---"
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no \
+            -o ConnectTimeout=10 \
+            -v \
+            "$LINODE_USER@$LINODE_HOST" "echo SSH_OK" 2>&1 | tail -30
+
+          echo "--- Syncing dist/ ---"
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             dist/ \
             "$LINODE_USER@$LINODE_HOST:/var/www/get-hired-FE/dist/"
+          echo "Deploy complete."
