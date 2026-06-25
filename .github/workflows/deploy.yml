@@ -32,28 +32,11 @@ jobs:
           LINODE_SSH_KEY: ${{ secrets.LINODE_SSH_KEY }}
         run: |
           set -e
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-
-          echo "--- Decoding SSH key ---"
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
           echo "$LINODE_SSH_KEY" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          echo "Key file size: $(wc -c < ~/.ssh/deploy_key) bytes"
-          head -1 ~/.ssh/deploy_key
-
-          echo "--- Scanning host key ---"
-          ssh-keyscan -v -H "$LINODE_HOST" >> ~/.ssh/known_hosts 2>&1
-          echo "known_hosts entries: $(wc -l < ~/.ssh/known_hosts)"
-
-          echo "--- Testing SSH connection ---"
-          ssh -i ~/.ssh/deploy_key \
-            -o StrictHostKeyChecking=no \
-            -o ConnectTimeout=10 \
-            -v \
-            "$LINODE_USER@$LINODE_HOST" "echo SSH_OK" 2>&1 | tail -30
-
-          echo "--- Syncing dist/get-hired/ ---"
-          rsync -avz --delete \
+          ssh-keyscan -H "$LINODE_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          rsync -az --delete \
             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
             dist/get-hired/ \
             "$LINODE_USER@$LINODE_HOST:/var/www/gethired/dist/get-hired/"
