@@ -93,11 +93,16 @@
             (keydown.enter)="selectThread(t)"
             (keydown.space)="$event.preventDefault(); selectThread(t)">
 
-            <!-- Avatar -->
+            <!-- Avatar — STITCH QA11 FIX F-02: (error) hides the img and shows
+                 the initial fallback when the Firebase Storage URL is stale/expired.
+                 Without this, the img 404s invisibly and the initial span stays hidden. -->
             <span class="rm-thread-avatar" aria-hidden="true">
-              <img *ngIf="t.applicantPhotoUrl" [src]="t.applicantPhotoUrl"
-                alt="" class="rm-thread-avatar-img" loading="lazy">
-              <span *ngIf="!t.applicantPhotoUrl">{{ avatarInitial(t) }}</span>
+              <img *ngIf="t.applicantPhotoUrl && !t['_photoError']"
+                [src]="t.applicantPhotoUrl"
+                alt="" class="rm-thread-avatar-img" loading="lazy"
+                width="38" height="38"
+                (error)="t['_photoError'] = true">
+              <span *ngIf="!t.applicantPhotoUrl || t['_photoError']">{{ avatarInitial(t) }}</span>
             </span>
 
             <div class="rm-thread-body">

@@ -30,6 +30,9 @@ interface FilterOption {
 })
 export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
   items: InterviewHubItem[] = [];
+  // OPTIMIZE QA11: cache filtered results so the template *ngFor does not
+  // call getFilteredItems() on every change-detection cycle (O(200) per tick).
+  filteredItems: InterviewHubItem[] = [];
   loading = true;
   error = false;
   activeFilter: FilterKey = 'all';
@@ -54,6 +57,7 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
     this.sub = this.hubService.getInterviewHub().subscribe({
       next: (res) => {
         this.items = res.items || [];
+        this._applyFilter();
         this.loading = false;
       },
       error: () => {
@@ -69,18 +73,27 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
 
   setFilter(key: FilterKey): void {
     this.activeFilter = key;
+    this._applyFilter();
   }
 
-  getFilteredItems(): InterviewHubItem[] {
+  /** Recompute filteredItems. Called on data load and filter change only. */
+  private _applyFilter(): void {
     switch (this.activeFilter) {
       case 'has-video':
-        return this.items.filter((i) => i.hasVideoAnswers);
+        this.filteredItems = this.items.filter((i) => i.hasVideoAnswers);
+        break;
       case 'review-stage':
         // applicationStatusId === 3 = "Under Review" (set when video answers present)
-        return this.items.filter((i) => i.applicationStatusId === 3);
+        this.filteredItems = this.items.filter((i) => i.applicationStatusId === 3);
+        break;
       default:
-        return this.items;
+        this.filteredItems = this.items;
     }
+  }
+
+  /** @deprecated Use filteredItems property in template instead. Kept for backward compat. */
+  getFilteredItems(): InterviewHubItem[] {
+    return this.filteredItems;
   }
 
   /** Returns the correct candidate detail route for this application. */

@@ -3,7 +3,8 @@
 	<div [ngClass]="detailSize === 'large' ? '' : 'small'">
 		<div class="empty-image w-100 d-flex justify-content-center align-self-center">
 			<div class="main">
-				<img src="/assets/images/placeholder/empty.png" class="img-fluid">
+				<!-- NOTIFY QA11: alt="" marks as decorative; heading/subTitle provide the text -->
+				<img src="/assets/images/placeholder/empty.png" class="img-fluid" alt="">
 			</div>
 		</div>
 	</div>
@@ -17,7 +18,8 @@
 [@animate]="{value:'*', params:{ scale:'0.7', delay: (250) + 'ms' }}">
 	<div class="empty-image-search w-100 d-flex justify-content-center align-self-center">
 		<div class="main">
-			<img src="/assets/images/placeholder/empty-search.png" class="img-fluid">
+			<!-- NOTIFY QA11: alt="" marks as decorative -->
+			<img src="/assets/images/placeholder/empty-search.png" class="img-fluid" alt="">
 		</div>
 	</div>
 

@@ -32,6 +32,15 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
             this.snackBar.open(`Your session has expired. Please sign in again to continue.`,
               '', { duration: 4000, panelClass: ['danger-snackbar'] });
             this.router.navigateByUrl('/signin');
+          } else if (err.status === 429) {
+            // NOTIFY QA11 (SEC-01): Rate-limit hit. Do NOT log the user out.
+            // Show a non-destructive warning so the user knows to wait, not retry
+            // immediately. The snackbar is informational, not a session signal.
+            this.snackBar.open(
+              `You've made too many requests. Please wait a moment and try again.`,
+              '',
+              { duration: 5000, panelClass: ['warn-snackbar'] }
+            );
           }
         }
         else {

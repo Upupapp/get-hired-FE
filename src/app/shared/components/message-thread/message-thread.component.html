@@ -4,9 +4,11 @@
   </div>
 
   <div class="msg-thread-body" role="log" aria-live="polite" aria-label="Message history">
-    <div *ngIf="loading" class="msg-thread-loading">Loading conversation…</div>
+    <!-- NOTIFY QA11: role="status" lets screen readers announce loading state -->
+    <div *ngIf="loading" class="msg-thread-loading" role="status">Loading conversation…</div>
 
-    <div *ngIf="!loading && error && messages.length === 0" class="msg-thread-error">
+    <!-- NOTIFY QA11: role="alert" announces errors immediately via AT -->
+    <div *ngIf="!loading && error && messages.length === 0" class="msg-thread-error" role="alert">
       {{ error }}
     </div>
 
@@ -26,7 +28,8 @@
     <div #scrollAnchor></div>
   </div>
 
-  <p *ngIf="error && messages.length > 0" class="msg-thread-inline-error">{{ error }}</p>
+  <!-- NOTIFY QA11: role="alert" announces send errors to screen readers -->
+  <p *ngIf="error && messages.length > 0" class="msg-thread-inline-error" role="alert">{{ error }}</p>
 
   <form class="msg-thread-composer" (ngSubmit)="send()">
     <label for="msg-thread-input" class="visually-hidden">Write a message</label>

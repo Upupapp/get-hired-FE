@@ -108,7 +108,8 @@ export class AccountAuthenticationComponent implements OnInit {
             this.isResent = true;
             localStorage.removeItem('loginError');
             localStorage.removeItem('loginMessage');
-            this.snackBar.open(`Verification link send to your email. Please verify and login again.`,
+            // NOTIFY QA11: fixed typo "send" → "sent"; clearer phrasing
+            this.snackBar.open(`Verification email sent. Please check your inbox and verify your account.`,
               '', { duration: 4000, panelClass: ['success-snackbar'] });
             setTimeout(() => this.redirectToLogin(), 3000);
           }

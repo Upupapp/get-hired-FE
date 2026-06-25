@@ -17,7 +17,8 @@
       <span class="ih-skeleton-chip"></span>
       <span class="ih-skeleton-chip"></span>
     </div>
-    <div class="ih-skeleton-cards">
+    <!-- min-height matches estimated real content height to prevent CLS on data arrival -->
+    <div class="ih-skeleton-cards" style="min-height: 480px;">
       <div class="ih-skeleton-card" *ngFor="let n of [1,2,3]">
         <div class="ih-skeleton-line ih-skeleton-line--name"></div>
         <div class="ih-skeleton-line ih-skeleton-line--job"></div>
@@ -47,7 +48,7 @@
   <!-- Empty state -->
   <div *ngIf="!loading && !error && items.length === 0" class="ih-empty">
     <div class="ih-empty-inner">
-      <div class="ih-empty-icon" aria-hidden="true">&#9654;</div>
+      <div class="ih-empty-icon" aria-hidden="true"><span aria-hidden="true">&#9654;</span></div>
       <h2 class="ih-empty-heading">No interview activity yet</h2>
       <p class="ih-empty-body">
         Candidates will appear here when they apply to your jobs or submit
@@ -86,14 +87,14 @@
     </div>
 
     <!-- No results for current filter -->
-    <div *ngIf="getFilteredItems().length === 0" class="ih-filter-empty">
+    <div *ngIf="filteredItems.length === 0" class="ih-filter-empty">
       <p>No candidates match this filter.</p>
     </div>
 
     <!-- Card list -->
     <div class="ih-list" role="list" aria-label="Interview activity list">
       <div
-        *ngFor="let item of getFilteredItems(); trackBy: trackByApplicationId"
+        *ngFor="let item of filteredItems; trackBy: trackByApplicationId"
         class="ih-card"
         role="listitem">
 
@@ -107,13 +108,13 @@
         </div>
 
         <div class="ih-card-job">
-          <span class="ih-card-job-label" aria-label="Job">&#128188;</span>
+          <span class="ih-card-job-label" aria-hidden="true">&#128188;</span>
           {{ item.jobTitle }}
         </div>
 
         <div class="ih-card-meta">
           <span *ngIf="item.hasVideoAnswers" class="ih-video-badge" aria-label="Video answers submitted">
-            &#9654;
+            <span aria-hidden="true">&#9654;</span>
             {{ item.videoAnswerCount }}
             video {{ item.videoAnswerCount === 1 ? 'response' : 'responses' }}
           </span>
