@@ -1,0 +1,53 @@
+name: Deploy to Linode
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production
+        run: npx ng build --configuration production
+
+      - name: Test SSH connection
+        env:
+          LINODE_HOST: ${{ secrets.LINODE_HOST }}
+          LINODE_USER: ${{ secrets.LINODE_USER }}
+          LINODE_SSH_KEY: ${{ secrets.LINODE_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$LINODE_SSH_KEY" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$LINODE_HOST" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$LINODE_USER@$LINODE_HOST" "echo SSH connection successful"
+
+      - name: Copy dist to server
+        env:
+          LINODE_HOST: ${{ secrets.LINODE_HOST }}
+          LINODE_USER: ${{ secrets.LINODE_USER }}
+          LINODE_SSH_KEY: ${{ secrets.LINODE_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$LINODE_SSH_KEY" | base64 -d > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$LINODE_HOST" >> ~/.ssh/known_hosts
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            dist/ \
+            "$LINODE_USER@$LINODE_HOST:/var/www/get-hired-FE/dist/"
