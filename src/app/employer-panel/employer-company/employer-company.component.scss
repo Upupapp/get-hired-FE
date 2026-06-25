@@ -1,1 +1,352 @@
+// GETHIRED_COMPANY_PROFILE_SUBTABS_B09_WORLD_CLASS_TECHY_V1
+// Scoped to .cp-* prefix — zero leak into global styles.
+
 @import "src/assets/styles/colors";
+
+// ─── Shared tokens ────────────────────────────────────────────────────────────
+$cp-nav-height: 56px;
+$cp-radius: 10px;
+$cp-tab-active: $color-global-red;
+$cp-text-primary: #03011A;
+$cp-text-muted: #868686;
+$cp-text-hint: #a0a0a0;
+$cp-bg-backlog: #fafafa;
+$cp-border: #E4E4E4;
+$cp-chip-bg: #f0f4ff;
+$cp-chip-color: #0C264C;
+$cp-shadow: 0 4px 22px rgba(0,0,0,.07);
+
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+@keyframes cp-skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes cp-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cp-check-pulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.25); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+// Reduced-motion override for every animation in this component
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+// ─── Workspace container ──────────────────────────────────────────────────────
+.cp-workspace {
+  min-height: 100vh;
+  background: #F4F5F9;
+  padding-bottom: 60px;
+}
+
+// ─── Subtab navigation ───────────────────────────────────────────────────────
+.cp-subtab-nav {
+  display: flex;
+  align-items: flex-end;
+  background: #fff;
+  border-bottom: 2px solid $cp-border;
+  padding: 0 24px;
+  position: sticky;
+  top: 80px; // below global top-nav
+  z-index: 98;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.cp-subtab-btn {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 20px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: $cp-text-muted;
+  line-height: 1.4;
+  transition: color .2s ease;
+  margin-right: 4px;
+
+  &:focus-visible {
+    outline: 2px solid $cp-tab-active;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  &:hover:not(.cp-subtab-btn--active) {
+    color: darken($cp-text-muted, 20%);
+  }
+
+  // Press micro-interaction
+  &:active {
+    transform: scale(0.97);
+    transition: transform .08s ease;
+  }
+
+  &--active {
+    color: $cp-tab-active;
+    font-weight: 600;
+  }
+}
+
+.cp-subtab-label {
+  position: relative;
+  z-index: 1;
+}
+
+.cp-subtab-underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: $cp-tab-active;
+  opacity: 0;
+  transform: scaleX(0);
+  transition: opacity .2s ease, transform .22s cubic-bezier(.4,0,.2,1);
+
+  .cp-subtab-btn--active & {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+// ─── Tab panel ────────────────────────────────────────────────────────────────
+.cp-tab-panel {
+  max-width: 860px;
+  margin: 24px auto 0;
+  padding: 0 20px;
+}
+
+// ─── Intro banner ─────────────────────────────────────────────────────────────
+.cp-tab-intro {
+  margin-bottom: 20px;
+}
+
+.cp-tab-intro__text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: $cp-text-muted;
+  margin: 0 0 4px;
+}
+
+.cp-tab-intro__hint {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: $cp-text-hint;
+  margin: 0;
+}
+
+// ─── Cards shared ─────────────────────────────────────────────────────────────
+.card {
+  background: #fff;
+  box-shadow: $cp-shadow;
+  border-radius: $cp-radius !important;
+  border: none !important;
+  padding: 24px 28px !important;
+}
+
+// ─── Section headings ─────────────────────────────────────────────────────────
+.cp-section-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: $cp-text-primary;
+  margin-bottom: 4px;
+}
+
+.cp-section-hint {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: $cp-text-muted;
+  margin-bottom: 12px;
+}
+
+// ─── Brand section ────────────────────────────────────────────────────────────
+.cp-brand-section {
+  // nothing extra — card styles handle it
+}
+
+.cp-backlog-section {
+  background: $cp-bg-backlog !important;
+  border: 1px dashed $cp-border !important;
+  box-shadow: none !important;
+}
+
+// ─── Logo preview ─────────────────────────────────────────────────────────────
+.cp-logo-preview {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.cp-logo-img {
+  height: 80px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid $cp-border;
+  background: #fafafa;
+  padding: 6px;
+}
+
+// ─── Brand text preview ───────────────────────────────────────────────────────
+.cp-brand-preview {
+  background: #fafafa;
+  border: 1px solid $cp-border;
+  border-radius: 8px;
+  padding: 14px 16px;
+  min-height: 72px;
+
+  &--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+  }
+}
+
+.cp-brand-preview__text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: $cp-text-primary;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+// ─── Benefit chip ─────────────────────────────────────────────────────────────
+.cp-benefit-chip {
+  display: inline-block;
+  background: $cp-chip-bg;
+  color: $cp-chip-color;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 8px;
+  margin-bottom: 4px;
+}
+
+// ─── Optional / Recommended badge ─────────────────────────────────────────────
+.cp-badge-optional {
+  display: inline-block;
+  background: #fffbf0;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+// ─── Empty states ─────────────────────────────────────────────────────────────
+.cp-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 12px;
+  text-align: center;
+}
+
+.cp-empty-state--reveal {
+  animation: cp-reveal .35s ease both;
+}
+
+.cp-empty-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  display: block;
+  line-height: 1;
+}
+
+.cp-empty-text {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: $cp-text-primary;
+  margin: 0 0 4px;
+}
+
+.cp-empty-hint {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: $cp-text-muted;
+  margin: 0;
+}
+
+// ─── Inline link (tab jump) ───────────────────────────────────────────────────
+.cp-inline-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: $cp-tab-active;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: darken($cp-tab-active, 10%);
+  }
+  &:focus-visible {
+    outline: 2px solid $cp-tab-active;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// ─── Skeleton shimmer ─────────────────────────────────────────────────────────
+.cp-skeleton-wrap {
+  padding: 24px 0;
+}
+
+.cp-skeleton {
+  background: linear-gradient(
+    90deg,
+    #eee 25%,
+    #f5f5f5 50%,
+    #eee 75%
+  );
+  background-size: 800px 100%;
+  animation: cp-skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  height: 18px;
+  width: 100%;
+}
+
+.cp-skeleton--title {
+  width: 40%;
+  height: 22px;
+}
+
+.cp-skeleton--body {
+  width: 80%;
+  height: 16px;
+}
+
+.cp-skeleton--short {
+  width: 55%;
+}

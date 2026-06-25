@@ -1,2 +1,282 @@
+<!-- GETHIRED_COMPANY_PROFILE_SUBTABS_B09_WORLD_CLASS_TECHY_V1
+     Company Profile workspace — 3 local subtabs.
+     No new routes, no top-level nav changes. -->
 
-<app-company-details></app-company-details>
+<div class="cp-workspace">
+
+  <!-- ================================================================
+       SUBTAB NAV BAR (local to this component, not top-level nav)
+       ================================================================ -->
+  <nav class="cp-subtab-nav" role="tablist" aria-label="Company profile sections">
+    <button
+      *ngFor="let tab of subtabs"
+      class="cp-subtab-btn"
+      [class.cp-subtab-btn--active]="activeTab === tab.id"
+      (click)="selectTab(tab.id)"
+      [attr.aria-selected]="activeTab === tab.id"
+      role="tab"
+      type="button">
+      <span class="cp-subtab-label">{{ tab.label }}</span>
+      <span class="cp-subtab-underline" aria-hidden="true"></span>
+    </button>
+  </nav>
+
+  <!-- ================================================================
+       TAB PANELS
+       ================================================================ -->
+
+  <!-- ──────────────────── TAB 1: Company Profile ──────────────────── -->
+  <div
+    class="cp-tab-panel"
+    *ngIf="activeTab === 1"
+    role="tabpanel"
+    aria-label="Company Profile"
+    [@animate]="{value:'*', params:{ y:'12px', delay:'40ms' }}">
+
+    <div class="cp-tab-intro">
+      <p class="cp-tab-intro__text">
+        A complete company profile helps candidates understand who is hiring.
+        You can publish jobs before completing every company detail.
+      </p>
+    </div>
+
+    <!-- Existing form — completely unchanged -->
+    <app-company-details-form (updateCompany)="onProfileUpdate($event)"></app-company-details-form>
+
+  </div>
+
+
+  <!-- ──────────────────── TAB 2: Employer Brand ──────────────────── -->
+  <div
+    class="cp-tab-panel"
+    *ngIf="activeTab === 2"
+    role="tabpanel"
+    aria-label="Employer Brand"
+    [@animate]="{value:'*', params:{ y:'12px', delay:'40ms' }}">
+
+    <ng-container *ngIf="company$ | async as company; else brandLoading">
+
+      <!-- Header -->
+      <div class="cp-tab-intro">
+        <p class="cp-tab-intro__text">
+          Tell candidates what makes your company worth joining.
+          A strong employer brand attracts better-fit applicants.
+        </p>
+        <p class="cp-tab-intro__hint">
+          Optional — complete at any time. Fields marked <span class="cp-badge-optional">Recommended</span>
+          have the most impact on candidate interest.
+        </p>
+      </div>
+
+      <!-- Logo preview (read-only — edit on Profile tab) -->
+      <div class="cp-brand-section card card-body mb-4" *ngIf="company.companyLogoUrl">
+        <h6 class="cp-section-title">Company Logo</h6>
+        <p class="cp-section-hint">Update your logo on the Company Profile tab.</p>
+        <div class="cp-logo-preview">
+          <img
+            [src]="company.companyLogoUrl"
+            [alt]="company.companyName + ' logo'"
+            class="cp-logo-img"
+            loading="lazy" />
+        </div>
+      </div>
+
+      <!-- Company Overview (maps to company_details — edit on Profile tab) -->
+      <div class="cp-brand-section card card-body mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Company Overview</h6>
+          <span class="cp-badge-optional">Recommended</span>
+        </div>
+        <p class="cp-section-hint">
+          Your overview appears on public job listings to help candidates understand your company.
+          Edit it on the Company Profile tab.
+        </p>
+        <div class="cp-brand-preview" [class.cp-brand-preview--empty]="!company.companyDetails">
+          <ng-container *ngIf="company.companyDetails; else noOverview">
+            <p class="cp-brand-preview__text">{{ company.companyDetails }}</p>
+          </ng-container>
+          <ng-template #noOverview>
+            <div class="cp-empty-state cp-empty-state--reveal">
+              <span class="cp-empty-icon" aria-hidden="true">&#9998;</span>
+              <p class="cp-empty-text">No overview added yet.</p>
+              <p class="cp-empty-hint">
+                Add a company overview on the
+                <button class="cp-inline-link" type="button" (click)="selectTab(1)">Company Profile</button>
+                tab.
+              </p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Mission & Values — not in DB, backlogged -->
+      <div class="cp-brand-section card card-body mb-4 cp-backlog-section">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Mission &amp; Values</h6>
+          <span class="cp-badge-optional">Optional</span>
+        </div>
+        <div class="cp-empty-state cp-empty-state--reveal">
+          <span class="cp-empty-icon" aria-hidden="true">&#9733;</span>
+          <p class="cp-empty-text">Coming soon</p>
+          <p class="cp-empty-hint">
+            Mission and values fields are planned for a future update.
+            For now, include your mission in the Company Overview.
+          </p>
+        </div>
+      </div>
+
+      <!-- Why Work With Us — not in DB, backlogged -->
+      <div class="cp-brand-section card card-body mb-4 cp-backlog-section">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Why Work With Us</h6>
+          <span class="cp-badge-optional">Optional</span>
+        </div>
+        <div class="cp-empty-state cp-empty-state--reveal">
+          <span class="cp-empty-icon" aria-hidden="true">&#128161;</span>
+          <p class="cp-empty-text">Coming soon</p>
+          <p class="cp-empty-hint">
+            A dedicated "Why work with us" field is on our roadmap.
+            Highlight this in your Company Overview in the meantime.
+          </p>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- Brand loading skeleton -->
+    <ng-template #brandLoading>
+      <div class="cp-skeleton-wrap">
+        <div class="cp-skeleton cp-skeleton--title"></div>
+        <div class="cp-skeleton cp-skeleton--body"></div>
+        <div class="cp-skeleton cp-skeleton--body cp-skeleton--short"></div>
+      </div>
+    </ng-template>
+
+  </div>
+
+
+  <!-- ──────────────────── TAB 3: Benefits & Culture ──────────────────── -->
+  <div
+    class="cp-tab-panel"
+    *ngIf="activeTab === 3"
+    role="tabpanel"
+    aria-label="Benefits and Culture"
+    [@animate]="{value:'*', params:{ y:'12px', delay:'40ms' }}">
+
+    <ng-container *ngIf="company$ | async as company; else benefitsLoading">
+
+      <div class="cp-tab-intro">
+        <p class="cp-tab-intro__text">
+          Benefits and culture details help candidates decide if your company is the right fit.
+        </p>
+        <p class="cp-tab-intro__hint">
+          Optional — complete at any time.
+        </p>
+      </div>
+
+      <!-- Work Setup (work_setup_id — exists in DB) -->
+      <div class="cp-brand-section card card-body mb-4" *ngIf="workSetup$ | async as workSetupList">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Work Arrangement</h6>
+          <span class="cp-badge-optional">Recommended</span>
+        </div>
+        <p class="cp-section-hint">
+          Let candidates know how and where they will work.
+          Update this on the Company Profile tab.
+        </p>
+        <ng-container *ngIf="company.workSetupId; else noWorkSetup">
+          <ng-container *ngFor="let setup of workSetupList">
+            <span class="cp-benefit-chip" *ngIf="+setup.id === +company.workSetupId">
+              {{ setup.name }}
+            </span>
+          </ng-container>
+        </ng-container>
+        <ng-template #noWorkSetup>
+          <div class="cp-empty-state cp-empty-state--reveal">
+            <span class="cp-empty-icon" aria-hidden="true">&#127968;</span>
+            <p class="cp-empty-text">No work arrangement selected.</p>
+            <p class="cp-empty-hint">
+              Set the work arrangement on the
+              <button class="cp-inline-link" type="button" (click)="selectTab(1)">Company Profile</button>
+              tab.
+            </p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Team Size (number_of_employee — exists in DB) -->
+      <div class="cp-brand-section card card-body mb-4">
+        <h6 class="cp-section-title">Team Size</h6>
+        <p class="cp-section-hint">
+          Gives candidates a sense of company scale.
+          Update on the Company Profile tab.
+        </p>
+        <ng-container *ngIf="company.numberOfEmployee && company.numberOfEmployee > 0; else noTeamSize">
+          <span class="cp-benefit-chip">{{ company.numberOfEmployee }} employees</span>
+        </ng-container>
+        <ng-template #noTeamSize>
+          <div class="cp-empty-state cp-empty-state--reveal">
+            <span class="cp-empty-icon" aria-hidden="true">&#128101;</span>
+            <p class="cp-empty-text">Team size not set.</p>
+            <p class="cp-empty-hint">
+              Add team size on the
+              <button class="cp-inline-link" type="button" (click)="selectTab(1)">Company Profile</button>
+              tab.
+            </p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Health & Insurance — not in DB, backlogged -->
+      <div class="cp-brand-section card card-body mb-4 cp-backlog-section">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Health &amp; Insurance</h6>
+          <span class="cp-badge-optional">Optional</span>
+        </div>
+        <div class="cp-empty-state cp-empty-state--reveal">
+          <span class="cp-empty-icon" aria-hidden="true">&#10084;</span>
+          <p class="cp-empty-text">Coming soon</p>
+          <p class="cp-empty-hint">Health and insurance benefit details are planned for a future update.</p>
+        </div>
+      </div>
+
+      <!-- Leave & Flexibility — not in DB, backlogged -->
+      <div class="cp-brand-section card card-body mb-4 cp-backlog-section">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Leave &amp; Flexibility</h6>
+          <span class="cp-badge-optional">Optional</span>
+        </div>
+        <div class="cp-empty-state cp-empty-state--reveal">
+          <span class="cp-empty-icon" aria-hidden="true">&#128197;</span>
+          <p class="cp-empty-text">Coming soon</p>
+          <p class="cp-empty-hint">Leave, flexible hours, and remote work details are on the roadmap.</p>
+        </div>
+      </div>
+
+      <!-- Learning & Growth — not in DB, backlogged -->
+      <div class="cp-brand-section card card-body mb-4 cp-backlog-section">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h6 class="cp-section-title mb-0">Learning &amp; Growth</h6>
+          <span class="cp-badge-optional">Optional</span>
+        </div>
+        <div class="cp-empty-state cp-empty-state--reveal">
+          <span class="cp-empty-icon" aria-hidden="true">&#128218;</span>
+          <p class="cp-empty-text">Coming soon</p>
+          <p class="cp-empty-hint">Training, development, and learning benefit details are planned.</p>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <!-- Benefits loading skeleton -->
+    <ng-template #benefitsLoading>
+      <div class="cp-skeleton-wrap">
+        <div class="cp-skeleton cp-skeleton--title"></div>
+        <div class="cp-skeleton cp-skeleton--body"></div>
+        <div class="cp-skeleton cp-skeleton--body cp-skeleton--short"></div>
+      </div>
+    </ng-template>
+
+  </div>
+
+</div>
