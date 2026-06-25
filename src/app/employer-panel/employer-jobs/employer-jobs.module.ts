@@ -9,6 +9,8 @@ import { EmployerJobexpiredComponent } from './employer-jobexpired/employer-jobe
 import { EmployerJobcreateComponent } from './employer-jobcreate/employer-jobcreate.component';
 import { EmployerJobviewComponent } from './employer-jobview/employer-jobview.component';
 import { EmployerApplicantsComponent } from '../employer-applicants/employer-applicants.component';
+// B05 V1: Job-level dashboard — post-publish landing page
+import { EmployerJobDashboardComponent } from './employer-job-dashboard/employer-job-dashboard.component';
 
 const routes: Routes = [
   { path: 'list', component: EmployerJoblistComponent },
@@ -17,6 +19,8 @@ const routes: Routes = [
   { path: 'edit', component: EmployerJobcreateComponent },
   { path: 'applicants', component: EmployerApplicantsComponent },
   { path: 'view', component: EmployerJobviewComponent },
+  // B05 V1: Post-publish job-level dashboard
+  { path: 'dashboard', component: EmployerJobDashboardComponent },
   { path: '', redirectTo: 'list', pathMatch: 'full' },
 ];
 
@@ -28,6 +32,8 @@ const routes: Routes = [
     EmployerJobcreateComponent,
     EmployerJobviewComponent,
     EmployerApplicantsComponent,
+    // B05 V1
+    EmployerJobDashboardComponent,
   ],
   imports: [
     CommonModule,

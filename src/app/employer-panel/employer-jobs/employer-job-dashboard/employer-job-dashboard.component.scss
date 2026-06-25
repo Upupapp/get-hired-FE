@@ -1,0 +1,436 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+// ─── Shell ────────────────────────────────────────────────────────────────────
+.jd-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  font-family: 'Manrope', sans-serif;
+}
+
+// ─── Header band ──────────────────────────────────────────────────────────────
+.jd-header-band {
+  background: linear-gradient(135deg, #fff 0%, #f9f3ff 100%);
+  border-radius: 16px;
+  padding: 28px 28px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.jd-header-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jd-title-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.jd-job-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #121F3F;
+  margin: 0;
+}
+
+// ─── Status chip ──────────────────────────────────────────────────────────────
+.jd-status-chip {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  &.status-published {
+    background: rgba(4, 160, 139, 0.12);
+    color: #04A08B;
+    // Subtle glow for Published/Live state
+    box-shadow: 0 0 0 3px rgba(4, 160, 139, 0.15);
+    @include motion-safe;
+    animation: jd-status-glow 2.8s ease-in-out infinite alternate;
+  }
+
+  &.status-draft {
+    background: rgba(122, 99, 127, 0.12);
+    color: $color-global-gray-cancel;
+  }
+
+  &.status-expired {
+    background: rgba(254, 111, 97, 0.12);
+    color: $color-global-red;
+  }
+
+  &.status-archived {
+    background: rgba(45, 45, 45, 0.08);
+    color: #555;
+  }
+}
+
+@keyframes jd-status-glow {
+  0%   { box-shadow: 0 0 0 2px rgba(4, 160, 139, 0.10); }
+  100% { box-shadow: 0 0 0 5px rgba(4, 160, 139, 0.22); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-published {
+    animation: none !important;
+    box-shadow: 0 0 0 3px rgba(4, 160, 139, 0.18);
+  }
+}
+
+// ─── Meta row ─────────────────────────────────────────────────────────────────
+.jd-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.jd-meta-item {
+  font-size: 13px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+// ─── Success banner ───────────────────────────────────────────────────────────
+.jd-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(4, 160, 139, 0.08);
+  border: 1px solid rgba(4, 160, 139, 0.2);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  // Gentle reveal — skipped under reduced motion
+  animation: jd-banner-reveal 380ms cubic-bezier(0.0, 0.0, 0.2, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes jd-banner-reveal {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.jd-success-check {
+  font-size: 18px;
+  color: #04A08B;
+  font-weight: 700;
+}
+
+.jd-success-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #04A08B;
+}
+
+// ─── Sections ─────────────────────────────────────────────────────────────────
+.jd-section {
+  margin-bottom: 24px;
+}
+
+.jd-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #121F3F;
+  margin-bottom: 12px;
+}
+
+// ─── Applicant empty state ────────────────────────────────────────────────────
+.jd-applicant-panel {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.jd-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 12px;
+  text-align: center;
+  // Gentle reveal
+  animation: jd-empty-reveal 420ms cubic-bezier(0.0, 0.0, 0.2, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes jd-empty-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.jd-empty-icon {
+  font-size: 36px;
+  color: #c5c5cf;
+  margin-bottom: 10px;
+}
+
+.jd-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.jd-empty-body {
+  font-size: 13px;
+  color: #6b7280;
+  max-width: 340px;
+  margin-bottom: 0;
+}
+
+// ─── Action cards grid ────────────────────────────────────────────────────────
+.jd-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.jd-action-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  padding: 20px 16px 18px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  // Hover lift on desktop
+  transition: transform 160ms cubic-bezier(0.0, 0.0, 0.2, 1),
+              box-shadow 160ms cubic-bezier(0.0, 0.0, 0.2, 1),
+              border-color 160ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: border-color 160ms ease;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+    border-color: rgba($color-global-red, 0.3);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+
+  // Tap compression on mobile/touch
+  &:active {
+    transform: scale(0.975);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+
+  // Accent variant for "Create another job"
+  &.jd-action-card--accent {
+    background: linear-gradient(135deg, #fff8f7 0%, #fff0ee 100%);
+    border-color: rgba($color-global-red, 0.18);
+  }
+}
+
+.jd-action-icon {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.jd-action-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #121F3F;
+  margin-bottom: 4px;
+}
+
+.jd-action-sub {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.jd-btn-primary {
+  background: $color-global-red-buttons;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba($color-global-red-buttons, 0.85);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.jd-btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #e5e7eb;
+  }
+}
+
+// ─── Interview list ───────────────────────────────────────────────────────────
+.jd-interview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 18px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.jd-interview-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.jd-interview-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-global-red-buttons;
+  min-width: 28px;
+  padding-top: 2px;
+}
+
+.jd-interview-text {
+  flex: 1;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.jd-interview-dur {
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+// ─── Error / fallback state ───────────────────────────────────────────────────
+.jd-error-state {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 28px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-top: 24px;
+}
+
+.jd-error-icon {
+  font-size: 36px;
+  color: #d1d5db;
+  margin-bottom: 12px;
+}
+
+.jd-error-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.jd-error-body {
+  font-size: 14px;
+  color: #6b7280;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.jd-error-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+// ─── Skeleton shimmer ─────────────────────────────────────────────────────────
+.jd-skeleton-wrap {
+  padding: 28px 24px;
+}
+
+.jd-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 10px;
+  // Shimmer animation — removed under reduced motion
+  animation: jd-shimmer 1.4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: #f0f0f0;
+  }
+}
+
+@keyframes jd-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.jd-skeleton-title {
+  height: 30px;
+  width: 60%;
+  margin-bottom: 12px;
+}
+
+.jd-skeleton-chip {
+  height: 20px;
+  width: 90px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.jd-skeleton-meta {
+  height: 14px;
+  width: 45%;
+  margin-bottom: 28px;
+}
+
+.jd-skeleton-card {
+  height: 100px;
+  border-radius: 14px;
+}

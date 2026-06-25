@@ -156,12 +156,21 @@
         <ng-container *ngIf="screenWidth >= 1281">Prev: Create Interview</ng-container>
       </button>
 
+      <!-- B05 V1: Publish button with loading state (spinner while saving)
+           and micro-scale press effect (defined in job-create.component.scss).
+           Disabled while loading to prevent double-submit. -->
       <button
-        class="btn btn-add-service me-2"
+        class="btn btn-add-service me-2 btn-publish-post"
         (click)="publishJobPost()"
-        *ngIf="stepper == 4" [disabled]="!isAllowedToPublish"
+        *ngIf="stepper == 4"
+        [disabled]="!isAllowedToPublish || loading"
+        [attr.aria-label]="loading ? 'Publishing...' : 'Publish Job Post'"
       >
-        Publish Job Post
+        <span *ngIf="!loading">Publish Job Post</span>
+        <span *ngIf="loading" class="btn-publish-loading" aria-live="polite">
+          <span class="publish-spinner" aria-hidden="true"></span>
+          Publishing...
+        </span>
       </button>
 
       <span *ngIf="!isAllowedToPublish && stepper == 4" class="cursor-pointer" (click)="restrictJobCreation(true)"><i class="bi bi-exclamation-circle text-danger fs-3"></i></span>

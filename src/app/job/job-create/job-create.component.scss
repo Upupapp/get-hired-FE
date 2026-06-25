@@ -147,3 +147,33 @@
     transform: scale(0.97);
   }
 }
+
+// B05 V1: Publish button loading state
+.btn-publish-post {
+  min-width: 148px;
+}
+
+.btn-publish-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.publish-spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: publish-spin 0.7s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+@keyframes publish-spin {
+  to { transform: rotate(360deg); }
+}

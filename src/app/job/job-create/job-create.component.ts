@@ -470,19 +470,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
             '', { duration: 5000, panelClass: ['success-snackbar'] }
           );
           this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
-          // B05 V5: Navigate to job-specific applicant view after publish so
-          // the employer can immediately monitor applicants for their new post.
-          // For new jobs (this.jobId is null), read the newly created job's ID
-          // from the store (saveJobSuccess stores it in state.selected).
-          // Falls back to jobs list if no jobId can be resolved.
+          // B05 V1: Navigate to the job-level dashboard after publish so the
+          // recruiter lands on their specific job command center instead of the
+          // generic jobs list. For existing jobs (this.jobId is set from query
+          // params at load time), use it directly. For newly created jobs,
+          // read the job ID from state.selected (set by saveJobSuccess in the
+          // reducer). Falls back to jobs list with a message if no ID found.
           if (this.jobId) {
-            this.router.navigate(['/recruiter/jobs/applicants'], { queryParams: { id: this.jobId } });
+            this.router.navigate(['/recruiter/jobs/dashboard'], { queryParams: { id: this.jobId } });
           } else {
             this.jobFacade.jobDetails$.pipe(take(1)).subscribe(job => {
               if (job && job.jobId) {
-                this.router.navigate(['/recruiter/jobs/applicants'], { queryParams: { id: job.jobId } });
+                this.router.navigate(['/recruiter/jobs/dashboard'], { queryParams: { id: job.jobId } });
               } else {
-                this.router.navigateByUrl('/recruiter/jobs');
+                this.snackBar.open('Your job was published. View all jobs.', '', {
+                  duration: 5000,
+                  panelClass: ['success-snackbar']
+                });
+                this.router.navigate(['/recruiter/jobs/list']);
               }
             });
           }

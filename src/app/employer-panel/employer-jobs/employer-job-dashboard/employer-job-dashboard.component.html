@@ -1,0 +1,193 @@
+<!-- ─── Recruiter Job Dashboard ───────────────────────────────────────────────
+     Route: /recruiter/jobs/dashboard?id=<jobId>
+     Reached after publishing a job post.
+
+     Rules:
+     - NEVER fakes applicant counts or views
+     - "Applicants will appear here when candidates apply."  (no count shown)
+     - All animations guarded by prefers-reduced-motion via gh-pressable / motion-safe
+───────────────────────────────────────────────────────────────────────────── -->
+
+<!-- ── LOADING SKELETON ── -->
+<div *ngIf="loading" class="jd-shell jd-skeleton-wrap" aria-busy="true" aria-label="Loading job details">
+  <div class="jd-skeleton jd-skeleton-title"></div>
+  <div class="jd-skeleton jd-skeleton-chip"></div>
+  <div class="jd-skeleton jd-skeleton-meta"></div>
+  <div class="jd-actions-grid mt-4">
+    <div class="jd-skeleton jd-skeleton-card" *ngFor="let i of [0,1,2,3]"></div>
+  </div>
+</div>
+
+<!-- ── ERROR / FALLBACK STATE ── -->
+<div *ngIf="!loading && loadError" class="jd-shell jd-error-state" role="alert">
+  <div class="jd-error-icon" aria-hidden="true">&#9888;</div>
+  <h2 class="jd-error-title">Couldn't load your job post</h2>
+  <p class="jd-error-body">Your job was published. We couldn't load the details right now.</p>
+  <div class="jd-error-actions mt-3">
+    <button class="btn jd-btn-primary" (click)="backToAllJobs()">View all jobs</button>
+    <button class="btn jd-btn-secondary ms-2" (click)="createAnotherJob()">Create another job</button>
+  </div>
+</div>
+
+<!-- ── MAIN DASHBOARD ── -->
+<ng-container *ngIf="!loading && !loadError && (job$ | async) as job">
+  <div class="jd-shell" [@animate]="{value:'*', params:{ y:'20px', delay:'0ms' }}">
+
+    <!-- ── HEADER BAND ── -->
+    <div class="jd-header-band">
+      <div class="jd-header-inner">
+        <div class="jd-title-block">
+          <h1 class="jd-job-title">{{ job.jobTitle || 'Your Job Post' }}</h1>
+
+          <!-- Status chip: subtle glow for Published state -->
+          <span
+            class="jd-status-chip"
+            [ngClass]="getStatusClass(job)"
+            [attr.aria-label]="'Job status: ' + getStatusLabel(job)"
+          >
+            {{ getStatusLabel(job) }}
+          </span>
+        </div>
+
+        <div class="jd-meta-row">
+          <span *ngIf="job.jobCity || job.jobCountry" class="jd-meta-item">
+            <span aria-hidden="true">&#128205;</span>
+            {{ job.jobCity }}{{ job.jobCity && job.jobCountry ? ', ' : '' }}{{ job.jobCountry }}
+          </span>
+          <span *ngIf="job.workSetupName" class="jd-meta-item">
+            <span aria-hidden="true">&#127970;</span>
+            {{ job.workSetupName }}
+          </span>
+          <span *ngIf="job.jobTypeName" class="jd-meta-item">
+            <span aria-hidden="true">&#128203;</span>
+            {{ job.jobTypeName }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PUBLISH SUCCESS BANNER ── -->
+    <div class="jd-success-banner" role="status" aria-live="polite">
+      <span class="jd-success-check" aria-hidden="true">&#10003;</span>
+      <span class="jd-success-text">Your job is published.</span>
+    </div>
+
+    <!-- ── APPLICANT PIPELINE PANEL ── -->
+    <div class="jd-section jd-applicant-panel" [@animate]="{value:'*', params:{ y:'10px', delay:'120ms' }}">
+      <h2 class="jd-section-title">Applicants</h2>
+      <!-- B05 rule: NEVER show a count. Empty state with honest copy only. -->
+      <div class="jd-empty-state">
+        <div class="jd-empty-icon" aria-hidden="true">&#128100;</div>
+        <p class="jd-empty-title">No applicants yet</p>
+        <p class="jd-empty-body">Applicants will appear here when candidates apply.</p>
+        <button
+          class="btn jd-btn-primary gh-pressable mt-2"
+          (click)="viewApplicants()"
+          aria-label="Review applicants for this job"
+        >
+          Review applicants
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ACTION CARDS ── -->
+    <div class="jd-section">
+      <h2 class="jd-section-title">Quick actions</h2>
+      <div class="jd-actions-grid">
+
+        <!-- View public job -->
+        <button
+          class="jd-action-card gh-pressable"
+          (click)="viewPublicJob()"
+          aria-label="View public job posting (opens in new tab)"
+          [@animate]="{value:'*', params:{ y:'12px', delay:'160ms' }}"
+        >
+          <div class="jd-action-icon" aria-hidden="true">&#128279;</div>
+          <div class="jd-action-label">View public job</div>
+          <div class="jd-action-sub">See what candidates see</div>
+        </button>
+
+        <!-- Review applicants -->
+        <button
+          class="jd-action-card gh-pressable"
+          (click)="viewApplicants()"
+          aria-label="Review applicants for this job"
+          [@animate]="{value:'*', params:{ y:'12px', delay:'200ms' }}"
+        >
+          <div class="jd-action-icon" aria-hidden="true">&#128203;</div>
+          <div class="jd-action-label">Review applicants</div>
+          <div class="jd-action-sub">See who has applied</div>
+        </button>
+
+        <!-- Edit job post -->
+        <button
+          class="jd-action-card gh-pressable"
+          (click)="editJob()"
+          aria-label="Edit this job post"
+          [@animate]="{value:'*', params:{ y:'12px', delay:'240ms' }}"
+        >
+          <div class="jd-action-icon" aria-hidden="true">&#9998;</div>
+          <div class="jd-action-label">Edit job post</div>
+          <div class="jd-action-sub">Update details or requirements</div>
+        </button>
+
+        <!-- Back to all jobs -->
+        <button
+          class="jd-action-card gh-pressable"
+          (click)="backToAllJobs()"
+          aria-label="Back to all jobs"
+          [@animate]="{value:'*', params:{ y:'12px', delay:'280ms' }}"
+        >
+          <div class="jd-action-icon" aria-hidden="true">&#8592;</div>
+          <div class="jd-action-label">Back to all jobs</div>
+          <div class="jd-action-sub">See your full job list</div>
+        </button>
+
+        <!-- Create another job -->
+        <button
+          class="jd-action-card jd-action-card--accent gh-pressable"
+          (click)="createAnotherJob()"
+          aria-label="Create another job post"
+          [@animate]="{value:'*', params:{ y:'12px', delay:'320ms' }}"
+        >
+          <div class="jd-action-icon" aria-hidden="true">&#43;</div>
+          <div class="jd-action-label">Create another job</div>
+          <div class="jd-action-sub">Post a new position</div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ── INTERVIEW QUESTIONS SUMMARY (preserved, read-only) ── -->
+    <div
+      class="jd-section"
+      *ngIf="job.interviewQuestions && job.interviewQuestions.length > 0"
+      [@animate]="{value:'*', params:{ y:'10px', delay:'360ms' }}"
+    >
+      <h2 class="jd-section-title">Interview questions</h2>
+      <div class="jd-interview-list">
+        <div
+          class="jd-interview-item"
+          *ngFor="let q of job.interviewQuestions; let i = index"
+        >
+          <span class="jd-interview-num" aria-hidden="true">Q{{ i + 1 }}</span>
+          <span class="jd-interview-text">{{ q.question }}</span>
+          <span class="jd-interview-dur" *ngIf="q.answerDuration">{{ q.answerDuration }} min</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-container>
+
+<!-- ── NO JOB ID FALLBACK ── -->
+<ng-container *ngIf="!loading && !loadError && !(job$ | async)">
+  <div class="jd-shell jd-error-state" role="alert">
+    <div class="jd-error-icon" aria-hidden="true">&#128203;</div>
+    <h2 class="jd-error-title">Your job was published.</h2>
+    <p class="jd-error-body">View all jobs to find your new post.</p>
+    <div class="jd-error-actions mt-3">
+      <button class="btn jd-btn-primary" (click)="backToAllJobs()">View all jobs</button>
+    </div>
+  </div>
+</ng-container>
