@@ -132,6 +132,14 @@ export class JobFacade {
     this.store.dispatch(JobAction.deleteJobQuestion({ questionId, jobId }));
   }
 
+  /**
+   * P2 FIX: dispatch true job-level delete. The BE owns the company scope —
+   * we only pass jobId; the server derives companyId from the Firebase JWT.
+   */
+  deleteJobPost(jobId: string) {
+    this.store.dispatch(JobAction.deleteJob({ jobId }));
+  }
+
   // getfeatureList() {
 
   // }

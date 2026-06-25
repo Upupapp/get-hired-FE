@@ -79,6 +79,14 @@ enum AllFeatureActionTypes {
   DeleteJobQuestionSuccess = '[job] - Delete Job Question Success',
   DeleteJobQuestionFail = '[job] - Delete Job Question Fail',
 
+  // P2 FIX: true job-level delete actions (separate from the interview-question
+  // delete above). The FE previously had no NgRx path for DELETE /job/delete —
+  // "delete" in the UI fell back to changeJobStatus(4) (archive). These new
+  // actions wire the real destructive endpoint end-to-end.
+  DeleteJob = '[job] - Delete Job',
+  DeleteJobSuccess = '[job] - Delete Job Success',
+  DeleteJobFail = '[job] - Delete Job Fail',
+
   ResetSuccessMsg = '[job] - Reset Success Message',
 
 };
@@ -129,6 +137,22 @@ export const deleteJobQuestionSuccess = createAction(
 
 export const deleteJobQuestionFail = createAction(
   AllFeatureActionTypes.DeleteJobQuestionFail,
+  props<{ payload: any }>()
+);
+
+// P2 FIX: job-level delete actions — wired to DELETE /job/delete endpoint.
+export const deleteJob = createAction(
+  AllFeatureActionTypes.DeleteJob,
+  props<{ jobId: string }>()
+);
+
+export const deleteJobSuccess = createAction(
+  AllFeatureActionTypes.DeleteJobSuccess,
+  props<{ basicList: Model.BasicList[] }>()
+);
+
+export const deleteJobFail = createAction(
+  AllFeatureActionTypes.DeleteJobFail,
   props<{ payload: any }>()
 );
 

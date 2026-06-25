@@ -400,6 +400,30 @@ export class JobEffects {
     );
   });
 
+  // P2 FIX: effect for the new job-level delete endpoint. On success the BE
+  // returns the caller's updated job list (ownership-scoped). On failure the
+  // BE returns 404 { error: "..." } or 403 { message: "..." }; both are
+  // normalised to a string so the reducer and UI always receive readable copy.
+  deleteJob$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(JobActions.deleteJob),
+      mergeMap((action) => this.jobService.deleteJobPost(action.jobId)
+        .pipe(
+          map((res: any) => {
+            const basicList: Model.BasicList[] = res.data || [];
+            return JobActions.deleteJobSuccess({ basicList });
+          }),
+          catchError((err) => {
+            const body = (err && err.error) || {};
+            const payload: string = body.error || body.message
+              || 'We couldn\'t delete this job. It may no longer exist or you may not have access.';
+            return of(JobActions.deleteJobFail({ payload }));
+          })
+        )
+      )
+    );
+  });
+
   getInitialDetailsOfJob(job: Model.Job): Model.InitialDetails {
     return {
       jobTitle: job.jobTitle,

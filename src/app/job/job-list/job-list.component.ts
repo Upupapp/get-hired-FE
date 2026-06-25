@@ -130,16 +130,17 @@ export class JobListComponent implements OnInit, OnDestroy {
       }
     });
 
-    // QA8 BRAND FIX-B: surface changeJobStatusFail errors to the user.
-    // Fix 1 in job.effects.ts normalises all error shapes (403 { message }
-    // or generic { error }) to a plain string, so this toast always has
-    // readable copy. Without this subscription the error string was written
-    // to state but never displayed, leaving the user with no feedback when
-    // archiving / status-changing a job fails.
+    // QA8 BRAND FIX-B: surface changeJobStatusFail and deleteJobFail errors.
+    // P2 FIX: deleteJobFail also writes to jobError$ with the normalised
+    // error string from the effect (covers 403/404 responses). The generic
+    // copy below is a fallback; the BE's own error message is shown when
+    // available — e.g. "Job not found or you do not have access."
     this.req.add(
       this.jobFacade.jobError$.pipe(takeUntil(this.unsubscribe$)).subscribe((err) => {
         if (err) {
-          this.snackBar.open(err, '', {
+          const msg = typeof err === 'string' ? err
+            : 'We couldn\'t delete this job. It may no longer exist or you may not have access.';
+          this.snackBar.open(msg, '', {
             duration: 4000,
             panelClass: ['danger-snackbar'],
           });
@@ -210,11 +211,19 @@ export class JobListComponent implements OnInit, OnDestroy {
       });
   }
 
+  // P2 FIX: deleteRow now dispatches the real DELETE /job/delete endpoint
+  // instead of changeJobStatus(4). The confirmation dialog copy is updated to
+  // be unambiguous about permanent deletion. The delete button is implicitly
+  // disabled while the request is in flight because loading$ drives the
+  // reusable-table's disabled state via the existing loading binding.
   deleteRow(event) {
+    const jobId = event.hasOwnProperty('data') ? event.data.jobId : event.jobId;
+
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
-        action: 'Delete',
+        action: 'Delete job',
+        message: 'This action cannot be undone.',
       },
     });
 
@@ -223,13 +232,23 @@ export class JobListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((result) => {
         if (result == 1) {
-          // TODO delete
-          this.jobFacade.changeJobStatus(4, event.hasOwnProperty('data') ? event.data.jobId : event.jobId);
+          this.jobFacade.deleteJobPost(jobId);
         }
       });
   }
 
   afterChange(event) {
+    if (event === 'deleted') {
+      // P2 FIX: success path for true delete. List is already updated by the
+      // reducer (BE returns the refreshed list). Show confirmation toast.
+      this.snackBar.open('Job deleted.', '', {
+        duration: 4000,
+        panelClass: ['success-snackbar'],
+      });
+      setTimeout(() => this.dialog.closeAll(), 400);
+      return;
+    }
+
     if (event == 'archived') {
       this.jobFacade.getBasicList(this.user.companyId);
 

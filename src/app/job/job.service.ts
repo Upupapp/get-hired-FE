@@ -42,6 +42,16 @@ export class JobService {
     return this.baseService.delete<string>(`${this.jobUrl}/deleteinterviewquestion?questionId=${questionId}&jobId=${jobId}`);
   }
 
+  /**
+   * P2 FIX: true job-level delete. Sends DELETE /job/delete with only the
+   * jobId in the body — never sends companyId (the backend derives it from
+   * the authenticated caller's JWT). Returns the caller's refreshed job list.
+   * HttpClient.delete requires body via { body: ... } in the options object.
+   */
+  deleteJobPost(jobId: string) {
+    return this.baseService.delete<Model.BasicList[]>(`${this.jobUrl}/delete`, { body: { jobId } });
+  }
+
   getJobApplicantDetails(jobId: string, userId: string) {
     return this.baseService.get<any>(`${this.jobUrl}/applicantdetails?jobId=${jobId}&id=${userId}`);
   }

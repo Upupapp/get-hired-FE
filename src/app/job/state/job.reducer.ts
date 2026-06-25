@@ -490,4 +490,34 @@ export const jobReducer = createReducer<JobState>(
       succesMsg: null
     };
   }),
+  // P2 FIX: job-level delete reducer handlers.
+  // deleteJob: spinner on, clear previous success/error so the UI is clean.
+  on(JobActions.deleteJob, (state): JobState => {
+    return {
+      ...state,
+      loading: true,
+      succesMsg: null,
+      error: null
+    };
+  }),
+  // deleteJobSuccess: replace list with the BE-returned refreshed list
+  // (scoped to the caller's company), surface 'deleted' success signal.
+  on(JobActions.deleteJobSuccess, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      list: action.basicList,
+      succesMsg: 'deleted',
+      error: null
+    };
+  }),
+  // deleteJobFail: surface the normalised error string for the UI snackbar.
+  on(JobActions.deleteJobFail, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      error: action.payload,
+      succesMsg: null
+    };
+  }),
 );

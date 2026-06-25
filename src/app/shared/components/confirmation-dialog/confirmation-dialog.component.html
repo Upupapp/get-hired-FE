@@ -7,7 +7,10 @@
       <div class="ms-3">
         <h5 class="title-label">{{ data.action }} Confirmation</h5>
         <p>
-          Would you like to save your progress in {{ data.action }} ?
+          <!-- P2 FIX: show a caller-supplied message when present (e.g. "This
+               action cannot be undone." for delete-job). Falls back to the
+               original generic text for all other callers. -->
+          {{ data.message ? data.message : ('Would you like to save your progress in ' + data.action + ' ?') }}
         </p>
       </div>
     </div>
