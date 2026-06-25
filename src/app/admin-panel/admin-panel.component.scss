@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 #body-main-container{
   z-index: 1 !important;
@@ -94,3 +95,149 @@
   padding-left: 10px;
 }
 
+// ─── MOBILEVIEW: Admin mobile top bar ────────────────────────────────────────
+.gh-admin-mobile-topbar {
+  position: sticky;
+  top: 0; left: 0; right: 0;
+  z-index: 1001;
+  height: 56px;
+  background: $color-global-gray-cancel;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.gh-admin-mobile-topbar-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  flex: 1;
+}
+
+.gh-admin-mobile-menu-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; min-width: 44px;
+  background: transparent; border: none; border-radius: 10px;
+  color: #ffffff; cursor: pointer; padding: 0; outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: rgba(255,255,255,0.1); }
+  &:focus-visible { outline: 2px solid rgba($color-global-red-buttons, 0.85); outline-offset: 2px; }
+  &:active {
+    transform: scale(0.93); background: rgba(255,255,255,0.15);
+    @media (prefers-reduced-motion: reduce) { transform: none; }
+  }
+}
+
+.gh-admin-menu-icon {
+  width: 24px; height: 24px; flex-shrink: 0;
+  .gh-admin-menu-line {
+    transition: transform $motion-duration-drawer $motion-ease-decelerate,
+                opacity $motion-duration-micro $motion-ease-standard;
+    transform-origin: center;
+    @include motion-safe;
+  }
+  &--open {
+    .gh-admin-menu-line--top { transform: rotate(45deg) translate(4px, 6px); }
+    .gh-admin-menu-line--mid { opacity: 0; transform: scaleX(0); }
+    .gh-admin-menu-line--bot { transform: rotate(-45deg) translate(4px, -6px); }
+  }
+}
+
+.gh-admin-mobile-scrim {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;
+  background: rgba(0,0,0,0.48); opacity: 0; pointer-events: none;
+  transition: opacity $motion-duration-drawer $motion-ease-standard;
+  @include motion-safe;
+  &--visible { opacity: 1; pointer-events: auto; }
+}
+
+.gh-admin-mobile-drawer {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 280px; z-index: 1001;
+  background: $color-global-gray-cancel;
+  transform: translateX(-100%);
+  transition: transform $motion-duration-drawer $motion-ease-decelerate;
+  @include motion-safe;
+  display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.28);
+  &--open { transform: translateX(0); }
+  @media (min-width: 768px) { display: none !important; }
+}
+
+.gh-admin-drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); min-height: 64px;
+}
+.gh-admin-drawer-logo { height: 32px; width: auto; object-fit: contain; }
+.gh-admin-drawer-close-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; background: transparent; border: none;
+  border-radius: 8px; color: rgba(255,255,255,0.75); cursor: pointer; outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard, transform 100ms $motion-ease-standard;
+  @include motion-safe;
+  &:hover { background: rgba(255,255,255,0.1); color: #ffffff; }
+  &:focus-visible { outline: 2px solid rgba($color-global-red-buttons, 0.85); outline-offset: 2px; }
+  &:active { transform: scale(0.9); @media (prefers-reduced-motion: reduce) { transform: none; } }
+}
+
+.gh-admin-drawer-nav {
+  list-style: none; padding: 8px 0; margin: 0; flex: 1;
+}
+
+.gh-admin-drawer-nav-item {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  padding: 0 20px; height: 52px;
+  color: rgba(255,255,255,0.75); text-decoration: none;
+  font-family: 'Manrope', sans-serif; font-size: 14px; font-weight: 500;
+  border-left: 3px solid transparent; cursor: pointer; outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              color $motion-duration-micro $motion-ease-standard,
+              border-color $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+  &:hover { background: rgba(255,255,255,0.07); color: #ffffff; text-decoration: none; }
+  &:focus-visible { outline: 2px solid rgba($color-global-red-buttons, 0.85); outline-offset: -2px; }
+  &:active { transform: scale(0.97); @media (prefers-reduced-motion: reduce) { transform: none; } }
+  &--active, &[aria-current="page"] {
+    background: $color-global-sidebar-employer-route-active;
+    border-left-color: $color-global-red-buttons;
+    color: #ffffff; font-weight: 600;
+  }
+}
+.gh-admin-drawer-nav-icon { width: 20px; height: 20px; flex-shrink: 0; stroke: currentColor; }
+.gh-admin-drawer-nav-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+// ─── MOBILEVIEW: Admin bottom nav ────────────────────────────────────────────
+.gh-admin-mobile-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+  background: $color-global-gray-cancel;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding: 6px 0 env(safe-area-inset-bottom, 0px);
+  justify-content: space-around; align-items: center;
+
+  &-item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.55); text-decoration: none;
+    min-width: 44px; min-height: 44px; padding: 4px 8px;
+    border-radius: 8px; cursor: pointer; outline: none;
+    &:focus-visible { outline: 2px solid rgba(255,112,98,0.85); outline-offset: 2px; }
+    &--active { color: $color-global-red-buttons; }
+  }
+  &-icon { width: 22px; height: 22px; margin-bottom: 2px; }
+  &-label { font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 500; line-height: 1; }
+}
+
+@media (max-width: 767px) {
+  #sub-applicant-component {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  #body-main-container {
+    padding-top: 56px;
+  }
+}

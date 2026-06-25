@@ -394,3 +394,34 @@
 
 	color: #FFFFFF;
 }
+
+// ─── MOBILEVIEW: Banner mobile overflow fix ───────────────────────────────────
+// The container-fluid with px-5 causes 40px horizontal padding that overflows
+// at very small screens. Cap the padding on mobile.
+@media (max-width: 575px) {
+  .container-fluid {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .bg-banner {
+    height: auto !important;
+    min-height: 220px;
+    padding-bottom: 16px;
+  }
+
+  .title-banner {
+    font-size: 24px !important;
+    line-height: 30px !important;
+  }
+
+  .title-banner-description {
+    font-size: 14px !important;
+  }
+
+  .search-key, .search-key-2 {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}

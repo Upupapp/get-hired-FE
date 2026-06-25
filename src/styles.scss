@@ -6,6 +6,163 @@
 @include mat-core();
 @import "~ngx-org-chart/_theming.scss";
 
+// ─── MOBILEVIEW Phase 1: Global responsive baseline ─────────────────────────
+// Prevents horizontal overflow universally. All box-sizing normalized.
+// Media/embed elements stay within containers on mobile.
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+// Mobile tap compression — touchscreen-only devices (hover:none = no fine pointer)
+@media (hover: none) and (pointer: coarse) {
+  .mat-raised-button:active,
+  .mat-flat-button:active,
+  .btn:active,
+  .gh-card:active {
+    transform: scale(0.97);
+  }
+}
+
+// Global reduced-motion contract — completely disables all transitions/animations
+// for users who prefer reduced motion. Component-level @include motion-safe
+// mixins apply the same rule locally; this ensures no global styles slip through.
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ─── MOBILEVIEW: Touch target minimum (WCAG 2.5.5) ──────────────────────────
+.mat-icon-button, .icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+// ─── MOBILEVIEW: Global card hover/tap behavior ──────────────────────────────
+// Desktop: subtle lift on hover. Mobile: scale compress on :active (haptic feel).
+// Reduced-motion: transforms disabled, tint only.
+.gh-card, .job-card, .mat-card {
+  transition: transform $motion-duration-micro $motion-ease-standard,
+              box-shadow $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY($gh-lift);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover, &:active {
+      transform: none;
+    }
+  }
+}
+
+// ─── MOBILEVIEW: Sticky bottom action bar (for forms, job create, etc.) ──────
+.gh-sticky-action-bar {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ─── MOBILEVIEW: Tables → Cards responsive pattern ───────────────────────────
+// Applies to any mat-table or standard table at mobile breakpoint.
+// Requires data-label attributes on td elements for the label display.
+@media (max-width: 767px) {
+  .gh-responsive-table.mat-table,
+  .gh-responsive-table table {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .gh-responsive-table .mat-header-row,
+  .gh-responsive-table thead {
+    display: none;
+  }
+
+  .gh-responsive-table .mat-row,
+  .gh-responsive-table tbody tr {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .gh-responsive-table .mat-cell,
+  .gh-responsive-table tbody td {
+    display: flex;
+    align-items: flex-start;
+    padding: 4px 0;
+    border-bottom: none;
+    font-size: 13px;
+    min-height: 28px;
+
+    &::before {
+      content: attr(data-label);
+      font-weight: 600;
+      min-width: 120px;
+      color: #555;
+      flex-shrink: 0;
+    }
+  }
+
+  .gh-responsive-table .mat-cell:last-child,
+  .gh-responsive-table tbody td:last-child {
+    border-bottom: none;
+  }
+}
+
+// ─── MOBILEVIEW: Focus-visible glow (a11y) ───────────────────────────────────
+// Consistent focus ring across interactive elements.
+:focus-visible {
+  outline: 2px solid $color-global-red-buttons;
+  outline-offset: 2px;
+}
+
+// ─── MOBILEVIEW: Skeleton shimmer reveal transition ──────────────────────────
+// Allows skeleton cards to fade out when content arrives.
+.gh-skeleton-reveal {
+  transition: opacity 200ms $motion-ease-standard;
+  @include motion-safe;
+
+  &.loaded {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+}
+
 html,
 body {
   height: 100%;

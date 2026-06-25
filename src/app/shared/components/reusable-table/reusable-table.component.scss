@@ -960,3 +960,17 @@ tr:last-child{
 		margin: 0;
 	}
 }
+
+// ─── MOBILEVIEW: Table responsive card override ───────────────────────────────
+// Applied when the table wrapper has class .gh-responsive-table.
+// At mobile, hide header row and display each mat-row as a card with
+// data-label based cell labels for visual context.
+@media (max-width: 767px) {
+  section { overflow-x: hidden; }
+
+  .gh-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+}

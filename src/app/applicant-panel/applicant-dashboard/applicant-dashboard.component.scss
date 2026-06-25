@@ -1,4 +1,16 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
+
+// ─── MOBILEVIEW: Dashboard alert repositioned above mobile nav ───────────────
+@media (max-width: 767px) {
+  .alert.visible {
+    top: auto !important;
+    bottom: 76px; // clears the mobile bottom nav
+    right: 8px;
+    left: 8px;
+    transform: none !important;
+  }
+}
 
 .alert {
   position: fixed;

@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 #body-main-container{
   z-index: 1 !important;
@@ -21,7 +22,7 @@
   position: relative !important;
   background-color: $color-global-sidebar-applicant-gray !important;
   overflow-x: hidden !important;
-  overflow-y: none !important;
+  overflow-y: initial !important;
   margin-bottom: 30px !important;
 }
 
@@ -29,16 +30,14 @@
 #body-row {
   margin-left:0;
   margin-right:0;
-  //padding-bottom: 50px !important;
   flex-wrap: nowrap !important;
   background-color: inherit !important;
   min-height: 70vh;
   margin-bottom: 0 !important;
-  overflow-y: none !important;
+  overflow-y: initial !important;
 }
 
 #sidebar-container {
-  // min-height: 100vh;
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   padding: 0;
@@ -50,7 +49,6 @@
 
 /* Menu item*/
 #sidebar-container .list-group a {
-  /* height: 50px; */
   color: white;
 }
 
@@ -92,5 +90,360 @@
   display: inline;
   text-align: right;
   padding-left: 10px;
+}
+
+// ─── MOBILEVIEW: Applicant mobile top bar ────────────────────────────────────
+.gh-ap-mobile-topbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  height: 56px;
+  background: $color-global-gray-cancel;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.gh-ap-mobile-topbar-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  flex: 1;
+}
+
+// ─── MOBILEVIEW: Applicant hamburger button ───────────────────────────────────
+.gh-ap-mobile-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.93);
+    background: rgba(255, 255, 255, 0.15);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+}
+
+.gh-ap-menu-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  .gh-ap-menu-line {
+    transition: transform $motion-duration-drawer $motion-ease-decelerate,
+                opacity $motion-duration-micro $motion-ease-standard;
+    transform-origin: center;
+    @include motion-safe;
+  }
+
+  &--open {
+    .gh-ap-menu-line--top {
+      transform: rotate(45deg) translate(4px, 6px);
+    }
+    .gh-ap-menu-line--mid {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .gh-ap-menu-line--bot {
+      transform: rotate(-45deg) translate(4px, -6px);
+    }
+  }
+}
+
+// ─── MOBILEVIEW: Scrim overlay ────────────────────────────────────────────────
+.gh-ap-mobile-scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.48);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity $motion-duration-drawer $motion-ease-standard;
+  @include motion-safe;
+
+  &--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+// ─── MOBILEVIEW: Applicant mobile drawer ─────────────────────────────────────
+.gh-ap-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  z-index: 1001;
+  background: $color-global-gray-cancel;
+  transform: translateX(-100%);
+  transition: transform $motion-duration-drawer $motion-ease-decelerate;
+  @include motion-safe;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.28);
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+// ─── Drawer header ────────────────────────────────────────────────────────────
+.gh-ap-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 64px;
+}
+
+.gh-ap-drawer-logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.gh-ap-drawer-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.9);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+}
+
+// ─── Drawer nav list ──────────────────────────────────────────────────────────
+.gh-ap-drawer-nav {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  flex: 1;
+}
+
+.gh-ap-drawer-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 20px;
+  height: 52px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              color $motion-duration-micro $motion-ease-standard,
+              border-color $motion-duration-micro $motion-ease-standard,
+              transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: -2px;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    background: rgba($color-global-sidebar-applicant-route-active, 0.15);
+
+    @media (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
+  }
+
+  &--active,
+  &[aria-current="page"] {
+    background: rgba($color-global-sidebar-applicant-route-active, 0.2);
+    border-left-color: $color-global-sidebar-applicant-route-active;
+    color: #ffffff;
+    font-weight: 600;
+  }
+}
+
+.gh-ap-drawer-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
+.gh-ap-drawer-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Drawer footer ────────────────────────────────────────────────────────────
+.gh-ap-drawer-footer {
+  padding: 12px 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+.gh-ap-drawer-settings-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  padding: 10px 4px;
+  border-radius: 8px;
+  outline: none;
+  transition: color $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+// ─── MOBILEVIEW: Applicant bottom navigation bar ─────────────────────────────
+.gh-ap-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: $color-global-gray-cancel;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 0 env(safe-area-inset-bottom, 0px);
+  justify-content: space-around;
+  align-items: center;
+
+  &-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+
+    &:focus-visible {
+      outline: 2px solid rgba($color-global-red-buttons, 0.85);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      color: $color-global-sidebar-applicant-route-active;
+    }
+  }
+
+  &-icon {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
+  }
+
+  &-label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+  }
+}
+
+// ─── MOBILEVIEW: Push content above bottom nav on mobile ─────────────────────
+@media (max-width: 767px) {
+  #sub-applicant-component {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  // Push body content below the sticky mobile top bar
+  #body-main-container {
+    padding-top: 56px;
+  }
 }
 
