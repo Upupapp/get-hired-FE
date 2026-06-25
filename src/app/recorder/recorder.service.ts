@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from "@environments/environment";
 import { BaseService } from "@main/core/services/base.service";
-import RecordRTC from 'recordrtc';
 import moment from "moment";
 import { Observable, Subject } from 'rxjs';
 
@@ -80,13 +79,13 @@ export class RecordService {
 
     this._recordingTime.next('00:00');
     return new Promise((resolve, reject) => {
-      browser.mediaDevices.getUserMedia(conf).then(stream => {
+      browser.mediaDevices.getUserMedia(conf).then(async stream => {
         this.stream = stream;
-        this.record();
+        await this.record();
         resolve(this.stream);
       }).catch(error => {
         this._recordingFailed.next(null);
-        reject;
+        reject(error);
       });
     });
   }
@@ -95,7 +94,8 @@ export class RecordService {
     this.stopMedia();
   }
 
-  private record() {
+  private async record() {
+    const { default: RecordRTC } = await import('recordrtc');
     this.recorder = new RecordRTC(this.stream, {
       type: 'video',
       mimeType: 'video/webm; codecs=vp8,opus',
