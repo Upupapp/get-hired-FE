@@ -1,4 +1,4 @@
-<section id="body-main-container" *ngIf="user$ | async as user">
+<section id="body-main-container" *ngIf="user$ | async as user; else profileLoadError">
 
   <!-- MOBILEVIEW: Mobile top bar — visible only below md breakpoint (768px).
        Sticky so it stays visible while scrolling content. -->
@@ -203,3 +203,26 @@
     </a>
   </nav>
 </section>
+
+<!-- SEC-01 NOTIFY: profile load error fallback — shown when getUserProfile() fails
+     and user$ stays null. For 401/403 the interceptor already fires a snackbar
+     and redirects to /signin; this catches 404 (no profile yet) and generic errors
+     so the user never sees a blank screen. -->
+<ng-template #profileLoadError>
+  <ng-container *ngIf="error$ | async as profileErr">
+    <div class="gh-profile-error-banner m-4" role="alert" aria-live="assertive">
+      <svg class="gh-profile-error-banner__icon" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <div class="gh-profile-error-banner__message">
+        <p class="mb-2">{{ profileErr }}</p>
+        <a routerLink="/signin" class="btn btn-sm btn-outline-danger gh-signin-cta"
+           aria-label="Sign in to your account">Sign In</a>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

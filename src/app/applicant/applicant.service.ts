@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from '@main/core/services/base.service';
 import { environment } from 'environments/environment';
-import { of } from 'rxjs';
 import * as Model from '../applicant/applicant.model';
 
 @Injectable({

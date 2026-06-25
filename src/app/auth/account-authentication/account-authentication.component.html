@@ -6,11 +6,11 @@
     <div *ngIf="isResent; else errorSent">
       <img src="assets/images/success.gif" />
       <h5 class="title-main px-5">
-        Verification link has been sent to your email. Please verify and login again.
+        Verification link has been sent to your email. Please verify and sign in again.
       </h5>
       <div class="text-center mb-3">
-        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3" (click)="redirectToLogin()" type="button">
-          Login
+        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3" (click)="redirectToLogin()" type="button" aria-label="Sign in to your account">
+          Sign In
         </button>
       </div>
     </div>
@@ -47,8 +47,8 @@
         </h5>
 
         <div class="mt-2">
-          <button class="btn btn-submit text-center w-50 mt-2" (click)="redirectToLogin()" type="button">
-            Login
+          <button class="btn btn-submit text-center w-50 mt-2" (click)="redirectToLogin()" type="button" aria-label="Sign in to your account">
+            Sign In
           </button>
         </div>
       </div>

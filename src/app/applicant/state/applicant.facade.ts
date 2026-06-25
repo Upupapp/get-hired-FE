@@ -4,7 +4,6 @@ import { State } from './applicant.reducer';
 import { select, Store } from '@ngrx/store';
 import * as ApplicantAction from './applicant.actions';
 import * as fromfeature from './applicant.selector';
-import * as InterviewModel from '@main/interview/interview.model';
 
 @Injectable()
 export class ApplicantFacade {

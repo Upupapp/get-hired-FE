@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import * as Model from '../applicant.model';
-import * as InterviewModel from '@main/interview/interview.model';
 
 enum AllFeatureActionTypes {
   GetUserProfile = '[applicant] - Get User Profile status',

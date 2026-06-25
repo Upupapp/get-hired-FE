@@ -13,9 +13,9 @@
   border-radius: 8px;
   background: linear-gradient(
     90deg,
-    #e8e8e8 25%,
-    #f5f5f5 50%,
-    #e8e8e8 75%
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
   );
   background-size: 800px 100%;
   animation: gh-skeleton-shimmer 1.4s ease-in-out infinite;
@@ -51,7 +51,7 @@
 }
 
 .gh-profile-card {
-  animation: gh-profile-reveal 240ms $motion-ease-decelerate both;
+  animation: gh-profile-reveal $motion-duration-card $motion-ease-decelerate both;
   @include motion-safe;
 }
 
@@ -123,17 +123,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px; // MOBILEVIEW: WCAG 2.5.5 touch target
+  padding-left: 20px;
+  padding-right: 20px;
   cursor: pointer;
   transition: transform 100ms $motion-ease-standard,
               box-shadow 100ms $motion-ease-standard;
   @include motion-safe;
 
   &:active {
-    transform: scale(0.97);
-
-    @media (prefers-reduced-motion: reduce) {
-      transform: none;
-    }
+    transform: scale($gh-scale-press);
   }
 
   &:focus-visible {
@@ -147,16 +146,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 44px; // MOBILEVIEW: WCAG 2.5.5 touch target
+  padding-left: 20px;
+  padding-right: 20px;
   cursor: pointer;
   transition: transform 100ms $motion-ease-standard;
   @include motion-safe;
 
   &:active {
-    transform: scale(0.97);
-
-    @media (prefers-reduced-motion: reduce) {
-      transform: none;
-    }
+    transform: scale($gh-scale-press);
   }
 
   &:focus-visible {
@@ -167,10 +165,32 @@
 
 // ─── SEC-01 Mobile tap feedback ───────────────────────────────────────────────
 // Adds tactile feel on touch devices; @media(hover:none) targets touch screens.
-@media (hover: none) {
+@media (hover: none) and (pointer: coarse) {
   .gh-profile-cta-btn:active,
   .gh-profile-retry-btn:active,
   .gh-signin-cta:active {
     background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+// ─── SEC-01 Mobile layout: session-expired banner full-width, no overflow ─────
+@media (max-width: 767px) {
+  .gh-session-expired-banner {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .gh-profile-error-banner {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  // Banner CTAs stacked full-width on mobile
+  .gh-profile-cta-btn,
+  .gh-signin-cta {
+    width: 100%;
+    justify-content: center;
   }
 }

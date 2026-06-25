@@ -58,12 +58,8 @@
             {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
           </button>
 
-          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">
-            Login to Apply
-          </button>
-
-          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole">
-            Login to Apply
+          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole" aria-label="Sign in to apply for this job">
+            Sign In to Apply
           </button>
 
           <img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2"

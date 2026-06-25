@@ -15,6 +15,9 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
   isUserLoggedIn: boolean;
   local = JSON.parse(localStorage.getItem('user'));
   user$ = this.applicantFacade.user$;
+  // SEC-01 NOTIFY: wire error$ so the template can render a safe fallback
+  // when getUserProfile() fails (401 / 403 / 404 / generic).
+  error$ = this.applicantFacade.error$;
 
   // MOBILEVIEW: Mobile drawer state
   mobileNavOpen = false;

@@ -101,6 +101,7 @@
   padding: 8px 30px !important;
   margin-top: 1px;
   height: 38px !important;
+  min-height: 44px !important; // MOBILEVIEW: WCAG 2.5.5 touch target — override fixed 38px on mobile
 
   &:hover{
     border: solid 2px #FF4D3C !important;
