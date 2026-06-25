@@ -1,18 +1,1 @@
-<div *ngIf="!isSmallScreen || isSmallScreenAllowed; else small">
-  <router-outlet></router-outlet>
-</div>
-
-<ng-template #small>
-  <div class="row w-100" style="height: 100vh">
-    <div class="text-center justify-content-center align-items-center d-flex flex-column">
-      <img src="assets/images/smallscreen.gif" class="w-70" />
-      <p class="text-center px-5">
-        We take recruitment and interviews seriously. Kindly, take a seat, setup a good lighting and access our platform
-        on a LAPTOP or DESKTOP screens.
-      </p>
-      <h5>Thank you!</h5>
-      <h5 class="title-verified mt-2 px-5">From your <span class="gwana-trademark"> <img src="/assets/images/logo.png" style="width: 15%;"></span> team!
-      </h5>
-    </div>
-  </div>
-</ng-template>
+<router-outlet></router-outlet>
