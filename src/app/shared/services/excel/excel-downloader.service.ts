@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
+// QA10 FIX-1: Migrated from xlsx (CVE-2023-30533 — no patched version published
+// to the public npm registry; 0.19.3 is SheetJS Pro only) to exceljs 4.x which
+// has no known critical CVEs. The service only exports CSV so the API surface
+// needed is minimal: build a workbook, add a worksheet, write rows, export as
+// CSV blob. The public call signature (exportAsExcelFile) is unchanged.
+import * as ExcelJS from 'exceljs';
 
-const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.csv';
 
 @Injectable({
@@ -13,16 +17,24 @@ export class ExcelDownloaderService {
   constructor() { }
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
-    const myworksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
-    const myworkbook: XLSX.WorkBook = { Sheets: { 'data': myworksheet }, SheetNames: ['data'] };
-    const excelBuffer: any = XLSX.write(myworkbook, { bookType: 'csv', type: 'array' });
-    this.saveAsExcelFile(excelBuffer, excelFileName);
-  }
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('data');
 
-  private saveAsExcelFile(buffer: any, fileName: string): void {
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE
+    if (json && json.length > 0) {
+      // Use the first object's keys as the header row.
+      const headers = Object.keys(json[0]);
+      worksheet.addRow(headers);
+      json.forEach(row => {
+        worksheet.addRow(headers.map(h => row[h]));
+      });
+    }
+
+    // ExcelJS's csv.writeBuffer() returns a Promise<Buffer>.
+    workbook.csv.writeBuffer().then((buffer) => {
+      const data: Blob = new Blob([buffer], {
+        type: 'text/csv;charset=UTF-8'
+      });
+      FileSaver.saveAs(data, excelFileName + '_exported' + EXCEL_EXTENSION);
     });
-    FileSaver.saveAs(data, fileName + '_exported'+ EXCEL_EXTENSION);
   }
 }

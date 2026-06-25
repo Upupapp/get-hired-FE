@@ -13,14 +13,18 @@ export class GroupService {
     constructor(private http: HttpClient) {}
   
     getGroupList(data: any): Observable<any> {
-        return this.http.get<any>(`${this.server}/groups/list?companyId=${data.payload}`).pipe(
+        // QA10 FIX-14: removed ?companyId= query param — BE now derives
+        // companyId from the JWT and ignores any caller-supplied param.
+        return this.http.get<any>(`${this.server}/groups/list`).pipe(
           map((res) => <any[]>res.data),
           catchError(this.handleError)
         );
     }
 
     getContactGroupList(data: any): Observable<any> {
-      return this.http.get<any>(`${this.server}/groups/contactlist?companyId=${data.payload.companyId}&groupName=${data.payload.groupName}`).pipe(
+      // QA10 FIX-14: removed companyId query param — BE now derives from JWT.
+      // groupName is still required for filtering.
+      return this.http.get<any>(`${this.server}/groups/contactlist?groupName=${data.payload.groupName}`).pipe(
         map((res) => <any[]>res.data),
         catchError(this.handleError)
       );

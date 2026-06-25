@@ -76,6 +76,11 @@ export const success = createSelector(
   state => state.succesMsg
 );
 
+export const getError = createSelector(
+  getApplicantInitState,
+  state => state.error
+);
+
 // export const getApplicantDetails = createSelector(
 //   getApplicantInitState,
 //   state => state.selected

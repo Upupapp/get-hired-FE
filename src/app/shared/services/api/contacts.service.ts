@@ -13,7 +13,9 @@ export class ContactService {
     constructor(private http: HttpClient) {}
   
     getContactList(data: any): Observable<any> {
-        return this.http.get<any>(`${this.server}/contacts/list?companyId=${data.payload}`).pipe(
+        // QA10 FIX-14: removed ?companyId= query param — BE now derives
+        // companyId from the JWT and ignores any caller-supplied param.
+        return this.http.get<any>(`${this.server}/contacts/list`).pipe(
           map((res) => <any[]>res.data),
           catchError(this.handleError)
         );

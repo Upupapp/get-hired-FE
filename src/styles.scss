@@ -38,6 +38,14 @@ body {
   background-color: $color-global-red-buttons;
 }
 
+// QA8 BRAND FIX-A: danger-snackbar was used in 13 files as a panelClass but
+// had no CSS definition. Uses $color-global-red (#FE6F61) — the brand error
+// red — with white text to visually distinguish error toasts from neutral ones.
+.danger-snackbar {
+  background-color: $color-global-red;
+  color: #ffffff;
+}
+
 .text-primary-red {
   color: #ff7062;
 }

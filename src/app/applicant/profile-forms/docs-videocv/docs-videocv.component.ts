@@ -7,7 +7,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { RecorderComponent } from '@main/recorder/recorder.component';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import * as Model from '../../applicant.model';
 
 @Component({
@@ -27,6 +27,7 @@ export class DocsVideocvComponent implements OnInit {
   videoFile: File;
   videoUrl: string;
 
+  private unsubscribe$ = new Subject<void>();
   recording$: Subscription;
   confirmation$: Subscription;
 
@@ -51,6 +52,22 @@ export class DocsVideocvComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // QA10 FIX-9: surface saveVideoCV 403 errors to the user.
+    // saveVideoCVFail dispatches to the applicant store's error$ but the
+    // component previously only subscribed to success$ — errors were silent.
+    this.applicantFacade.error$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((err) => {
+        if (err) {
+          const msg = (err && (err.message || err)) || 'An error occurred. Please try again.';
+          this.snackBar.open(msg, '', {
+            duration: 4000,
+            panelClass: ['danger-snackbar'],
+            verticalPosition: 'top',
+            horizontalPosition: 'right',
+          });
+        }
+      });
   }
 
   onUpload(docu: any) {
@@ -186,6 +203,8 @@ export class DocsVideocvComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
     if (this.success$) {
       this.success$.unsubscribe();
     }

@@ -27,7 +27,9 @@ export class ApplicantFacade {
   docu$ = this.store.pipe(select(fromfeature.getProfileDocs));
   // getApplicantById$ = this.store.pipe(select(fromfeature.getApplicantById));
   // getApplicantLoading$ = this.store.pipe(select(fromfeature.applicantLoading));
-  error$: any;
+  // QA10 FIX-9: wire error$ to the store selector so components can subscribe
+  // and show error toasts when saveVideoCV or other actions fail with a 403.
+  error$ = this.store.pipe(select(fromfeature.getError));
   // applicantTemp$ = this.store.pipe(select(fromfeature.applicantTemp));
 
   getBasicInfo$ = this.store.pipe(select(fromfeature.getBasicInfo));

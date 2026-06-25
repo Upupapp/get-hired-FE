@@ -5,7 +5,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { UpdateQuestionComponent } from '@main/interview/update-question/update-question.component';
-import { Subscription} from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as InterviewModel from '@main/interview/interview.model';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
@@ -26,6 +27,7 @@ export class CreateInterviewComponent implements OnInit {
   interviewQuestions: FormArray;
   interviewForm: FormGroup;
 
+  private unsubscribe$ = new Subject<void>();
   editDialogSubs$: Subscription;
   success$ = this.jobFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this))
@@ -41,7 +43,23 @@ export class CreateInterviewComponent implements OnInit {
 
     this.interviewForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
     this.interviewQuestions = this.interviewForm.get('interviewQuestions') as FormArray;
-    this.questionsContainer = this.questions ? [...this.questions]: [...this.interviewQuestions.value]
+    this.questionsContainer = this.questions ? [...this.questions]: [...this.interviewQuestions.value];
+
+    // QA10 FIX-9: surface delete/update interview question 403 errors to the user.
+    // updateJobQuestionFail and deleteJobQuestionFail both write to jobError$ in
+    // the job store. Without this subscription the errors are written to state but
+    // never displayed.
+    this.jobFacade.jobError$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((err) => {
+        if (err) {
+          const msg = (err && (err.message || err.error)) || 'An error occurred. Please try again.';
+          this.snackBar.open(msg, '', {
+            duration: 4000,
+            panelClass: ['danger-snackbar'],
+          });
+        }
+      });
   }
 
   addQuestion(item) {
@@ -121,6 +139,8 @@ export class CreateInterviewComponent implements OnInit {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
     if(this.editDialogSubs$) {
       this.editDialogSubs$.unsubscribe();
     }

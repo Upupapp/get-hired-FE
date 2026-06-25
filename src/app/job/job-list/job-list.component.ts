@@ -30,7 +30,7 @@ import * as Model from '../job.model';
   styleUrls: ['./job-list.component.scss'],
   animations: [mainAnimations],
 })
-export class JobListComponent implements OnInit {
+export class JobListComponent implements OnInit, OnDestroy {
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -68,6 +68,10 @@ export class JobListComponent implements OnInit {
     .subscribe(this.afterChange.bind(this));
 
   loading$ = this.jobFacade.loading$.pipe().subscribe(this.onLoad.bind(this));
+
+  // QA9 FIX-13: removed duplicate class-field error$ subscription to jobError$.
+  // The authoritative subscription is in ngOnInit (uses req.add + takeUntil for
+  // proper cleanup, danger-snackbar, 4s). Keeping both caused double toasts.
   restrictions$ = this.jobFacade.subsRestrictions$
     .pipe().subscribe(this.checkJobRestriction.bind(this));
 
@@ -125,6 +129,23 @@ export class JobListComponent implements OnInit {
         this.jobFacade.getCompanySubscription(this.user.companyId);
       }
     });
+
+    // QA8 BRAND FIX-B: surface changeJobStatusFail errors to the user.
+    // Fix 1 in job.effects.ts normalises all error shapes (403 { message }
+    // or generic { error }) to a plain string, so this toast always has
+    // readable copy. Without this subscription the error string was written
+    // to state but never displayed, leaving the user with no feedback when
+    // archiving / status-changing a job fails.
+    this.req.add(
+      this.jobFacade.jobError$.pipe(takeUntil(this.unsubscribe$)).subscribe((err) => {
+        if (err) {
+          this.snackBar.open(err, '', {
+            duration: 4000,
+            panelClass: ['danger-snackbar'],
+          });
+        }
+      })
+    );
 
     setTimeout(() => (this.loading = false), 1500);
   }
@@ -252,6 +273,11 @@ export class JobListComponent implements OnInit {
 
 
   ngOnDestroy(): void {
+    // QA10 FIX-10: complete the Subject so takeUntil(this.unsubscribe$)
+    // actually tears down the jobError$ subscription added in ngOnInit.
+    // Previously only req.unsubscribe() was called, leaving the Subject open.
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
     if (this.req) this.req.unsubscribe();
     this.jobFacade.getBasicList(null);
     this.dialog.closeAll();
