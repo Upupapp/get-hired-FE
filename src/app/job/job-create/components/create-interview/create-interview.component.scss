@@ -1,5 +1,84 @@
 @import "src/assets/styles/colors";
 
+// B04: Optional-for-publishing badge
+.interview-optional-badge {
+  display: inline-block;
+  background: #f0f7ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  letter-spacing: 0.02em;
+  // Reduced-motion-safe entry transition
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// B04: Hint text beneath the section heading
+.interview-optional-hint {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+// B04: Empty-state card when no questions exist
+.interview-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px !important;
+  border: 2px dashed #e5e7eb !important;
+  background: #fafafa !important;
+  border-radius: 10px;
+  text-align: center;
+  // Reduced-motion-safe reveal
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.interview-empty-icon {
+  margin-bottom: 12px;
+  opacity: 0.45;
+  img {
+    height: 44px;
+    width: auto;
+  }
+}
+
+.interview-empty-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
+
+.interview-empty-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 0;
+}
+
+// B04: Publish button micro-scale press effect (scoped to this step's card)
+.btn-record {
+  transition: transform 0.1s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
 .main-title{
 	font-family: 'Manrope';
 	font-style: normal;

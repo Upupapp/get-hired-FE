@@ -1,13 +1,31 @@
-<div class="card card-body">
-  <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+<div class="card card-body" [@animate]="{value:'*', params:{ y:'30px', delay:'150ms' }}">
+  <div class="row">
     <!-- EMPLOYMENT DETAILS -->
-    <div class="col-12">
-      <h5 class="title-label">Interview Questions</h5>
-      <hr style="border: dashed 1px #868686">
+    <div class="col-12 d-flex align-items-center flex-wrap gap-2 mb-1">
+      <h5 class="title-label mb-0">Interview Questions</h5>
+      <!-- B04: Optional badge — interview questions do not block publishing -->
+      <span class="interview-optional-badge" [@animate]="{value:'*', params:{ y:'6px', delay:'250ms' }}">
+        Optional for publishing
+      </span>
     </div>
+    <p class="interview-optional-hint mb-2" [@animate]="{value:'*', params:{ y:'6px', delay:'320ms' }}">
+      Add interview questions to guide applicant responses. Applicants may answer these questions by video as part of their application. Video answers are reviewed by employers and are not automatically scored.
+    </p>
+    <hr style="border: dashed 1px #868686">
     <app-create-question (addItem)="addQuestion($event)"
       [questionIndex]="interviewQuestions && questionsContainer.length + 1"></app-create-question>
   </div>
+</div>
+
+<!-- B04: Empty-state card — shown when no questions have been added yet -->
+<div class="interview-empty-state card card-body mt-3"
+  *ngIf="interviewQuestions && questionsContainer.length === 0"
+  [@animate]="{value:'*', params:{ y:'10px', delay:'300ms' }}">
+  <div class="interview-empty-icon">
+    <img src="/assets/images/placeholder/icons/interview-logo-4.png" alt="No questions yet">
+  </div>
+  <p class="interview-empty-title">No interview questions added yet.</p>
+  <p class="interview-empty-subtitle">You can publish now and add questions later.</p>
 </div>
 
 <div *ngIf="interviewQuestions">

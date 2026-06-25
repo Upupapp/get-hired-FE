@@ -476,3 +476,50 @@
 	@extend .badge-card;
 	background: #FFCCE4;
 }
+
+// B04: Optional-for-publishing badge in preview panel
+.preview-optional-badge {
+  display: inline-block;
+  background: #f0f7ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  letter-spacing: 0.02em;
+  // Reduced-motion-safe entry transition
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// B04: Empty-state for preview when no interview questions have been added
+.preview-no-questions {
+  text-align: center;
+  padding: 28px 16px;
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  background: #fafafa;
+  // Reduced-motion-safe reveal
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.preview-no-questions-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
+
+.preview-no-questions-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 0;
+}

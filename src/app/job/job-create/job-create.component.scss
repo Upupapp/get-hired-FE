@@ -136,3 +136,14 @@
 		right: 40px;
 	}
 }
+
+// B04: Publish button micro-scale press effect (reduced-motion-safe)
+.btn-add-service {
+  transition: transform 0.1s ease, background 0.15s ease;
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 0.15s ease;
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+}
