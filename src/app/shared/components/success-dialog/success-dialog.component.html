@@ -1,8 +1,9 @@
 <div class="card card-body">
   <div class="border-solid">
     <div class="d-flex p-1">
+      <!-- NOTIFY-FIX-5: decorative icon gets aria-hidden so screen readers skip it -->
       <img src="/assets/images/placeholder/icons/success.png" class="mt-1"
-      style="height: 34px">
+      style="height: 34px" aria-hidden="true">
 
       <div class="ms-3">
         <h5 class="title-label">{{ data.title || 'Message:' }}</h5>

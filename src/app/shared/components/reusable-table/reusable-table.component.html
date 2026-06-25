@@ -121,11 +121,16 @@
 					|| header?.col_name == 'action'" class="table_img">
 
             <span *ngIf="header?.col_name == 'action'">
-              <img src="/assets/images/placeholder/icons/menu.png" class="hvr-grow menu-image"
+              <!-- NOTIFY-FIX-4: desktop action images are interactive; wrap in button for a11y -->
+              <button type="button" class="btn p-0 border-0 bg-transparent" aria-label="Open menu"
                 (click)="openDialog('menu', data)">
+                <img src="/assets/images/placeholder/icons/menu.png" class="hvr-grow menu-image" alt="">
+              </button>
 
-              <img src="/assets/images/placeholder/icons/delete-circle-red.png" class="hvr-grow delete-image"
+              <button type="button" class="btn p-0 border-0 bg-transparent" aria-label="Delete"
                 (click)="openDialog('delete', data)" *ngIf="data.status != 'Archived'">
+                <img src="/assets/images/placeholder/icons/delete-circle-red.png" class="hvr-grow delete-image" alt="">
+              </button>
             </span>
           </span>
 

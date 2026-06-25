@@ -29,8 +29,9 @@
 
 							</button>
 
-							<button class="btn btn-settings me-2 gh-recorder-btn-secondary" (click)="openInterviewSettings()">
-								<img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
+							<!-- NOTIFY-FIX-6: icon-only settings button needs accessible label -->
+							<button class="btn btn-settings me-2 gh-recorder-btn-secondary" (click)="openInterviewSettings()" aria-label="Open recording settings">
+								<img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1" aria-hidden="true">
 							</button>
 						</div>
 					</div>

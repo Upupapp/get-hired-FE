@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { A11yModule } from '@angular/cdk/a11y';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -90,7 +91,8 @@ const classesToInclude: any[] = [
     MaterialComponentsModule,
     NgxDocViewerModule,
     TranslateModule,
-    RouterModule
+    RouterModule,
+    A11yModule
   ],
   entryComponents: [...classesToInclude],
   providers: [
@@ -104,7 +106,8 @@ const classesToInclude: any[] = [
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    RouterModule
+    RouterModule,
+    A11yModule
   ]
 })
 export class SharedModule { }

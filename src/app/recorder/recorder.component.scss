@@ -184,6 +184,9 @@ video{
     justify-content: center;
     flex-wrap: wrap;
     padding: 8px 0;
+    // Override the desktop absolute positioning so the controls
+    // flow into the document at mobile widths instead of overlapping.
+    position: static !important;
   }
 
   .video-placeholder {

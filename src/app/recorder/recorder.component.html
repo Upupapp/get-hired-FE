@@ -1,7 +1,9 @@
 <div class="w-100 mb-3" style="height: 20px;">
   <span class="float-end">
-    <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px; width: 15px; cursor: pointer;"
-      (click)="cancel()">
+    <!-- NOTIFY-FIX-1: close button gets aria-label so screen readers can identify it -->
+    <button type="button" class="btn p-0 border-0 bg-transparent" (click)="cancel()" aria-label="Close recorder">
+      <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px; width: 15px; cursor: pointer;" aria-hidden="true">
+    </button>
   </span>
 
   <h5 class="title-main" *ngIf="data?.title">{{data?.title}}</h5>
@@ -19,7 +21,7 @@
 
       <!-- VIDEO CONTAINER -->
       <section>
-        <div [hidden]="!isVideoRecording || !videoBlobUrl">
+        <div class="gh-recorder-preview" [hidden]="!isVideoRecording || !videoBlobUrl">
           <video #videoElement class="w-100" controls autoplay="autoplay">
             <source *ngIf="isVideoRecording" [src]="videoBlobUrl">
 
@@ -47,16 +49,27 @@
         </div>
       </div>
 
+      <!-- NOTIFY-FIX-2: surface camera/permission error in-UI; videoRecordingError is set by
+           the component on both getUserMedia rejection and the recordingFailed() observable. -->
+      <div class="alert alert-danger mt-2 mx-2 py-2 px-3" role="alert"
+           *ngIf="videoRecordingError"
+           style="position: absolute; top: 0; left: 0; right: 0; z-index: 10;">
+        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+        {{ videoRecordingError }}
+        <br><small>Check your browser's camera permission (usually in the address bar) and try again.</small>
+      </div>
+
       <div class="gh-recorder-controls" style="position: absolute; right: 0; top: 0">
+        <!-- NOTIFY-FIX-3: decorative record icon gets alt="" since button text is sufficient -->
         <button class="btn btn-take-interview text-truncate my-2 gh-recorder-btn-primary" (click)="startVideoRecording()"
           *ngIf="!isVideoRecording">
-          <img src="/assets/images/placeholder/icons/record.png" class="h-100 me-1">
+          <img src="/assets/images/placeholder/icons/record.png" class="h-100 me-1" alt="">
           Start Recording
         </button>
         <button class="btn btn-take-interview my-2 text-truncate gh-recorder-btn-primary gh-recorder-recording-pulse" (click)="stopVideoRecording()"
           *ngIf="isVideoRecording">
-          <img src="/assets/images/stop.png" class="h-100 me-1">
-          Stop Recorder
+          <img src="/assets/images/stop.png" class="h-100 me-1" alt="">
+          Stop Recording
         </button>
       </div>
     </div>

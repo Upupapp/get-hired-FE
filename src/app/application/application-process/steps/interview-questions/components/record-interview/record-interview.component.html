@@ -37,8 +37,9 @@
                   <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">
                   {{ 'INTERVIEW_PAGE_SECTION.START_BUTTON' | translate }}
                 </button>
-                <button class="btn btn-settings me-2 gh-recorder-btn-secondary" (click)="openInterviewSettings()" *ngIf="!isVideoRecording">
-                  <img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1">
+                <!-- NOTIFY-FIX-7: icon-only settings button needs accessible label -->
+                <button class="btn btn-settings me-2 gh-recorder-btn-secondary" (click)="openInterviewSettings()" *ngIf="!isVideoRecording" aria-label="Open recording settings">
+                  <img src="/assets/images/placeholder/icons/settings.png" style="height:27px" class="me-1" aria-hidden="true">
                 </button>
                 <button class="btn btn-take-interview text-truncate gh-recorder-btn-primary gh-recorder-recording-pulse" (click)="stopRecorder()" *ngIf="isVideoRecording">
                   <img src="/assets/images/placeholder/icons/record.png" style="height:17px" class="me-1">

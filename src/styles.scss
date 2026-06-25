@@ -23,12 +23,13 @@ img, video, iframe {
 }
 
 // Mobile tap compression — touchscreen-only devices (hover:none = no fine pointer)
+// Uses $gh-scale-press token (0.985) for consistent haptic feel across all tappable elements.
 @media (hover: none) and (pointer: coarse) {
   .mat-raised-button:active,
   .mat-flat-button:active,
   .btn:active,
   .gh-card:active {
-    transform: scale(0.97);
+    transform: scale($gh-scale-press);
   }
 }
 
@@ -112,7 +113,7 @@ img, video, iframe {
 
   @media (hover: none) {
     &:active {
-      transform: scale(0.98);
+      transform: scale($gh-scale-press);
     }
   }
 
@@ -199,7 +200,7 @@ img, video, iframe {
 // ─── MOBILEVIEW: Skeleton shimmer reveal transition ──────────────────────────
 // Allows skeleton cards to fade out when content arrives.
 .gh-skeleton-reveal {
-  transition: opacity 200ms $motion-ease-standard;
+  transition: opacity $motion-duration-micro $motion-ease-standard;
   @include motion-safe;
 
   &.loaded {
@@ -478,8 +479,10 @@ label {
 
 @media only screen and (max-width: 767px) {
   // Position the CDK overlay pane flush to the bottom of the viewport.
-  // !important needed because MatDialog injects inline styles.
-  .cdk-overlay-pane {
+  // Scoped to .cdk-global-overlay-wrapper (used by MatDialog/MatBottomSheet)
+  // so autocomplete, mat-select, and tooltip overlays are NOT affected.
+  // Those use .cdk-overlay-connected-position-bounding-box instead.
+  .cdk-global-overlay-wrapper .cdk-overlay-pane {
     max-width: 100vw !important;
     width: 100% !important;
   }
@@ -498,7 +501,7 @@ label {
     border-radius: 16px 16px 0 0 !important;
     // Entry animation
     @media (prefers-reduced-motion: no-preference) {
-      animation: gh-sheet-reveal 0.22s cubic-bezier(0.0, 0.0, 0.2, 1) both;
+      animation: gh-sheet-reveal $motion-duration-card $motion-ease-decelerate both;
     }
   }
 

@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
 
 
@@ -235,29 +236,7 @@
 	line-height: 18px;
 	/* identical to box height */
 	color: #FFFFFF;
-	
-	padding-right: 15px;
 
-	.group-number{
-		color: #1D72F1;
-		min-width: 20px;
-		max-width: 20px;
-		border-radius: 50%;
-		background: white;
-		margin-right: 4px;
-		font-weight: 600;
-	}
-}
-
-.view-group{
-	background: #1D72F1;
-	border-radius: 14.5px;
-	font-weight: 400;
-	font-size: 12px;
-	line-height: 18px;
-	/* identical to box height */
-	color: #FFFFFF;
-	
 	padding-right: 15px;
 
 	.group-number{
@@ -982,12 +961,12 @@ tr:last-child{
     padding: 14px 16px;
     margin-bottom: 10px;
     cursor: pointer;
-    animation: gh-card-reveal 220ms ease-out both;
+    animation: gh-card-reveal $motion-duration-card $motion-ease-standard both;
 
     // Tap compression haptic
     &:active {
-      transform: scale(0.985);
-      transition: transform 0.1s;
+      transform: scale($gh-scale-press);
+      transition: transform $motion-duration-micro $motion-ease-standard;
     }
 
     // Selected state
@@ -1064,7 +1043,7 @@ tr:last-child{
       justify-content: center;
       cursor: pointer;
       outline: none;
-      transition: background 120ms ease;
+      transition: background $motion-duration-micro $motion-ease-standard;
 
       &:hover {
         background: rgba(0, 0, 0, 0.05);

@@ -442,8 +442,10 @@ input.ng-invalid.ng-dirty.ng-touched {
 // Applied to the form card wrapper inside .gh-signin-form-col.
 // The Angular @animate trigger fires on void => *, this CSS animation
 // targets the card itself on first paint (applies once, fill-mode forwards).
+// Duration 0.3s has no exact token ($motion-duration-drawer is 260ms); left as-is.
+// Easing uses $motion-ease-decelerate (the decelerate/ease-out semantic token).
 .gh-signin-form-col .card {
-  animation: gh-trust-reveal 0.3s ease-out both;
+  animation: gh-trust-reveal 0.3s $motion-ease-decelerate both;
   @include motion-safe;
 }
 
