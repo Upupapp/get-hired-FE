@@ -248,7 +248,7 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
         // File read error — browser will not surface details here
       };
     } else {
-      alert('Please import valid .csv file.');
+      this.snackbarService.error('Please import a valid .csv file.');
       this.fileReset();
     }
   }

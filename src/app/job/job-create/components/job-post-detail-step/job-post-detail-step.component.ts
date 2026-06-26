@@ -48,7 +48,6 @@ export class JobPostDetailStepComponent implements OnInit {
     });
 
     this.initialDetailsForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-    console.log(this.initialDetailsForm);
     this.badges = this.initialDetailsForm.get('badges') as FormArray;
     this.requirements = this.initialDetailsForm.get('requirements') as FormArray;
     this.goodToHave = this.initialDetailsForm.get('goodToHave') as FormArray;
@@ -81,8 +80,7 @@ export class JobPostDetailStepComponent implements OnInit {
         this.snackbarService.warning(`Banner size too large`, '');
       }
     } else {
-      console.log(event);
-      this.snackbarService.warning(`Banner size too large.`, '');
+      this.snackbarService.warning(`Please upload a single image file for the banner.`, '');
     }
   }
 
@@ -103,7 +101,6 @@ export class JobPostDetailStepComponent implements OnInit {
         }));
       }
 
-      console.log(this.badges?.value);
     } else {
       this.snackbarService.warning(`You are only allowed to add up to 3 badges`, '');
     }
@@ -113,8 +110,6 @@ export class JobPostDetailStepComponent implements OnInit {
 
   addItem(control, controlArray: FormArray) {
     let value = this.initialDetailsForm.get(control).value;
-
-    console.log(controlArray);
 
     if (value && value != '') {
       if (controlArray.controls.length != 5) {

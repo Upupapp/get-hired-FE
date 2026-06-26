@@ -623,7 +623,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     let openChecker = this.dialog.open(
       SubscriptionAlertComponent,
       {
-        width: '34vw',
+        width: 'min(560px, 95vw)',
         data: {
           isError: restriction
         }
