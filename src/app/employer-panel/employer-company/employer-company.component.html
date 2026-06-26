@@ -7,7 +7,7 @@
   <!-- ================================================================
        SUBTAB NAV BAR (local to this component, not top-level nav)
        ================================================================ -->
-  <nav class="cp-subtab-nav" role="tablist" aria-label="Company profile sections">
+  <nav class="cp-subtab-nav" role="tablist" aria-label="Company profile sections" (keydown)="onTabKeydown($event)">
     <button
       *ngFor="let tab of subtabs"
       class="cp-subtab-btn"
@@ -15,6 +15,7 @@
       (click)="selectTab(tab.id)"
       [attr.aria-selected]="activeTab === tab.id"
       [attr.aria-controls]="'cp-tabpanel-' + tab.id"
+      [attr.tabindex]="activeTab === tab.id ? 0 : -1"
       [id]="'cp-tab-' + tab.id"
       role="tab"
       type="button">

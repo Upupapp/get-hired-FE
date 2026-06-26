@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CompanyFacade } from '@main/company/state/company.facade';
@@ -60,6 +60,22 @@ export class EmployerCompanyComponent implements OnInit, OnDestroy {
     if (this.activeTab === id) return;
     this.activeTab = id;
     this.saveSuccess = false;
+  }
+
+  onTabKeydown(event: KeyboardEvent): void {
+    const ids = this.subtabs.map(t => t.id);
+    const idx = ids.indexOf(this.activeTab);
+    let next: number | null = null;
+    if (event.key === 'ArrowRight') { next = ids[(idx + 1) % ids.length]; }
+    else if (event.key === 'ArrowLeft') { next = ids[(idx - 1 + ids.length) % ids.length]; }
+    else if (event.key === 'Home') { next = ids[0]; }
+    else if (event.key === 'End') { next = ids[ids.length - 1]; }
+    if (next !== null) {
+      event.preventDefault();
+      this.selectTab(next);
+      const btn = document.getElementById('cp-tab-' + next);
+      if (btn) { btn.focus(); }
+    }
   }
 
   /** Called by Profile subtab when company is updated */

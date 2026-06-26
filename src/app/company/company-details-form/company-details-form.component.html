@@ -66,8 +66,14 @@
           <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_DESCRIPTION' | translate }}</label>
           <div class="form-group">
             <textarea type="text" class="form-control"
-              placeholder="Subject to the terms and conditions set forth in this Agreement, Company will perform the Services described in each Quote/Proposal. Company retains ownership of any portion of Company developed tools or products that are used in or form a part of computer programs or documentation resulting from a particular service provided."
-              rows="4" formControlName="companyDetails"></textarea>
+              placeholder="Describe your company — what you do, your culture, and what makes you a great place to work."
+              rows="4" formControlName="companyDetails" maxlength="1000"></textarea>
+            <div class="d-flex justify-content-end mt-1">
+              <small class="text-muted" [class.text-danger]="(companyDetailsForm.get('companyDetails')?.value?.length || 0) >= 950"
+                aria-live="polite" aria-atomic="true">
+                {{ companyDetailsForm.get('companyDetails')?.value?.length || 0 }} / 1000
+              </small>
+            </div>
           </div>
         </div>
       </div>

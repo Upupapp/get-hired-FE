@@ -96,14 +96,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       shownPublicly: []
     });
 
-    //this.showSuccessDialog()
-
-    console.log(!this.companyDetailsForm.valid && !this.addressFormValid);
-
   }
 
   setCompany(company: EmployeeCompany) {
-    console.log(company);
     if (company && company.companyId != null) {
       this.company = company;
       const {
@@ -176,7 +171,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   redirectToPreview() {
-    console.log(this.router.config);
     // this.router.navigate(['../company-details'], {relativeTo: this.route });
   }
 
@@ -217,9 +211,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   afterSubmit(event) {
-    console.log(event);
-    console.log('dito lang')
-
     if (event == 'created') {
       const create = this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
@@ -241,7 +232,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   }
 
   updateLocalStorage() {
-    console.log('Update LocalStorage')
     const user = localStorage.getItem('user');
     localStorage.removeItem('user');
     localStorage.setItem('user', JSON.stringify({
@@ -266,7 +256,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         },
       });
     } else {
-      console.log('loading in company user form');
       // dont close automatically all modal
       // if (!this.updateSuccess) {
       // setTimeout(() => this.loadingDialog.closeAll(), 3000);

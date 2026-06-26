@@ -81,6 +81,7 @@ $cp-shadow: 0 4px 22px rgba(0,0,0,.07);
   flex-direction: column;
   align-items: center;
   padding: 14px 20px 12px;
+  min-height: 44px; // WCAG 2.5.5 touch target
   background: none;
   border: none;
   cursor: pointer;
@@ -334,6 +335,10 @@ $cp-shadow: 0 4px 22px rgba(0,0,0,.07);
     padding: 0 8px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    // Gradient fade indicates horizontal scrollability
+    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 92%, transparent 100%);
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
   }
 
   .cp-subtab-btn {
