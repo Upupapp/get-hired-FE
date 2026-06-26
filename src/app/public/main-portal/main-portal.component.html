@@ -20,6 +20,11 @@
         <app-talent-proof-badge variant="pill" placement="main_portal_hero"></app-talent-proof-badge>
       </div>
 
+      <!-- Proof chips: honest feature labels, no fabricated numbers -->
+      <div class="portal-hero-proof-chips" aria-label="Key features">
+        <span class="portal-hero-chip" *ngFor="let chip of heroProofChips">{{ chip }}</span>
+      </div>
+
       <div class="portal-role-secondary portal-hero-secondary">
         <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</button>
         <span class="portal-role-divider" aria-hidden="true">|</span>
@@ -93,9 +98,6 @@
     </div>
   </div>
 
-  <!-- GETHIRED 500K TALENT PROOF SYSTEM -- trust strip, additive to the
-       hero badge above; shows the claim alongside other real, safe
-       feature chips rather than repeating the same badge a third time. -->
   <div class="portal-trust-strip">
     <app-talent-proof-badge variant="pill" placement="main_portal_role_card"></app-talent-proof-badge>
     <span class="portal-trust-chip">Structured profiles</span>
@@ -104,9 +106,6 @@
   </div>
 </section>
 
-<!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- the 4 strongest,
-     code-verified differentiators (see GETHIRED_PUBLIC_PORTAL_WOW_USP_FEATURE_TRUTH_AUDIT.md),
-     each with a small local SVG (no external assets, no stock photos). -->
 <section class="portal-usp" aria-label="Why GetHired is different" appViewedOnce (viewedOnce)="onUspSectionViewed()">
   <h2 class="portal-section-title">Not just a job board</h2>
   <p class="portal-usp-subtitle">Structured profiles, video answers, and explainable signals help both sides decide with more confidence.</p>
@@ -167,26 +166,256 @@
   </div>
 </section>
 
-<section class="portal-how-it-works" aria-label="How GetHired works">
-  <h2 class="portal-section-title">How it works</h2>
-  <div class="portal-how-it-works-grid">
-    <div class="portal-how-it-works-col portal-how-it-works-col--seeker">
-      <h3>Job seekers</h3>
-      <ol>
-        <li>Build profile</li>
-        <li>Search jobs</li>
-        <li>Apply</li>
-        <li>Track applications</li>
-      </ol>
+<!-- PRODUCT PREVIEW SECTION — tabbed CSS-only mockups; all data is
+     illustrative only, no real user data, no fake testimonials. -->
+<section class="portal-product-preview portal-reveal-section"
+         appPortalReveal
+         (revealed)="onProductPreviewViewed()"
+         aria-label="See how GetHired works">
+  <div class="portal-product-preview-inner">
+    <h2 class="portal-section-title">See how GetHired works</h2>
+    <p class="portal-preview-subtitle">Illustrative view of key features.</p>
+
+    <div class="portal-preview-tabs" role="tablist" aria-label="Product feature preview">
+      <button class="portal-preview-tab" [class.active]="activePreviewTab === 'seeker'"
+              role="tab" [attr.aria-selected]="activePreviewTab === 'seeker'"
+              (click)="setPreviewTab('seeker')" id="tab-seeker" aria-controls="panel-seeker">
+        Job seeker profile
+      </button>
+      <button class="portal-preview-tab" [class.active]="activePreviewTab === 'employer'"
+              role="tab" [attr.aria-selected]="activePreviewTab === 'employer'"
+              (click)="setPreviewTab('employer')" id="tab-employer" aria-controls="panel-employer">
+        Employer dashboard
+      </button>
+      <button class="portal-preview-tab" [class.active]="activePreviewTab === 'tracking'"
+              role="tab" [attr.aria-selected]="activePreviewTab === 'tracking'"
+              (click)="setPreviewTab('tracking')" id="tab-tracking" aria-controls="panel-tracking">
+        Application tracking
+      </button>
+      <button class="portal-preview-tab" [class.active]="activePreviewTab === 'video'"
+              role="tab" [attr.aria-selected]="activePreviewTab === 'video'"
+              (click)="setPreviewTab('video')" id="tab-video" aria-controls="panel-video">
+        Video answers
+      </button>
+      <button class="portal-preview-tab" [class.active]="activePreviewTab === 'signals'"
+              role="tab" [attr.aria-selected]="activePreviewTab === 'signals'"
+              (click)="setPreviewTab('signals')" id="tab-signals" aria-controls="panel-signals">
+        Compatibility signals
+      </button>
     </div>
-    <div class="portal-how-it-works-col portal-how-it-works-col--employer">
-      <h3>Employers</h3>
-      <ol>
-        <li>Post job</li>
-        <li>Review applicants</li>
-        <li>Use video answers / match signals</li>
-        <li>Manage hiring</li>
-      </ol>
+
+    <div class="portal-preview-content" [id]="'panel-' + activePreviewTab"
+         [attr.aria-labelledby]="'tab-' + activePreviewTab" role="tabpanel">
+
+      <!-- Job Seeker Profile -->
+      <ng-container *ngIf="activePreviewTab === 'seeker'">
+        <div class="portal-preview-panel">
+          <div class="preview-mock-card preview-mock-card--profile">
+            <div class="preview-card-header">
+              <span class="preview-avatar preview-avatar--teal">MD</span>
+              <div>
+                <div class="preview-name">Maria D.</div>
+                <div class="preview-role-label">Customer Support Associate</div>
+              </div>
+            </div>
+            <div class="preview-skills">
+              <span class="preview-skill-chip">Communication</span>
+              <span class="preview-skill-chip">MS Office</span>
+              <span class="preview-skill-chip">Problem solving</span>
+            </div>
+            <div class="preview-meta-row">
+              <span class="preview-meta-item">📄 CV uploaded</span>
+              <span class="preview-meta-item">🎥 Video answer</span>
+            </div>
+            <div class="preview-completeness">
+              <div class="preview-completeness-label">Profile <strong>82%</strong> complete</div>
+              <div class="preview-completeness-bar">
+                <div class="preview-completeness-fill" style="width: 82%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-panel-info">
+            <h3>One reusable profile</h3>
+            <ul>
+              <li>Build once, apply to multiple jobs</li>
+              <li>Upload CV and supporting documents</li>
+              <li>Add video answers for relevant jobs</li>
+            </ul>
+            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">Build your profile</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Employer Dashboard -->
+      <ng-container *ngIf="activePreviewTab === 'employer'">
+        <div class="portal-preview-panel">
+          <div class="preview-mock-card preview-mock-card--dashboard">
+            <div class="preview-card-header">
+              <span class="preview-avatar preview-avatar--coral">AC</span>
+              <div>
+                <div class="preview-name">ABC Company</div>
+                <div class="preview-role-label">HR Officer</div>
+              </div>
+            </div>
+            <div class="preview-job-list">
+              <div class="preview-job-row">
+                <span class="preview-job-title">Customer Support Rep.</span>
+                <span class="preview-badge preview-badge--teal">12 applicants</span>
+              </div>
+              <div class="preview-job-row">
+                <span class="preview-job-title">Sales Associate</span>
+                <span class="preview-badge preview-badge--teal">8 applicants</span>
+              </div>
+              <div class="preview-job-row">
+                <span class="preview-job-title">Marketing Coordinator</span>
+                <span class="preview-badge preview-badge--coral">3 new</span>
+              </div>
+            </div>
+          </div>
+          <div class="preview-panel-info">
+            <h3>Manage hiring in one workspace</h3>
+            <ul>
+              <li>Post jobs and track applicants</li>
+              <li>Review structured profiles and CVs</li>
+              <li>Message candidates directly</li>
+            </ul>
+            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Application Tracking -->
+      <ng-container *ngIf="activePreviewTab === 'tracking'">
+        <div class="portal-preview-panel">
+          <div class="preview-mock-card preview-mock-card--tracking">
+            <div class="preview-tracking-title">My Applications</div>
+            <div class="preview-tracking-list">
+              <div class="preview-tracking-item">
+                <span class="preview-tracking-dot preview-tracking-dot--teal"></span>
+                <span class="preview-tracking-company">ABC Company</span>
+                <span class="preview-tracking-status">Application submitted</span>
+              </div>
+              <div class="preview-tracking-item">
+                <span class="preview-tracking-dot preview-tracking-dot--orange"></span>
+                <span class="preview-tracking-company">XYZ Corp</span>
+                <span class="preview-tracking-status">Under review</span>
+              </div>
+              <div class="preview-tracking-item">
+                <span class="preview-tracking-dot preview-tracking-dot--coral"></span>
+                <span class="preview-tracking-company">Sunrise BPO</span>
+                <span class="preview-tracking-status">Interview scheduled</span>
+              </div>
+            </div>
+          </div>
+          <div class="preview-panel-info">
+            <h3>Follow every application</h3>
+            <ul>
+              <li>See status updates in one place</li>
+              <li>Know when employers respond</li>
+              <li>Track multiple applications easily</li>
+            </ul>
+            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Video Answers -->
+      <ng-container *ngIf="activePreviewTab === 'video'">
+        <div class="portal-preview-panel">
+          <div class="preview-mock-card preview-mock-card--video">
+            <div class="preview-video-question">"Tell us about your customer service experience."</div>
+            <div class="preview-video-player" aria-hidden="true">
+              <div class="preview-video-play-btn">▶</div>
+            </div>
+            <div class="preview-video-meta">Juan P. &nbsp;·&nbsp; 2 min 14 sec</div>
+          </div>
+          <div class="preview-panel-info">
+            <h3>Video answers, reviewed by people</h3>
+            <ul>
+              <li>Some jobs include optional video questions</li>
+              <li>Candidates explain experience in their own words</li>
+              <li>Reviewed by real hiring team members</li>
+            </ul>
+            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">See job seeker features</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Compatibility Signals -->
+      <ng-container *ngIf="activePreviewTab === 'signals'">
+        <div class="portal-preview-panel">
+          <div class="preview-mock-card preview-mock-card--signals">
+            <img src="/assets/brand/gethired-wow/match-signal-rings.svg" alt=""
+                 aria-hidden="true" class="preview-signals-rings" width="96" height="96" loading="lazy">
+            <div class="preview-signals-label">Compatibility signals</div>
+            <div class="preview-signals-note">guidance · not automatic · human review</div>
+          </div>
+          <div class="preview-panel-info">
+            <h3>Explainable signals, not hidden decisions</h3>
+            <ul>
+              <li>Signals help teams understand candidate fit</li>
+              <li>Based on structured profile data</li>
+              <li>Always reviewed by a real person</li>
+            </ul>
+            <p class="preview-panel-note">Signals support decisions — they never replace them.</p>
+            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">See employer features</button>
+          </div>
+        </div>
+      </ng-container>
+
+    </div><!-- /portal-preview-content -->
+  </div><!-- /portal-product-preview-inner -->
+</section>
+
+<!-- TRUST & SAFETY SECTION — honest claims only; no AI screening,
+     no guaranteed outcomes, no face/voice/emotion analysis claims. -->
+<section class="portal-trust-safety portal-reveal-section"
+         appPortalReveal
+         (revealed)="onTrustSectionViewed()"
+         aria-label="Trust and fair hiring">
+  <h2 class="portal-section-title">Built for clearer, more organized hiring</h2>
+  <p class="portal-trust-subtitle">GetHired helps organize hiring information — not replace human judgment.</p>
+  <div class="portal-trust-grid">
+    <div class="portal-trust-card">
+      <span class="portal-trust-emoji" aria-hidden="true">🛡️</span>
+      <h3>Guidance, not automatic decisions</h3>
+      <p>Compatibility signals support review — they never auto-screen, auto-rank, or replace people in the hiring process.</p>
+    </div>
+    <div class="portal-trust-card">
+      <span class="portal-trust-emoji" aria-hidden="true">👥</span>
+      <h3>Video answers reviewed by real people</h3>
+      <p>When employers review video answers, real hiring team members watch them. No automated decisions from video content.</p>
+    </div>
+    <div class="portal-trust-card">
+      <span class="portal-trust-emoji" aria-hidden="true">📋</span>
+      <h3>Structured data, clearer review</h3>
+      <p>Organized profiles, CVs, and application data make it easier for employers to compare candidates with full context.</p>
+    </div>
+    <div class="portal-trust-card">
+      <span class="portal-trust-emoji" aria-hidden="true">🇵🇭</span>
+      <h3>Built for Philippine hiring</h3>
+      <p>GetHired is designed for the Philippine job market, connecting local job seekers and employers in one organized workspace.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EMPLOYER CONVERSION BAND — secondary mid-page employer entry
+     point with talent proof and direct CTA to employer portal. -->
+<section class="portal-employer-band portal-reveal-section"
+         appPortalReveal
+         (revealed)="onEmployerBandViewed()"
+         aria-label="Ready to hire">
+  <div class="portal-employer-band-inner">
+    <h2 class="portal-employer-band-title">Ready to hire in the Philippines?</h2>
+    <p class="portal-employer-band-copy">
+      Create your employer account, build your company page, and start managing
+      applicants with GetHired.
+    </p>
+    <div class="portal-employer-band-proof">
+      <app-talent-proof-badge variant="strip" placement="employer_portal_hero"></app-talent-proof-badge>
+    </div>
+    <div class="portal-employer-band-cta">
+      <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
     </div>
   </div>
 </section>

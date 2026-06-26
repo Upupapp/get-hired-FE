@@ -156,4 +156,30 @@ export class PublicPortalAnalyticsService {
   trackApplicationCompletenessCtaClicked(applicationId: string, ctaLabel: string): void {
     this.track('application_completeness_cta_clicked', { applicationId, ctaLabel });
   }
+
+  // HOME V2 — product preview / trust / employer band engagement.
+  // Payload is section/tab/page metadata only, never user PII.
+  trackProductPreviewSectionViewed(page: string): void {
+    this.track('product_preview_section_viewed', { page });
+  }
+
+  trackProductPreviewTabClicked(tab: string, page: string): void {
+    this.track('product_preview_tab_clicked', { tab, page });
+  }
+
+  trackTrustSafetySectionViewed(page: string): void {
+    this.track('trust_safety_section_viewed', { page });
+  }
+
+  trackEmployerConversionBandViewed(page: string): void {
+    this.track('employer_conversion_band_viewed', { page });
+  }
+
+  trackHeroCTAClicked(cta: 'find_jobs' | 'start_hiring', page: string): void {
+    this.track('hero_cta_clicked', { cta, page });
+  }
+
+  trackFinalCTAClicked(cta: 'find_jobs' | 'start_hiring', page: string): void {
+    this.track('final_cta_clicked', { cta, page });
+  }
 }

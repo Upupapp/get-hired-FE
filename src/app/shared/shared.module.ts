@@ -44,6 +44,7 @@ import { MessageThreadComponent } from './components/message-thread/message-thre
 import { ApplicationCompletenessBadgeComponent } from './components/application-completeness-badge/application-completeness-badge.component';
 import { ApplicationCompletenessCardComponent } from './components/application-completeness-card/application-completeness-card.component';
 import { ViewedOnceDirective } from './directives/viewed-once.directive';
+import { PortalRevealDirective } from './directives/portal-reveal.directive';
 
 
 const classesToInclude: any[] = [
@@ -98,10 +99,11 @@ const classesToInclude: any[] = [
   providers: [
   { provide: MAT_DIALOG_DATA, useValue: {} },
   { provide: MatDialogRef, useValue: {} }],
-  declarations: [...classesToInclude, ViewedOnceDirective],
+  declarations: [...classesToInclude, ViewedOnceDirective, PortalRevealDirective],
   exports: [
     ...classesToInclude,
     ViewedOnceDirective,
+    PortalRevealDirective,
     MaterialComponentsModule,
     FormsModule,
     ReactiveFormsModule,

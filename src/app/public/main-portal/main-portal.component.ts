@@ -65,6 +65,17 @@ export class MainPortalComponent implements OnInit {
     { title: 'Hire with confidence', description: 'Move forward once you have found the right fit.' },
   ];
 
+  /** Active tab in the Product Preview section. */
+  activePreviewTab: string = 'seeker';
+
+  /** Proof chips shown in the hero — brief, honest feature labels. */
+  heroProofChips = [
+    'Structured profiles',
+    'Video answers',
+    'Employer dashboard',
+    'Application tracking',
+  ];
+
   constructor(
     private router: Router,
     private haptics: HapticFeedbackService,
@@ -74,7 +85,6 @@ export class MainPortalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // SEO: set canonical metadata, OG tags, structured data for homepage
     this.seoService.setPageMeta({
       title: 'GetHired Online — Jobs and Hiring Platform in the Philippines',
       description: 'Find jobs, build your profile, post jobs, and manage hiring with GetHired Online — the modern hiring platform for the Philippines.',
@@ -93,6 +103,11 @@ export class MainPortalComponent implements OnInit {
         }
       });
     }
+  }
+
+  setPreviewTab(tab: string): void {
+    this.activePreviewTab = tab;
+    this.analytics.trackProductPreviewTabClicked(tab, 'home');
   }
 
   goToJobSeekerPortal(): void {
@@ -115,5 +130,17 @@ export class MainPortalComponent implements OnInit {
 
   onUspSectionViewed(): void {
     this.analytics.trackUspSectionViewed('home');
+  }
+
+  onProductPreviewViewed(): void {
+    this.analytics.trackProductPreviewSectionViewed('home');
+  }
+
+  onTrustSectionViewed(): void {
+    this.analytics.trackTrustSafetySectionViewed('home');
+  }
+
+  onEmployerBandViewed(): void {
+    this.analytics.trackEmployerConversionBandViewed('home');
   }
 }
