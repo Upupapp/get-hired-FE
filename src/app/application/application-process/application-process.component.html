@@ -1,64 +1,125 @@
 <div class="card card-body">
   <form [formGroup]="applicationForm">
 
-    <!-- STEPPER CONTAINER changeStepper-->
-    <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
-    </app-main-stepper>
-
-    <!-- STEPPER STEPS -->
-    <section style="min-height: 100vh; overflow-y: visible;">
-      <div class="row" *ngIf="profile$ | async as profile; else noProfile">
-        <div class="col-12 col-md-12 col-lg-12" *ngIf="stepper != 3">
-          <app-applicant-avatar [user]="profile"></app-applicant-avatar>
-        </div>
-
-        <div class="col-12 col-md-12 col-lg-12">
-          <ng-container *ngIf="stepper === 1">
-            <app-applicant-details [user]="profile"></app-applicant-details>
-          </ng-container>
-
-          <ng-container *ngIf="stepper === 2">
-            <div class="card card-body mt-3">
-              <app-profile-documents formGroupName="profileDocs"></app-profile-documents>
-            </div>
-          </ng-container>
-
-          <ng-container *ngIf="stepper === 3">
-            <app-interview-questions [interviews]="job.interviewQuestions" (nextStep)="changeStep($event)">
-            </app-interview-questions>
-          </ng-container>
-
-          <ng-container *ngIf="stepper === 4">
-            <app-application-preview [profile]="profile" [interviews]="job.interviewQuestions"></app-application-preview>
-          </ng-container>
-        </div>
+    <!-- LAUNCH-01: Inline success panel — replaces the form after a confirmed submission -->
+    <div class="application-result-panel application-result-panel--success"
+         *ngIf="submitStatus === 'success'"
+         role="status"
+         aria-live="polite"
+         aria-atomic="true">
+      <div class="result-icon-wrap">
+        <span class="material-icons result-icon result-icon--success">check_circle</span>
       </div>
+      <h4 class="result-heading">Application Submitted!</h4>
+      <p class="result-body">
+        Your application for <strong>{{ job?.jobTitle }}</strong>
+        <ng-container *ngIf="job?.companyName"> at <strong>{{ job.companyName }}</strong></ng-container>
+        has been received. We've sent a confirmation to your registered email address.
+      </p>
+      <div class="result-actions">
+        <a class="btn btn-primary me-2" routerLink="/user/applications">View my applications</a>
+        <button class="btn btn-outline-secondary" type="button" (click)="apply.emit(false)">Browse more jobs</button>
+      </div>
+    </div>
 
-      <ng-template #noProfile>
-        <div class="py-5 row justify-content-center">
-          <div class="col-12 col-lg-8 text-center">
-            <h3 class="text-primary-red">
-              It seems your account details is Empty.
-            </h3>
-            <h5 class="text-primary-red">
-              To start applying on Jobs, Please complete your profile details.
-            </h5>
-            <button class="btn btn-save mb-3 d-block mx-auto" type="button" (click)="redirectToUpdate()">
-              Update Profile</button>
-            <img [src]="'assets/images/' + env.projectName + '/update-profile.gif'" class="w-70 bordered" />
+    <!-- LAUNCH-01: Duplicate application panel — user already applied to this job -->
+    <div class="application-result-panel application-result-panel--duplicate"
+         *ngIf="submitStatus === 'duplicate'"
+         role="alert"
+         aria-live="assertive">
+      <div class="result-icon-wrap">
+        <span class="material-icons result-icon result-icon--warning">info</span>
+      </div>
+      <h4 class="result-heading">Already Applied</h4>
+      <p class="result-body">
+        You've already submitted an application for this position.
+        You can track your application status on your applications page.
+      </p>
+      <div class="result-actions">
+        <a class="btn btn-primary me-2" routerLink="/user/applications">View my applications</a>
+        <button class="btn btn-outline-secondary" type="button" (click)="apply.emit(false)">Back to job</button>
+      </div>
+    </div>
+
+    <!-- LAUNCH-01: Error alert — shown above the form so the user can retry -->
+    <div class="alert alert-danger d-flex align-items-start gap-2 mb-3"
+         *ngIf="submitStatus === 'error'"
+         role="alert"
+         aria-live="assertive">
+      <span class="material-icons mt-1" style="font-size:1.2rem;">error_outline</span>
+      <span><strong>Submission failed.</strong> {{ submitError }}</span>
+    </div>
+
+    <!-- Form content — hidden once submission is complete (success or duplicate) -->
+    <ng-container *ngIf="submitStatus !== 'success' && submitStatus !== 'duplicate'">
+
+      <!-- STEPPER CONTAINER -->
+      <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
+      </app-main-stepper>
+
+      <!-- STEPPER STEPS -->
+      <section style="min-height: 100vh; overflow-y: visible;">
+        <div class="row" *ngIf="profile$ | async as profile; else noProfile">
+          <div class="col-12 col-md-12 col-lg-12" *ngIf="stepper != 3">
+            <app-applicant-avatar [user]="profile"></app-applicant-avatar>
+          </div>
+
+          <div class="col-12 col-md-12 col-lg-12">
+            <ng-container *ngIf="stepper === 1">
+              <app-applicant-details [user]="profile"></app-applicant-details>
+            </ng-container>
+
+            <ng-container *ngIf="stepper === 2">
+              <div class="card card-body mt-3">
+                <app-profile-documents formGroupName="profileDocs"></app-profile-documents>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="stepper === 3">
+              <app-interview-questions [interviews]="job.interviewQuestions" (nextStep)="changeStep($event)">
+              </app-interview-questions>
+            </ng-container>
+
+            <ng-container *ngIf="stepper === 4">
+              <app-application-preview [profile]="profile" [interviews]="job.interviewQuestions"></app-application-preview>
+            </ng-container>
           </div>
         </div>
-      </ng-template>
-    </section>
 
-    <div class="text-end mt-4"
-    [ngClass]="showEvaluateButton ? '' : 'container-evaluate'"
-    *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-      <!-- <button class="btn btn-save-draft me-3">Save as Draft</button> -->
+        <ng-template #noProfile>
+          <div class="py-5 row justify-content-center">
+            <div class="col-12 col-lg-8 text-center">
+              <h3 class="text-primary-red">
+                It seems your account details is Empty.
+              </h3>
+              <h5 class="text-primary-red">
+                To start applying on Jobs, Please complete your profile details.
+              </h5>
+              <button class="btn btn-save mb-3 d-block mx-auto" type="button" (click)="redirectToUpdate()">
+                Update Profile</button>
+              <img [src]="'assets/images/' + env.projectName + '/update-profile.gif'" class="w-70 bordered" />
+            </div>
+          </div>
+        </ng-template>
+      </section>
 
-      <button class="btn btn-save me-2" type="button" (click)="submitApplication()" [disabled]="isSubmitting">
-        {{ 'SUMMARY_PAGE.EVALUATION_SUBMIT_BUTTON' | translate }}</button>
-    </div>
+      <div class="text-end mt-4"
+        [ngClass]="showEvaluateButton ? '' : 'container-evaluate'"
+        *ngIf="stepper == 4" [@animate]="{value:'*', params:{ y:'10px', delay: (150) + 'ms' }}">
+
+        <button class="btn btn-save me-2" type="button" (click)="submitApplication()"
+          [disabled]="isSubmitting" [attr.aria-busy]="isSubmitting || null">
+          <ng-container *ngIf="!isSubmitting">
+            {{ 'SUMMARY_PAGE.EVALUATION_SUBMIT_BUTTON' | translate }}
+          </ng-container>
+          <ng-container *ngIf="isSubmitting">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Submitting...
+          </ng-container>
+        </button>
+      </div>
+
+    </ng-container>
   </form>
 
 </div>

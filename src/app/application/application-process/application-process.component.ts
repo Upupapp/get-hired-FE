@@ -34,6 +34,9 @@ export class ApplicationProcessComponent implements OnInit {
   applicationForm: FormGroup;
   user: ApplicantModel.Applicant;
   isSubmitting: boolean;
+  // LAUNCH-01: tracks submission lifecycle for inline feedback panels
+  submitStatus: string = 'idle'; // idle | submitting | success | error | duplicate
+  submitError: string = '';
 
   stepperItems: any[] = [
     {
@@ -109,7 +112,8 @@ export class ApplicationProcessComponent implements OnInit {
   pageLoad$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));
 
-  success$ = this.applicationFacade.success$
+  // LAUNCH-01: subscribe to combined result (success + error + errorCode) in one handler
+  success$ = this.applicationFacade.submitResult$
     .pipe().subscribe(this.afterSubmit.bind(this))
 
   constructor(
@@ -157,12 +161,11 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   submitApplication() {
+    if (this.submitStatus === 'submitting') return;
+    this.submitStatus = 'submitting';
     this.isSubmitting = true;
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
+    this.submitError = '';
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
     const application = {
       ...this.applicationForm.controls.profileDocs.value,
@@ -172,19 +175,35 @@ export class ApplicationProcessComponent implements OnInit {
       applicantId: this.user.applicantProfileId
     }
 
-    this.applicationFacade.submitApplication(application)
+    this.applicationFacade.submitApplication(application);
   }
 
-  afterSubmit(event) {
-    if (event == 'submitted') {
+  // LAUNCH-01: handles the combined submitResult$ emission (success + error + errorCode)
+  afterSubmit(result: any) {
+    if (!result || (!result.success && !result.error && !result.errorCode)) return;
+
+    if (result.success === 'submitted') {
+      this.submitStatus = 'success';
       this.isSubmitting = false;
-
-      this.snackBar.open(`You have successfully applied to this job`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      this.snackBar.open('Application submitted! Check your email for confirmation.', '', {
+        duration: 5000, panelClass: ['success-snackbar'],
       });
+      return;
+    }
 
-      this.apply.emit(false);
+    if (result.errorCode === 'JOB_APPLICATION_ALREADY_EXISTS') {
+      this.submitStatus = 'duplicate';
+      this.isSubmitting = false;
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (result.error) {
+      this.submitStatus = 'error';
+      this.isSubmitting = false;
+      this.submitError = 'We couldn\'t submit your application. Please check your connection and try again.';
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
   }
 

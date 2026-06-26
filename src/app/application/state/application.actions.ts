@@ -30,7 +30,7 @@ export const submitApplicationSuccess = createAction(
 
 export const submitApplicationFail = createAction(
   AllFeatureActionTypes.SubmitApplicationFail,
-  props<{ payload: any }>()
+  props<{ payload: any; errorCode?: string }>()
 );
 
 // export const getApplicationList = createAction(

@@ -9,9 +9,12 @@ import * as fromfeature from './application.selector';
 export class ApplicationFacade {
   loading$ = this.store.pipe(select(fromfeature.loading));
   applicationDetails$ = this.store.pipe(select(fromfeature.getApplicationDetails));
-  // jobList$ = this.store.pipe(select(fromfeature.getJobList));
   success$ = this.store.pipe(select(fromfeature.success));
-  error$: any;
+  // LAUNCH-01: error state observables for inline feedback panels
+  error$ = this.store.pipe(select(fromfeature.getError));
+  errorCode$ = this.store.pipe(select(fromfeature.getErrorCode));
+  // LAUNCH-01: combined result observable — subscribe once to handle all outcomes
+  submitResult$ = this.store.pipe(select(fromfeature.getSubmitResult));
 
   constructor(
     private store: Store<State>,

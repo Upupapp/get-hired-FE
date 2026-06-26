@@ -11,6 +11,8 @@ export interface ApplicationState {
   selected: Model.Application;
   // list: Model.BasicJob[];
   error: any;
+  // LAUNCH-01: error code so the FE can distinguish 409 (duplicate) from 5xx (server error)
+  errorCode: string | null;
   succesMsg: string;
   loading: boolean;
 }
@@ -19,6 +21,7 @@ const initialState: ApplicationState  = {
   selected: null,
   // list: [],
   error: null,
+  errorCode: null,
   succesMsg: null,
   loading: false,
 }
@@ -30,6 +33,7 @@ export const ApplicationsReducer = createReducer<ApplicationState>(
       ...state,
       loading: false,
       error: null,
+      errorCode: null,
       selected: null
     };
   }),
@@ -37,7 +41,8 @@ export const ApplicationsReducer = createReducer<ApplicationState>(
     return {
       ...state,
       loading: true,
-      error: null
+      error: null,
+      errorCode: null
     };
   }),
   on(ApplicationActions.submitApplicationSuccess, (state, action): ApplicationState => {
@@ -45,14 +50,17 @@ export const ApplicationsReducer = createReducer<ApplicationState>(
       ...state,
       loading: false,
       selected: action.application,
-      succesMsg: 'submitted'
+      succesMsg: 'submitted',
+      error: null,
+      errorCode: null
     };
   }),
   on(ApplicationActions.submitApplicationFail, (state, action): ApplicationState => {
     return {
       ...state,
       loading: false,
-      error: action.payload
+      error: action.payload,
+      errorCode: action.errorCode || null
     };
   }),
 );

@@ -33,9 +33,15 @@ export class ApplicationEffects {
             const application: Model.Application = res.data;
             return ApplicationActions.submitApplicationSuccess({ application });
           }),
+          // LAUNCH-01: distinguish HTTP 409 (duplicate) from other errors
+          // so the FE can show the appropriate inline panel.
           catchError((err) => {
-            const { error } = err.error;
-            return of(ApplicationActions.submitApplicationFail({ payload: error }))
+            const errBody = err && err.error ? err.error : {};
+            const errorCode = err && err.status === 409
+              ? (errBody.code || 'JOB_APPLICATION_ALREADY_EXISTS')
+              : null;
+            const errorMsg = errBody.error || errBody.message || 'Something went wrong. Please try again.';
+            return of(ApplicationActions.submitApplicationFail({ payload: errorMsg, errorCode: errorCode }));
           })
         )
       )
