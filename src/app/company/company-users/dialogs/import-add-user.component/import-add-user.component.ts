@@ -9,6 +9,7 @@ import { CompanyActionTypes } from '@main/shared/store/actions/company.action';
 import { StoreState } from '@main/shared/store/index';
 import { CompanyState } from '@main/shared/store/reducers/company.reducer';
 import { SnackbarService } from '@app-core/services/snackbar.service';
+import { HapticService } from '@app-core/services/haptic.service';
 import { CSVDataRecord } from './import-user-model';
 
 interface InviteResult {
@@ -58,6 +59,7 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
     private snackbarService: SnackbarService,
+    private hapticService: HapticService,
     private companyState: Store<StoreState>,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
@@ -96,18 +98,21 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
           if (succeeded.length > 0 && failed.length === 0) {
             // All success
             const msg = succeeded.length === 1 ? 'Invite sent.' : `${succeeded.length} invites sent.`;
+            this.hapticService.success();
             this.snackbarService.success(msg);
             this.showResultPanel = false;
           } else if (succeeded.length > 0 && failed.length > 0) {
-            // Partial success — show result panel, warning toast
+            // Partial success — show result panel, warning haptic + toast
             this.showResultPanel = true;
             this.allFailed = false;
+            this.hapticService.warning();
             this.snackbarService.warning(`${succeeded.length} sent. ${failed.length} couldn't be added.`);
           } else {
-            // All failed — show result panel, error toast, keep dialog open
+            // All failed — show result panel, error haptic + toast, keep dialog open
             this.showResultPanel = true;
             this.allFailed = true;
             this.submitting = false;
+            this.hapticService.error();
             this.snackbarService.error('No invites were sent. See details below.');
           }
         }
@@ -280,5 +285,7 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.req) { this.req.unsubscribe(); }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

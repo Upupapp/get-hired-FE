@@ -19,6 +19,10 @@ import { SharedModule } from '@app-shared/shared.module';
   exports: [
     HeaderComponent
   ],
-  providers: [CoreService, SnackbarService, HapticService]
+  // SnackbarService and HapticService are providedIn: 'root' — do not list
+  // them here or Angular creates a second injector-scoped instance that
+  // shadow-registers over the root singleton, breaking any component that
+  // injects the root instance (they get the CoreModule-scoped copy instead).
+  providers: [CoreService]
 })
 export class CoreModule { }

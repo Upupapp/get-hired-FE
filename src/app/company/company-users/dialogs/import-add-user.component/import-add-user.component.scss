@@ -277,3 +277,82 @@
 	border-radius: 5px !important;
 	margin-top: 6px;
 }
+
+// ─── BRAND_RECENT_4: Result panel (partial/all-fail invite states) ──────────
+// Visual distinction between error (all-fail) and partial-success states.
+// Shake animation guards prefers-reduced-motion via the global contract in
+// styles.scss (animation-duration: 0.01ms under reduce) — no extra guard needed.
+
+@keyframes result-panel-shake {
+	0%, 100% { transform: translateX(0); }
+	20%       { transform: translateX(-6px); }
+	40%       { transform: translateX(6px); }
+	60%       { transform: translateX(-4px); }
+	80%       { transform: translateX(4px); }
+}
+
+.result-panel {
+	border-radius: 8px;
+	font-family: 'Manrope', sans-serif;
+
+	&__title {
+		font-weight: 700;
+		font-size: 16px;
+	}
+
+	&__summary {
+		font-size: 14px;
+	}
+
+	&__failed-item {
+		font-size: 13px;
+		padding: 4px 0;
+		border-bottom: 1px solid rgba(0,0,0,0.08);
+
+		&:last-child { border-bottom: none; }
+	}
+
+	&__email {
+		font-weight: 600;
+	}
+
+	// MOBILEVIEW_RECENT_4: failed-list must scroll at mobile rather than
+	// pushing the panel off-screen. Cap height and allow overflow-y scroll.
+	&__failed-list {
+		max-height: 180px;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	// MOBILEVIEW_RECENT_4: result-panel action buttons use btn-sm (~30px tall),
+	// below WCAG 2.5.5 44px touch-target minimum. Override padding here.
+	// flex-wrap already set in HTML so buttons reflow to multiple rows on 360px.
+	&__actions .btn {
+		min-height: 44px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+
+	// All-fail: bold error styling + shake entry to signal the failure clearly
+	&--error {
+		background-color: #FFF0EE;
+		border-left: 4px solid #C0392B;
+		color: #5C1008;
+
+		.result-panel__title { color: #C0392B; }
+
+		// Shake on entry — reduced-motion users get the colour/border signal instead
+		@media (prefers-reduced-motion: no-preference) {
+			animation: result-panel-shake 0.4s ease-in-out;
+		}
+	}
+
+	// Partial-fail: amber warning styling, no shake (less severe than all-fail)
+	&--partial {
+		background-color: #FFFBEB;
+		border-left: 4px solid #B45309;
+		color: #4A3000;
+
+		.result-panel__title { color: #B45309; }
+	}
+}

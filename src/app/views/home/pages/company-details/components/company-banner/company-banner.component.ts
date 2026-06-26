@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
@@ -8,20 +9,26 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
   styleUrls: ['./company-banner.component.scss']
 })
 export class CompanyBannerComponent implements OnInit {
-  @Input() companyData: any;  
+  @Input() companyData: any;
 
-  public firstSentence: string;  
+  public firstSentence: string;
   public bannerImage: any = undefined;
   public bannerEdit: boolean = false;
   public bannerHeight: number;
 
-  constructor() { }
+  // MOBILEVIEW_RECENT_4: inject PLATFORM_ID for SSR guard on document access
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit(): void {
-    this.firstSentence = this.companyData?.description  
-    let banner_sub_id = document.getElementById('bg-details'); 
-    let bannerHeight = banner_sub_id?.offsetHeight + 65;
-    this.bannerHeight = bannerHeight;
+    this.firstSentence = this.companyData?.description;
+    // MOBILEVIEW_RECENT_4: document.getElementById crashes on SSR server.
+    // Guard with isPlatformBrowser — bannerHeight remains undefined on server,
+    // which is safe since it only affects desktop visual layout.
+    if (isPlatformBrowser(this.platformId)) {
+      const banner_sub_id = document.getElementById('bg-details');
+      const bannerHeight = (banner_sub_id?.offsetHeight ?? 0) + 65;
+      this.bannerHeight = bannerHeight;
+    }
   }
 
 }

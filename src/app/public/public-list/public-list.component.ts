@@ -64,7 +64,12 @@ export class PublicListComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.screenSize = window.innerWidth;
+  onResize(_event: any) {
+    // OPTIMIZE-R4: guard with isPlatformBrowser — HostListeners can fire
+    // during SSR hydration on some Angular Universal versions and would throw
+    // a ReferenceError because `window` is not defined on the server.
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenSize = window.innerWidth;
+    }
   }
 }

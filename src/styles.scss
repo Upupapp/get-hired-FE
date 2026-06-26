@@ -238,6 +238,14 @@ body {
   border-radius: 1rem;
 }
 
+// MOBILEVIEW_RECENT_4: Ensure snackbar messages wrap rather than clip on narrow
+// viewports. Angular Material's default white-space:pre-wrap can conflict with
+// single-word long error strings. word-break:break-word prevents overflow.
+.mat-snack-bar-container {
+  word-break: break-word;
+  white-space: normal;
+}
+
 // COMMAND3 NOTE: success-snackbar formerly used $color-global-red-buttons
 // (#FF7062, ~3.1:1 vs white — WCAG AA fail). Replaced with accessible green
 // #1A7A4A (4.85:1 vs white — WCAG AA pass) which correctly signals success

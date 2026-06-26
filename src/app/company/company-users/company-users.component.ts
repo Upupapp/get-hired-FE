@@ -95,7 +95,7 @@ export class CompanyUsersComponent implements OnInit {
         this.addUserToCompany()
       }
     } else {
-      console.log('Haist')
+      // Subscription data unavailable — silently no-op; addAccess() will re-fetch
     }
   }
 
