@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
-import { Title } from '@angular/platform-browser';
+import { Title, Meta } from '@angular/platform-browser';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -58,6 +58,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     private normalizer: PublicJobNormalizerService,
     private jobSignals: JobSignalsService,
     private titleService: Title,
+    private meta: Meta,
     private structuredData: JobStructuredDataService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
@@ -65,6 +66,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   }
 
   private normalizedJobSub: Subscription;
+  private jobErrorSub: Subscription;
 
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
@@ -78,7 +80,16 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     this.normalizedJobSub = this.normalizedJob$.subscribe(job => {
       if (job) {
         this.titleService.setTitle(`${job.title} at ${job.companyName} | GetHired`);
+        this.meta.updateTag({ name: 'robots', content: 'index, follow' });
         this.structuredData.apply(job);
+      }
+    });
+
+    // SEO: error pages (expired/deleted/not-found jobs) return HTTP 200 from SSR.
+    // Mark them noindex so Google doesn't index thin/dead-content pages.
+    this.jobErrorSub = this.jobError$.subscribe(err => {
+      if (err) {
+        this.meta.updateTag({ name: 'robots', content: 'noindex' });
       }
     });
   }
@@ -148,6 +159,10 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
 
     if (this.normalizedJobSub) {
       this.normalizedJobSub.unsubscribe();
+    }
+
+    if (this.jobErrorSub) {
+      this.jobErrorSub.unsubscribe();
     }
 
     this.structuredData.remove();

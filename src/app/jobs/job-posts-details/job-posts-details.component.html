@@ -12,6 +12,14 @@
 </div>
 
 <section *ngIf="details$ | async as selectedJobPost" class="gh-job-content-reveal">
+  <nav aria-label="Breadcrumb" class="gh-breadcrumb-nav">
+    <ol class="gh-breadcrumb">
+      <li class="gh-breadcrumb-item"><a routerLink="/home">Home</a></li>
+      <li class="gh-breadcrumb-item"><a routerLink="/jobs">Jobs</a></li>
+      <li class="gh-breadcrumb-item gh-breadcrumb-item--current" aria-current="page">{{ selectedJobPost?.jobTitle }}</li>
+    </ol>
+  </nav>
+
   <div class="p-0" style="overflow-x: hidden;" id="banner" *ngIf="withBanner">
     <div class="row">
       <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
