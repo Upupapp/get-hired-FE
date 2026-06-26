@@ -3,7 +3,7 @@
 	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
 		<div class="employee-details row">
 			<div class="col-12 col-md-6 px-0">
-				<button class="btn btn-add w-100" 
+				<button class="btn btn-add w-100"
 				[ngClass]="importEmployee ? 'inactive' : ''"
 				(click)="importEmployee = false">
 				{{ 'NEW_USER_ACCESS.NEW_USER__ACCESS_FORM' | translate }}
@@ -19,9 +19,65 @@
 			</div>
 		</div>
 
-		<ng-container *ngIf="!submitting">
+		<!-- Result panel: shown when partial or all-fail — stays above form so user sees outcome -->
+		<ng-container *ngIf="showResultPanel">
+			<div class="result-panel p-3 mt-3"
+			[@animate]="{value:'*', params:{ y:'-10px', delay:'100ms' }}"
+			[ngClass]="allFailed ? 'result-panel--error' : 'result-panel--partial'">
+
+				<h5 class="result-panel__title mb-2">
+					<ng-container *ngIf="allFailed">No invites were sent</ng-container>
+					<ng-container *ngIf="!allFailed">{{ successCount }} invite{{ successCount !== 1 ? 's' : '' }} sent</ng-container>
+				</h5>
+
+				<p class="result-panel__summary mb-2" *ngIf="!allFailed">
+					{{ failedEmails.length }} email{{ failedEmails.length !== 1 ? 's' : '' }} couldn't be added.
+				</p>
+
+				<div class="result-panel__failed-list mb-3" *ngIf="failedEmails.length > 0">
+					<p class="mb-1"><strong>Failed emails:</strong></p>
+					<div class="result-panel__failed-item"
+					*ngFor="let item of failedEmails">
+						<span class="result-panel__email">{{ item.email }}</span>
+						<span class="result-panel__reason text-muted ms-2">
+							— {{ item.msg || item.message || 'Could not be added' }}
+						</span>
+					</div>
+				</div>
+
+				<div class="result-panel__actions d-flex flex-wrap gap-2">
+					<button type="button"
+					class="btn btn-primary btn-sm hvr-grow"
+					*ngIf="failedEmails.length > 0"
+					(click)="retryFailed()">
+						Retry Failed ({{ failedEmails.length }})
+					</button>
+
+					<button type="button"
+					class="btn btn-outline-secondary btn-sm hvr-grow"
+					*ngIf="failedEmails.length > 0"
+					(click)="copyFailedEmails()">
+						Copy Failed Emails
+					</button>
+
+					<button type="button"
+					class="btn btn-default btn-sm hvr-grow"
+					(click)="addMoreEmployee()">
+						{{ allFailed ? 'Try Again' : 'Add More Users' }}
+					</button>
+
+					<button type="button"
+					class="btn btn-default btn-sm hvr-grow"
+					(click)="close()">
+						Done
+					</button>
+				</div>
+			</div>
+		</ng-container>
+
+		<ng-container *ngIf="!submitting && !showResultPanel">
 			<div class="share-container"
-			style="position: relative;" 
+			style="position: relative;"
 			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 			<div class="row pt-4" *ngIf="importEmployee">
 				<div class="col-12 col-md-12 text-start mb-2">
@@ -40,11 +96,11 @@
 
 				<ng-container *ngIf="!importEmployee && !importing">
 					<!-- Error Message -->
-					<div class="mt-1 bg-gray max-height-scroll" 
+					<div class="mt-1 bg-gray max-height-scroll"
 					*ngIf="emailArray?.length > 0 && !importEmployee"
 					[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
 						<div class="employee-email-container">
-							<div class="w-100 employee-email text-start" 
+							<div class="w-100 employee-email text-start"
 							[@animate]="{value:'*', params:{ y:'-5px', delay:'200ms' }}"
 							*ngFor="let item of emailArray">
 								{{item.email}}
@@ -56,7 +112,7 @@
 
 						<div class="mt-4">
 							<div style="position: relative;" class="mt-2 w-100 text-end">
-								<button class="btn w-25 me-3 btn-primary invite-other hvr-grow" 
+								<button class="btn w-25 me-3 btn-primary invite-other hvr-grow"
 								(click)="submitInvites()">Invite All</button>
 							</div>
 						</div>
@@ -64,8 +120,8 @@
 
 					<ng-container *ngIf="!importEmployee && !importing">
 						<!-- Error Message -->
-						<form class="px-1" [ngClass]="emailArray?.length > 0 ? 'mt-4' : ''" 
-						[formGroup]="inviteForm" 
+						<form class="px-1" [ngClass]="emailArray?.length > 0 ? 'mt-4' : ''"
+						[formGroup]="inviteForm"
 						[@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
 							<div class="form-group mt-2">
 								<label class="mb-2" >{{ 'NEW_USER_ACCESS.EMAIL_TEXT' | translate }}</label>
@@ -75,16 +131,16 @@
 
 							<div class="mt-4">
 								<div style="position: relative;" class="mt-2 text-center">
-									<button type="button" 
-									class="btn me-3 btn-default hvr-grow" 
+									<button type="button"
+									class="btn me-3 btn-default hvr-grow"
 									(click)="dialogRef.close()">{{ 'NEW_USER_ACCESS.CANCEL_BUTTON' | translate }} </button>
 
-									<button type="button" 
-									class="btn me-1 btn-primary hvr-grow" 
+									<button type="button"
+									class="btn me-1 btn-primary hvr-grow"
 									(click)="addEmployeeEmail()" [disabled]="!inviteForm.valid || !inviteForm.controls['email'].value">{{ 'NEW_USER_ACCESS.ADD_EMAIL_BUTTON' | translate }}</button>
 								</div>
 							</div>
-						</form> 
+						</form>
 					</ng-container>
 				</ng-container>
 
@@ -144,8 +200,8 @@
 
 						<div class="col-12">
 							<div style="position: relative;" class="mt-2 text-center">
-								<button type="button" 
-								class="btn me-3 btn-default hvr-grow" 
+								<button type="button"
+								class="btn me-3 btn-default hvr-grow"
 								(click)="dialogRef.close()">Cancel </button>
 
 								<button type="button" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading"
@@ -158,7 +214,7 @@
 
 		</ng-container>
 
-		<ng-container *ngIf="submitting">
+		<ng-container *ngIf="submitting && !showResultPanel">
 			<div class="text-center bg-white pb-3" >
 				<div class="d-flex w-100  justify-content-center align-self-center" >
 					<div class="congrats-circle"
@@ -167,7 +223,7 @@
 					</div>
 				</div>
 
-				<div class="text-center" 
+				<div class="text-center"
 				[@animate]="{value:'*', params:{ y:'-20px', delay:'300ms' }}">
 					<h5 class="title-congrats">Congratulations! </h5>
 					<p class="title-congrats-description">Congratulation for adding a new user to your list. <br>You can still add more user.</p>
@@ -183,12 +239,12 @@
 							</div>
 						</div>
 					</div>
-					
-					
+
+
 					<div class="mt-4">
 						<div style="position: relative;" class="mt-2 w-100 text-center">
-							<button class="btn me-3 btn-primary invite-other hvr-grow" 
-							style="width: 200px !important;" 
+							<button class="btn me-3 btn-primary invite-other hvr-grow"
+							style="width: 200px !important;"
 							(click)="addMoreEmployee()">Add More Users</button>
 						</div>
 					</div>

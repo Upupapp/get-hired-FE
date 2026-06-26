@@ -1,15 +1,22 @@
-import { Component, Inject, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { select, Store } from '@ngrx/store';
-import { mainAnimations } from '@app-shared/animations/main-animations'; 
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompanyActionTypes } from '@main/shared/store/actions/company.action';
 import { StoreState } from '@main/shared/store/index';
 import { CompanyState } from '@main/shared/store/reducers/company.reducer';
-import { Subject } from 'rxjs';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { CSVDataRecord } from './import-user-model';
+
+interface InviteResult {
+  email: string;
+  status: string;
+  msg?: string;
+  message?: string;
+}
 
 @Component({
   selector: 'app-import-add-user.component',
@@ -17,24 +24,31 @@ import { CSVDataRecord } from './import-user-model';
   styleUrls: ['./import-add-user.component.scss'],
   animations: [mainAnimations]
 })
-export class ImportAddUserComponent implements OnInit {
+export class ImportAddUserComponent implements OnInit, OnDestroy {
 
   public inviteForm: FormGroup;
   public emailArray: any[] = [];
   public submitting: boolean = false;
   public importEmployee: boolean = false;
   public importing: boolean = false;
-  public localData: any = localStorage.getItem('user');
+  // Phase 5: SSR guard — field is null until ngOnInit reads localStorage safely
+  public localData: any = null;
   private invitedCompanyUsers$: any;
   public loading: boolean = false;
   private req: Subscription;
   private unsubscribe$ = new Subject<void>();
-  public invitedUsersList: any[] = [];
-  public document:any = null;
+  public invitedUsersList: InviteResult[] = [];
+  public document: any = null;
   public fileData: any;
 
+  // Phase 3+4: result panel state
+  public showResultPanel: boolean = false;
+  public successCount: number = 0;
+  public failedEmails: InviteResult[] = [];
+  public allFailed: boolean = false;
+
   @ViewChild('csvReader') csvReader: any;
-  jsondatadisplay:any;
+  jsondatadisplay: any;
   public records: any;
   public isLoading: boolean = false;
 
@@ -43,200 +57,228 @@ export class ImportAddUserComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data,
     private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
-    public snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private companyState: Store<StoreState>,
-  ) {
-    console.log(data)
-  }
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
 
   ngOnInit(): void {
-    this.localData = JSON.parse(this.localData);
+    // Phase 5: SSR guard — read localStorage only in browser
+    if (isPlatformBrowser(this.platformId) && typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem('user');
+      try {
+        this.localData = raw ? JSON.parse(raw) : null;
+      } catch (_e) {
+        this.localData = null;
+      }
+    }
+
     this.inviteForm = this.formBuilder.group({
-      email: [this.data ? this.data?.invitation?.email : '', [Validators.email]],
+      email: [this.data ? (this.data.invitation ? this.data.invitation.email : '') : '', [Validators.email]],
     });
+
     this.invitedCompanyUsers$ = this.companyState.pipe(select(state => state.company));
     this.req = this.invitedCompanyUsers$.subscribe((invite: CompanyState) => {
       this.loading = invite.pending;
-      console.log(this.loading, "loading");
-      if(invite.companyUserRes){
-        const emails: any[] = invite.companyUserRes.emails || [];
-        if(emails.length > 0){
-          // NOTIFY-P2: check per-email status — backend returns all submitted
-          // emails in the array regardless of whether they failed. A "failed"
-          // status means the invite was NOT sent (e.g. email already a user).
-          const successCount = emails.filter((e: any) => e.status !== 'failed').length;
-          const failureCount = emails.length - successCount;
+
+      if (invite.companyUserRes) {
+        const emails: InviteResult[] = invite.companyUserRes.emails || [];
+        if (emails.length > 0) {
+          const succeeded = emails.filter((e: InviteResult) => e.status !== 'failed');
+          const failed = emails.filter((e: InviteResult) => e.status === 'failed');
+
+          this.successCount = succeeded.length;
+          this.failedEmails = failed;
           this.invitedUsersList = emails;
           this.isLoading = false;
           this.submitting = true;
 
-          if (successCount > 0 && failureCount === 0) {
-            const msg = successCount === 1 ? 'Invite sent.' : `${successCount} invites sent.`;
-            this.snackBar.open(msg, '', { duration: 4000, panelClass: 'success-snackbar' });
-          } else if (successCount > 0 && failureCount > 0) {
-            this.snackBar.open(`${successCount} sent. ${failureCount} couldn't be added.`, '', { duration: 6000, panelClass: 'warning-snackbar' });
+          if (succeeded.length > 0 && failed.length === 0) {
+            // All success
+            const msg = succeeded.length === 1 ? 'Invite sent.' : `${succeeded.length} invites sent.`;
+            this.snackbarService.success(msg);
+            this.showResultPanel = false;
+          } else if (succeeded.length > 0 && failed.length > 0) {
+            // Partial success — show result panel, warning toast
+            this.showResultPanel = true;
+            this.allFailed = false;
+            this.snackbarService.warning(`${succeeded.length} sent. ${failed.length} couldn't be added.`);
           } else {
-            // successCount === 0 — all failed; never show a success toast
-            this.snackBar.open('No invites were sent.', '', { duration: 6000, panelClass: 'danger-snackbar' });
+            // All failed — show result panel, error toast, keep dialog open
+            this.showResultPanel = true;
+            this.allFailed = true;
+            this.submitting = false;
+            this.snackbarService.error('No invites were sent. See details below.');
           }
         }
-        // this.company.dispatch({
-        //   type: CompanyActionTypes.SAVE_COMPANY_USER_SUCCESS,
-        //   payload: null
-        // });
       }
-    })
+    });
   }
-
 
   close() {
     this.dialogRef.close(null);
   }
 
-  addEmployeeEmail(){
-    let obj = { email: this.inviteForm.controls['email'].value };
-    this.emailArray.push(obj);  
+  addEmployeeEmail() {
+    const obj = { email: this.inviteForm.controls['email'].value };
+    this.emailArray.push(obj);
     this.inviteForm.reset();
   }
 
-  removeEmployee(employee){
-    let index = this.emailArray.findIndex(el => el === employee);  
+  removeEmployee(employee) {
+    const index = this.emailArray.findIndex(el => el === employee);
     this.emailArray.splice(index, 1);
   }
 
-  addMoreEmployee(){
+  addMoreEmployee() {
     this.submitting = false;
+    this.showResultPanel = false;
+    this.allFailed = false;
+    this.failedEmails = [];
+    this.successCount = 0;
     this.emailArray = [];
   }
 
-  importUserTab(){
+  retryFailed() {
+    if (this.failedEmails.length === 0) { return; }
+    const retryEmails = this.failedEmails.map(f => ({ email: f.email }));
+    this.showResultPanel = false;
+    this.allFailed = false;
+    this.submitting = false;
+    this.emailArray = retryEmails;
+    this.saveCompanyUser(retryEmails);
+  }
+
+  copyFailedEmails() {
+    if (!isPlatformBrowser(this.platformId)) { return; }
+    const text = this.failedEmails.map(f => f.email).join('\n');
+    try {
+      navigator.clipboard.writeText(text);
+      this.snackbarService.info('Failed emails copied to clipboard.');
+    } catch (_e) {
+      // Clipboard not available — silently ignore
+    }
+  }
+
+  importUserTab() {
     this.submitting = false;
     this.emailArray = [];
     this.importEmployee = true;
   }
 
-  convertToDateTime(dateVal: Date){
+  convertToDateTime(dateVal: Date) {
     return Math.ceil(new Date(dateVal).getTime() / 1000);
   }
 
-  convertToDate(dateTime){
-    return new Date(dateTime * 1000)
+  convertToDate(dateTime) {
+    return new Date(dateTime * 1000);
   }
 
   uploadedFile: any;
 
-  onUpload(file){
+  onUpload(file) {
     this.uploadedFile = file;
   }
 
-  uploadDocument(){
+  uploadDocument() {
     this.importEmployee = false;
     this.importing = true;
-    // this.emailArray = ["dapito.sherwin@gmail.com", "miles.gonzales@gmail.com", "kenshin.himura@gmail.com"];
   }
 
-  submitInvites(){
+  submitInvites() {
     this.importing = false;
     this.submitting = true;
     this.saveCompanyUser(this.emailArray);
     this.uploadedFile = undefined;
     this.inviteForm.reset();
-    // this.invitedUsersList = [];
   }
 
-  saveCompanyUser(value){
-    let data = {
-      companyId: this.localData.companyId,
-      emails: [
-        ...value
-      ]
-    }
-    console.log(data, "company add user data")
+  saveCompanyUser(value) {
+    const companyId = this.localData ? this.localData.companyId : undefined;
+    const payload = {
+      companyId,
+      emails: [...value],
+    };
     this.companyState.dispatch({
       type: CompanyActionTypes.SAVE_COMPANY_USER,
-      payload: data
-    }); 
+      payload,
+    });
   }
 
-    //Restrict file upload to csv
-    isValidCSVFile(file: any) {
-      return file.name.endsWith(".csv");
-    }
-  
-    // distinction of first row as header
-    getHeaderArray(csvRecordsArr: any) {
-      let headers = (csvRecordsArr[0]).split(',');
-      let headerArray = [];
-      for (let j = 0; j < headers.length; j++) {
-        headerArray.push(headers[j]);
-      }
-      return headerArray;
-    }
-  
-    //Upload listener
-    uploadListener($event: any): void {
-      let text = [];
-      let files = $event.srcElement.files;
-  
-      if (this.isValidCSVFile(files[0])) {
-        this.document= files[0].name;
-        this.fileData = files[0];
-  
-        let input = $event.target;
-        let reader = new FileReader();
-        reader.readAsText(input.files[0]);
-  
-        reader.onload = () => {
-          let csvData = reader.result;
-          let csvRecordsArray = (csvData as string).split(/\r\n|\n/);
-  
-          let headersRow = this.getHeaderArray(csvRecordsArray);
-  
-          this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-        };
-  
-        reader.onerror = function () {
-          console.log('error is occured while reading file!');
-        };
-  
-      } else {
-        alert("Please import valid .csv file.");
-        this.fileReset();
-      }
-    }
-  
-    //data
-    getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {
-      let csvArr = [];
-  
-      for (let i = 1; i < csvRecordsArray.length; i++) {
-        let curruntRecord = (csvRecordsArray[i]).split(',');
-        if (curruntRecord.length == headerLength) {
-          let csvRecord: CSVDataRecord = new CSVDataRecord();
-          csvRecord.email = curruntRecord[0].trim();
-          csvArr.push(csvRecord);
-        }
-      }
-      return csvArr;
-    }
-  
-    fileReset() {
-      this.csvReader.nativeElement.value = "";
-      this.records = [];
-      this.jsondatadisplay = '';
-    }
-  
-    removeDocument(){
-      this.document = null;
-    }
-  
-    uploadFile() {
-      this.isLoading = true;
-       this.saveCompanyUser(this.records);
-    }
+  // Restrict file upload to csv
+  isValidCSVFile(file: any) {
+    return file.name.endsWith('.csv');
+  }
 
-    ngOnDestroy(): void {
-      if(this.req) this.req.unsubscribe();
+  // Distinction of first row as header
+  getHeaderArray(csvRecordsArr: any) {
+    const headers = (csvRecordsArr[0]).split(',');
+    const headerArray = [];
+    for (let j = 0; j < headers.length; j++) {
+      headerArray.push(headers[j]);
     }
-  
+    return headerArray;
+  }
+
+  // Upload listener
+  uploadListener($event: any): void {
+    const files = $event.srcElement.files;
+
+    if (this.isValidCSVFile(files[0])) {
+      this.document = files[0].name;
+      this.fileData = files[0];
+
+      const input = $event.target;
+      const reader = new FileReader();
+      reader.readAsText(input.files[0]);
+
+      reader.onload = () => {
+        const csvData = reader.result;
+        const csvRecordsArray = (csvData as string).split(/\r\n|\n/);
+        const headersRow = this.getHeaderArray(csvRecordsArray);
+        this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+      };
+
+      reader.onerror = function () {
+        // File read error — browser will not surface details here
+      };
+    } else {
+      alert('Please import valid .csv file.');
+      this.fileReset();
+    }
+  }
+
+  // Data
+  getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {
+    const csvArr = [];
+
+    for (let i = 1; i < csvRecordsArray.length; i++) {
+      const curruntRecord = (csvRecordsArray[i]).split(',');
+      if (curruntRecord.length === headerLength) {
+        const csvRecord: CSVDataRecord = new CSVDataRecord();
+        csvRecord.email = curruntRecord[0].trim();
+        csvArr.push(csvRecord);
+      }
+    }
+    return csvArr;
+  }
+
+  fileReset() {
+    this.csvReader.nativeElement.value = '';
+    this.records = [];
+    this.jsondatadisplay = '';
+  }
+
+  removeDocument() {
+    this.document = null;
+  }
+
+  uploadFile() {
+    this.isLoading = true;
+    this.saveCompanyUser(this.records);
+  }
+
+  ngOnDestroy(): void {
+    if (this.req) { this.req.unsubscribe(); }
+  }
 }

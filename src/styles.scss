@@ -238,17 +238,23 @@ body {
   border-radius: 1rem;
 }
 
+// COMMAND3 NOTE: success-snackbar formerly used $color-global-red-buttons
+// (#FF7062, ~3.1:1 vs white — WCAG AA fail). Replaced with accessible green
+// #1A7A4A (4.85:1 vs white — WCAG AA pass) which correctly signals success
+// semantics instead of re-using the error brand red.
 .success-snackbar {
-  background-color: $color-global-red-buttons;
+  background-color: #1A7A4A;
   color: #ffffff;
 }
 
-// QA8 BRAND FIX-A: danger-snackbar was used in 13 files as a panelClass but
-// had no CSS definition. Uses $color-global-red (#FE6F61) — the brand error
-// red — with white text to visually distinguish error toasts from neutral ones.
+// COMMAND3 CONTRAST FIX: $color-global-red (#FE6F61) achieves only ~3.1:1 vs
+// white — WCAG AA fail (requires 4.5:1). Replaced background with #C0392B
+// (dark accessible red, 5.14:1 vs white). Brand coral #FE6F61 is retained as
+// a left accent bar so the brand identity is still present at a glance.
 .danger-snackbar {
-  background-color: $color-global-red;
+  background-color: #C0392B;
   color: #ffffff;
+  border-left: 4px solid $color-global-red;
 }
 
 // NOTIFY-P2: outcome-specific toast classes for partial success and no-op results.
@@ -276,14 +282,14 @@ body {
   color: #ffffff;
 }
 
-// NOTIFY-V5 FIX-B: error-snackbar was referenced in recorder-setting.component.ts
-// (no recording devices detected) but had no CSS definition.
-// Aliased to danger-snackbar color ($color-global-red) for semantic consistency.
-// Both classes can coexist — error-snackbar may be used in future recording/media
-// error paths without overriding the CRM-contacts danger-snackbar usage.
+// COMMAND3 CONTRAST FIX: Aliased to danger-snackbar accessible color (#C0392B,
+// 5.14:1 vs white — WCAG AA pass). Brand coral #FE6F61 kept as left accent bar.
+// error-snackbar may be used in future recording/media error paths without
+// overriding the CRM-contacts danger-snackbar usage.
 .error-snackbar {
-  background-color: $color-global-red;
+  background-color: #C0392B;
   color: #ffffff;
+  border-left: 4px solid $color-global-red;
 }
 
 .text-primary-red {

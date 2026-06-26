@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompaniesFacade } from '../state/companies.facade';
+import { Company } from '../companies.model';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { environment } from "@environments/environment";
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -45,10 +46,11 @@ export class PublicCompanyDetailsComponent implements OnInit {
     this.companiesFacade.getCompany(this.companyId);
 
     // SEO: set company page metadata once data loads
+    // Phase 6: use typed Company (not `any`) — companyName is defined on the model.
     this.details$.pipe(
-      filter(company => !!company && !!(company as any).companyName),
+      filter((company: Company) => !!company && !!company.companyName),
       take(1),
-    ).subscribe((company: any) => {
+    ).subscribe((company: Company) => {
       this.seoService.setPageMeta({
         title: `${company.companyName} | GetHired Online`,
         description: `Explore ${company.companyName} on GetHired Online — view their company profile and open job positions in the Philippines.`,
