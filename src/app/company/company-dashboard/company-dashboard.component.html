@@ -38,7 +38,9 @@
     </div>
 
     <ng-container *ngIf="!pipelineLoading && !pipelineError">
-      <ng-container *ngIf="companyProfileMissingFields(dashboard.company) as missingFields">
+      <!-- OPTIMIZE DASHBOARD: was companyProfileMissingFields(dashboard.company) called every CD cycle;
+           now reads cachedProfileMissingFields property, refreshed only on dashboard$ emit. -->
+      <ng-container *ngIf="true">
         <div class="emp-dash-action-grid">
           <button type="button" class="emp-dash-action-card emp-dash-action-card--urgent gh-pressable"
             *ngIf="needsReviewCount > 0"
@@ -64,14 +66,14 @@
           </button>
 
           <button type="button" class="emp-dash-action-card gh-pressable"
-            *ngIf="missingFields.length > 0"
+            *ngIf="cachedProfileMissingFields.length > 0"
             (click)="goToCompanyProfile()">
             <span class="emp-dash-action-icon" aria-hidden="true">
               <img src="/assets/brand/gethired-wow/trust-shield-glow.svg" alt="">
             </span>
             <span class="emp-dash-action-body">
               <span class="emp-dash-action-title">Complete your company profile</span>
-              <span class="emp-dash-action-desc">Missing: {{ missingFields.join(', ') }}.</span>
+              <span class="emp-dash-action-desc">Missing: {{ cachedProfileMissingFields.join(', ') }}.</span>
             </span>
           </button>
 
@@ -91,7 +93,7 @@
             </span>
           </button>
 
-          <div class="emp-dash-action-empty" *ngIf="needsReviewCount === 0 && missingFields.length === 0">
+          <div class="emp-dash-action-empty" *ngIf="needsReviewCount === 0 && cachedProfileMissingFields.length === 0">
             <p>You're all caught up. No applicants are waiting for review right now.</p>
           </div>
         </div>
@@ -100,20 +102,26 @@
   </section>
 
   <!-- KPI Summary -->
+  <!-- NOTIFY DASHBOARD: added aria-label to each KPI button for screen readers;
+       "Video answers" navigates to jobs list (no dedicated video route yet) — honest. -->
   <section class="emp-dash-kpis" aria-label="Key metrics">
-    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()">
+    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()"
+      [attr.aria-label]="'Active jobs: ' + (dashboard.charts?.activeJobs || 0) + '. View jobs list.'">
       <span class="emp-dash-kpi-value">{{ dashboard.charts?.activeJobs || 0 }}</span>
       <span class="emp-dash-kpi-label">Active jobs</span>
     </button>
-    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()">
+    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()"
+      [attr.aria-label]="'Applicants this month: ' + (dashboard.charts?.applicants || 0) + '. View applicants.'">
       <span class="emp-dash-kpi-value">{{ dashboard.charts?.applicants || 0 }}</span>
       <span class="emp-dash-kpi-label">Applicants this month</span>
     </button>
-    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()">
+    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()"
+      [attr.aria-label]="'Video answers this month: ' + (dashboard.charts?.interviews || 0) + '. View jobs list.'">
       <span class="emp-dash-kpi-value">{{ dashboard.charts?.interviews || 0 }}</span>
       <span class="emp-dash-kpi-label">Video answers this month</span>
     </button>
-    <button type="button" class="emp-dash-kpi-card gh-pressable" *ngIf="!pipelineLoading && !pipelineError" (click)="goToJobsList()">
+    <button type="button" class="emp-dash-kpi-card gh-pressable" *ngIf="!pipelineLoading && !pipelineError" (click)="goToJobsList()"
+      [attr.aria-label]="'Needs review: ' + needsReviewCount + ' applicant' + (needsReviewCount === 1 ? '' : 's') + '. View applicants.'">
       <span class="emp-dash-kpi-value">{{ needsReviewCount }}</span>
       <span class="emp-dash-kpi-label">Needs review</span>
     </button>
@@ -209,12 +217,14 @@
   </section>
 
   <!-- Job Performance — jobs that have applicants actively waiting for review,
-       derived from pipeline data already fetched (no extra API call). -->
-  <section class="emp-dash-job-perf" aria-label="Jobs with active applicants"
+       derived from pipeline data already fetched (no extra API call).
+       NOTIFY DASHBOARD: renamed section title from "Jobs with applicants waiting"
+       to "Jobs awaiting review" — clearer, action-oriented, matches CTA wording. -->
+  <section class="emp-dash-job-perf" aria-label="Jobs awaiting review"
     *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length > 0">
-    <h2 class="emp-dash-section-title">Jobs with applicants waiting</h2>
+    <h2 class="emp-dash-section-title">Jobs awaiting review</h2>
     <div class="emp-dash-job-list">
-      <div class="emp-dash-job-row" *ngFor="let job of cachedJobGroups">
+      <div class="emp-dash-job-row" *ngFor="let job of cachedJobGroups; trackBy: trackByIndex">
         <div class="emp-dash-job-row-body">
           <p class="emp-dash-job-title">{{ job.jobTitle }}</p>
           <p class="emp-dash-job-meta">{{ job.count }} applicant{{ job.count === 1 ? '' : 's' }} awaiting review</p>
@@ -226,9 +236,11 @@
   </section>
 
   <!-- Employer Branding Health — score derived from real company profile fields;
-       no fake metrics, computed client-side from already-loaded company data. -->
-  <section class="emp-dash-branding" aria-label="Employer branding health" *ngIf="dashboard.company">
-    <ng-container *ngIf="brandingScore(dashboard.company) as branding">
+       no fake metrics, computed client-side from already-loaded company data.
+       OPTIMIZE DASHBOARD: was brandingScore(dashboard.company) called every CD cycle;
+       now reads cachedBrandingScore property, refreshed only on dashboard$ emit. -->
+  <section class="emp-dash-branding" aria-label="Employer branding health" *ngIf="dashboard.company && cachedBrandingScore">
+    <ng-container *ngIf="cachedBrandingScore as branding">
       <div class="emp-dash-branding-inner">
         <div class="emp-dash-branding-header">
           <h2 class="emp-dash-section-title" style="margin:0">Employer branding health</h2>
@@ -253,7 +265,7 @@
         <div class="emp-dash-branding-missing" *ngIf="branding.missing.length > 0">
           <p class="emp-dash-branding-missing-label">Still missing:</p>
           <div class="emp-dash-branding-chips">
-            <span class="emp-dash-branding-chip" *ngFor="let field of branding.missing">{{ field }}</span>
+            <span class="emp-dash-branding-chip" *ngFor="let field of branding.missing; trackBy: trackByIndex">{{ field }}</span>
           </div>
           <button type="button" class="btn-cta-primary emp-dash-branding-cta gh-pressable" (click)="goToCompanyProfile()">
             Complete profile
@@ -267,8 +279,17 @@
   </section>
 
   <!-- Subscription / Plan Health — loads independently of dashboard data
-       so a subscription API failure never blanks the rest of the dashboard. -->
-  <section class="emp-dash-subscription" aria-label="Subscription and plan" *ngIf="subsRestrictions$ | async as subs">
+       so a subscription API failure never blanks the rest of the dashboard.
+       NOTIFY DASHBOARD: added error state so a failure shows a retry prompt
+       instead of silently hiding the whole section.
+       BRAND DASHBOARD: emp-dash-sub-inner gets entrance animation via CSS. -->
+  <section class="emp-dash-subscription" aria-label="Subscription and plan">
+    <!-- Error state: shown when subsRestrictions$ errors -->
+    <div class="emp-dash-action-error emp-dash-sub-error" *ngIf="subsError" role="alert">
+      <p>Couldn't load your subscription details right now.</p>
+      <button type="button" class="btn-link" (click)="retrySubscription()">Retry</button>
+    </div>
+    <ng-container *ngIf="!subsError && (subsRestrictions$ | async) as subs">
     <div class="emp-dash-sub-inner">
       <div class="emp-dash-sub-header">
         <h2 class="emp-dash-section-title" style="margin:0">Subscription</h2>
@@ -330,6 +351,7 @@
       </div>
       <button type="button" class="btn-link gh-pressable" (click)="goToSubscription()">Manage subscription</button>
     </div>
+    </ng-container>
   </section>
 
   <!-- Existing charts/statistics, kept and restyled wrapper -->

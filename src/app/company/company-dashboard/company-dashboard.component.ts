@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CompanyFacade } from '../state/company.facade';
 import { CompanyService } from '../company.service';
 import * as Model from '../company.model';
-import { map, tap } from 'rxjs';
+import { map, tap, catchError, of } from 'rxjs';
 
 interface PipelineStage {
   statusId: number;
@@ -53,11 +53,20 @@ export class CompanyDashboardComponent implements OnInit {
       }),
       // OPTIMIZE V5: cache company/charts for the onboarding step cache refresh.
       // tap does not alter the emitted value seen by the template's async pipe.
+      // OPTIMIZE DASHBOARD: also cache brandingScore and profileMissingFields
+      // here so the template reads properties instead of calling methods per tick.
       tap(dash => {
         if (dash) {
           this._lastDashboardCompany = dash.company;
           this._lastDashboardCharts = dash.charts;
           this._refreshOnboardingCache();
+          if (dash.company) {
+            this.cachedBrandingScore = this.brandingScore(dash.company);
+            this.cachedProfileMissingFields = this.companyProfileMissingFields(dash.company);
+          } else {
+            this.cachedBrandingScore = null;
+            this.cachedProfileMissingFields = [];
+          }
         }
       })
     );
@@ -73,8 +82,25 @@ export class CompanyDashboardComponent implements OnInit {
    * change-detection tick. Both values are used 3–6 times in the template. */
   needsReviewCount = 0;
   pipelineBarMax = 1;
-  subsRestrictions$ = this.companyFacade.subsRestrictions$;
+  /** NOTIFY/BRAND DASHBOARD: wrap subsRestrictions$ to catch errors so the
+   * subscription section can show a retry state instead of silently disappearing.
+   * On error emits null; subsError flag drives the visible error card. */
+  subsError = false;
+  subsRestrictions$ = this.companyFacade.subsRestrictions$.pipe(
+    tap(() => { this.subsError = false; }),
+    catchError(() => { this.subsError = true; return of(null); })
+  );
   cachedJobGroups: Array<{ jobId: string; jobTitle: string; count: number }> = [];
+
+  /** OPTIMIZE DASHBOARD: brandingScore() was called every CD cycle via
+   * *ngIf="brandingScore(dashboard.company) as branding". Cached here and
+   * refreshed only when dashboard$ emits (via tap below). */
+  cachedBrandingScore: { score: number; missing: string[] } | null = null;
+
+  /** OPTIMIZE DASHBOARD: companyProfileMissingFields() was called every CD
+   * cycle via *ngIf="companyProfileMissingFields(dashboard.company) as missingFields".
+   * Cached here and refreshed only when dashboard$ emits (via tap below). */
+  cachedProfileMissingFields: string[] = [];
 
   asyncLocalStorage = {
     getItem: async function (key: string) {
@@ -150,6 +176,18 @@ export class CompanyDashboardComponent implements OnInit {
     this.loadPipelineOverview();
   }
 
+  retrySubscription(): void {
+    this.subsError = false;
+    this.asyncLocalStorage.getItem('user').then(details => {
+      if (details) {
+        const user = JSON.parse(details);
+        if (user && user.companyId) {
+          this.companyFacade.getCompanySubscription(user.companyId);
+        }
+      }
+    });
+  }
+
   goToCreateJob(): void {
     this.router.navigate(['/recruiter/jobs/create']);
   }
@@ -194,6 +232,12 @@ export class CompanyDashboardComponent implements OnInit {
   // ── OPTIMIZE V5: trackBy functions ─────────────────────────────────────────
   trackByStageId(_index: number, stage: PipelineStage): number {
     return stage.statusId;
+  }
+
+  /** OPTIMIZE DASHBOARD: trackBy for branding missing-field chips — the array
+   * is stable (max 6 strings) so index is a safe, cheap key here. */
+  trackByIndex(i: number): number {
+    return i;
   }
 
   trackByApplicationId(_index: number, item: NeedsReviewItem): string {
@@ -264,7 +308,7 @@ export class CompanyDashboardComponent implements OnInit {
     if (!company.companyLogoUrl) { missing.push('company logo'); }
     if (!company.companyDetails) { missing.push('description'); }
     if (!company.companyCity) { missing.push('location'); }
-    if (!company.industryId) { missing.push('industry'); }
+    if (company.industryId == null) { missing.push('industry'); }
     if (!company.numberOfEmployee) { missing.push('team size'); }
     if (!company.companyContactNumber) { missing.push('contact number'); }
     const total = 6;
@@ -275,6 +319,8 @@ export class CompanyDashboardComponent implements OnInit {
   subscriptionDaysLeft(endAt: any): number {
     if (!endAt) { return 0; }
     const end = new Date(endAt);
+    // Guard against an unparseable date string — isNaN check prevents NaN in template.
+    if (isNaN(end.getTime())) { return 0; }
     const now = new Date();
     return Math.max(0, Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
   }

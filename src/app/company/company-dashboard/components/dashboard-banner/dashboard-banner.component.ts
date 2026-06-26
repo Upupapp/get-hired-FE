@@ -17,7 +17,6 @@ export class DashboardBannerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.details);
   }
 
   redirectToEdit() {

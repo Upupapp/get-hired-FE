@@ -274,6 +274,9 @@
   align-items: flex-start;
   gap: 6px;
   cursor: pointer;
+  // BRAND DASHBOARD: KPI cards now use emp-card-reveal entrance animation
+  // for a staggered-feel entry that matches action cards and review cards.
+  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
   transition: box-shadow $motion-duration-micro $motion-ease-standard,
               transform $motion-duration-micro $motion-ease-standard;
   text-align: left;
@@ -552,6 +555,11 @@
 
 @media (max-width: 575px) {
   .emp-dash-kpi-card { flex: 1 1 100%; }
+  // MOBILEVIEW Pass 3: subscription header badge wraps on very narrow screens
+  // so plan name is never cut off (flex-shrink could hide text below 360px).
+  .emp-dash-sub-header { flex-wrap: wrap; }
+  // MOBILEVIEW Pass 3: pipeline label text stays readable on 320px screens
+  .emp-dash-pipeline-label { font-size: 8px; }
 }
 
 // ─── V5: Onboarding Checklist ─────────────────────────────────────────────────
@@ -739,6 +747,9 @@
   border: 1.5px solid #ede9f7;
   border-radius: 16px;
   padding: 24px;
+  // BRAND DASHBOARD: entrance animation — branding section slides in when
+  // dashboard$ async data resolves (async *ngIf toggles the section into DOM).
+  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
 }
 
 .emp-dash-branding-header {
@@ -841,6 +852,15 @@
   border: 1.5px solid #ede9f7;
   border-radius: 16px;
   padding: 24px;
+  // BRAND DASHBOARD: entrance animation — subscription section slides in when
+  // subsRestrictions$ async data resolves (async *ngIf toggles ng-container).
+  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
+}
+
+// NOTIFY / BRAND DASHBOARD: error card for subscription load failure.
+// Reuses .emp-dash-action-error layout; extra class allows future overrides.
+.emp-dash-sub-error {
+  margin-bottom: 0;
 }
 
 .emp-dash-sub-header {
@@ -975,4 +995,8 @@
   .emp-dash-job-row { animation: none; }
   .emp-dash-branding-bar-fill,
   .emp-dash-sub-meter-fill { transition: none; }
+  // BRAND DASHBOARD: new animated elements added — all get animation: none here
+  .emp-dash-kpi-card { animation: none; }
+  .emp-dash-branding-inner { animation: none; }
+  .emp-dash-sub-inner { animation: none; }
 }
