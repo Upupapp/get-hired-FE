@@ -35,15 +35,22 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
 
-    // SSR 404: RESPONSE is only injected on the server; on the browser it is
-    // null (@Optional). When the job fetch fails on the server, mark the
-    // Express response 404 so Googlebot receives the correct HTTP status.
-    if (this.response) {
-      this.errorSub = this.jobFacade.jobError$.pipe(
-        filter(err => !!err),
-        take(1),
-      ).subscribe(() => this.response.status(404));
-    }
+    // Error state: set noindex and (on the server) HTTP 404 when the job
+    // fetch fails so error pages are never indexed as thin content.
+    // RESPONSE is null on the browser (@Optional), so the status call is guarded.
+    this.errorSub = this.jobFacade.jobError$.pipe(
+      filter(err => !!err),
+      take(1),
+    ).subscribe(() => {
+      if (this.response) {
+        this.response.status(404);
+      }
+      this.seoService.setPageMeta({
+        title: 'Job Not Found | GetHired Online',
+        description: 'This job posting is no longer available on GetHired Online.',
+        robots: 'noindex, nofollow',
+      });
+    });
 
     // SEO Phase 4 + 6: set metadata and JobPosting JSON-LD once job data arrives.
     // Only active (jobStatusId === 2) jobs get JobPosting schema.

@@ -1,3 +1,12 @@
+<!-- Breadcrumb — visible nav matching the BreadcrumbList JSON-LD already in <head> -->
+<nav class="job-breadcrumb" aria-label="Breadcrumb" *ngIf="details$ | async as selectedJobPost">
+  <ol class="job-breadcrumb__list">
+    <li class="job-breadcrumb__item"><a routerLink="/home">Home</a></li>
+    <li class="job-breadcrumb__item"><a routerLink="/jobs">Jobs</a></li>
+    <li class="job-breadcrumb__item" aria-current="page">{{selectedJobPost.jobTitle}}</li>
+  </ol>
+</nav>
+
 <!-- CUSTOM BANNER -->
 <div class="p-0" style="overflow-x: hidden;" *ngIf="details$ | async as selectedJobPost">
   <div class="row">
