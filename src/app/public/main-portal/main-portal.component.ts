@@ -143,4 +143,11 @@ export class MainPortalComponent implements OnInit {
   onEmployerBandViewed(): void {
     this.analytics.trackEmployerConversionBandViewed('home');
   }
+
+  /** TrackBy helpers for static lists — prevents DOM re-creation on
+   *  any future change detection passes. Index is sufficient here
+   *  because all four arrays are module-level constants (never mutated). */
+  trackByIndex(index: number): number {
+    return index;
+  }
 }

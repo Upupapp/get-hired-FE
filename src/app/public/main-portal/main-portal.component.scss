@@ -408,56 +408,6 @@
   flex-wrap: wrap;
 }
 
-// ── How it works ──────────────────────────────────────────────────────
-
-.portal-how-it-works {
-  max-width: 1100px;
-  margin: 56px auto 0;
-  padding: 0 24px;
-}
-
-.portal-how-it-works-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-
-  @media (max-width: 767px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.portal-how-it-works-col {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 16px;
-  padding: 24px;
-
-  h3 {
-    font-size: 16px;
-    font-weight: 700;
-    margin: 0 0 12px 0;
-  }
-
-  ol {
-    margin: 0;
-    padding-left: 20px;
-    color: #4b5563;
-    font-size: 14px;
-
-    li {
-      margin-bottom: 6px;
-    }
-  }
-
-  &--seeker h3 {
-    color: #0d9488;
-  }
-
-  &--employer h3 {
-    color: $color-global-red-buttons;
-  }
-}
-
 // ── Final CTA wrap ────────────────────────────────────────────────────
 
 .portal-final-cta-wrap {
@@ -592,7 +542,7 @@
 
 .portal-preview-subtitle {
   text-align: center;
-  color: #9ca3af;
+  color: #6b7280;
   font-size: 13px;
   margin: -16px auto 28px;
   font-style: italic;
@@ -911,7 +861,7 @@
 
 .preview-panel-note {
   font-size: 12px;
-  color: #9ca3af;
+  color: #6b7280;
   font-style: italic;
   margin: -8px 0 16px;
 }

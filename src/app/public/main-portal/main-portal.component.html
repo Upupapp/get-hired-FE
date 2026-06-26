@@ -22,7 +22,7 @@
 
       <!-- Proof chips: honest feature labels, no fabricated numbers -->
       <div class="portal-hero-proof-chips" aria-label="Key features">
-        <span class="portal-hero-chip" *ngFor="let chip of heroProofChips">{{ chip }}</span>
+        <span class="portal-hero-chip" *ngFor="let chip of heroProofChips; trackBy: trackByIndex">{{ chip }}</span>
       </div>
 
       <div class="portal-role-secondary portal-hero-secondary">
@@ -111,8 +111,8 @@
   <p class="portal-usp-subtitle">Structured profiles, video answers, and explainable signals help both sides decide with more confidence.</p>
   <img src="/assets/brand/gethired-wow/gethired-connection-bridge.svg" alt="" class="portal-usp-bridge" aria-hidden="true" width="320" height="80" loading="lazy">
   <div class="portal-usp-grid">
-    <div class="portal-usp-card" *ngFor="let item of uspPillars">
-      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true">
+    <div class="portal-usp-card" *ngFor="let item of uspPillars; trackBy: trackByIndex">
+      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true" loading="lazy">
       <h3>{{ item.title }}</h3>
       <p>{{ item.description }}</p>
     </div>
@@ -122,7 +122,7 @@
 <section class="portal-differentiators" aria-label="What GetHired offers">
   <h2 class="portal-section-title">What GetHired does</h2>
   <div class="portal-bento-grid">
-    <div class="portal-bento-card" *ngFor="let item of differentiators">
+    <div class="portal-bento-card" *ngFor="let item of differentiators; trackBy: trackByIndex">
       <span class="portal-bento-icon" aria-hidden="true">{{ item.icon }}</span>
       <h3>{{ item.title }}</h3>
       <p>{{ item.description }}</p>
@@ -133,7 +133,7 @@
 <section class="portal-journey" aria-label="For job seekers">
   <h2 class="portal-section-title">For job seekers: build your profile once, apply with confidence.</h2>
   <ol class="portal-journey-steps portal-journey-steps--seeker">
-    <li class="portal-journey-step" *ngFor="let step of jobSeekerJourney; let i = index">
+    <li class="portal-journey-step" *ngFor="let step of jobSeekerJourney; let i = index; trackBy: trackByIndex">
       <span class="portal-journey-step-number">{{ i + 1 }}</span>
       <div>
         <h3>{{ step.title }}</h3>
@@ -149,7 +149,7 @@
 <section class="portal-journey portal-journey--employer" aria-label="For employers">
   <h2 class="portal-section-title">For employers: post jobs and manage hiring in one workspace.</h2>
   <ol class="portal-journey-steps portal-journey-steps--employer">
-    <li class="portal-journey-step" *ngFor="let step of employerJourney; let i = index">
+    <li class="portal-journey-step" *ngFor="let step of employerJourney; let i = index; trackBy: trackByIndex">
       <span class="portal-journey-step-number portal-journey-step-number--employer">{{ i + 1 }}</span>
       <div>
         <h3>{{ step.title }}</h3>
@@ -174,7 +174,7 @@
          aria-label="See how GetHired works">
   <div class="portal-product-preview-inner">
     <h2 class="portal-section-title">See how GetHired works</h2>
-    <p class="portal-preview-subtitle">Illustrative view of key features.</p>
+    <p class="portal-preview-subtitle">All previews below show example data — not real users or employers.</p>
 
     <div class="portal-preview-tabs" role="tablist" aria-label="Product feature preview">
       <button class="portal-preview-tab" [class.active]="activePreviewTab === 'seeker'"
@@ -210,7 +210,7 @@
       <!-- Job Seeker Profile -->
       <ng-container *ngIf="activePreviewTab === 'seeker'">
         <div class="portal-preview-panel">
-          <div class="preview-mock-card preview-mock-card--profile">
+          <div class="preview-mock-card preview-mock-card--profile" aria-hidden="true">
             <div class="preview-card-header">
               <span class="preview-avatar preview-avatar--teal">MD</span>
               <div>
@@ -249,7 +249,7 @@
       <!-- Employer Dashboard -->
       <ng-container *ngIf="activePreviewTab === 'employer'">
         <div class="portal-preview-panel">
-          <div class="preview-mock-card preview-mock-card--dashboard">
+          <div class="preview-mock-card preview-mock-card--dashboard" aria-hidden="true">
             <div class="preview-card-header">
               <span class="preview-avatar preview-avatar--coral">AC</span>
               <div>
@@ -287,7 +287,7 @@
       <!-- Application Tracking -->
       <ng-container *ngIf="activePreviewTab === 'tracking'">
         <div class="portal-preview-panel">
-          <div class="preview-mock-card preview-mock-card--tracking">
+          <div class="preview-mock-card preview-mock-card--tracking" aria-hidden="true">
             <div class="preview-tracking-title">My Applications</div>
             <div class="preview-tracking-list">
               <div class="preview-tracking-item">
@@ -322,7 +322,7 @@
       <!-- Video Answers -->
       <ng-container *ngIf="activePreviewTab === 'video'">
         <div class="portal-preview-panel">
-          <div class="preview-mock-card preview-mock-card--video">
+          <div class="preview-mock-card preview-mock-card--video" aria-hidden="true">
             <div class="preview-video-question">"Tell us about your customer service experience."</div>
             <div class="preview-video-player" aria-hidden="true">
               <div class="preview-video-play-btn">▶</div>
@@ -344,7 +344,7 @@
       <!-- Compatibility Signals -->
       <ng-container *ngIf="activePreviewTab === 'signals'">
         <div class="portal-preview-panel">
-          <div class="preview-mock-card preview-mock-card--signals">
+          <div class="preview-mock-card preview-mock-card--signals" aria-hidden="true">
             <img src="/assets/brand/gethired-wow/match-signal-rings.svg" alt=""
                  aria-hidden="true" class="preview-signals-rings" width="96" height="96" loading="lazy">
             <div class="preview-signals-label">Compatibility signals</div>
