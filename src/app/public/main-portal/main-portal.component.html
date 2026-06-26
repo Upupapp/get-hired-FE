@@ -1,4 +1,4 @@
-<section class="portal-hero portal-hero--upgraded">
+<section #heroSection class="portal-hero portal-hero--upgraded">
   <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="portal-hero-mesh" aria-hidden="true" width="400" height="300" loading="lazy">
   <div class="portal-hero-glow portal-hero-glow--one" aria-hidden="true"></div>
   <div class="portal-hero-glow portal-hero-glow--two" aria-hidden="true"></div>
@@ -68,6 +68,15 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Mobile-only scroll cue — tells users there is more below the hero.
+       aria-hidden: decorative, content below is accessible normally. -->
+  <div class="portal-hero-scroll-cue" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Scroll to explore</span>
   </div>
 </section>
 
@@ -422,7 +431,7 @@
   </div>
 </section>
 
-<section class="portal-final-cta-wrap">
+<section #finalCtaSection class="portal-final-cta-wrap">
   <div class="portal-final-cta-glow" aria-hidden="true"></div>
   <app-portal-cta-band
     title="Ready to get started?"
@@ -438,3 +447,24 @@
     <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
   </div>
 </section>
+
+<!-- Mobile sticky CTA bar — appears after hero CTAs scroll out of view.
+     aria-hidden + tabindex=-1: intentional — visual-only shortcuts that
+     duplicate accessible CTAs already in the page content, preventing
+     double-announcement to screen reader users. -->
+<div class="portal-sticky-cta"
+     [class.is-visible]="isStickyCTAVisible"
+     aria-hidden="true">
+  <a routerLink="/jobs"
+     class="portal-sticky-cta-btn portal-sticky-cta-btn--jobs gh-pressable"
+     (click)="stickyCTAFindJobs()"
+     tabindex="-1">
+    Find jobs
+  </a>
+  <a routerLink="/employers"
+     class="portal-sticky-cta-btn portal-sticky-cta-btn--hiring gh-pressable"
+     (click)="stickyCTAStartHiring()"
+     tabindex="-1">
+    Start hiring
+  </a>
+</div>

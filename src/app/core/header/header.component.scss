@@ -91,6 +91,31 @@
   background: rgba(255, 255, 255, 1) !important;
 }
 
+// MOBILEVIEW: "Start hiring" link shown only in mobile collapse menu.
+// Styled as a soft outlined button so it doesn't compete with Sign In.
+.btn-nav-hire {
+  display: inline-flex;
+  align-items: center;
+  color: #FF7062;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  padding: 10px 10px;
+  min-height: 44px;
+  border-radius: 6px;
+  transition: background 120ms ease;
+
+  &:hover, &:focus-visible {
+    background: rgba(255, 112, 98, 0.08);
+    color: #FF4D3C;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FF7062;
+    outline-offset: 2px;
+  }
+}
+
 .btn-nav-gradient{
   background: linear-gradient(163.18deg, #D06047 1.81%, #D06047 98.2%) !important;
   box-shadow: 0px 29.81px 46.8519px rgba(10, 146, 200, 0.1059), 0px 14.52px 25.4815px rgba(10, 146, 200, 0.1007) !important;

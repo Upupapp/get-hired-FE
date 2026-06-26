@@ -1015,3 +1015,275 @@
   display: flex;
   justify-content: center;
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GETHIRED_HOME_MOBILEVIEW — mobile-first homepage optimization pass
+// Scope: max-width 767px unless noted. Desktop rules above are untouched.
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Scroll cue (mobile only) ──────────────────────────────────────────────────
+
+.portal-hero-scroll-cue {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding-top: 16px;
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: default;
+  user-select: none;
+
+  svg {
+    animation: mobileScrollCueBounce 2s ease-in-out infinite;
+    @include ambient-motion-safe;
+  }
+
+  @media (max-width: 767px) {
+    display: flex;
+  }
+}
+
+@keyframes mobileScrollCueBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  55%       { transform: translateY(6px); opacity: 1; }
+}
+
+// ── Mobile sticky CTA bar ─────────────────────────────────────────────────────
+// Hidden on desktop; on mobile it stays off-screen until is-visible is set.
+
+.portal-sticky-cta {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.07);
+  gap: 10px;
+  transform: translateY(110%);
+  transition: transform $motion-duration-drawer $motion-ease-decelerate;
+  @include motion-safe;
+
+  &.is-visible {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 767px) {
+    display: flex;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none !important;
+    transition: none !important;
+    &:not(.is-visible) { display: none; }
+    &.is-visible { display: flex; }
+  }
+}
+
+.portal-sticky-cta-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform $motion-duration-micro $motion-ease-standard,
+              background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &--jobs {
+    background: linear-gradient(99.75deg, $color-global-red 24.68%, #FF4D3C 91.74%);
+    color: #fff;
+  }
+
+  &--hiring {
+    background: transparent;
+    color: $color-global-red-buttons;
+    border: 2px solid $color-global-red-buttons;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+// ── Section spacing: reduce 56-64px desktop margins to 36-40px on mobile ─────
+
+@media (max-width: 767px) {
+  .portal-usp,
+  .portal-differentiators,
+  .portal-journey,
+  .portal-product-preview,
+  .portal-trust-safety,
+  .portal-employer-band,
+  .portal-final-cta-wrap {
+    margin-top: 40px;
+  }
+
+  .portal-journey--employer {
+    margin-top: 28px;
+  }
+
+  // Footer padding so sticky CTA doesn't cover the final CTA section
+  .portal-final-cta-wrap {
+    padding-bottom: 16px;
+  }
+}
+
+// ── Hero: further compression at narrow screens ───────────────────────────────
+
+@media (max-width: 375px) {
+  .portal-hero--upgraded {
+    padding: 32px 16px 24px;
+  }
+}
+
+// ── Product preview: scrollable tab row on mobile ─────────────────────────────
+// Prevents tall wrapping rows; users can swipe the pill tabs.
+// Keyboard: Arrow keys already handle tab navigation (onTabKeydown in TS).
+
+@media (max-width: 767px) {
+  .portal-preview-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+    // Fade edges signal scrollability
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 90%, transparent 100%);
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .portal-preview-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+// ── Journey sections: mobile vertical stepper ────────────────────────────────
+
+@media (max-width: 767px) {
+  .portal-journey-steps {
+    grid-template-columns: 1fr;
+    gap: 0;
+    position: relative;
+
+    // Vertical connector line behind step numbers
+    &::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 18px;
+      bottom: 18px;
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        rgba(45, 212, 191, 0.45) 0%,
+        rgba(45, 212, 191, 0.08) 100%
+      );
+      border-radius: 2px;
+    }
+
+    &--employer::before {
+      background: linear-gradient(
+        to bottom,
+        rgba(254, 111, 97, 0.45) 0%,
+        rgba(254, 111, 97, 0.08) 100%
+      );
+    }
+  }
+
+  .portal-journey-step {
+    padding: 0 0 20px 52px;
+    position: relative;
+    min-height: 0;
+
+    &:last-child { padding-bottom: 0; }
+
+    // Step number floats left of the connector line
+    .portal-journey-step-number,
+    .portal-journey-step-number--employer {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
+}
+
+// ── USP grid: 2-col on 390px+ / 1-col below 390px ────────────────────────────
+
+@media (min-width: 390px) and (max-width: 991px) {
+  .portal-usp-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ── Bento grid (What GetHired does): 2-col on 390px+ ─────────────────────────
+
+@media (min-width: 390px) and (max-width: 991px) {
+  .portal-bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ── Trust grid: 2-col on 390px+ / 1-col below ────────────────────────────────
+
+@media (min-width: 390px) and (max-width: 575px) {
+  .portal-trust-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ── Role selector: tighter padding on narrow mobile ───────────────────────────
+
+@media (max-width: 575px) {
+  .portal-role-selector {
+    padding: 20px 16px;
+  }
+
+  .portal-role-grid {
+    gap: 12px;
+  }
+}
+
+// ── Employer band: compact padding on mobile ──────────────────────────────────
+
+@media (max-width: 575px) {
+  .portal-employer-band {
+    padding: 0 16px;
+  }
+}
+
+// ── Padding bottom on page to prevent sticky CTA covering footer area ─────────
+
+@media (max-width: 767px) {
+  app-footer,
+  app-main-portal > :last-of-type:not(.portal-sticky-cta) {
+    padding-bottom: 72px;
+  }
+}

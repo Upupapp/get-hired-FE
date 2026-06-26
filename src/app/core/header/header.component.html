@@ -40,6 +40,16 @@
           </button>
         </li>
 
+        <!-- MOBILEVIEW: "Start hiring" in the mobile collapse menu.
+             d-lg-none keeps it off the desktop nav bar (which already has
+             this path via btn-nav-gradient Sign In → employer flow).
+             routerLink instead of click handler keeps it a crawlable link. -->
+        <li class="nav-item d-lg-none" *ngIf="isPublic && !isUserLoggedIn">
+          <a routerLink="/employers" class="btn-nav-hire d-block">
+            Start hiring
+          </a>
+        </li>
+
         <li class="nav-item">
           <app-language-selection title="Language"></app-language-selection>
         </li>

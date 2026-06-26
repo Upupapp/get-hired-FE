@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { CoreService } from '@app-core/services/core.service';
@@ -24,7 +24,7 @@ import { SeoService } from '@app-core/services/seo.service';
   templateUrl: './main-portal.component.html',
   styleUrls: ['./main-portal.component.scss'],
 })
-export class MainPortalComponent implements OnInit {
+export class MainPortalComponent implements OnInit, AfterViewInit, OnDestroy {
   /** GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- the 4 strongest
    * code-verified differentiators, each copy line taken directly from
    * the approved-safe pillar list (see
@@ -71,6 +71,8 @@ export class MainPortalComponent implements OnInit {
   readonly previewTabs = ['seeker', 'employer', 'tracking', 'video', 'signals'];
 
   @ViewChild('tablistRef') private tablistRef: ElementRef<HTMLElement>;
+  @ViewChild('heroSection') private heroSectionRef: ElementRef<HTMLElement>;
+  @ViewChild('finalCtaSection') private finalCtaSectionRef: ElementRef<HTMLElement>;
 
   /** Proof chips shown in the hero — brief, honest feature labels. */
   heroProofChips = [
@@ -79,6 +81,13 @@ export class MainPortalComponent implements OnInit {
     'Employer dashboard',
     'Application tracking',
   ];
+
+  /** Controls mobile sticky CTA bar visibility.
+   * Shown after hero scrolls out of view; hidden when final CTA is reached. */
+  isStickyCTAVisible = false;
+
+  private heroObserver: any = null;
+  private finalCtaObserver: any = null;
 
   constructor(
     private router: Router,
@@ -109,6 +118,47 @@ export class MainPortalComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    this.initMobileStickyCTA();
+  }
+
+  ngOnDestroy(): void {
+    if (this.heroObserver) { this.heroObserver.disconnect(); }
+    if (this.finalCtaObserver) { this.finalCtaObserver.disconnect(); }
+  }
+
+  /** SSR-safe IntersectionObserver setup for the mobile sticky CTA.
+   * Shows sticky CTA once hero scrolls past; hides it again at the
+   * final CTA section so it never covers the page-end conversion area. */
+  private initMobileStickyCTA(): void {
+    if (typeof window === 'undefined') { return; }
+    if (typeof IntersectionObserver === 'undefined') { return; }
+
+    const heroEl = this.heroSectionRef && this.heroSectionRef.nativeElement;
+    if (heroEl) {
+      this.heroObserver = new IntersectionObserver(
+        (entries) => {
+          this.isStickyCTAVisible = !entries[0].isIntersecting;
+        },
+        { threshold: 0.05 }
+      );
+      this.heroObserver.observe(heroEl);
+    }
+
+    const finalEl = this.finalCtaSectionRef && this.finalCtaSectionRef.nativeElement;
+    if (finalEl) {
+      this.finalCtaObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            this.isStickyCTAVisible = false;
+          }
+        },
+        { threshold: 0.1 }
+      );
+      this.finalCtaObserver.observe(finalEl);
+    }
+  }
+
   setPreviewTab(tab: string): void {
     this.activePreviewTab = tab;
     this.analytics.trackProductPreviewTabClicked(tab, 'home');
@@ -131,7 +181,7 @@ export class MainPortalComponent implements OnInit {
     const nextTab = tabs[nextIdx];
     this.setPreviewTab(nextTab);
     if (this.tablistRef) {
-      const btn = this.tablistRef.nativeElement.querySelector(`#tab-${nextTab}`) as HTMLElement;
+      const btn = this.tablistRef.nativeElement.querySelector('#tab-' + nextTab) as HTMLElement;
       if (btn) { btn.focus(); }
     }
   }
@@ -171,6 +221,18 @@ export class MainPortalComponent implements OnInit {
 
   finalCTAStartHiring(): void {
     this.analytics.trackFinalCTAClicked('start_hiring', 'home');
+    this.goToEmployerPortal();
+  }
+
+  stickyCTAFindJobs(): void {
+    this.haptics.selection();
+    this.analytics.trackHeroCTAClicked('find_jobs', 'home');
+    this.goToJobs();
+  }
+
+  stickyCTAStartHiring(): void {
+    this.haptics.selection();
+    this.analytics.trackHeroCTAClicked('start_hiring', 'home');
     this.goToEmployerPortal();
   }
 
