@@ -211,12 +211,11 @@
       </button>
     </div>
 
-    <div class="portal-preview-content" [id]="'panel-' + activePreviewTab"
-         [attr.aria-labelledby]="'tab-' + activePreviewTab" role="tabpanel">
+    <div class="portal-preview-content">
 
       <!-- Job Seeker Profile -->
-      <ng-container *ngIf="activePreviewTab === 'seeker'">
-        <div class="portal-preview-panel">
+      <div class="portal-preview-panel" id="panel-seeker" role="tabpanel" aria-labelledby="tab-seeker"
+           [hidden]="activePreviewTab !== 'seeker'">
           <div class="preview-mock-card preview-mock-card--profile" aria-hidden="true">
             <div class="preview-card-header">
               <span class="preview-avatar preview-avatar--teal">MD</span>
@@ -251,11 +250,11 @@
             <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">Build your profile</button>
           </div>
         </div>
-      </ng-container>
+      </div>
 
       <!-- Employer Dashboard -->
-      <ng-container *ngIf="activePreviewTab === 'employer'">
-        <div class="portal-preview-panel">
+      <div class="portal-preview-panel" id="panel-employer" role="tabpanel" aria-labelledby="tab-employer"
+           [hidden]="activePreviewTab !== 'employer'">
           <div class="preview-mock-card preview-mock-card--dashboard" aria-hidden="true">
             <div class="preview-card-header">
               <span class="preview-avatar preview-avatar--coral">AC</span>
@@ -289,11 +288,11 @@
             <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
           </div>
         </div>
-      </ng-container>
+      </div>
 
       <!-- Application Tracking -->
-      <ng-container *ngIf="activePreviewTab === 'tracking'">
-        <div class="portal-preview-panel">
+      <div class="portal-preview-panel" id="panel-tracking" role="tabpanel" aria-labelledby="tab-tracking"
+           [hidden]="activePreviewTab !== 'tracking'">
           <div class="preview-mock-card preview-mock-card--tracking" aria-hidden="true">
             <div class="preview-tracking-title">My Applications</div>
             <div class="preview-tracking-list">
@@ -324,11 +323,11 @@
             <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
           </div>
         </div>
-      </ng-container>
+      </div>
 
       <!-- Video Answers -->
-      <ng-container *ngIf="activePreviewTab === 'video'">
-        <div class="portal-preview-panel">
+      <div class="portal-preview-panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video"
+           [hidden]="activePreviewTab !== 'video'">
           <div class="preview-mock-card preview-mock-card--video" aria-hidden="true">
             <div class="preview-video-question">"Tell us about your customer service experience."</div>
             <div class="preview-video-player" aria-hidden="true">
@@ -346,11 +345,11 @@
             <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">See job seeker features</button>
           </div>
         </div>
-      </ng-container>
+      </div>
 
       <!-- Compatibility Signals -->
-      <ng-container *ngIf="activePreviewTab === 'signals'">
-        <div class="portal-preview-panel">
+      <div class="portal-preview-panel" id="panel-signals" role="tabpanel" aria-labelledby="tab-signals"
+           [hidden]="activePreviewTab !== 'signals'">
           <div class="preview-mock-card preview-mock-card--signals" aria-hidden="true">
             <img src="/assets/brand/gethired-wow/match-signal-rings.svg" alt=""
                  aria-hidden="true" class="preview-signals-rings" width="96" height="96" loading="lazy"
@@ -369,7 +368,7 @@
             <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">See employer features</button>
           </div>
         </div>
-      </ng-container>
+      </div>
 
     </div><!-- /portal-preview-content -->
   </div><!-- /portal-product-preview-inner -->
