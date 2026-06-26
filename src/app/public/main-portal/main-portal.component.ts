@@ -154,6 +154,26 @@ export class MainPortalComponent implements OnInit {
     this.router.navigateByUrl('/signin');
   }
 
+  heroCTAFindJobs(): void {
+    this.analytics.trackHeroCTAClicked('find_jobs', 'home');
+    this.goToJobs();
+  }
+
+  heroCTAStartHiring(): void {
+    this.analytics.trackHeroCTAClicked('start_hiring', 'home');
+    this.goToEmployerPortal();
+  }
+
+  finalCTAFindJobs(): void {
+    this.analytics.trackFinalCTAClicked('find_jobs', 'home');
+    this.goToJobs();
+  }
+
+  finalCTAStartHiring(): void {
+    this.analytics.trackFinalCTAClicked('start_hiring', 'home');
+    this.goToEmployerPortal();
+  }
+
   onUspSectionViewed(): void {
     this.analytics.trackUspSectionViewed('home');
   }

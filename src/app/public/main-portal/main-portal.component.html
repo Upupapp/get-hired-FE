@@ -12,8 +12,8 @@
       </p>
 
       <div class="portal-hero-cta-group">
-        <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
-        <button type="button" class="btn-cta-outline gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
+        <button type="button" class="btn-cta-primary gh-pressable" (click)="heroCTAFindJobs()">Find jobs</button>
+        <button type="button" class="btn-cta-outline gh-pressable" (click)="heroCTAStartHiring()">Start hiring</button>
       </div>
 
       <div class="portal-hero-proof">
@@ -112,7 +112,8 @@
   <img src="/assets/brand/gethired-wow/gethired-connection-bridge.svg" alt="" class="portal-usp-bridge" aria-hidden="true" width="320" height="80" loading="lazy">
   <div class="portal-usp-grid">
     <div class="portal-usp-card" *ngFor="let item of uspPillars; trackBy: trackByIndex">
-      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true" loading="lazy">
+      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true" loading="lazy"
+           (error)="$any($event.target).style.display='none'">
       <h3>{{ item.title }}</h3>
       <p>{{ item.description }}</p>
     </div>
@@ -352,7 +353,8 @@
         <div class="portal-preview-panel">
           <div class="preview-mock-card preview-mock-card--signals" aria-hidden="true">
             <img src="/assets/brand/gethired-wow/match-signal-rings.svg" alt=""
-                 aria-hidden="true" class="preview-signals-rings" width="96" height="96" loading="lazy">
+                 aria-hidden="true" class="preview-signals-rings" width="96" height="96" loading="lazy"
+                 (error)="$any($event.target).style.display='none'">
             <div class="preview-signals-label">Compatibility signals</div>
             <div class="preview-signals-note">guidance · not automatic · human review</div>
           </div>
@@ -433,8 +435,8 @@
     description="Choose your path and start moving forward with GetHired."
     primaryLabel="Find jobs"
     secondaryLabel="Start hiring"
-    (primaryClick)="goToJobs()"
-    (secondaryClick)="goToEmployerPortal()">
+    (primaryClick)="finalCTAFindJobs()"
+    (secondaryClick)="finalCTAStartHiring()">
   </app-portal-cta-band>
   <div class="portal-role-secondary">
     <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</button>
