@@ -52,20 +52,26 @@ export class DocsVideocvComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // QA10 FIX-9: surface saveVideoCV 403 errors to the user.
-    // saveVideoCVFail dispatches to the applicant store's error$ but the
-    // component previously only subscribed to success$ — errors were silent.
+    // QA10 FIX-9 + SEC-03: surface saveVideoCV errors with BE rejection message.
+    // err.error.message carries the video validation reason (VIDEO_DISALLOWED,
+    // VIDEO_SIGNATURE_MISMATCH, etc.) set by the backend; fall back to the HTTP
+    // error text if not present. Clear the local preview on rejection so the
+    // rejected file is never shown as if it were accepted.
     this.applicantFacade.error$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((err) => {
         if (err) {
-          const msg = (err && (err.message || err)) || 'An error occurred. Please try again.';
+          const backendMsg = (err.error && err.error.message) ? err.error.message : null;
+          const msg = backendMsg || err.message || 'An error occurred. Please try again.';
           this.snackBar.open(msg, '', {
-            duration: 4000,
+            duration: 6000,
             panelClass: ['danger-snackbar'],
             verticalPosition: 'top',
             horizontalPosition: 'right',
           });
+          this.previewBlob = null;
+          this.videoFile = null;
+          this.ref.detectChanges();
         }
       });
   }

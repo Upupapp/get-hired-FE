@@ -80,6 +80,7 @@ export const applicantReducer = createReducer<ApplicantState>(
   on(ApplicantActions.saveVideoCVFail, (state, action): ApplicantState => {
     return {
       ...state,
+      loading: false,
       error: action.payload,
       succesMsg: null,
     };
