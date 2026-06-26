@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -42,7 +42,7 @@ export class ProfileBasicInfoComponent implements OnInit {
   constructor(
     private applicantFacade: ApplicantFacade,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private router: Router,
     private route: ActivatedRoute,
     private loadingDialog: MatDialog,
@@ -159,18 +159,10 @@ export class ProfileBasicInfoComponent implements OnInit {
   afterSubmit(event) {
     console.log('who called');
     if (event == 'created') {
-      this.snackBar.open(`Your public profile has been created`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-      });
+      this.snackbarService.success(`Your public profile has been created`, '');
       this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
     } else if (event == 'updated') {
-      this.snackBar.open(`Profile successfully updated`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      });
+      this.snackbarService.success(`Profile successfully updated`, '');
       this.submitBasicInfo.emit('VALID');
     }
   }

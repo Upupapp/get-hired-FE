@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { distinctUntilChanged, Subject, Subscription, take, debounceTime } from 'rxjs';
@@ -114,7 +114,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private jobFacade: JobFacade,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
@@ -487,10 +487,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       }
 
       this.haptics.warning();
-      this.snackBar.open(`Your job post can't be published yet. Missing: ${missingJob.trim()}.`, '', {
-        duration: 5000,
-        panelClass: ['danger-snackbar'],
-      });
+      this.snackbarService.warning(`Your job post can't be published yet. Missing: ${missingJob.trim()}.`, '', 5000);
     }
   }
 
@@ -548,9 +545,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           // call sites use that dialog -- not modified here, see
           // GETHIRED_TALENT_PROOF_500K_PUBLISH_SUCCESS_JOB_DASHBOARD_LOG.md).
           this.haptics.jobPublished();
-          this.snackBar.open(
+          this.snackbarService.success(
             `Your job is published and ready to be discovered by ${this.talentProof.getDisplayCopy('short')}.`,
-            '', { duration: 5000, panelClass: ['success-snackbar'] }
+            '', 5000
           );
           this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
           // B05 V1: Navigate to the job-level dashboard after publish so the
@@ -566,10 +563,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
               if (job && job.jobId) {
                 this.router.navigate(['/recruiter/jobs/dashboard'], { queryParams: { id: job.jobId } });
               } else {
-                this.snackBar.open('Your job was published. View all jobs.', '', {
-                  duration: 5000,
-                  panelClass: ['success-snackbar']
-                });
+                this.snackbarService.success('Your job was published. View all jobs.', '', 5000);
                 this.router.navigate(['/recruiter/jobs/list']);
               }
             });

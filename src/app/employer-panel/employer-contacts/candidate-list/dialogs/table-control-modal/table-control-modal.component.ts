@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -23,13 +23,13 @@ export class TableControlModalComponent implements OnInit {
     public dialogRef: MatDialogRef<TableControlModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private router: Router,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar) { }
+    private route: ActivatedRoute) { }
 
-  ngOnInit(): void {
-    console.log(this.data)
+  ngOnInit(): void {}
+
+  onAvatarError(event: Event): void {
+    (event.target as HTMLImageElement).src = '/assets/images/placeholder/job-post-banner-person.png';
   }
-  
 
   close() {
     this.dialogRef.close(null);

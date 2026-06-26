@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
@@ -27,7 +26,6 @@ export class EmployerAccountSettingsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,
-    private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 

@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location, formatDate, DatePipe } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
-import { map, takeUntil, tap, BehaviorSubject, combineLatest, catchError, of, Observable, switchMap } from 'rxjs';
+import { map, takeUntil, tap, BehaviorSubject, Subject, combineLatest, catchError, of, Observable, switchMap } from 'rxjs';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
 import { ApplicantActionModalComponent } from './applicant-action-modal/applicant-action-modal.component';
 import * as InterviewModel from '@main/interview/interview.model';
@@ -29,7 +29,8 @@ export interface TableHeader {
   styleUrls: ['./job-applicants.component.scss'],
   animations: [mainAnimations]
 })
-export class JobApplicantsComponent implements OnInit {
+export class JobApplicantsComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   jobId: string;
   loading: boolean = true;
   // interviewQuestions: InterviewModel.InterviewQuestion[];
@@ -175,6 +176,7 @@ export class JobApplicantsComponent implements OnInit {
         map((res: any) => res.data as any[]),
         catchError(() => of([]))
       )
+      .pipe(takeUntil(this.destroy$))
       .subscribe((applicantsWithSignals) => {
         const byUserId: Record<string, any> = {};
         (applicantsWithSignals || []).forEach((a) => {
@@ -194,6 +196,7 @@ export class JobApplicantsComponent implements OnInit {
         map((res: any) => res?.data),
         catchError(() => of(null))
       )
+      .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         this.snapshotSummary = data;
         this.snapshotSummaryLoading = false;
@@ -288,6 +291,11 @@ export class JobApplicantsComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   formatSalary(salaryMin, salaryMax, rate) {

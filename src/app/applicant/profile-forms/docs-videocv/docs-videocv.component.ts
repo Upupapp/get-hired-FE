@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -46,7 +46,7 @@ export class DocsVideocvComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private applicantFacade: ApplicantFacade,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private loadingDialog: MatDialog,
     private ref: ChangeDetectorRef
   ) { }
@@ -63,12 +63,7 @@ export class DocsVideocvComponent implements OnInit {
         if (err) {
           const backendMsg = (err.error && err.error.message) ? err.error.message : null;
           const msg = backendMsg || err.message || 'An error occurred. Please try again.';
-          this.snackBar.open(msg, '', {
-            duration: 6000,
-            panelClass: ['danger-snackbar'],
-            verticalPosition: 'top',
-            horizontalPosition: 'right',
-          });
+          this.snackbarService.error(msg, '', 6000);
           this.previewBlob = null;
           this.videoFile = null;
           this.ref.detectChanges();
@@ -134,22 +129,12 @@ export class DocsVideocvComponent implements OnInit {
 
   afterSubmit(event) {
     if (event == 'updated') {
-      this.snackBar.open(`Profile successfully updated`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      });
+      this.snackbarService.success(`Profile successfully updated`, '');
     } else if (event == 'deleted') {
       this.previewBlob = null;
       this.videoUrl = null;
 
-      this.snackBar.open(`Video successfully deleted`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      });
+      this.snackbarService.success(`Video successfully deleted`, '');
     }
   }
 

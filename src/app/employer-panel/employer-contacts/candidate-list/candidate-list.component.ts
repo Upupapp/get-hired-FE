@@ -22,7 +22,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ImportAddCandidateComponent } from './dialogs/import-add-candidate/import-add-candidate.component';
 import { CandidateActionTypes } from '@main/shared/store/actions/candidate.action';
 import { StoreState } from '@main/shared/store/index';
@@ -75,7 +75,7 @@ export class CandidateListComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private candidateState: Store<StoreState>,
     private jobService: JobService
     ) {
@@ -98,17 +98,11 @@ export class CandidateListComponent implements OnInit {
       }
 
       if(candidate.success){
-        this.snackBar.open(candidate.success, "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success(candidate.success, "");
       }
 
       if(candidate.error){
-        this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
-          duration: 4000,
-          panelClass:'danger-snackbar'
-        });
+        this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
       }
     })
 

@@ -25,7 +25,10 @@
 
   <!-- ================================================================
        TAB PANELS
+       aria-live="polite" ensures screen readers announce the new panel
+       content when the active tab changes (panels enter/leave via *ngIf)
        ================================================================ -->
+  <div aria-live="polite">
 
   <!-- ──────────────────── TAB 1: Company Profile ──────────────────── -->
   <div
@@ -283,5 +286,7 @@
     </ng-template>
 
   </div>
+
+  </div><!-- /aria-live panel wrapper -->
 
 </div>

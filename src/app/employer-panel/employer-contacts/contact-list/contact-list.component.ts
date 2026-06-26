@@ -22,7 +22,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ImportAddContactComponent } from './dialogs/import-add-contact/import-add-contact.component';
 import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
 import { StoreState } from '@main/shared/store/index';
@@ -77,7 +77,7 @@ export class ContactListComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private contactState: Store<StoreState>,
     private translate: TranslateService
     ) {
@@ -100,17 +100,11 @@ export class ContactListComponent implements OnInit {
       }
 
       if(contact.success){
-        this.snackBar.open(contact.success, "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success(contact.success, "");
       }
 
       if(contact.editContactRes){
-        this.snackBar.open("Successfully Edited Contact!", "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success("Successfully Edited Contact!", "");
 
         this.contactState.dispatch({
           type:ContactActionTypes.EDIT_CONTACT_SUCCESS,
@@ -119,10 +113,7 @@ export class ContactListComponent implements OnInit {
       }
 
       if(contact.deleteContactRes){
-        this.snackBar.open("Successfully Deleted Contact!", "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success("Successfully Deleted Contact!", "");
 
         this.contactState.dispatch({
           type:ContactActionTypes.DELETE_CONTACT_SUCCESS,
@@ -133,10 +124,7 @@ export class ContactListComponent implements OnInit {
       }
 
       if(contact.error){
-        this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
-          duration: 4000,
-          panelClass:'danger-snackbar'
-        });
+        this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
       }
     })
 

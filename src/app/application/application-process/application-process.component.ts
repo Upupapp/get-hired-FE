@@ -7,7 +7,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { LoadingComponent } from '@app-shared/components/loading/loading.component';
 import { Subject, takeUntil, tap } from 'rxjs';
 import * as JobModel from '@main/job/job.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ApplicationFacade } from '../state/application.facade';
 import * as ApplicantModel from '@main/applicant/applicant.model';
 import { RecordLoadingComponent } from '@app-shared/components/record-loading/record-loading.component';
@@ -122,7 +122,7 @@ export class ApplicationProcessComponent implements OnInit {
     private applicantFacade: ApplicantFacade,
     private loadingDialog: MatDialog,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private applicationFacade: ApplicationFacade,
     private translate: TranslateService,
     private router: Router
@@ -186,9 +186,7 @@ export class ApplicationProcessComponent implements OnInit {
       this.submitStatus = 'success';
       this.isSubmitting = false;
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      this.snackBar.open('Application submitted! Check your email for confirmation.', '', {
-        duration: 5000, panelClass: ['success-snackbar'],
-      });
+      this.snackbarService.success('Application submitted! Check your email for confirmation.', '', 5000);
       return;
     }
 

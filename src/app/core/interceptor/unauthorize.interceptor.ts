@@ -7,14 +7,14 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { tap } from "rxjs";
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../services/snackbar.service';
 import { CoreService } from "../services/core.service";
 
 @Injectable()
 export class UnAuthorizedInterceptor implements HttpInterceptor {
   constructor(private router: Router,
     private coreService: CoreService,
-    private snackBar: MatSnackBar
+    private snackbarService: SnackbarService
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -29,17 +29,15 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
             // a truly expired session would silently show API errors with no
             // guidance to re-authenticate.
             this.coreService.logout();
-            this.snackBar.open(`Your session has expired. Please sign in again to continue.`,
-              '', { duration: 4000, panelClass: ['danger-snackbar'] });
+            this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');
             this.router.navigateByUrl('/signin');
           } else if (err.status === 429) {
             // NOTIFY QA11 (SEC-01): Rate-limit hit. Do NOT log the user out.
             // Show a non-destructive warning so the user knows to wait, not retry
             // immediately. The snackbar is informational, not a session signal.
-            this.snackBar.open(
+            this.snackbarService.warning(
               `You've made too many requests. Please wait a moment and try again.`,
-              '',
-              { duration: 5000, panelClass: ['warn-snackbar'] }
+              '', 5000
             );
           }
         }

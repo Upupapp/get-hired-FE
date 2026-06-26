@@ -5,7 +5,9 @@
 	</button>
 
 	<h6 class="pb-3 d-flex" style="border-bottom: dashed 1px #d9d9d9;">
-		<img [src]="data?.data?.photoUrl" class="img-avatar">
+		<img [src]="data?.data?.photoUrl" class="img-avatar"
+		     alt="Applicant photo"
+		     (error)="onAvatarError($event)">
 
 		<div class="mt-1 ms-2">
 			<strong>{{data?.data?.firstName + ' ' + data?.data?.lastName}}</strong>

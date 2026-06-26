@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { catchError, finalize, map, of } from 'rxjs';
@@ -31,7 +31,7 @@ export class AccountAuthenticationComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private fb: FormBuilder,
     private seoService: SeoService,
   ) {
@@ -116,16 +116,14 @@ export class AccountAuthenticationComponent implements OnInit {
             localStorage.removeItem('loginError');
             localStorage.removeItem('loginMessage');
             // NOTIFY QA11: fixed typo "send" → "sent"; clearer phrasing
-            this.snackBar.open(`Verification email sent. Please check your inbox and verify your account.`,
-              '', { duration: 4000, panelClass: ['success-snackbar'] });
+            this.snackbarService.success(`Verification email sent. Please check your inbox and verify your account.`, '');
             setTimeout(() => this.redirectToLogin(), 3000);
           }
         }),
         catchError((err: any) => {
           this.isResent = false;
           this.loading = false;
-          this.snackBar.open(err,
-              '', { duration: 4000, panelClass: ['danger-snackbar'] });
+          this.snackbarService.error(err, '');
           return of(err);
         })
       ).subscribe();

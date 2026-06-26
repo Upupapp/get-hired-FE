@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { UpdateQuestionComponent } from '@main/interview/update-question/update-question.component';
@@ -36,7 +36,7 @@ export class CreateInterviewComponent implements OnInit {
     private rootFormGroup: FormGroupDirective,
     private dialog: MatDialog,
     private jobFacade: JobFacade,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
   ) { }
 
   ngOnInit(): void {
@@ -54,10 +54,7 @@ export class CreateInterviewComponent implements OnInit {
       .subscribe((err) => {
         if (err) {
           const msg = (err && (err.message || err.error)) || 'An error occurred. Please try again.';
-          this.snackBar.open(msg, '', {
-            duration: 4000,
-            panelClass: ['danger-snackbar'],
-          });
+          this.snackbarService.error(msg, '');
         }
       });
   }
@@ -124,12 +121,7 @@ export class CreateInterviewComponent implements OnInit {
     if (event == 'updated') {
       this.questionsContainer = [...this.questions];
 
-      this.snackBar.open(`Interview Question successfully updated`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      });
+      this.snackbarService.success(`Interview Question successfully updated`, '');
 
       this.jobFacade.resetSuccessMsg();
     }

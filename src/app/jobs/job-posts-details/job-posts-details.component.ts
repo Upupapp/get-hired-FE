@@ -6,7 +6,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { environment } from "@environments/environment";
 import { catchError, map, of, Subscription, tap } from 'rxjs';
@@ -53,7 +53,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     public location: Location,
     private clipboard: Clipboard,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private jobsService: JobsService,
     private coreService: CoreService,
     private normalizer: PublicJobNormalizerService,
@@ -148,12 +148,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
         tap(res => {
           if (res.data) {
             this.clipboard.copy(res.data.shortLink)
-            this.snackBar.open(`Link copied to your clipboard`, '', {
-              duration: 4000,
-              panelClass: 'success-snackbar',
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
+            this.snackbarService.success(`Link copied to your clipboard`, '');
           }
         }),
         catchError(err => of(err))

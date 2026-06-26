@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ContactActionTypes } from '@main/shared/store/actions/contact.action';
 import { GroupActionTypes } from '@main/shared/store/actions/group.action';
 import { StoreState } from '@main/shared/store/index';
@@ -53,7 +53,7 @@ export class ImportAddContactComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data,
     private formBuilder: FormBuilder,
     private cdr: ChangeDetectorRef,
-    public snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private contactState: Store<StoreState>,
     private groupState: Store<StoreState>,
   ) {}
@@ -119,7 +119,15 @@ export class ImportAddContactComponent implements OnInit {
             toastDuration = 5000;
           }
         }
-        this.snackBar.open(toastMsg, '', { duration: toastDuration, panelClass: toastClass });
+        if (toastClass === 'success-snackbar') {
+          this.snackbarService.success(toastMsg, '', toastDuration);
+        } else if (toastClass === 'warning-snackbar') {
+          this.snackbarService.warning(toastMsg, '', toastDuration);
+        } else if (toastClass === 'info-snackbar') {
+          this.snackbarService.info(toastMsg, '', toastDuration);
+        } else {
+          this.snackbarService.error(toastMsg, '', toastDuration);
+        }
 
         if(!this.importContact){
           this.contactState.dispatch({
@@ -142,10 +150,7 @@ export class ImportAddContactComponent implements OnInit {
       }
 
       if(onboard.error){
-        this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
-          duration: 4000,
-          panelClass:'danger-snackbar'
-        });
+        this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
         this.close();
 
         this.contactState.dispatch({

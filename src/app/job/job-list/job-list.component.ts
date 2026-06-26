@@ -13,7 +13,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { JobFacade } from '@app-job/state/job.facade';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { TableControlModalComponent } from './dialogs/table-control-modal/table-control-modal.component';
@@ -108,7 +108,7 @@ export class JobListComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private jobFacade: JobFacade,
     private currencyPipe:CurrencyPipe,
     private translate: TranslateService,
@@ -152,10 +152,7 @@ export class JobListComponent implements OnInit, OnDestroy {
         if (err) {
           const msg = typeof err === 'string' ? err
             : 'We couldn\'t delete this job. It may no longer exist or you may not have access.';
-          this.snackBar.open(msg, '', {
-            duration: 4000,
-            panelClass: ['danger-snackbar'],
-          });
+          this.snackbarService.error(msg, '');
         }
       })
     );
@@ -257,10 +254,7 @@ export class JobListComponent implements OnInit, OnDestroy {
     if (event === 'deleted') {
       // P2 FIX: success path for true delete. List is already updated by the
       // reducer (BE returns the refreshed list). Show confirmation toast.
-      this.snackBar.open('Job deleted.', '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-      });
+      this.snackbarService.success('Job deleted.', '');
       setTimeout(() => this.dialog.closeAll(), 400);
       return;
     }

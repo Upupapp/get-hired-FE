@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { Router } from '@angular/router';
 import { JobService } from '@app-job/job.service';
 
@@ -48,11 +48,15 @@ export class ApplicantActionModalComponent implements OnInit {
     private router: Router,
     public dialogRef: MatDialogRef<ApplicantActionModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private jobService: JobService,
   ) {}
 
   ngOnInit(): void {}
+
+  onAvatarError(event: Event): void {
+    (event.target as HTMLImageElement).src = '/assets/images/placeholder/job-post-banner-person.png';
+  }
 
   trackById(_index: number, item: any): any {
     return item.id;
@@ -101,12 +105,12 @@ export class ApplicantActionModalComponent implements OnInit {
   selectStatus(statusId: number, statusName: string): void {
     const applicationId = this.data && this.data.data && this.data.data.applicationId;
     if (!applicationId) {
-      this.snackBar.open("We couldn't find this application. Please close and try again.", 'Dismiss', { duration: 4000 });
+      this.snackbarService.error("We couldn't find this application. Please close and try again.", 'Dismiss', 4000);
       return;
     }
     const currentStatusId = this.data && this.data.data && this.data.data.jobApplicationStatusId;
     if (statusId === parseInt(currentStatusId, 10)) {
-      this.snackBar.open('This applicant is already at that status — no change made.', 'Dismiss', { duration: 3000 });
+      this.snackbarService.info('This applicant is already at that status — no change made.', 'Dismiss', 3000);
       this.dialogRef.close(null);
       return;
     }
@@ -136,13 +140,13 @@ export class ApplicantActionModalComponent implements OnInit {
     this.jobService.updateApplicationStatus(applicationId, statusId).subscribe(
       () => {
         this.statusUpdating = false;
-        this.snackBar.open(`Application status updated to "${statusName}".`, 'OK', { duration: 3000 });
+        this.snackbarService.success(`Application status updated to "${statusName}".`, 'OK', 3000);
         this.dialogRef.close({ statusUpdated: true, newStatusId: statusId, newStatusName: statusName, applicationId: applicationId });
       },
       (err: any) => {
         this.statusUpdating = false;
         const msg = (err && err.error && err.error.message) || "We couldn't update the status. Please try again.";
-        this.snackBar.open(msg, 'OK', { duration: 4000 });
+        this.snackbarService.error(msg, 'OK', 4000);
       }
     );
   }

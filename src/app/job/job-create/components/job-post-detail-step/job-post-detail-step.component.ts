@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, FormGroupDirective, Val
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from '@app-job/job.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 @Component({
   selector: 'app-job-post-detail-step',
@@ -36,7 +36,7 @@ export class JobPostDetailStepComponent implements OnInit {
   constructor(
     private rootFormGroup: FormGroupDirective,
     private jobFacade: JobFacade,
-    private snackBar: MatSnackBar
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -78,13 +78,11 @@ export class JobPostDetailStepComponent implements OnInit {
           type: new FormControl(event[0].type)
         }));
       } else {
-        this.snackBar.open(`Banner size too large`,
-        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+        this.snackbarService.warning(`Banner size too large`, '');
       }
     } else {
       console.log(event);
-      this.snackBar.open(`Banner size too large.`,
-      '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      this.snackbarService.warning(`Banner size too large.`, '');
     }
   }
 
@@ -107,8 +105,7 @@ export class JobPostDetailStepComponent implements OnInit {
 
       console.log(this.badges?.value);
     } else {
-      this.snackBar.open(`You are only allowed to add up to 3 badges`,
-        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      this.snackbarService.warning(`You are only allowed to add up to 3 badges`, '');
     }
   }
 
@@ -124,12 +121,10 @@ export class JobPostDetailStepComponent implements OnInit {
         controlArray.push(new FormControl(value));
         this.initialDetailsForm.controls[control].setValue(null);
       } else {
-        this.snackBar.open(`You are only allowed to add up to 5 items to this category`,
-          '', { duration: 4000, panelClass: ['danger-snackbar'] });
+        this.snackbarService.warning(`You are only allowed to add up to 5 items to this category`, '');
       }
     } else {
-      this.snackBar.open(`Empty string not allowed`,
-        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      this.snackbarService.warning(`Empty string not allowed`, '');
     }
   }
 
@@ -145,8 +140,7 @@ export class JobPostDetailStepComponent implements OnInit {
   // broken payload.
   addCertificationRequirement() {
     if (this.certificationRequirements.length >= 10) {
-      this.snackBar.open(`You are only allowed to add up to 10 certification/license requirements`,
-        '', { duration: 4000, panelClass: ['danger-snackbar'] });
+      this.snackbarService.warning(`You are only allowed to add up to 10 certification/license requirements`, '');
       return;
     }
     this.certificationRequirements.push(new FormGroup({

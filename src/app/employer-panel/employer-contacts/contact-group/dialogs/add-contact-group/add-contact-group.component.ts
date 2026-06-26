@@ -7,7 +7,6 @@ import { StoreState } from '@main/shared/store/index';
 import { Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-contact-group',
@@ -30,8 +29,7 @@ export class AddContactGroupComponent implements OnInit {
     public dialogRef: MatDialogRef<AddContactGroupComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
     private formBuilder: FormBuilder,
-    private groupState: Store<StoreState>,
-    private snackBar: MatSnackBar
+    private groupState: Store<StoreState>
   ) { }
 
   ngOnInit(): void {

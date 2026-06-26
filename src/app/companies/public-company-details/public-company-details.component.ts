@@ -5,7 +5,7 @@ import { CompaniesFacade } from '../state/companies.facade';
 import { Company } from '../companies.model';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { environment } from "@environments/environment";
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { CompaniesService } from '../companies.service';
 import { catchError, of, Subscription, tap, filter, take } from 'rxjs';
 import { SeoService } from '@app-core/services/seo.service';
@@ -33,7 +33,7 @@ export class PublicCompanyDetailsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private clipboard: Clipboard,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private companiesService: CompaniesService,
     private seoService: SeoService,
   ) {
@@ -96,12 +96,7 @@ export class PublicCompanyDetailsComponent implements OnInit {
             // this.clipboard.copy(`${environment.app_url}/companies/details?id=${this.companyId}`);
             console.log(res.data);
             this.clipboard.copy(res.data.shortLink)
-            this.snackBar.open(`Link copied to your clipboard`, '', {
-              duration: 4000,
-              panelClass: 'success-snackbar',
-              horizontalPosition: 'right',
-              verticalPosition: 'top'
-            });
+            this.snackbarService.success(`Link copied to your clipboard`, '');
           }
         }),
         catchError(err => of(err))

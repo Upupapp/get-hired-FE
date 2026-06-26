@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 // import { AddAccessModalComponent } from '@main/shared/components/add-access-modal/add-access-modal.component';
 import { TableHeader } from '@main/views/home/utils/job-list-model-interface';
@@ -59,7 +58,6 @@ export class CompanyUsersComponent implements OnInit {
     private companyFacade: CompanyFacade,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar,
     private translate: TranslateService,
     private route: ActivatedRoute,
     private router: Router

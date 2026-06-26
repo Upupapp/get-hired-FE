@@ -1,7 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmployeeCompany } from '@main/employee/employee.model';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { LoadingComponent } from '@main/shared/components/loading/loading.component';
@@ -63,7 +62,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar,
     private companyFacade: CompanyFacade,
     private loadingDialog: MatDialog,
     private successDialog: MatDialog,

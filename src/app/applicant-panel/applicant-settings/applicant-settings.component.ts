@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 
@@ -25,7 +24,6 @@ export class ApplicantSettingsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,
-    private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 

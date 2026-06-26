@@ -21,7 +21,7 @@ import {
 } from './utils/group-list-model-interface';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { GroupActionTypes } from '@main/shared/store/actions/group.action';
 import { StoreState } from '@main/shared/store/index';
 import { GroupState } from '@app-shared/store/reducers/group.reducer';
@@ -60,7 +60,7 @@ export class GroupListComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private groupState: Store<StoreState>
     ) {
       this.groupId = this.route.snapshot.params['id'];
@@ -82,10 +82,7 @@ export class GroupListComponent implements OnInit {
       }
 
       if(group.success){
-        this.snackBar.open(group.success, "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success(group.success, "");
 
         this.groupState.dispatch({
           type:GroupActionTypes.SAVE_GROUP_SUCCESS,
@@ -94,10 +91,7 @@ export class GroupListComponent implements OnInit {
       }
 
       if(group.error){
-        this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
-          duration: 4000,
-          panelClass:'danger-snackbar'
-        });
+        this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
       }
     })
   }

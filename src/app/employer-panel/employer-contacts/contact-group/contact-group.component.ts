@@ -22,7 +22,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { AddContactGroupComponent } from './dialogs/add-contact-group/add-contact-group.component';
 import { GroupActionTypes } from '@main/shared/store/actions/group.action';
 import { StoreState } from '@main/shared/store/index';
@@ -74,7 +74,7 @@ export class ContactGroupComponent implements OnInit {
     private router: Router,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private groupState: Store<StoreState>,
     private translate: TranslateService
     ) {
@@ -102,10 +102,7 @@ export class ContactGroupComponent implements OnInit {
       }
 
       if(group.success){
-        this.snackBar.open(group.success, "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success(group.success, "");
 
         this.groupState.dispatch({
           type:GroupActionTypes.SAVE_GROUP_SUCCESS,
@@ -114,10 +111,7 @@ export class ContactGroupComponent implements OnInit {
       }
 
       if(group.editGroupRes){
-        this.snackBar.open("Successfully Edited Group", "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success("Successfully Edited Group", "");
 
         this.groupState.dispatch({
           type:GroupActionTypes.EDIT_GROUP_SUCCESS,
@@ -126,10 +120,7 @@ export class ContactGroupComponent implements OnInit {
       }
 
       if(group.deleteGroupRes){
-        this.snackBar.open("Successfully Deleted Group", "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success("Successfully Deleted Group", "");
 
         this.groupState.dispatch({
           type:GroupActionTypes.DELETE_GROUP_SUCCESS,
@@ -140,10 +131,7 @@ export class ContactGroupComponent implements OnInit {
       }
 
       if(group.error){
-        this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
-          duration: 4000,
-          panelClass:'danger-snackbar'
-        });
+        this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
       }
     })
 

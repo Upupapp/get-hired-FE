@@ -14,7 +14,7 @@ import {
 } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { CandidateActionTypes } from '@main/shared/store/actions/candidate.action';
 import { StoreState } from '@main/shared/store/index';
 import {
@@ -65,7 +65,7 @@ export class JobListComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private candidateState: Store<StoreState>,
     private translate: TranslateService
   ) { }
@@ -86,17 +86,11 @@ export class JobListComponent implements OnInit {
       }
 
       if(candidate.success){
-        this.snackBar.open(candidate.success, "", {
-          duration: 4000,
-          panelClass:'success-snackbar'
-        });
+        this.snackbarService.success(candidate.success, "");
       }
 
       if(candidate.error){
-        this.snackBar.open("Something went wrong please try again later or contact your administrator", "", {
-          duration: 4000,
-          panelClass:'danger-snackbar'
-        });
+        this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
       }
     })
   }

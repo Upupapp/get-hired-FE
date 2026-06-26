@@ -3,7 +3,7 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 import { industries, job_role } from '@app-job/jobs-model-interface';
 import { JobFacade } from '@app-job/state/job.facade';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { currencies } from '@app-shared/mock.data';
 
 @Component({
@@ -76,7 +76,7 @@ export class CreateJobPostStepComponent implements OnInit {
 
   constructor(
     private jobFacade: JobFacade,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private rootFormGroup: FormGroupDirective
   ) { }
 
@@ -104,8 +104,7 @@ export class CreateJobPostStepComponent implements OnInit {
         controlArray.push(new FormControl(value));
         this.jobInfoForm.controls[control].setValue(null);
       } else {
-        this.snackBar.open(`You are only allowed to add up to 5 items to this category`,
-          '', { duration: 4000, panelClass: ['danger-snackbar'] });
+        this.snackbarService.warning(`You are only allowed to add up to 5 items to this category`, '');
       }
     }
   }

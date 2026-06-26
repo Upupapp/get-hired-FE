@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -28,7 +27,6 @@ export class AccountSettingComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,
-    private snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {}
 

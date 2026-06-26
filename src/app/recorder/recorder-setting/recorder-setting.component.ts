@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 @Component({
   selector: 'app-recorder-setting',
@@ -20,7 +20,7 @@ export class RecorderSettingComponent implements OnInit {
   audioOut: string;
 
   constructor(
-    private snackBar: MatSnackBar
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -29,12 +29,7 @@ export class RecorderSettingComponent implements OnInit {
 
   getUserDevices() {
     if (!navigator.mediaDevices?.enumerateDevices) {
-      this.snackBar.open(`No Available Devices to record`, '', {
-        duration: 4000,
-        panelClass: ['error-snackbar'],
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      });
+      this.snackbarService.error(`No Available Devices to record`, '');
     } else {
       // List cameras and microphones.
       navigator.mediaDevices.enumerateDevices()

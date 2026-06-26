@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -45,7 +45,7 @@ export class SkillsExperienceComponent implements OnInit {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private applicantFacade: ApplicantFacade,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private loadingDialog: MatDialog
   ) { }
 
@@ -208,12 +208,7 @@ export class SkillsExperienceComponent implements OnInit {
 
   afterSubmit(event) {
     if (event == 'updated') {
-      this.snackBar.open(`Profile successfully updated`, '', {
-        duration: 4000,
-        panelClass: ['success-snackbar'],
-        verticalPosition: 'top',
-        horizontalPosition: 'right'
-      });
+      this.snackbarService.success(`Profile successfully updated`, '');
     }
   }
 
