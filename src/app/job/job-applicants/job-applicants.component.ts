@@ -87,7 +87,7 @@ export class JobApplicantsComponent implements OnInit {
           return {
             ...applicant,
             jobApplicationStatusId: override ? override.statusId : (applicant as any).jobApplicationStatusId,
-            jobApplicationStatusName: override ? override.statusName : applicant.jobApplicationStatusName,
+            jobApplicationStatusName: override ? override.statusName : (applicant as any).jobApplicationStatusName,
             fullName: applicant.firstName + ' ' + applicant.lastName,
             salary: this.formatSalary(applicant.salaryMinimum, applicant.salaryMaximum, 'Monthly'),
             dateApplied: this.datePipe.transform(applicant.dateApplied, 'medium'),
