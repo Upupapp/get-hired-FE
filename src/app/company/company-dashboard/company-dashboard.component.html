@@ -208,6 +208,130 @@
     </ol>
   </section>
 
+  <!-- Job Performance — jobs that have applicants actively waiting for review,
+       derived from pipeline data already fetched (no extra API call). -->
+  <section class="emp-dash-job-perf" aria-label="Jobs with active applicants"
+    *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length > 0">
+    <h2 class="emp-dash-section-title">Jobs with applicants waiting</h2>
+    <div class="emp-dash-job-list">
+      <div class="emp-dash-job-row" *ngFor="let job of cachedJobGroups">
+        <div class="emp-dash-job-row-body">
+          <p class="emp-dash-job-title">{{ job.jobTitle }}</p>
+          <p class="emp-dash-job-meta">{{ job.count }} applicant{{ job.count === 1 ? '' : 's' }} awaiting review</p>
+        </div>
+        <span class="emp-dash-job-badge">{{ job.count }}</span>
+        <button type="button" class="btn-cta-outline emp-dash-review-cta gh-pressable" (click)="goToApplicants(job.jobId)">Review</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Employer Branding Health — score derived from real company profile fields;
+       no fake metrics, computed client-side from already-loaded company data. -->
+  <section class="emp-dash-branding" aria-label="Employer branding health" *ngIf="dashboard.company">
+    <ng-container *ngIf="brandingScore(dashboard.company) as branding">
+      <div class="emp-dash-branding-inner">
+        <div class="emp-dash-branding-header">
+          <h2 class="emp-dash-section-title" style="margin:0">Employer branding health</h2>
+          <span class="emp-dash-branding-score"
+            [class.emp-dash-branding-score--good]="branding.score >= 80"
+            [class.emp-dash-branding-score--warn]="branding.score >= 50 && branding.score < 80"
+            [class.emp-dash-branding-score--poor]="branding.score < 50">
+            {{ branding.score }}%
+          </span>
+        </div>
+        <p class="emp-dash-branding-subtitle">A complete profile attracts more candidates and builds trust.</p>
+        <div class="emp-dash-branding-bar-wrap" role="progressbar"
+          [attr.aria-valuenow]="branding.score" aria-valuemin="0" aria-valuemax="100"
+          [attr.aria-label]="'Employer branding completeness: ' + branding.score + '%'">
+          <div class="emp-dash-branding-bar-fill"
+            [style.width.%]="branding.score"
+            [class.emp-dash-branding-bar-fill--good]="branding.score >= 80"
+            [class.emp-dash-branding-bar-fill--warn]="branding.score >= 50 && branding.score < 80"
+            [class.emp-dash-branding-bar-fill--poor]="branding.score < 50">
+          </div>
+        </div>
+        <div class="emp-dash-branding-missing" *ngIf="branding.missing.length > 0">
+          <p class="emp-dash-branding-missing-label">Still missing:</p>
+          <div class="emp-dash-branding-chips">
+            <span class="emp-dash-branding-chip" *ngFor="let field of branding.missing">{{ field }}</span>
+          </div>
+          <button type="button" class="btn-cta-primary emp-dash-branding-cta gh-pressable" (click)="goToCompanyProfile()">
+            Complete profile
+          </button>
+        </div>
+        <p class="emp-dash-branding-done" *ngIf="branding.missing.length === 0">
+          Your company profile is complete. Candidates see your best face.
+        </p>
+      </div>
+    </ng-container>
+  </section>
+
+  <!-- Subscription / Plan Health — loads independently of dashboard data
+       so a subscription API failure never blanks the rest of the dashboard. -->
+  <section class="emp-dash-subscription" aria-label="Subscription and plan" *ngIf="subsRestrictions$ | async as subs">
+    <div class="emp-dash-sub-inner">
+      <div class="emp-dash-sub-header">
+        <h2 class="emp-dash-section-title" style="margin:0">Subscription</h2>
+        <span class="emp-dash-sub-badge"
+          [class.emp-dash-sub-badge--paid]="subs.isPaid"
+          [class.emp-dash-sub-badge--free]="!subs.isPaid">
+          {{ subs.isPaid ? (subs.subscriptionName || 'Paid plan') : 'Free plan' }}
+        </span>
+      </div>
+      <p class="emp-dash-sub-expiry" *ngIf="subs.isPaid && subs.endAt">
+        {{ subscriptionDaysLeft(subs.endAt) }} days remaining &middot; renews {{ subs.endAt | date:'mediumDate' }}
+      </p>
+      <div class="emp-dash-sub-meters">
+        <div class="emp-dash-sub-meter">
+          <div class="emp-dash-sub-meter-header">
+            <span class="emp-dash-sub-meter-label">Job posts</span>
+            <span class="emp-dash-sub-meter-count">{{ subs.jobPostCount || 0 }} / {{ subs.jobPost || '—' }}</span>
+          </div>
+          <div class="emp-dash-sub-meter-track" role="progressbar"
+            [attr.aria-valuenow]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)"
+            aria-valuemin="0" aria-valuemax="100"
+            [attr.aria-label]="'Job posts: ' + (subs.jobPostCount || 0) + ' of ' + (subs.jobPost || 0) + ' used'">
+            <div class="emp-dash-sub-meter-fill"
+              [style.width.%]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)"
+              [class.emp-dash-sub-meter-fill--warn]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost) >= 80">
+            </div>
+          </div>
+        </div>
+        <div class="emp-dash-sub-meter">
+          <div class="emp-dash-sub-meter-header">
+            <span class="emp-dash-sub-meter-label">Admin users</span>
+            <span class="emp-dash-sub-meter-count">{{ subs.adminCount || 0 }} / {{ subs.admin || '—' }}</span>
+          </div>
+          <div class="emp-dash-sub-meter-track" role="progressbar"
+            [attr.aria-valuenow]="subscriptionUsagePct(subs.adminCount, subs.admin)"
+            aria-valuemin="0" aria-valuemax="100"
+            [attr.aria-label]="'Admin users: ' + (subs.adminCount || 0) + ' of ' + (subs.admin || 0) + ' used'">
+            <div class="emp-dash-sub-meter-fill"
+              [style.width.%]="subscriptionUsagePct(subs.adminCount, subs.admin)"
+              [class.emp-dash-sub-meter-fill--warn]="subscriptionUsagePct(subs.adminCount, subs.admin) >= 80">
+            </div>
+          </div>
+        </div>
+        <div class="emp-dash-sub-meter">
+          <div class="emp-dash-sub-meter-header">
+            <span class="emp-dash-sub-meter-label">Video responses</span>
+            <span class="emp-dash-sub-meter-count">{{ subs.videoResponseCount || 0 }} / {{ subs.videoResponse || '—' }}</span>
+          </div>
+          <div class="emp-dash-sub-meter-track" role="progressbar"
+            [attr.aria-valuenow]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)"
+            aria-valuemin="0" aria-valuemax="100"
+            [attr.aria-label]="'Video responses: ' + (subs.videoResponseCount || 0) + ' of ' + (subs.videoResponse || 0) + ' used'">
+            <div class="emp-dash-sub-meter-fill"
+              [style.width.%]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)"
+              [class.emp-dash-sub-meter-fill--warn]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse) >= 80">
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn-link gh-pressable" (click)="goToSubscription()">Manage subscription</button>
+    </div>
+  </section>
+
   <!-- Existing charts/statistics, kept and restyled wrapper -->
   <section class="emp-dash-analytics">
     <h2 class="emp-dash-section-title">Activity</h2>

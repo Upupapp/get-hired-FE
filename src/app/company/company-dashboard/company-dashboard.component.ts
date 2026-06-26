@@ -73,6 +73,15 @@ export class CompanyDashboardComponent implements OnInit {
    * change-detection tick. Both values are used 3–6 times in the template. */
   needsReviewCount = 0;
   pipelineBarMax = 1;
+  subsRestrictions$ = this.companyFacade.subsRestrictions$;
+  cachedJobGroups: Array<{ jobId: string; jobTitle: string; count: number }> = [];
+
+  asyncLocalStorage = {
+    getItem: async function (key: string) {
+      await Promise.resolve();
+      return localStorage.getItem(key);
+    }
+  };
 
   /** OPTIMIZE V5: cached result of onboardingSteps() so the template can
    * reference cachedOnboardingSteps directly instead of calling the method
@@ -91,6 +100,14 @@ export class CompanyDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.companyFacade.getCompanyDashboard();
     this.loadPipelineOverview();
+    this.asyncLocalStorage.getItem('user').then(details => {
+      if (details) {
+        const user = JSON.parse(details);
+        if (user && user.companyId) {
+          this.companyFacade.getCompanySubscription(user.companyId);
+        }
+      }
+    });
   }
 
   private loadPipelineOverview(): void {
@@ -104,6 +121,7 @@ export class CompanyDashboardComponent implements OnInit {
           (this.byStage.find(s => s.statusId === 1)?.count || 0) +
           (this.byStage.find(s => s.statusId === 3)?.count || 0);
         this.pipelineBarMax = Math.max(1, ...this.byStage.map(s => s.count));
+        this.cachedJobGroups = this._buildJobGroups(this.needsReview);
         this.pipelineLoading = false;
         // OPTIMIZE V5: refresh cached steps now that needsReviewCount is known.
         // Must be done after pipelineLoading=false or the section stays hidden.
@@ -155,6 +173,10 @@ export class CompanyDashboardComponent implements OnInit {
   // B01: Messages inbox CTA from dashboard action center
   goToMessages(): void {
     this.router.navigate(['/recruiter/messages']);
+  }
+
+  goToSubscription(): void {
+    this.router.navigate(['/recruiter/subscription']);
   }
 
   /** Real, derived from already-fetched company fields -- not a fake
@@ -220,5 +242,45 @@ export class CompanyDashboardComponent implements OnInit {
     // Return all steps when at least one is incomplete (collapses when all done)
     const allDone = steps.every(s => s.done);
     return allDone ? [] : steps;
+  }
+
+  private _buildJobGroups(items: NeedsReviewItem[]): Array<{ jobId: string; jobTitle: string; count: number }> {
+    if (!items || !items.length) { return []; }
+    const map: Record<string, { jobTitle: string; count: number }> = {};
+    for (const item of items) {
+      if (!map[item.jobId]) {
+        map[item.jobId] = { jobTitle: item.jobTitle, count: 0 };
+      }
+      map[item.jobId].count++;
+    }
+    return Object.entries(map)
+      .map(([jobId, v]) => ({ jobId, jobTitle: v.jobTitle, count: v.count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  brandingScore(company: Model.Company): { score: number; missing: string[] } {
+    if (!company) { return { score: 0, missing: [] }; }
+    const missing: string[] = [];
+    if (!company.companyLogoUrl) { missing.push('company logo'); }
+    if (!company.companyDetails) { missing.push('description'); }
+    if (!company.companyCity) { missing.push('location'); }
+    if (!company.industryId) { missing.push('industry'); }
+    if (!company.numberOfEmployee) { missing.push('team size'); }
+    if (!company.companyContactNumber) { missing.push('contact number'); }
+    const total = 6;
+    const score = Math.round(((total - missing.length) / total) * 100);
+    return { score, missing };
+  }
+
+  subscriptionDaysLeft(endAt: any): number {
+    if (!endAt) { return 0; }
+    const end = new Date(endAt);
+    const now = new Date();
+    return Math.max(0, Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+  }
+
+  subscriptionUsagePct(used: number, limit: number): number {
+    if (!limit || limit === 0) { return 0; }
+    return Math.min(100, Math.round((used / limit) * 100));
   }
 }

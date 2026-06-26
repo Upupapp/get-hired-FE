@@ -674,6 +674,290 @@
   .emp-dash-onboarding-step-cta { width: 100%; margin-top: 8px; }
 }
 
+// ─── Job Performance ──────────────────────────────────────────────────────────
+.emp-dash-job-perf {
+  padding: 28px 24px 8px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.emp-dash-job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emp-dash-job-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 14px;
+  padding: 14px 18px;
+  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
+}
+
+.emp-dash-job-row-body {
+  flex: 1;
+  min-width: 0;
+
+  p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+
+.emp-dash-job-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1830;
+}
+
+.emp-dash-job-meta {
+  font-size: 12px;
+  color: #6b6887;
+  margin-top: 2px !important;
+}
+
+.emp-dash-job-badge {
+  flex-shrink: 0;
+  background: rgba($color-pipeline-accent, 0.12);
+  color: $color-pipeline-accent;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 12px;
+}
+
+// ─── Employer Branding Health ─────────────────────────────────────────────────
+.emp-dash-branding {
+  padding: 28px 24px 8px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.emp-dash-branding-inner {
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.emp-dash-branding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.emp-dash-branding-score {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+
+  &--good  { color: $color-green-secondary; }
+  &--warn  { color: #EFA20D; }
+  &--poor  { color: $color-global-red-buttons; }
+}
+
+.emp-dash-branding-subtitle {
+  font-size: 13px;
+  color: #6b6887;
+  margin: 0 0 14px;
+}
+
+.emp-dash-branding-bar-wrap {
+  height: 8px;
+  background: #ede9f7;
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.emp-dash-branding-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 600ms $motion-ease-standard;
+  background: #c5c0d4;
+
+  &--good { background: $color-green-secondary; }
+  &--warn { background: #EFA20D; }
+  &--poor { background: $color-global-red-buttons; }
+}
+
+.emp-dash-branding-missing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.emp-dash-branding-missing-label {
+  font-size: 13px;
+  color: #6b6887;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.emp-dash-branding-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+
+.emp-dash-branding-chip {
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(254, 111, 97, 0.08);
+  border: 1px solid rgba(254, 111, 97, 0.25);
+  color: $color-global-red-buttons;
+  border-radius: 100px;
+  padding: 3px 10px;
+  text-transform: capitalize;
+}
+
+.emp-dash-branding-cta {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  font-size: 13px;
+}
+
+.emp-dash-branding-done {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-green-secondary;
+  margin: 0;
+}
+
+// ─── Subscription / Plan Health ───────────────────────────────────────────────
+.emp-dash-subscription {
+  padding: 28px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.emp-dash-sub-inner {
+  background: #ffffff;
+  border: 1.5px solid #ede9f7;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.emp-dash-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.emp-dash-sub-badge {
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 4px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &--paid {
+    background: rgba(9, 201, 134, 0.12);
+    color: $color-green-secondary;
+    border: 1px solid rgba(9, 201, 134, 0.3);
+  }
+
+  &--free {
+    background: rgba(107, 104, 135, 0.1);
+    color: #6b6887;
+    border: 1px solid rgba(107, 104, 135, 0.2);
+  }
+}
+
+.emp-dash-sub-expiry {
+  font-size: 13px;
+  color: #6b6887;
+  margin: 0 0 20px;
+}
+
+.emp-dash-sub-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.emp-dash-sub-meter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.emp-dash-sub-meter-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1830;
+}
+
+.emp-dash-sub-meter-count {
+  font-size: 12px;
+  color: #6b6887;
+  font-weight: 600;
+}
+
+.emp-dash-sub-meter-track {
+  height: 8px;
+  background: #ede9f7;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.emp-dash-sub-meter-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: $color-pipeline-accent;
+  transition: width 600ms $motion-ease-standard;
+
+  &--warn { background: #EFA20D; }
+}
+
+// ─── Section padding group: new sections use same max-width as existing ───────
+.emp-dash-job-perf,
+.emp-dash-branding,
+.emp-dash-subscription {
+  @media (max-width: 767px) {
+    padding: 20px 16px 8px;
+  }
+}
+
+.emp-dash-subscription {
+  @media (max-width: 767px) {
+    padding-bottom: 20px;
+  }
+}
+
+.emp-dash-sub-meters {
+  @media (max-width: 575px) {
+    gap: 14px;
+  }
+}
+
+.emp-dash-job-row {
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+
+    .emp-dash-review-cta { width: 100%; margin-top: 8px; display: flex; justify-content: center; }
+  }
+}
+
+.emp-dash-branding-missing {
+  @media (max-width: 575px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .emp-dash-branding-cta { width: 100%; text-align: center; }
+  }
+}
+
 // ─── Reduced motion ───────────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
   .emp-dash-hero-inner { animation: none; }
@@ -688,4 +972,7 @@
   // OPTIMIZE V5: pipeline bar background transition was missing from this block
   .emp-dash-pipeline-bar { transition: none; }
   .emp-dash-onboarding-step-cta { transition: none; }
+  .emp-dash-job-row { animation: none; }
+  .emp-dash-branding-bar-fill,
+  .emp-dash-sub-meter-fill { transition: none; }
 }
