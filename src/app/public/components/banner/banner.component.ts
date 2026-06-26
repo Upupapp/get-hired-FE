@@ -79,7 +79,5 @@ export class BannerComponent implements OnInit, OnDestroy {
 
     sessionStorage.setItem('job-search', JSON.stringify(job_search_data));
 
-    console.log(job_search_data)
-
   }
 }

@@ -67,7 +67,7 @@ export class AccountAuthenticationComponent implements OnInit {
         { relativeTo: this.route, queryParams: { role: this.role, oobCode: this.code, email: this.email } }), 3000);
         break;
       case 'recoverEmail':
-        console.log('For implementation')
+        // TODO: implement email recovery flow
         break;
       case 'verifyEmail':
         setTimeout(() => this.verifyEmail(), 3000);
@@ -77,7 +77,6 @@ export class AccountAuthenticationComponent implements OnInit {
         this.isResent = true;
         break;
       default:
-        console.log('mode missing');
         break;
     }
   }
@@ -97,7 +96,6 @@ export class AccountAuthenticationComponent implements OnInit {
           return of(err);
         }),
         finalize(() => {
-          console.log('verified na');
           // if(this.manual) {
           //   setTimeout(() => {
           //     window.self.close(), 3000
@@ -126,7 +124,6 @@ export class AccountAuthenticationComponent implements OnInit {
         catchError((err: any) => {
           this.isResent = false;
           this.loading = false;
-          console.log(err);
           this.snackBar.open(err,
               '', { duration: 4000, panelClass: ['danger-snackbar'] });
           return of(err);

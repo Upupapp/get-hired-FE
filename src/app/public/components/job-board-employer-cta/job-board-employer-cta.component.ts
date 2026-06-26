@@ -40,6 +40,11 @@ export class JobBoardEmployerCtaComponent implements OnInit {
   }
 
   private wasDismissed(): boolean {
+    // MV3-F5: typeof guard prevents SSR ReferenceError. The try/catch alone
+    // was not sufficient — `localStorage` as an unresolvable identifier in
+    // Node.js throws a ReferenceError before the catch block is entered,
+    // causing a noisy server error log on every SSR render of /jobs.
+    if (typeof localStorage === 'undefined') { return false; }
     try {
       return localStorage.getItem(DISMISS_KEY) === '1';
     } catch {
@@ -55,10 +60,14 @@ export class JobBoardEmployerCtaComponent implements OnInit {
   dismiss(): void {
     this.dismissed = true;
     this.analytics.trackTalentProofBannerDismissed('job_board_banner');
-    try {
-      localStorage.setItem(DISMISS_KEY, '1');
-    } catch {
-      // localStorage unavailable (private mode etc.) -- dismissal just won't persist, not a crash.
+    // MV3-F5: typeof guard + try/catch — belt-and-suspenders for both
+    // SSR (localStorage undefined) and private-mode (localStorage throws).
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(DISMISS_KEY, '1');
+      } catch {
+        // Private browsing or storage quota exceeded — dismissal won't persist.
+      }
     }
   }
 }

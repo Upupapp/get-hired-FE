@@ -59,7 +59,6 @@ export class ImportAddContactComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.data);
     this.localData = JSON.parse(this.localData);
     this.getJobList();
     this.getGroupList();

@@ -8,14 +8,20 @@ import { SeoService } from '@app-core/services/seo.service';
   styleUrls: ['./public-list.component.scss']
 })
 export class PublicListComponent implements OnInit, OnDestroy {
+  // MV3-F4: asyncLocalStorage methods called bare localStorage without a
+  // typeof guard. When this component is SSR-rendered for /jobs, the async
+  // microtask (Promise.resolve()) resolves while the server-side event loop
+  // is still processing, which triggers a ReferenceError in the Node.js
+  // environment where localStorage is not defined. The typeof guard avoids
+  // the throw entirely and returns a safe fallback (null / no-op).
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
-      localStorage.setItem(key, value);
+      if (typeof localStorage !== 'undefined') { localStorage.setItem(key, value); }
     },
     getItem: async function (key) {
       await Promise.resolve();
-      return localStorage.getItem(key);
+      return (typeof localStorage !== 'undefined') ? localStorage.getItem(key) : null;
     }
   };
 

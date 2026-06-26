@@ -36,14 +36,17 @@ export class PublicSearchComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: object,
   ) { }
 
+  // OPTIMIZE-R3: asyncLocalStorage wraps bare localStorage calls; these crash
+  // on the SSR server. The object is retained for backward-compat with
+  // getUserRole(), but both methods are now no-ops on the server.
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
-      localStorage.setItem(key, value);
+      if (typeof localStorage !== 'undefined') localStorage.setItem(key, value);
     },
     getItem: async function (key) {
       await Promise.resolve();
-      return localStorage.getItem(key);
+      return typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null;
     }
   };
 

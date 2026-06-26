@@ -1,18 +1,21 @@
 import {
   Component,
   ElementRef,
+  Inject,
   Input,
   ViewChild,
   OnChanges,
   OnInit,
   OnDestroy,
-  HostListener
+  HostListener,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { jobLists, Job } from '../../utils/job-list-model-interface';
-import { 
-  Router, 
-  ActivatedRoute 
+import {
+  Router,
+  ActivatedRoute
 } from '@angular/router';
 import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
@@ -23,7 +26,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './job-posts.component.html',
   styleUrls: ['./job-posts.component.scss']
 })
-export class JobPostsComponent implements OnInit {
+export class JobPostsComponent implements OnInit, OnDestroy {
 
   private req: Subscription;
   public loading: boolean = true;
@@ -33,26 +36,32 @@ export class JobPostsComponent implements OnInit {
   public listView: boolean = false;
 
   public loggedUser: any;
-  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  // OPTIMIZE-R3: localStorage field initializer crashes on SSR server.
+  // Moved to ngOnInit behind isPlatformBrowser guard.
+  public loggedUserData: any = null;
   public location: any;
 
 
-  constructor(private router:Router, 
+  constructor(private router:Router,
     private activatedRoute: ActivatedRoute,
-    private adminService: AdminService) { 
+    private adminService: AdminService,
+    @Inject(PLATFORM_ID) private platformId: object) {
 
-    this.req = this.router.events.subscribe((event: any) => {
-      this.location = this.router.url;
-
-      this.adminService.adminStatus$.subscribe((result: any) => {
-        this.loggedUser = result;
-        this.loggedUserData = JSON.parse(localStorage.getItem('userData'));
-      });
+    // OPTIMIZE-R3: nested subscription leak fixed. Each router event was
+    // opening a new inner adminStatus$ subscription. Replace with a single
+    // direct subscribe; also removes the redundant per-event localStorage read.
+    this.req = this.adminService.adminStatus$.subscribe((result: any) => {
+      this.loggedUser = result;
     });
+    this.location = this.router.url;
   }
 
   ngOnInit(): void {
-    this.screenSize = window.innerWidth;
+    // OPTIMIZE-R3: guard browser-only APIs with isPlatformBrowser.
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenSize = window.innerWidth;
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
+    }
   }
 
   ngOnDestroy(): void {

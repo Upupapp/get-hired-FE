@@ -55,7 +55,6 @@ export class SigninComponent implements OnInit {
 
   loggedIn(user) {
     if (user && user.id) {
-      console.log('dapat di na');
       this.submitting = false;
 
       let data = user;
@@ -73,7 +72,6 @@ export class SigninComponent implements OnInit {
       }
 
       this.message = localStorage.getItem('loginMessage');
-      console.log(user);
       switch (user.role) {
         case 1:
           localStorage.setItem('user', JSON.stringify({
@@ -117,7 +115,6 @@ export class SigninComponent implements OnInit {
           }));
 
           const redirect = localStorage.getItem('returnURL');
-          console.log(redirect);
           if (redirect) {
             this.router.navigateByUrl(redirect);
           } else {

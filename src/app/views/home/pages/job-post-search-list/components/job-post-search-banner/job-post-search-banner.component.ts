@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, Input, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
@@ -13,10 +14,12 @@ import {
   templateUrl: './job-post-search-banner.component.html',
   styleUrls: ['./job-post-search-banner.component.scss']
 })
-export class JobPostSearchBannerComponent implements OnInit {
+export class JobPostSearchBannerComponent implements OnInit, OnDestroy {
   @Input() screenSize: number = 1600;
 
-  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  // OPTIMIZE-R3: localStorage field initializer crashes on SSR server.
+  // Moved to ngOnInit behind isPlatformBrowser guard.
+  public loggedUserData: any = null;
   public loggedUser: any;
   private req?: Subscription;
 
@@ -26,17 +29,20 @@ export class JobPostSearchBannerComponent implements OnInit {
 
   constructor(private router:Router,
     private activatedRoute: ActivatedRoute,
-    private adminService: AdminService) {
-    this.req = this.router.events.subscribe((event: any) => {
-      this.adminService.adminStatus$.subscribe((result: any) => {
-        this.loggedUser = result;
-
-        //console.log(result, this.loggedUserData)
-      });
+    private adminService: AdminService,
+    @Inject(PLATFORM_ID) private platformId: object) {
+    // OPTIMIZE-R3: nested subscription leak fixed. Each router event opened a
+    // new inner adminStatus$ subscription that was never cleaned up.
+    // Replace with a single direct subscribe — adminStatus$ emits immediately.
+    this.req = this.adminService.adminStatus$.subscribe((result: any) => {
+      this.loggedUser = result;
     });
   }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
+    }
     //console.log(this.keyword, this.work_setup, this.job_type)
 
     this.keyword = this.keyword != 'undefined' ? this.keyword : '';

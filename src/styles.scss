@@ -307,6 +307,10 @@ body {
 
 	color: #FFFFFF!important;
 	padding: 7px 20px !important;
+  // MV3-F1: WCAG 2.5.5 — global .btn-primary was ≈41px tall (7+27+7), 3px
+  // below the 44px touch-target minimum. min-height forces the extra 3px
+  // without changing horizontal layout or line-height.
+  min-height: 44px;
 
   &:hover{
     background: rgba($color-global-red-buttons, 0.9) !important;
@@ -325,6 +329,10 @@ body {
 	font-size: 15px;
 	line-height: 27px;
 	transition: all 0.4s ease !important;
+  // MV3-F2: WCAG 2.5.5 — .btn-outline-primary was ≈34px tall (10+14+10), 10px
+  // short of the 44px touch-target minimum. min-height brings it into compliance
+  // without altering the visual appearance on desktop.
+  min-height: 44px;
 
   &:hover {
     background: $color-global-red-buttons;
