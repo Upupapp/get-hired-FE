@@ -61,12 +61,10 @@ export class EmployerSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('on settings');
     this.getUser();
   }
 
   changeStep(step: number): void {
-    console.log(step);
     this.stepper = step;
   }
 

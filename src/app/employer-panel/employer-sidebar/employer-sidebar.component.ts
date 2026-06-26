@@ -2,8 +2,9 @@ import { Component, Input, OnInit, OnDestroy, HostListener } from '@angular/core
 import { Router } from '@angular/router';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
-// OPTIMIZE V5: removed unused ActivatedRoute and EmployeeFacade imports
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { CompanyFacade } from '@main/company/state/company.facade';
 
 @Component({
   selector: 'app-employer-sidebar',
@@ -11,13 +12,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./employer-sidebar.component.scss'],
   animations: [mainAnimations]
 })
-// OPTIMIZE V5: added OnDestroy to implements — ngOnDestroy was already present
-// but the interface was not declared, breaking strict compiler checks.
 export class EmployerSidebarComponent implements OnInit, OnDestroy {
   private req: Subscription;
   @Input() sidebarWidth;
   @Input() user;
-  companyName: string;
+  companyName$: Observable<string>;
   withActiveSubscription = localStorage.getItem('withActiveSubscription');
   public location: any = '';
   public screenHeight: number = 300;
@@ -25,7 +24,8 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private companyFacade: CompanyFacade
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -45,7 +45,9 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.location = this.router.url;
     this.screenHeight = window.innerHeight;
-    // OPTIMIZE V5: removed debug console.log calls (were present since initial build)
+    this.companyName$ = this.companyFacade.companyDetails$.pipe(
+      map(company => (company && company.companyName) ? company.companyName : (this.user && this.user.companyName ? this.user.companyName : ''))
+    );
   }
 
   subRouteActive(route) {

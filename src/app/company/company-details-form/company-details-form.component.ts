@@ -7,8 +7,8 @@ import { LoadingComponent } from '@main/shared/components/loading/loading.compon
 import { CompanyFacade } from '../state/company.facade';
 import * as Model from '../company.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SuccessDialogComponent } from '@main/shared/components/success-dialog/success-dialog.component';
-import { Subscription, Subject, takeUntil } from 'rxjs';
+import { SnackbarService } from '@app-core/services/snackbar.service';
+import { Subscription, Subject } from 'rxjs';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 
 @Component({
@@ -64,10 +64,10 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private companyFacade: CompanyFacade,
     private loadingDialog: MatDialog,
-    private successDialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -222,12 +222,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         .pipe()
         .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route })));
     } else if (event == 'updated') {
-      this.dialog.open(UpdatedDialogComponent, {
-        disableClose: false,
-        data: 'Company successfully updated',
-      });
       this.loadingDialog.closeAll();
-      this.showSuccessDialog();
+      this.snackbarService.success('Company details updated.');
     }
   }
 
@@ -261,26 +257,6 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       // setTimeout(() => this.loadingDialog.closeAll(), 3000);
       // }
     }
-  }
-
-  showSuccessDialog() {
-    let openDialog = this.successDialog.open(
-      SuccessDialogComponent,
-      {
-        width: '29vw',
-        data: {
-          title: 'Update Details',
-          subtitle: 'Successfully updated company details'
-        },
-      }
-    );
-
-    this.subscriptions$.add(openDialog
-      .afterClosed()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(result => {
-        this.updateSuccess = false
-      }));
   }
 
   ngOnDestroy(): void {

@@ -75,7 +75,7 @@
 
 					<div class="mt-1">
 						<h5 class="img-avatar-full-name text-capitalize">{{ user.firstName + ' ' + user.lastName }}</h5>
-						<h5 class="img-avatar-full-email text-truncate">{{ user.companyName }}</h5>
+						<h5 class="img-avatar-full-email text-truncate">{{ companyName$ | async }}</h5>
 					</div>
 				</div>
 
