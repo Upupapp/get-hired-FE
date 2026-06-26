@@ -1,5 +1,6 @@
-import { Component, HostListener, Inject, OnInit, OnDestroy, Input, Output, EventEmitter, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, HostListener, Inject, OnInit, OnDestroy, Input, Output, EventEmitter, Optional, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { RESPONSE } from '@nguniversal/express-engine/tokens';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { Location } from '@angular/common';
@@ -60,7 +61,11 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     private titleService: Title,
     private meta: Meta,
     private seoService: SeoService,
-    @Inject(PLATFORM_ID) private platformId: object
+    @Inject(PLATFORM_ID) private platformId: object,
+    // RESPONSE is only available during SSR (Express context).
+    // @Optional() ensures the component does not crash in the browser
+    // where no RESPONSE provider exists.
+    @Optional() @Inject(RESPONSE) private response: any
   ) {
     this.jobId = this.route.snapshot.params['id']
   }
@@ -84,11 +89,21 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    // SEO: error pages (expired/deleted/not-found jobs) return HTTP 200 from SSR.
-    // Mark them noindex so Google doesn't index thin/dead-content pages.
+    // SEO-V4: error pages (expired/deleted/not-found jobs) get:
+    //   1. noindex so Google stops crawling dead-content pages.
+    //   2. A descriptive title for the browser tab (and SSR head).
+    //   3. HTTP 404 in the SSR context via the RESPONSE token so Googlebot
+    //      receives a real 404 rather than a soft-404 (HTTP 200 + error text).
+    //      @Optional() on RESPONSE means this safely no-ops in the browser.
     this.jobErrorSub = this.jobError$.subscribe(err => {
       if (err) {
         this.meta.updateTag({ name: 'robots', content: 'noindex' });
+        this.titleService.setTitle('Job not found | GetHired');
+        // SSR-only: signal real 404 to crawlers (Googlebot, Bing).
+        // isPlatformServer guard ensures this is skipped in the browser.
+        if (isPlatformServer(this.platformId) && this.response) {
+          this.response.status(404);
+        }
       }
     });
   }
