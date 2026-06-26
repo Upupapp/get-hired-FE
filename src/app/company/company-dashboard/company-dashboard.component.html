@@ -41,12 +41,14 @@
             {{ subsHero.isPaid ? (subsHero.subscriptionName || 'Pro plan') : 'Free plan' }}
           </span>
         </ng-container>
-        <span class="gh-chip"
-          [class.gh-chip--good]="cachedHiringHealth === 'good'"
-          [class.gh-chip--warn]="cachedHiringHealth === 'attention'">
-          <span class="gh-chip-dot" aria-hidden="true"></span>
-          Hiring health: {{ cachedHiringHealth === 'good' ? 'Good' : cachedHiringHealth === 'attention' ? 'Needs attention' : 'Unknown' }}
-        </span>
+        <ng-container *ngIf="cachedHiringHealth !== 'unknown'">
+          <span class="gh-chip"
+            [class.gh-chip--good]="cachedHiringHealth === 'good'"
+            [class.gh-chip--warn]="cachedHiringHealth === 'attention'">
+            <span class="gh-chip-dot" aria-hidden="true"></span>
+            Hiring health: {{ cachedHiringHealth === 'good' ? 'Good' : 'Needs attention' }}
+          </span>
+        </ng-container>
       </div>
 
       <div class="gh-hero-ctas">
@@ -60,9 +62,9 @@
     </div>
 
     <!-- Right: profile completeness ring -->
-    <div class="gh-hero-profile" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
+    <div class="gh-hero-profile" role="group" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
       <div class="gh-profile-ring">
-        <svg viewBox="0 0 72 72" width="96" height="96" aria-hidden="true" focusable="false">
+        <svg viewBox="0 0 72 72" aria-hidden="true" focusable="false">
           <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6"/>
           <circle cx="36" cy="36" r="30" fill="none" stroke="#FF7062" stroke-width="6"
             stroke-linecap="round"
@@ -263,7 +265,7 @@
   <div class="gh-card gh-chart-card">
     <div class="gh-card-head">
       <h2 class="gh-card-title">Views and applications</h2>
-      <div class="gh-trend-tabs" role="tablist" aria-label="Chart time range">
+      <div class="gh-trend-tabs" role="tablist" aria-label="Chart time range" title="Date range filtering is coming soon">
         <button role="tab" type="button" class="gh-trend-tab"
           [class.gh-trend-tab--on]="trendRange === '7d'"
           [attr.aria-selected]="trendRange === '7d'"

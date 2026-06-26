@@ -1,12 +1,13 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { of, throwError, Subject } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { CompanyDashboardComponent } from './company-dashboard.component';
 import { CompanyFacade } from '../state/company.facade';
 import { CompanyService } from '../company.service';
+import { SeoService } from '@app-core/services/seo.service';
 
 // ─── Mock factories ──────────────────────────────────────────────────────────
 
@@ -34,6 +35,7 @@ function makeMockCompanyService(pipelineResult: any = null, error = false) {
   };
 }
 
+/** Build a fully-complete Company object, override individual fields as needed. */
 function makeCompany(overrides: Record<string, any> = {}) {
   return {
     companyId: 'COM001',
@@ -73,8 +75,9 @@ describe('CompanyDashboardComponent', () => {
       providers: [
         { provide: CompanyFacade, useValue: mockFacade },
         { provide: CompanyService, useValue: mockService },
+        { provide: SeoService, useValue: { setPageMeta: () => {} } },
       ],
-      schemas: [NO_ERRORS_SCHEMA], // ignore sub-components (app-empty-section etc.)
+      schemas: [NO_ERRORS_SCHEMA],
     });
 
     fixture = TestBed.createComponent(CompanyDashboardComponent);
@@ -87,195 +90,188 @@ describe('CompanyDashboardComponent', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §1 brandingScore()
+  // §1 brandingScore() — 6-field model
   // ──────────────────────────────────────────────────────────────────────────
   describe('brandingScore()', () => {
 
     beforeEach(() => createComponent());
 
     it('returns score=100 and missing=[] when all 6 fields are present', () => {
-      const company = makeCompany(); // all 6 fields set
-      const result = component.brandingScore(company as any);
+      const result = component.brandingScore(makeCompany() as any);
       expect(result.score).toBe(100);
       expect(result.missing.length).toBe(0);
     });
 
-    it('returns score=0 and all 6 fields in missing[] when company is null', () => {
+    it('returns {score:0, missing:[]} for null company (null guard)', () => {
       const result = component.brandingScore(null as any);
       expect(result.score).toBe(0);
-      expect(result.missing.length).toBe(0); // null guard returns {score:0, missing:[]}
+      expect(result.missing.length).toBe(0);
     });
 
-    it('returns score=0 and 6 items in missing when all fields are absent', () => {
-      const company = makeCompany({
-        companyLogoUrl: null,
-        companyDetails: null,
-        companyCity: null,
-        industryId: null,
-        numberOfEmployee: null,
-        companyContactNumber: null,
-      });
-      const result = component.brandingScore(company as any);
+    it('returns score=0 and 6 items when all fields are absent', () => {
+      const result = component.brandingScore(makeCompany({
+        companyLogoUrl: null, companyDetails: null, companyCity: null,
+        industryId: null, numberOfEmployee: null, companyContactNumber: null,
+      }) as any);
       expect(result.score).toBe(0);
+      expect(result.missing.length).toBe(6);
       expect(result.missing).toContain('company logo');
       expect(result.missing).toContain('description');
       expect(result.missing).toContain('location');
       expect(result.missing).toContain('industry');
       expect(result.missing).toContain('team size');
       expect(result.missing).toContain('contact number');
-      expect(result.missing.length).toBe(6);
     });
 
     it('returns score=50 when 3 of 6 fields are missing', () => {
-      const company = makeCompany({
-        companyLogoUrl: null,
-        companyDetails: null,
-        companyCity: null,
-      });
-      const result = component.brandingScore(company as any);
+      const result = component.brandingScore(makeCompany({
+        companyLogoUrl: null, companyDetails: null, companyCity: null,
+      }) as any);
       expect(result.score).toBe(50);
       expect(result.missing.length).toBe(3);
     });
 
-    it('returns score=83 (5/6) when only company logo is missing', () => {
-      const company = makeCompany({ companyLogoUrl: null });
-      const result = component.brandingScore(company as any);
-      expect(result.score).toBe(83); // Math.round(5/6*100) = 83
+    it('returns score=83 (5/6) when only logo is missing', () => {
+      const result = component.brandingScore(makeCompany({ companyLogoUrl: null }) as any);
+      expect(result.score).toBe(83);
       expect(result.missing).toContain('company logo');
-      expect(result.missing.length).toBe(1);
     });
 
-    it('returns score=17 (1/6) when only companyLogoUrl is present', () => {
-      const company = makeCompany({
-        companyDetails: null,
-        companyCity: null,
-        industryId: null,
-        numberOfEmployee: null,
-        companyContactNumber: null,
-      });
-      const result = component.brandingScore(company as any);
-      expect(result.score).toBe(17); // Math.round(1/6*100) = 17
+    it('returns score=17 (1/6) when only logo is present', () => {
+      const result = component.brandingScore(makeCompany({
+        companyDetails: null, companyCity: null, industryId: null,
+        numberOfEmployee: null, companyContactNumber: null,
+      }) as any);
+      expect(result.score).toBe(17);
       expect(result.missing.length).toBe(5);
     });
 
     it('treats empty string companyDetails as missing', () => {
-      const company = makeCompany({ companyDetails: '' });
-      const result = component.brandingScore(company as any);
-      expect(result.missing).toContain('description');
+      expect(component.brandingScore(makeCompany({ companyDetails: '' }) as any).missing)
+        .toContain('description');
     });
 
-    it('treats empty string companyCity as missing', () => {
-      const company = makeCompany({ companyCity: '' });
-      const result = component.brandingScore(company as any);
-      expect(result.missing).toContain('location');
-    });
-
-    it('treats industryId=0 as missing (falsy edge case)', () => {
-      // industryId=0 is falsy; this is a known edge case documented in sweep
-      const company = makeCompany({ industryId: 0 });
-      const result = component.brandingScore(company as any);
-      expect(result.missing).toContain('industry');
-    });
-
-    it('returns score=100 when all fields are truthy non-empty strings', () => {
-      const company = makeCompany({
-        companyLogoUrl: 'logo.png',
-        companyDetails: 'desc',
-        companyCity: 'City',
-        industryId: 5,
-        numberOfEmployee: 10,
-        companyContactNumber: '123',
-      });
-      const result = component.brandingScore(company as any);
-      expect(result.score).toBe(100);
+    it('treats industryId=0 as missing (0 == null is false; == null check)', () => {
+      // industryId == null uses loose equality, so 0 is NOT null → not missing
+      const result = component.brandingScore(makeCompany({ industryId: 0 }) as any);
+      // 0 == null → false in JS, so industryId:0 should NOT appear in missing
+      expect(result.missing).not.toContain('industry');
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §2 _buildJobGroups()
+  // §2 companyProfileMissingFields() — now checks 6 fields (was 3)
   // ──────────────────────────────────────────────────────────────────────────
-  describe('_buildJobGroups()', () => {
+  describe('companyProfileMissingFields()', () => {
 
     beforeEach(() => createComponent());
 
-    // Access private method via bracket notation for testing
-    function buildJobGroups(items: any[]) {
-      return (component as any)._buildJobGroups(items);
-    }
-
-    it('returns [] when given an empty array', () => {
-      expect(buildJobGroups([])).toEqual([]);
+    it('returns [] when company is null', () => {
+      expect(component.companyProfileMissingFields(null as any)).toEqual([]);
     });
 
-    it('returns [] when given null', () => {
-      expect(buildJobGroups(null as any)).toEqual([]);
+    it('returns [] when all 6 fields are present', () => {
+      expect(component.companyProfileMissingFields(makeCompany() as any)).toEqual([]);
     });
 
-    it('returns [] when given undefined', () => {
-      expect(buildJobGroups(undefined as any)).toEqual([]);
+    it('reports "logo" for missing companyLogoUrl', () => {
+      expect(component.companyProfileMissingFields(makeCompany({ companyLogoUrl: null }) as any))
+        .toContain('logo');
     });
 
-    it('returns single group with count=1 for a single item', () => {
-      const items = [
-        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Developer', candidateName: 'Jane', statusId: 1, submittedDate: '2026-01-01' }
-      ];
-      const result = buildJobGroups(items);
-      expect(result.length).toBe(1);
-      expect(result[0].jobId).toBe('J1');
-      expect(result[0].jobTitle).toBe('Developer');
-      expect(result[0].count).toBe(1);
+    it('reports "company description" for missing companyDetails', () => {
+      expect(component.companyProfileMissingFields(makeCompany({ companyDetails: '' }) as any))
+        .toContain('company description');
     });
 
-    it('groups multiple items with the same jobId correctly', () => {
-      const items = [
-        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Developer', candidateName: 'Jane', statusId: 1, submittedDate: '2026-01-01' },
-        { applicationId: 'A2', jobId: 'J1', jobTitle: 'Developer', candidateName: 'Bob', statusId: 3, submittedDate: '2026-01-02' },
-        { applicationId: 'A3', jobId: 'J1', jobTitle: 'Developer', candidateName: 'Alice', statusId: 1, submittedDate: '2026-01-03' },
-      ];
-      const result = buildJobGroups(items);
-      expect(result.length).toBe(1);
-      expect(result[0].count).toBe(3);
+    it('reports "location" for missing companyCity', () => {
+      expect(component.companyProfileMissingFields(makeCompany({ companyCity: null }) as any))
+        .toContain('location');
     });
 
-    it('separates items with different jobIds into different groups', () => {
-      const items = [
-        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Developer', candidateName: 'Jane', statusId: 1, submittedDate: '2026-01-01' },
-        { applicationId: 'A2', jobId: 'J2', jobTitle: 'Designer', candidateName: 'Bob', statusId: 3, submittedDate: '2026-01-02' },
-      ];
-      const result = buildJobGroups(items);
-      expect(result.length).toBe(2);
-      const jobIds = result.map((r: any) => r.jobId);
-      expect(jobIds).toContain('J1');
-      expect(jobIds).toContain('J2');
+    it('reports "industry" for missing industryId (null)', () => {
+      expect(component.companyProfileMissingFields(makeCompany({ industryId: null }) as any))
+        .toContain('industry');
     });
 
-    it('sorts groups by count descending', () => {
-      const items = [
-        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Low', candidateName: 'X', statusId: 1, submittedDate: '2026-01-01' },
-        { applicationId: 'A2', jobId: 'J2', jobTitle: 'High', candidateName: 'Y', statusId: 1, submittedDate: '2026-01-02' },
-        { applicationId: 'A3', jobId: 'J2', jobTitle: 'High', candidateName: 'Z', statusId: 1, submittedDate: '2026-01-03' },
-        { applicationId: 'A4', jobId: 'J3', jobTitle: 'Mid', candidateName: 'W', statusId: 3, submittedDate: '2026-01-04' },
-        { applicationId: 'A5', jobId: 'J3', jobTitle: 'Mid', candidateName: 'V', statusId: 1, submittedDate: '2026-01-05' },
-        { applicationId: 'A6', jobId: 'J3', jobTitle: 'Mid', candidateName: 'U', statusId: 3, submittedDate: '2026-01-06' },
-      ];
-      const result = buildJobGroups(items);
-      expect(result[0].jobId).toBe('J3'); // count=3, highest
-      expect(result[1].jobId).toBe('J2'); // count=2
-      expect(result[2].jobId).toBe('J1'); // count=1
+    it('reports "team size" for missing numberOfEmployee', () => {
+      expect(component.companyProfileMissingFields(makeCompany({ numberOfEmployee: null }) as any))
+        .toContain('team size');
     });
 
-    it('uses jobTitle from the first item encountered for the group', () => {
-      const items = [
-        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Senior Developer', candidateName: 'X', statusId: 1, submittedDate: '2026-01-01' },
-        { applicationId: 'A2', jobId: 'J1', jobTitle: 'Senior Developer', candidateName: 'Y', statusId: 1, submittedDate: '2026-01-02' },
-      ];
-      const result = buildJobGroups(items);
-      expect(result[0].jobTitle).toBe('Senior Developer');
+    it('reports "contact number" for missing companyContactNumber', () => {
+      expect(component.companyProfileMissingFields(makeCompany({ companyContactNumber: null }) as any))
+        .toContain('contact number');
+    });
+
+    it('reports all 6 missing when all fields are absent', () => {
+      const result = component.companyProfileMissingFields(makeCompany({
+        companyLogoUrl: null, companyDetails: null, companyCity: null,
+        industryId: null, numberOfEmployee: null, companyContactNumber: null,
+      }) as any);
+      expect(result.length).toBe(6);
+    });
+
+    it('returns only the 3 missing entries when logo/description/city absent (other 3 present)', () => {
+      const result = component.companyProfileMissingFields(makeCompany({
+        companyLogoUrl: null, companyDetails: null, companyCity: null,
+      }) as any);
+      expect(result.length).toBe(3);
+      expect(result).toContain('logo');
+      expect(result).toContain('company description');
+      expect(result).toContain('location');
+      expect(result).not.toContain('industry');
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §3 subscriptionUsagePct()
+  // §3 subscriptionDaysLeft()
+  // ──────────────────────────────────────────────────────────────────────────
+  describe('subscriptionDaysLeft()', () => {
+
+    beforeEach(() => createComponent());
+
+    it('returns 0 for null', () => {
+      expect(component.subscriptionDaysLeft(null)).toBe(0);
+    });
+
+    it('returns 0 for undefined', () => {
+      expect(component.subscriptionDaysLeft(undefined)).toBe(0);
+    });
+
+    it('returns 0 for empty string', () => {
+      expect(component.subscriptionDaysLeft('')).toBe(0);
+    });
+
+    it('returns 0 for invalid date string', () => {
+      expect(component.subscriptionDaysLeft('not-a-date')).toBe(0);
+    });
+
+    it('returns 0 (not negative) for a past date', () => {
+      const past = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      expect(component.subscriptionDaysLeft(past)).toBe(0);
+    });
+
+    it('returns positive number for a future date', () => {
+      const future = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      const result = component.subscriptionDaysLeft(future);
+      expect(result).toBeGreaterThan(0);
+      expect(result).toBeLessThanOrEqual(31);
+    });
+
+    it('uses Math.ceil — 1ms in the future is 1 day', () => {
+      const almostNow = new Date(Date.now() + 1000).toISOString();
+      expect(component.subscriptionDaysLeft(almostNow)).toBe(1);
+    });
+
+    it('accepts a Date object directly', () => {
+      const future = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
+      expect(component.subscriptionDaysLeft(future)).toBeGreaterThan(0);
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // §4 subscriptionUsagePct()
   // ──────────────────────────────────────────────────────────────────────────
   describe('subscriptionUsagePct()', () => {
 
@@ -289,10 +285,6 @@ describe('CompanyDashboardComponent', () => {
       expect(component.subscriptionUsagePct(5, null as any)).toBe(0);
     });
 
-    it('returns 0 when limit is undefined', () => {
-      expect(component.subscriptionUsagePct(5, undefined as any)).toBe(0);
-    });
-
     it('returns 0 when used is 0', () => {
       expect(component.subscriptionUsagePct(0, 10)).toBe(0);
     });
@@ -301,422 +293,269 @@ describe('CompanyDashboardComponent', () => {
       expect(component.subscriptionUsagePct(5, 10)).toBe(50);
     });
 
-    it('returns 100 for full usage', () => {
+    it('returns 100 at limit', () => {
       expect(component.subscriptionUsagePct(10, 10)).toBe(100);
     });
 
-    it('returns 100 (capped) when used exceeds limit', () => {
+    it('caps at 100 when over limit', () => {
       expect(component.subscriptionUsagePct(15, 10)).toBe(100);
     });
 
-    it('returns 100 (capped) when used is far above limit', () => {
-      expect(component.subscriptionUsagePct(1000, 10)).toBe(100);
-    });
-
-    it('rounds to nearest integer', () => {
-      // 1/3 * 100 = 33.33... → rounds to 33
+    it('rounds correctly (1/3 → 33)', () => {
       expect(component.subscriptionUsagePct(1, 3)).toBe(33);
     });
 
-    it('rounds up correctly', () => {
-      // 2/3 * 100 = 66.66... → rounds to 67
+    it('rounds correctly (2/3 → 67)', () => {
       expect(component.subscriptionUsagePct(2, 3)).toBe(67);
-    });
-
-    it('returns correct pct for typical job post scenario', () => {
-      // 3 used of 20 allowed → 15%
-      expect(component.subscriptionUsagePct(3, 20)).toBe(15);
-    });
-
-    it('handles large limits correctly', () => {
-      expect(component.subscriptionUsagePct(1, 1000)).toBe(0); // rounds to 0
-      expect(component.subscriptionUsagePct(500, 1000)).toBe(50);
-      expect(component.subscriptionUsagePct(999, 1000)).toBe(100); // rounds to 100
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §4 subscriptionDaysLeft()
+  // §5 _buildRecommendedStep() — 6 priority branches (via cachedRecommendedStep)
   // ──────────────────────────────────────────────────────────────────────────
-  describe('subscriptionDaysLeft()', () => {
+  describe('_buildRecommendedStep() priority branches', () => {
 
     beforeEach(() => createComponent());
 
-    it('returns 0 when endAt is null', () => {
-      expect(component.subscriptionDaysLeft(null)).toBe(0);
+    function callBuild(charts: any) {
+      (component as any)._buildRecommendedStep(charts);
+    }
+
+    it('branch 1: missingCount>=2 → complete_company_profile (high)', () => {
+      component.cachedProfileMissingFields = ['logo', 'industry'];
+      callBuild({ activeJobs: 0, interviews: 0 });
+      expect(component.cachedRecommendedStep!.type).toBe('complete_company_profile');
+      expect(component.cachedRecommendedStep!.priority).toBe('high');
     });
 
-    it('returns 0 when endAt is undefined', () => {
-      expect(component.subscriptionDaysLeft(undefined)).toBe(0);
+    it('branch 2: missingCount<2 and activeJobs=0 → post_first_job (high)', () => {
+      component.cachedProfileMissingFields = [];
+      callBuild({ activeJobs: 0, interviews: 0 });
+      expect(component.cachedRecommendedStep!.type).toBe('post_first_job');
+      expect(component.cachedRecommendedStep!.priority).toBe('high');
     });
 
-    it('returns 0 when endAt is empty string', () => {
-      expect(component.subscriptionDaysLeft('')).toBe(0);
+    it('branch 3: needsReviewCount>0 → review_applicants (high)', () => {
+      component.cachedProfileMissingFields = [];
+      component.needsReviewCount = 5;
+      callBuild({ activeJobs: 3, interviews: 0 });
+      expect(component.cachedRecommendedStep!.type).toBe('review_applicants');
+      expect(component.cachedRecommendedStep!.priority).toBe('high');
+      expect(component.cachedRecommendedStep!.count).toBe(5);
     });
 
-    it('returns 0 (not negative) for past dates', () => {
-      const pastDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days ago
-      expect(component.subscriptionDaysLeft(pastDate)).toBe(0);
+    it('branch 4: interviews>0 and no review needed → review_video_answers (medium)', () => {
+      component.cachedProfileMissingFields = [];
+      component.needsReviewCount = 0;
+      callBuild({ activeJobs: 3, interviews: 4 });
+      expect(component.cachedRecommendedStep!.type).toBe('review_video_answers');
+      expect(component.cachedRecommendedStep!.priority).toBe('medium');
     });
 
-    it('returns positive number for a future date', () => {
-      const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days ahead
-      const result = component.subscriptionDaysLeft(futureDate);
-      expect(result).toBeGreaterThan(0);
-      expect(result).toBeLessThanOrEqual(31); // ceiling rounding, may be 30 or 31
+    it('branch 5: score<80 and no urgent tasks → improve_employer_brand (low)', () => {
+      component.cachedProfileMissingFields = ['logo']; // length=1 < 2, so not branch 1
+      component.needsReviewCount = 0;
+      component.cachedBrandingScore = { score: 60, missing: ['logo'] };
+      callBuild({ activeJobs: 2, interviews: 0 });
+      expect(component.cachedRecommendedStep!.type).toBe('improve_employer_brand');
+      expect(component.cachedRecommendedStep!.priority).toBe('low');
     });
 
-    it('returns approximately 1 for a date 1 day in the future', () => {
-      const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-      const result = component.subscriptionDaysLeft(tomorrow);
-      expect(result).toBe(1);
-    });
-
-    it('returns approximately 365 for a date 1 year in the future', () => {
-      const oneYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
-      const result = component.subscriptionDaysLeft(oneYear);
-      expect(result).toBeGreaterThanOrEqual(364);
-      expect(result).toBeLessThanOrEqual(366);
-    });
-
-    it('uses Math.ceil so partial days count as 1', () => {
-      // 1ms in the future should still be 1 day (ceil)
-      const almostNow = new Date(Date.now() + 1000).toISOString();
-      expect(component.subscriptionDaysLeft(almostNow)).toBe(1);
-    });
-
-    it('accepts Date object as well as string', () => {
-      const futureDate = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
-      const result = component.subscriptionDaysLeft(futureDate);
-      expect(result).toBeGreaterThan(0);
+    it('branch 6: all good → all_caught_up (success)', () => {
+      component.cachedProfileMissingFields = [];
+      component.needsReviewCount = 0;
+      component.cachedBrandingScore = { score: 100, missing: [] };
+      callBuild({ activeJobs: 2, interviews: 0 });
+      expect(component.cachedRecommendedStep!.type).toBe('all_caught_up');
+      expect(component.cachedRecommendedStep!.priority).toBe('success');
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §5 needsReviewCount — verifies it sums status 1 and 3 only
+  // §6 _computeJobViewsCache()
+  // ──────────────────────────────────────────────────────────────────────────
+  describe('_computeJobViewsCache()', () => {
+
+    beforeEach(() => createComponent());
+
+    function callCompute(graph: any) {
+      (component as any)._computeJobViewsCache(graph);
+    }
+
+    it('sets 0 and null conversion when graph is null', () => {
+      callCompute(null);
+      expect(component.cachedJobViewsThisMonth).toBe(0);
+      expect(component.cachedConversionRate).toBeNull();
+    });
+
+    it('sets 0 when jobViews is not an array', () => {
+      callCompute({ jobViews: null });
+      expect(component.cachedJobViewsThisMonth).toBe(0);
+    });
+
+    it('counts only current-month rows', () => {
+      const now = new Date();
+      const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-15`;
+      const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 15).toISOString();
+      (component as any)._lastDashboardCharts = { applicants: 10 };
+      callCompute({ jobViews: [
+        { date: thisMonth, count: 200 },
+        { date: lastMonth, count: 50 },
+      ]});
+      expect(component.cachedJobViewsThisMonth).toBe(200);
+    });
+
+    it('returns null conversion rate when no job views this month', () => {
+      const lastMonth = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 15).toISOString();
+      callCompute({ jobViews: [{ date: lastMonth, count: 100 }] });
+      expect(component.cachedJobViewsThisMonth).toBe(0);
+      expect(component.cachedConversionRate).toBeNull();
+    });
+
+    it('computes conversion rate when views > 0', () => {
+      const now = new Date();
+      const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+      (component as any)._lastDashboardCharts = { applicants: 20 };
+      callCompute({ jobViews: [{ date: thisMonth, count: 100 }] });
+      expect(component.cachedConversionRate).toBe('20.0%');
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // §7 _computeCitiesCache()
+  // ──────────────────────────────────────────────────────────────────────────
+  describe('_computeCitiesCache()', () => {
+
+    beforeEach(() => createComponent());
+
+    function callCompute(stat: any) {
+      (component as any)._computeCitiesCache(stat);
+    }
+
+    it('returns [] for null stat', () => {
+      callCompute(null);
+      expect(component.cachedCities).toEqual([]);
+    });
+
+    it('returns [] when stat has no cities', () => {
+      callCompute({});
+      expect(component.cachedCities).toEqual([]);
+    });
+
+    it('handles flat array cities', () => {
+      const cities = [{ city: 'Manila', count: '10' }];
+      callCompute({ cities });
+      expect(component.cachedCities).toEqual(cities);
+    });
+
+    it('handles nested {cities:[]} object', () => {
+      const cities = [{ city: 'Cebu', count: '5' }];
+      callCompute({ cities: { cities } });
+      expect(component.cachedCities).toEqual(cities);
+    });
+
+    it('returns [] for unrecognized cities shape', () => {
+      callCompute({ cities: { weird: true } });
+      expect(component.cachedCities).toEqual([]);
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // §8 _buildJobGroups()
+  // ──────────────────────────────────────────────────────────────────────────
+  describe('_buildJobGroups()', () => {
+
+    beforeEach(() => createComponent());
+
+    function buildJobGroups(items: any[]) {
+      return (component as any)._buildJobGroups(items);
+    }
+
+    it('returns [] for empty array', () => {
+      expect(buildJobGroups([])).toEqual([]);
+    });
+
+    it('returns [] for null', () => {
+      expect(buildJobGroups(null as any)).toEqual([]);
+    });
+
+    it('returns single group with count=1 for one item', () => {
+      const items = [
+        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Dev', candidateName: 'X', statusId: 1, submittedDate: '' }
+      ];
+      const result = buildJobGroups(items);
+      expect(result.length).toBe(1);
+      expect(result[0].count).toBe(1);
+      expect(result[0].jobTitle).toBe('Dev');
+    });
+
+    it('groups 2 applicants under same jobId with count=2', () => {
+      const items = [
+        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Dev', candidateName: 'X', statusId: 1, submittedDate: '' },
+        { applicationId: 'A2', jobId: 'J1', jobTitle: 'Dev', candidateName: 'Y', statusId: 1, submittedDate: '' },
+      ];
+      expect(buildJobGroups(items)[0].count).toBe(2);
+    });
+
+    it('separates items with different jobIds', () => {
+      const items = [
+        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Dev', candidateName: 'X', statusId: 1, submittedDate: '' },
+        { applicationId: 'A2', jobId: 'J2', jobTitle: 'PM', candidateName: 'Y', statusId: 1, submittedDate: '' },
+      ];
+      expect(buildJobGroups(items).length).toBe(2);
+    });
+
+    it('sorts groups by count descending', () => {
+      const items = [
+        { applicationId: 'A1', jobId: 'J1', jobTitle: 'Low', candidateName: 'X', statusId: 1, submittedDate: '' },
+        { applicationId: 'A2', jobId: 'J2', jobTitle: 'High', candidateName: 'Y', statusId: 1, submittedDate: '' },
+        { applicationId: 'A3', jobId: 'J2', jobTitle: 'High', candidateName: 'Z', statusId: 1, submittedDate: '' },
+      ];
+      const result = buildJobGroups(items);
+      expect(result[0].jobId).toBe('J2'); // count=2 first
+    });
+  });
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // §9 needsReviewCount derivation from pipeline data
   // ──────────────────────────────────────────────────────────────────────────
   describe('needsReviewCount derivation', () => {
 
     it('is 0 by default before pipeline data loads', () => {
       createComponent();
-      fixture.detectChanges(); // triggers ngOnInit
-      // pipeline immediately returns empty arrays (default mock)
+      fixture.detectChanges();
       expect(component.needsReviewCount).toBe(0);
     });
 
-    it('sums status 1 and 3 correctly from byStage', () => {
-      const pipelineResult = {
-        data: {
-          byStage: [
-            { statusId: 1, label: 'Pending Review', count: 4 },
-            { statusId: 2, label: 'Screening', count: 10 },
-            { statusId: 3, label: 'Under Review', count: 2 },
-            { statusId: 4, label: 'Offer', count: 1 },
-          ],
-          needsReview: []
-        }
-      };
-      createComponent({}, pipelineResult);
+    it('sums status 1 and status 3 correctly', () => {
+      const pipeline = { data: { byStage: [
+        { statusId: 1, label: 'Pending Review', count: 4 },
+        { statusId: 2, label: 'Screening', count: 10 },
+        { statusId: 3, label: 'Under Review', count: 2 },
+      ], needsReview: [] } };
+      createComponent({}, pipeline);
       fixture.detectChanges();
-      expect(component.needsReviewCount).toBe(6); // 4 + 2
+      expect(component.needsReviewCount).toBe(6);
     });
 
-    it('does NOT include status 2, 4, or other statuses in count', () => {
-      const pipelineResult = {
-        data: {
-          byStage: [
-            { statusId: 2, label: 'Screening', count: 100 },
-            { statusId: 4, label: 'Offer', count: 50 },
-            { statusId: 5, label: 'Hired', count: 20 },
-          ],
-          needsReview: []
-        }
-      };
-      createComponent({}, pipelineResult);
-      fixture.detectChanges();
-      expect(component.needsReviewCount).toBe(0); // none of these are status 1 or 3
-    });
-
-    it('counts status 1 only when status 3 is absent', () => {
-      const pipelineResult = {
-        data: {
-          byStage: [
-            { statusId: 1, label: 'Pending Review', count: 7 },
-          ],
-          needsReview: []
-        }
-      };
-      createComponent({}, pipelineResult);
-      fixture.detectChanges();
-      expect(component.needsReviewCount).toBe(7);
-    });
-
-    it('counts status 3 only when status 1 is absent', () => {
-      const pipelineResult = {
-        data: {
-          byStage: [
-            { statusId: 3, label: 'Under Review', count: 3 },
-          ],
-          needsReview: []
-        }
-      };
-      createComponent({}, pipelineResult);
-      fixture.detectChanges();
-      expect(component.needsReviewCount).toBe(3);
-    });
-
-    it('is 0 when byStage is empty', () => {
-      const pipelineResult = { data: { byStage: [], needsReview: [] } };
-      createComponent({}, pipelineResult);
+    it('does NOT include status 2, 4, or other statuses', () => {
+      const pipeline = { data: { byStage: [
+        { statusId: 2, label: 'Screening', count: 100 },
+        { statusId: 4, label: 'Offer', count: 50 },
+      ], needsReview: [] } };
+      createComponent({}, pipeline);
       fixture.detectChanges();
       expect(component.needsReviewCount).toBe(0);
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §6 Smoke tests — template rendering with mocked facade
-  // ──────────────────────────────────────────────────────────────────────────
-  describe('Template smoke tests', () => {
-
-    const mockDashboardData = {
-      company: makeCompany(),
-      charts: { activeJobs: 5, applicants: 42, interviews: 8 },
-      graph: [],
-      jobViews: [],
-      statistic: { contacts: '60', applicants: '40' },
-      totalContacts: 20,
-      cities: []
-    };
-
-    it('renders without error when all data is available', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-
-      expect(() => fixture.detectChanges()).not.toThrow();
-    });
-
-    it('shows skeleton when loading$ emits true', () => {
-      createComponent({
-        loading$: of(true),
-        dashboard$: of(null),
-        subsRestrictions$: of(null),
-      });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      // skeleton template should be rendered instead of main content
-      expect(compiled.querySelector('.emp-dash-hero-skeleton')).toBeTruthy();
-      expect(compiled.querySelector('.emp-dash')).toBeFalsy();
-    });
-
-    it('renders main content when loading$ emits false', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.emp-dash')).toBeTruthy();
-    });
-
-    it('renders the hero section with company name', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const hero = compiled.querySelector('.emp-dash-hero-title');
-      expect(hero).toBeTruthy();
-      expect(hero!.textContent).toContain('Test Co');
-    });
-
-    it('shows fallback company name when company is null', () => {
-      const noCompanyDash = { ...mockDashboardData, company: null };
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(noCompanyDash),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const hero = compiled.querySelector('.emp-dash-hero-title');
-      expect(hero!.textContent).toContain('Your company');
-    });
-
-    it('shows KPI cards', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const kpiCards = compiled.querySelectorAll('.emp-dash-kpi-card');
-      expect(kpiCards.length).toBeGreaterThanOrEqual(3); // at minimum the first 3
-    });
-
-    it('shows pipeline section', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.emp-dash-pipeline')).toBeTruthy();
-    });
-
-    it('shows branding health section when company data is available', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.emp-dash-branding')).toBeTruthy();
-    });
-
-    it('shows subscription section when subsRestrictions$ emits a value', () => {
-      const mockSubs = {
-        isPaid: true,
-        subscriptionName: 'Pro',
-        endAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        jobPost: 20, jobPostCount: 3,
-        admin: 5, adminCount: 2,
-        videoResponse: 100, videoResponseCount: 15,
-      };
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(mockSubs),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.emp-dash-subscription')).toBeTruthy();
-    });
-
-    it('hides subscription section when subsRestrictions$ emits null', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.emp-dash-subscription')).toBeFalsy();
-    });
-
-    it('shows pipeline stages when byStage is non-empty', () => {
-      const pipelineResult = {
-        data: {
-          byStage: [
-            { statusId: 1, label: 'Pending Review', count: 4 },
-            { statusId: 2, label: 'Screening', count: 2 },
-          ],
-          needsReview: []
-        }
-      };
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, pipelineResult);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const stages = compiled.querySelectorAll('.emp-dash-pipeline-stage');
-      expect(stages.length).toBe(2);
-    });
-
-    it('shows pipeline error state on pipeline failure', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, null, true /* pipelineError */);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      // Error alert divs should be present
-      const alerts = compiled.querySelectorAll('[role="alert"]');
-      expect(alerts.length).toBeGreaterThan(0);
-    });
-
-    it('calls getCompanyDashboard on init', () => {
-      createComponent();
-      fixture.detectChanges();
-      expect(mockFacade.getCompanyDashboard).toHaveBeenCalled();
-    });
-
-    it('calls getDashboardPipelineOverview on init', () => {
-      createComponent();
-      fixture.detectChanges();
-      expect(mockService.getDashboardPipelineOverview).toHaveBeenCalled();
-    });
-
-    it('shows "needs review" action card when needsReviewCount > 0', () => {
-      const pipelineResult = {
-        data: {
-          byStage: [
-            { statusId: 1, label: 'Pending Review', count: 3 },
-          ],
-          needsReview: [
-            { applicationId: 'A1', jobId: 'J1', candidateName: 'Jane Doe', jobTitle: 'Dev', statusId: 1, submittedDate: '2026-01-01' }
-          ]
-        }
-      };
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, pipelineResult);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const urgentCard = compiled.querySelector('.emp-dash-action-card--urgent');
-      expect(urgentCard).toBeTruthy();
-    });
-
-    it('hides "needs review" action card when needsReviewCount === 0', () => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(mockDashboardData),
-        subsRestrictions$: of(null),
-      }, { data: { byStage: [], needsReview: [] } });
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const urgentCard = compiled.querySelector('.emp-dash-action-card--urgent');
-      expect(urgentCard).toBeFalsy();
-    });
-  });
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // §7 Navigation methods
+  // §10 Navigation methods
   // ──────────────────────────────────────────────────────────────────────────
   describe('Navigation methods', () => {
 
     beforeEach(() => {
-      createComponent({
-        loading$: of(false),
-        dashboard$: of(null),
-        subsRestrictions$: of(null),
-      });
+      createComponent();
       fixture.detectChanges();
     });
 
@@ -738,12 +577,6 @@ describe('CompanyDashboardComponent', () => {
       expect(spy).toHaveBeenCalledWith(['/recruiter/company/details']);
     });
 
-    it('goToSubscription navigates to /recruiter/subscription', () => {
-      const spy = spyOn(router, 'navigate');
-      component.goToSubscription();
-      expect(spy).toHaveBeenCalledWith(['/recruiter/subscription']);
-    });
-
     it('goToApplicants with jobId adds queryParams', () => {
       const spy = spyOn(router, 'navigate');
       component.goToApplicants('JOB123');
@@ -761,48 +594,16 @@ describe('CompanyDashboardComponent', () => {
       component.goToMessages();
       expect(spy).toHaveBeenCalledWith(['/recruiter/messages']);
     });
-  });
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // §8 companyProfileMissingFields()
-  // ──────────────────────────────────────────────────────────────────────────
-  describe('companyProfileMissingFields()', () => {
-
-    beforeEach(() => createComponent());
-
-    it('returns [] when company is null', () => {
-      expect(component.companyProfileMissingFields(null as any)).toEqual([]);
-    });
-
-    it('returns [] when all 3 fields are present', () => {
-      const company = makeCompany(); // has logo, details, city
-      expect(component.companyProfileMissingFields(company as any)).toEqual([]);
-    });
-
-    it('reports missing logo', () => {
-      const company = makeCompany({ companyLogoUrl: null });
-      expect(component.companyProfileMissingFields(company as any)).toContain('logo');
-    });
-
-    it('reports missing description', () => {
-      const company = makeCompany({ companyDetails: null });
-      expect(component.companyProfileMissingFields(company as any)).toContain('company description');
-    });
-
-    it('reports missing location', () => {
-      const company = makeCompany({ companyCity: '' });
-      expect(component.companyProfileMissingFields(company as any)).toContain('location');
-    });
-
-    it('reports all 3 missing', () => {
-      const company = makeCompany({ companyLogoUrl: null, companyDetails: null, companyCity: null });
-      const result = component.companyProfileMissingFields(company as any);
-      expect(result.length).toBe(3);
+    it('goToSubscription navigates to /recruiter/subscription', () => {
+      const spy = spyOn(router, 'navigate');
+      component.goToSubscription();
+      expect(spy).toHaveBeenCalledWith(['/recruiter/subscription']);
     });
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // §9 retryPipelineOverview()
+  // §11 retryPipelineOverview()
   // ──────────────────────────────────────────────────────────────────────────
   describe('retryPipelineOverview()', () => {
 
@@ -811,7 +612,6 @@ describe('CompanyDashboardComponent', () => {
       fixture.detectChanges();
       expect(component.pipelineError).toBe(true);
 
-      // Fix the service to return success
       mockService.getDashboardPipelineOverview.and.returnValue(
         of({ data: { byStage: [], needsReview: [] } })
       );

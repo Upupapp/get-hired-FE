@@ -47,10 +47,6 @@ interface SupportingAction {
   styleUrls: ['./company-dashboard.component.scss']
 })
 export class CompanyDashboardComponent implements OnInit, OnDestroy {
-  company: Model.Company;
-  stat: any;
-  charts: any;
-
   private _destroy$ = new Subject<void>();
 
   loading$ = this.companyFacade.loading$;
@@ -78,7 +74,6 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         if (dash) {
           this._lastDashboardCompany = dash.company;
           this._lastDashboardCharts = dash.charts;
-          this._refreshOnboardingCache();
           if (dash.company) {
             this.cachedBrandingScore = this.brandingScore(dash.company);
             this.cachedProfileMissingFields = this.companyProfileMissingFields(dash.company);
@@ -159,11 +154,6 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     }
   };
 
-  /** cachedOnboardingSteps: refreshed when dashboard$ emits or pipeline loads. */
-  cachedOnboardingSteps: Array<{
-    title: string; desc: string; cta: string; done: boolean; action: () => void;
-  }> = [];
-
   constructor(
     private companyFacade: CompanyFacade,
     private companyService: CompanyService,
@@ -205,7 +195,6 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         this.pipelineBarMax = Math.max(1, ...this.byStage.map(s => s.count));
         this.cachedJobGroups = this._buildJobGroups(this.needsReview);
         this.pipelineLoading = false;
-        this._refreshOnboardingCache();
         this._refreshV5Cache();
       },
       error: () => {
@@ -214,13 +203,6 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         this._refreshV5Cache();
       }
     });
-  }
-
-  /** Refreshes onboarding checklist cache from last dashboard + pipeline data. */
-  private _refreshOnboardingCache(): void {
-    this.cachedOnboardingSteps = this.onboardingSteps(
-      this._lastDashboardCompany, this._lastDashboardCharts
-    );
   }
 
   /** V5: refreshes hiring health, pipeline totals, recommended step, and supporting actions. */
@@ -444,6 +426,9 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     if (!company.companyLogoUrl) { missing.push('logo'); }
     if (!company.companyDetails) { missing.push('company description'); }
     if (!company.companyCity) { missing.push('location'); }
+    if (company.industryId == null) { missing.push('industry'); }
+    if (!company.numberOfEmployee) { missing.push('team size'); }
+    if (!company.companyContactNumber) { missing.push('contact number'); }
     return missing;
   }
 
@@ -458,46 +443,6 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
 
   trackByApplicationId(_index: number, item: NeedsReviewItem): string {
     return item.applicationId;
-  }
-
-  trackOnboardingStep(index: number): number {
-    return index;
-  }
-
-  onboardingSteps(company: Model.Company, charts: any): Array<{
-    title: string; desc: string; cta: string; done: boolean; action: () => void;
-  }> {
-    const hasLogo = !!(company && company.companyLogoUrl);
-    const hasDescription = !!(company && company.companyDetails);
-    const hasLocation = !!(company && company.companyCity);
-    const hasActiveJob = (charts && charts.activeJobs ? charts.activeJobs : 0) > 0;
-
-    const steps = [
-      {
-        title: 'Complete your company profile',
-        desc: 'Add your logo, description, and location so candidates know who is hiring.',
-        cta: 'Complete profile',
-        done: hasLogo && hasDescription && hasLocation,
-        action: () => this.goToCompanyProfile()
-      },
-      {
-        title: 'Post your first job',
-        desc: 'Create a job post to start receiving applications from qualified candidates.',
-        cta: 'Post a job',
-        done: hasActiveJob,
-        action: () => this.goToCreateJob()
-      },
-      {
-        title: 'Review your first applicants',
-        desc: 'Once candidates apply, review their profiles and video answers here.',
-        cta: 'View applicants',
-        done: (this.byStage.reduce((sum, s) => sum + s.count, 0) || 0) > 0,
-        action: () => this.goToApplicants()
-      }
-    ];
-
-    const allDone = steps.every(s => s.done);
-    return allDone ? [] : steps;
   }
 
   private _buildJobGroups(items: NeedsReviewItem[]): Array<{ jobId: string; jobTitle: string; count: number }> {
