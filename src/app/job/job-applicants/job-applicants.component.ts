@@ -61,6 +61,7 @@ export class JobApplicantsComponent implements OnInit {
    * details$/applicants$ below, which both reference it in their own
    * field initializers -- class fields run in declaration order. */
   private matchSignalsByUserId$ = new BehaviorSubject<Record<string, any>>({});
+  private statusOverrides$ = new BehaviorSubject<Record<string, { statusId: number; statusName: string }>>({});
 
   // profile$ = this.applicantFacade.applicantDetails$;
   details$: Observable<any> = combineLatest([this.jobFacade.details$, this.matchSignalsByUserId$])
@@ -76,13 +77,17 @@ export class JobApplicantsComponent implements OnInit {
 
   job$ = this.jobFacade.getJobById$;
 
-  applicants$ = combineLatest([this.jobFacade.applicants$, this.matchSignalsByUserId$])
+  applicants$ = combineLatest([this.jobFacade.applicants$, this.matchSignalsByUserId$, this.statusOverrides$])
     .pipe(
-      map(([applicants, signalsByUserId]) => {
+      map(([applicants, signalsByUserId, statusOverrides]) => {
         return applicants.map(applicant => {
+          const appId = (applicant as any).applicationId;
+          const override = appId ? statusOverrides[appId] : null;
           const fitSignals = signalsByUserId[(applicant as any).userId];
           return {
             ...applicant,
+            jobApplicationStatusId: override ? override.statusId : (applicant as any).jobApplicationStatusId,
+            jobApplicationStatusName: override ? override.statusName : applicant.jobApplicationStatusName,
             fullName: applicant.firstName + ' ' + applicant.lastName,
             salary: this.formatSalary(applicant.salaryMinimum, applicant.salaryMaximum, 'Monthly'),
             dateApplied: this.datePipe.transform(applicant.dateApplied, 'medium'),
@@ -214,10 +219,6 @@ export class JobApplicantsComponent implements OnInit {
     }
   }
 
-  inviteApplicant() {
-    // TODO
-  }
-
   formLoading(loading: boolean) {
     this.loading = loading;
     if (loading) {
@@ -279,8 +280,12 @@ export class JobApplicantsComponent implements OnInit {
         }
       }
 
-      if (result && result.statusUpdated) {
-        this.jobFacade.getApplicants(this.jobId);
+      if (result && result.statusUpdated && result.applicationId) {
+        const current = this.statusOverrides$.getValue();
+        this.statusOverrides$.next({
+          ...current,
+          [result.applicationId]: { statusId: result.newStatusId, statusName: result.newStatusName }
+        });
       }
     });
   }

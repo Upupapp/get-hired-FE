@@ -137,7 +137,7 @@ export class ApplicantActionModalComponent implements OnInit {
       () => {
         this.statusUpdating = false;
         this.snackBar.open(`Application status updated to "${statusName}".`, 'OK', { duration: 3000 });
-        this.dialogRef.close({ statusUpdated: true, newStatusId: statusId, newStatusName: statusName });
+        this.dialogRef.close({ statusUpdated: true, newStatusId: statusId, newStatusName: statusName, applicationId: applicationId });
       },
       (err: any) => {
         this.statusUpdating = false;
