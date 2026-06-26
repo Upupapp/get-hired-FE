@@ -27,6 +27,11 @@
 
 .gh-breadcrumb-nav {
   padding: 0.5rem 1rem 0;
+  // OPTIMIZE-V5: reserve vertical space so the breadcrumb's appearance
+  // after job data loads does not shift content below (CLS risk).
+  // 1.2rem line-height at 0.8rem font-size + padding ~= 2rem.
+  min-height: 2rem;
+  contain: layout;
 }
 
 .gh-breadcrumb {
@@ -53,6 +58,13 @@
   &:last-child::after { content: none; }
 
   a {
+    // MV5-B1: meet 44×44px touch target (WCAG 2.5.5).
+    // inline-flex expands the hit area via padding without breaking
+    // the inline breadcrumb flow.
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 4px;
     color: #6b7280;
     text-decoration: none;
 
@@ -60,11 +72,20 @@
     &:focus-visible { outline: 2px solid currentColor; border-radius: 2px; }
   }
 
-  &--current { color: #374151; font-weight: 500; }
+  // MV5-B2: truncate long job titles in the current crumb so the
+  // breadcrumb never overflows at 320px.
+  &--current {
+    color: #374151;
+    font-weight: 500;
+    max-width: min(240px, 50vw);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .gh-breadcrumb-nav { animation: gh-job-detail-reveal 180ms ease-out both; }
+  .gh-breadcrumb-nav { animation: gh-job-detail-reveal 180ms $motion-ease-decelerate both; }
 }
 
 .gh-job-content-reveal {
@@ -109,6 +130,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .gh-job-content-reveal,
+  .gh-breadcrumb-nav,
   .bg-applied,
   .job-detail-session-banner,
   .gh-job-skeleton {

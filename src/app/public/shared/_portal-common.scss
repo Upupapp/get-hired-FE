@@ -39,12 +39,21 @@
 }
 
 .btn-link-cta {
+  // MV5-B3: display:inline-flex ensures both <button> and <a> elements
+  // using this class render as flex containers so min-height and padding
+  // expand the actual hit area (inline elements ignore min-height).
+  display: inline-flex;
+  align-items: center;
   background: none;
   border: none;
   color: $color-global-red-buttons;
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 8px;
+  // MV5-B3: raise vertical padding from 4px to 12px → ~40px hit area;
+  // combined with text line-height (~20px) reaches ≥44px effectively.
+  padding: 12px 8px;
+  min-height: 44px;
+  text-decoration: none; // ensures <a> variant doesn't show underline by default
 
   &:focus-visible {
     outline: 2px solid $color-global-red-buttons;
@@ -150,16 +159,27 @@
 }
 
 .btn-cta-primary {
+  // MV5-B4: display:inline-flex makes both <button> and <a> variants
+  // respect min-height/padding for the 44px WCAG touch target.
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(99.75deg, $color-global-red 24.68%, #FF4D3C 91.74%);
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 10px 24px;
+  // MV5-B4: 12px vertical → ≥44px total (12+20+12).
+  padding: 12px 24px;
+  min-height: 44px;
   font-weight: 600;
   white-space: nowrap;
+  text-decoration: none; // <a> variant must never show default underline
 
-  &:hover, &:focus-visible {
-    transform: translateY(-2px);
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover, &:focus-visible {
+      color: #fff;
+      transform: translateY(-2px);
+    }
   }
 }
 
@@ -217,11 +237,14 @@
   padding: 22px 18px;
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: transform 160ms $motion-ease-standard, box-shadow 160ms $motion-ease-standard;
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 160ms $motion-ease-standard, box-shadow 160ms $motion-ease-standard;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    }
   }
 
   h3 {

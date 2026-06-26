@@ -1,4 +1,5 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { SeoService } from '@app-core/services/seo.service';
 
 @Component({
@@ -21,10 +22,17 @@ export class PublicListComponent implements OnInit, OnDestroy {
   userRole: string;
   screenSize: number = 1600;
 
-  constructor(private seoService: SeoService) { }
+  constructor(
+    private seoService: SeoService,
+    @Inject(PLATFORM_ID) private platformId: object,
+  ) { }
 
   ngOnInit(): void {
-    this.screenSize = window.innerWidth;
+    // OPTIMIZE-V5: guard window.innerWidth with isPlatformBrowser so SSR
+    // does not throw ReferenceError when /jobs is server-rendered.
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenSize = window.innerWidth;
+    }
     this.getUserRole();
 
     // SEO: canonical jobs list page (no query params in canonical)

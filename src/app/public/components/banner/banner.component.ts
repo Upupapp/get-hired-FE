@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, Input, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
@@ -15,7 +16,9 @@ import {
 })
 export class BannerComponent implements OnInit, OnDestroy {
   @Input() screenSize: number = 1600;
-  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  // OPTIMIZE-V5: localStorage in a field initializer crashes on SSR.
+  // Moved to ngOnInit behind isPlatformBrowser guard.
+  public loggedUserData: any = null;
   public loggedUser: any;
   private req?: Subscription;
 
@@ -23,23 +26,29 @@ export class BannerComponent implements OnInit, OnDestroy {
   public work_setup: string = 'Work Setup';
   public job_type: string = 'Job Type';
 
-  constructor(private router:Router,
+  constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
-    private adminService: AdminService) {
-    this.req = this.router.events.subscribe((event: any) => {
-      this.adminService.adminStatus$.subscribe((result: any) => {
-        this.loggedUser = result;
-
-        //console.log(result, this.loggedUserData)
-      });
+    private adminService: AdminService,
+    @Inject(PLATFORM_ID) private platformId: object) {
+    // OPTIMIZE-V5: fix nested subscription leak. Previously, each router event
+    // opened a new inner subscription to adminStatus$ without ever closing it,
+    // leaking O(n) subscriptions proportional to navigation events during the
+    // component lifetime. Replace with a single direct subscribe — adminStatus$
+    // is a BehaviorSubject/ReplaySubject so the latest value is emitted on
+    // subscribe without needing router event triggering.
+    this.req = this.adminService.adminStatus$.subscribe((result: any) => {
+      this.loggedUser = result;
     });
   }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
+    }
   }
 
   ngOnDestroy(): void {
-    if(this.req) this.req.unsubscribe();
+    if (this.req) this.req.unsubscribe();
   }
 
   findJobs(){

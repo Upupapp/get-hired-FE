@@ -80,7 +80,6 @@ export class SignupComponent implements OnInit {
       map(([success, loading]) => {
         if (success && !loading) {
           this.submitting = false;
-          console.log('here meeee')
           this.openVerification(this.email);
         }
       }),
@@ -119,7 +118,6 @@ export class SignupComponent implements OnInit {
   }
 
   showError(err: any) {
-    console.log(err);
     if (err) {
       this.submitting = false;
       window.scroll(0, 0);

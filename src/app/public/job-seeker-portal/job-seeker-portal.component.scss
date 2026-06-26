@@ -116,10 +116,13 @@
   font-size: 12px;
   font-weight: 600;
   color: #1a1a1a;
-  transition: transform 160ms $motion-ease-standard;
 
-  &:hover {
-    transform: translateY(-3px);
+  @media (prefers-reduced-motion: no-preference) {
+    transition: transform 160ms $motion-ease-standard;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
   }
 }
 

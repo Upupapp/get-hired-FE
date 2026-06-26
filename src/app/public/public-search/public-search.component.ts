@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { AdminService } from '@app-shared/services/auth/admin/admin.service';
 import { Subscription } from 'rxjs';
@@ -16,20 +17,23 @@ import { SeoService } from '@app-core/services/seo.service';
 })
 export class PublicSearchComponent implements OnInit {
   public screenSize: number = 1600;
-  public loggedUserData: any = JSON.parse(localStorage.getItem('userData'));
+  // OPTIMIZE-V5: field initializers that call localStorage/sessionStorage
+  // crash on the SSR server. Moved to ngOnInit behind isPlatformBrowser guard.
+  public loggedUserData: any = null;
   public loggedUser: any;
   private req?: Subscription;
   public userRole: string;
 
-  public jobSearch = JSON.parse(sessionStorage.getItem('job-search'));
-  public keyword: string;  
-  public work_setup: string = 'Work Setup';  
+  public jobSearch: any = null;
+  public keyword: string = '';
+  public work_setup: string = 'Work Setup';
   public job_type: string = 'Job Type';
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private seoService: SeoService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) { }
 
   asyncLocalStorage = {
@@ -44,7 +48,14 @@ export class PublicSearchComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.screenSize = window.innerWidth;
+    // OPTIMIZE-V5: guard all browser-only APIs with isPlatformBrowser so SSR
+    // does not throw when /jobs/search/:keyword is server-rendered.
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenSize = window.innerWidth;
+      this.loggedUserData = JSON.parse(localStorage.getItem('userData') || 'null');
+      this.jobSearch = JSON.parse(sessionStorage.getItem('job-search') || 'null');
+    }
+
     // GH-ACT-021 fix: pre-fill the search/filter inputs from the active
     // search instead of always rendering blank -- previously these fields
     // never reflected `jobSearch`, so re-opening this page (or re-searching

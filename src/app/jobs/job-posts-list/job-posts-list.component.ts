@@ -1,16 +1,20 @@
 import {
   Component,
   ElementRef,
+  Inject,
   Input,
   ViewChild,
   OnChanges,
   OnInit,
   OnDestroy,
-  HostListener
+  HostListener,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { JobsFacade } from '../state/jobs.facade';
 
 @Component({
@@ -19,7 +23,7 @@ import { JobsFacade } from '../state/jobs.facade';
   templateUrl: './job-posts-list.component.html',
   styleUrls: ['./job-posts-list.component.scss']
 })
-export class JobPostsListComponent implements OnInit {
+export class JobPostsListComponent implements OnInit, OnDestroy {
   @Input() fromSearch: boolean = false;
   @Input() label: string;
   @Input() subLabel: string = this.translate.instant('COMPANY_DETAILS.JOBS_CAREERS_MESSAGE');
@@ -33,20 +37,38 @@ export class JobPostsListComponent implements OnInit {
   list$ = this.jobsFacade.jobList$;
   loading$ = this.jobsFacade.loading$;
 
+  // OPTIMIZE-V5: store the queryParams subscription so it can be cleaned up
+  // in ngOnDestroy. Previously subscribed in the constructor with no
+  // reference held, causing a permanent leak for every instance of this
+  // component (it appears on multiple public pages).
+  private queryParamsSub: Subscription;
+
   constructor(
     private jobsFacade: JobsFacade,
     private router: Router,
     private route: ActivatedRoute,
-    private translate: TranslateService
+    private translate: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {
-    this.route.queryParams.subscribe(params => {
-      this.companyId = params.id
+    this.queryParamsSub = this.route.queryParams.subscribe(params => {
+      this.companyId = params.id;
     });
   }
 
   ngOnInit(): void {
     this.jobsFacade.getPublishedList(this.companyId);
-    this.screenSize = window.innerWidth;
+    // OPTIMIZE-V5: guard window.innerWidth with isPlatformBrowser so SSR
+    // does not crash when this component renders on the server. The 1600
+    // default is wide enough that no layout branch is wrong server-side.
+    if (isPlatformBrowser(this.platformId)) {
+      this.screenSize = window.innerWidth;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.queryParamsSub) {
+      this.queryParamsSub.unsubscribe();
+    }
   }
 
   // GH-ACT-021: previously only `keyword` was ever applied -- the
@@ -78,8 +100,18 @@ export class JobPostsListComponent implements OnInit {
     return value.toLowerCase();
   }
 
+  // OPTIMIZE-V5: trackBy to prevent Angular from destroying and recreating
+  // every job card DOM node when the list observable emits a new value
+  // (e.g. search/filter update or store refresh). Without trackBy, Angular
+  // diffs by object identity, so a re-fetch replaces every node even when
+  // jobId values are unchanged.
+  trackByJobId(_index: number, job: any): string {
+    return job?.jobId;
+  }
+
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+  onResize(_event: any) {
+    // @HostListener only fires in the browser, so no isPlatformBrowser guard needed here.
     this.screenSize = window.innerWidth;
   }
 }

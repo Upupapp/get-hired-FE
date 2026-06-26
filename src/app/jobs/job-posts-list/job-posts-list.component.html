@@ -31,7 +31,9 @@
     zero-search-results case, each with [search] set correctly so the
     right illustration shows. -->
     <ng-container *ngIf="filterJobList(jobLists) as filteredJobs">
-      <ng-container *ngFor="let data of filteredJobs; let i = index">
+      <!-- OPTIMIZE-V5: trackByJobId prevents Angular from destroying/recreating
+           every card DOM node when the store emits a new list reference. -->
+      <ng-container *ngFor="let data of filteredJobs; let i = index; trackBy: trackByJobId">
         <div [ngClass]="listView ? 'col-12 col-md-12 col-lg-6' : 'col-12 col-md-6 col-lg-3'"
           [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
           <ng-container *ngIf="!listView">

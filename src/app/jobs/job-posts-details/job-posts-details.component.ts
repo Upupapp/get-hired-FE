@@ -11,9 +11,9 @@ import { environment } from "@environments/environment";
 import { catchError, map, of, Subscription, tap } from 'rxjs';
 import { JobsService } from '../jobs.service';
 import { CoreService } from '@app-core/services/core.service';
+import { SeoService } from '@app-core/services/seo.service';
 import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
 import { JobSignalsService } from '@main/public/services/job-signals.service';
-import { JobStructuredDataService } from '@main/public/services/job-structured-data.service';
 
 @Component({
   selector: 'app-job-posts-details',
@@ -59,7 +59,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     private jobSignals: JobSignalsService,
     private titleService: Title,
     private meta: Meta,
-    private structuredData: JobStructuredDataService,
+    private seoService: SeoService,
     @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.jobId = this.route.snapshot.params['id']
@@ -73,15 +73,14 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     this.coreService.getRole()
       .then(role => this.userRole = role);
 
-    // GH-ACT step 17 (SEO): set a real per-job page title and inject
-    // schema.org JobPosting structured data once the job loads. No
-    // page-title/structured-data management existed anywhere in this
-    // codebase before this (confirmed via repo-wide search).
     this.normalizedJobSub = this.normalizedJob$.subscribe(job => {
       if (job) {
         this.titleService.setTitle(`${job.title} at ${job.companyName} | GetHired`);
         this.meta.updateTag({ name: 'robots', content: 'index, follow' });
-        this.structuredData.apply(job);
+        // SEO: canonical URL prevents duplicate-content signals when the job is
+        // embedded in other routes. JobPosting JSON-LD is handled by the parent
+        // PublicDetailsComponent (seoService.setJobPostingJsonLd) — not duplicated here.
+        this.seoService.setCanonical(`https://gethiredonline.app/jobs/details/${job.jobId}`);
       }
     });
 
@@ -133,7 +132,6 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       .pipe(
         tap(res => {
           if (res.data) {
-            console.log(res.data);
             this.clipboard.copy(res.data.shortLink)
             this.snackBar.open(`Link copied to your clipboard`, '', {
               duration: 4000,
@@ -165,7 +163,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       this.jobErrorSub.unsubscribe();
     }
 
-    this.structuredData.remove();
+    this.seoService.clearCanonical();
     // Reset to the site default rather than leaving a stale job title
     // visible on whatever page the user navigates to next -- no app-wide
     // title management exists today to restore a "previous" title instead.

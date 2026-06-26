@@ -265,6 +265,27 @@ body {
   color: #ffffff;
 }
 
+// NOTIFY-V5 FIX-A: warn-snackbar was referenced in unauthorize.interceptor.ts
+// (HTTP 429 rate-limit toast) but had no CSS definition — Angular Material would
+// fall back to the default snackbar style with no semantic color signal.
+// Uses $color-warning-amber (#b45309, amber-800) = 5.02:1 contrast vs white (WCAG AA pass).
+// Intentionally visually distinct from danger-snackbar (which uses brand red) because
+// a 429 is informational ("wait and retry"), not an auth error.
+.warn-snackbar {
+  background-color: $color-warning-amber;
+  color: #ffffff;
+}
+
+// NOTIFY-V5 FIX-B: error-snackbar was referenced in recorder-setting.component.ts
+// (no recording devices detected) but had no CSS definition.
+// Aliased to danger-snackbar color ($color-global-red) for semantic consistency.
+// Both classes can coexist — error-snackbar may be used in future recording/media
+// error paths without overriding the CRM-contacts danger-snackbar usage.
+.error-snackbar {
+  background-color: $color-global-red;
+  color: #ffffff;
+}
+
 .text-primary-red {
   color: #ff7062;
 }
