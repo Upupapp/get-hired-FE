@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { CoreService } from '@app-core/services/core.service';
@@ -68,6 +68,10 @@ export class MainPortalComponent implements OnInit {
   /** Active tab in the Product Preview section. */
   activePreviewTab: string = 'seeker';
 
+  readonly previewTabs = ['seeker', 'employer', 'tracking', 'video', 'signals'];
+
+  @ViewChild('tablistRef') private tablistRef: ElementRef<HTMLElement>;
+
   /** Proof chips shown in the hero — brief, honest feature labels. */
   heroProofChips = [
     'Structured profiles',
@@ -108,6 +112,28 @@ export class MainPortalComponent implements OnInit {
   setPreviewTab(tab: string): void {
     this.activePreviewTab = tab;
     this.analytics.trackProductPreviewTabClicked(tab, 'home');
+  }
+
+  onTabKeydown(event: KeyboardEvent): void {
+    const tabs = this.previewTabs;
+    const currentIdx = tabs.indexOf(this.activePreviewTab);
+    let nextIdx: number | null = null;
+
+    switch (event.key) {
+      case 'ArrowRight': nextIdx = (currentIdx + 1) % tabs.length; break;
+      case 'ArrowLeft': nextIdx = (currentIdx - 1 + tabs.length) % tabs.length; break;
+      case 'Home': nextIdx = 0; break;
+      case 'End': nextIdx = tabs.length - 1; break;
+      default: return;
+    }
+
+    event.preventDefault();
+    const nextTab = tabs[nextIdx];
+    this.setPreviewTab(nextTab);
+    if (this.tablistRef) {
+      const btn = this.tablistRef.nativeElement.querySelector(`#tab-${nextTab}`) as HTMLElement;
+      if (btn) { btn.focus(); }
+    }
   }
 
   goToJobSeekerPortal(): void {

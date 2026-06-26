@@ -176,29 +176,35 @@
     <h2 class="portal-section-title">See how GetHired works</h2>
     <p class="portal-preview-subtitle">All previews below show example data — not real users or employers.</p>
 
-    <div class="portal-preview-tabs" role="tablist" aria-label="Product feature preview">
+    <div class="portal-preview-tabs" role="tablist" aria-label="Product feature preview"
+         #tablistRef (keydown)="onTabKeydown($event)">
       <button class="portal-preview-tab" [class.active]="activePreviewTab === 'seeker'"
               role="tab" [attr.aria-selected]="activePreviewTab === 'seeker'"
+              [attr.tabindex]="activePreviewTab === 'seeker' ? 0 : -1"
               (click)="setPreviewTab('seeker')" id="tab-seeker" aria-controls="panel-seeker">
         Job seeker profile
       </button>
       <button class="portal-preview-tab" [class.active]="activePreviewTab === 'employer'"
               role="tab" [attr.aria-selected]="activePreviewTab === 'employer'"
+              [attr.tabindex]="activePreviewTab === 'employer' ? 0 : -1"
               (click)="setPreviewTab('employer')" id="tab-employer" aria-controls="panel-employer">
         Employer dashboard
       </button>
       <button class="portal-preview-tab" [class.active]="activePreviewTab === 'tracking'"
               role="tab" [attr.aria-selected]="activePreviewTab === 'tracking'"
+              [attr.tabindex]="activePreviewTab === 'tracking' ? 0 : -1"
               (click)="setPreviewTab('tracking')" id="tab-tracking" aria-controls="panel-tracking">
         Application tracking
       </button>
       <button class="portal-preview-tab" [class.active]="activePreviewTab === 'video'"
               role="tab" [attr.aria-selected]="activePreviewTab === 'video'"
+              [attr.tabindex]="activePreviewTab === 'video' ? 0 : -1"
               (click)="setPreviewTab('video')" id="tab-video" aria-controls="panel-video">
         Video answers
       </button>
       <button class="portal-preview-tab" [class.active]="activePreviewTab === 'signals'"
               role="tab" [attr.aria-selected]="activePreviewTab === 'signals'"
+              [attr.tabindex]="activePreviewTab === 'signals' ? 0 : -1"
               (click)="setPreviewTab('signals')" id="tab-signals" aria-controls="panel-signals">
         Compatibility signals
       </button>

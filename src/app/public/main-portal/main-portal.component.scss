@@ -567,8 +567,8 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  min-height: 38px;
-  transition: border-color 150ms ease, color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  min-height: 44px;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 80ms ease;
 
   &:hover {
     border-color: $color-global-red-buttons;
@@ -578,6 +578,10 @@
   &:focus-visible {
     outline: 2px solid $color-global-red-buttons;
     outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.96);
   }
 
   &.active {
