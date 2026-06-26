@@ -38,8 +38,7 @@ export const routes: Routes = [
     loadChildren: () => import('./employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
     canActivate: [AuthGuard],
     data: {
-      role: '2',
-      isMobileViewAllowed: false
+      role: '2'
     }
   },
   {
@@ -48,7 +47,7 @@ export const routes: Routes = [
       import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
     canActivate: [AuthGuard],
     data: {
-      role: '3', isMobileViewAllowed: false
+      role: '3'
     }
   },
   {
@@ -73,16 +72,10 @@ export const routes: Routes = [
     // matching, not guard-gated empty-path matching.
     path: '',
     loadChildren: () => import('@main/public/public.module').then(m => m.PublicModule),
-    data: {
-      isMobileViewAllowed: false
-    }
   },
   {
     path: '',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule),
-    data: {
-      isMobileViewAllowed: true
-    }
   },
   {
     // BRAND fix: an error-not-found page/component already existed

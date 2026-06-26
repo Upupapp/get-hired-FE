@@ -326,7 +326,6 @@ export class SeoService {
       name: 'GetHired Online',
       url: BASE_URL,
       logo: `${BASE_URL}/assets/images/logo.png`,
-      sameAs: [],
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer support',

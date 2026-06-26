@@ -14,7 +14,7 @@ export class ApplicantService {
 
   getApplicant(userId: string) {
     return this.baseService.get<Model.Applicant>(
-      `${this.applicantUrl}/profile?id=${userId}`
+      `${this.applicantUrl}/profile`
     );
   }
 

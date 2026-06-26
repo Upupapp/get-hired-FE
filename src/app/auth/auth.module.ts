@@ -24,9 +24,6 @@ const routes: Routes = [
     // from these pages) at the leaf level instead of the parent.
     path: 'signin', component: SigninComponent,
     canActivate: [UnauthGuard],
-    data: {
-      isMobileViewAllowed: true
-    }
   },
   { path: 'signup', component: SignupComponent, canActivate: [UnauthGuard] },
   { path: 'reset-password', component: ResetPasswordComponent, canActivate: [UnauthGuard] },

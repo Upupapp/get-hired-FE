@@ -120,7 +120,7 @@
     </p>
     <div class="portal-journey-cta">
       <button type="button" class="btn-cta-primary gh-pressable" (click)="createAccount()">Create free account</button>
-      <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs</button>
+      <a routerLink="/jobs" class="btn-link-cta">Browse jobs</a>
     </div>
   </div>
   <div class="portal-workspace-visual" aria-hidden="true">
@@ -173,11 +173,11 @@
     <div class="portal-jobs-fallback portal-jobs-fallback--upgraded" *ngIf="!jobs || jobs.length === 0">
       <h3>Explore open roles on GetHired</h3>
       <p>Job previews are not available here right now, but you can browse all open roles on the job board.</p>
-      <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Browse all jobs</button>
+      <a routerLink="/jobs" class="btn-cta-primary gh-pressable">Browse all jobs</a>
     </div>
 
     <div class="portal-jobs-cta" *ngIf="jobs && jobs.length > 0">
-      <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse all jobs</button>
+      <a routerLink="/jobs" class="btn-link-cta">Browse all jobs</a>
     </div>
   </ng-container>
 </section>
