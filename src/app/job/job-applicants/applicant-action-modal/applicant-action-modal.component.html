@@ -17,30 +17,62 @@
 
 	<!-- Status picker view -->
 	<div *ngIf="statusView" class="status-picker-view pt-2">
-		<div class="d-flex align-items-center mb-2">
-			<!-- BRAND-FIX-2: disable Back while update is in-flight so the user
-			     cannot navigate away and lose the pending result feedback. -->
-			<button class="btn btn-sm btn-link p-0 me-2" (click)="statusView = false" [disabled]="statusUpdating">&#8592; Back</button>
-			<span class="fw-semibold small">Update Application Status</span>
+
+		<!-- Confirmation step for Rejected / Hired (email sends on change) -->
+		<div *ngIf="confirmingStatus" class="status-confirm-view">
+			<div class="d-flex align-items-center mb-3">
+				<button class="btn btn-sm btn-link p-0 me-2" (click)="cancelConfirm()" [disabled]="statusUpdating">&#8592; Back</button>
+				<span class="fw-semibold small">Confirm status change</span>
+			</div>
+			<div class="alert alert-warning small p-3 mb-3">
+				<strong>Set status to "{{confirmingStatus.name}}"?</strong><br>
+				An email notification will be sent to the applicant. This action cannot be undone.
+			</div>
+			<div class="d-flex gap-2">
+				<button class="btn btn-sm btn-outline-secondary flex-shrink-0"
+					(click)="cancelConfirm()" [disabled]="statusUpdating">Cancel</button>
+				<button class="btn btn-sm btn-danger flex-grow-1"
+					(click)="confirmStatusChange()" [disabled]="statusUpdating">
+					<span *ngIf="!statusUpdating">Confirm — {{confirmingStatus.name}}</span>
+					<span *ngIf="statusUpdating" role="status">
+						<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+						Updating&hellip;
+					</span>
+				</button>
+			</div>
 		</div>
-		<p class="text-muted small mb-3">
-			Current: <strong>{{data?.data?.jobApplicationStatusName || 'Unknown'}}</strong>
-		</p>
-		<div class="status-options">
-			<button
-				*ngFor="let s of statusOptions; trackBy: trackById"
-				class="btn btn-outline-secondary btn-sm w-100 mb-2 text-start"
-				[disabled]="statusUpdating"
-				(click)="selectStatus(s.id, s.name)"
-			>{{s.name}}</button>
-		</div>
-		<!-- BRAND-FIX-3: spinner + text for a richer loading state. The
-		     role="status" + sr-only text ensures screen readers announce it.
-		     Bootstrap's border-spinner is already available project-wide. -->
-		<div *ngIf="statusUpdating" class="text-center text-muted small mt-2" role="status">
-			<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
-			Updating&hellip;
-		</div>
+
+		<!-- Status list -->
+		<ng-container *ngIf="!confirmingStatus">
+			<div class="d-flex align-items-center mb-2">
+				<!-- BRAND-FIX-2: disable Back while update is in-flight so the user
+				     cannot navigate away and lose the pending result feedback. -->
+				<button class="btn btn-sm btn-link p-0 me-2" (click)="statusView = false" [disabled]="statusUpdating">&#8592; Back</button>
+				<span class="fw-semibold small">Update Application Status</span>
+			</div>
+			<p class="text-muted small mb-3">
+				Current: <strong>{{data?.data?.jobApplicationStatusName || 'Unknown'}}</strong>
+			</p>
+			<div class="status-options">
+				<button
+					*ngFor="let s of statusOptions; trackBy: trackById"
+					class="btn btn-outline-secondary btn-sm w-100 mb-2 text-start d-flex justify-content-between align-items-center"
+					[class.status-btn--current]="isCurrentStatus(s.id)"
+					[disabled]="statusUpdating"
+					(click)="selectStatus(s.id, s.name)"
+				>
+					<span>{{s.name}}</span>
+					<span *ngIf="isCurrentStatus(s.id)" class="badge bg-light text-muted ms-2 small fw-normal">current</span>
+				</button>
+			</div>
+			<!-- BRAND-FIX-3: spinner + text for a richer loading state. The
+			     role="status" + sr-only text ensures screen readers announce it.
+			     Bootstrap's border-spinner is already available project-wide. -->
+			<div *ngIf="statusUpdating" class="text-center text-muted small mt-2" role="status">
+				<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+				Updating&hellip;
+			</div>
+		</ng-container>
 	</div>
 
 	<!-- Default action menu -->

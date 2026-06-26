@@ -20,6 +20,7 @@ const STATUS_OPTIONS = [
 export class ApplicantActionModalComponent implements OnInit {
   statusView = false;
   statusUpdating = false;
+  confirmingStatus: { id: number; name: string } | null = null;
   readonly statusOptions = STATUS_OPTIONS;
 
   public tableControls: any[] = [
@@ -92,6 +93,11 @@ export class ApplicantActionModalComponent implements OnInit {
     }
   }
 
+  isCurrentStatus(statusId: number): boolean {
+    const current = this.data && this.data.data && this.data.data.jobApplicationStatusId;
+    return !!current && statusId === parseInt(String(current), 10);
+  }
+
   selectStatus(statusId: number, statusName: string): void {
     const applicationId = this.data && this.data.data && this.data.data.applicationId;
     if (!applicationId) {
@@ -104,6 +110,28 @@ export class ApplicantActionModalComponent implements OnInit {
       this.dialogRef.close(null);
       return;
     }
+    // Rejected (5) and Hired (6) trigger an email to the applicant — require confirmation
+    if (statusId === 5 || statusId === 6) {
+      this.confirmingStatus = { id: statusId, name: statusName };
+      return;
+    }
+    this.applyStatusUpdate(statusId, statusName);
+  }
+
+  confirmStatusChange(): void {
+    if (!this.confirmingStatus) { return; }
+    const id = this.confirmingStatus.id;
+    const name = this.confirmingStatus.name;
+    this.confirmingStatus = null;
+    this.applyStatusUpdate(id, name);
+  }
+
+  cancelConfirm(): void {
+    this.confirmingStatus = null;
+  }
+
+  applyStatusUpdate(statusId: number, statusName: string): void {
+    const applicationId = this.data && this.data.data && this.data.data.applicationId;
     this.statusUpdating = true;
     this.jobService.updateApplicationStatus(applicationId, statusId).subscribe(
       () => {

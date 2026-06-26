@@ -619,10 +619,10 @@
   }
 
   &.active {
-    background: $color-global-red-buttons;
-    border-color: $color-global-red-buttons;
+    background: #C0392B;
+    border-color: #C0392B;
     color: #fff;
-    box-shadow: 0 2px 8px rgba(254, 111, 97, 0.3);
+    box-shadow: 0 2px 8px rgba(192, 57, 43, 0.35);
   }
 }
 

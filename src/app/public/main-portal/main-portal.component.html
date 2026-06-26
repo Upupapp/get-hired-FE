@@ -12,8 +12,8 @@
       </p>
 
       <div class="portal-hero-cta-group">
-        <button type="button" class="btn-cta-primary gh-pressable" (click)="heroCTAFindJobs()">Find jobs</button>
-        <button type="button" class="btn-cta-outline gh-pressable" (click)="heroCTAStartHiring()">Start hiring</button>
+        <a routerLink="/jobs" class="btn-cta-primary gh-pressable" (click)="heroCTAFindJobs()">Find jobs</a>
+        <a routerLink="/employers" class="btn-cta-outline gh-pressable" (click)="heroCTAStartHiring()">Start hiring</a>
       </div>
 
       <div class="portal-hero-proof">
@@ -94,7 +94,7 @@
         ariaLabel="Continue as Employer"
         (activated)="goToEmployerPortal()">
       </app-role-card>
-      <button type="button" class="btn-link-cta portal-role-card-secondary" (click)="goToEmployerPortal()">Start hiring</button>
+      <a routerLink="/employers" class="btn-link-cta portal-role-card-secondary" (click)="goToEmployerPortal()">Start hiring</a>
     </div>
   </div>
 
@@ -143,7 +143,7 @@
     </li>
   </ol>
   <div class="portal-journey-cta">
-    <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
+    <a routerLink="/jobs" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</a>
   </div>
 </section>
 
@@ -162,8 +162,8 @@
     <app-talent-proof-badge variant="strip" placement="main_portal_role_card"></app-talent-proof-badge>
   </p>
   <div class="portal-journey-cta">
-    <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
-    <button type="button" class="btn-link-cta" (click)="goToEmployerPortal()">Learn more for employers</button>
+    <a routerLink="/employers" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</a>
+    <a routerLink="/employers" class="btn-link-cta" (click)="goToEmployerPortal()">Learn more for employers</a>
   </div>
 </section>
 
@@ -247,7 +247,7 @@
               <li>Upload CV and supporting documents</li>
               <li>Add video answers for relevant jobs</li>
             </ul>
-            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">Build your profile</button>
+            <a routerLink="/job-seekers" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">Build your profile</a>
           </div>
         </div>
       </div>
@@ -285,7 +285,7 @@
               <li>Review structured profiles and CVs</li>
               <li>Message candidates directly</li>
             </ul>
-            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
+            <a routerLink="/employers" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</a>
           </div>
         </div>
       </div>
@@ -320,7 +320,7 @@
               <li>Know when employers respond</li>
               <li>Track multiple applications easily</li>
             </ul>
-            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</button>
+            <a routerLink="/jobs" class="btn-cta-primary gh-pressable" (click)="goToJobs()">Find jobs</a>
           </div>
         </div>
       </div>
@@ -342,7 +342,7 @@
               <li>Candidates explain experience in their own words</li>
               <li>Reviewed by real hiring team members</li>
             </ul>
-            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">See job seeker features</button>
+            <a routerLink="/job-seekers" class="btn-cta-primary gh-pressable" (click)="goToJobSeekerPortal()">See job seeker features</a>
           </div>
         </div>
       </div>
@@ -365,7 +365,7 @@
               <li>Always reviewed by a real person</li>
             </ul>
             <p class="preview-panel-note">Signals support decisions — they never replace them.</p>
-            <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">See employer features</button>
+            <a routerLink="/employers" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">See employer features</a>
           </div>
         </div>
       </div>
@@ -422,7 +422,7 @@
       <app-talent-proof-badge variant="strip" placement="employer_portal_hero"></app-talent-proof-badge>
     </div>
     <div class="portal-employer-band-cta">
-      <button type="button" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</button>
+      <a routerLink="/employers" class="btn-cta-primary gh-pressable" (click)="goToEmployerPortal()">Start hiring</a>
     </div>
   </div>
 </section>

@@ -92,6 +92,13 @@
   }
 }
 
+// Visual indicator for the applicant's current status in the picker
+.status-btn--current {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  font-weight: 600;
+}
+
 // MV4-S4: Back button in status picker — btn-sm btn-link is ~30px
 .status-picker-view .btn-link {
   min-height: 44px;
