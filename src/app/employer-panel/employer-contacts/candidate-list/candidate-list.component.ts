@@ -167,7 +167,6 @@ export class CandidateListComponent implements OnInit {
   getApplicant(userId: string) {
     this.jobService.getJobApplicantDetails(this.jobId, userId)
       .pipe().subscribe(res => {
-        console.log(res);
         if(res.data) {
           this.profile = res.data.profile;
           this.interviewQuestions = res.data.interviewQuestions;
