@@ -27,7 +27,7 @@ export class AddAccessModalComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     public snackBar: MatSnackBar,
   ) {
-    console.log(data)
+    // SECURE-RECENT-4-FIX-03: removed console.log(data) — could expose invited email addresses in browser console
 
   }
 
