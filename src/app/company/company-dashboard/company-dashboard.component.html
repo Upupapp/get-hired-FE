@@ -478,7 +478,7 @@
               [attr.stroke-dashoffset]="213.6 - (213.6 * cachedProfilePct / 100)"
               transform="rotate(-90 40 40)"/>
           </svg>
-          <span class="gh-profile-comp-pct" aria-label="Profile completeness {{ cachedProfilePct }}%">
+          <span class="gh-profile-comp-pct" [attr.aria-label]="'Profile completeness ' + cachedProfilePct + '%'">
             {{ cachedProfilePct }}%
           </span>
         </div>

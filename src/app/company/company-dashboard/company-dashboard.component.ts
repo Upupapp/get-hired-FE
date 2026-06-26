@@ -173,7 +173,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Dashboard is auth-gated — prevent indexing.
-    this.seoService.setPageMeta({ title: 'Dashboard — GetHired Online', robots: 'noindex, nofollow' });
+    this.seoService.setPageMeta({ title: 'Dashboard — GetHired Online', description: '', robots: 'noindex, nofollow' });
 
     this.companyFacade.getCompanyDashboard();
     this.loadPipelineOverview();
