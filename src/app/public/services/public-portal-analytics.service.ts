@@ -16,9 +16,14 @@ export class PublicPortalAnalyticsService {
   private track(event: string, payload?: Record<string, any>): void {
     if (!this.isProd()) {
       // eslint-disable-next-line no-console
-      console.debug(`[analytics] ${event}`, payload ?? {});
+      console.debug(`[analytics] ${event}`, payload || {});
     }
-    // Real provider integration point — intentionally empty until one exists.
+    try {
+      const gtag = (window as any).gtag;
+      if (typeof gtag === 'function') {
+        gtag('event', event, payload || {});
+      }
+    } catch (_) { /* blocked or unsupported — fail silently */ }
   }
 
   private isProd(): boolean {

@@ -31,6 +31,17 @@
   <meta name="google-site-verification" content="EYWOEFfXbR2hY6_iyAD0X8UXPX4fHysRFjxnOUJoEJo">
   <!-- Canonical handled dynamically by SeoService per route -->
 
+  <!-- Google Analytics 4 — Measurement ID matches Firebase project G-4C797NXLJF.
+       send_page_view: false because Angular SPA navigation is tracked manually
+       via Router.events in AppComponent (SSR-safe). -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4C797NXLJF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4C797NXLJF', { send_page_view: false });
+  </script>
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
