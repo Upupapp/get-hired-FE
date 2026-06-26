@@ -150,13 +150,18 @@
 }
 
 .btn-cta-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   color: $color-global-red-buttons;
   border: 2px solid $color-global-red-buttons;
   border-radius: 8px;
   padding: 10px 22px;
+  min-height: 44px;
   font-weight: 600;
   white-space: nowrap;
+  text-decoration: none;
 
   &:hover, &:focus-visible {
     background: rgba(255, 112, 98, 0.08);
