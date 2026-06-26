@@ -1,10 +1,11 @@
-import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { SeoService } from '@app-core/services/seo.service';
 import { Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { RESPONSE } from '@nguniversal/express-engine/tokens';
 
 @Component({
   selector: 'app-public-details',
@@ -20,17 +21,29 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
   public screenSize: number = 1600;
 
   private seoSub: Subscription;
+  private errorSub: Subscription;
 
   constructor(
     private jobFacade: JobFacade,
     private route: ActivatedRoute,
     private seoService: SeoService,
+    @Optional() @Inject(RESPONSE) private response: any,
   ) {
     this.jobId = this.route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
+
+    // SSR 404: RESPONSE is only injected on the server; on the browser it is
+    // null (@Optional). When the job fetch fails on the server, mark the
+    // Express response 404 so Googlebot receives the correct HTTP status.
+    if (this.response) {
+      this.errorSub = this.jobFacade.jobError$.pipe(
+        filter(err => !!err),
+        take(1),
+      ).subscribe(() => this.response.status(404));
+    }
 
     // SEO Phase 4 + 6: set metadata and JobPosting JSON-LD once job data arrives.
     // Only active (jobStatusId === 2) jobs get JobPosting schema.
@@ -81,6 +94,9 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
     this.seoService.clearBreadcrumbJsonLd();
     if (this.seoSub) {
       this.seoSub.unsubscribe();
+    }
+    if (this.errorSub) {
+      this.errorSub.unsubscribe();
     }
   }
 }

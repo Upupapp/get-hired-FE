@@ -427,6 +427,7 @@ export const jobReducer = createReducer<JobState>(
     return {
       ...state,
       jobLoading: true,
+      error: null,
       succesMsg: null
     };
   }),
