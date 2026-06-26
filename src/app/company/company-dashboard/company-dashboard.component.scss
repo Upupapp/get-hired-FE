@@ -1,1002 +1,1301 @@
 @import "src/assets/styles/colors";
-@import "~assets/styles/motion";
+@import "src/assets/styles/motion";
 
-// ─── Layout wrapper ──────────────────────────────────────────────────────────
-.emp-dash {
-  background: #f8f9fb;
+// ─── Design tokens ───────────────────────────────────────────────────────────
+$gh-navy:       #1a1830;
+$gh-navy-mid:   #2a2348;
+$gh-coral:      $color-global-red-buttons;
+$gh-white:      #ffffff;
+$gh-bg:         #f4f5f9;
+$gh-card-bg:    #ffffff;
+$gh-border:     #ebe7f5;
+$gh-text:       #1a1830;
+$gh-muted:      #6b6887;
+$gh-green:      $color-green-secondary;
+$gh-amber:      #f59e0b;
+$gh-red:        #ef4444;
+$gh-purple:     $color-pipeline-accent;
+$gh-teal:       $color-teal-accent;
+
+// ─── Skeleton shimmer ────────────────────────────────────────────────────────
+@keyframes gh-shimmer {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+
+%sk {
+  background: linear-gradient(90deg, #f0edf8 25%, #e6e2f2 50%, #f0edf8 75%);
+  background-size: 1600px 100%;
+  animation: gh-shimmer 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+// ─── Entrance animations ─────────────────────────────────────────────────────
+@keyframes gh-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Root wrapper ─────────────────────────────────────────────────────────────
+.gh-dash {
+  background: $gh-bg;
   min-height: 100vh;
 }
 
-// ─── Command Center Hero Header ──────────────────────────────────────────────
-.emp-dash-hero {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1a1830 0%, #2a2348 60%, #1e1b3a 100%);
-  padding: 40px 32px 52px;
-  margin-bottom: 0;
-}
-
-.emp-dash-hero-mesh {
+// ─── Visually hidden (screen reader text) ─────────────────────────────────────
+.gh-visually-hidden {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.35;
-  pointer-events: none;
-}
-
-.emp-dash-hero-inner {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  animation: emp-hero-reveal 0.5s $motion-ease-standard both;
-}
-
-.emp-dash-hero-eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(254, 111, 97, 0.85);
-  margin: 0 0 8px;
-}
-
-.emp-dash-hero-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 8px;
-  line-height: 1.2;
-}
-
-.emp-dash-hero-subtitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0 0 16px;
-}
-
-.emp-dash-hero-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.emp-dash-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(254, 111, 97, 0.18);
-  border: 1px solid rgba(254, 111, 97, 0.4);
-  color: #FE6F61;
-  border-radius: 100px;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.emp-dash-hero-cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-}
-
-// ─── Shared button styles ─────────────────────────────────────────────────────
-.btn-cta-primary {
-  background: $color-global-red-buttons;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 22px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-
-  &:hover, &:focus-visible {
-    background: darken($color-global-red-buttons, 6%);
-    outline: 2px solid $color-global-red-buttons;
-    outline-offset: 2px;
-  }
-}
-
-.btn-cta-outline {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  padding: 10px 22px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-
-  .emp-dash-review-cta & {
-    color: $color-global-red-buttons;
-    border-color: $color-global-red-buttons;
-
-    &:hover, &:focus-visible {
-      background: rgba(255, 112, 98, 0.08);
-    }
-  }
-
-  &:hover, &:focus-visible {
-    background: rgba(255, 255, 255, 0.08);
-    outline: 2px solid rgba(255,255,255,0.4);
-    outline-offset: 2px;
-  }
-}
-
-.btn-link {
-  background: none;
-  border: none;
-  color: $color-global-red-buttons;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 4px 0;
-  text-decoration: underline;
-}
-
-// ─── Section layout ───────────────────────────────────────────────────────────
-.emp-dash-section-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1a1830;
-  margin: 0 0 16px;
-}
-
-.emp-dash-actions,
-.emp-dash-kpis,
-.emp-dash-pipeline,
-.emp-dash-review,
-.emp-dash-analytics {
-  padding: 28px 24px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-// ─── Action Center ────────────────────────────────────────────────────────────
-.emp-dash-action-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.emp-dash-action-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 14px;
-  padding: 16px 20px;
-  text-align: left;
-  cursor: pointer;
-  transition: box-shadow $motion-duration-micro $motion-ease-standard,
-              transform $motion-duration-micro $motion-ease-standard;
-  width: 100%;
-
-  &--urgent {
-    border-color: rgba(254, 111, 97, 0.4);
-    background: linear-gradient(135deg, #fff 60%, rgba(254, 111, 97, 0.04) 100%);
-
-    .emp-dash-action-title { color: $color-global-red-buttons; }
-  }
-
-  &:hover, &:focus-visible {
-    box-shadow: 0 4px 20px rgba(26, 24, 48, 0.1);
-    transform: translateY(-2px);
-    outline: 2px solid $color-global-red-buttons;
-    outline-offset: 2px;
-  }
-}
-
-.emp-dash-action-icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img { width: 36px; height: 36px; object-fit: contain; }
-}
-
-.emp-dash-action-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.emp-dash-action-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1830;
-}
-
-.emp-dash-action-desc {
-  font-size: 13px;
-  color: #6b6887;
-}
-
-.emp-dash-action-count {
-  background: $color-global-red-buttons;
-  color: #fff;
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 3px 10px;
-  flex-shrink: 0;
-}
-
-.emp-dash-action-empty {
-  padding: 16px 20px;
-  background: #f3f2f9;
-  border-radius: 12px;
-  color: #6b6887;
-  font-size: 14px;
-}
-
-.emp-dash-action-error {
-  padding: 16px 20px;
-  background: #fff3f2;
-  border: 1px solid rgba(254, 111, 97, 0.25);
-  border-radius: 12px;
-  color: #6b6887;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  p { margin: 0; }
-}
-
-// ─── KPI Cards ────────────────────────────────────────────────────────────────
-.emp-dash-kpis {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  padding-top: 0;
-}
-
-.emp-dash-kpi-card {
-  flex: 1 1 180px;
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 14px;
-  padding: 20px 20px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  cursor: pointer;
-  // BRAND DASHBOARD: KPI cards now use emp-card-reveal entrance animation
-  // for a staggered-feel entry that matches action cards and review cards.
-  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
-  transition: box-shadow $motion-duration-micro $motion-ease-standard,
-              transform $motion-duration-micro $motion-ease-standard;
-  text-align: left;
-
-  &:hover, &:focus-visible {
-    box-shadow: 0 4px 20px rgba(26, 24, 48, 0.1);
-    transform: translateY(-2px);
-    outline: 2px solid rgba($color-pipeline-accent, 0.5);
-    outline-offset: 2px;
-  }
-}
-
-.emp-dash-kpi-value {
-  font-size: 28px;
-  font-weight: 800;
-  color: #1a1830;
-  line-height: 1;
-}
-
-.emp-dash-kpi-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b6887;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-// ─── Hiring Pipeline ──────────────────────────────────────────────────────────
-.emp-dash-pipeline {
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 1100px;
-  margin: 0 24px 4px;
-}
-
-.emp-dash-pipeline-rail {
-  display: flex;
-  gap: 8px;
-  align-items: flex-end;
-  height: 120px;
-  padding-top: 12px;
-}
-
-.emp-dash-pipeline-stage {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  min-width: 0;
-
-  &:hover .emp-dash-pipeline-bar,
-  &:focus-visible .emp-dash-pipeline-bar {
-    background: $color-global-red-buttons;
-  }
-
-  &:focus-visible {
-    outline: 2px solid $color-global-red-buttons;
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-}
-
-.emp-dash-pipeline-bar {
-  width: 100%;
-  min-height: 8px;
-  background: rgba($color-pipeline-accent, 0.5);
-  border-radius: 6px 6px 0 0;
-  // OPTIMIZE V5: removed `min-height` from transition — height-based
-  // transitions trigger layout/reflow on every frame. Background-only
-  // transition is compositable and sufficient for the hover state change.
-  transition: background $motion-duration-micro $motion-ease-standard;
-}
-
-.emp-dash-pipeline-count {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1830;
-}
-
-.emp-dash-pipeline-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: #6b6887;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-// ─── Applicants Needing Review ────────────────────────────────────────────────
-.emp-dash-review {
-  padding-top: 8px;
-}
-
-.emp-dash-review-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.emp-dash-review-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 14px;
-  padding: 14px 18px;
-  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
-}
-
-.emp-dash-review-initials {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, $color-pipeline-accent, $color-teal-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  text-transform: uppercase;
-}
-
-.emp-dash-review-body {
-  flex: 1;
-  min-width: 0;
-
-  p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-}
-
-.emp-dash-review-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1830;
-}
-
-.emp-dash-review-meta {
-  font-size: 12px;
-  color: #6b6887;
-  margin-top: 2px !important;
-}
-
-.emp-dash-review-stage {
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 600;
-  background: rgba($color-pipeline-accent, 0.12);
-  color: $color-pipeline-accent;
-  border-radius: 100px;
-  padding: 3px 10px;
-}
-
-.emp-dash-review-cta {
-  flex-shrink: 0;
-  padding: 6px 14px;
-  font-size: 13px;
-}
-
-// ─── Analytics section wrapper (pre-existing sub-components) ─────────────────
-.emp-dash-analytics {
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 16px;
-  margin: 0 24px 28px;
-  padding: 24px;
-  max-width: 1100px;
-}
-
-// ─── Skeleton loaders ─────────────────────────────────────────────────────────
-@keyframes emp-shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position: 600px 0; }
-}
-
-%skeleton-base {
-  background: linear-gradient(90deg, #f0edf8 25%, #e8e4f4 50%, #f0edf8 75%);
-  background-size: 1200px 100%;
-  animation: emp-shimmer 1.4s ease-in-out infinite;
-  border-radius: 12px;
-}
-
-.emp-dash-hero-skeleton {
-  @extend %skeleton-base;
-  height: 180px;
-  margin-bottom: 24px;
-}
-
-.emp-dash-action-skeleton {
-  @extend %skeleton-base;
-  height: 72px;
-  margin-bottom: 12px;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.emp-dash-pipeline-skeleton {
-  @extend %skeleton-base;
-  height: 140px;
-}
-
-// ─── Accessibility ─────────────────────────────────────────────────────────────
-.emp-dash-visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border-width: 0;
+  border: 0;
 }
 
-// ─── Animations ───────────────────────────────────────────────────────────────
-@keyframes emp-hero-reveal {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes emp-card-reveal {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-// ─── Responsive ───────────────────────────────────────────────────────────────
-@media (max-width: 767px) {
-  .emp-dash-hero { padding: 28px 20px 40px; }
-  .emp-dash-hero-title { font-size: 22px; }
-  // MOBILEVIEW Pass 2: CTA buttons stack and go full-width on mobile
-  .emp-dash-hero-cta {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-  }
-  .emp-dash-hero-cta .btn-cta-primary,
-  .emp-dash-hero-cta .btn-cta-outline {
-    width: 100%;
-    text-align: center;
-    min-height: 44px;
-  }
-
-  .emp-dash-actions,
-  .emp-dash-review,
-  .emp-dash-analytics { padding: 20px 16px; }
-
-  .emp-dash-kpis { padding: 12px 16px 0; gap: 10px; }
-  .emp-dash-kpi-card { flex: 1 1 calc(50% - 5px); padding: 16px 14px 12px; }
-  .emp-dash-kpi-value { font-size: 22px; }
-
-  .emp-dash-pipeline {
-    margin: 0 16px 4px;
-    padding: 18px 16px;
-  }
-
-  .emp-dash-analytics { margin: 0 16px 20px; padding: 18px 16px; }
-
-  .emp-dash-review-stage { display: none; }
-  .emp-dash-review-card { flex-wrap: wrap; }
-  .emp-dash-review-cta { width: 100%; justify-content: center; margin-top: 8px; display: flex; }
-
-  .emp-dash-pipeline-label { font-size: 9px; }
-}
-
-@media (max-width: 575px) {
-  .emp-dash-kpi-card { flex: 1 1 100%; }
-  // MOBILEVIEW Pass 3: subscription header badge wraps on very narrow screens
-  // so plan name is never cut off (flex-shrink could hide text below 360px).
-  .emp-dash-sub-header { flex-wrap: wrap; }
-  // MOBILEVIEW Pass 3: pipeline label text stays readable on 320px screens
-  .emp-dash-pipeline-label { font-size: 8px; }
-}
-
-// ─── V5: Onboarding Checklist ─────────────────────────────────────────────────
-.emp-dash-onboarding {
-  padding: 28px 24px;
-  max-width: 1100px;
+// ─── Shared section container ────────────────────────────────────────────────
+.gh-section {
+  max-width: 1240px;
   margin: 0 auto;
+  padding: 28px 28px 0;
+
+  @media (max-width: 767px) { padding: 20px 16px 0; }
 }
 
-.emp-dash-onboarding-intro {
-  font-size: 14px;
-  color: #6b6887;
-  margin: -8px 0 16px;
-}
-
-.emp-dash-onboarding-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.emp-dash-onboarding-step {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 14px;
-  padding: 16px 20px;
-  // CSS-only reveal animation; gated by reduced-motion below
-  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
-
-  &--done {
-    background: #f6fff6;
-    border-color: rgba(4, 160, 139, 0.25);
-    opacity: 0.8;
-
-    .emp-dash-onboarding-check {
-      background: $color-green-secondary;
-      border-color: $color-green-secondary;
-      color: #fff;
-    }
-
-    .emp-dash-onboarding-step-title {
-      text-decoration: line-through;
-      color: #999;
-    }
-  }
-}
-
-.emp-dash-onboarding-check {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid #c5c0d4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-}
-
-.emp-dash-onboarding-step-label {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.emp-dash-onboarding-step-title {
-  font-size: 14px;
+.gh-section-title {
+  font-size: 16px;
   font-weight: 700;
-  color: #1a1830;
+  color: $gh-text;
+  margin: 0 0 6px;
 }
 
-.emp-dash-onboarding-step-desc {
-  font-size: 12px;
-  color: #6b6887;
-}
-
-.emp-dash-onboarding-step-cta {
-  flex-shrink: 0;
-  background: $color-global-red-buttons;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 7px 16px;
+.gh-section-sub {
   font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-
-  &:hover, &:focus-visible {
-    background: darken($color-global-red-buttons, 6%);
-    outline: 2px solid $color-global-red-buttons;
-    outline-offset: 2px;
-  }
+  color: $gh-muted;
+  margin: 0 0 20px;
 }
 
-.emp-dash-onboarding-step-done-label {
-  flex-shrink: 0;
-  font-size: 11px;
-  font-weight: 700;
-  color: $color-green-secondary;
-  background: rgba(4, 160, 139, 0.1);
-  border-radius: 100px;
-  padding: 4px 10px;
-}
-
-@media (max-width: 767px) {
-  .emp-dash-onboarding { padding: 20px 16px; }
-  .emp-dash-onboarding-step { flex-wrap: wrap; }
-  .emp-dash-onboarding-step-cta { width: 100%; margin-top: 8px; }
-}
-
-// ─── Job Performance ──────────────────────────────────────────────────────────
-.emp-dash-job-perf {
-  padding: 28px 24px 8px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.emp-dash-job-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.emp-dash-job-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 14px;
-  padding: 14px 18px;
-  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
-}
-
-.emp-dash-job-row-body {
-  flex: 1;
-  min-width: 0;
-
-  p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-}
-
-.emp-dash-job-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #1a1830;
-}
-
-.emp-dash-job-meta {
-  font-size: 12px;
-  color: #6b6887;
-  margin-top: 2px !important;
-}
-
-.emp-dash-job-badge {
-  flex-shrink: 0;
-  background: rgba($color-pipeline-accent, 0.12);
-  color: $color-pipeline-accent;
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 3px 12px;
-}
-
-// ─── Employer Branding Health ─────────────────────────────────────────────────
-.emp-dash-branding {
-  padding: 28px 24px 8px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.emp-dash-branding-inner {
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
+// ─── Common card ─────────────────────────────────────────────────────────────
+.gh-card {
+  background: $gh-card-bg;
+  border: 1.5px solid $gh-border;
   border-radius: 16px;
-  padding: 24px;
-  // BRAND DASHBOARD: entrance animation — branding section slides in when
-  // dashboard$ async data resolves (async *ngIf toggles the section into DOM).
-  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
+  padding: 22px 22px 20px;
+  animation: gh-reveal 0.4s $motion-ease-standard both;
 }
 
-.emp-dash-branding-header {
+.gh-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 6px;
+  margin-bottom: 16px;
 }
 
-.emp-dash-branding-score {
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-
-  &--good  { color: $color-green-secondary; }
-  &--warn  { color: #EFA20D; }
-  &--poor  { color: $color-global-red-buttons; }
+.gh-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: $gh-text;
+  margin: 0;
 }
 
-.emp-dash-branding-subtitle {
+// ─── Chips ────────────────────────────────────────────────────────────────────
+.gh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  padding: 4px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(107, 104, 135, 0.1);
+  color: $gh-muted;
+  border: 1px solid rgba(107, 104, 135, 0.2);
+
+  &--good    { background: rgba(34, 197, 94, 0.12); color: $gh-green; border-color: rgba(34, 197, 94, 0.3); }
+  &--warn    { background: rgba(245, 158, 11, 0.12); color: $gh-amber; border-color: rgba(245, 158, 11, 0.3); }
+  &--poor    { background: rgba(239, 68, 68, 0.12); color: $gh-red; border-color: rgba(239, 68, 68, 0.3); }
+  &--plan    { background: rgba(91, 70, 189, 0.12); color: $gh-purple; border-color: rgba(91, 70, 189, 0.3); }
+  &--neutral { background: rgba(107, 104, 135, 0.1); color: $gh-muted; }
+}
+
+.gh-chip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.gh-btn-coral {
+  background: $gh-coral;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background $motion-duration-micro $motion-ease-standard;
+
+  &:hover, &:focus-visible {
+    background: darken($gh-coral, 7%);
+    outline: 2px solid $gh-coral;
+    outline-offset: 2px;
+  }
+}
+
+.gh-btn-white-outline {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+.gh-btn-hero-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  border: none;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible { color: rgba(255, 255, 255, 0.9); outline: none; }
+}
+
+.gh-btn-hero-link {
+  background: none;
+  border: none;
+  color: $gh-coral;
   font-size: 13px;
-  color: #6b6887;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.gh-btn-link {
+  background: none;
+  border: none;
+  color: $gh-coral;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover, &:focus-visible { color: darken($gh-coral, 10%); }
+}
+
+.gh-btn-sm {
+  background: $gh-coral;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible {
+    background: darken($gh-coral, 7%);
+    outline: 2px solid $gh-coral;
+    outline-offset: 2px;
+  }
+}
+
+// ─── Error states ──────────────────────────────────────────────────────────────
+.gh-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff3f2;
+  border: 1px solid rgba(254, 111, 97, 0.25);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: $gh-muted;
+
+  span { flex: 1; }
+}
+
+.gh-error-sm {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0;
+  color: $gh-muted;
+  font-size: 13px;
+  p { margin: 0; }
+}
+
+.gh-empty-text {
+  color: $gh-muted;
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+// ─── Skeleton placeholders ───────────────────────────────────────────────────
+.gh-skeleton { @extend %sk; }
+
+.gh-hero-skeleton         { @extend %sk; height: 220px; }
+.gh-skeleton--inbox-main  { @extend %sk; height: 200px; flex: 1 1 340px; min-width: 0; }
+.gh-skeleton--inbox-card  { @extend %sk; height: 100px; }
+.gh-skeleton--kpi         { @extend %sk; height: 90px; flex: 1 1 140px; }
+.gh-skeleton--pipeline    { @extend %sk; height: 100px; }
+.gh-skeleton--jobperf     { @extend %sk; height: 120px; }
+.gh-skeleton--sub-head    { @extend %sk; height: 16px; width: 130px; margin-bottom: 14px; }
+.gh-skeleton--sub-meter   { @extend %sk; height: 8px; margin-bottom: 16px; border-radius: 4px; }
+
+.gh-kpi-skeleton-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px 28px;
+
+  @media (max-width: 767px) { padding: 16px 16px; }
+}
+
+.gh-inbox-skeleton {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+// ─── HERO ─────────────────────────────────────────────────────────────────────
+.gh-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1830 0%, #2a2348 60%, #1e1b3a 100%);
+  padding: 40px 32px 48px;
+  animation: gh-reveal 0.45s $motion-ease-standard both;
+}
+
+.gh-hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 80% 50%, rgba(254, 111, 97, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 20% 80%, rgba(91, 70, 189, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.gh-hero-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  max-width: 1240px;
+  margin: 0 auto;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.gh-hero-left { flex: 1; min-width: 0; }
+
+.gh-hero-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(254, 111, 97, 0.85);
   margin: 0 0 14px;
 }
 
-.emp-dash-branding-bar-wrap {
-  height: 8px;
-  background: #ede9f7;
-  border-radius: 100px;
+.gh-hero-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.gh-hero-avatar {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
-  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.emp-dash-branding-bar-fill {
-  height: 100%;
-  border-radius: 100px;
-  transition: width 600ms $motion-ease-standard;
-  background: #c5c0d4;
-
-  &--good { background: $color-green-secondary; }
-  &--warn { background: #EFA20D; }
-  &--poor { background: $color-global-red-buttons; }
+.gh-hero-avatar-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
 }
 
-.emp-dash-branding-missing {
+.gh-hero-avatar-initial {
+  font-size: 22px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gh-hero-name {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 5px;
+  line-height: 1.15;
+}
+
+.gh-hero-stats {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+
+  strong { color: rgba(255, 255, 255, 0.9); }
+}
+
+.gh-hero-chips {
   display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+
+  .gh-chip {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+
+    &--plan { background: rgba(91, 70, 189, 0.25); color: #c4b5fd; border-color: rgba(196, 181, 253, 0.3); }
+    &--good { background: rgba(34, 197, 94, 0.18); color: #86efac; border-color: rgba(134, 239, 172, 0.3); }
+    &--warn { background: rgba(245, 158, 11, 0.18); color: #fcd34d; border-color: rgba(252, 211, 77, 0.3); }
+  }
+}
+
+.gh-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    .gh-btn-coral, .gh-btn-white-outline, .gh-btn-hero-ghost {
+      text-align: center;
+      min-height: 44px;
+    }
+  }
+}
+
+// Profile completeness card on hero right
+.gh-hero-profile {
+  flex-shrink: 0;
+  width: 200px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 22px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+
+  @media (max-width: 900px) {
+    width: 100%;
+    flex-direction: row;
+    padding: 16px 20px;
+    text-align: left;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.gh-profile-ring {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg { position: absolute; inset: 0; }
+
+  @media (max-width: 900px) { width: 64px; height: 64px; }
+}
+
+.gh-profile-ring-pct {
+  position: relative;
+  z-index: 1;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+
+  @media (max-width: 900px) { font-size: 14px; }
+}
+
+.gh-profile-ring-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.gh-profile-ring-sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  line-height: 1.4;
+
+  &--done { color: #86efac; }
+}
+
+// ─── ACTION INBOX ─────────────────────────────────────────────────────────────
+.gh-inbox {
+  .gh-inbox-header { margin-bottom: 4px; }
+}
+
+.gh-inbox-grid {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+// Main (recommended next step) card
+.gh-inbox-main {
+  flex: 1 1 340px;
+  min-width: 0;
+  background: $gh-card-bg;
+  border: 1.5px solid $gh-border;
+  border-radius: 16px;
+  padding: 26px 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: gh-reveal 0.4s $motion-ease-standard both;
+
+  &--high {
+    border-color: rgba(254, 111, 97, 0.45);
+    background: linear-gradient(135deg, #fff 50%, rgba(254, 111, 97, 0.04) 100%);
+    box-shadow: 0 0 0 3px rgba(254, 111, 97, 0.08);
+  }
+
+  &--success {
+    border-color: rgba(34, 197, 94, 0.35);
+    background: linear-gradient(135deg, #fff 60%, rgba(34, 197, 94, 0.04) 100%);
+  }
+}
+
+.gh-inbox-main-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gh-inbox-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $gh-muted;
+}
+
+.gh-inbox-badge {
+  background: $gh-coral;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 2px 10px;
+}
+
+.gh-inbox-main-icon {
+  height: 44px;
+  img { height: 44px; width: auto; object-fit: contain; }
+}
+
+.gh-inbox-main-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: $gh-text;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.gh-inbox-main-reason {
+  font-size: 13px;
+  color: $gh-muted;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// Supporting action cards
+.gh-inbox-cards {
+  flex: 1 1 260px;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  align-content: start;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gh-inbox-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: $gh-card-bg;
+  border: 1.5px solid $gh-border;
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow $motion-duration-micro $motion-ease-standard,
+              transform $motion-duration-micro $motion-ease-standard;
+  animation: gh-reveal 0.4s $motion-ease-standard both;
+
+  &--urgent {
+    border-color: rgba(254, 111, 97, 0.35);
+
+    .gh-inbox-card-label { color: $gh-coral; }
+  }
+
+  &:hover, &:focus-visible {
+    box-shadow: 0 4px 18px rgba(26, 24, 48, 0.1);
+    transform: translateY(-2px);
+    outline: 2px solid $gh-coral;
+    outline-offset: 2px;
+  }
+}
+
+.gh-inbox-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.gh-inbox-card-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: $gh-text;
+}
+
+.gh-inbox-card-count {
+  background: $gh-coral;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+}
+
+.gh-inbox-card-desc {
+  font-size: 11px;
+  color: $gh-muted;
+  line-height: 1.4;
+}
+
+.gh-inbox-card-cta {
+  font-size: 11px;
+  font-weight: 600;
+  color: $gh-coral;
+  margin-top: 4px;
+}
+
+.gh-inbox-all-clear {
+  grid-column: 1 / -1;
+  display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.emp-dash-branding-missing-label {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: $gh-green;
   font-size: 13px;
-  color: #6b6887;
-  margin: 0;
-  white-space: nowrap;
+  p { margin: 0; }
 }
 
-.emp-dash-branding-chips {
+.gh-inbox-all-clear-icon {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.gh-inbox-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  flex: 1 1 260px;
+  min-width: 0;
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+}
+
+// ─── KPI STRIP ────────────────────────────────────────────────────────────────
+.gh-kpi-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  max-width: 1240px;
+  margin: 20px auto 0;
+  padding: 0 28px;
+
+  @media (max-width: 767px) {
+    padding: 0 16px;
+    gap: 10px;
+  }
+}
+
+.gh-kpi-card {
+  flex: 1 1 130px;
+  min-width: 0;
+  background: $gh-card-bg;
+  border: 1.5px solid $gh-border;
+  border-radius: 14px;
+  padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  text-align: left;
+  animation: gh-reveal 0.4s $motion-ease-standard both;
+  transition: box-shadow $motion-duration-micro $motion-ease-standard,
+              transform $motion-duration-micro $motion-ease-standard;
+
+  &:not(button) { cursor: default; }
+
+  &:is(button):hover, &:is(button):focus-visible {
+    box-shadow: 0 4px 18px rgba(26, 24, 48, 0.08);
+    transform: translateY(-2px);
+    outline: 2px solid rgba($gh-purple, 0.4);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 767px) {
+    flex: 1 1 calc(50% - 5px);
+    padding: 14px 14px 12px;
+  }
+
+  @media (max-width: 400px) {
+    flex: 1 1 100%;
+  }
+}
+
+.gh-kpi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  background: #f4f5f9;
+  color: $gh-muted;
+
+  &--blue   { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+  &--green  { background: rgba(34, 197, 94, 0.1); color: $gh-green; }
+  &--warn   { background: rgba(245, 158, 11, 0.1); color: $gh-amber; }
+  &--indigo { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+  &--teal   { background: rgba(20, 184, 166, 0.1); color: #14b8a6; }
+  &--purple { background: rgba(91, 70, 189, 0.1); color: $gh-purple; }
+  &--coral  { background: rgba(254, 111, 97, 0.1); color: $gh-coral; }
+  &--amber  { background: rgba(245, 158, 11, 0.1); color: $gh-amber; }
+}
+
+.gh-kpi-num {
+  font-size: 26px;
+  font-weight: 800;
+  color: $gh-text;
+  line-height: 1;
+
+  &--warn { color: $gh-amber; }
+}
+
+.gh-kpi-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: $gh-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.gh-kpi-ctx {
+  font-size: 11px;
+  color: lighten($gh-muted, 15%);
+}
+
+// ─── MAIN INSIGHT GRID ────────────────────────────────────────────────────────
+.gh-insight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+
+  @media (max-width: 1100px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 767px)  { grid-template-columns: 1fr; }
+}
+
+// Chart card
+.gh-chart-card { display: flex; flex-direction: column; gap: 12px; }
+
+.gh-trend-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f4f5f9;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.gh-trend-tab {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $gh-muted;
+  cursor: pointer;
+
+  &--on {
+    background: $gh-white;
+    color: $gh-text;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  &:focus-visible { outline: 2px solid $gh-coral; outline-offset: 2px; }
+}
+
+.gh-chart-wrap {
+  min-height: 180px;
+  overflow: hidden;
+}
+
+.gh-chart-summary {
+  font-size: 12px;
+  color: $gh-muted;
+  margin: 0;
+  border-top: 1px solid $gh-border;
+  padding-top: 10px;
+}
+
+.gh-chart-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: $gh-muted;
+  font-size: 13px;
+  p { margin: 0 0 12px; }
+}
+
+// Pipeline card
+.gh-pipeline-card { display: flex; flex-direction: column; }
+
+.gh-pipeline-total {
+  font-size: 12px;
+  font-weight: 600;
+  color: $gh-muted;
+}
+
+.gh-pipeline-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.gh-pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.55;
+
+  &--has { opacity: 1; }
+}
+
+.gh-pipeline-count {
+  flex-shrink: 0;
+  width: 36px;
+  font-size: 16px;
+  font-weight: 800;
+  color: $gh-muted;
+  text-align: center;
+
+  &--active { color: $gh-text; }
+}
+
+.gh-pipeline-stage-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.gh-pipeline-stage-lbl {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: $gh-text;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-pipeline-bar-wrap {
+  height: 5px;
+  background: $gh-border;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.gh-pipeline-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: $gh-border;
+  transition: width 600ms $motion-ease-standard;
+
+  &--active { background: $gh-purple; }
+}
+
+.gh-pipeline-footer {
+  font-size: 11px;
+  color: $gh-muted;
+  margin-top: 14px;
+  border-top: 1px solid $gh-border;
+  padding-top: 10px;
+
+  strong { color: $gh-text; }
+}
+
+.gh-pipeline-empty {
+  padding: 24px 0 8px;
+  text-align: center;
+  color: $gh-muted;
+  font-size: 13px;
+  p { margin: 0 0 10px; }
+}
+
+// Job performance table
+.gh-jobperf-card { display: flex; flex-direction: column; overflow: hidden; }
+
+.gh-jobperf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: $gh-muted;
+    padding: 0 8px 10px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid $gh-border;
+  }
+
+  td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba($gh-border, 0.6);
+    vertical-align: middle;
+
+    &:last-child { width: 1%; white-space: nowrap; }
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: rgba($gh-border, 0.3); }
+}
+
+.gh-jobperf-title {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: $gh-text;
+}
+
+.gh-status-badge {
+  display: inline-block;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &--active { background: rgba(34, 197, 94, 0.12); color: $gh-green; }
+  &--draft  { background: rgba(107, 104, 135, 0.12); color: $gh-muted; }
+}
+
+.gh-review-chip {
+  display: inline-block;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  background: $gh-border;
+  color: $gh-muted;
+
+  &--has { background: rgba(254, 111, 97, 0.15); color: $gh-coral; }
+}
+
+.gh-jobperf-empty {
+  padding: 28px 0 8px;
+  text-align: center;
+  color: $gh-muted;
+  font-size: 13px;
+  p { margin: 0 0 10px; }
+}
+
+// ─── EMPLOYER HEALTH GRID ─────────────────────────────────────────────────────
+.gh-health-section {
+  padding-bottom: 0;
+
+  .gh-section-title { margin-bottom: 4px; }
+}
+
+.gh-health-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 4px;
+
+  @media (max-width: 1100px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 767px)  { grid-template-columns: 1fr; }
+}
+
+.gh-health-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gh-health-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gh-health-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: $gh-text;
+}
+
+.gh-health-sub {
+  font-size: 12px;
+  color: $gh-muted;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.gh-health-cta {
+  margin-top: auto;
+}
+
+// Branding health
+.gh-branding-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.gh-branding-score {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+
+  &--good { color: $gh-green; }
+  &--warn { color: $gh-amber; }
+  &--poor { color: $gh-red; }
+}
+
+.gh-branding-denom {
+  font-size: 16px;
+  font-weight: 600;
+  color: $gh-muted;
+}
+
+.gh-branding-bar-wrap {
+  height: 8px;
+  background: $gh-border;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.gh-branding-bar {
+  height: 100%;
+  border-radius: 100px;
+  background: $gh-muted;
+  transition: width 600ms $motion-ease-standard;
+
+  &--good { background: $gh-green; }
+  &--warn { background: $gh-amber; }
+  &--poor { background: $gh-red; }
+}
+
+.gh-miss-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  flex: 1;
 }
 
-.emp-dash-branding-chip {
+.gh-miss-chip {
   font-size: 11px;
   font-weight: 600;
-  background: rgba(254, 111, 97, 0.08);
-  border: 1px solid rgba(254, 111, 97, 0.25);
-  color: $color-global-red-buttons;
+  background: rgba($gh-coral, 0.08);
+  border: 1px solid rgba($gh-coral, 0.2);
+  color: $gh-coral;
   border-radius: 100px;
   padding: 3px 10px;
   text-transform: capitalize;
 }
 
-.emp-dash-branding-cta {
-  flex-shrink: 0;
-  padding: 8px 18px;
+.gh-branding-done {
   font-size: 13px;
-}
-
-.emp-dash-branding-done {
-  font-size: 14px;
   font-weight: 600;
-  color: $color-green-secondary;
+  color: $gh-green;
   margin: 0;
 }
 
-// ─── Subscription / Plan Health ───────────────────────────────────────────────
-.emp-dash-subscription {
-  padding: 28px 24px;
-  max-width: 1100px;
-  margin: 0 auto;
+// Profile completeness card
+.gh-profile-comp-body {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
 }
 
-.emp-dash-sub-inner {
-  background: #ffffff;
-  border: 1.5px solid #ede9f7;
-  border-radius: 16px;
-  padding: 24px;
-  // BRAND DASHBOARD: entrance animation — subscription section slides in when
-  // subsRestrictions$ async data resolves (async *ngIf toggles ng-container).
-  animation: emp-card-reveal $motion-duration-card $motion-ease-standard both;
-}
-
-// NOTIFY / BRAND DASHBOARD: error card for subscription load failure.
-// Reuses .emp-dash-action-error layout; extra class allows future overrides.
-.emp-dash-sub-error {
-  margin-bottom: 0;
-}
-
-.emp-dash-sub-header {
+.gh-profile-comp-ring {
+  position: relative;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+  justify-content: center;
+
+  svg { position: absolute; inset: 0; }
 }
 
-.emp-dash-sub-badge {
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 100px;
-  padding: 4px 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-
-  &--paid {
-    background: rgba(9, 201, 134, 0.12);
-    color: $color-green-secondary;
-    border: 1px solid rgba(9, 201, 134, 0.3);
-  }
-
-  &--free {
-    background: rgba(107, 104, 135, 0.1);
-    color: #6b6887;
-    border: 1px solid rgba(107, 104, 135, 0.2);
-  }
+.gh-profile-comp-pct {
+  position: relative;
+  z-index: 1;
+  font-size: 15px;
+  font-weight: 800;
+  color: $gh-text;
 }
 
-.emp-dash-sub-expiry {
-  font-size: 13px;
-  color: #6b6887;
-  margin: 0 0 20px;
-}
-
-.emp-dash-sub-meters {
+.gh-profile-checklist {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 5px;
 }
 
-.emp-dash-sub-meter-header {
+.gh-profile-checklist-head {
+  font-size: 11px;
+  font-weight: 700;
+  color: $gh-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 4px;
+}
+
+.gh-profile-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: $gh-muted;
+
+  span { font-size: 11px; color: $gh-muted; }
+
+  &--done {
+    color: $gh-text;
+    span { color: $gh-green; font-weight: 700; }
+  }
+}
+
+// Subscription card
+.gh-sub-renew {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: $gh-muted;
+  margin: -4px 0 0;
+
+  svg { flex-shrink: 0; }
+}
+
+.gh-sub-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gh-sub-meter-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 6px;
-}
-
-.emp-dash-sub-meter-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a1830;
-}
-
-.emp-dash-sub-meter-count {
+  margin-bottom: 5px;
   font-size: 12px;
-  color: #6b6887;
   font-weight: 600;
+  color: $gh-text;
 }
 
-.emp-dash-sub-meter-track {
-  height: 8px;
-  background: #ede9f7;
+.gh-sub-meter-track {
+  height: 7px;
+  background: $gh-border;
   border-radius: 100px;
   overflow: hidden;
 }
 
-.emp-dash-sub-meter-fill {
+.gh-sub-meter-fill {
   height: 100%;
   border-radius: 100px;
-  background: $color-pipeline-accent;
+  background: $gh-purple;
   transition: width 600ms $motion-ease-standard;
 
-  &--warn { background: #EFA20D; }
+  &--warn   { background: $gh-amber; }
+  &--danger { background: $gh-red; }
 }
 
-// ─── Section padding group: new sections use same max-width as existing ───────
-.emp-dash-job-perf,
-.emp-dash-branding,
-.emp-dash-subscription {
-  @media (max-width: 767px) {
-    padding: 20px 16px 8px;
-  }
+.gh-sub-loading {
+  padding: 4px 0;
 }
 
-.emp-dash-subscription {
-  @media (max-width: 767px) {
-    padding-bottom: 20px;
-  }
+// ─── CANDIDATE INSIGHTS ───────────────────────────────────────────────────────
+.gh-insights-section {
+  padding-bottom: 0;
+  margin-bottom: 40px;
 }
 
-.emp-dash-sub-meters {
-  @media (max-width: 575px) {
-    gap: 14px;
-  }
+.gh-insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 4px;
+
+  @media (max-width: 767px) { grid-template-columns: 1fr; }
 }
 
-.emp-dash-job-row {
-  @media (max-width: 767px) {
-    flex-wrap: wrap;
+.gh-insight-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba($gh-border, 0.7);
 
-    .emp-dash-review-cta { width: 100%; margin-top: 8px; display: flex; justify-content: center; }
-  }
+  &:last-child { border-bottom: none; }
 }
 
-.emp-dash-branding-missing {
-  @media (max-width: 575px) {
-    flex-direction: column;
-    align-items: flex-start;
+.gh-insight-city {
+  font-size: 13px;
+  font-weight: 600;
+  color: $gh-text;
+  min-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
 
-    .emp-dash-branding-cta { width: 100%; text-align: center; }
-  }
+.gh-insight-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: $gh-border;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.gh-insight-bar {
+  height: 100%;
+  border-radius: 100px;
+  background: $gh-purple;
+  transition: width 600ms $motion-ease-standard;
+}
+
+.gh-insight-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: $gh-muted;
+  min-width: 28px;
+  text-align: right;
+}
+
+// Applicant overview stats grid
+.gh-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.gh-overview-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gh-overview-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: $gh-text;
+  line-height: 1;
+
+  &--warn { color: $gh-amber; }
+}
+
+.gh-overview-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: $gh-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 // ─── Reduced motion ───────────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
-  .emp-dash-hero-inner { animation: none; }
-  .emp-dash-review-card { animation: none; }
-  .emp-dash-onboarding-step { animation: none; }
-  .emp-dash-action-skeleton,
-  .emp-dash-hero-skeleton,
-  .emp-dash-pipeline-skeleton { animation: none; background: #f0edf8; }
-  .emp-dash-action-card,
-  .emp-dash-kpi-card,
-  .emp-dash-pipeline-stage { transition: none; }
-  // OPTIMIZE V5: pipeline bar background transition was missing from this block
-  .emp-dash-pipeline-bar { transition: none; }
-  .emp-dash-onboarding-step-cta { transition: none; }
-  .emp-dash-job-row { animation: none; }
-  .emp-dash-branding-bar-fill,
-  .emp-dash-sub-meter-fill { transition: none; }
-  // BRAND DASHBOARD: new animated elements added — all get animation: none here
-  .emp-dash-kpi-card { animation: none; }
-  .emp-dash-branding-inner { animation: none; }
-  .emp-dash-sub-inner { animation: none; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .gh-skeleton, .gh-hero-skeleton, .gh-skeleton--inbox-main,
+  .gh-skeleton--inbox-card, .gh-skeleton--kpi, .gh-skeleton--pipeline,
+  .gh-skeleton--jobperf, .gh-skeleton--sub-head, .gh-skeleton--sub-meter {
+    animation: none;
+    background: #f0edf8;
+  }
 }

@@ -1,371 +1,683 @@
-<div class="emp-dash" *ngIf="!(loading$ | async); else dashSkeleton">
+<div class="gh-dash" *ngIf="!(loading$ | async); else ghDashSkeleton">
 <ng-container *ngIf="dashboard$ | async as dashboard">
 
-  <!-- Command Center Header -->
-  <section class="emp-dash-hero">
-    <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="emp-dash-hero-mesh" aria-hidden="true">
-    <div class="emp-dash-hero-inner">
-      <div class="emp-dash-hero-copy">
-        <p class="emp-dash-hero-eyebrow">Hiring command center</p>
-        <h1 class="emp-dash-hero-title">{{ dashboard.company?.companyName || 'Your company' }}</h1>
-        <p class="emp-dash-hero-subtitle">
-          {{ dashboard.charts?.activeJobs || 0 }} active job{{ dashboard.charts?.activeJobs === 1 ? '' : 's' }} &middot;
-          {{ dashboard.charts?.applicants || 0 }} applicant{{ dashboard.charts?.applicants === 1 ? '' : 's' }} this month
-        </p>
-        <div class="emp-dash-hero-chips" *ngIf="!pipelineLoading && !pipelineError">
-          <span class="emp-dash-chip" *ngIf="needsReviewCount > 0">{{ needsReviewCount }} applicant{{ needsReviewCount === 1 ? '' : 's' }} to review</span>
-        </div>
-        <div class="emp-dash-hero-cta">
-          <button type="button" class="btn-cta-primary gh-pressable" (click)="goToCreateJob()">Post a job</button>
-          <button type="button" class="btn-cta-outline gh-pressable" (click)="goToJobsList()">Review applicants</button>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HERO — Hiring Command Center
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="gh-hero" aria-label="Hiring command center">
+  <div class="gh-hero-mesh" aria-hidden="true"></div>
+  <div class="gh-hero-body">
 
-  <!-- Action Center — use ng-container *ngIf to compute profile missing-fields
-       once per dashboard render rather than calling the method 3× per tick -->
-  <section class="emp-dash-actions" aria-label="Action center">
-    <h2 class="emp-dash-section-title">Action center</h2>
-
-    <ng-container *ngIf="pipelineLoading">
-      <div class="emp-dash-action-skeleton" *ngFor="let i of [1,2]"></div>
-    </ng-container>
-
-    <div class="emp-dash-action-error" *ngIf="pipelineError" role="alert">
-      <p>Couldn't load your action items right now.</p>
-      <button type="button" class="btn-link" (click)="retryPipelineOverview()">Retry</button>
-    </div>
-
-    <ng-container *ngIf="!pipelineLoading && !pipelineError">
-      <!-- OPTIMIZE DASHBOARD: was companyProfileMissingFields(dashboard.company) called every CD cycle;
-           now reads cachedProfileMissingFields property, refreshed only on dashboard$ emit. -->
-      <ng-container *ngIf="true">
-        <div class="emp-dash-action-grid">
-          <button type="button" class="emp-dash-action-card emp-dash-action-card--urgent gh-pressable"
-            *ngIf="needsReviewCount > 0"
-            (click)="goToApplicants(needsReview[0]?.jobId)">
-            <span class="emp-dash-action-icon" aria-hidden="true">
-              <img src="/assets/brand/gethired-wow/candidate-profile-card.svg" alt="">
-            </span>
-            <span class="emp-dash-action-body">
-              <span class="emp-dash-action-title">Review new applicants</span>
-              <span class="emp-dash-action-desc">{{ needsReviewCount }} applicant{{ needsReviewCount === 1 ? '' : 's' }} waiting for your review.</span>
-            </span>
-            <span class="emp-dash-action-count">{{ needsReviewCount }}</span>
-          </button>
-
-          <button type="button" class="emp-dash-action-card gh-pressable" (click)="goToJobsList()">
-            <span class="emp-dash-action-icon" aria-hidden="true">
-              <img src="/assets/brand/gethired-wow/hiring-pipeline-lines.svg" alt="">
-            </span>
-            <span class="emp-dash-action-body">
-              <span class="emp-dash-action-title">Manage your jobs</span>
-              <span class="emp-dash-action-desc">View, edit, and publish your job posts.</span>
-            </span>
-          </button>
-
-          <button type="button" class="emp-dash-action-card gh-pressable"
-            *ngIf="cachedProfileMissingFields.length > 0"
-            (click)="goToCompanyProfile()">
-            <span class="emp-dash-action-icon" aria-hidden="true">
-              <img src="/assets/brand/gethired-wow/trust-shield-glow.svg" alt="">
-            </span>
-            <span class="emp-dash-action-body">
-              <span class="emp-dash-action-title">Complete your company profile</span>
-              <span class="emp-dash-action-desc">Missing: {{ cachedProfileMissingFields.join(', ') }}.</span>
-            </span>
-          </button>
-
-          <!-- B01: Messages inbox quick-link card. Always shown in action center
-               so recruiters can reach /recruiter/messages from the dashboard.
-               No fake unread count — copy is honest about what the inbox does. -->
-          <button type="button" class="emp-dash-action-card gh-pressable" (click)="goToMessages()">
-            <span class="emp-dash-action-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                width="28" height="28" aria-hidden="true" focusable="false">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-              </svg>
-            </span>
-            <span class="emp-dash-action-body">
-              <span class="emp-dash-action-title">Messages</span>
-              <span class="emp-dash-action-desc">View all candidate conversations in one place.</span>
-            </span>
-          </button>
-
-          <div class="emp-dash-action-empty" *ngIf="needsReviewCount === 0 && cachedProfileMissingFields.length === 0">
-            <p>You're all caught up. No applicants are waiting for review right now.</p>
-          </div>
-        </div>
-      </ng-container>
-    </ng-container>
-  </section>
-
-  <!-- KPI Summary -->
-  <!-- NOTIFY DASHBOARD: added aria-label to each KPI button for screen readers;
-       "Video answers" navigates to jobs list (no dedicated video route yet) — honest. -->
-  <section class="emp-dash-kpis" aria-label="Key metrics">
-    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()"
-      [attr.aria-label]="'Active jobs: ' + (dashboard.charts?.activeJobs || 0) + '. View jobs list.'">
-      <span class="emp-dash-kpi-value">{{ dashboard.charts?.activeJobs || 0 }}</span>
-      <span class="emp-dash-kpi-label">Active jobs</span>
-    </button>
-    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()"
-      [attr.aria-label]="'Applicants this month: ' + (dashboard.charts?.applicants || 0) + '. View applicants.'">
-      <span class="emp-dash-kpi-value">{{ dashboard.charts?.applicants || 0 }}</span>
-      <span class="emp-dash-kpi-label">Applicants this month</span>
-    </button>
-    <button type="button" class="emp-dash-kpi-card gh-pressable" (click)="goToJobsList()"
-      [attr.aria-label]="'Video answers this month: ' + (dashboard.charts?.interviews || 0) + '. View jobs list.'">
-      <span class="emp-dash-kpi-value">{{ dashboard.charts?.interviews || 0 }}</span>
-      <span class="emp-dash-kpi-label">Video answers this month</span>
-    </button>
-    <button type="button" class="emp-dash-kpi-card gh-pressable" *ngIf="!pipelineLoading && !pipelineError" (click)="goToJobsList()"
-      [attr.aria-label]="'Needs review: ' + needsReviewCount + ' applicant' + (needsReviewCount === 1 ? '' : 's') + '. View applicants.'">
-      <span class="emp-dash-kpi-value">{{ needsReviewCount }}</span>
-      <span class="emp-dash-kpi-label">Needs review</span>
-    </button>
-  </section>
-
-  <!-- Hiring Pipeline -->
-  <section class="emp-dash-pipeline" aria-label="Hiring pipeline">
-    <h2 class="emp-dash-section-title">Hiring pipeline</h2>
-
-    <div class="emp-dash-pipeline-skeleton" *ngIf="pipelineLoading"></div>
-
-    <div class="emp-dash-action-error" *ngIf="pipelineError" role="alert">
-      <p>Couldn't load your hiring pipeline right now.</p>
-      <button type="button" class="btn-link" (click)="retryPipelineOverview()">Retry</button>
-    </div>
-
-    <app-empty-section
-      *ngIf="!pipelineLoading && !pipelineError && byStage.length === 0"
-      title="No applicants yet"
-      subTitle="Applicants will appear here once candidates start applying to your jobs."
-      detailSize="small">
-    </app-empty-section>
-
-    <ng-container *ngIf="!pipelineLoading && !pipelineError && byStage.length > 0">
-      <div class="emp-dash-pipeline-rail" role="list">
-        <button type="button" class="emp-dash-pipeline-stage gh-pressable" role="listitem"
-          *ngFor="let stage of byStage; trackBy: trackByStageId" (click)="goToJobsList()"
-          [attr.aria-label]="stage.label + ': ' + stage.count + ' applicants'">
-          <span class="emp-dash-pipeline-bar" [style.height.%]="(stage.count / pipelineBarMax) * 100"></span>
-          <span class="emp-dash-pipeline-count">{{ stage.count }}</span>
-          <span class="emp-dash-pipeline-label">{{ stage.label }}</span>
-        </button>
-      </div>
-      <p class="emp-dash-visually-hidden">
-        Hiring pipeline: {{ byStage.length }} stages.
-        <ng-container *ngFor="let stage of byStage">{{ stage.label }}: {{ stage.count }} applicants. </ng-container>
-      </p>
-    </ng-container>
-  </section>
-
-  <!-- Applicants Needing Review -->
-  <section class="emp-dash-review" aria-label="Applicants needing review" *ngIf="!pipelineLoading && !pipelineError && needsReview.length > 0">
-    <h2 class="emp-dash-section-title">Applicants needing review</h2>
-    <div class="emp-dash-review-list">
-      <div class="emp-dash-review-card" *ngFor="let applicant of needsReview; trackBy: trackByApplicationId">
-        <span class="emp-dash-review-initials" aria-hidden="true">{{ applicant.candidateName?.charAt(0) || '?' }}</span>
-        <div class="emp-dash-review-body">
-          <p class="emp-dash-review-name">{{ applicant.candidateName }}</p>
-          <p class="emp-dash-review-meta">{{ applicant.jobTitle }} &middot; {{ applicant.submittedDate | date:'mediumDate' }}</p>
-        </div>
-        <span class="emp-dash-review-stage">{{ applicant.statusId === 1 ? 'Pending Review' : 'Under Review' }}</span>
-        <button type="button" class="btn-cta-outline emp-dash-review-cta gh-pressable" (click)="goToApplicants(applicant.jobId)">Review</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- V5: Employer Onboarding Checklist — shown only when there are
-       incomplete setup steps. Driven entirely by real data (company fields +
-       job counts). No fake progress or fake counts. Collapses automatically
-       when all steps are complete.
-       Reduced-motion: checklist items use CSS transitions gated by
-       prefers-reduced-motion via the motion.scss mixin.
-       OPTIMIZE V5: uses cachedOnboardingSteps (a component property) instead
-       of calling onboardingSteps() twice per CD cycle. Cache is refreshed via
-       tap in dashboard$ and after pipeline data arrives. -->
-  <section class="emp-dash-onboarding" aria-label="Getting started checklist"
-    *ngIf="!pipelineLoading && cachedOnboardingSteps.length > 0">
-    <h2 class="emp-dash-section-title">Getting started</h2>
-    <p class="emp-dash-onboarding-intro">Complete these steps to get the most out of GetHired.</p>
-    <ol class="emp-dash-onboarding-list" role="list">
-      <li class="emp-dash-onboarding-step"
-        *ngFor="let step of cachedOnboardingSteps; trackBy: trackOnboardingStep"
-        [class.emp-dash-onboarding-step--done]="step.done"
-        role="listitem">
-        <span class="emp-dash-onboarding-check" aria-hidden="true">
-          <svg *ngIf="step.done" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-            stroke-width="2.5" aria-hidden="true" focusable="false">
-            <path d="M3 8l3.5 3.5 6.5-7"/>
-          </svg>
-        </span>
-        <span class="emp-dash-onboarding-step-label">
-          <span class="emp-dash-onboarding-step-title">{{ step.title }}</span>
-          <span class="emp-dash-onboarding-step-desc">{{ step.desc }}</span>
-        </span>
-        <button *ngIf="!step.done" type="button"
-          class="emp-dash-onboarding-step-cta gh-pressable"
-          (click)="step.action()">
-          {{ step.cta }}
-        </button>
-        <span *ngIf="step.done" class="emp-dash-onboarding-step-done-label" aria-label="Completed">Done</span>
-      </li>
-    </ol>
-  </section>
-
-  <!-- Job Performance — jobs that have applicants actively waiting for review,
-       derived from pipeline data already fetched (no extra API call).
-       NOTIFY DASHBOARD: renamed section title from "Jobs with applicants waiting"
-       to "Jobs awaiting review" — clearer, action-oriented, matches CTA wording. -->
-  <section class="emp-dash-job-perf" aria-label="Jobs awaiting review"
-    *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length > 0">
-    <h2 class="emp-dash-section-title">Jobs awaiting review</h2>
-    <div class="emp-dash-job-list">
-      <div class="emp-dash-job-row" *ngFor="let job of cachedJobGroups; trackBy: trackByIndex">
-        <div class="emp-dash-job-row-body">
-          <p class="emp-dash-job-title">{{ job.jobTitle }}</p>
-          <p class="emp-dash-job-meta">{{ job.count }} applicant{{ job.count === 1 ? '' : 's' }} awaiting review</p>
-        </div>
-        <span class="emp-dash-job-badge">{{ job.count }}</span>
-        <button type="button" class="btn-cta-outline emp-dash-review-cta gh-pressable" (click)="goToApplicants(job.jobId)">Review</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Employer Branding Health — score derived from real company profile fields;
-       no fake metrics, computed client-side from already-loaded company data.
-       OPTIMIZE DASHBOARD: was brandingScore(dashboard.company) called every CD cycle;
-       now reads cachedBrandingScore property, refreshed only on dashboard$ emit. -->
-  <section class="emp-dash-branding" aria-label="Employer branding health" *ngIf="dashboard.company && cachedBrandingScore">
-    <ng-container *ngIf="cachedBrandingScore as branding">
-      <div class="emp-dash-branding-inner">
-        <div class="emp-dash-branding-header">
-          <h2 class="emp-dash-section-title" style="margin:0">Employer branding health</h2>
-          <span class="emp-dash-branding-score"
-            [class.emp-dash-branding-score--good]="branding.score >= 80"
-            [class.emp-dash-branding-score--warn]="branding.score >= 50 && branding.score < 80"
-            [class.emp-dash-branding-score--poor]="branding.score < 50">
-            {{ branding.score }}%
+    <!-- Left: identity, chips, CTAs -->
+    <div class="gh-hero-left">
+      <p class="gh-hero-eyebrow">Hiring command center</p>
+      <div class="gh-hero-identity">
+        <div class="gh-hero-avatar" aria-hidden="true">
+          <img *ngIf="dashboard.company?.companyLogoUrl"
+               [src]="dashboard.company.companyLogoUrl"
+               [alt]="dashboard.company?.companyName || ''"
+               class="gh-hero-avatar-img">
+          <span *ngIf="!dashboard.company?.companyLogoUrl" class="gh-hero-avatar-initial">
+            {{ (dashboard.company?.companyName || 'C').charAt(0).toUpperCase() }}
           </span>
         </div>
-        <p class="emp-dash-branding-subtitle">A complete profile attracts more candidates and builds trust.</p>
-        <div class="emp-dash-branding-bar-wrap" role="progressbar"
-          [attr.aria-valuenow]="branding.score" aria-valuemin="0" aria-valuemax="100"
-          [attr.aria-label]="'Employer branding completeness: ' + branding.score + '%'">
-          <div class="emp-dash-branding-bar-fill"
-            [style.width.%]="branding.score"
-            [class.emp-dash-branding-bar-fill--good]="branding.score >= 80"
-            [class.emp-dash-branding-bar-fill--warn]="branding.score >= 50 && branding.score < 80"
-            [class.emp-dash-branding-bar-fill--poor]="branding.score < 50">
-          </div>
+        <div>
+          <h1 class="gh-hero-name">{{ dashboard.company?.companyName || 'Your company' }}</h1>
+          <p class="gh-hero-stats">
+            <strong>{{ dashboard.charts?.activeJobs || 0 }}</strong> active job{{ dashboard.charts?.activeJobs === 1 ? '' : 's' }}
+            &nbsp;&middot;&nbsp;
+            <strong>{{ dashboard.charts?.applicants || 0 }}</strong> applicant{{ dashboard.charts?.applicants === 1 ? '' : 's' }} this month
+            <ng-container *ngIf="cachedJobViewsThisMonth > 0">
+              &nbsp;&middot;&nbsp;
+              <strong>{{ cachedJobViewsThisMonth | number }}</strong> job views this month
+            </ng-container>
+          </p>
         </div>
-        <div class="emp-dash-branding-missing" *ngIf="branding.missing.length > 0">
-          <p class="emp-dash-branding-missing-label">Still missing:</p>
-          <div class="emp-dash-branding-chips">
-            <span class="emp-dash-branding-chip" *ngFor="let field of branding.missing; trackBy: trackByIndex">{{ field }}</span>
-          </div>
-          <button type="button" class="btn-cta-primary emp-dash-branding-cta gh-pressable" (click)="goToCompanyProfile()">
-            Complete profile
-          </button>
-        </div>
-        <p class="emp-dash-branding-done" *ngIf="branding.missing.length === 0">
-          Your company profile is complete. Candidates see your best face.
-        </p>
       </div>
-    </ng-container>
-  </section>
 
-  <!-- Subscription / Plan Health — loads independently of dashboard data
-       so a subscription API failure never blanks the rest of the dashboard.
-       NOTIFY DASHBOARD: added error state so a failure shows a retry prompt
-       instead of silently hiding the whole section.
-       BRAND DASHBOARD: emp-dash-sub-inner gets entrance animation via CSS. -->
-  <section class="emp-dash-subscription" aria-label="Subscription and plan">
-    <!-- Error state: shown when subsRestrictions$ errors -->
-    <div class="emp-dash-action-error emp-dash-sub-error" *ngIf="subsError" role="alert">
-      <p>Couldn't load your subscription details right now.</p>
-      <button type="button" class="btn-link" (click)="retrySubscription()">Retry</button>
-    </div>
-    <ng-container *ngIf="!subsError && (subsRestrictions$ | async) as subs">
-    <div class="emp-dash-sub-inner">
-      <div class="emp-dash-sub-header">
-        <h2 class="emp-dash-section-title" style="margin:0">Subscription</h2>
-        <span class="emp-dash-sub-badge"
-          [class.emp-dash-sub-badge--paid]="subs.isPaid"
-          [class.emp-dash-sub-badge--free]="!subs.isPaid">
-          {{ subs.isPaid ? (subs.subscriptionName || 'Paid plan') : 'Free plan' }}
+      <div class="gh-hero-chips">
+        <ng-container *ngIf="subsRestrictions$ | async as subsHero">
+          <span class="gh-chip gh-chip--plan">
+            {{ subsHero.isPaid ? (subsHero.subscriptionName || 'Pro plan') : 'Free plan' }}
+          </span>
+        </ng-container>
+        <span class="gh-chip"
+          [class.gh-chip--good]="cachedHiringHealth === 'good'"
+          [class.gh-chip--warn]="cachedHiringHealth === 'attention'">
+          <span class="gh-chip-dot" aria-hidden="true"></span>
+          Hiring health: {{ cachedHiringHealth === 'good' ? 'Good' : cachedHiringHealth === 'attention' ? 'Needs attention' : 'Unknown' }}
         </span>
       </div>
-      <p class="emp-dash-sub-expiry" *ngIf="subs.isPaid && subs.endAt">
-        {{ subscriptionDaysLeft(subs.endAt) }} days remaining &middot; renews {{ subs.endAt | date:'mediumDate' }}
+
+      <div class="gh-hero-ctas">
+        <button type="button" class="gh-btn-coral gh-pressable" (click)="goToCreateJob()">Post a job</button>
+        <button type="button" class="gh-btn-white-outline gh-pressable" (click)="goToJobsList()">Review applicants</button>
+        <button type="button" class="gh-btn-hero-ghost gh-pressable"
+          *ngIf="cachedProfilePct < 100" (click)="goToCompanyProfile()">
+          Complete profile
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: profile completeness ring -->
+    <div class="gh-hero-profile" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
+      <div class="gh-profile-ring">
+        <svg viewBox="0 0 72 72" width="96" height="96" aria-hidden="true" focusable="false">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="#FF7062" stroke-width="6"
+            stroke-linecap="round"
+            stroke-dasharray="188.5"
+            [attr.stroke-dashoffset]="188.5 - (188.5 * cachedProfilePct / 100)"
+            transform="rotate(-90 36 36)"/>
+        </svg>
+        <span class="gh-profile-ring-pct">{{ cachedProfilePct }}%</span>
+      </div>
+      <p class="gh-profile-ring-title">Profile completeness</p>
+      <p class="gh-profile-ring-sub" *ngIf="cachedProfilePct < 100">
+        Almost there! Complete your profile to attract more candidates.
       </p>
-      <div class="emp-dash-sub-meters">
-        <div class="emp-dash-sub-meter">
-          <div class="emp-dash-sub-meter-header">
-            <span class="emp-dash-sub-meter-label">Job posts</span>
-            <span class="emp-dash-sub-meter-count">{{ subs.jobPostCount || 0 }} / {{ subs.jobPost || '—' }}</span>
-          </div>
-          <div class="emp-dash-sub-meter-track" role="progressbar"
-            [attr.aria-valuenow]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)"
-            aria-valuemin="0" aria-valuemax="100"
-            [attr.aria-label]="'Job posts: ' + (subs.jobPostCount || 0) + ' of ' + (subs.jobPost || 0) + ' used'">
-            <div class="emp-dash-sub-meter-fill"
-              [style.width.%]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)"
-              [class.emp-dash-sub-meter-fill--warn]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost) >= 80">
-            </div>
-          </div>
+      <p class="gh-profile-ring-sub gh-profile-ring-sub--done" *ngIf="cachedProfilePct >= 100">
+        Profile complete!
+      </p>
+      <button type="button" class="gh-btn-hero-link gh-pressable"
+        (click)="goToCompanyProfile()" *ngIf="cachedProfilePct < 100">
+        Complete profile →
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ACTION INBOX
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="gh-section gh-inbox" aria-label="Action inbox">
+  <div class="gh-inbox-header">
+    <h2 class="gh-section-title">Action inbox</h2>
+    <p class="gh-section-sub">The most important hiring actions to handle next.</p>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div class="gh-inbox-skeleton" *ngIf="pipelineLoading" aria-hidden="true">
+    <div class="gh-skeleton gh-skeleton--inbox-main"></div>
+    <div class="gh-inbox-cards-grid">
+      <div class="gh-skeleton gh-skeleton--inbox-card" *ngFor="let i of [1,2,3]"></div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="gh-error-banner" *ngIf="pipelineError && !pipelineLoading" role="alert">
+    <span>Couldn't load action items right now.</span>
+    <button type="button" class="gh-btn-link" (click)="retryPipelineOverview()">Retry</button>
+  </div>
+
+  <!-- Action inbox grid -->
+  <div class="gh-inbox-grid" *ngIf="!pipelineLoading && !pipelineError">
+
+    <!-- Recommended next step (large card) -->
+    <div class="gh-inbox-main" [class]="'gh-inbox-main--' + (cachedRecommendedStep?.priority || 'medium')">
+      <div class="gh-inbox-main-head">
+        <span class="gh-inbox-eyebrow">Recommended next step</span>
+        <span class="gh-inbox-badge" *ngIf="(cachedRecommendedStep?.count || 0) > 0">
+          {{ cachedRecommendedStep?.count }}
+        </span>
+      </div>
+      <div class="gh-inbox-main-icon" aria-hidden="true">
+        <img src="/assets/brand/gethired-wow/candidate-profile-card.svg" alt=""
+          *ngIf="cachedRecommendedStep?.type === 'review_applicants' || cachedRecommendedStep?.type === 'review_video_answers'">
+        <img src="/assets/brand/gethired-wow/hiring-pipeline-lines.svg" alt=""
+          *ngIf="cachedRecommendedStep?.type === 'post_first_job'">
+        <img src="/assets/brand/gethired-wow/trust-shield-glow.svg" alt=""
+          *ngIf="cachedRecommendedStep?.type === 'complete_company_profile' || cachedRecommendedStep?.type === 'improve_employer_brand'">
+      </div>
+      <h3 class="gh-inbox-main-title">{{ cachedRecommendedStep?.title || 'All caught up' }}</h3>
+      <p class="gh-inbox-main-reason">{{ cachedRecommendedStep?.reason }}</p>
+      <button type="button" class="gh-btn-coral gh-pressable" (click)="onRecommendedStepCta()">
+        {{ cachedRecommendedStep?.ctaLabel || 'View jobs' }}
+      </button>
+    </div>
+
+    <!-- Supporting action cards -->
+    <div class="gh-inbox-cards">
+      <button type="button" class="gh-inbox-card gh-pressable"
+        *ngFor="let action of cachedSupportingActions; trackBy: trackByIndex"
+        (click)="navigateTo(action.route)"
+        [class.gh-inbox-card--urgent]="action.priority === 'high'">
+        <div class="gh-inbox-card-top">
+          <span class="gh-inbox-card-label">{{ action.label }}</span>
+          <span class="gh-inbox-card-count" *ngIf="(action.count || 0) > 0">{{ action.count }}</span>
         </div>
-        <div class="emp-dash-sub-meter">
-          <div class="emp-dash-sub-meter-header">
-            <span class="emp-dash-sub-meter-label">Admin users</span>
-            <span class="emp-dash-sub-meter-count">{{ subs.adminCount || 0 }} / {{ subs.admin || '—' }}</span>
-          </div>
-          <div class="emp-dash-sub-meter-track" role="progressbar"
-            [attr.aria-valuenow]="subscriptionUsagePct(subs.adminCount, subs.admin)"
-            aria-valuemin="0" aria-valuemax="100"
-            [attr.aria-label]="'Admin users: ' + (subs.adminCount || 0) + ' of ' + (subs.admin || 0) + ' used'">
-            <div class="emp-dash-sub-meter-fill"
-              [style.width.%]="subscriptionUsagePct(subs.adminCount, subs.admin)"
-              [class.emp-dash-sub-meter-fill--warn]="subscriptionUsagePct(subs.adminCount, subs.admin) >= 80">
-            </div>
-          </div>
-        </div>
-        <div class="emp-dash-sub-meter">
-          <div class="emp-dash-sub-meter-header">
-            <span class="emp-dash-sub-meter-label">Video responses</span>
-            <span class="emp-dash-sub-meter-count">{{ subs.videoResponseCount || 0 }} / {{ subs.videoResponse || '—' }}</span>
-          </div>
-          <div class="emp-dash-sub-meter-track" role="progressbar"
-            [attr.aria-valuenow]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)"
-            aria-valuemin="0" aria-valuemax="100"
-            [attr.aria-label]="'Video responses: ' + (subs.videoResponseCount || 0) + ' of ' + (subs.videoResponse || 0) + ' used'">
-            <div class="emp-dash-sub-meter-fill"
-              [style.width.%]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)"
-              [class.emp-dash-sub-meter-fill--warn]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse) >= 80">
+        <span class="gh-inbox-card-desc">{{ action.desc }}</span>
+        <span class="gh-inbox-card-cta">{{ action.cta }} →</span>
+      </button>
+
+      <!-- All caught up state -->
+      <div class="gh-inbox-all-clear" *ngIf="cachedSupportingActions.length === 0">
+        <span class="gh-inbox-all-clear-icon" aria-hidden="true">✓</span>
+        <p>You're all caught up. No urgent actions right now.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     KPI STRIP
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="gh-kpi-strip" aria-label="Key metrics">
+
+  <!-- Active jobs -->
+  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToJobsList()"
+    [attr.aria-label]="'Active jobs: ' + (dashboard.charts?.activeJobs || 0) + '. Go to jobs list.'">
+    <span class="gh-kpi-icon gh-kpi-icon--blue" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="2" y="3" width="16" height="14" rx="2"/><path d="M7 3v3M13 3v3M2 9h16"/></svg>
+    </span>
+    <span class="gh-kpi-num">{{ dashboard.charts?.activeJobs || 0 }}</span>
+    <span class="gh-kpi-lbl">Active jobs</span>
+    <span class="gh-kpi-ctx">currently published</span>
+  </button>
+
+  <!-- Applicants this month -->
+  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToJobsList()"
+    [attr.aria-label]="'Applicants this month: ' + (dashboard.charts?.applicants || 0)">
+    <span class="gh-kpi-icon gh-kpi-icon--green" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="10" cy="7" r="4"/><path d="M2 17c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+    </span>
+    <span class="gh-kpi-num">{{ dashboard.charts?.applicants || 0 }}</span>
+    <span class="gh-kpi-lbl">Applicants this month</span>
+    <span class="gh-kpi-ctx">new applications</span>
+  </button>
+
+  <!-- Needs review -->
+  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToJobsList()"
+    [attr.aria-label]="'Needs review: ' + needsReviewCount + ' applicants'">
+    <span class="gh-kpi-icon"
+      [class.gh-kpi-icon--warn]="needsReviewCount > 0"
+      [class.gh-kpi-icon--green]="needsReviewCount === 0"
+      aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M10 2l8 15H2L10 2z"/><path d="M10 8v4M10 14h.01"/></svg>
+    </span>
+    <span class="gh-kpi-num" [class.gh-kpi-num--warn]="needsReviewCount > 0">{{ needsReviewCount }}</span>
+    <span class="gh-kpi-lbl">Needs review</span>
+    <span class="gh-kpi-ctx">{{ needsReviewCount > 0 ? 'applicants waiting' : 'all reviewed' }}</span>
+  </button>
+
+  <!-- Job views this month -->
+  <div class="gh-kpi-card" [attr.aria-label]="'Job views this month: ' + cachedJobViewsThisMonth">
+    <span class="gh-kpi-icon gh-kpi-icon--indigo" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M1 10C1 10 4 4 10 4s9 6 9 6-3 6-9 6-9-6-9-6z"/><circle cx="10" cy="10" r="2"/></svg>
+    </span>
+    <span class="gh-kpi-num">{{ cachedJobViewsThisMonth > 0 ? (cachedJobViewsThisMonth | number) : '—' }}</span>
+    <span class="gh-kpi-lbl">Job views</span>
+    <span class="gh-kpi-ctx">{{ cachedJobViewsThisMonth > 0 ? 'this month' : 'no views yet' }}</span>
+  </div>
+
+  <!-- Application conversion rate -->
+  <div class="gh-kpi-card" [attr.aria-label]="'Conversion rate: ' + (cachedConversionRate || 'no data yet')">
+    <span class="gh-kpi-icon gh-kpi-icon--teal" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M4 14l4-4 4 4 4-8"/></svg>
+    </span>
+    <span class="gh-kpi-num">{{ cachedConversionRate || '—' }}</span>
+    <span class="gh-kpi-lbl">Conversion rate</span>
+    <span class="gh-kpi-ctx">{{ cachedConversionRate ? 'views → applications' : 'no views yet' }}</span>
+  </div>
+
+  <!-- Video answers this month -->
+  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToJobsList()"
+    [attr.aria-label]="'Video answers this month: ' + (dashboard.charts?.interviews || 0)">
+    <span class="gh-kpi-icon gh-kpi-icon--purple" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="2" y="4" width="11" height="12" rx="2"/><path d="M13 8l5-3v10l-5-3V8z"/></svg>
+    </span>
+    <span class="gh-kpi-num">{{ dashboard.charts?.interviews || 0 }}</span>
+    <span class="gh-kpi-lbl">Video answers</span>
+    <span class="gh-kpi-ctx">this month</span>
+  </button>
+
+  <!-- Messages -->
+  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToMessages()"
+    aria-label="View messages inbox">
+    <span class="gh-kpi-icon gh-kpi-icon--coral" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M18 13a2 2 0 0 1-2 2H6l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>
+    </span>
+    <span class="gh-kpi-num">—</span>
+    <span class="gh-kpi-lbl">Messages</span>
+    <span class="gh-kpi-ctx">view inbox</span>
+  </button>
+
+  <!-- Interviews scheduled -->
+  <div class="gh-kpi-card" [attr.aria-label]="'Interviews scheduled: ' + cachedInterviewsScheduled">
+    <span class="gh-kpi-icon gh-kpi-icon--amber" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l3 3"/></svg>
+    </span>
+    <span class="gh-kpi-num">{{ cachedInterviewsScheduled }}</span>
+    <span class="gh-kpi-lbl">Interviews</span>
+    <span class="gh-kpi-ctx">in pipeline</span>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     MAIN INSIGHT GRID  (chart | pipeline | job performance)
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="gh-insight-grid gh-section">
+
+  <!-- ── Views & Applications Chart ─────────────────────────────────────── -->
+  <div class="gh-card gh-chart-card">
+    <div class="gh-card-head">
+      <h2 class="gh-card-title">Views and applications</h2>
+      <div class="gh-trend-tabs" role="tablist" aria-label="Chart time range">
+        <button role="tab" type="button" class="gh-trend-tab"
+          [class.gh-trend-tab--on]="trendRange === '7d'"
+          [attr.aria-selected]="trendRange === '7d'"
+          (click)="setTrendRange('7d')">7d</button>
+        <button role="tab" type="button" class="gh-trend-tab"
+          [class.gh-trend-tab--on]="trendRange === '30d'"
+          [attr.aria-selected]="trendRange === '30d'"
+          (click)="setTrendRange('30d')">30d</button>
+        <button role="tab" type="button" class="gh-trend-tab"
+          [class.gh-trend-tab--on]="trendRange === '90d'"
+          [attr.aria-selected]="trendRange === '90d'"
+          (click)="setTrendRange('90d')">90d</button>
+      </div>
+    </div>
+    <div class="gh-chart-wrap">
+      <app-dashboard-charts [details]="dashboard.graph"></app-dashboard-charts>
+    </div>
+    <p class="gh-chart-summary"
+      *ngIf="(dashboard.charts?.applicants || 0) > 0 || cachedJobViewsThisMonth > 0">
+      Last {{ trendRange }}:
+      {{ cachedJobViewsThisMonth | number }} views &middot;
+      {{ dashboard.charts?.applicants || 0 }} applications
+      <ng-container *ngIf="cachedConversionRate">
+        &middot; {{ cachedConversionRate }} conversion
+      </ng-container>
+    </p>
+    <div class="gh-chart-empty"
+      *ngIf="(dashboard.charts?.applicants || 0) === 0 && cachedJobViewsThisMonth === 0">
+      <p>Activity trends will appear once your jobs receive views and applications.</p>
+      <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">Manage jobs</button>
+    </div>
+  </div>
+
+  <!-- ── Hiring Pipeline Health ──────────────────────────────────────────── -->
+  <div class="gh-card gh-pipeline-card">
+    <div class="gh-card-head">
+      <h2 class="gh-card-title">Hiring pipeline health</h2>
+      <span class="gh-pipeline-total" *ngIf="cachedPipelineTotal > 0" aria-live="polite">
+        {{ cachedPipelineTotal }} candidates
+      </span>
+    </div>
+
+    <div class="gh-skeleton gh-skeleton--pipeline" *ngIf="pipelineLoading" aria-hidden="true"></div>
+
+    <div class="gh-error-sm" *ngIf="pipelineError && !pipelineLoading" role="alert">
+      <p>Couldn't load pipeline data.</p>
+      <button type="button" class="gh-btn-link" (click)="retryPipelineOverview()">Retry</button>
+    </div>
+
+    <div class="gh-pipeline-empty" *ngIf="!pipelineLoading && !pipelineError && byStage.length === 0">
+      <p>Applicants will appear here once candidates start applying to your jobs.</p>
+      <button type="button" class="gh-btn-link gh-pressable" (click)="goToCreateJob()">Post a job</button>
+    </div>
+
+    <div class="gh-pipeline-stages" *ngIf="!pipelineLoading && !pipelineError && byStage.length > 0"
+      role="list">
+      <div class="gh-pipeline-stage" role="listitem"
+        *ngFor="let stage of byStage; trackBy: trackByStageId"
+        [class.gh-pipeline-stage--has]="stage.count > 0">
+        <span class="gh-pipeline-count" [class.gh-pipeline-count--active]="stage.count > 0">
+          {{ stage.count }}
+        </span>
+        <div class="gh-pipeline-stage-body">
+          <span class="gh-pipeline-stage-lbl">{{ stage.label }}</span>
+          <div class="gh-pipeline-bar-wrap" aria-hidden="true">
+            <div class="gh-pipeline-bar-fill"
+              [style.width.%]="(stage.count / pipelineBarMax) * 100"
+              [class.gh-pipeline-bar-fill--active]="stage.count > 0">
             </div>
           </div>
         </div>
       </div>
-      <button type="button" class="btn-link gh-pressable" (click)="goToSubscription()">Manage subscription</button>
     </div>
-    </ng-container>
-  </section>
 
-  <!-- Existing charts/statistics, kept and restyled wrapper -->
-  <section class="emp-dash-analytics">
-    <h2 class="emp-dash-section-title">Activity</h2>
-    <app-dashboard-banner [details]="dashboard.company" [charts]="dashboard.charts"></app-dashboard-banner>
-    <app-dashboard-charts [details]="dashboard.graph"></app-dashboard-charts>
-    <app-dashboard-statistics [details]="dashboard.stat"></app-dashboard-statistics>
-  </section>
+    <div class="gh-pipeline-footer" *ngIf="!pipelineLoading && !pipelineError && byStage.length > 0">
+      Overall conversion rate: <strong>{{ cachedConversionRate || '—' }}</strong>
+    </div>
+
+    <!-- Screen reader summary -->
+    <p class="gh-visually-hidden" *ngIf="!pipelineLoading && byStage.length > 0">
+      Hiring pipeline:
+      <ng-container *ngFor="let s of byStage">{{ s.label }}: {{ s.count }} candidates. </ng-container>
+    </p>
+  </div>
+
+  <!-- ── Job Performance Table ───────────────────────────────────────────── -->
+  <div class="gh-card gh-jobperf-card">
+    <div class="gh-card-head">
+      <h2 class="gh-card-title">Job performance</h2>
+      <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">
+        View all jobs →
+      </button>
+    </div>
+
+    <div class="gh-skeleton gh-skeleton--jobperf" *ngIf="pipelineLoading" aria-hidden="true"></div>
+
+    <div class="gh-error-sm" *ngIf="pipelineError && !pipelineLoading" role="alert">
+      <p>Couldn't load job data.</p>
+      <button type="button" class="gh-btn-link" (click)="retryPipelineOverview()">Retry</button>
+    </div>
+
+    <div class="gh-jobperf-empty" *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length === 0">
+      <p>No jobs are currently awaiting applicant review.</p>
+      <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">View all jobs</button>
+    </div>
+
+    <table class="gh-jobperf-table"
+      *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length > 0"
+      aria-label="Jobs awaiting applicant review">
+      <thead>
+        <tr>
+          <th scope="col">Job title</th>
+          <th scope="col">Status</th>
+          <th scope="col">Needs review</th>
+          <th scope="col"><span class="gh-visually-hidden">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let job of cachedJobGroups; trackBy: trackByIndex">
+          <td class="gh-jobperf-title" [title]="job.jobTitle">{{ job.jobTitle }}</td>
+          <td><span class="gh-status-badge gh-status-badge--active">Active</span></td>
+          <td>
+            <span class="gh-review-chip" [class.gh-review-chip--has]="job.count > 0">
+              {{ job.count }}
+            </span>
+          </td>
+          <td>
+            <button type="button" class="gh-btn-sm gh-pressable"
+              (click)="goToApplicants(job.jobId)"
+              [attr.aria-label]="'Review applicants for ' + job.jobTitle">
+              Review
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /gh-insight-grid -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     EMPLOYER HEALTH GRID  (branding | profile completeness | subscription)
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="gh-section gh-health-section" aria-label="Employer health">
+  <h2 class="gh-section-title">Employer health</h2>
+  <p class="gh-section-sub">Keep your company profile, employer brand, and plan ready for hiring.</p>
+
+  <div class="gh-health-grid">
+
+    <!-- Employer Branding Health -->
+    <div class="gh-card gh-health-card" *ngIf="cachedBrandingScore as branding">
+      <div class="gh-health-card-top">
+        <span class="gh-health-label">Employer Branding Health</span>
+        <span class="gh-chip"
+          [class.gh-chip--good]="branding.score >= 80"
+          [class.gh-chip--warn]="branding.score >= 50 && branding.score < 80"
+          [class.gh-chip--poor]="branding.score < 50">
+          {{ branding.score >= 80 ? 'Good' : branding.score >= 50 ? 'Needs work' : 'Incomplete' }}
+        </span>
+      </div>
+      <div class="gh-branding-score-row">
+        <span class="gh-branding-score"
+          [class.gh-branding-score--good]="branding.score >= 80"
+          [class.gh-branding-score--warn]="branding.score >= 50 && branding.score < 80"
+          [class.gh-branding-score--poor]="branding.score < 50">{{ branding.score }}</span>
+        <span class="gh-branding-denom">/100</span>
+      </div>
+      <p class="gh-health-sub">
+        {{ branding.score >= 80 ? 'You\'re building a strong brand!' : 'A complete profile attracts more candidates and builds trust.' }}
+      </p>
+      <div class="gh-branding-bar-wrap" role="progressbar"
+        [attr.aria-valuenow]="branding.score" aria-valuemin="0" aria-valuemax="100"
+        [attr.aria-label]="'Employer branding score: ' + branding.score + ' out of 100'">
+        <div class="gh-branding-bar"
+          [style.width.%]="branding.score"
+          [class.gh-branding-bar--good]="branding.score >= 80"
+          [class.gh-branding-bar--warn]="branding.score >= 50 && branding.score < 80"
+          [class.gh-branding-bar--poor]="branding.score < 50">
+        </div>
+      </div>
+      <div class="gh-miss-chips" *ngIf="branding.missing.length > 0">
+        <span class="gh-miss-chip" *ngFor="let f of branding.missing; trackBy: trackByIndex">{{ f }}</span>
+      </div>
+      <p class="gh-branding-done" *ngIf="branding.missing.length === 0">
+        Your employer profile is complete. Candidates see your best face.
+      </p>
+      <button type="button" class="gh-btn-link gh-health-cta gh-pressable" (click)="goToCompanyProfile()">
+        {{ branding.missing.length > 0 ? 'Improve branding →' : 'View company profile →' }}
+      </button>
+    </div>
+
+    <!-- Company Profile Completeness -->
+    <div class="gh-card gh-health-card" *ngIf="dashboard.company">
+      <div class="gh-health-card-top">
+        <span class="gh-health-label">Company Profile Completeness</span>
+        <span class="gh-chip"
+          [class.gh-chip--good]="cachedProfilePct >= 100"
+          [class.gh-chip--warn]="cachedProfilePct >= 50 && cachedProfilePct < 100"
+          [class.gh-chip--poor]="cachedProfilePct < 50">
+          {{ cachedProfilePct >= 100 ? 'Complete' : cachedProfilePct >= 50 ? 'Good' : 'Needs work' }}
+        </span>
+      </div>
+      <div class="gh-profile-comp-body">
+        <!-- Mini ring -->
+        <div class="gh-profile-comp-ring">
+          <svg viewBox="0 0 80 80" width="80" height="80" aria-hidden="true" focusable="false">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="#f0edf8" stroke-width="7"/>
+            <circle cx="40" cy="40" r="34" fill="none"
+              [attr.stroke]="cachedProfilePct >= 80 ? '#22c55e' : cachedProfilePct >= 50 ? '#f59e0b' : '#ef4444'"
+              stroke-width="7" stroke-linecap="round"
+              stroke-dasharray="213.6"
+              [attr.stroke-dashoffset]="213.6 - (213.6 * cachedProfilePct / 100)"
+              transform="rotate(-90 40 40)"/>
+          </svg>
+          <span class="gh-profile-comp-pct" aria-label="Profile completeness {{ cachedProfilePct }}%">
+            {{ cachedProfilePct }}%
+          </span>
+        </div>
+        <!-- Field checklist -->
+        <div class="gh-profile-checklist">
+          <p class="gh-profile-checklist-head">
+            {{ (6 - (cachedBrandingScore?.missing?.length || 0)) }} of 6 profile items complete
+          </p>
+          <div class="gh-profile-check" [class.gh-profile-check--done]="!!dashboard.company?.companyLogoUrl">
+            <span aria-hidden="true">{{ dashboard.company?.companyLogoUrl ? '✓' : '○' }}</span>
+            Logo &amp; cover image
+          </div>
+          <div class="gh-profile-check" [class.gh-profile-check--done]="!!dashboard.company?.companyDetails">
+            <span aria-hidden="true">{{ dashboard.company?.companyDetails ? '✓' : '○' }}</span>
+            Company description
+          </div>
+          <div class="gh-profile-check" [class.gh-profile-check--done]="!!dashboard.company?.companyCity">
+            <span aria-hidden="true">{{ dashboard.company?.companyCity ? '✓' : '○' }}</span>
+            Company location
+          </div>
+          <div class="gh-profile-check" [class.gh-profile-check--done]="dashboard.company?.industryId != null">
+            <span aria-hidden="true">{{ dashboard.company?.industryId != null ? '✓' : '○' }}</span>
+            Industry
+          </div>
+          <div class="gh-profile-check" [class.gh-profile-check--done]="!!dashboard.company?.numberOfEmployee">
+            <span aria-hidden="true">{{ dashboard.company?.numberOfEmployee ? '✓' : '○' }}</span>
+            Company size
+          </div>
+          <div class="gh-profile-check" [class.gh-profile-check--done]="!!dashboard.company?.companyContactNumber">
+            <span aria-hidden="true">{{ dashboard.company?.companyContactNumber ? '✓' : '○' }}</span>
+            Contact number
+          </div>
+        </div>
+      </div>
+      <button type="button" class="gh-btn-link gh-health-cta gh-pressable" (click)="goToCompanyProfile()">
+        {{ cachedProfilePct >= 100 ? 'View profile →' : 'Complete profile →' }}
+      </button>
+    </div>
+
+    <!-- Subscription / Plan Health -->
+    <div class="gh-card gh-health-card">
+      <div class="gh-error-sm" *ngIf="subsError" role="alert">
+        <p>Couldn't load subscription details.</p>
+        <button type="button" class="gh-btn-link" (click)="retrySubscription()">Retry</button>
+      </div>
+
+      <!-- Subscription loading skeleton -->
+      <div class="gh-sub-loading" *ngIf="!subsError && !(subsRestrictions$ | async)" aria-hidden="true">
+        <div class="gh-skeleton gh-skeleton--sub-head"></div>
+        <div class="gh-skeleton gh-skeleton--sub-meter" *ngFor="let i of [1,2,3]"></div>
+      </div>
+
+      <ng-container *ngIf="!subsError && (subsRestrictions$ | async) as subs">
+        <div class="gh-health-card-top">
+          <span class="gh-health-label">Subscription / Plan Health</span>
+          <span class="gh-chip" [class.gh-chip--good]="subs.isPaid" [class.gh-chip--neutral]="!subs.isPaid">
+            {{ subs.isPaid ? (subs.subscriptionName || 'Pro plan') : 'Free plan' }}
+          </span>
+        </div>
+        <p class="gh-sub-renew" *ngIf="subs.isPaid && subs.endAt">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+            width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+          Renews {{ subs.endAt | date:'mediumDate' }}
+          &middot; {{ subscriptionDaysLeft(subs.endAt) }} days remaining
+        </p>
+        <div class="gh-sub-meters">
+          <div class="gh-sub-meter">
+            <div class="gh-sub-meter-head">
+              <span>Job slots</span>
+              <span>{{ subs.jobPostCount || 0 }} / {{ subs.jobPost || '—' }}</span>
+            </div>
+            <div class="gh-sub-meter-track" role="progressbar"
+              [attr.aria-valuenow]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)"
+              aria-valuemin="0" aria-valuemax="100"
+              [attr.aria-label]="'Job slots: ' + (subs.jobPostCount || 0) + ' of ' + (subs.jobPost || 0) + ' used'">
+              <div class="gh-sub-meter-fill"
+                [class.gh-sub-meter-fill--warn]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost) >= 80"
+                [class.gh-sub-meter-fill--danger]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost) >= 100"
+                [style.width.%]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)">
+              </div>
+            </div>
+          </div>
+          <div class="gh-sub-meter">
+            <div class="gh-sub-meter-head">
+              <span>Admin users</span>
+              <span>{{ subs.adminCount || 0 }} / {{ subs.admin || '—' }}</span>
+            </div>
+            <div class="gh-sub-meter-track" role="progressbar"
+              [attr.aria-valuenow]="subscriptionUsagePct(subs.adminCount, subs.admin)"
+              aria-valuemin="0" aria-valuemax="100"
+              [attr.aria-label]="'Admin users: ' + (subs.adminCount || 0) + ' of ' + (subs.admin || 0) + ' used'">
+              <div class="gh-sub-meter-fill"
+                [class.gh-sub-meter-fill--warn]="subscriptionUsagePct(subs.adminCount, subs.admin) >= 80"
+                [style.width.%]="subscriptionUsagePct(subs.adminCount, subs.admin)">
+              </div>
+            </div>
+          </div>
+          <div class="gh-sub-meter">
+            <div class="gh-sub-meter-head">
+              <span>Video responses</span>
+              <span>{{ subs.videoResponseCount || 0 }} / {{ subs.videoResponse || '—' }}</span>
+            </div>
+            <div class="gh-sub-meter-track" role="progressbar"
+              [attr.aria-valuenow]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)"
+              aria-valuemin="0" aria-valuemax="100"
+              [attr.aria-label]="'Video responses: ' + (subs.videoResponseCount || 0) + ' of ' + (subs.videoResponse || 0) + ' used'">
+              <div class="gh-sub-meter-fill"
+                [class.gh-sub-meter-fill--warn]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse) >= 80"
+                [style.width.%]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="gh-btn-link gh-health-cta gh-pressable" (click)="goToSubscription()">
+          Manage plan →
+        </button>
+      </ng-container>
+    </div>
+
+  </div><!-- /gh-health-grid -->
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CANDIDATE INSIGHTS
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="gh-section gh-insights-section" aria-label="Candidate insights">
+  <h2 class="gh-section-title">Candidate insights</h2>
+
+  <div class="gh-insights-grid">
+
+    <!-- Top applicant cities -->
+    <div class="gh-card">
+      <h3 class="gh-card-title">Top applicant cities</h3>
+      <ng-container *ngIf="cachedCities.length > 0; else noCities">
+        <div class="gh-insight-row"
+          *ngFor="let c of cachedCities; let i = index; trackBy: trackByIndex">
+          <span class="gh-insight-city">{{ c.city || 'Unknown' }}</span>
+          <div class="gh-insight-bar-wrap" aria-hidden="true">
+            <div class="gh-insight-bar"
+              [style.width.%]="(+c.count / +(cachedCities[0].count || 1)) * 100">
+            </div>
+          </div>
+          <span class="gh-insight-count">{{ c.count }}</span>
+        </div>
+      </ng-container>
+      <ng-template #noCities>
+        <p class="gh-empty-text">
+          Cities will appear once applicants start applying to your jobs.
+        </p>
+      </ng-template>
+    </div>
+
+    <!-- Applicant overview stats -->
+    <div class="gh-card">
+      <h3 class="gh-card-title">Applicant overview</h3>
+      <div class="gh-overview-grid">
+        <div class="gh-overview-stat">
+          <span class="gh-overview-num">{{ dashboard.stat?.totalContacts || 0 }}</span>
+          <span class="gh-overview-lbl">Total candidates</span>
+        </div>
+        <div class="gh-overview-stat">
+          <span class="gh-overview-num"
+            [class.gh-overview-num--warn]="needsReviewCount > 0">{{ needsReviewCount }}</span>
+          <span class="gh-overview-lbl">Awaiting review</span>
+        </div>
+        <div class="gh-overview-stat">
+          <span class="gh-overview-num">{{ dashboard.charts?.interviews || 0 }}</span>
+          <span class="gh-overview-lbl">Video answers</span>
+        </div>
+        <div class="gh-overview-stat">
+          <span class="gh-overview-num">{{ cachedInterviewsScheduled }}</span>
+          <span class="gh-overview-lbl">Interviews scheduled</span>
+        </div>
+      </div>
+      <p class="gh-empty-text" *ngIf="(dashboard.stat?.totalContacts || 0) === 0">
+        Candidate insights will appear once applicants start applying.
+      </p>
+    </div>
+
+  </div>
+</section>
 
 </ng-container>
 </div>
 
-<ng-template #dashSkeleton>
-  <div class="emp-dash-hero-skeleton"></div>
-  <div class="emp-dash-action-skeleton" *ngFor="let i of [1,2,3]"></div>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     LOADING SKELETON
+════════════════════════════════════════════════════════════════════════════ -->
+<ng-template #ghDashSkeleton>
+  <div class="gh-hero-skeleton"></div>
+  <div class="gh-section">
+    <div class="gh-inbox-skeleton">
+      <div class="gh-skeleton gh-skeleton--inbox-main"></div>
+      <div class="gh-inbox-cards-grid">
+        <div class="gh-skeleton gh-skeleton--inbox-card" *ngFor="let i of [1,2,3]"></div>
+      </div>
+    </div>
+  </div>
+  <div class="gh-kpi-skeleton-strip">
+    <div class="gh-skeleton gh-skeleton--kpi" *ngFor="let i of [1,2,3,4,5,6,7,8]"></div>
+  </div>
 </ng-template>

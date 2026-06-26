@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CompanyFacade } from '../state/company.facade';
 import { CompanyService } from '../company.service';
+import { SeoService } from '@app-core/services/seo.service';
 import * as Model from '../company.model';
-import { map, tap, catchError, of } from 'rxjs';
+import { map, tap, catchError, of, Subject, takeUntil } from 'rxjs';
 
 interface PipelineStage {
   statusId: number;
@@ -20,22 +21,44 @@ interface NeedsReviewItem {
   submittedDate: string;
 }
 
+interface RecommendedStep {
+  type: string;
+  title: string;
+  reason: string;
+  ctaLabel: string;
+  route: string;
+  priority: 'high' | 'medium' | 'low' | 'success';
+  count?: number;
+}
+
+interface SupportingAction {
+  type: string;
+  label: string;
+  desc: string;
+  cta: string;
+  count?: number;
+  priority: 'high' | 'medium' | 'low';
+  route: string;
+}
+
 @Component({
   selector: 'app-company-dashboard',
   templateUrl: './company-dashboard.component.html',
   styleUrls: ['./company-dashboard.component.scss']
 })
-export class CompanyDashboardComponent implements OnInit {
+export class CompanyDashboardComponent implements OnInit, OnDestroy {
   company: Model.Company;
   stat: any;
   charts: any;
+
+  private _destroy$ = new Subject<void>();
 
   loading$ = this.companyFacade.loading$;
 
   dashboard$ = this.companyFacade.dashboard$
     .pipe(
       map(dash => {
-        if(dash) {
+        if (dash) {
           return {
             company: dash.company,
             charts: dash.charts,
@@ -48,13 +71,9 @@ export class CompanyDashboardComponent implements OnInit {
               totalContacts: dash.totalContacts,
               cities: dash.cities
             }
-          }
+          };
         }
       }),
-      // OPTIMIZE V5: cache company/charts for the onboarding step cache refresh.
-      // tap does not alter the emitted value seen by the template's async pipe.
-      // OPTIMIZE DASHBOARD: also cache brandingScore and profileMissingFields
-      // here so the template reads properties instead of calling methods per tick.
       tap(dash => {
         if (dash) {
           this._lastDashboardCompany = dash.company;
@@ -63,44 +82,75 @@ export class CompanyDashboardComponent implements OnInit {
           if (dash.company) {
             this.cachedBrandingScore = this.brandingScore(dash.company);
             this.cachedProfileMissingFields = this.companyProfileMissingFields(dash.company);
+            this.cachedProfilePct = this.cachedBrandingScore ? this.cachedBrandingScore.score : 0;
           } else {
             this.cachedBrandingScore = null;
             this.cachedProfileMissingFields = [];
+            this.cachedProfilePct = 0;
           }
+          // V5: job views this month + conversion rate from graph data
+          this._computeJobViewsCache(dash.graph);
+          // V5: cities from stat
+          this._computeCitiesCache(dash.stat);
+          // V5: hiring health + recommended step + supporting actions
+          this._refreshV5Cache();
         }
       })
     );
 
-  /** GETHIRED_EMPLOYER_DASHBOARD_WORLD_CLASS_TECHY_REDESIGN_V2 -- fetched
-   * independently of dashboard$ (own loading/error state) so a failure
-   * here never blanks the charts/stat widgets above, and vice versa. */
+  /** Fetched independently so a failure here never blanks the charts/stat widgets. */
   pipelineLoading = true;
   pipelineError = false;
   byStage: PipelineStage[] = [];
   needsReview: NeedsReviewItem[] = [];
-  /** OPTIMIZE: cached once when pipeline data arrives, not recomputed per
-   * change-detection tick. Both values are used 3–6 times in the template. */
   needsReviewCount = 0;
   pipelineBarMax = 1;
-  /** NOTIFY/BRAND DASHBOARD: wrap subsRestrictions$ to catch errors so the
-   * subscription section can show a retry state instead of silently disappearing.
-   * On error emits null; subsError flag drives the visible error card. */
+
+  /** subsRestrictions$ wrapped with catchError so the section shows a retry state. */
   subsError = false;
   subsRestrictions$ = this.companyFacade.subsRestrictions$.pipe(
     tap(() => { this.subsError = false; }),
     catchError(() => { this.subsError = true; return of(null); })
   );
+
   cachedJobGroups: Array<{ jobId: string; jobTitle: string; count: number }> = [];
 
-  /** OPTIMIZE DASHBOARD: brandingScore() was called every CD cycle via
-   * *ngIf="brandingScore(dashboard.company) as branding". Cached here and
-   * refreshed only when dashboard$ emits (via tap below). */
+  /** brandingScore() cached here; refreshed only on dashboard$ emit. */
   cachedBrandingScore: { score: number; missing: string[] } | null = null;
 
-  /** OPTIMIZE DASHBOARD: companyProfileMissingFields() was called every CD
-   * cycle via *ngIf="companyProfileMissingFields(dashboard.company) as missingFields".
-   * Cached here and refreshed only when dashboard$ emits (via tap below). */
+  /** companyProfileMissingFields() cached here; refreshed only on dashboard$ emit. */
   cachedProfileMissingFields: string[] = [];
+
+  // ── V5 properties ───────────────────────────────────────────────────────────
+  /** Profile completeness percentage (0–100), derived from brandingScore. */
+  cachedProfilePct = 0;
+
+  /** Job views for the current calendar month, summed from graph.jobViews. */
+  cachedJobViewsThisMonth = 0;
+
+  /** Conversion rate string (e.g. "6.9%"), null when no job views. */
+  cachedConversionRate: string | null = null;
+
+  /** Count of interview-scheduled applicants from byStage. */
+  cachedInterviewsScheduled = 0;
+
+  /** Total applicants across all pipeline stages. */
+  cachedPipelineTotal = 0;
+
+  /** Overall hiring health status derived from key indicators. */
+  cachedHiringHealth: 'good' | 'attention' | 'unknown' = 'unknown';
+
+  /** Highest-priority recommended action for the Action Inbox main card. */
+  cachedRecommendedStep: RecommendedStep | null = null;
+
+  /** Up to 4 supporting action cards shown alongside the recommended step. */
+  cachedSupportingActions: SupportingAction[] = [];
+
+  /** Cities data (array) computed from stat.cities (handles nested or flat). */
+  cachedCities: Array<{ city: string; count: string }> = [];
+
+  /** Active time-range selector for the Views & Applications chart (UI only). */
+  trendRange: '7d' | '30d' | '90d' = '30d';
 
   asyncLocalStorage = {
     getItem: async function (key: string) {
@@ -109,10 +159,7 @@ export class CompanyDashboardComponent implements OnInit {
     }
   };
 
-  /** OPTIMIZE V5: cached result of onboardingSteps() so the template can
-   * reference cachedOnboardingSteps directly instead of calling the method
-   * twice per change-detection cycle (once for *ngIf, once for *ngFor).
-   * Refreshed whenever dashboard$ emits or pipeline data arrives. */
+  /** cachedOnboardingSteps: refreshed when dashboard$ emits or pipeline loads. */
   cachedOnboardingSteps: Array<{
     title: string; desc: string; cta: string; done: boolean; action: () => void;
   }> = [];
@@ -121,9 +168,13 @@ export class CompanyDashboardComponent implements OnInit {
     private companyFacade: CompanyFacade,
     private companyService: CompanyService,
     private router: Router,
+    private seoService: SeoService,
   ) { }
 
   ngOnInit(): void {
+    // Dashboard is auth-gated — prevent indexing.
+    this.seoService.setPageMeta({ title: 'Dashboard — GetHired Online', robots: 'noindex, nofollow' });
+
     this.companyFacade.getCompanyDashboard();
     this.loadPipelineOverview();
     this.asyncLocalStorage.getItem('user').then(details => {
@@ -136,37 +187,191 @@ export class CompanyDashboardComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
+  }
+
   private loadPipelineOverview(): void {
     this.pipelineLoading = true;
     this.pipelineError = false;
     this.companyService.getDashboardPipelineOverview().subscribe({
       next: (res: any) => {
-        this.byStage = res?.data?.byStage || [];
-        this.needsReview = res?.data?.needsReview || [];
+        this.byStage = res && res.data && res.data.byStage ? res.data.byStage : [];
+        this.needsReview = res && res.data && res.data.needsReview ? res.data.needsReview : [];
         this.needsReviewCount =
-          (this.byStage.find(s => s.statusId === 1)?.count || 0) +
-          (this.byStage.find(s => s.statusId === 3)?.count || 0);
+          (this.byStage.find(s => s.statusId === 1) ? this.byStage.find(s => s.statusId === 1).count : 0) +
+          (this.byStage.find(s => s.statusId === 3) ? this.byStage.find(s => s.statusId === 3).count : 0);
         this.pipelineBarMax = Math.max(1, ...this.byStage.map(s => s.count));
         this.cachedJobGroups = this._buildJobGroups(this.needsReview);
         this.pipelineLoading = false;
-        // OPTIMIZE V5: refresh cached steps now that needsReviewCount is known.
-        // Must be done after pipelineLoading=false or the section stays hidden.
         this._refreshOnboardingCache();
+        this._refreshV5Cache();
       },
       error: () => {
         this.pipelineLoading = false;
         this.pipelineError = true;
+        this._refreshV5Cache();
       }
     });
   }
 
-  /** OPTIMIZE V5: called from ngOnInit (after dashboard$ emits via tap) and
-   * from loadPipelineOverview so the cache is always fresh when either data
-   * source updates. Reads this.lastDashboardCompany/Charts set by dashboard$. */
+  /** Refreshes onboarding checklist cache from last dashboard + pipeline data. */
   private _refreshOnboardingCache(): void {
     this.cachedOnboardingSteps = this.onboardingSteps(
       this._lastDashboardCompany, this._lastDashboardCharts
     );
+  }
+
+  /** V5: refreshes hiring health, pipeline totals, recommended step, and supporting actions. */
+  private _refreshV5Cache(): void {
+    const charts = this._lastDashboardCharts;
+    this.cachedPipelineTotal = this.byStage.reduce((s, st) => s + (st.count || 0), 0);
+    // Interview-scheduled stage: find by label (handle varying stage labels)
+    const intStage = this.byStage.find(
+      s => s.label && s.label.toLowerCase().indexOf('interview') !== -1 &&
+           s.label.toLowerCase().indexOf('question') === -1 &&
+           s.label.toLowerCase().indexOf('sched') !== -1
+    );
+    this.cachedInterviewsScheduled = intStage ? (intStage.count || 0) : 0;
+    const score = this.cachedBrandingScore ? this.cachedBrandingScore.score : 0;
+    if (this.needsReviewCount > 10 || score < 50) {
+      this.cachedHiringHealth = 'attention';
+    } else if (this.needsReviewCount > 0 || score >= 50) {
+      this.cachedHiringHealth = 'good';
+    } else {
+      this.cachedHiringHealth = 'unknown';
+    }
+    this._buildRecommendedStep(charts);
+    this._buildSupportingActions(charts);
+  }
+
+  /** V5: compute job views this month and conversion rate from graph data. */
+  private _computeJobViewsCache(graph: any): void {
+    if (!graph || !Array.isArray(graph.jobViews)) {
+      this.cachedJobViewsThisMonth = 0;
+      this.cachedConversionRate = null;
+      return;
+    }
+    const now = new Date();
+    const cm = now.getMonth();
+    const cy = now.getFullYear();
+    let total = 0;
+    for (var i = 0; i < graph.jobViews.length; i++) {
+      var row = graph.jobViews[i];
+      var d = new Date(row.date);
+      if (d.getFullYear() === cy && d.getMonth() === cm) {
+        total += parseInt(String(row.count), 10) || 0;
+      }
+    }
+    this.cachedJobViewsThisMonth = total;
+    var applicants = this._lastDashboardCharts ? (parseInt(String(this._lastDashboardCharts.applicants), 10) || 0) : 0;
+    this.cachedConversionRate = total > 0 ? ((applicants / total) * 100).toFixed(1) + '%' : null;
+  }
+
+  /** V5: normalize cities from stat (handles both nested {cities:[...]} and flat array). */
+  private _computeCitiesCache(stat: any): void {
+    if (!stat) { this.cachedCities = []; return; }
+    var raw = stat.cities;
+    if (!raw) { this.cachedCities = []; return; }
+    if (Array.isArray(raw)) {
+      this.cachedCities = raw;
+    } else if (raw && Array.isArray(raw.cities)) {
+      this.cachedCities = raw.cities;
+    } else {
+      this.cachedCities = [];
+    }
+  }
+
+  /** V5: derives the highest-priority recommended next step. */
+  private _buildRecommendedStep(charts: any): void {
+    var activeJobs = charts ? (parseInt(String(charts.activeJobs), 10) || 0) : 0;
+    var interviews = charts ? (parseInt(String(charts.interviews), 10) || 0) : 0;
+    var score = this.cachedBrandingScore ? this.cachedBrandingScore.score : 0;
+    var missingCount = this.cachedProfileMissingFields ? this.cachedProfileMissingFields.length : 0;
+
+    if (missingCount >= 2) {
+      this.cachedRecommendedStep = {
+        type: 'complete_company_profile', priority: 'high',
+        title: 'Complete your company profile',
+        reason: 'Candidates are more likely to apply when they can see who is hiring.',
+        ctaLabel: 'Complete profile', route: '/recruiter/company/details'
+      };
+    } else if (activeJobs === 0) {
+      this.cachedRecommendedStep = {
+        type: 'post_first_job', priority: 'high',
+        title: 'Post your first job',
+        reason: 'Create a job post to start receiving applications from qualified candidates.',
+        ctaLabel: 'Post a job', route: '/recruiter/jobs/create'
+      };
+    } else if (this.needsReviewCount > 0) {
+      this.cachedRecommendedStep = {
+        type: 'review_applicants', priority: 'high',
+        title: 'Review new applicants',
+        reason: 'New applicants match your recent job posts and are waiting for your review.',
+        ctaLabel: 'Review applicants', route: '/recruiter/jobs/list',
+        count: this.needsReviewCount
+      };
+    } else if (interviews > 0) {
+      this.cachedRecommendedStep = {
+        type: 'review_video_answers', priority: 'medium',
+        title: 'Review video answers',
+        reason: 'Candidates have submitted video answers to your interview questions.',
+        ctaLabel: 'Review videos', route: '/recruiter/jobs/list', count: interviews
+      };
+    } else if (score < 80) {
+      this.cachedRecommendedStep = {
+        type: 'improve_employer_brand', priority: 'low',
+        title: 'Strengthen your employer brand',
+        reason: 'A stronger profile helps you stand out and attract more qualified candidates.',
+        ctaLabel: 'Improve branding', route: '/recruiter/company/details'
+      };
+    } else {
+      this.cachedRecommendedStep = {
+        type: 'all_caught_up', priority: 'success',
+        title: 'All caught up',
+        reason: 'Your hiring workspace has no urgent tasks right now. Keep it up!',
+        ctaLabel: 'View jobs', route: '/recruiter/jobs/list'
+      };
+    }
+  }
+
+  /** V5: builds up to 4 supporting action cards for the Action Inbox. */
+  private _buildSupportingActions(charts: any): void {
+    var actions: SupportingAction[] = [];
+    var interviews = charts ? (parseInt(String(charts.interviews), 10) || 0) : 0;
+
+    if (this.needsReviewCount > 0) {
+      actions.push({
+        type: 'review_applicants', priority: 'high', count: this.needsReviewCount,
+        label: 'Review applicants',
+        desc: this.needsReviewCount + ' applicant' + (this.needsReviewCount === 1 ? '' : 's') + ' waiting for review.',
+        cta: 'Review applicants', route: '/recruiter/jobs/list'
+      });
+    }
+    if (interviews > 0) {
+      actions.push({
+        type: 'review_videos', priority: 'high', count: interviews,
+        label: 'Review video answers',
+        desc: interviews + ' video answer' + (interviews === 1 ? '' : 's') + ' need review.',
+        cta: 'Review videos', route: '/recruiter/jobs/list'
+      });
+    }
+    actions.push({
+      type: 'messages', priority: 'medium',
+      label: 'Reply to candidate messages',
+      desc: 'View all candidate conversations in one place.',
+      cta: 'Open messages', route: '/recruiter/messages'
+    });
+    if (this.cachedProfileMissingFields && this.cachedProfileMissingFields.length > 0) {
+      actions.push({
+        type: 'complete_profile', priority: 'medium',
+        label: 'Complete company profile',
+        desc: 'Missing: ' + this.cachedProfileMissingFields.join(', ') + '.',
+        cta: 'Complete profile', route: '/recruiter/company/details'
+      });
+    }
+    this.cachedSupportingActions = actions.slice(0, 4);
   }
 
   private _lastDashboardCompany: any = null;
@@ -208,7 +413,6 @@ export class CompanyDashboardComponent implements OnInit {
     this.router.navigate(['/recruiter/company/details']);
   }
 
-  // B01: Messages inbox CTA from dashboard action center
   goToMessages(): void {
     this.router.navigate(['/recruiter/messages']);
   }
@@ -217,9 +421,23 @@ export class CompanyDashboardComponent implements OnInit {
     this.router.navigate(['/recruiter/subscription']);
   }
 
-  /** Real, derived from already-fetched company fields -- not a fake
-   * score. Mirrors the applicant-side completeness pattern but kept
-   * client-side/lightweight since no backend equivalent exists yet. */
+  /** V5: navigates to any route by URL string (used by inbox cards). */
+  navigateTo(route: string): void {
+    this.router.navigateByUrl(route);
+  }
+
+  /** V5: fires the recommended step CTA. */
+  onRecommendedStepCta(): void {
+    if (this.cachedRecommendedStep) {
+      this.navigateTo(this.cachedRecommendedStep.route);
+    }
+  }
+
+  /** V5: sets the active time range for the views/applications chart UI. */
+  setTrendRange(range: '7d' | '30d' | '90d'): void {
+    this.trendRange = range;
+  }
+
   companyProfileMissingFields(company: Model.Company): string[] {
     if (!company) { return []; }
     const missing: string[] = [];
@@ -229,13 +447,11 @@ export class CompanyDashboardComponent implements OnInit {
     return missing;
   }
 
-  // ── OPTIMIZE V5: trackBy functions ─────────────────────────────────────────
+  // ── trackBy functions ────────────────────────────────────────────────────────
   trackByStageId(_index: number, stage: PipelineStage): number {
     return stage.statusId;
   }
 
-  /** OPTIMIZE DASHBOARD: trackBy for branding missing-field chips — the array
-   * is stable (max 6 strings) so index is a safe, cheap key here. */
   trackByIndex(i: number): number {
     return i;
   }
@@ -248,16 +464,13 @@ export class CompanyDashboardComponent implements OnInit {
     return index;
   }
 
-  /** V5 B07: Onboarding checklist steps derived from real company/job data.
-   * Returns only incomplete steps when all are complete the section hides.
-   * Safe: no fake progress. Charts.activeJobs === 0 means no published jobs. */
   onboardingSteps(company: Model.Company, charts: any): Array<{
     title: string; desc: string; cta: string; done: boolean; action: () => void;
   }> {
-    const hasLogo = !!(company?.companyLogoUrl);
-    const hasDescription = !!(company?.companyDetails);
-    const hasLocation = !!(company?.companyCity);
-    const hasActiveJob = (charts?.activeJobs || 0) > 0;
+    const hasLogo = !!(company && company.companyLogoUrl);
+    const hasDescription = !!(company && company.companyDetails);
+    const hasLocation = !!(company && company.companyCity);
+    const hasActiveJob = (charts && charts.activeJobs ? charts.activeJobs : 0) > 0;
 
     const steps = [
       {
@@ -283,7 +496,6 @@ export class CompanyDashboardComponent implements OnInit {
       }
     ];
 
-    // Return all steps when at least one is incomplete (collapses when all done)
     const allDone = steps.every(s => s.done);
     return allDone ? [] : steps;
   }
@@ -319,7 +531,6 @@ export class CompanyDashboardComponent implements OnInit {
   subscriptionDaysLeft(endAt: any): number {
     if (!endAt) { return 0; }
     const end = new Date(endAt);
-    // Guard against an unparseable date string — isNaN check prevents NaN in template.
     if (isNaN(end.getTime())) { return 0; }
     const now = new Date();
     return Math.max(0, Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
