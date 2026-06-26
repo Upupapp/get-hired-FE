@@ -9,24 +9,40 @@
 
 		<div class="mt-1 ms-2">
 			<strong>{{data?.data?.firstName + ' ' + data?.data?.lastName}}</strong>
-
-			<br><!--  - Applied to Job ID {{data?.data?.job_id}} -->
+			<br>
 			<small>{{data?.data?.jobTitle}} - </small>
-			<small>{{data?.data?.workSetupName}}, {{data?.data?.jobTypeName}} ssss</small>
+			<small>{{data?.data?.workSetupName}}, {{data?.data?.jobTypeName}}</small>
 		</div>
 	</h6>
 
+	<!-- Status picker view -->
+	<div *ngIf="statusView" class="status-picker-view pt-2">
+		<div class="d-flex align-items-center mb-2">
+			<button class="btn btn-sm btn-link p-0 me-2" (click)="statusView = false">&#8592; Back</button>
+			<span class="fw-semibold small">Update Application Status</span>
+		</div>
+		<p class="text-muted small mb-3">
+			Current: <strong>{{data?.data?.jobApplicationStatusName || 'Unknown'}}</strong>
+		</p>
+		<div class="status-options">
+			<button
+				*ngFor="let s of statusOptions"
+				class="btn btn-outline-secondary btn-sm w-100 mb-2 text-start"
+				[disabled]="statusUpdating"
+				(click)="selectStatus(s.id, s.name)"
+			>{{s.name}}</button>
+		</div>
+		<div *ngIf="statusUpdating" class="text-center text-muted small mt-2">Updating&hellip;</div>
+	</div>
 
-
-	<div class="row">
+	<!-- Default action menu -->
+	<div *ngIf="!statusView" class="row">
 		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls">
 			<div class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center"
 			[ngStyle]="{ background: menu?.background }"
 			(click)="openControlMenu(menu)">
-				<!-- <img [src]="menu?.icon" width="18px"> -->
 				<span class="side-sub-menu-title">{{menu.title}}</span>
 			</div>
 		</div>
 	</div>
 </div>
-

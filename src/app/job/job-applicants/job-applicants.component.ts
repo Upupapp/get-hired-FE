@@ -279,6 +279,10 @@ export class JobApplicantsComponent implements OnInit {
           this.loadSnapshotSummary(appId);
         }
       }
+
+      if (result && result.statusUpdated) {
+        this.jobFacade.getApplicants(this.jobId);
+      }
     });
   }
 

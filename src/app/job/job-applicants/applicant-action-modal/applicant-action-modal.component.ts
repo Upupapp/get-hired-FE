@@ -2,6 +2,15 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { JobService } from '@app-job/job.service';
+
+const STATUS_OPTIONS = [
+  { id: 2, name: 'Applied' },
+  { id: 3, name: 'Under Review' },
+  { id: 4, name: 'Shortlisted' },
+  { id: 5, name: 'Rejected' },
+  { id: 6, name: 'Hired' },
+];
 
 @Component({
   selector: 'app-applicant-action-modal',
@@ -9,31 +18,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./applicant-action-modal.component.scss']
 })
 export class ApplicantActionModalComponent implements OnInit {
+  statusView = false;
+  statusUpdating = false;
+  readonly statusOptions = STATUS_OPTIONS;
 
   public tableControls: any[] = [
     {
-      id: "Video-cv",
-      title: "Video CV",
-      icon: "/assets/images/icons/client-menu/about-me.png",
-      background: "#FEF1FC"
+      id: 'Video-cv',
+      title: 'Video CV',
+      icon: '/assets/images/icons/client-menu/about-me.png',
+      background: '#FEF1FC'
     },
-    // {
-    //   id: "download-cv",
-    //   title: "Download CV",
-    //   icon: "/assets/images/icons/client-menu/service-history.png",
-    //   background: "#dce8fa"
-    // },
-    // {
-    //   id: "change-status",
-    //   title: "Change Status",
-    //   icon: "/assets/images/icons/client-menu/individual-intake.png",
-    //   background: "#D7F4F8"
-    // },
     {
-      id: "view-applicant",
-      title: "Applicant Details",
-      icon: "/assets/images/icons/client-menu/service-templates.png",
-      background: "#f7f2e4"
+      id: 'change-status',
+      title: 'Change Status',
+      icon: '/assets/images/icons/client-menu/individual-intake.png',
+      background: '#D7F4F8'
+    },
+    {
+      id: 'view-applicant',
+      title: 'Applicant Details',
+      icon: '/assets/images/icons/client-menu/service-templates.png',
+      background: '#f7f2e4'
     },
   ];
 
@@ -41,20 +47,17 @@ export class ApplicantActionModalComponent implements OnInit {
     private router: Router,
     public dialogRef: MatDialogRef<ApplicantActionModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
-    private snackBar: MatSnackBar
-  ) {
-    console.log(data)
-  }
+    private snackBar: MatSnackBar,
+    private jobService: JobService,
+  ) {}
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   close() {
     this.dialogRef.close(null);
   }
 
-  viewCv(){
+  viewCv() {
     this.dialogRef.close({
       cancel: false,
       data: this.data,
@@ -63,22 +66,52 @@ export class ApplicantActionModalComponent implements OnInit {
   }
 
   openControlMenu(menu: any) {
-    if (menu?.route) {
-      this.dialogRef.close()
-      this.router.navigate([`${menu?.route}`])
+    if (menu && menu.route) {
+      this.dialogRef.close();
+      this.router.navigate([`${menu.route}`]);
     }
 
-    if (menu?.id === 'Video-cv') {
+    if (menu && menu.id === 'Video-cv') {
       this.viewCv();
     }
 
-    if (menu?.id === 'view-applicant') {
+    if (menu && menu.id === 'view-applicant') {
       this.dialogRef.close({
         cancel: false,
         data: this.data,
         profile: true
       });
-      // this.router.navigate([`/company/jobs/${this.data?.job_id}/applicants/details/${this.data?.data?.id}`])
     }
+
+    if (menu && menu.id === 'change-status') {
+      this.statusView = true;
+    }
+  }
+
+  selectStatus(statusId: number, statusName: string): void {
+    const applicationId = this.data && this.data.data && this.data.data.applicationId;
+    if (!applicationId) {
+      this.snackBar.open('Application ID not found.', 'OK', { duration: 3000 });
+      return;
+    }
+    const currentStatusId = this.data && this.data.data && this.data.data.jobApplicationStatusId;
+    if (statusId === parseInt(currentStatusId, 10)) {
+      this.snackBar.open('Applicant already has this status.', 'OK', { duration: 2000 });
+      this.dialogRef.close(null);
+      return;
+    }
+    this.statusUpdating = true;
+    this.jobService.updateApplicationStatus(applicationId, statusId).subscribe(
+      () => {
+        this.statusUpdating = false;
+        this.snackBar.open(`Status updated to "${statusName}".`, 'OK', { duration: 3000 });
+        this.dialogRef.close({ statusUpdated: true, newStatusId: statusId, newStatusName: statusName });
+      },
+      (err: any) => {
+        this.statusUpdating = false;
+        const msg = (err && err.error && err.error.message) || 'Failed to update status. Please try again.';
+        this.snackBar.open(msg, 'OK', { duration: 4000 });
+      }
+    );
   }
 }

@@ -74,6 +74,10 @@ export class JobService {
     return this.baseService.get<any>(`${environment.api_url}/job/applicant/snapshot-summary?applicationId=${encodeURIComponent(applicationId)}`);
   }
 
+  updateApplicationStatus(applicationId: string, newStatusId: number) {
+    return this.baseService.put<any>(`${environment.api_url}/application/status`, { applicationId, newStatusId });
+  }
+
   // P2-01 FIX: removed dead ?id= param — BE now derives company from the
   // authenticated caller's JWT (getUserCompany(req.user.uid)) and ignores
   // any caller-supplied id. Sending it was harmless but misleading.
