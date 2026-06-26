@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" role="img" aria-labelledby="videoCvOrbTitle videoCvOrbDesc">
+  <title id="videoCvOrbTitle">GetHired Video CV Orb</title>
+  <desc id="videoCvOrbDesc">Decorative concentric coral signal rings for a premium video preview loading backdrop.</desc>
+  <defs>
+    <radialGradient id="videoCvOrbCoreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF7062" stop-opacity="0.32" />
+      <stop offset="42%" stop-color="#FF7062" stop-opacity="0.13" />
+      <stop offset="76%" stop-color="#FF7062" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#FF7062" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="videoCvOrbStroke" x1="86" y1="84" x2="414" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FF9A86" />
+      <stop offset="46%" stop-color="#FF7062" />
+      <stop offset="100%" stop-color="#C0392B" />
+    </linearGradient>
+    <filter id="videoCvOrbSoftGlow" x="-22%" y="-22%" width="144%" height="144%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="3.6" result="blur" />
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.95  0 0.55 0 0 0.18  0 0 0.32 0 0.15  0 0 0 0.86 0" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="videoCvOrbNodeGlow" x="-200%" y="-200%" width="500%" height="500%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="4" result="nodeBlur" />
+      <feMerge>
+        <feMergeNode in="nodeBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g id="video-cv-orb" class="video-cv-orb" fill="none">
+    <circle class="orb-core-glow" cx="250" cy="250" r="190" fill="url(#videoCvOrbCoreGlow)" />
+
+    <g class="orb-rings" filter="url(#videoCvOrbSoftGlow)" stroke="url(#videoCvOrbStroke)" vector-effect="non-scaling-stroke">
+      <circle class="orb-ring orb-ring-1" cx="250" cy="250" r="70" stroke-width="3.2" stroke-opacity="0.72" />
+      <circle class="orb-ring orb-ring-2" cx="250" cy="250" r="110" stroke-width="2.6" stroke-opacity="0.52" />
+      <circle class="orb-ring orb-ring-3" cx="250" cy="250" r="150" stroke-width="2.1" stroke-opacity="0.34" />
+      <circle class="orb-ring orb-ring-4" cx="250" cy="250" r="190" stroke-width="1.7" stroke-opacity="0.20" />
+      <circle class="orb-ring orb-ring-5" cx="250" cy="250" r="225" stroke-width="1.35" stroke-opacity="0.12" />
+      <circle class="orb-ring orb-ring-6" cx="250" cy="250" r="243" stroke-width="1.05" stroke-opacity="0.08" />
+    </g>
+
+    <g class="orb-signal-arcs" stroke="url(#videoCvOrbStroke)" stroke-linecap="round" vector-effect="non-scaling-stroke">
+      <circle class="orb-arc orb-arc-1" cx="250" cy="250" r="110" stroke-width="2" stroke-opacity="0.72" stroke-dasharray="46 660" transform="rotate(-28 250 250)" />
+      <circle class="orb-arc orb-arc-2" cx="250" cy="250" r="150" stroke-width="1.6" stroke-opacity="0.50" stroke-dasharray="78 865" transform="rotate(38 250 250)" />
+      <circle class="orb-arc orb-arc-3" cx="250" cy="250" r="190" stroke-width="1.35" stroke-opacity="0.30" stroke-dasharray="100 1095" transform="rotate(142 250 250)" />
+      <circle class="orb-arc orb-arc-4" cx="250" cy="250" r="225" stroke-width="1.15" stroke-opacity="0.18" stroke-dasharray="122 1295" transform="rotate(214 250 250)" />
+    </g>
+
+    <g class="orb-circuit-lines" stroke="#FF7062" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+      <path class="orb-circuit orb-circuit-1" d="M122 222 C160 196 184 190 210 180" stroke-width="1.3" stroke-opacity="0.22" />
+      <path class="orb-circuit orb-circuit-2" d="M291 125 C324 136 348 157 371 188" stroke-width="1.3" stroke-opacity="0.20" />
+      <path class="orb-circuit orb-circuit-3" d="M318 377 C352 356 376 334 396 305" stroke-width="1.2" stroke-opacity="0.18" />
+      <path class="orb-circuit orb-circuit-4" d="M104 304 C143 328 176 343 211 352" stroke-width="1.2" stroke-opacity="0.16" />
+    </g>
+
+    <g class="orb-nodes" filter="url(#videoCvOrbNodeGlow)" fill="#FF7062">
+      <circle class="orb-node orb-node-1" cx="210" cy="180" r="4" fill-opacity="0.92" />
+      <circle class="orb-node orb-node-2" cx="371" cy="188" r="3.4" fill-opacity="0.82" />
+      <circle class="orb-node orb-node-3" cx="396" cy="305" r="3.1" fill-opacity="0.68" />
+      <circle class="orb-node orb-node-4" cx="211" cy="352" r="3" fill-opacity="0.60" />
+      <circle class="orb-node orb-node-5" cx="250" cy="250" r="5.6" fill-opacity="0.82" />
+    </g>
+
+    <g class="orb-center-mark" opacity="0.48" transform="translate(250 250)">
+      <circle class="orb-center-dot" cx="0" cy="0" r="22" fill="#FF7062" fill-opacity="0.09" stroke="#FF7062" stroke-width="1.5" stroke-opacity="0.36" />
+      <path class="orb-play-spark" d="M-5 -10 L13 0 L-5 10 Z" fill="#FFFFFF" fill-opacity="0.30" />
+    </g>
+  </g>
+</svg>

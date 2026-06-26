@@ -517,6 +517,21 @@ label {
   //position: absolute !important;
 }
 
+// Video CV premium preview — removes default padding/background so the
+// component's own dark shell covers the entire panel surface.
+.video-preview-panel.mat-dialog-container {
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+  border-radius: 28px !important;
+}
+@media only screen and (max-width: 767px) {
+  .video-preview-panel.mat-dialog-container {
+    padding: 0 !important;
+    border-radius: 22px 22px 0 0 !important;
+  }
+}
+
 // ─── BL-010: Mobile dialog → bottom-sheet CSS conversion ─────────────────────
 // On screens ≤767px ALL simple dialogs (confirm/cancel, success, subscription
 // alerts, action menus) slide up from the bottom like a bottom sheet.

@@ -79,7 +79,9 @@ export class ApplicationPreviewComponent implements OnInit {
   previewVideo(question, url) {
 
     let dialog = this.dialog.open(VideoPreviewComponent, {
-      width: '50vw',
+      width: '92vw',
+      maxWidth: '920px',
+      panelClass: 'video-preview-panel',
       data: {
         title: question,
         url

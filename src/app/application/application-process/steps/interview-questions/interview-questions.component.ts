@@ -69,10 +69,10 @@ export class InterviewQuestionsComponent implements OnInit {
   }
 
   previewVideo(question, url) {
-    console.log(question);
-
     let dialog = this.dialog.open(VideoPreviewComponent, {
-      width: '50vw',
+      width: '92vw',
+      maxWidth: '920px',
+      panelClass: 'video-preview-panel',
       data: {
         title: question,
         url

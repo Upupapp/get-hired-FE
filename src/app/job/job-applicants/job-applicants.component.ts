@@ -239,7 +239,9 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
   viewCv(event) {
     if(event) {
       let dialog = this.dialog.open(VideoPreviewComponent, {
-        width: '50vw',
+        width: '92vw',
+        maxWidth: '920px',
+        panelClass: 'video-preview-panel',
         data: {
           url: event
         }

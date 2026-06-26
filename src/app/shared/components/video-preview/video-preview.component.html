@@ -1,12 +1,50 @@
-<div class="w-100 mb-3" style="height: 20px;">
-  <span class="float-end">
-    <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px; width: 15px; cursor: pointer;"
-      (click)="cancel()">
-  </span>
+<div class="video-preview-dialog" [class.is-buffering]="isVideoBuffering">
 
-  <h5 class="title-main" *ngIf="data?.title">{{data?.title}}</h5>
-</div>
+  <button
+    type="button"
+    class="video-preview-close"
+    aria-label="Close video preview"
+    (click)="cancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
 
-<div class="row p-2 record-container mt-2">
-  <video #preview class="w-100" height="340" controls autoplay="autoplay" [src]="data?.url"></video>
+  <div class="video-preview-orb-layer" aria-hidden="true">
+    <img
+      src="/assets/brand/video-cv-orb.svg"
+      alt=""
+      class="video-cv-orb-img" />
+  </div>
+
+  <div class="video-preview-shell">
+    <div class="video-preview-header">
+      <span class="video-preview-kicker">{{ kicker }}</span>
+      <h2 class="video-preview-title">{{ title }}</h2>
+    </div>
+
+    <div class="video-frame">
+      <div class="video-loading-state" *ngIf="isVideoBuffering && !hasVideoError" aria-live="polite">
+        <span class="loading-dot" aria-hidden="true"></span>
+        Loading video&hellip;
+      </div>
+
+      <div class="video-error-state" *ngIf="hasVideoError" aria-live="assertive">
+        Unable to load video. Please close and try again.
+      </div>
+
+      <video
+        class="video-preview-player"
+        [src]="data?.url"
+        controls
+        autoplay
+        playsinline
+        preload="metadata"
+        (loadstart)="onVideoBuffering()"
+        (waiting)="onVideoBuffering()"
+        (stalled)="onVideoBuffering()"
+        (canplay)="onVideoReady()"
+        (playing)="onVideoReady()"
+        (error)="onVideoError()">
+      </video>
+    </div>
+  </div>
 </div>

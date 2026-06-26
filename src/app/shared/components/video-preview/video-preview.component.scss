@@ -1,1 +1,222 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
+
+.video-preview-dialog {
+  position: relative;
+  padding: 28px;
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 80% 8%, rgba(255, 112, 98, 0.20), transparent 34%),
+    linear-gradient(145deg, rgba(9, 16, 31, 0.98), rgba(14, 22, 39, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.46),
+    0 0 0 1px rgba(255, 112, 98, 0.08);
+  animation: videoDialogEnter $motion-duration-card $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+.video-preview-orb-layer {
+  position: absolute;
+  top: auto;
+  right: -130px;
+  bottom: -180px;
+  left: auto;
+  width: 520px;
+  height: 520px;
+  pointer-events: none;
+  opacity: 0.72;
+  transform: rotate(-8deg);
+}
+
+.video-cv-orb-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 0 34px rgba(255, 112, 98, 0.32));
+  animation: videoOrbIdle 4.8s ease-in-out infinite;
+  @include ambient-motion-safe;
+}
+
+.video-preview-dialog.is-buffering .video-cv-orb-img {
+  animation: videoOrbPulse 2.4s ease-in-out infinite;
+}
+
+.video-preview-shell {
+  position: relative;
+  z-index: 2;
+}
+
+.video-preview-header {
+  margin-bottom: 18px;
+}
+
+.video-preview-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #ff9a86;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.video-preview-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+  line-height: 1.2;
+  font-weight: 800;
+  padding-right: 56px; // clear the close button
+}
+
+.video-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #050914;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 112, 98, 0.08),
+    0 24px 64px rgba(0, 0, 0, 0.34);
+}
+
+.video-preview-player {
+  display: block;
+  width: 100%;
+  max-height: min(60vh, 520px);
+  background: #050914;
+  border-radius: inherit;
+  // Override global styles.scss rule: img, video { height: auto }
+  height: auto;
+}
+
+.video-loading-state {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 700;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 112, 98, 0.18), transparent 34%),
+    rgba(5, 9, 20, 0.48);
+  backdrop-filter: blur(8px);
+}
+
+.video-error-state {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.80);
+  font-size: 0.9rem;
+  background: rgba(5, 9, 20, 0.80);
+  backdrop-filter: blur(8px);
+}
+
+.loading-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #ff7062;
+  box-shadow: 0 0 22px rgba(255, 112, 98, 0.86);
+  animation: loadingDotPulse 1.2s ease-in-out infinite;
+  @include ambient-motion-safe;
+}
+
+.video-preview-close {
+  position: absolute;
+  z-index: 5;
+  top: 16px;
+  right: 16px;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.10);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition:
+    transform 160ms $motion-ease-standard,
+    background 160ms $motion-ease-standard,
+    box-shadow 160ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    transform: translateY(-1px) scale(1.04);
+    background: rgba(255, 112, 98, 0.18);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 112, 98, 0.34),
+      0 0 24px rgba(255, 112, 98, 0.16);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(255, 112, 98, 0.72);
+    outline-offset: 3px;
+  }
+
+  span {
+    font-size: 28px;
+    line-height: 1;
+    transform: translateY(-1px);
+    display: block;
+  }
+}
+
+// ── Keyframes ──────────────────────────────────────────────────────────────────
+
+@keyframes videoDialogEnter {
+  from { opacity: 0; transform: scale(0.965) translateY(10px); }
+  to   { opacity: 1; transform: scale(1)     translateY(0);    }
+}
+
+@keyframes videoOrbIdle {
+  0%, 100% { opacity: 0.62; transform: scale(0.985); }
+  50%      { opacity: 0.84; transform: scale(1.025); }
+}
+
+@keyframes videoOrbPulse {
+  0%, 100% { opacity: 0.48; transform: scale(0.94); }
+  50%      { opacity: 0.94; transform: scale(1.06); }
+}
+
+@keyframes loadingDotPulse {
+  0%, 100% { opacity: 0.42; transform: scale(0.82); }
+  50%      { opacity: 1;    transform: scale(1.18); }
+}
+
+// ── Mobile ─────────────────────────────────────────────────────────────────────
+
+@media (max-width: 640px) {
+  .video-preview-dialog {
+    padding: 18px;
+  }
+
+  .video-preview-orb-layer {
+    width: 320px;
+    height: 320px;
+    right: -100px;
+    bottom: -110px;
+  }
+
+  .video-preview-close {
+    top: 12px;
+    right: 12px;
+  }
+}
