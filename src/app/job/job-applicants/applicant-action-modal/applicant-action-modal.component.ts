@@ -53,6 +53,10 @@ export class ApplicantActionModalComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  trackById(_index: number, item: any): any {
+    return item.id;
+  }
+
   close() {
     this.dialogRef.close(null);
   }
@@ -91,12 +95,12 @@ export class ApplicantActionModalComponent implements OnInit {
   selectStatus(statusId: number, statusName: string): void {
     const applicationId = this.data && this.data.data && this.data.data.applicationId;
     if (!applicationId) {
-      this.snackBar.open('Application ID not found.', 'OK', { duration: 3000 });
+      this.snackBar.open("We couldn't find this application. Please close and try again.", 'Dismiss', { duration: 4000 });
       return;
     }
     const currentStatusId = this.data && this.data.data && this.data.data.jobApplicationStatusId;
     if (statusId === parseInt(currentStatusId, 10)) {
-      this.snackBar.open('Applicant already has this status.', 'OK', { duration: 2000 });
+      this.snackBar.open('This applicant is already at that status — no change made.', 'Dismiss', { duration: 3000 });
       this.dialogRef.close(null);
       return;
     }
@@ -104,12 +108,12 @@ export class ApplicantActionModalComponent implements OnInit {
     this.jobService.updateApplicationStatus(applicationId, statusId).subscribe(
       () => {
         this.statusUpdating = false;
-        this.snackBar.open(`Status updated to "${statusName}".`, 'OK', { duration: 3000 });
+        this.snackBar.open(`Application status updated to "${statusName}".`, 'OK', { duration: 3000 });
         this.dialogRef.close({ statusUpdated: true, newStatusId: statusId, newStatusName: statusName });
       },
       (err: any) => {
         this.statusUpdating = false;
-        const msg = (err && err.error && err.error.message) || 'Failed to update status. Please try again.';
+        const msg = (err && err.error && err.error.message) || "We couldn't update the status. Please try again.";
         this.snackBar.open(msg, 'OK', { duration: 4000 });
       }
     );

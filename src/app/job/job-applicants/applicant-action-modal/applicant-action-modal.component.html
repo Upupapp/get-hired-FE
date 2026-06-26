@@ -1,8 +1,8 @@
 <div class="side-sub-menu px-0">
-	<span class="close float-end">
+	<button type="button" class="close float-end btn btn-link p-0" (click)="dialogRef.close()" aria-label="Close">
 		<img src="/assets/images/placeholder/icons/remove-gray.png"
-		style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
-	</span>
+		style="height: 13px; cursor: pointer;" aria-hidden="true">
+	</button>
 
 	<h6 class="pb-3 d-flex" style="border-bottom: dashed 1px #d9d9d9;">
 		<img [src]="data?.data?.photoUrl" class="img-avatar">
@@ -18,7 +18,9 @@
 	<!-- Status picker view -->
 	<div *ngIf="statusView" class="status-picker-view pt-2">
 		<div class="d-flex align-items-center mb-2">
-			<button class="btn btn-sm btn-link p-0 me-2" (click)="statusView = false">&#8592; Back</button>
+			<!-- BRAND-FIX-2: disable Back while update is in-flight so the user
+			     cannot navigate away and lose the pending result feedback. -->
+			<button class="btn btn-sm btn-link p-0 me-2" (click)="statusView = false" [disabled]="statusUpdating">&#8592; Back</button>
 			<span class="fw-semibold small">Update Application Status</span>
 		</div>
 		<p class="text-muted small mb-3">
@@ -26,23 +28,30 @@
 		</p>
 		<div class="status-options">
 			<button
-				*ngFor="let s of statusOptions"
+				*ngFor="let s of statusOptions; trackBy: trackById"
 				class="btn btn-outline-secondary btn-sm w-100 mb-2 text-start"
 				[disabled]="statusUpdating"
 				(click)="selectStatus(s.id, s.name)"
 			>{{s.name}}</button>
 		</div>
-		<div *ngIf="statusUpdating" class="text-center text-muted small mt-2">Updating&hellip;</div>
+		<!-- BRAND-FIX-3: spinner + text for a richer loading state. The
+		     role="status" + sr-only text ensures screen readers announce it.
+		     Bootstrap's border-spinner is already available project-wide. -->
+		<div *ngIf="statusUpdating" class="text-center text-muted small mt-2" role="status">
+			<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+			Updating&hellip;
+		</div>
 	</div>
 
 	<!-- Default action menu -->
 	<div *ngIf="!statusView" class="row">
-		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls">
-			<div class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center"
-			[ngStyle]="{ background: menu?.background }"
-			(click)="openControlMenu(menu)">
+		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls; trackBy: trackById">
+			<button type="button"
+				class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center border-0"
+				[ngStyle]="{ background: menu?.background }"
+				(click)="openControlMenu(menu)">
 				<span class="side-sub-menu-title">{{menu.title}}</span>
-			</div>
+			</button>
 		</div>
 	</div>
 </div>

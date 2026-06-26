@@ -87,7 +87,7 @@ export class JobApplicantsComponent implements OnInit {
             salary: this.formatSalary(applicant.salaryMinimum, applicant.salaryMaximum, 'Monthly'),
             dateApplied: this.datePipe.transform(applicant.dateApplied, 'medium'),
             address: applicant.city + ', ' + applicant.country,
-            matchSignalLabel: fitSignals ? fitSignals.label : 'Match signals unavailable',
+            matchSignalLabel: fitSignals ? fitSignals.label : 'No signal data',
           }
         })
       })
@@ -196,10 +196,10 @@ export class JobApplicantsComponent implements OnInit {
   }
 
   /** GH-EMP-B02 -- only show the disclaimer when there's an actual signal
-   * to disclaim; a row's fallback label ("Match signals unavailable") has
+   * to disclaim; a row's fallback label ("No signal data") has
    * nothing for the disclaimer to apply to. */
   hasAnyMatchSignal(applicants: any[]): boolean {
-    return (applicants || []).some(a => a.matchSignalLabel && a.matchSignalLabel !== 'Match signals unavailable');
+    return (applicants || []).some(a => a.matchSignalLabel && a.matchSignalLabel !== 'No signal data');
   }
 
   redirectTo(url) {
@@ -244,11 +244,10 @@ export class JobApplicantsComponent implements OnInit {
   }
 
   viewMenu(event): void {
-    console.log(event);
     let openDialog = this.dialog.open(
       ApplicantActionModalComponent,
       {
-        width: '34vw',
+        width: 'min(560px, 95vw)',
         data: {
           job_id: this.jobId,
           ...event

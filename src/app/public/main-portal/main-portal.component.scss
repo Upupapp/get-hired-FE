@@ -162,9 +162,26 @@
   font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
+  // BRAND-FIX-1: add transition so hover/focus background tint eases in
+  // rather than snapping. Covered by the reduced-motion block below.
+  transition: background 150ms ease;
 
   &:hover, &:focus-visible {
     background: rgba(255, 112, 98, 0.08);
+  }
+
+  // MV4-B1: press feedback missing in V3; added here for touch parity
+  &:active {
+    background: rgba(255, 112, 98, 0.15);
+    transform: scale(0.97);
+  }
+
+  // MV4-B2: prevent iOS double-tap zoom on this button
+  touch-action: manipulation;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    &:active { transform: none; }
   }
 }
 
@@ -476,6 +493,16 @@
     opacity: 1;
     transform: none;
   }
+
+  // Tab button micro-interaction (scale + multi-property transition)
+  // is suppressed for users who prefer reduced motion.
+  .portal-preview-tab {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+  }
 }
 
 // ── Scroll reveal (appPortalReveal) ───────────────────────────────────
@@ -573,6 +600,8 @@
   font-weight: 600;
   cursor: pointer;
   min-height: 44px;
+  // MV4-B3: prevent iOS double-tap zoom on tab buttons
+  touch-action: manipulation;
   transition: border-color 150ms ease, color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 80ms ease;
 
   &:hover {

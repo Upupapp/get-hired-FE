@@ -75,3 +75,38 @@
         background: $color-global-red;
     }
 }
+
+// ── MV4: Status picker mobile touch fixes ────────────────────────────────
+// Bootstrap btn-sm is ~30px tall — below the 44px iOS guideline.
+// These rules raise status-picker buttons to 44px and add press feedback.
+
+.status-options .btn {
+  // MV4-S1: raise from Bootstrap btn-sm (~30px) to 44px touch target
+  min-height: 44px;
+  // MV4-S2: prevent iOS double-tap zoom
+  touch-action: manipulation;
+  // MV4-S3: press feedback for touch users
+  &:active {
+    opacity: 0.75;
+    transform: scale(0.98);
+  }
+}
+
+// MV4-S4: Back button in status picker — btn-sm btn-link is ~30px
+.status-picker-view .btn-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  touch-action: manipulation;
+  &:active {
+    opacity: 0.65;
+  }
+}
+
+// MV4-S5: Close icon hit area — 13px image is far below 44px
+.side-sub-menu > .close img {
+  // Expand clickable area via padding without changing visual size
+  padding: 16px;
+  margin: -16px;
+  touch-action: manipulation;
+}
