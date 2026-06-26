@@ -249,7 +249,7 @@ export class SeoService {
       '@context': 'https://schema.org',
       '@type': 'JobPosting',
       title: job.jobTitle || '',
-      description: this.stripHtml(job.jobDescription || ''),
+      description: this.stripHtml(job.jobDescription || '') || job.jobTitle || '',
       datePosted: this.toIso(job.createdAt),
       // FIX: API returns company_name (snake_case); match the same fallback
       // chain used in public-details.component.ts line 41.
@@ -267,6 +267,11 @@ export class SeoService {
           ...(job.jobCity ? { addressLocality: job.jobCity } : {}),
         },
       },
+      // Per Google for Jobs spec: signal remote eligibility for the "Remote" badge.
+      ...(job.workSetupName && /remote/i.test(job.workSetupName) ? {
+        jobLocationType: 'TELECOMMUTE',
+        applicantLocationRequirements: { '@type': 'Country', name: 'Philippines' },
+      } : {}),
       url: `${BASE_URL}/jobs/details/${job.jobId}`,
       // directApply: true signals that users can apply without leaving this site,
       // enabling the "Apply on site" badge in Google for Jobs.

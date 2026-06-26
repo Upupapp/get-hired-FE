@@ -344,6 +344,26 @@ describe('SeoService (browser)', () => {
       const parsed = JSON.parse((document.getElementById('gh-jsonld-jobposting') as any).text);
       expect(parsed.validThrough).toBeUndefined();
     });
+
+    it('sets jobLocationType TELECOMMUTE for Remote work setup', () => {
+      service.setJobPostingJsonLd(makeJob({ workSetupName: 'Remote' }));
+      const parsed = JSON.parse((document.getElementById('gh-jsonld-jobposting') as any).text);
+      expect(parsed.jobLocationType).toBe('TELECOMMUTE');
+      expect(parsed.applicantLocationRequirements).toBeTruthy();
+      expect(parsed.applicantLocationRequirements['@type']).toBe('Country');
+    });
+
+    it('omits jobLocationType for On-site work setup', () => {
+      service.setJobPostingJsonLd(makeJob({ workSetupName: 'On-site' }));
+      const parsed = JSON.parse((document.getElementById('gh-jsonld-jobposting') as any).text);
+      expect(parsed.jobLocationType).toBeUndefined();
+    });
+
+    it('falls back to jobTitle for description when jobDescription is null', () => {
+      service.setJobPostingJsonLd(makeJob({ jobDescription: null }));
+      const parsed = JSON.parse((document.getElementById('gh-jsonld-jobposting') as any).text);
+      expect(parsed.description).toBe('Software Engineer');
+    });
   });
 
   // ── clearJsonLd / clearJobPostingJsonLd ───────────────────────────────────
