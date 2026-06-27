@@ -538,9 +538,9 @@ $border:       rgba(0,0,0,0.07);
   display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
 }
 
-// ─── Global page offset for sticky header ────────────────────────────────────
-// The public nav bar is 68px — compensate at the top of the first section.
-:host { display: block; padding-top: 68px; }
+// public.component.html already applies margin-top:80px on the router-outlet
+// wrapper so we do NOT add padding-top here — it would double the gap.
+:host { display: block; }
 
 // ─── Mobile overrides ─────────────────────────────────────────────────────────
 @media (max-width: 767px) {
