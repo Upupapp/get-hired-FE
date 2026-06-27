@@ -3,7 +3,7 @@
         <div class="col-12  text-center">
             <div class="mb-2">
 
-                <div class="w-100">
+                <div class="w-100" *ngIf="company?.companyLogoUrl">
                     <img [src]="company?.companyLogoUrl" class="img-fluid" style="height:130px">
                 </div>
 

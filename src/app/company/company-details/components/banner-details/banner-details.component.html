@@ -58,7 +58,7 @@
           </div>
         </div>
 
-        <img [src]="details.companyLogoUrl" class="company-logo mt-3" />
+        <img *ngIf="details.companyLogoUrl" [src]="details.companyLogoUrl" class="company-logo mt-3" />
 
         <div class="row">
           <div class="col-12 col-lg-8 offset-lg-2">

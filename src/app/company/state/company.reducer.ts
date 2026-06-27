@@ -185,11 +185,24 @@ export const companyReducer = createReducer<CompanyState>(
     };
   }),
   on(CompanyActions.updateCompanySuccess, (state, action): CompanyState => {
+    const updatedDashboard = state.dashboard ? {
+      ...state.dashboard,
+      company: state.dashboard.company ? {
+        ...state.dashboard.company,
+        companyLogoUrl: action.company.companyLogoUrl,
+        companyName: action.company.companyName,
+        companyDetails: action.company.companyDetails,
+        companyCity: action.company.companyCity,
+        industryId: action.company.industryId,
+        numberOfEmployee: action.company.numberOfEmployee,
+      } : state.dashboard.company
+    } : state.dashboard;
     return {
       ...state,
       loading: false,
       succesMsg: 'updated',
-      selected: action.company
+      selected: action.company,
+      dashboard: updatedDashboard
     };
   }),
   on(CompanyActions.updateCompanyFail, (state, action): CompanyState => {

@@ -21,7 +21,9 @@
 		<div class="col-12 col-lg-12">
 			<div class="card-transparent text-center">
 				
-				<img [src]="companyData?.logo" class="company-logo">
+				<img *ngIf="companyData?.logo || companyData?.companyLogoUrl"
+					[src]="companyData?.companyLogoUrl || companyData?.logo"
+					class="company-logo">
 				<div class="row">
 					<div class="col-12 col-lg-10 offset-lg-1">
 						<h5 class="title-company">{{companyData?.name}} ({{companyData?.type}})</h5>
