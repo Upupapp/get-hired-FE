@@ -18,6 +18,7 @@ const routes: Routes = [
   {
     path: '',
     children: [
+      { path: '', component: CompaniesComponent, pathMatch: 'full' },
       { path: 'details', component: PublicCompanyDetailsComponent },
       { path: ':slug', component: PublicCompanyDetailsComponent },
     ]

@@ -26,6 +26,12 @@ export class CompaniesService {
     return this.baseService.get<Model.Company>(`${this.companyUrl}/slug/${slug}`);
   }
 
+  getPublicCompanies(page: number = 1) {
+    return this.baseService.get<{ companies: Model.CompanyListItem[]; total: number; page: number; limit: number }>(
+      `${environment.api_url}/public/companies?page=${page}`
+    );
+  }
+
   getPublicCompanyProfile(slug: string) {
     return this.baseService.get<Model.PublicCompanyProfile>(
       `${environment.api_url}/public/company/${encodeURIComponent(slug)}`

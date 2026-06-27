@@ -1,3 +1,15 @@
+export interface CompanyListItem {
+  companyId: string;
+  displayName: string;
+  slug: string;
+  logoUrl: string | null;
+  industry: string | null;
+  location: string | null;
+  workSetup: string | null;
+  employeeCount: number | null;
+  openJobs: number;
+}
+
 export interface PublicJob {
   jobId: string;
   jobTitle: string;
