@@ -1,23 +1,17 @@
 @import "src/assets/styles/colors";
 @import "src/assets/styles/motion";
 
+// Sidebar fills the fixed #sidebar-container (height: 100vh).
+// overflow-y: hidden here — only .gh-sidebar-nav scrolls internally
+// so the footer user card is always visible at the bottom.
 .gh-sidebar {
   display: flex;
   flex-direction: column;
   width: 252px;
-  min-height: 100vh;
+  height: 100%;
   background: $color-global-sidebar-employer-user-menu;
-  position: sticky;
-  top: 0;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-
-  // Thin custom scrollbar
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.15) transparent;
-  &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 }
 
 // ─── Logo ─────────────────────────────────────────────────────────────────────
@@ -45,11 +39,21 @@
 
 // ─── Nav list ─────────────────────────────────────────────────────────────────
 
+// flex:1 + min-height:0 lets the nav shrink; overflow-y:auto gives it its
+// own scrollbar if nav items overflow, keeping the footer always on screen.
 .gh-sidebar-nav {
   list-style: none;
   padding: 12px 0;
   margin: 0;
-  flex: 1;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 }
 
 // ─── Nav item ─────────────────────────────────────────────────────────────────
@@ -153,7 +157,10 @@
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
+// flex-shrink:0 ensures the footer is never squeezed out when nav is long.
+// margin-top:auto is a belt-and-suspenders push to bottom for edge cases.
 .gh-sidebar-footer {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;

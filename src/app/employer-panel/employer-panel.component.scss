@@ -36,15 +36,26 @@
   overflow-y: hidden !important;
 }
 
+// Desktop sidebar is fixed so it stays pinned during page scroll.
+// position:sticky was broken by #body-row overflow-y:hidden.
+// Out-of-flow fixed positioning bypasses that entirely.
 #sidebar-container {
-  // min-height: 100vh;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 252px;
+  z-index: 100;
   padding: 0;
   background: $color-global-sidebar-employer-user-menu;
-  max-width: 252px;
-  min-height: 100vh;
-  margin-bottom: 0 !important;
+}
+
+// Offset main content so it doesn't slide under the fixed sidebar.
+@media (min-width: 768px) {
+  #main-company-component {
+    margin-left: 252px !important;
+    width: calc(100% - 252px) !important;
+  }
 }
 
 /* Menu item*/
