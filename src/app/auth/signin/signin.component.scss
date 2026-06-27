@@ -9,9 +9,14 @@
 .main-logo{
 	background: #FFFFFF;
 	border-radius: 0px 0px 10px 10px;
-	padding: 30px 15px 10px 15px;
+	padding: 20px 24px;
 	margin-bottom: 15px;
-	height: 120px;
+	height: auto;
+	max-height: 80px;
+	width: auto;
+	max-width: 220px;
+	object-fit: contain;
+	display: block;
 	cursor: pointer;
 }
 
