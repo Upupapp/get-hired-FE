@@ -1,378 +1,378 @@
 @import "src/assets/styles/colors";
 
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$surface: #F8F9FC;
+$border: #E8EBF0;
+$text: #1A1D2E;
+$muted: #667085;
+$err-red: #D84040;
+$warn-amber: #C07000;
+$info-blue: #2563EB;
 
+// ── Layout ─────────────────────────────────────────────────────────────────────
 
-.btn-add-service{
-  display: inline-flex;
-  align-items: center;
+.as-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 720px;
+  padding-bottom: 48px;
+}
+
+// ── Cards ──────────────────────────────────────────────────────────────────────
+
+.as-card {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.as-card-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid $border;
+}
+
+.as-card-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 4px;
+}
+
+.as-card-sub {
+  font-size: 0.82rem;
+  color: $muted;
+  margin: 0;
+}
+
+.as-card-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ── Grid ───────────────────────────────────────────────────────────────────────
+
+.as-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 560px) { grid-template-columns: 1fr; }
+}
+
+.as-field {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-  border-radius: 10px;
-  padding: 0 18px;
-  height: 38px;
-  color: white;
+
+  &--full { grid-column: 1 / -1; }
+}
+
+// ── Labels ─────────────────────────────────────────────────────────────────────
+
+.as-label {
   font-family: 'Manrope', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  margin-top: -10px;
-  transition: opacity 120ms ease;
-  &:hover { opacity: 0.88; }
-}
-
-.main-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	/* or 215% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #03011A;
-}
-
-.title-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight:500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-	margin-bottom: 5px;
-
-	color: #464646;
-}
-
-.title-label-sub{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* or 131% */
-	color: #868686;
-	margin-bottom: 5px;
-}
-
-.card{
-  background: #FFFFFF;
-  box-shadow: 0 2px 12px rgba(16, 24, 40, 0.06);
-  border-radius: 18px;
-  border: 1px solid #E7EAF3;
-  padding: 24px !important;
-}
-
-.form-control{
-	background: #FFFFFF;
-	min-height: 50px;
-	border: 1px solid #AFBCC6 !important;
-}
-
-.form-select-multiple{
-	margin-bottom: 20px;
-	min-height: 170px !important;
-
-	option{
-		border-radius: 4px;
-		padding: 6px 10px;
-		margin-bottom: 5px;
-
-	}
-
-
-	option select {
-	    margin: 40px;
-	    background: red !important;
-	    color: #fff;
-	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-	}
-}
-
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-}
-
-.badge-selection{
-	background: #FFFFFF;
-	border: 2px dashed rgba(#AFBCC6, 0.7);
-	border-radius: 10px;
-	min-height: 170px;
-	margin-top: 30px;
-	padding: 20px;
-
-	.badge-item{
-		background: #FFFFFF;
-		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
-		border-radius: 10px;
-		padding: 10px 10px 10px 17px;
-
-		img{
-			height: 30px;
-			margin-right: 10px;
-			width: auto;
-			margin-top: 3px;
-		}
-
-		.badge-title{
-			font-family: 'Manrope';
-			font-style: normal;
-			font-weight: 400;
-			font-size: 16px;
-			line-height: 27px;
-			/* identical to box height */
-			margin-top: 3px;
-
-			color: #0C264C;
-		}
-
-		.remove-badge{
-			position: absolute;
-			right: 0px;
-			top: 3px;
-			cursor: pointer;
-			.mat-icon{
-				font-size: 16px !important;
-			}
-		}
-	}
-}
-
-.requirement-badge{
-	background: #868686;
-	border-radius: 6px;
-	color: white;
-	padding: 7px 15px;
-	cursor: pointer;
-	font-size: 12px;
-	font-weight: 500;
-	position: relative;
-}
-
-.img-banner{
-	margin-bottom: 35px;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-	border-radius: 10.624px;
-	height: 150px;
-	object-position: center;
-	object-fit: cover;
-}
-
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
-}
-
-.btn-search{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 4px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;	/* identical to box height */
-	color: #FFFFFF;
-	min-width: 100px;
-	padding: 10px;
-}
-
-.industry-skills{
-	border: none !important;
-	background: #FFFFFF;
-	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
-	border-radius: 10.624px;
-	cursor: pointer;
-}
-
-.industry-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 15.936px;
-	line-height: 15px;
-	letter-spacing: -0.03em;
-	color: #000000;
-}
-
-.industry-subtitle{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 15.936px;
-	line-height: 140%;
-	color: #4F4F4F;
-}
-
-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	/* identical to box height */
-
-
-	color: #464646;
-}
-
-.rate-card{
-	border: solid 2px #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-
-.title-rate{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #0C264C;
-}
-
-.check{
-	position: absolute;
-	height: 19px;
-	top: 8px;
-	right: 8px;
-}
-
-
-.rate-card-active{
-	background: #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-.title-rate-active{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #FFFFFF;
-}
-
-.rate-selection{
-	background: $color-global-sidebar-employer-user-menu;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	min-height: 300px;
-	padding: 20px;
-}
-
-.title-rate-range{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	color: #FFFFFF;
-}
-
-
-.title-rate-selection{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	color: #FFFFFF;
-}
-
-.industry-badge{
-	background: #0C264C;
-	border-radius: 6px;
-	color: white;
-	padding: 5px 15px;
-	cursor: pointer;
-}
-
-.btn-work-setup{
-	background: #FFFFFF;
-	border: 1px solid #AFBCC6;
-	border-radius: 6px !important;
-	padding: 15px 20px !important;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-}
-
-
-.active{
-	background: #0C264D;
-	color: white !important;
-}
-
-.btn-save{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-  border-radius: 10px;
-  font-family: 'Manrope', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  color: #FFFFFF;
-  padding: 0 22px !important;
-  height: 44px;
-  border: none;
-  cursor: pointer;
-  transition: opacity 120ms ease;
-  &:hover { opacity: 0.88; }
-}
-
-.btn-save-draft{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
   font-weight: 600;
-  font-size: 14px;
-  color: #667085;
-  background: #FFFFFF;
-  border: 1.5px solid #E7EAF3;
-  border-radius: 10px;
-  padding: 0 22px !important;
+  color: $text;
+}
+
+// ── Inputs ─────────────────────────────────────────────────────────────────────
+
+.as-input {
   height: 44px;
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.9rem;
+  color: $text;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::placeholder { color: $muted; }
+
+  &:focus {
+    outline: none;
+    border-color: $azure;
+    box-shadow: 0 0 0 3px rgba($azure, 0.14);
+  }
+
+  &--readonly {
+    background: $surface;
+    color: $muted;
+    cursor: not-allowed;
+  }
+
+  &--pw { padding-right: 48px; }
+
+  &--err {
+    border-color: $err-red;
+    &:focus { box-shadow: 0 0 0 3px rgba($err-red, 0.14); }
+  }
+}
+
+// ── Password row (input + eye toggle) ──────────────────────────────────────────
+
+.as-pw-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.as-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
   cursor: pointer;
-  transition: border-color 120ms ease;
-  &:hover { border-color: #FF675D; color: #FF675D; }
+  color: $muted;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: color 0.12s;
+
+  &:hover { color: $coral; }
+  &:focus-visible {
+    outline: 2px solid $azure;
+    outline-offset: 2px;
+  }
 }
 
+// ── Hint ───────────────────────────────────────────────────────────────────────
 
-
-.bg-gray{
-	background-size: cover !important;
-	background-position: center !important;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
-	border-radius: 7px;
-	padding: 20px;
-	background-repeat: no-repeat;
-	//background-color: rgba(0, 0, 0, 0.1)!important;
-
+.as-hint {
+  font-size: 0.75rem;
+  color: $muted;
 }
 
-.avatar-image{
-	background-color: white;
-	object-fit: cover;
-	object-position: center;
-	height: 200px;
-	width: 200px;
-	border-radius: 50%;
-	border: solid 2px #c9c9c9;
+.as-forgot {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: $coral;
+  text-decoration: none;
+  margin-top: 2px;
+
+  &:hover { text-decoration: underline; }
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; border-radius: 3px; }
+}
+
+// ── Field-level errors ─────────────────────────────────────────────────────────
+
+.as-field-err {
+  font-size: 0.76rem;
+  color: $err-red;
+  font-weight: 500;
+}
+
+// ── State banners ──────────────────────────────────────────────────────────────
+
+.as-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  line-height: 1.45;
+
+  &--error {
+    background: rgba($err-red, 0.06);
+    color: $err-red;
+    border: 1px solid rgba($err-red, 0.18);
+  }
+
+  &--warn {
+    background: rgba($warn-amber, 0.07);
+    color: $warn-amber;
+    border: 1px solid rgba($warn-amber, 0.18);
+  }
+
+  &--info {
+    background: rgba($info-blue, 0.06);
+    color: $info-blue;
+    border: 1px solid rgba($info-blue, 0.18);
+  }
+}
+
+.as-banner-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.as-banner-msg { flex: 1; }
+
+.as-banner-link {
+  white-space: nowrap;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  flex-shrink: 0;
+
+  &:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
+}
+
+// ── Strength checklist ─────────────────────────────────────────────────────────
+
+.as-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: $surface;
+  border-radius: 10px;
+  margin: 16px 0 20px;
+}
+
+.as-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: $muted;
+  transition: color 0.15s;
+
+  svg { flex-shrink: 0; color: $muted; transition: color 0.15s; }
+
+  &--pass {
+    color: $text;
+    svg { color: $coral; }
+  }
+}
+
+// ── Buttons ────────────────────────────────────────────────────────────────────
+
+.as-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
+
+  &--primary {
+    background: linear-gradient(135deg, $coral 0%, #FF9068 100%);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba($coral, 0.28);
+
+    &:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    &:active:not(:disabled) { transform: translateY(0); }
+    &:focus-visible { outline: 2px solid $coral; outline-offset: 3px; }
+    &:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  }
+
+  &--block { width: 100%; }
+
+  &--loading { cursor: wait; }
+}
+
+.as-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: as-spin 0.65s linear infinite;
+  flex-shrink: 0;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    border-top-color: rgba(255,255,255,0.7);
+  }
+}
+
+@keyframes as-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Success state ──────────────────────────────────────────────────────────────
+
+.as-pw-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 0 8px;
+  gap: 10px;
+}
+
+.as-pw-success-ring {
+  margin-bottom: 8px;
+}
+
+.as-pw-success-svg {
+  width: 56px;
+  height: 56px;
+}
+
+.as-success-track {
+  opacity: 0.15;
+}
+
+.as-success-draw {
+  stroke-dasharray: 150;
+  stroke-dashoffset: 0;
+  animation: as-orbit 0.55s ease-out forwards;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+.as-success-check {
+  stroke-dasharray: 32;
+  stroke-dashoffset: 32;
+  animation: as-check-draw 0.35s 0.4s ease-out forwards;
+
+  @media (prefers-reduced-motion: reduce) { stroke-dashoffset: 0; animation: none; }
+}
+
+@keyframes as-orbit {
+  from { stroke-dashoffset: 150; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes as-check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.as-pw-success-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: $text;
+  margin: 0;
+}
+
+.as-pw-success-body {
+  font-size: 0.88rem;
+  color: $muted;
+  margin: 0;
+}
+
+// ── Mobile ─────────────────────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .as-card { padding: 20px 16px; }
+  .as-btn--block { height: 48px; font-size: 0.92rem; }
 }

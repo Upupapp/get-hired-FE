@@ -60,6 +60,15 @@ export class AuthService {
     return this.baseService.post(`${this.authUrl}/changepassword`, body);
   }
 
+  changePasswordInSession(payload: {
+    currentPassword: string;
+    newPassword: string;
+    signOutOtherSessions: boolean;
+    clientEventId: string;
+  }) {
+    return this.baseService.post(`${this.authUrl}/account/change-password`, payload);
+  }
+
   getUserProfile() {
     return this.baseService.get<Model.User>(`${this.authUrl}/getprofile`);
   }

@@ -1,52 +1,234 @@
-<form [formGroup]="profileDetailsForm" (ngSubmit)="onSubmit()">
-  <div class="card card-body mt-3">
+<div class="as-wrap" [@animate]="{value:'*', params:{y:'30px', delay:'100ms'}}">
 
-    <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-      <!-- CONTACT DETAILS -->
-      <div class="col-12 mt-2">
-        <h5 class="title-label">{{ 'ACCOUNT_SETTINGS.TITLE_TEXT' | translate }}</h5>
-        <hr style="border: dashed 1px #868686">
-      </div>
-
-      <div class="col-12 col-lg-6 mb-3">
-        <div class="title-container mb-3">
-          <label>{{ 'ACCOUNT_SETTINGS.FN_INPUT_FIELD' | translate }}</label>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="George" formControlName="firstName">
-          </div>
-        </div>
-
-        <div class="title-container mb-3">
-          <label>Email</label>
-
-          <div class="form-group">
-            <input type="email" class="form-control" placeholder="sample.email@gmail.com" formControlName="email">
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-6 mb-3">
-        <div class="title-container mb-3">
-          <label>{{ 'ACCOUNT_SETTINGS.LN_INPUT_FIELD' | translate }}</label>
-
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Cruz" formControlName="lastName">
-          </div>
-        </div>
-
-        <div class="title-container mb-3">
-          <label>{{ 'ACCOUNT_SETTINGS.PW_INPUT' | translate }}</label>
-
-          <div class="container-input flex-wrap">
-            <input type="password" class="form-control" placeholder="***********">
-          </div>
-        </div>
-      </div>
+  <!-- ── Card 1: Account Profile ─────────────────────────────────────────────── -->
+  <div class="as-card">
+    <div class="as-card-header">
+      <h3 class="as-card-title">{{ 'ACCOUNT_SETTINGS.TITLE_TEXT' | translate }}</h3>
     </div>
-
-    <div class="d-flex justify-content-end mt-3">
-      <button class="btn btn-save" type="submit">{{ 'ACCOUNT_SETTINGS.SUBMIT_BUTTON' | translate }}</button>
-    </div>
+    <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+      <div class="as-grid">
+        <div class="as-field">
+          <label class="as-label" for="asFirstName">{{ 'ACCOUNT_SETTINGS.FN_INPUT_FIELD' | translate }}</label>
+          <input id="asFirstName" type="text" class="as-input" formControlName="firstName"
+            placeholder="First name" autocomplete="given-name">
+        </div>
+        <div class="as-field">
+          <label class="as-label" for="asLastName">{{ 'ACCOUNT_SETTINGS.LN_INPUT_FIELD' | translate }}</label>
+          <input id="asLastName" type="text" class="as-input" formControlName="lastName"
+            placeholder="Last name" autocomplete="family-name">
+        </div>
+        <div class="as-field as-field--full">
+          <label class="as-label" for="asEmail">Email</label>
+          <input id="asEmail" type="email" class="as-input as-input--readonly" formControlName="email"
+            readonly autocomplete="email">
+          <span class="as-hint">Contact support to change your email address.</span>
+        </div>
+      </div>
+      <div class="as-card-footer">
+        <button class="as-btn as-btn--primary" type="submit"
+          [disabled]="profileSaving || profileForm.invalid"
+          [attr.aria-busy]="profileSaving">
+          <span *ngIf="!profileSaving">Save account details</span>
+          <span *ngIf="profileSaving" class="as-spinner" aria-label="Saving…"></span>
+        </button>
+      </div>
+    </form>
   </div>
-</form>
+
+  <!-- ── Card 2: Change Password ─────────────────────────────────────────────── -->
+  <div class="as-card">
+
+    <!-- Success state -->
+    <div *ngIf="pwState === 'success'" class="as-pw-success"
+      [@animate]="{value:'*', params:{y:'10px', delay:'0ms'}}" role="status" aria-live="polite">
+      <div class="as-pw-success-ring" aria-hidden="true">
+        <svg class="as-pw-success-svg" viewBox="0 0 56 56" fill="none">
+          <circle cx="28" cy="28" r="24" stroke="#FF675D" stroke-width="2" class="as-success-track"/>
+          <circle cx="28" cy="28" r="24" stroke="#FF675D" stroke-width="2" class="as-success-draw"/>
+          <polyline points="17 28 24 35 39 20" stroke="#FF675D" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" class="as-success-check"/>
+        </svg>
+      </div>
+      <h4 class="as-pw-success-title">Password updated</h4>
+      <p class="as-pw-success-body">Your GetHired password has been changed successfully.</p>
+      <button class="as-btn as-btn--primary" type="button" (click)="resetPwForm()">Done</button>
+    </div>
+
+    <!-- Change password form -->
+    <ng-container *ngIf="pwState !== 'success'">
+      <div class="as-card-header">
+        <h3 class="as-card-title">Change password</h3>
+        <p class="as-card-sub">Use a strong password you don't use on other sites.</p>
+      </div>
+
+      <!-- State banner -->
+      <div *ngIf="pwErrorMessage" class="as-banner"
+        [class.as-banner--error]="pwState === 'wrong_current' || pwState === 'server'"
+        [class.as-banner--warn]="pwState === 'weak' || pwState === 'same_as_old'"
+        [class.as-banner--info]="pwState === 'rate_limited' || pwState === 'network'"
+        role="alert" aria-live="assertive">
+        <svg class="as-banner-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="10" cy="10" r="8"/>
+          <line x1="10" y1="6.5" x2="10" y2="10.5"/>
+          <line x1="10" y1="13.5" x2="10.01" y2="13.5"/>
+        </svg>
+        <span class="as-banner-msg">{{ pwErrorMessage }}</span>
+        <a *ngIf="pwState === 'wrong_current'" routerLink="/reset-password" class="as-banner-link">
+          Forgot password?
+        </a>
+      </div>
+
+      <form [formGroup]="pwForm" (ngSubmit)="onChangePw()" autocomplete="off">
+
+        <!-- Current password -->
+        <div class="as-field">
+          <label class="as-label" for="asCurrent">Current password</label>
+          <div class="as-pw-row">
+            <input id="asCurrent" [type]="showCurrent ? 'text' : 'password'"
+              class="as-input as-input--pw"
+              [class.as-input--err]="pwForm.get('currentPassword')?.invalid && pwForm.get('currentPassword')?.touched"
+              formControlName="currentPassword"
+              placeholder="Enter your current password"
+              autocomplete="current-password">
+            <button type="button" class="as-eye"
+              (click)="showCurrent = !showCurrent"
+              [attr.aria-label]="showCurrent ? 'Hide current password' : 'Show current password'"
+              [attr.aria-pressed]="showCurrent">
+              <svg *ngIf="!showCurrent" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="18" height="18" stroke-linecap="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg *ngIf="showCurrent" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="18" height="18" stroke-linecap="round" aria-hidden="true">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="pwForm.get('currentPassword')?.invalid && pwForm.get('currentPassword')?.touched"
+            class="as-field-err" role="alert">
+            Current password is required.
+          </div>
+          <a routerLink="/reset-password" class="as-forgot">Forgot current password?</a>
+        </div>
+
+        <!-- New password -->
+        <div class="as-field">
+          <label class="as-label" for="asNew">New password</label>
+          <div class="as-pw-row">
+            <input id="asNew" [type]="showNew ? 'text' : 'password'"
+              class="as-input as-input--pw"
+              [class.as-input--err]="pwForm.get('newPassword')?.invalid && pwForm.get('newPassword')?.touched"
+              formControlName="newPassword"
+              placeholder="At least 12 characters"
+              autocomplete="new-password">
+            <button type="button" class="as-eye"
+              (click)="showNew = !showNew"
+              [attr.aria-label]="showNew ? 'Hide new password' : 'Show new password'"
+              [attr.aria-pressed]="showNew">
+              <svg *ngIf="!showNew" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="18" height="18" stroke-linecap="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg *ngIf="showNew" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="18" height="18" stroke-linecap="round" aria-hidden="true">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="pwForm.get('newPassword')?.hasError('minlength') && pwForm.get('newPassword')?.touched"
+            class="as-field-err" role="alert">
+            Use at least 12 characters.
+          </div>
+        </div>
+
+        <!-- Confirm password -->
+        <div class="as-field">
+          <label class="as-label" for="asConfirm">Confirm new password</label>
+          <div class="as-pw-row">
+            <input id="asConfirm" [type]="showConfirm ? 'text' : 'password'"
+              class="as-input as-input--pw"
+              [class.as-input--err]="pwForm.get('confirmPassword')?.errors?.['mismatch'] && pwForm.get('confirmPassword')?.touched"
+              formControlName="confirmPassword"
+              placeholder="Repeat your new password"
+              autocomplete="new-password">
+            <button type="button" class="as-eye"
+              (click)="showConfirm = !showConfirm"
+              [attr.aria-label]="showConfirm ? 'Hide confirm password' : 'Show confirm password'"
+              [attr.aria-pressed]="showConfirm">
+              <svg *ngIf="!showConfirm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="18" height="18" stroke-linecap="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg *ngIf="showConfirm" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" width="18" height="18" stroke-linecap="round" aria-hidden="true">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="pwForm.get('confirmPassword')?.errors?.['mismatch'] && pwForm.get('confirmPassword')?.touched"
+            class="as-field-err" role="alert">
+            Passwords must match.
+          </div>
+        </div>
+
+        <!-- Strength checklist -->
+        <div class="as-checklist" aria-label="Password requirements" aria-live="polite">
+          <div class="as-check" [class.as-check--pass]="checks.length">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
+              width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <ng-container *ngIf="checks.length">
+                <polyline points="2 8 6 12 14 4"/>
+              </ng-container>
+              <ng-container *ngIf="!checks.length">
+                <circle cx="8" cy="8" r="5.5"/>
+              </ng-container>
+            </svg>
+            <span>At least 12 characters</span>
+          </div>
+          <div class="as-check" [class.as-check--pass]="checks.notCommon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
+              width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <ng-container *ngIf="checks.notCommon">
+                <polyline points="2 8 6 12 14 4"/>
+              </ng-container>
+              <ng-container *ngIf="!checks.notCommon">
+                <circle cx="8" cy="8" r="5.5"/>
+              </ng-container>
+            </svg>
+            <span>Avoid common passwords</span>
+          </div>
+          <div class="as-check" [class.as-check--pass]="checks.matches && checks.confirmHasValue">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
+              width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <ng-container *ngIf="checks.matches && checks.confirmHasValue">
+                <polyline points="2 8 6 12 14 4"/>
+              </ng-container>
+              <ng-container *ngIf="!(checks.matches && checks.confirmHasValue)">
+                <circle cx="8" cy="8" r="5.5"/>
+              </ng-container>
+            </svg>
+            <span>Passwords match</span>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="as-btn as-btn--primary as-btn--block"
+          [disabled]="pwState === 'saving' || pwState === 'rate_limited'"
+          [class.as-btn--loading]="pwState === 'saving'"
+          [attr.aria-busy]="pwState === 'saving'">
+          <span class="as-spinner" *ngIf="pwState === 'saving'" aria-hidden="true"></span>
+          <span>{{ pwState === 'saving' ? 'Updating password…' : 'Change password' }}</span>
+        </button>
+
+      </form>
+    </ng-container>
+  </div>
+
+</div>
