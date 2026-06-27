@@ -5,9 +5,9 @@
         <span class="main-title mt-3">{{ 'JOB_POSTS_PAGE.SIDEBAR_JOB_POSTS' | translate }}</span>
 
         <div class="float-end">
-          <button class="btn btn-add-service gh-pressable" (click)="getCompanyRestrictions()">
+          <button class="gh-btn-primary gh-pressable" (click)="getCompanyRestrictions()">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
             {{ 'JOB_POSTS_PAGE.NEW_JOB_BUTTON' | translate }}
-            <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1" aria-hidden="true">
           </button>
         </div>
       </div>
@@ -30,11 +30,11 @@
             <p class="gh-job-list-empty-desc">
               Post your first job to start receiving applicants.
             </p>
-            <button class="btn btn-add-service gh-pressable gh-job-list-empty-cta"
+            <button class="gh-btn-primary gh-pressable gh-job-list-empty-cta"
               (click)="getCompanyRestrictions()"
               aria-label="Post your first job">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i>
               Post your first job
-              <img src="/assets/images/placeholder/icons/add-new.png" style="width: 16px;" class="ms-1" aria-hidden="true">
             </button>
           </div>
         </div>

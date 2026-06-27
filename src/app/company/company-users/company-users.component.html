@@ -2,10 +2,9 @@
 	<div class="card card-body" *ngIf="listView && !loading">
 		<h5 class="title-label mt-2">Company Users
 			<span class="float-end">
-				<button class="btn btn-add-service" (click)="addAccess()" [disabled]="!companyId">
+				<button class="gh-btn-primary" (click)="addAccess()" [disabled]="!companyId">
+					<i class="bi bi-plus-lg" aria-hidden="true"></i>
 					{{ 'EDIT_COMPANY_USERS.ADD_NEW_ACCESS_BUTTON' | translate }}
-					<img src="/assets/images/placeholder/icons/add-new.png"
-					style="width: 16px;" class="ms-1">
 				</button>
 			</span>
 		</h5>

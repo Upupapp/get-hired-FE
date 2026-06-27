@@ -70,13 +70,16 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       shownPublicly: []
     });
 
+    // Drive loading from data arrival, not the shared NgRx loading$ flag.
+    // The shared flag covers getSetup/getIndustry/getCompanySubscription too —
+    // any of those failing silently could leave loading=true forever.
+    this.loading = true;
     this.companyFacade.companyDetails$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(company => this.setCompany(company as EmployeeCompany));
-
-    this.companyFacade.loading$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(loading => { this.loading = loading; });
+      .subscribe(company => {
+        this.setCompany(company as EmployeeCompany);
+        this.loading = false;
+      });
 
     this.companyFacade.success$
       .pipe(takeUntil(this.destroy$))

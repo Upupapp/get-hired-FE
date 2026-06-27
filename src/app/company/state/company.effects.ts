@@ -52,8 +52,8 @@ export class CompanyEffects {
             return CompanyActions.createCompanySuccess({ company });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.createCompanyFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.createCompanyFail({ payload }))
           })
         )
       )
@@ -70,8 +70,8 @@ export class CompanyEffects {
             return CompanyActions.createInitialCompanySuccess({ company });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.createInitialCompanyFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.createInitialCompanyFail({ payload }))
           })
         )
       )
@@ -88,8 +88,8 @@ export class CompanyEffects {
             return CompanyActions.updateCompanySuccess({ company });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.updateCompanyFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.updateCompanyFail({ payload }))
           })
         )
       )
@@ -106,8 +106,8 @@ export class CompanyEffects {
             return CompanyActions.getCompanySuccess({ company });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.getCompanyFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getCompanyFail({ payload }))
           })
         )
       )
@@ -124,8 +124,8 @@ export class CompanyEffects {
             return CompanyActions.getCompanyUsersSuccess({ users });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.getCompanyUsersFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getCompanyUsersFail({ payload }))
           })
         )
       )
@@ -142,8 +142,8 @@ export class CompanyEffects {
             return CompanyActions.getCompanySubscriptionSuccess({ subscription });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.getCompanySubscriptionFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getCompanySubscriptionFail({ payload }))
           })
         )
       )
@@ -160,8 +160,8 @@ export class CompanyEffects {
             return CompanyActions.companyDashboardSuccess({ dashboard });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.companyDashboardFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.companyDashboardFail({ payload }))
           })
         )
       )
@@ -178,8 +178,8 @@ export class CompanyEffects {
             return CompanyActions.getSetupListSuccess({ setup });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.getSetupListFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getSetupListFail({ payload }))
           })
         )
       )
@@ -196,8 +196,8 @@ export class CompanyEffects {
             return CompanyActions.getIndustryListSuccess({ industry });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(CompanyActions.getIndustryListFail({ payload: error }))
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getIndustryListFail({ payload }))
           })
         )
       )

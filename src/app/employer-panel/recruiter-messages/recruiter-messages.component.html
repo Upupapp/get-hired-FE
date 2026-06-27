@@ -18,10 +18,10 @@
     <p class="rm-state-title">We couldn't load your messages</p>
     <p class="rm-state-body">Please try again. If the issue continues, go back to your dashboard.</p>
     <div class="rm-state-actions">
-      <button type="button" class="rm-btn rm-btn--primary gh-pressable" (click)="retry()" [disabled]="retrying">
+      <button type="button" class="gh-btn-primary gh-pressable" (click)="retry()" [disabled]="retrying">
         {{ retrying ? 'Trying…' : 'Try again' }}
       </button>
-      <button type="button" class="rm-btn rm-btn--outline gh-pressable" (click)="goToDashboard()">
+      <button type="button" class="gh-btn-secondary gh-pressable" (click)="goToDashboard()">
         Back to dashboard
       </button>
     </div>
@@ -66,8 +66,8 @@
           <h2 class="rm-empty-title">No messages yet</h2>
           <p class="rm-empty-body">Candidate conversations will appear here when applicants message you or when you start a conversation from an applicant profile.</p>
           <div class="rm-empty-actions">
-            <button type="button" class="rm-btn rm-btn--primary gh-pressable" (click)="goToApplicants()">Review applicants</button>
-            <button type="button" class="rm-btn rm-btn--outline gh-pressable" (click)="goToJobs()">View jobs</button>
+            <button type="button" class="gh-btn-primary gh-pressable" (click)="goToApplicants()">Review applicants</button>
+            <button type="button" class="gh-btn-secondary gh-pressable" (click)="goToJobs()">View jobs</button>
           </div>
         </div>
 
@@ -75,7 +75,7 @@
         <div *ngIf="threads.length > 0 && filteredThreads.length === 0" class="rm-empty-state rm-empty-state--reveal">
           <h2 class="rm-empty-title">No messages match this filter</h2>
           <p class="rm-empty-body">Try another filter or return to all conversations.</p>
-          <button type="button" class="rm-btn rm-btn--outline gh-pressable" (click)="setFilter('all')">View all messages</button>
+          <button type="button" class="gh-btn-secondary gh-pressable" (click)="setFilter('all')">View all messages</button>
         </div>
 
         <!-- Thread rows -->
