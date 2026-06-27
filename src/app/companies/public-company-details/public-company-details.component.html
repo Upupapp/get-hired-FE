@@ -1,12 +1,10 @@
-<!-- GETHIRED_PUBLIC_COMPANY_PROFILE_REDESIGN_TRUST_JOBS_SEO_FULLSTACK_V3 -->
+<!-- GETHIRED_PUBLIC_COMPANY_PROFILE_REDESIGN_TRUST_JOBS_SEO_FULLSTACK_V3 ADDENDUM -->
 
 <!-- ═══════════════════════════════════════════════════════════════
      SKELETON LOADING STATE
      ═══════════════════════════════════════════════════════════════ -->
 <ng-container *ngIf="loading">
   <div class="cph-skeleton-page" aria-busy="true" aria-label="Loading company profile">
-
-    <!-- Skeleton hero -->
     <div class="cph-skeleton-hero">
       <div class="cph-skeleton-hero-bg shimmer"></div>
       <div class="cph-skeleton-hero-card">
@@ -19,16 +17,13 @@
         </div>
       </div>
     </div>
-
-    <!-- Skeleton snapshot rail -->
+    <div class="cph-skeleton-subnav shimmer"></div>
     <div class="cph-skeleton-rail">
       <div class="cph-skeleton-chip shimmer"></div>
       <div class="cph-skeleton-chip shimmer"></div>
       <div class="cph-skeleton-chip shimmer"></div>
       <div class="cph-skeleton-chip shimmer"></div>
     </div>
-
-    <!-- Skeleton jobs -->
     <div class="cph-skeleton-jobs">
       <div class="cph-skeleton-job-card shimmer"></div>
       <div class="cph-skeleton-job-card shimmer"></div>
@@ -73,23 +68,16 @@
   <section class="cph-hero" [class.cph-hero--has-banner]="profile.heroBanner"
     role="banner" [attr.aria-label]="profile.displayName + ' employer brand hero'">
 
-    <!-- Banner image layer -->
     <div class="cph-hero-banner" *ngIf="profile.heroBanner" aria-hidden="true">
       <img [src]="profile.heroBanner.url" [alt]="profile.heroBanner.alt"
            class="cph-hero-banner-img" loading="eager">
     </div>
-
-    <!-- Gradient fallback (always rendered; hidden when banner loads) -->
     <div class="cph-hero-gradient" aria-hidden="true"></div>
-
-    <!-- Dark overlay for text readability -->
     <div class="cph-hero-overlay" aria-hidden="true"></div>
 
-    <!-- Floating company info card -->
     <div class="cph-hero-content">
       <div class="cph-hero-card">
 
-        <!-- Logo -->
         <div class="cph-logo-wrap" aria-hidden="true">
           <img *ngIf="profile.logo" [src]="profile.logo.url" [alt]="profile.logo.alt"
                class="cph-logo" loading="eager">
@@ -98,10 +86,7 @@
           </div>
         </div>
 
-        <!-- Company name + chips + CTAs -->
         <div class="cph-hero-info">
-
-          <!-- Platform + meta chips -->
           <div class="cph-hero-chips" aria-label="Company attributes">
             <span class="cph-chip cph-chip--platform">
               <svg viewBox="0 0 12 12" fill="none" width="10" height="10" aria-hidden="true">
@@ -121,15 +106,12 @@
             </span>
           </div>
 
-          <!-- H1 company name -->
           <h1 class="cph-hero-title">{{ profile.displayName }}</h1>
 
-          <!-- Short about / tagline -->
           <p *ngIf="profile.about" class="cph-hero-tagline">
             {{ profile.about.length > 140 ? (profile.about | slice:0:140) + '…' : profile.about }}
           </p>
 
-          <!-- CTAs -->
           <div class="cph-hero-ctas">
             <button class="cph-btn-primary gh-pressable"
               type="button"
@@ -138,8 +120,9 @@
                 ? 'View ' + profile.openJobsCount + ' open jobs at ' + profile.displayName
                 : 'View open jobs at ' + profile.displayName">
               View open jobs
-              <span *ngIf="profile.openJobsCount > 0" class="cph-jobs-badge"
-                aria-hidden="true">{{ profile.openJobsCount }}</span>
+              <span *ngIf="profile.openJobsCount > 0" class="cph-jobs-badge" aria-hidden="true">
+                {{ profile.openJobsCount }}
+              </span>
             </button>
 
             <button class="cph-btn-share gh-pressable"
@@ -160,87 +143,200 @@
               {{ copied ? 'Copied!' : 'Share' }}
             </button>
           </div>
-
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ─── COMPANY SNAPSHOT RAIL ────────────────────────────────── -->
-  <section class="cph-snapshot" aria-label="Company at a glance">
-    <div class="cph-snapshot-rail">
+  <!-- ─── STICKY SUBNAV ─────────────────────────────────────────── -->
+  <nav class="cph-subnav" aria-label="Company profile sections">
+    <div class="cph-subnav-inner">
 
-      <div *ngIf="profile.industry" class="cph-snapshot-item">
-        <svg class="cph-snapshot-icon" viewBox="0 0 18 18" fill="none"
-          stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <rect x="2" y="9" width="4" height="7" rx="0.75"/>
-          <rect x="7" y="5" width="4" height="11" rx="0.75"/>
-          <rect x="12" y="2" width="4" height="14" rx="0.75"/>
-        </svg>
-        <span class="cph-snapshot-label">Industry</span>
-        <span class="cph-snapshot-value">{{ profile.industry }}</span>
+      <div class="cph-subnav-tabs" role="tablist">
+        <button class="cph-subnav-tab"
+          [class.active]="activeSectionId === 'cph-snapshot'"
+          (click)="scrollToSection('cph-snapshot')"
+          role="tab"
+          [attr.aria-selected]="activeSectionId === 'cph-snapshot'">
+          Snapshot
+        </button>
+
+        <button *ngIf="hasWhyJoinUs"
+          class="cph-subnav-tab"
+          [class.active]="activeSectionId === 'cph-why-join'"
+          (click)="scrollToSection('cph-why-join')"
+          role="tab"
+          [attr.aria-selected]="activeSectionId === 'cph-why-join'">
+          Why Join Us
+        </button>
+
+        <button class="cph-subnav-tab"
+          [class.active]="activeSectionId === 'cph-jobs'"
+          (click)="scrollToSection('cph-jobs')"
+          role="tab"
+          [attr.aria-selected]="activeSectionId === 'cph-jobs'">
+          Jobs
+          <span *ngIf="profile.openJobsCount > 0" class="cph-subnav-badge" aria-hidden="true">
+            {{ profile.openJobsCount }}
+          </span>
+        </button>
+
+        <button class="cph-subnav-tab"
+          [class.active]="activeSectionId === 'cph-hiring-process'"
+          (click)="scrollToSection('cph-hiring-process')"
+          role="tab"
+          [attr.aria-selected]="activeSectionId === 'cph-hiring-process'">
+          Hiring Process
+        </button>
       </div>
 
-      <div *ngIf="profile.workSetup" class="cph-snapshot-item">
-        <svg class="cph-snapshot-icon" viewBox="0 0 18 18" fill="none"
-          stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <rect x="2" y="5" width="14" height="10" rx="1.5"/>
-          <path d="M6 5V3.5A.5.5 0 0 1 6.5 3h5a.5.5 0 0 1 .5.5V5"/>
-          <line x1="2" y1="9" x2="16" y2="9"/>
-        </svg>
-        <span class="cph-snapshot-label">Work setup</span>
-        <span class="cph-snapshot-value">{{ profile.workSetup }}</span>
-      </div>
+      <!-- Follow Company button -->
+      <div class="cph-subnav-follow">
+        <!-- Logged-out: show follow button that prompts login -->
+        <button *ngIf="!isLoggedIn && !followState.loading"
+          class="cph-follow-btn gh-pressable"
+          type="button"
+          (click)="promptLogin()"
+          aria-label="Sign in to follow this company">
+          <svg viewBox="0 0 14 14" fill="none" width="12" height="12" aria-hidden="true">
+            <path d="M7 2C4.8 2 3 3.8 3 6c0 3.3 4 7 4 7s4-3.7 4-7c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Follow
+        </button>
 
-      <div *ngIf="profile.location" class="cph-snapshot-item">
-        <svg class="cph-snapshot-icon" viewBox="0 0 18 18" fill="none"
-          stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path d="M9 2a5 5 0 0 1 5 5c0 4-5 9-5 9S4 11 4 7a5 5 0 0 1 5-5z"/>
-          <circle cx="9" cy="7" r="2"/>
-        </svg>
-        <span class="cph-snapshot-label">Headquarters</span>
-        <span class="cph-snapshot-value">{{ profile.location }}</span>
-      </div>
+        <!-- Logged-in, not following -->
+        <button *ngIf="isLoggedIn && followState.available && !followState.following && !followState.loading"
+          class="cph-follow-btn gh-pressable"
+          type="button"
+          [disabled]="followLoading"
+          (click)="follow()"
+          aria-label="Follow this company to get updates">
+          <svg *ngIf="!followLoading" viewBox="0 0 14 14" fill="none" width="12" height="12" aria-hidden="true">
+            <path d="M7 2C4.8 2 3 3.8 3 6c0 3.3 4 7 4 7s4-3.7 4-7c0-2.2-1.8-4-4-4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span *ngIf="!followLoading">+ Follow</span>
+          <span *ngIf="followLoading" class="cph-follow-spinner" aria-hidden="true"></span>
+        </button>
 
-      <div *ngIf="profile.companySize" class="cph-snapshot-item">
-        <svg class="cph-snapshot-icon" viewBox="0 0 18 18" fill="none"
-          stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <circle cx="7" cy="6" r="3"/>
-          <path d="M2 15v-1.5A4 4 0 0 1 6 9.5h2a4 4 0 0 1 4 4V15"/>
-          <path d="M12 4a3 3 0 0 1 0 5.8M16 15v-1.5a4 4 0 0 0-2.5-3.7"/>
-        </svg>
-        <span class="cph-snapshot-label">Company size</span>
-        <span class="cph-snapshot-value">{{ profile.companySize }} employees</span>
-      </div>
-
-      <div class="cph-snapshot-item">
-        <svg class="cph-snapshot-icon" viewBox="0 0 18 18" fill="none"
-          stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <rect x="2" y="6" width="14" height="10" rx="1.5"/>
-          <path d="M12 6V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2"/>
-        </svg>
-        <span class="cph-snapshot-label">Open roles</span>
-        <span class="cph-snapshot-value cph-snapshot-value--coral">
-          {{ profile.openJobsCount || 0 }}
-        </span>
+        <!-- Logged-in, following -->
+        <button *ngIf="isLoggedIn && followState.available && followState.following && !followState.loading"
+          class="cph-follow-btn cph-follow-btn--following gh-pressable"
+          type="button"
+          [disabled]="followLoading"
+          (click)="unfollow()"
+          aria-label="Unfollow this company">
+          <svg *ngIf="!followLoading" viewBox="0 0 14 14" fill="none" width="12" height="12" aria-hidden="true">
+            <path d="M7 2C4.8 2 3 3.8 3 6c0 3.3 4 7 4 7s4-3.7 4-7c0-2.2-1.8-4-4-4z" fill="currentColor" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 6.5l1.5 1.5L9 5.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span *ngIf="!followLoading">Following</span>
+          <span *ngIf="followLoading" class="cph-follow-spinner" aria-hidden="true"></span>
+        </button>
       </div>
 
     </div>
-  </section>
+  </nav>
 
-  <!-- ─── ABOUT SECTION ────────────────────────────────────────── -->
-  <section *ngIf="profile.about" class="cph-section cph-about"
-    aria-labelledby="cph-about-heading">
+  <!-- ─── 1. SNAPSHOT SECTION ──────────────────────────────────── -->
+  <section id="cph-snapshot" class="cph-section cph-section--snapshot"
+    aria-labelledby="cph-snapshot-heading">
     <div class="cph-section-inner">
-      <h2 id="cph-about-heading" class="cph-section-title">
-        About {{ profile.displayName }}
-      </h2>
-      <p class="cph-about-body">{{ profile.about }}</p>
+      <h2 id="cph-snapshot-heading" class="cph-section-title">Company Snapshot</h2>
+
+      <div class="cph-snapshot-grid">
+
+        <div *ngIf="profile.snapshot.industry" class="cph-snapshot-card">
+          <div class="cph-snapshot-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="10" width="4" height="8" rx="0.75"/>
+              <rect x="8" y="6" width="4" height="12" rx="0.75"/>
+              <rect x="14" y="2" width="4" height="16" rx="0.75"/>
+            </svg>
+          </div>
+          <span class="cph-snapshot-card-label">Industry</span>
+          <span class="cph-snapshot-card-value">{{ profile.snapshot.industry }}</span>
+        </div>
+
+        <div *ngIf="profile.snapshot.companySize" class="cph-snapshot-card">
+          <div class="cph-snapshot-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.5">
+              <circle cx="8" cy="6" r="3"/>
+              <path d="M2 17v-1.5A4.5 4.5 0 0 1 6.5 11h3A4.5 4.5 0 0 1 14 15.5V17"/>
+              <path d="M13 5a3 3 0 0 1 0 5.6M17 17v-1.5a4 4 0 0 0-2.5-3.8"/>
+            </svg>
+          </div>
+          <span class="cph-snapshot-card-label">Company size</span>
+          <span class="cph-snapshot-card-value">{{ profile.snapshot.companySize }} employees</span>
+        </div>
+
+        <div *ngIf="profile.snapshot.workSetup" class="cph-snapshot-card">
+          <div class="cph-snapshot-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="6" width="16" height="11" rx="1.5"/>
+              <path d="M7 6V4.5A.5.5 0 0 1 7.5 4h5a.5.5 0 0 1 .5.5V6"/>
+              <line x1="2" y1="10" x2="18" y2="10"/>
+            </svg>
+          </div>
+          <span class="cph-snapshot-card-label">Work setup</span>
+          <span class="cph-snapshot-card-value">{{ profile.snapshot.workSetup }}</span>
+        </div>
+
+        <div *ngIf="profile.snapshot.location" class="cph-snapshot-card">
+          <div class="cph-snapshot-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.5">
+              <path d="M10 2a6 6 0 0 1 6 6c0 5-6 10-6 10S4 13 4 8a6 6 0 0 1 6-6z"/>
+              <circle cx="10" cy="8" r="2.5"/>
+            </svg>
+          </div>
+          <span class="cph-snapshot-card-label">Headquarters</span>
+          <span class="cph-snapshot-card-value">{{ profile.snapshot.location }}</span>
+        </div>
+
+        <div class="cph-snapshot-card cph-snapshot-card--highlight">
+          <div class="cph-snapshot-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="7" width="16" height="11" rx="1.5"/>
+              <path d="M7 7V5a3 3 0 0 1 6 0v2"/>
+            </svg>
+          </div>
+          <span class="cph-snapshot-card-label">Open roles</span>
+          <span class="cph-snapshot-card-value cph-snapshot-card-value--coral">
+            {{ profile.snapshot.openRoles || 0 }}
+          </span>
+        </div>
+
+        <div class="cph-snapshot-card cph-snapshot-card--platform">
+          <div class="cph-snapshot-card-icon cph-snapshot-card-icon--coral" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" width="20" height="20">
+              <circle cx="10" cy="10" r="8" stroke="#FF7062" stroke-width="1.5"/>
+              <path d="M7 10l2.5 2.5L14 8" stroke="#FF7062" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="cph-snapshot-card-label">Platform</span>
+          <span class="cph-snapshot-card-value cph-snapshot-card-value--coral">Hiring on GetHired</span>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <!-- ─── OPEN JOBS SECTION ─────────────────────────────────────── -->
-  <section id="open-jobs" class="cph-section cph-jobs-section"
+  <!-- ─── 2. WHY JOIN US SECTION (conditional) ──────────────────── -->
+  <section id="cph-why-join" class="cph-section cph-section--why-join"
+    *ngIf="hasWhyJoinUs"
+    aria-labelledby="cph-why-join-heading">
+    <div class="cph-section-inner">
+      <h2 id="cph-why-join-heading" class="cph-section-title">
+        Why Join {{ profile.displayName }}?
+      </h2>
+      <div class="cph-why-join-body">
+        <p class="cph-about-text" *ngIf="profile.whyJoinUs.about">{{ profile.whyJoinUs.about }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 3. OPEN JOBS SECTION ──────────────────────────────────── -->
+  <section id="cph-jobs" class="cph-section cph-section--jobs"
     aria-labelledby="cph-jobs-heading">
     <div class="cph-section-inner">
 
@@ -254,7 +350,6 @@
         </span>
       </div>
 
-      <!-- Jobs loading skeleton -->
       <div *ngIf="jobsLoading" class="cph-jobs-grid" aria-busy="true" aria-label="Loading jobs">
         <div *ngFor="let i of [1,2,3]" class="cph-job-card cph-job-card--skeleton">
           <div class="shimmer cph-jsk-title"></div>
@@ -263,7 +358,6 @@
         </div>
       </div>
 
-      <!-- Jobs list -->
       <div *ngIf="!jobsLoading && jobs.length > 0" class="cph-jobs-grid">
         <article *ngFor="let job of jobs"
           class="cph-job-card gh-pressable"
@@ -276,7 +370,8 @@
 
           <div class="cph-job-card-header">
             <h3 class="cph-job-title">{{ job.jobTitle }}</h3>
-            <span *ngIf="job.jobType" class="cph-chip cph-chip--jobtype" [attr.aria-label]="'Job type: ' + job.jobType">
+            <span *ngIf="job.jobType" class="cph-chip cph-chip--jobtype"
+              [attr.aria-label]="'Job type: ' + job.jobType">
               {{ job.jobType }}
             </span>
           </div>
@@ -294,7 +389,8 @@
               [attr.aria-label]="'Work setup: ' + job.workSetup">{{ job.workSetup }}</span>
           </div>
 
-          <div *ngIf="formatSalary(job)" class="cph-job-salary" [attr.aria-label]="'Salary: ' + formatSalary(job)">
+          <div *ngIf="formatSalary(job)" class="cph-job-salary"
+            [attr.aria-label]="'Salary: ' + formatSalary(job)">
             <svg viewBox="0 0 14 14" fill="none" width="12" height="12"
               stroke="currentColor" stroke-width="1.4" aria-hidden="true">
               <circle cx="7" cy="7" r="5.5"/>
@@ -304,7 +400,8 @@
           </div>
 
           <div class="cph-job-card-footer">
-            <span class="cph-job-date" *ngIf="job.postedAt" [attr.aria-label]="'Posted ' + getPostedLabel(job.postedAt)">
+            <span class="cph-job-date" *ngIf="job.postedAt"
+              [attr.aria-label]="'Posted ' + getPostedLabel(job.postedAt)">
               {{ getPostedLabel(job.postedAt) }}
             </span>
             <a [routerLink]="['/jobs/details', job.jobId]"
@@ -321,11 +418,9 @@
         </article>
       </div>
 
-      <!-- No open jobs — applicant-friendly empty state -->
       <div *ngIf="!jobsLoading && jobs.length === 0"
         class="cph-no-jobs" role="status"
         [attr.aria-label]="'No open roles at ' + profile.displayName">
-
         <div class="cph-no-jobs-icon" aria-hidden="true">
           <svg viewBox="0 0 80 80" fill="none" width="72" height="72">
             <circle cx="40" cy="40" r="36" fill="rgba(255,112,98,0.07)"/>
@@ -336,16 +431,45 @@
             <circle cx="40" cy="43" r="2.5" fill="#FF7062" opacity="0.5"/>
           </svg>
         </div>
-
         <h3 class="cph-no-jobs-title">No open roles right now</h3>
         <p class="cph-no-jobs-body">
           {{ profile.displayName }} does not have public job openings at the moment.
           You can check back later or browse more jobs on GetHired.
         </p>
-
         <div class="cph-no-jobs-ctas">
           <a routerLink="/jobs" class="cph-btn-primary gh-pressable">Browse jobs</a>
           <a routerLink="/companies" class="cph-btn-secondary gh-pressable">View other companies</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 4. HIRING PROCESS SECTION ────────────────────────────── -->
+  <section id="cph-hiring-process" class="cph-section cph-section--hiring-process"
+    aria-labelledby="cph-hiring-process-heading">
+    <div class="cph-section-inner">
+      <h2 id="cph-hiring-process-heading" class="cph-section-title">Hiring Process</h2>
+      <p class="cph-section-subtitle" *ngIf="profile.hiringProcess.isDefault">
+        Here's what to expect when you apply at {{ profile.displayName }}.
+      </p>
+
+      <div class="cph-hiring-steps" *ngIf="profile.hiringProcess && profile.hiringProcess.steps">
+        <div class="cph-hiring-step"
+          *ngFor="let step of profile.hiringProcess.steps; let last = last">
+
+          <div class="cph-hiring-step-left">
+            <div class="cph-hiring-step-num" [attr.aria-label]="'Step ' + step.step">
+              {{ step.step }}
+            </div>
+            <div class="cph-hiring-step-line" *ngIf="!last" aria-hidden="true"></div>
+          </div>
+
+          <div class="cph-hiring-step-body">
+            <h3 class="cph-hiring-step-title">{{ step.title }}</h3>
+            <p class="cph-hiring-step-desc">{{ step.description }}</p>
+          </div>
+
         </div>
       </div>
 
@@ -357,7 +481,6 @@
     <div class="cph-footer-cta-inner">
       <div class="cph-footer-cta-ring cph-footer-cta-ring--1" aria-hidden="true"></div>
       <div class="cph-footer-cta-ring cph-footer-cta-ring--2" aria-hidden="true"></div>
-
       <h2 id="cph-footer-cta-heading" class="cph-footer-cta-title">
         Ready to find your next opportunity?
       </h2>

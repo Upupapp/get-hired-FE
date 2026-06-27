@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "@environments/environment";
 import { BaseService } from "@main/core/services/base.service";
-import { of } from "rxjs";
 import * as Model from "./companies.model";
 
 @Injectable({
@@ -49,4 +48,24 @@ export class CompaniesService {
     return this.baseService.get<any>(`${this.companyUrl}/sharelink?id=${companyId}`);
   }
 
+  // ─── Follow Company ────────────────────────────────────────────────────────
+
+  getCompanyFollowState(slug: string) {
+    return this.baseService.get<Model.PublicCompanyFollowState>(
+      `${environment.api_url}/public/companies/${encodeURIComponent(slug)}/follow-state`
+    );
+  }
+
+  followCompany(slug: string) {
+    return this.baseService.post<{ following: boolean }>(
+      `${environment.api_url}/public/companies/${encodeURIComponent(slug)}/follow`,
+      {}
+    );
+  }
+
+  unfollowCompany(slug: string) {
+    return this.baseService.delete<{ following: boolean }>(
+      `${environment.api_url}/public/companies/${encodeURIComponent(slug)}/follow`
+    );
+  }
 }

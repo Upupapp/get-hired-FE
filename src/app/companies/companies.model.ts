@@ -11,6 +11,12 @@ export interface PublicJob {
   postedAt: string | null;
 }
 
+export interface PublicHiringStep {
+  step: number;
+  title: string;
+  description: string;
+}
+
 export interface PublicCompanyProfile {
   slug: string;
   companyId: string;
@@ -31,6 +37,37 @@ export interface PublicCompanyProfile {
     canonical: string;
     ogImage: string | null;
   };
+  snapshot: {
+    industry: string | null;
+    companySize: string | null;
+    workSetup: string | null;
+    location: string | null;
+    openRoles: number;
+    lastUpdated: string | null;
+    hiringOnGetHired: boolean;
+  };
+  whyJoinUs: {
+    about: string | null;
+    hasContent: boolean;
+  };
+  hiringProcess: {
+    steps: PublicHiringStep[];
+    isDefault: boolean;
+  };
+  benefits: {
+    items: string[];
+    hasContent: boolean;
+  };
+  navigation: {
+    tabs: string[];
+  };
+}
+
+export interface PublicCompanyFollowState {
+  following: boolean;
+  available: boolean;
+  loading: boolean;
+  message?: string;
 }
 
 export interface BasicInfo {
