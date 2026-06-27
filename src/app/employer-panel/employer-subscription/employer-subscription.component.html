@@ -303,7 +303,7 @@
     </div>
 
     <!-- ── SMART RECOMMENDATION CARD ── -->
-    <div class="gh-sub-recommendation" *ngIf="recommendedPlan && !isCurrentPlan(recommendedPlan.planCode)" role="complementary" aria-label="Recommended upgrade">
+    <div class="gh-sub-recommendation" *ngIf="recommendedPlan && !isCurrentPlanAboveOrEqualTo(recommendedPlan.planCode)" role="complementary" aria-label="Recommended upgrade">
       <div class="gh-sub-recommendation__left">
         <div class="gh-sub-recommendation__pill">Recommended next step</div>
         <p class="gh-sub-recommendation__title">Upgrade to <strong>{{ recommendedPlan.planName }}</strong></p>

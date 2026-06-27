@@ -274,6 +274,16 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
     return current === planCode;
   }
 
+  isCurrentPlanAboveOrEqualTo(planCode: string): boolean {
+    const current = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
+    if (!current || current === 'none' || current === null) { return false; }
+    const order = ['free_trial', 'starter', 'growth', 'premium', 'enterprise'];
+    const currentIdx = order.indexOf(current);
+    const targetIdx = order.indexOf(planCode);
+    if (currentIdx < 0 || targetIdx < 0) { return current === planCode; }
+    return currentIdx >= targetIdx;
+  }
+
   getEffectivePlanConfigs(): PlanConfig[] {
     // If backend returns available plans, try to enrich; otherwise use defaults
     if (this.summary && this.summary.availablePlans && this.summary.availablePlans.length > 0) {
