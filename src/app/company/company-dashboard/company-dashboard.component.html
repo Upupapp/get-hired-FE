@@ -282,7 +282,7 @@
     </div>
     <ng-container *ngIf="(dashboard.charts?.applicants || 0) > 0 || cachedJobViewsThisMonth > 0; else ghChartNoData">
       <div class="gh-chart-wrap">
-        <app-dashboard-charts [details]="dashboard.graph"></app-dashboard-charts>
+        <app-dashboard-charts [details]="dashboard.graph" [range]="trendRange"></app-dashboard-charts>
       </div>
       <p class="gh-chart-summary">
         Last {{ trendRange }}:

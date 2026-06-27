@@ -1,6 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~assets/styles/colors";
 @import "~assets/styles/motion";
+// BRAND v6: Design token system (type scale, spacing, component sizing, colour tokens)
+// Extends colors + motion; does not conflict with existing SCSS vars.
+@import "~assets/styles/tokens";
 @import "~@angular/material/theming";
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 @include mat-core();

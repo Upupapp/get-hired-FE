@@ -1,252 +1,221 @@
+// ─── Create Job Post Step — Revamp v2 ────────────────────────────────────────
+// Phase 8+13 — GETHIRED_EMPLOYER_JOB_POST_CREATE_FULL_REVAMP_V1
 @import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
 
-.with-add{
-	background: white !important;
-	//border-top-right-radius: 0 !important;
-	//border-bottom-right-radius: 0 !important;
-
-	input{
-		//border-top-right-radius: 4px !important;
-		//border-bottom-right-radius: 4px !important;
-		border-right: none !important;
-		outline: none !important;
-		z-index: 9 !important;
-
-		&:focus{
-			outline: none !important;
-		}
-	}
-
-	input:focus {
-	  outline: none !important;
-	  outline-style: none !important;
-	  box-shadow: none !important;
-	  //border-color: transparent !important;
-	}
-
-	.btn-add-now{
-		margin-left: -9px;
-		background: $color-global-red-buttons;
-		box-shadow: 0px 7px 20px rgba(252, 139, 121, 0.34);
-		border-radius: 9px;
-		//border-bottom-left-radius: 0 !important;
-		//border-top-left-radius: 0 !important;
-		color: white;
-		min-width: 83px;
-		outline: none !important;
-		border: none !important;
-		z-index: 9 !important;
-		&:hover{
-			border: none !important;
-		}
-	}
-}
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
+// ─── Step wrapper ─────────────────────────────────────────────────────────────
+.gh-form-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-
-.main-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 21px;
-	line-height: 28px;
-	/* or 215% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #03011A;
+.gh-form-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.07);
+  padding: 24px;
 }
 
-.active-industry{
-	background: #0C264C !important;
-	transition: all 0.3s ease !important;
+.gh-form-card-header { margin-bottom: 20px; }
+.gh-form-card-title {
+  font-size: 17px; font-weight: 700; color: #1a1830; margin: 0 0 4px;
+}
+.gh-form-card-subtitle { font-size: 13px; color: #6b6887; margin: 0; }
 
-	h5,h6{
-		color: white !important;
-	}
+.gh-field { display: flex; flex-direction: column; gap: 4px; }
+.gh-label { font-size: 13px; font-weight: 600; color: #1a1830; margin: 0; }
+.gh-label-optional { color: #9CA3AF; font-weight: 400; font-size: 12px; margin-left: 4px; }
+.gh-label--sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap;
+}
+.gh-field-helper { font-size: 12px; color: #9CA3AF; margin: 0; line-height: 1.4; }
+
+.gh-input,
+.gh-select {
+  height: 44px;
+  border: 1.5px solid #DDD8F0;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #1a1830;
+  background: #fff;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+  width: 100%;
+  appearance: none;
+
+  @include motion-safe;
+
+  &::placeholder { color: #C4C0D6; }
+  &:focus {
+    outline: none;
+    border-color: $color-global-red-buttons;
+    box-shadow: 0 0 0 3px rgba(255, 112, 98, 0.12);
+  }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 1px; }
+
+  &--chip {
+    flex: 1;
+    border-radius: 10px 0 0 10px !important;
+    border-right: none !important;
+  }
 }
 
+.gh-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%236b6887' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 32px;
+  cursor: pointer;
 
-.card{
-	background: #FFFFFF;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	border: none;
-	padding: 30px 30px !important;
+  &--currency {
+    width: 90px;
+    padding: 0 28px 0 10px;
+    flex-shrink: 0;
+  }
 }
 
-
-.form-control{
-	background: #FFFFFF;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-	min-height: 50px;
+// ─── Chip input ───────────────────────────────────────────────────────────────
+.gh-chip-input-group {
+  display: flex;
+  align-items: stretch;
 }
 
-.form-control-main{
-	background: #FFFFFF;
-	border: 1px solid #d9d9d9 !important;
-	min-height: 30px !important;
-	//min-height: 50px;
-	//border: 1px solid #AFBCC6 !important;
+.gh-chip-add-btn {
+  background: $color-global-red-buttons;
+  color: #fff;
+  border: none;
+  border-radius: 0 10px 10px 0;
+  padding: 0 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background 140ms ease;
+
+  @include motion-safe;
+
+  &:hover { background: darken($color-global-red-buttons, 8%); }
+  &:focus-visible { outline: 2px solid #1a1830; outline-offset: 2px; }
 }
 
-
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
+.gh-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
 }
 
-.img-banner{
-	margin-bottom: 35px;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-	border-radius: 10.624px;
-	min-width: 260px;
-	height: 150px;
-	object-position: center;
-	object-fit: cover;
+.gh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #F4F5F9;
+  color: #374151;
+
+  &--skill { background: rgba(255, 112, 98, 0.08); color: darken($color-global-red-buttons, 15%); }
+  &--tag   { background: #EFF6FF; color: #1D4ED8; }
+  &--removable { padding-right: 6px; }
 }
 
-.btn-search{
-	background: $color-global-red-buttons;
-	border-radius: 4px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;	/* identical to box height */
-	color: #FFFFFF;
-	min-width: 100px;
-	padding: 10px;
+.gh-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.12);
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  cursor: pointer;
+  color: #374151;
+  font-size: 11px;
+  transition: background 120ms ease;
+
+  @include motion-safe;
+
+  &:hover { background: rgba(239, 68, 68, 0.2); color: #B91C1C; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; border-radius: 50%; }
 }
 
-.industry-skills{
-	border: none !important;
-	background: #FFFFFF;
-	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
-	border-radius: 10.624px;
-	cursor: pointer;
+// ─── Rate selector ────────────────────────────────────────────────────────────
+.gh-rate-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.industry-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 15.936px;
-	line-height: 15px;
-	letter-spacing: -0.03em;
-	color: #000000;
+.gh-rate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid #DDD8F0;
+  border-radius: 10px;
+  background: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
+  cursor: pointer;
+  min-height: 44px;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+
+  @include motion-safe;
+
+  &:hover { border-color: $color-global-red-buttons; color: $color-global-red-buttons; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+
+  &--active {
+    border-color: $color-global-red-buttons;
+    background: rgba(255, 112, 98, 0.06);
+    color: $color-global-red-buttons;
+    font-weight: 600;
+  }
 }
 
-.industry-subtitle{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 15.936px;
-	line-height: 140%;
-	color: #4F4F4F;
+// ─── Salary row ───────────────────────────────────────────────────────────────
+.gh-salary-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
+.gh-salary-currency { position: relative; }
 
-
-	color: #191919;
+.gh-salary-field {
+  flex: 1;
+  min-width: 100px;
+  max-width: 180px;
 }
 
-.rate-card{
-	border: solid 2px #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
+.gh-salary-to {
+  font-size: 13px;
+  color: #9CA3AF;
+  white-space: nowrap;
 }
 
-
-.title-rate{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #0C264C;
+.gh-salary-period {
+  font-size: 13px;
+  color: #6b6887;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.check{
-	position: absolute;
-	height: 19px;
-	top: 8px;
-	right: 8px;
-}
-
-
-.rate-card-active{
-	background: #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-.title-rate-active{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #FFFFFF;
-}
-
-.rate-selection{
-	background: $color-global-sidebar-employer-user-menu;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	min-height: 300px;
-	padding: 20px;
-}
-
-.title-rate-range{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	color: #FFFFFF;
-}
-
-
-.title-rate-selection{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	color: #FFFFFF;
-}
-
-.talent-badge{
-	background: #0C264C;
-	border-radius: 6px;
-	color: white;
-	padding: 5px 15px;
-	cursor: pointer;
-	margin-top: 8px !important;
-}
-
-.label-rate{
-	font-weight: 500;
-	font-style: italic;
-	color: #a9a9a9;
+// ─── Reduced motion ───────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .gh-input, .gh-select, .gh-chip-add-btn,
+  .gh-chip-remove, .gh-rate-btn {
+    transition: none !important;
+  }
 }

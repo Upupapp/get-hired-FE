@@ -118,14 +118,13 @@ export class CreateJobPostStepComponent implements OnInit {
     this.jobInfoForm.controls.rate.setValue(chosen.title);
   }
 
-  // searchIndustry(){
-  //   const listDataSource = [...this.industries]
-  //   .filter(el => {
-  //     return JSON.stringify(el).toLowerCase().includes(this.search.toLowerCase());
-  //   });
-
-  //   this.industriesFiltered = listDataSource;
-
-  // }
+  getRateIcon(title: string): string {
+    switch (title) {
+      case 'Monthly': return 'bi-calendar-month';
+      case 'Daily':   return 'bi-calendar-day';
+      case 'Hourly':  return 'bi-clock';
+      default:        return 'bi-cash';
+    }
+  }
 
 }

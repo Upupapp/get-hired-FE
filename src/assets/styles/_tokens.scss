@@ -1,0 +1,182 @@
+// ─── GetHired Design Token System ────────────────────────────────────────────
+// BRAND v6 · 2026-06-27
+//
+// Extends (does not replace) existing SCSS variables in colors.scss and _motion.scss.
+// Provides CSS custom properties for use via var() in component SCSS.
+// Naming convention: --gh-<category>-<name>
+//
+// Import order: colors → motion → tokens (already imported via styles.scss or component)
+// NEVER import this file before colors.scss — it references $color-* SCSS vars.
+
+:root {
+  // ─── Typography scale ──────────────────────────────────────────────────────
+  // Font family (Manrope is confirmed brand font — loaded via Google Fonts in index.html)
+  --gh-font-base:    'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  // Font weights
+  --gh-weight-regular:  400;
+  --gh-weight-medium:   500;
+  --gh-weight-semibold: 600;
+  --gh-weight-bold:     700;
+
+  // Type scale — font-size / line-height / font-weight
+  // Usage: apply these as individual properties on elements
+  --gh-text-display-size:   36px;
+  --gh-text-display-lh:     44px;
+  --gh-text-display-weight: 700;   // display/hero title
+
+  --gh-text-page-size:      28px;
+  --gh-text-page-lh:        36px;
+  --gh-text-page-weight:    700;   // page title (H1 in authenticated pages)
+
+  --gh-text-section-size:   20px;
+  --gh-text-section-lh:     28px;
+  --gh-text-section-weight: 700;   // section title (H2)
+
+  --gh-text-card-size:      16px;
+  --gh-text-card-lh:        24px;
+  --gh-text-card-weight:    600;   // card title
+
+  --gh-text-body-size:      14px;
+  --gh-text-body-lh:        22px;
+  --gh-text-body-weight:    400;   // body text
+
+  --gh-text-helper-size:    13px;
+  --gh-text-helper-lh:      20px;
+  --gh-text-helper-weight:  400;   // small helper text, table cells
+
+  --gh-text-label-size:     12px;
+  --gh-text-label-lh:       16px;
+  --gh-text-label-weight:   600;   // micro label, badge
+
+  --gh-text-kpi-size:       32px;
+  --gh-text-kpi-lh:         40px;
+  --gh-text-kpi-weight:     700;   // KPI number
+
+  --gh-text-table-header-size:   12px;
+  --gh-text-table-header-lh:     16px;
+  --gh-text-table-header-weight: 700; // table header (uppercase optional)
+
+  --gh-text-table-cell-size:   13px;
+  --gh-text-table-cell-lh:     20px;
+  --gh-text-table-cell-weight: 400; // table cell (400–500)
+
+  // Letter spacing
+  --gh-tracking-normal:  0;          // normal text
+  --gh-tracking-eyebrow: 0.08em;    // uppercase eyebrow labels
+  --gh-tracking-badge:   0.02em;    // badge/chip text
+
+  // ─── Spacing scale ─────────────────────────────────────────────────────────
+  --gh-space-micro:  4px;   // tightest gap (icon+text in badges)
+  --gh-space-compact: 8px;  // chip padding, tight rows
+  --gh-space-sm:    12px;   // small gap
+  --gh-space-base:  16px;   // base spacing unit (most common)
+  --gh-space-card:  20px;   // card internal gap
+  --gh-space-section: 24px; // section gap (between card groups)
+  --gh-space-major: 32px;   // major section gap
+  --gh-space-page:  48px;   // hero / page-level top padding
+
+  // ─── Component sizing ──────────────────────────────────────────────────────
+
+  // Buttons
+  --gh-btn-height:          44px;   // standard button
+  --gh-btn-height-compact:  36px;   // compact / table action button
+  --gh-btn-height-large:    48px;   // large CTA
+  --gh-btn-radius:          10px;   // standard button radius
+  --gh-btn-radius-pill:     9999px; // pill/outline button radius
+  --gh-btn-font-size:       14px;
+  --gh-btn-font-weight:     600;
+  --gh-btn-icon-gap:        8px;    // gap between icon and label
+
+  // Sidebar (employer, admin, applicant)
+  --gh-sidebar-width:       260px;  // standard sidebar width (actual: 252px — close enough; token is target)
+  --gh-sidebar-logo-height:    38px;
+  --gh-sidebar-logo-max-width: 180px;
+  --gh-sidebar-nav-item-height: 46px;  // nav item height
+  --gh-sidebar-nav-label-size:  14px;
+  --gh-sidebar-nav-label-weight: 500;
+  --gh-sidebar-nav-icon-size:   20px;
+  --gh-sidebar-nav-gap:         12px;  // icon + label gap
+  --gh-sidebar-padding:         16px;  // horizontal sidebar padding
+
+  // Cards
+  --gh-card-radius:         16px;   // standard card radius
+  --gh-card-radius-lg:      24px;   // large card (dashboard hero)
+  --gh-card-padding:        20px;   // standard card padding
+  --gh-card-padding-lg:     24px;   // large card padding
+  --gh-card-border:         1px solid var(--gh-color-border-subtle);
+  --gh-card-shadow:         0 2px 8px rgba(0, 0, 0, 0.06);
+
+  // Dashboard hero
+  --gh-dash-hero-radius:    22px;
+  --gh-dash-hero-padding:   28px;
+
+  // KPI cards
+  --gh-kpi-card-height-min: 96px;
+  --gh-kpi-card-height-max: 120px;
+
+  // Action cards
+  --gh-action-card-height-min: 120px;
+  --gh-action-card-height-max: 150px;
+
+  // Main insight card
+  --gh-insight-card-min-height: 280px;
+
+  // Forms
+  --gh-input-height:        44px;
+  --gh-input-radius:        10px;
+  --gh-input-font-size:     14px;
+  --gh-label-font-size:     13px;
+  --gh-label-font-weight:   600;
+  --gh-helper-font-size:    12px;
+
+  // Badges and chips
+  --gh-badge-height:        26px;
+  --gh-badge-radius:        9999px;  // pill
+  --gh-badge-font-size:     12px;
+  --gh-badge-font-weight:   600;
+  --gh-badge-padding:       6px 10px;
+  --gh-chip-icon-size:      34px;    // icon chip size (small)
+  --gh-chip-icon-size-lg:   40px;    // icon chip size (large)
+
+  // Icons
+  --gh-icon-sm:   16px;
+  --gh-icon-base: 20px;
+  --gh-icon-lg:   36px;   // card icon
+  --gh-icon-hero: 56px;   // decorative / empty state (max unless hero)
+
+  // ─── Colour tokens ─────────────────────────────────────────────────────────
+  // These alias the SCSS variables from colors.scss as CSS custom properties.
+  // Use SCSS vars in SCSS files; use these CSS custom properties in inline styles
+  // or component SCSS that can't access SCSS vars directly.
+
+  --gh-color-primary:         #FF7062;   // coral (= $color-global-red-buttons)
+  --gh-color-primary-hover:   rgba(255, 112, 98, 0.9);
+  --gh-color-primary-light:   rgba(255, 112, 98, 0.1);
+
+  --gh-color-navy:            #1a1830;   // dark navy (dashboard hero)
+  --gh-color-navy-mid:        #2a2348;   // deep purple mid (sidebar gradient)
+  --gh-color-purple:          #7c83fd;   // pipeline accent (= $color-pipeline-accent)
+  --gh-color-teal:            #2dd4bf;   // teal accent (= $color-teal-accent)
+
+  --gh-color-bg-page:         #f4f5f9;   // page background
+  --gh-color-bg-card:         #ffffff;   // card background
+  --gh-color-bg-sidebar:      #444152;   // employer sidebar bg (= $color-global-sidebar-employer-user-menu)
+
+  --gh-color-text-primary:    #1a1830;   // primary text
+  --gh-color-text-secondary:  #6b6887;   // secondary / muted text (= $gh-muted in dashboard)
+  --gh-color-text-muted:      rgba(255, 255, 255, 0.6);  // on dark backgrounds
+
+  --gh-color-border-subtle:   #ebe7f5;   // card borders, dividers
+
+  --gh-color-success:         #04A08B;   // success green (= $color-green-secondary)
+  --gh-color-success-dark:    #1A7A4A;   // accessible success (snackbar bg)
+  --gh-color-warning:         #b45309;   // warning amber (= $color-warning-amber, 5.02:1 vs white)
+  --gh-color-error:           #C0392B;   // error red (accessible, 5.14:1 vs white)
+  --gh-color-error-brand:     #FF7062;   // brand coral (= $color-global-red; only for accents, not text on white)
+  --gh-color-analytics:       #7c83fd;   // analytics / charts (= $color-pipeline-accent)
+
+  // Logo tokens
+  --gh-sidebar-logo-height:     38px;    // employer sidebar horizontal logo height
+  --gh-sidebar-logo-max-width:  180px;   // max-width for horizontal logo
+}

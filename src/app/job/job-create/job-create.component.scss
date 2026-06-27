@@ -1,369 +1,761 @@
+// ─── GetHired Job Create — Full Revamp v2 ────────────────────────────────────
+// Phase 3+6+7+8+13+14+17+18 — GETHIRED_EMPLOYER_JOB_POST_CREATE_FULL_REVAMP_V1
+// Imports brand tokens; never duplicates variables from colors.scss/_tokens.scss.
+// All new classes use gh- prefix. prefers-reduced-motion respected throughout.
+
 @import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
 
-.btn-create-interview{
-	border: solid 1px #c9c9c9;
-	margin-right: 20px;
-	margin-top: -15px !important;
-	font-size: 14px !important;
-	padding: 7px 25px !important;
-	&:hover{
-		border-color: $color-global-red;
-		background: $color-global-red;
-		color: #fff;
-		font-weight: 600;
-	}
-}
+// ─── Shell ──────────────────────────────────────────────────────────────────
+.gh-jc-shell {
+  min-height: 100vh;
+  background: #F4F5F9;
+  padding: 24px 28px 80px;
+  font-family: 'Manrope', system-ui, sans-serif;
 
-.bg-upper-gray{
-	//position: fixed !important;
-	//top: 80px;
-	//width: 83%;
-	//max-width: 1350px;
-	background: #F4F5F9;
-	z-index: 99 !important;
-	padding: 20px 20px 10px 25px;
-	min-height: 170px;
-	// BRAND AUDIT FIX-1: scope the transition to only the properties that
-	// actually change (position+top via [ngStyle]) and guard it for
-	// prefers-reduced-motion. "transition: all" was triggering on every
-	// change-detection cycle for unrelated properties.
-	transition: top 0.3s ease, opacity 0.3s ease;
-	@media (prefers-reduced-motion: reduce) {
-		transition: none;
-	}
-}
-
-.bg-gray{
-	background: #F4F5F9
-}
-
-
-.breadcrumbs{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;
-	/* identical to box height, or 121% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #8D8D8D;
-}
-
-.main-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 600;
-	font-size: 21px;
-	line-height: 39px;
-	color: #121F3F;
-}
-
-
-.card{
-	background: #FFFFFF;
-	//box-shadow: 0px 3.5px 5.5px rgba(0, 0, 0, 0.02);
-	border-radius: 15px;
-	border: none;
-	padding: 25px;
-}
-
-.btn-add-service{
-	background: $color-global-red-buttons;
-	border-radius: 6px;
-	padding: 7px 20px;
-	color: white;
-	font-size: 13px;
-	&:hover{
-		background: rgba($color-global-red-buttons, 0.7);
-	}
-}
-
-.btn-menu{
-	background: #F0F1F5 !important;
-	//border: 1px solid rgba(93, 93, 93, 0.2) !important;
-	box-sizing: border-box !important;
-	border-radius: 8px !important;
-	//padding: 11px 15px !important;
-	box-shadow: 0px 3.5px 5.5px rgba(0, 0, 0, 0.02);
-}
-
-.btn-save-draft{
-	background: $color-global-gray-cancel;
-	border-radius: 10px;
-	color: white;
-	font-size: 13px;
-	border-radius: 6px;
-	padding: 7px 20px;
-}
-
-.btn-preview-job-post{
-	background: $color-global-red-buttons;
-	border-radius: 10px;
-	color: white;
-	font-size: 13px;
-	border-radius: 6px;
-	padding: 7px 10px;
-
-  &:hover {
-    color: $color-global-red-buttons;
-    border: 1px solid $color-global-red-buttons;
-    background: #fff;
-
+  @media (max-width: 768px) {
+    padding: 16px 14px 100px;
   }
 }
 
-
-.btn-next{
-	background: #FFEFED;
-	border-radius: 10px;
-	color: gray;
-	font-size: 13px;
-	border-radius: 6px;
-	padding: 7px 10px;
-
-  &:hover {
-    color: $color-global-red-buttons;
-    border: 1px solid $color-global-red-buttons;
-    background: #fff;
-
-  }
-}
-
-.adjust-flex{
-	@media(min-width: 1281px){
-		position: absolute;
-		right: 20px;
-	}
-
-	@media(max-width: 1280px){
-		//display: flex;
-		position: absolute;
-		right: 40px;
-	}
-}
-
-// B04: Publish button micro-scale press effect (reduced-motion-safe)
-// BRAND AUDIT FIX-2: merged into single rule block below to avoid overrides.
-// The duplicate definition above (line 65) keeps hover/shape styles; this
-// block adds only the interaction tokens.
-.btn-add-service {
-  transition: transform 0.1s ease, background 0.15s ease;
-  @media (prefers-reduced-motion: reduce) {
-    transition: background 0.15s ease;
-  }
-  &:active {
-    transform: scale(0.97);
-    @media (prefers-reduced-motion: reduce) {
-      transform: none;
-    }
-  }
-}
-
-// B05 V1: Publish button loading state
-.btn-publish-post {
-  min-width: 148px;
-}
-
-.btn-publish-loading {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.publish-spinner {
-  display: inline-block;
-  width: 13px;
-  height: 13px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: publish-spin 0.7s linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    border-color: rgba(255, 255, 255, 0.7);
-  }
-}
-
-@keyframes publish-spin {
-  to { transform: rotate(360deg); }
-}
-
-// ── F-08: Job Update UX — haptics / modern effects ───────────────────────────
-
-// Draft-save button: shares micro-scale tap with btn-add-service above
-.btn-draft-save {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease;
-  @media (prefers-reduced-motion: reduce) {
-    transition: background 0.15s ease, border-color 0.15s ease;
-  }
-  &:active {
-    transform: scale(0.97);
-    @media (prefers-reduced-motion: reduce) {
-      transform: none;
-    }
-  }
-}
-
-// Back/Cancel button: tap compression on mobile
-.btn-back-cancel {
-  transition: transform 0.1s ease;
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-  &:active {
-    transform: scale(0.96);
-    @media (prefers-reduced-motion: reduce) {
-      transform: none;
-    }
-  }
-}
-
-// Draft-save spinner (identical pattern to publish-spinner)
-.btn-draft-loading {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.draft-spinner {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 2px solid rgba(80, 80, 80, 0.25);
-  border-top-color: #555;
-  border-radius: 50%;
-  animation: draft-spin 0.7s linear infinite;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    border-color: rgba(80, 80, 80, 0.5);
-  }
-}
-
-@keyframes draft-spin {
-  to { transform: rotate(360deg); }
-}
-
-// Success pulse: brief green check after backend success
-.save-success-pulse {
-  display: inline-flex;
-  align-items: center;
-  color: #22c55e;
-  font-size: 18px;
-  margin-left: 4px;
-  animation: success-pulse 0.4s ease;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
-}
-
-@keyframes success-pulse {
-  0%   { opacity: 0; transform: scale(0.6); }
-  60%  { opacity: 1; transform: scale(1.15); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-// Error alert: unauthorized/not-found shown below action buttons
-.save-error-alert {
-  margin-top: 8px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #fff5f5;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
-  font-size: 13px;
-  font-family: 'Manrope', sans-serif;
+// ─── Hero card ──────────────────────────────────────────────────────────────
+.gh-jc-hero {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.07);
+  margin-bottom: 20px;
+  animation: gh-jc-hero-in 220ms cubic-bezier(0.2, 0, 0, 1) both;
+
+  @include motion-safe;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 16px;
+  }
+}
+
+@keyframes gh-jc-hero-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gh-jc-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gh-jc-hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+
+  @media (max-width: 640px) {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.gh-jc-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $color-global-red-buttons;
+}
+
+.gh-jc-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1830;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.gh-jc-subtitle {
+  font-size: 14px;
+  color: #6b6887;
+  margin: 0;
+}
+
+// Status chip
+.gh-jc-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f0edf8;
+  color: #6b6887;
+
+  &--draft     { background: #f5f5f5; color: #6b6887; }
+  &--missing   { background: #FEF2F2; color: #B91C1C; }
+  &--ready     { background: #F0FDF4; color: #15803D; }
+  &--published { background: #EFF6FF; color: #1D4ED8; }
+}
+
+// Autosave indicator
+.gh-jc-autosave {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
-  animation: error-reveal 0.25s ease;
+  font-size: 12px;
+  color: #6b6887;
+  transition: color 160ms ease;
 
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
+  @include motion-safe;
+
+  &.saved   { color: #15803D; }
+  &.saving  { color: #6b6887; }
+  &.failed  { color: #B91C1C; }
+  &.unsaved { color: #9CA3AF; }
+}
+
+// ─── Stepper ─────────────────────────────────────────────────────────────────
+.gh-jc-stepper-wrap {
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px 20px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+
+.gh-jc-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: fit-content;
+}
+
+.gh-step-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 160ms ease, color 160ms ease;
+
+  @include motion-safe;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+
+  // Active step
+  &.gh-step--active {
+    background: $color-global-red-buttons;
+    color: #fff;
+
+    .gh-step-num {
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+
+    .gh-step-sub {
+      color: rgba(255,255,255,0.75);
+    }
+  }
+
+  // Completed step
+  &.gh-step--done {
+    background: #F0FDF4;
+    color: #15803D;
+
+    .gh-step-num {
+      background: #15803D;
+      color: #fff;
+    }
+
+    .gh-step-sub {
+      color: #4ADE80;
+    }
+  }
+
+  // Future unlocked
+  &.gh-step--future {
+    color: #1a1830;
+
+    .gh-step-num {
+      background: #f0edf8;
+      color: #6b6887;
+    }
+
+    .gh-step-sub {
+      color: #9CA3AF;
+    }
+
+    &:hover {
+      background: #F9F8FC;
+    }
+  }
+
+  // Locked
+  &.gh-step--locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+
+    .gh-step-num {
+      background: #E5E7EB;
+      color: #9CA3AF;
+    }
   }
 }
 
-@keyframes error-reveal {
+.gh-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background 160ms ease;
+
+  @include motion-safe;
+}
+
+.gh-step-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.gh-step-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: #9CA3AF;
+}
+
+.gh-step-connector {
+  flex: 1;
+  min-width: 16px;
+  max-width: 40px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+}
+
+.gh-step-connector-line {
+  height: 2px;
+  width: 100%;
+  background: #E5E7EB;
+  border-radius: 2px;
+  transition: background 220ms ease;
+
+  @include motion-safe;
+
+  &--done {
+    background: #4ADE80;
+  }
+}
+
+// Mobile progress bar (hidden on desktop)
+.gh-jc-mobile-progress {
+  display: none;
+  height: 3px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  margin-top: 10px;
+
+  @media (max-width: 640px) {
+    display: block;
+  }
+}
+
+.gh-jc-mobile-progress-bar {
+  height: 100%;
+  background: $color-global-red-buttons;
+  border-radius: 2px;
+  transition: width 300ms cubic-bezier(0.4,0,0.2,1);
+
+  @include motion-safe;
+}
+
+// ─── 2-column content layout ─────────────────────────────────────────────────
+.gh-jc-content {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+
+  form {
+    display: contents;
+  }
+}
+
+// ─── Left: form column ───────────────────────────────────────────────────────
+.gh-jc-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+// ─── Error summary ──────────────────────────────────────────────────────────
+.gh-jc-error-summary {
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #991B1B;
+  margin-bottom: 16px;
+  animation: gh-jc-error-reveal 200ms ease both;
+
+  @include motion-safe;
+}
+
+@keyframes gh-jc-error-reveal {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// Focus-visible glow on action buttons (keyboard navigation)
-.btn-draft-save:focus-visible,
-.btn-back-cancel:focus-visible,
-.btn-publish-post:focus-visible {
-  outline: 2px solid #e02020;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(224, 32, 32, 0.18);
+.gh-jc-error-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #B91C1C;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Manrope', sans-serif;
+
+  &:hover { color: #7F1D1D; }
+  &:focus-visible { outline: 2px solid #B91C1C; border-radius: 2px; }
 }
 
-// Mobile tap target: ensure minimum 44px touch target on small screens
-@media (max-width: 768px) {
-  .btn-draft-save,
-  .btn-back-cancel,
-  .btn-publish-post {
-    min-height: 44px;
-    padding-left: 16px;
-    padding-right: 16px;
+// ─── Step navigation bar (bottom of form column) ─────────────────────────────
+.gh-jc-step-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px 20px;
+  margin-top: 20px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.06);
+
+  @media (max-width: 640px) {
+    display: none; // replaced by mobile sticky bar
   }
 }
 
-// ─── MOBILEVIEW Pass 2 BL-005: Sticky controls bar on mobile ─────────────────
-// The controls section (.bg-upper-gray) is already fixed on desktop via ngStyle.
-// On mobile we override it to be sticky at the top so it stays visible while
-// the user scrolls the long multi-step job create form.
-@media (max-width: 767px) {
-  .bg-upper-gray {
-    position: sticky !important;
-    top: 0 !important;
-    width: 100% !important;
-    z-index: 110 !important;
-    padding: 12px 16px 8px !important;
-    min-height: auto !important;
+.gh-jc-step-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+// Subscription gate warning
+.gh-jc-plan-gate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #991B1B;
+  margin-top: 10px;
+}
+
+.gh-jc-plan-gate-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: $color-global-red-buttons;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+}
+
+// ─── Shared button system ────────────────────────────────────────────────────
+.gh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, color 140ms ease, transform 100ms ease, border-color 140ms ease;
+
+  @include motion-safe;
+
+  &:active { transform: scale(0.97); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
   }
 
-  // Stack title and stepper buttons on mobile
-  .bg-upper-gray .card-body,
-  .bg-upper-gray .d-flex {
-    flex-wrap: wrap;
-    gap: 8px;
+  &--primary {
+    background: $color-global-red-buttons;
+    color: #fff;
+    &:hover:not(:disabled) { background: darken($color-global-red-buttons, 8%); }
   }
 
-  // Ensure the publish / next button row is fully visible at mobile
-  .adjust-flex {
-    position: static !important;
-    margin-top: 8px;
+  &--secondary {
+    background: #F4F5F9;
+    color: #1a1830;
+    &:hover:not(:disabled) { background: #E5E7EB; }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: #6b6887;
+    border: 1px solid #E5E7EB;
+    &:hover:not(:disabled) { background: #F9F8FC; color: #1a1830; }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $color-global-red-buttons;
+    border: 1.5px solid $color-global-red-buttons;
+    &:hover:not(:disabled) { background: rgba($color-global-red-buttons, 0.06); }
+  }
+
+  &--publish {
+    background: #1a1830;
+    color: #fff;
+    min-width: 160px;
+    &:hover:not(:disabled) { background: #2a2348; }
+  }
+
+  &--sm {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
   }
 }
 
-// ── B13: Job Readiness panel (inside the builder) ────────────────────────────
-.jrc-builder-readiness-panel {
-  position: relative;
-  z-index: 1;
+// Small spinner used inside buttons
+.gh-spinner-sm {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: gh-spin 0.65s linear infinite;
+  flex-shrink: 0;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    border-color: rgba(255,255,255,0.7);
+  }
 }
 
-.jrc-readiness-card {
+@keyframes gh-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ─── Right: assistant rail ────────────────────────────────────────────────────
+.gh-jc-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 80px;
+
+  @media (max-width: 1024px) {
+    position: static;
+  }
+}
+
+// Shared card style used in rail
+.gh-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.07);
+  padding: 18px;
+}
+
+// ─── Readiness card ──────────────────────────────────────────────────────────
+.gh-jc-readiness-card {
+  animation: gh-dash-card-reveal 220ms cubic-bezier(0.2,0,0,1) both;
+  @include motion-safe;
+}
+
+.gh-jc-readiness-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px;
 }
 
-.jrc-readiness-card-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.jrc-readiness-card-title {
-  font-family: 'Manrope', sans-serif;
-  font-weight: 700;
+.gh-jc-readiness-title {
   font-size: 13px;
+  font-weight: 700;
   color: #444;
   display: flex;
   align-items: center;
 }
 
+.gh-jc-readiness-percent {
+  font-size: 13px;
+  font-weight: 700;
+  color: $color-global-red-buttons;
+}
+
+// Progress ring
+.gh-jc-readiness-ring-wrap {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin: 4px auto 10px;
+}
+
+.gh-jc-readiness-ring {
+  width: 60px;
+  height: 60px;
+}
+
+.gh-jc-readiness-ring-fill {
+  transition: stroke-dashoffset 600ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.gh-jc-readiness-ring-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a1830;
+}
+
+// Readiness level chip (inside the rail card)
+.gh-jc-readiness-level-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 12px;
+
+  &.gh-chip--success { background: #F0FDF4; color: #15803D; }
+  &.gh-chip--info    { background: #EFF6FF; color: #1D4ED8; }
+  &.gh-chip--warning { background: #FFFBEB; color: #92400E; }
+  &.gh-chip--draft   { background: #F5F5F5; color: #6B7280; }
+}
+
+// Collapsible readiness section
+.gh-jc-readiness-section {
+  border-top: 1px solid #F0EDF8;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.gh-jc-readiness-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 6px 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+
+  &:hover { background: #F9F8FC; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; border-radius: 6px; }
+}
+
+.gh-jc-readiness-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 2px;
+}
+
+// Chip variants
+.gh-jc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+
+  @include motion-safe;
+
+  &:active { transform: scale(0.96); }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+
+  &--blocking {
+    background: #FEF2F2;
+    color: #B91C1C;
+    border-color: #FECACA;
+    &:hover { background: #FEE2E2; }
+  }
+
+  &--recommended {
+    background: #FFFBEB;
+    color: #92400E;
+    border-color: #FDE68A;
+    &:hover { background: #FEF3C7; }
+  }
+
+  &--done {
+    background: #F0FDF4;
+    color: #166534;
+    border-color: #BBF7D0;
+    cursor: default;
+  }
+}
+
+// Next best action
+.gh-jc-next-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: rgba($color-global-red-buttons, 0.06);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: darken($color-global-red-buttons, 10%);
+  margin-top: 10px;
+}
+
+// ─── Publish checklist (step 4 rail) ─────────────────────────────────────────
+.gh-jc-publish-checklist {
+  // inherits from .gh-card
+}
+
+.gh-jc-checklist-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gh-jc-checklist-item {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #4B5563;
+  padding: 4px 6px;
+  border-radius: 6px;
+
+  &--done     { color: #166534; }
+  &--blocking { color: #B91C1C; }
+}
+
+// ─── Tips card ──────────────────────────────────────────────────────────────
+.gh-jc-tips-card {
+  // inherits from .gh-card
+}
+
+.gh-jc-tips-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b6887;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gh-jc-tips-body {
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ─── Mobile sticky bottom bar ────────────────────────────────────────────────
+.gh-jc-mobile-bar {
+  display: none;
+
+  @media (max-width: 640px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid #E5E7EB;
+    padding: 10px 16px;
+    z-index: 200;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+  }
+}
+
+// ─── Page animation ──────────────────────────────────────────────────────────
+@keyframes gh-dash-card-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Reduced-motion: disable all custom animations ───────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .gh-jc-hero,
+  .gh-jc-readiness-card,
+  .gh-jc-error-summary,
+  .gh-jc-mobile-progress-bar,
+  .gh-step-connector-line,
+  .gh-step-num,
+  .gh-btn,
+  .gh-jc-chip {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+
+  .gh-jc-readiness-ring-fill {
+    transition: none !important;
+  }
+}

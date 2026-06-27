@@ -1,284 +1,403 @@
-<section style="transition: all 0.4s ease !important;">
-  <!-- GETHIRED 500K TALENT PROOF SYSTEM -- non-blocking helper card,
-       never a modal, never interrupts typing/form completion. -->
+<section class="gh-form-step" [@animate]="{value:'*', params:{ y:'12px', delay:'80ms' }}">
+
+  <!-- Talent Proof strip -->
   <div class="mb-3">
     <app-talent-proof-badge variant="strip" placement="job_builder_sidebar"></app-talent-proof-badge>
   </div>
 
-  <!-- TITLE -->
-  <!-- <div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-    <h5 class="main-title">Job Details</h5>
-  </div>
- -->
-  <section class="card card-body mb-4">
-    <form [formGroup]="initialDetailsForm" id="intialForm">
-      <div [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-        <div class="title-container mb-3">
-          <h5 class="title-label">Job Title</h5>
-          <div class="form-group">
-            <input type="text" name="job-title" class="form-control" placeholder="Lead UI/UX Designer"
-              formControlName="jobTitle">
-          </div>
-        </div>
+  <form [formGroup]="initialDetailsForm" id="initialForm" novalidate>
 
-        <div class="row">
-          <div class="col-12 col-md-4 mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}"
-            *ngIf="typeList$ | async as jobType">
-            <label>Job Type</label>
-            <select class="form-select" formControlName="jobTypeId">
-              <option selected disabled [ngValue]="null">Select Job Type</option>
-              <ng-container *ngFor="let item of jobType; let i = index">
-                <option [ngValue]="item.id">{{item.name}}</option>
-              </ng-container>
-            </select>
-          </div>
+    <!-- ── CARD 1: Role Basics ─────────────────────────────────────────────── -->
+    <div class="gh-form-card mb-4" id="section-job-title">
+      <div class="gh-form-card-header">
+        <h2 class="gh-form-card-title">
+          <i class="bi bi-briefcase me-2" aria-hidden="true"></i>Role basics
+        </h2>
+        <p class="gh-form-card-subtitle">Tell candidates what this role is about.</p>
+      </div>
 
-          <div class="col-12 col-md-4 mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}"
-            *ngIf="level$ | async as jobLevel">
-            <label>Job Level</label>
-            <select class="form-select" formControlName="jobLevelId">
-              <option selected disabled [ngValue]="null">Select Job Level</option>
-              <ng-container *ngFor="let item of jobLevel; let i = index">
-                <option [ngValue]="item.id">{{item.name}}</option>
-              </ng-container>
-            </select>
-          </div>
+      <!-- Job Title -->
+      <div class="gh-field mb-4">
+        <label class="gh-label" for="job-title">
+          Job title <span class="gh-label-required" aria-label="required">*</span>
+        </label>
+        <input
+          id="job-title"
+          type="text"
+          class="gh-input"
+          placeholder="e.g. Senior Product Designer"
+          formControlName="jobTitle"
+          [attr.aria-describedby]="initialDetailsForm.get('jobTitle').invalid && initialDetailsForm.get('jobTitle').touched ? 'job-title-err' : null"
+          [class.gh-input--error]="initialDetailsForm.get('jobTitle').invalid && initialDetailsForm.get('jobTitle').touched"
+          (blur)="initialDetailsForm.get('jobTitle').markAsTouched()"
+        >
+        <p class="gh-field-error" id="job-title-err" role="alert"
+          *ngIf="initialDetailsForm.get('jobTitle').invalid && initialDetailsForm.get('jobTitle').touched">
+          Job title is required.
+        </p>
+      </div>
 
-          <div class="col-12 col-md-4 mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}"
-            *ngIf="category$ | async as jobCategory">
-            <label>Job Category</label>
-            <select class="form-select" formControlName="jobCategoryId">
-              <option selected disabled [ngValue]="null">Select Job Category</option>
-              <ng-container *ngFor="let item of jobCategory; let i = index">
-                <option [ngValue]="item.id">{{item.name}}</option>
-              </ng-container>
+      <!-- Type / Level / Category -->
+      <div class="row g-3 mb-2" id="section-employment">
+        <div class="col-12 col-md-4">
+          <div class="gh-field" *ngIf="typeList$ | async as jobType">
+            <label class="gh-label" for="job-type">Employment type</label>
+            <select id="job-type" class="gh-select" formControlName="jobTypeId"
+              [class.gh-input--error]="initialDetailsForm.get('jobTypeId').invalid && initialDetailsForm.get('jobTypeId').touched">
+              <option [ngValue]="null" disabled selected>Select type</option>
+              <option *ngFor="let item of jobType" [ngValue]="item.id">{{ item.name }}</option>
             </select>
           </div>
         </div>
-      </div>
 
-      <!-- WORK SETUP -->
-      <div class="title-container mb-2">
-        <h5 class="title-label" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">Work Setup</h5>
+        <div class="col-12 col-md-4" id="section-job-level">
+          <div class="gh-field" *ngIf="level$ | async as jobLevel">
+            <label class="gh-label" for="job-level">Job level</label>
+            <select id="job-level" class="gh-select" formControlName="jobLevelId">
+              <option [ngValue]="null" disabled selected>Select level</option>
+              <option *ngFor="let item of jobLevel" [ngValue]="item.id">{{ item.name }}</option>
+            </select>
+          </div>
+        </div>
 
-        <div class="row" *ngIf="workSetup$ | async as workSetup">
-          <div class="col-12 col-md-6 mb-3 col-lg-4" *ngFor="let item of workSetup; let i = index">
-            <button class="btn btn-work-setup w-100 text-start hvr-hang" type="button"
-              [@animate]="{value:'*', params:{ y:'40px', delay: ((i * 100) + 250) + 'ms' }}"
-              (click)="selectWorkSetUp(item.id)" [ngClass]="item.id === workSetupSelected ? 'active': ''">{{item.name}}
-              <img src="/assets/images/placeholder/icons/check-blank.png" *ngIf="item.id !== workSetupSelected"
-                class="float-end" style="width: 20px;">
-
-              <img src="/assets/images/placeholder/icons/check-white.png" *ngIf="item.id === workSetupSelected"
-                class="float-end" style="width: 20px;">
-            </button>
+        <div class="col-12 col-md-4">
+          <div class="gh-field" *ngIf="category$ | async as jobCategory">
+            <label class="gh-label" for="job-category">Job category</label>
+            <select id="job-category" class="gh-select" formControlName="jobCategoryId">
+              <option [ngValue]="null" disabled selected>Select category</option>
+              <option *ngFor="let item of jobCategory" [ngValue]="item.id">{{ item.name }}</option>
+            </select>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Location -->
-      <div class="mt-2 row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-        <div class="col-12 col-md-6 mb-3">
-          <label>Address</label>
-          <p class="title-label-sub mb-3">This is your main office location/address.</p>
+    <!-- ── CARD 2: Work Setup & Location ─────────────────────────────────── -->
+    <div class="gh-form-card mb-4" id="section-work-setup">
+      <div class="gh-form-card-header">
+        <h2 class="gh-form-card-title">
+          <i class="bi bi-building me-2" aria-hidden="true"></i>Work setup & location
+        </h2>
+        <p class="gh-form-card-subtitle">Let candidates know where and how this role is performed.</p>
+      </div>
 
-          <div class="form-group d-flex">
-            <input type="text" name="address" class="form-control" placeholder="Address" formControlName="jobAddress">
-          </div>
-        </div>
-        <div class="col-12 col-md-3 mb-3">
-          <label>City</label>
-          <p class="title-label-sub mb-3">Where the job will take place</p>
-
-          <div class="form-group d-flex">
-            <input type="text" name="city" class="form-control" placeholder="City" formControlName="jobCity">
-          </div>
-        </div>
-        <div class="col-12 col-md-3 mb-3">
-          <label>Country</label>
-          <p class="title-label-sub mb-3">Where the job will take place</p>
-
-          <div class="form-group d-flex">
-            <input type="text" name="country" class="form-control" placeholder="Country" formControlName="jobCountry">
-          </div>
+      <!-- Work Setup buttons -->
+      <div class="gh-field mb-4">
+        <label class="gh-label">Work setup</label>
+        <div class="gh-work-setup-grid" *ngIf="workSetup$ | async as workSetup">
+          <button
+            *ngFor="let item of workSetup; let i = index"
+            class="gh-work-setup-btn"
+            type="button"
+            (click)="selectWorkSetUp(item.id)"
+            [ngClass]="{'gh-work-setup-btn--active': item.id === workSetupSelected}"
+            [attr.aria-pressed]="item.id === workSetupSelected"
+            [attr.aria-label]="item.name + (item.id === workSetupSelected ? ' (selected)' : '')"
+          >
+            <i class="bi bi-check-circle-fill gh-work-setup-check" *ngIf="item.id === workSetupSelected" aria-hidden="true"></i>
+            <i class="bi bi-circle gh-work-setup-check" *ngIf="item.id !== workSetupSelected" aria-hidden="true"></i>
+            {{ item.name }}
+          </button>
         </div>
       </div>
 
-      <!-- BANNER UPLOADER -->
-      <div class="mt-3" [@animate]="{value:'*', params:{ y:'10px', delay: '500ms' }}">
-        <app-drag-and-drop [maxSize]="300000000" (upload)="getBanner($event)" multipleAttachmentTitle="Upload Banner" [isMultiple]="false" [fileArray]="bannerSelected.value">
-        </app-drag-and-drop>
-      </div>
-
-      <!-- BADGES -->
-      <div class="row px-lg-2" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}"
-        *ngIf="badge$ | async as badge">
-        <div class="col-12 col-lg-5" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
-          <h5 class="title-label">Add Badges</h5>
-          <select class="form-select form-select-multiple" size="3" multiple>
-            <option *ngFor="let item of badge; let i = index"
-            style="cursor: pointer"
-            [ngValue]="item.id" (click)="addBadge(item);">
-              {{item?.name}}</option>
-          </select>
+      <!-- Location fields -->
+      <div class="row g-3" id="section-location">
+        <div class="col-12 col-md-6">
+          <div class="gh-field">
+            <label class="gh-label" for="job-address">Office address</label>
+            <p class="gh-field-helper">Your main office or work location address.</p>
+            <input id="job-address" type="text" class="gh-input" placeholder="123 Main Street"
+              formControlName="jobAddress">
+          </div>
         </div>
 
-        <div class="col-12 col-lg-7" [@animate]="{value:'*', params:{ y:'10px', delay:'250ms' }}">
-          <div class="badge-selection">
-            <div class="row">
-              <div class="col-12 col-lg-6 mb-3" *ngFor="let item of badges.value; let i = index">
-                <div class="d-flex me-3 badge-item">
-                  <img [src]="'/assets/images/placeholder/icons/' + item.icon">
+        <div class="col-12 col-md-3">
+          <div class="gh-field">
+            <label class="gh-label" for="job-city">
+              City <span class="gh-label-required" aria-label="required">*</span>
+            </label>
+            <input id="job-city" type="text" class="gh-input"
+              placeholder="Manila"
+              formControlName="jobCity"
+              [class.gh-input--error]="initialDetailsForm.get('jobCity').invalid && initialDetailsForm.get('jobCity').touched"
+              (blur)="initialDetailsForm.get('jobCity').markAsTouched()"
+            >
+            <p class="gh-field-error" role="alert"
+              *ngIf="initialDetailsForm.get('jobCity').invalid && initialDetailsForm.get('jobCity').touched">
+              City is required.
+            </p>
+          </div>
+        </div>
 
-                  <h5 class="badge-title w-100" style="position: relative !important;">
-                    {{item.name}}
+        <div class="col-12 col-md-3">
+          <div class="gh-field">
+            <label class="gh-label" for="job-country">
+              Country <span class="gh-label-required" aria-label="required">*</span>
+            </label>
+            <input id="job-country" type="text" class="gh-input"
+              placeholder="Philippines"
+              formControlName="jobCountry"
+              [class.gh-input--error]="initialDetailsForm.get('jobCountry').invalid && initialDetailsForm.get('jobCountry').touched"
+              (blur)="initialDetailsForm.get('jobCountry').markAsTouched()"
+            >
+            <p class="gh-field-error" role="alert"
+              *ngIf="initialDetailsForm.get('jobCountry').invalid && initialDetailsForm.get('jobCountry').touched">
+              Country is required.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                    <div class="remove-badge">
-                      <mat-icon class="close" (click)="removeItem(i, this.badges)">close</mat-icon>
-                    </div>
-                  </h5>
+    <!-- ── CARD 3: Job Branding ────────────────────────────────────────────── -->
+    <div class="gh-form-card mb-4" id="section-banner">
+      <div class="gh-form-card-header">
+        <h2 class="gh-form-card-title">
+          <i class="bi bi-image me-2" aria-hidden="true"></i>Job branding
+        </h2>
+        <p class="gh-form-card-subtitle">Add a banner image and badges to make your listing stand out.</p>
+      </div>
+
+      <!-- Banner upload -->
+      <div class="gh-field mb-4">
+        <label class="gh-label">Job banner image <span class="gh-label-required" aria-label="required">*</span></label>
+        <p class="gh-field-helper">Recommended size: 1200 × 400 px. Max 300 MB.</p>
+        <div class="gh-dropzone-wrap">
+          <app-drag-and-drop
+            [maxSize]="300000000"
+            (upload)="getBanner($event)"
+            multipleAttachmentTitle="Upload banner image"
+            [isMultiple]="false"
+            [fileArray]="bannerSelected.value"
+          ></app-drag-and-drop>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="gh-field" *ngIf="badge$ | async as badge">
+        <label class="gh-label">Add badges <span class="gh-label-optional">(optional)</span></label>
+        <p class="gh-field-helper">Highlight up to 3 perks or qualities of this role.</p>
+
+        <div class="row g-3">
+          <div class="col-12 col-md-5">
+            <select class="gh-select gh-select--multi" size="4" multiple aria-label="Available badges">
+              <option
+                *ngFor="let item of badge"
+                [ngValue]="item.id"
+                (click)="addBadge(item)"
+                style="cursor:pointer"
+              >{{ item?.name }}</option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-7">
+            <div class="gh-badge-well" aria-label="Selected badges" aria-live="polite">
+              <div class="gh-badge-empty" *ngIf="badges.value.length === 0">
+                <i class="bi bi-patch-check me-1" aria-hidden="true"></i>
+                No badges selected yet
+              </div>
+              <div class="row g-2">
+                <div class="col-12 col-md-6" *ngFor="let item of badges.value; let i = index">
+                  <div class="gh-badge-item">
+                    <img [src]="'/assets/images/placeholder/icons/' + item.icon"
+                      [alt]="item.name" aria-hidden="true" class="gh-badge-icon">
+                    <span class="gh-badge-name">{{ item.name }}</span>
+                    <button class="gh-badge-remove" type="button"
+                      (click)="removeItem(i, badges)"
+                      [attr.aria-label]="'Remove badge ' + item.name">
+                      <i class="bi bi-x" aria-hidden="true"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <hr style="border-style: dashed">
+    <!-- ── CARD 4: Job Story ──────────────────────────────────────────────── -->
+    <div class="gh-form-card mb-4" id="section-description">
+      <div class="gh-form-card-header">
+        <h2 class="gh-form-card-title">
+          <i class="bi bi-file-text me-2" aria-hidden="true"></i>Job story
+        </h2>
+        <p class="gh-form-card-subtitle">
+          A compelling description gets 3x more applications. Be specific about what makes this role interesting.
+        </p>
+      </div>
 
-      <section class="px-lg-3">
-        <div class="title-container mb-3" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
-          <h5 class="title-label">Job Description</h5>
-          <div class="form-group">
-            <textarea name="job-title" class="form-control" rows="6"
-              placeholder="Describe the role: what the team does, how this position fits in, and what the day-to-day looks like."
-              formControlName="jobDescription"></textarea>
-          </div>
+      <!-- Job Description -->
+      <div class="gh-field mb-4">
+        <div class="gh-label-row">
+          <label class="gh-label" for="job-description">
+            Job description <span class="gh-label-required" aria-label="required">*</span>
+          </label>
+          <span class="gh-char-count" aria-live="polite">
+            {{ (initialDetailsForm.get('jobDescription').value || '').length }}/2000
+          </span>
         </div>
+        <p class="gh-field-helper">What does the team do? How does this role fit in? What does a typical day look like?</p>
+        <textarea
+          id="job-description"
+          class="gh-textarea"
+          rows="6"
+          maxlength="2000"
+          placeholder="Describe the role: what the team does, how this position fits in, and what the day-to-day looks like."
+          formControlName="jobDescription"
+        ></textarea>
+        <p class="gh-field-writing-tip">
+          <i class="bi bi-lightbulb me-1" aria-hidden="true"></i>
+          Tip: Start with what the team is building, then describe the impact this person will have.
+        </p>
+      </div>
 
-        <div class="title-container mb-3" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
-          <h5 class="title-label">Duties & Responsibilities</h5>
-          <div class="form-group">
-            <textarea name="job-title" class="form-control" rows="6"
-              placeholder="As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. "
-              formControlName="jobDuties"></textarea>
-          </div>
+      <!-- Duties & Responsibilities -->
+      <div class="gh-field" id="section-duties">
+        <div class="gh-label-row">
+          <label class="gh-label" for="job-duties">Duties & responsibilities</label>
+          <span class="gh-label-optional">Optional</span>
         </div>
+        <p class="gh-field-helper">List the key tasks and responsibilities for this role.</p>
+        <textarea
+          id="job-duties"
+          class="gh-textarea"
+          rows="5"
+          placeholder="• Design end-to-end user experiences&#10;• Collaborate with engineering and product teams&#10;• Conduct user research and usability testing"
+          formControlName="jobDuties"
+        ></textarea>
+      </div>
+    </div>
 
-        <hr class="my-4" style="border-style: dashed">
+    <!-- ── CARD 5: Requirements ──────────────────────────────────────────── -->
+    <div class="gh-form-card mb-4" id="section-requirements">
+      <div class="gh-form-card-header">
+        <h2 class="gh-form-card-title">
+          <i class="bi bi-check2-square me-2" aria-hidden="true"></i>Requirements
+        </h2>
+        <p class="gh-form-card-subtitle">What candidates need to be considered for this role.</p>
+      </div>
 
-        <!-- OTHER REQUIREMENTS -->
-        <div class="mt-2 row" [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
-          <div class="col-12 col-md-6 mb-3">
-            <div class="col-12">
-              <h5 class="title-label">Requirements</h5>
-            </div>
+      <!-- Required qualifications -->
+      <div class="gh-field mb-4">
+        <label class="gh-label">Required qualifications</label>
+        <p class="gh-field-helper">Add up to 5 must-have qualifications or experiences.</p>
+        <div class="gh-chip-input-group">
+          <input type="text" class="gh-input gh-input--chip"
+            placeholder="e.g. 3+ years of product design experience"
+            formControlName="requirementsTxt"
+            aria-label="Add a required qualification"
+            (keyup.enter)="addItem('requirementsTxt', requirements)">
+          <button class="gh-chip-add-btn" type="button"
+            (click)="addItem('requirementsTxt', requirements)"
+            aria-label="Add qualification">Add</button>
+        </div>
+        <div class="gh-chips-list mt-2" *ngIf="requirements && requirements.controls.length > 0"
+          aria-label="Added requirements" aria-live="polite">
+          <span *ngFor="let item of requirements.controls; let i = index"
+            class="gh-chip gh-chip--removable" role="listitem">
+            {{ item.value }}
+            <button class="gh-chip-remove" type="button"
+              (click)="removeItem(i, requirements)"
+              [attr.aria-label]="'Remove: ' + item.value">
+              <i class="bi bi-x" aria-hidden="true"></i>
+            </button>
+          </span>
+        </div>
+      </div>
 
-            <p class="title-label-sub mb-3">Add Requirements for your job (You can add up to 5 items)</p>
-
-            <div class="form-group d-flex with-add search-group">
-              <input type="text" name="search" class="form-control form-control-main" formControlName="requirementsTxt"
-                placeholder="ex, create custom material table, google sheet script"
-                (keyup.enter)="addItem('requirementsTxt', this.requirements)">>
-                <button class="btn btn-add-now" (click)="addItem('requirementsTxt', this.requirements)">
-                Add
-              </button>
-            </div>
-
-            <div class="mt-3" *ngIf="requirements && requirements.controls.length > 0">
-              <ng-container *ngFor="let item of requirements.controls; let i = index">
-                <h5 class="me-3 w-100 requirement-badge">{{item.value}}
-                  <img src="/assets/images/placeholder/icons/remove-white.png" style="height: 10px; margin-top: 3px"
-                    class="ms-2 float-end" (click)="removeItem(i, this.requirements)">
-                </h5>
-              </ng-container>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 mb-3">
-            <div class="col-12">
-              <h5 class="title-label">Educational Background</h5>
-            </div>
-
-            <p class="title-label-sub mb-3">Add educational background (You can add up to 5 items)</p>
-
-            <div class="form-group d-flex with-add search-group">
-              <input type="text" name="search" class="form-control form-control-main"
-                placeholder="ex, computer science graduate, have atleast 2.5 GPA"
+      <div class="row g-3">
+        <!-- Educational background -->
+        <div class="col-12 col-md-6" id="section-education">
+          <div class="gh-field mb-4">
+            <label class="gh-label">Educational background</label>
+            <p class="gh-field-helper">Add up to 5 items.</p>
+            <div class="gh-chip-input-group">
+              <input type="text" class="gh-input gh-input--chip"
+                placeholder="e.g. Bachelor's in Computer Science"
                 formControlName="educationalBackgroundTxt"
-                (keyup.enter)="addItem('educationalBackgroundTxt', this.educationalBackground)">
-              <button class="btn btn-add-now" (click)="addItem('educationalBackgroundTxt', this.educationalBackground)">
-                Add
-              </button>
+                aria-label="Add educational background"
+                (keyup.enter)="addItem('educationalBackgroundTxt', educationalBackground)">
+              <button class="gh-chip-add-btn" type="button"
+                (click)="addItem('educationalBackgroundTxt', educationalBackground)"
+                aria-label="Add education">Add</button>
             </div>
-
-            <div class="mt-3" *ngIf="educationalBackground && educationalBackground.controls.length > 0">
-              <ng-container *ngFor="let item of educationalBackground.controls; let i = index">
-                <h5 class="me-3 w-100 requirement-badge">{{item.value}}
-                  <img src="/assets/images/placeholder/icons/remove-white.png" style="height: 10px; margin-top: 3px"
-                    class="ms-2 float-end" (click)="removeItem(i, this.educationalBackground)">
-                </h5>
-              </ng-container>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 mb-3">
-            <div class="col-12">
-              <h5 class="title-label">Good to Have</h5>
-            </div>
-
-            <p class="title-label-sub mb-3">
-              Add good to have skills but not a deal breaker (You can add up to 5 items)
-            </p>
-
-            <div class="form-group d-flex with-add search-group">
-              <input type="text" name="search" class="form-control form-control-main"
-                placeholder="ex, with driver's license, covid vaccine certification" formControlName="goodToHaveTxt"
-                (keyup.enter)="addItem('goodToHaveTxt', this.goodToHave)">
-              <button class="btn btn-add-now" (click)="addItem('goodToHaveTxt', this.goodToHave)">
-                Add
-              </button>
-            </div>
-
-            <div class="mt-3" *ngIf="goodToHave && goodToHave.controls.length > 0">
-              <ng-container *ngFor="let item of goodToHave.controls; let i = index">
-                <h5 class="me-3 w-100 requirement-badge">{{item.value}}
-                  <img src="/assets/images/placeholder/icons/remove-white.png" style="height: 10px; margin-top: 3px"
-                    class="ms-2 float-end" (click)="removeItem(i, this.goodToHave)">
-                </h5>
-              </ng-container>
+            <div class="gh-chips-list mt-2" *ngIf="educationalBackground && educationalBackground.controls.length > 0"
+              aria-live="polite">
+              <span *ngFor="let item of educationalBackground.controls; let i = index"
+                class="gh-chip gh-chip--removable" role="listitem">
+                {{ item.value }}
+                <button class="gh-chip-remove" type="button"
+                  (click)="removeItem(i, educationalBackground)"
+                  [attr.aria-label]="'Remove: ' + item.value">
+                  <i class="bi bi-x" aria-hidden="true"></i>
+                </button>
+              </span>
             </div>
           </div>
         </div>
 
-        <hr class="my-4" style="border-style: dashed">
-
-        <!-- CERTIFICATIONS & LICENSES -->
-        <div class="mt-2 row" formArrayName="certificationRequirements"
-          [@animate]="{value:'*', params:{ y:'10px', delay: (250) + 'ms' }}">
-          <div class="col-12">
-            <h5 class="title-label">Certifications & Licenses</h5>
-            <p class="title-label-sub mb-3">
-              Add certifications, licenses, permits, eligibility, or board exam requirements that applicants should have for this role. (You can add up to 10 items)
-            </p>
+        <!-- Good-to-have skills -->
+        <div class="col-12 col-md-6">
+          <div class="gh-field mb-4">
+            <label class="gh-label">Good-to-have skills</label>
+            <p class="gh-field-helper">Add nice-to-have skills that are helpful but not required. Up to 5 items.</p>
+            <div class="gh-chip-input-group">
+              <input type="text" class="gh-input gh-input--chip"
+                placeholder="e.g. Experience with Figma"
+                formControlName="goodToHaveTxt"
+                aria-label="Add a good-to-have skill"
+                (keyup.enter)="addItem('goodToHaveTxt', goodToHave)">
+              <button class="gh-chip-add-btn" type="button"
+                (click)="addItem('goodToHaveTxt', goodToHave)"
+                aria-label="Add skill">Add</button>
+            </div>
+            <div class="gh-chips-list mt-2" *ngIf="goodToHave && goodToHave.controls.length > 0"
+              aria-live="polite">
+              <span *ngFor="let item of goodToHave.controls; let i = index"
+                class="gh-chip gh-chip--removable" role="listitem">
+                {{ item.value }}
+                <button class="gh-chip-remove" type="button"
+                  (click)="removeItem(i, goodToHave)"
+                  [attr.aria-label]="'Remove: ' + item.value">
+                  <i class="bi bi-x" aria-hidden="true"></i>
+                </button>
+              </span>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div class="col-12 mb-3" *ngFor="let item of certificationRequirements.controls; let i = index"
-            [formGroupName]="i">
-            <div class="row align-items-end cert-requirement-item p-3">
-              <div class="col-12 col-md-4 mb-2">
-                <label>Requirement Name</label>
-                <input type="text" class="form-control" placeholder="ex, Registered Nurse License"
-                  formControlName="name" [class.is-invalid]="item.get('name').invalid && item.get('name').touched"
+      <!-- Certifications & Licenses -->
+      <div class="gh-field" formArrayName="certificationRequirements">
+        <label class="gh-label">Certifications & licenses <span class="gh-label-optional">(optional)</span></label>
+        <p class="gh-field-helper">
+          Add certifications, licenses, permits, eligibility, or board exam requirements (up to 10 items).
+        </p>
+
+        <div *ngFor="let item of certificationRequirements.controls; let i = index"
+          [formGroupName]="i" class="gh-cert-item mb-3">
+          <div class="row align-items-end g-2">
+            <div class="col-12 col-md-4">
+              <div class="gh-field">
+                <label class="gh-label" [for]="'cert-name-' + i">Requirement name</label>
+                <input [id]="'cert-name-' + i" type="text" class="gh-input"
+                  placeholder="e.g. Registered Nurse License"
+                  formControlName="name"
+                  [class.gh-input--error]="item.get('name').invalid && item.get('name').touched"
                   (blur)="item.get('name').markAsTouched()">
-                <small class="text-danger" *ngIf="item.get('name').invalid && item.get('name').touched">
-                  Requirement name is needed -- this item won't be saved without it.
-                </small>
+                <p class="gh-field-error" role="alert"
+                  *ngIf="item.get('name').invalid && item.get('name').touched">
+                  Requirement name is required.
+                </p>
               </div>
+            </div>
 
-              <div class="col-12 col-md-2 mb-2">
-                <label>Type</label>
-                <select class="form-select" formControlName="type">
+            <div class="col-6 col-md-2">
+              <div class="gh-field">
+                <label class="gh-label" [for]="'cert-type-' + i">Type</label>
+                <select [id]="'cert-type-' + i" class="gh-select" formControlName="type">
                   <option value="certification">Certification</option>
                   <option value="license">License</option>
                   <option value="permit">Permit</option>
@@ -286,47 +405,57 @@
                   <option value="other">Other</option>
                 </select>
               </div>
+            </div>
 
-              <div class="col-12 col-md-2 mb-2">
-                <label>Importance</label>
-                <select class="form-select" formControlName="importance">
+            <div class="col-6 col-md-2">
+              <div class="gh-field">
+                <label class="gh-label" [for]="'cert-importance-' + i">Importance</label>
+                <select [id]="'cert-importance-' + i" class="gh-select" formControlName="importance">
                   <option value="required">Required</option>
                   <option value="preferred">Preferred</option>
                 </select>
               </div>
+            </div>
 
-              <div class="col-12 col-md-3 mb-2">
-                <label>Issuing Authority</label>
-                <input type="text" class="form-control" placeholder="ex, PRC" formControlName="issuingAuthority">
+            <div class="col-10 col-md-3">
+              <div class="gh-field">
+                <label class="gh-label" [for]="'cert-authority-' + i">Issuing authority</label>
+                <input [id]="'cert-authority-' + i" type="text" class="gh-input"
+                  placeholder="e.g. PRC" formControlName="issuingAuthority">
               </div>
+            </div>
 
-              <div class="col-12 col-md-1 mb-2 text-end">
-                <mat-icon class="close" style="cursor: pointer" (click)="removeCertificationRequirement(i)">close</mat-icon>
-              </div>
+            <div class="col-2 col-md-1 d-flex align-items-end pb-1">
+              <button class="gh-icon-btn" type="button"
+                (click)="removeCertificationRequirement(i)"
+                [attr.aria-label]="'Remove certification ' + (i + 1)">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+              </button>
+            </div>
 
-              <div class="col-12 col-md-6 mb-1">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input me-1" formControlName="expiryRequired">
-                  Expiry required (valid/unexpired document required)
+            <div class="col-12">
+              <div class="gh-cert-options">
+                <label class="gh-check-label">
+                  <input type="checkbox" class="gh-check" formControlName="expiryRequired">
+                  Expiry required (valid, unexpired document)
                 </label>
-              </div>
-
-              <div class="col-12 col-md-6 mb-1">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input me-1" formControlName="verificationRequired">
+                <label class="gh-check-label">
+                  <input type="checkbox" class="gh-check" formControlName="verificationRequired">
                   Verification required
                 </label>
               </div>
             </div>
           </div>
-
-          <div class="col-12">
-            <button class="btn btn-add-now" type="button" (click)="addCertificationRequirement()">
-              + Add certification/license requirement
-            </button>
-          </div>
         </div>
-      </section>
-    </form>
-  </section>
+
+        <button class="gh-btn-text-add" type="button"
+          (click)="addCertificationRequirement()"
+          *ngIf="certificationRequirements.length < 10">
+          <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>
+          Add certification / license requirement
+        </button>
+      </div>
+    </div>
+
+  </form>
 </section>

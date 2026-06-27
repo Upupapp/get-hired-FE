@@ -66,8 +66,31 @@ export class HapticFeedbackService {
     this.vibrate([12, 30, 12]);
   }
 
+  /** Employer dashboard action card tapped (user-initiated). */
+  dashboardAction(): void {
+    this.vibrate([8]);
+  }
+
+  /** Plan health CTA tapped (user-initiated). */
+  planAction(): void {
+    this.vibrate([8]);
+  }
+
+  /**
+   * Returns true if the user has requested reduced motion.
+   * When true, haptic feedback is suppressed — reduced-motion preference
+   * signals sensory sensitivity that may extend to vibration.
+   */
+  respectReducedMotion(): boolean {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
   private vibrate(pattern: number[]): void {
     if (!this.enabled || !this.canVibrate()) {
+      return;
+    }
+    if (this.respectReducedMotion()) {
       return;
     }
     try {

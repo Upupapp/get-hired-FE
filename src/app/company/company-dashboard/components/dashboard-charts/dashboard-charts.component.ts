@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -13,8 +13,9 @@ import moment from "moment";
   styleUrls: ['./dashboard-charts.component.scss'],
   animations: [mainAnimations],
 })
-export class DashboardChartsComponent implements OnInit {
+export class DashboardChartsComponent implements OnInit, OnChanges {
   @Input() details: any;
+  @Input() range: '7d' | '30d' | '90d' = '30d';
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
   months = month;
   lineChartRendering: boolean = true;
@@ -125,34 +126,46 @@ export class DashboardChartsComponent implements OnInit {
 
   ngOnInit(): void {
     const { applicants, contacts } = this.details.statistic;
-
-    const data = { data: [parseInt(contacts), parseInt(applicants)] }
+    const data = { data: [parseInt(contacts), parseInt(applicants)] };
     this.doughnutChartData.datasets.push(data);
     this.lineChartRender();
     this.chart?.update();
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['range'] && !changes['range'].firstChange) {
+      this.lineChartRender();
+      this.chart?.update();
+    }
+  }
+
+  private _rangeCutoff(): Date {
+    const now = new Date();
+    const days = this.range === '7d' ? 7 : this.range === '90d' ? 90 : 30;
+    return new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
   }
 
   lineChartRender(){
-    let sortedJobViews = this.details.jobViews?.slice().sort(function(a: any, b: any){
+    const cutoff = this._rangeCutoff();
+
+    let sortedJobViews = (this.details.jobViews || []).filter((r: any) => new Date(r.date) >= cutoff).slice().sort(function(a: any, b: any){
       var c: any = new Date(a.date);
       var d: any = new Date(b.date);
       return c-d;
     });
 
-    let sortedApplicants = this.details.graph?.slice().sort(function(a: any, b: any){
+    let sortedApplicants = (this.details.graph || []).filter((r: any) => new Date(r.date) >= cutoff).slice().sort(function(a: any, b: any){
       var c: any = new Date(a.date);
       var d: any = new Date(b.date);
       return c-d;
     });
 
-    let formattedLineChartData = this.formatLineGraphVal(sortedJobViews, sortedApplicants)
+    let formattedLineChartData = this.formatLineGraphVal(sortedJobViews, sortedApplicants);
 
-    this.lineChartData.datasets[0].data = formattedLineChartData.jobViews; 
-    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplicants; 
+    this.lineChartData.datasets[0].data = formattedLineChartData.jobViews;
+    this.lineChartData.datasets[1].data = formattedLineChartData.jobApplicants;
     this.lineChartData.labels = formattedLineChartData.labels;
     this.lineChartRendering = false;
-
   }
 
   getMonth(monthNumber) {

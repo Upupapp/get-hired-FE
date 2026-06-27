@@ -1,108 +1,113 @@
-<div *ngIf="!loading && restrictions$ | async">
-  <!-- CONTROLS -->
-  <section
-    class="bg-upper-gray"
-    style="width:83%"
-    [ngStyle]="{
-      position: delayControl ? '' : 'fixed',
-      top: delayControl ? '' : '80px'
-    }"
-  >
-    <div class="card card-body py-3 d-flex flex-row justify-content-between">
-        <span class="col-12 col-md-8 main-title">{{ jobId ? 'Update':'Create' }} a Job</span>
+<!-- Loading state -->
+<div class="mt-5" *ngIf="!(!loading && restrictions$ | async)">
+  <app-inline-loading></app-inline-loading>
+</div>
 
-        <span class="col-12 col-md-4 d-flex align-items-center justify-content-end">
-          <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
-        </span>
+<!-- Main shell — shown once loaded and subscription resolved -->
+<div class="gh-jc-shell" *ngIf="!loading && restrictions$ | async" @fadeInPage>
+
+  <!-- ── HERO CARD ─────────────────────────────────────────────────────────── -->
+  <header class="gh-jc-hero">
+    <div class="gh-jc-hero-left">
+      <span class="gh-jc-eyebrow">Job posting studio</span>
+      <h1 class="gh-jc-title">{{ jobId ? 'Update' : 'Create' }} a job</h1>
+      <p class="gh-jc-subtitle">Fill in the details below to attract the right candidates.</p>
     </div>
 
-    <div class="mt-3">
-      <div class="mt-2" [ngClass]="delayControl ? 'd-none' : 'adjust-flex'">
-        <!-- <span class="text-primary-red cursor-pointer me-2"
-        (click)="saveAsDraft()" *ngIf="initialFormValid && status === 1">Save as Draft</span> -->
-        <!-- F-08 UX: draft button shows spinner while saving, disabled to prevent duplicate clicks -->
+    <div class="gh-jc-hero-right">
+      <!-- Status chip -->
+      <span class="gh-jc-status-chip" [ngClass]="getStatusChipClass()">
+        <i class="bi" [ngClass]="getStatusChipIcon()" aria-hidden="true"></i>
+        {{ getStatusChipLabel() }}
+      </span>
+
+      <!-- Autosave indicator -->
+      <span class="gh-jc-autosave" [ngClass]="autoSaveState" role="status" aria-live="polite" aria-atomic="true">
+        <ng-container *ngIf="autoSaveState === 'saved'">
+          <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Saved
+        </ng-container>
+        <ng-container *ngIf="autoSaveState === 'saving'">
+          <span class="gh-spinner-sm me-1" aria-hidden="true"></span>Saving...
+        </ng-container>
+        <ng-container *ngIf="autoSaveState === 'failed'">
+          <i class="bi bi-exclamation-triangle-fill me-1 text-danger" aria-hidden="true"></i>Save failed
+        </ng-container>
+        <ng-container *ngIf="autoSaveState === 'unsaved'">
+          <i class="bi bi-circle me-1" aria-hidden="true"></i>Unsaved changes
+        </ng-container>
+      </span>
+    </div>
+  </header>
+
+  <!-- ── SINGLE STEPPER ──────────────────────────────────────────────────── -->
+  <div class="gh-jc-stepper-wrap" role="navigation" aria-label="Job creation steps">
+    <div class="gh-jc-stepper">
+      <ng-container *ngFor="let item of stepperItems; let i = index; let last = last">
         <button
-            *ngIf="initialFormValid && status === 1"
-            class="btn btn-create-interview btn-draft-save me-2"
-            (click)="saveAsDraft()"
-            [disabled]="savingDraft || loading"
-            [attr.aria-label]="savingDraft ? 'Saving draft...' : 'Save as Draft'"
-          >
-            <span *ngIf="!savingDraft">Save as Draft</span>
-            <span *ngIf="savingDraft" class="btn-draft-loading" aria-live="polite">
-              <span class="draft-spinner" aria-hidden="true"></span>
-              Saving...
-            </span>
-          </button>
-
-          <button class="btn btn-create-interview me-2 btn-back-cancel" (click)="cancel()"
-            [attr.aria-label]="'Cancel and go back'">
-            Cancel
-          </button>
-
-          <!-- F-08 UX: success pulse — brief green check shown after backend success -->
-          <span *ngIf="saveSuccessPulse" class="save-success-pulse" role="status" aria-live="polite" aria-label="Saved successfully">
-            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+          class="gh-step-btn"
+          type="button"
+          (click)="changeStep(item.id)"
+          [disabled]="item.disabled"
+          [attr.aria-current]="stepper === item.id ? 'step' : null"
+          [attr.aria-label]="'Step ' + item.id + ': ' + item.title + (stepper > item.id ? ' (completed)' : '')"
+          [ngClass]="{
+            'gh-step--active': stepper === item.id,
+            'gh-step--done': stepper > item.id,
+            'gh-step--future': stepper < item.id && !item.disabled,
+            'gh-step--locked': item.disabled
+          }"
+        >
+          <span class="gh-step-num" aria-hidden="true">
+            <i class="bi bi-check-lg" *ngIf="stepper > item.id"></i>
+            <span *ngIf="stepper <= item.id">{{ item.id }}</span>
           </span>
-
-          <!-- F-08 UX: error message for 403/404/500 — never shows security internals -->
-          <div *ngIf="saveErrorMsg" class="save-error-alert" role="alert" aria-live="assertive">
-            <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
-            {{ saveErrorMsg }}
-          </div>
-      </div>
-
-      <app-main-stepper
-        [stepper]="stepper"
-        [stepperItems]="stepperItems"
-        (changeStepper)="changeStep($event)">
-      </app-main-stepper>
-    </div>
-  </section>
-
-  <!-- FORM -->
-  <div class="py-4" style="position: relative">
-    <form [formGroup]="jobForm">
-      <!-- B13: Job Readiness Bar — visible on all steps, updates on form changes -->
-      <div
-        class="jrc-builder-readiness-panel"
-        [ngStyle]="{ 'margin-top': delayControl ? '0' : '150px' }"
-        style="padding-left: 25px; padding-right: 45px"
-        *ngIf="stepper !== 4"
-      >
-        <div class="card card-body py-3 jrc-readiness-card">
-          <div class="jrc-readiness-card-header">
-            <span class="jrc-readiness-card-title">
-              <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
-              Job readiness
-            </span>
-          </div>
-          <app-job-readiness-bar [result]="readinessResult"></app-job-readiness-bar>
-          <app-job-readiness-chips
-            [result]="readinessResult"
-            (jumpToSection)="onReadinessJumpToSection($event)"
-          ></app-job-readiness-chips>
+          <span class="gh-step-label">
+            {{ item.title }}
+            <span class="gh-step-sub">Step {{ item.id }}</span>
+          </span>
+        </button>
+        <div class="gh-step-connector" *ngIf="!last" aria-hidden="true">
+          <div class="gh-step-connector-line" [ngClass]="{'gh-step-connector-line--done': stepper > item.id}"></div>
         </div>
-      </div>
+      </ng-container>
+    </div>
 
-      <section
-        class="py-3"
-        id="job-create-forms"
-        [ngStyle]="{ 'margin-top': delayControl ? '-30px' : '140px' }"
-        style="padding-left: 25px; padding-right: 45px"
-      >
+    <!-- Mobile progress bar -->
+    <div class="gh-jc-mobile-progress" aria-hidden="true">
+      <div class="gh-jc-mobile-progress-bar" [style.width.%]="((stepper - 1) / (stepperItems.length - 1)) * 100"></div>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT: 2-COLUMN LAYOUT ─────────────────────────────────── -->
+  <div class="gh-jc-content">
+    <form [formGroup]="jobForm" novalidate>
+
+      <!-- LEFT: Form column (65-70%) -->
+      <main class="gh-jc-form-col" role="main">
+
+        <!-- Error summary (shown after failed step-advance attempt) -->
+        <div class="gh-jc-error-summary" *ngIf="stepErrorSummary.length > 0 && showStepErrors"
+          role="alert" aria-live="assertive" id="gh-jc-error-summary">
+          <i class="bi bi-exclamation-circle-fill me-2" aria-hidden="true"></i>
+          <strong>Please fix the following before continuing:</strong>
+          <ul class="mb-0 mt-1 ps-3">
+            <li *ngFor="let err of stepErrorSummary">
+              <button class="gh-jc-error-link" type="button" (click)="scrollToError(err.fieldId)">{{ err.label }}</button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- ── STEP 1: Job Basics ──────────────────────────────────────── -->
         <ng-container *ngIf="stepper === 1">
-          <app-job-post-detail-step
-            formGroupName="initialData"
-          ></app-job-post-detail-step>
+          <app-job-post-detail-step formGroupName="initialData"></app-job-post-detail-step>
         </ng-container>
 
+        <!-- ── STEP 2: Compensation, Requirements & Benefits ──────────── -->
         <ng-container *ngIf="stepper === 2">
-          <app-create-job-post-step
-            formGroupName="jobInfo"
-          ></app-create-job-post-step>
+          <app-create-job-post-step formGroupName="jobInfo"></app-create-job-post-step>
         </ng-container>
 
+        <!-- ── STEP 3: Screening & Interview ──────────────────────────── -->
         <ng-container *ngIf="stepper === 3">
           <app-create-interview-questions
             (publishChanges)="publishJobPost()"
@@ -112,114 +117,283 @@
           ></app-create-interview-questions>
         </ng-container>
 
+        <!-- ── STEP 4: Preview & Publish ──────────────────────────────── -->
         <ng-container *ngIf="stepper === 4">
           <app-preview-job-post-step></app-preview-job-post-step>
         </ng-container>
-      </section>
 
-      <!-- <div class="card card-body py-3">
-      <div class="w-100">
-        <div class="text-end">
-          <button class="btn btn-add-service me-2" (click)="cancel()">
+        <!-- ── STEP NAVIGATION (bottom of form col) ───────────────────── -->
+        <div class="gh-jc-step-nav" [class.gh-jc-step-nav--step4]="stepper === 4">
+          <!-- Back -->
+          <button
+            *ngIf="stepper > 1"
+            class="gh-btn gh-btn--secondary"
+            type="button"
+            (click)="changeStep(stepper - 1)"
+            [attr.aria-label]="'Back to ' + stepperItems[stepper - 2]?.title"
+          >
+            <i class="bi bi-chevron-left me-1" aria-hidden="true"></i>
+            Back
+          </button>
+
+          <!-- Cancel (step 1 only) -->
+          <button
+            *ngIf="stepper === 1"
+            class="gh-btn gh-btn--ghost"
+            type="button"
+            (click)="cancel()"
+            aria-label="Cancel and go back"
+          >
             Cancel
           </button>
 
-          <button class="btn btn-save-draft" (click)="saveAsDraft()" [disabled]="!initialFormValid">
-            Save as Draft
-          </button>
+          <div class="gh-jc-step-nav-right">
+            <!-- Save draft -->
+            <button
+              *ngIf="initialFormValid && status === 1"
+              class="gh-btn gh-btn--outline"
+              type="button"
+              (click)="saveAsDraft()"
+              [disabled]="savingDraft || loading"
+              [attr.aria-label]="savingDraft ? 'Saving draft...' : 'Save draft'"
+            >
+              <span *ngIf="!savingDraft">
+                <i class="bi bi-floppy me-1" aria-hidden="true"></i>Save draft
+              </span>
+              <span *ngIf="savingDraft" class="d-inline-flex align-items-center gap-2">
+                <span class="gh-spinner-sm" aria-hidden="true"></span>Saving...
+              </span>
+            </button>
 
-          <ng-template [ngTemplateOutlet]="stepperButtons"></ng-template>
+            <!-- Next (steps 1-3) -->
+            <button
+              *ngIf="stepper < 4"
+              class="gh-btn gh-btn--primary"
+              type="button"
+              (click)="onNextStep()"
+              [attr.aria-label]="'Next: ' + stepperItems[stepper]?.title"
+            >
+              Next: {{ stepperItems[stepper]?.title }}
+              <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+            </button>
 
+            <!-- Publish (step 4) -->
+            <button
+              *ngIf="stepper === 4"
+              class="gh-btn gh-btn--publish"
+              type="button"
+              (click)="publishJobPost()"
+              [disabled]="!isAllowedToPublish || loading"
+              [attr.aria-label]="loading ? 'Publishing...' : 'Publish job post'"
+            >
+              <span *ngIf="!loading">
+                <i class="bi bi-send-fill me-1" aria-hidden="true"></i>Publish job post
+              </span>
+              <span *ngIf="loading" class="d-inline-flex align-items-center gap-2">
+                <span class="gh-spinner-sm" aria-hidden="true"></span>Publishing...
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
-    </div> -->
+
+        <!-- Subscription gate warning -->
+        <div *ngIf="!isAllowedToPublish && stepper === 4" class="gh-jc-plan-gate" role="alert">
+          <i class="bi bi-lock-fill me-2" aria-hidden="true"></i>
+          You've reached your job post limit.
+          <button class="gh-jc-plan-gate-link" type="button" (click)="restrictJobCreation(true)">
+            Upgrade your plan
+          </button>
+        </div>
+
+      </main>
+
+      <!-- RIGHT: Assistant rail (30-35%) -->
+      <aside class="gh-jc-rail" aria-label="Job readiness assistant">
+
+        <!-- Readiness card (steps 1-3) -->
+        <div class="gh-jc-readiness-card gh-card" *ngIf="stepper !== 4 && readinessResult">
+          <div class="gh-jc-readiness-header">
+            <span class="gh-jc-readiness-title">
+              <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
+              Job readiness
+            </span>
+            <span class="gh-jc-readiness-percent">{{ readinessResult.readinessPercent }}%</span>
+          </div>
+
+          <!-- Progress ring (CSS-only, reduced-motion safe) -->
+          <div class="gh-jc-readiness-ring-wrap" aria-hidden="true">
+            <svg class="gh-jc-readiness-ring" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="22" cy="22" r="18" stroke="#EBE7F5" stroke-width="4"/>
+              <circle cx="22" cy="22" r="18" stroke="var(--gh-color-primary)"
+                stroke-width="4" stroke-linecap="round"
+                [style.stroke-dasharray]="113"
+                [style.stroke-dashoffset]="113 - (113 * readinessResult.readinessPercent / 100)"
+                class="gh-jc-readiness-ring-fill"
+                transform="rotate(-90 22 22)"/>
+            </svg>
+            <span class="gh-jc-readiness-ring-label">{{ readinessResult.readinessPercent }}%</span>
+          </div>
+
+          <div class="gh-jc-readiness-level-chip"
+            [ngClass]="readinessResult.readinessLevel === 'excellent' ? 'gh-chip--success'
+              : readinessResult.readinessLevel === 'strong' ? 'gh-chip--info'
+              : readinessResult.readinessLevel === 'basic' ? 'gh-chip--warning'
+              : 'gh-chip--draft'">
+            {{ getReadinessLevelLabel(readinessResult.readinessLevel) }}
+          </div>
+
+          <!-- Blocking items -->
+          <div class="gh-jc-readiness-section" *ngIf="readinessResult.blockingItems.length > 0">
+            <button class="gh-jc-readiness-group-toggle" type="button"
+              (click)="toggleReadinessGroup('blocking')"
+              [attr.aria-expanded]="readinessGroupOpen.blocking">
+              <i class="bi bi-x-circle-fill text-danger me-1" aria-hidden="true"></i>
+              <span>Required ({{ readinessResult.blockingItems.length }} missing)</span>
+              <i class="bi ms-auto" [ngClass]="readinessGroupOpen.blocking ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
+            </button>
+            <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.blocking">
+              <button
+                *ngFor="let item of readinessResult.blockingItems"
+                class="gh-jc-chip gh-jc-chip--blocking"
+                type="button"
+                (click)="onReadinessJumpToSection(item.sectionId)"
+                [attr.aria-label]="'Go to ' + item.label"
+              >
+                <i class="bi bi-{{ item.icon }} me-1" aria-hidden="true"></i>
+                {{ item.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Recommended items -->
+          <div class="gh-jc-readiness-section" *ngIf="readinessResult.recommendationItems.length > 0">
+            <button class="gh-jc-readiness-group-toggle" type="button"
+              (click)="toggleReadinessGroup('recommended')"
+              [attr.aria-expanded]="readinessGroupOpen.recommended">
+              <i class="bi bi-star-fill text-warning me-1" aria-hidden="true"></i>
+              <span>Recommended ({{ readinessResult.recommendationItems.length }})</span>
+              <i class="bi ms-auto" [ngClass]="readinessGroupOpen.recommended ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
+            </button>
+            <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.recommended">
+              <button
+                *ngFor="let item of readinessResult.recommendationItems"
+                class="gh-jc-chip gh-jc-chip--recommended"
+                type="button"
+                (click)="onReadinessJumpToSection(item.sectionId)"
+                [attr.aria-label]="'Go to ' + item.label"
+              >
+                <i class="bi bi-{{ item.icon }} me-1" aria-hidden="true"></i>
+                {{ item.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Completed items -->
+          <div class="gh-jc-readiness-section" *ngIf="readinessResult.completedItems.length > 0">
+            <button class="gh-jc-readiness-group-toggle" type="button"
+              (click)="toggleReadinessGroup('completed')"
+              [attr.aria-expanded]="readinessGroupOpen.completed">
+              <i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>
+              <span>Complete ({{ readinessResult.completedItems.length }})</span>
+              <i class="bi ms-auto" [ngClass]="readinessGroupOpen.completed ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
+            </button>
+            <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.completed">
+              <span
+                *ngFor="let item of readinessResult.completedItems"
+                class="gh-jc-chip gh-jc-chip--done"
+                [attr.aria-label]="item.label + ' complete'"
+              >
+                <i class="bi bi-{{ item.icon }} me-1" aria-hidden="true"></i>
+                {{ item.label }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Next best action -->
+          <div class="gh-jc-next-action" *ngIf="readinessResult.nextBestAction">
+            <i class="bi bi-lightning-fill me-1" aria-hidden="true"></i>
+            <span>{{ readinessResult.nextBestAction.label }}</span>
+          </div>
+        </div>
+
+        <!-- Step 4: publish checklist summary in rail -->
+        <div class="gh-jc-publish-checklist gh-card" *ngIf="stepper === 4 && readinessResult">
+          <div class="gh-jc-readiness-header">
+            <span class="gh-jc-readiness-title">
+              <i class="bi bi-send-check me-1" aria-hidden="true"></i>
+              Publish checklist
+            </span>
+          </div>
+          <ul class="gh-jc-checklist-list" role="list">
+            <li *ngFor="let item of readinessResult.sectionStatuses" class="gh-jc-checklist-item"
+              [ngClass]="item.complete ? 'gh-jc-checklist-item--done' : (item.blocking ? 'gh-jc-checklist-item--blocking' : '')">
+              <i class="bi me-2" aria-hidden="true"
+                [ngClass]="item.complete ? 'bi-check-circle-fill text-success' : (item.blocking ? 'bi-x-circle text-danger' : 'bi-circle text-muted')"></i>
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tips card (persistent) -->
+        <div class="gh-jc-tips-card gh-card">
+          <p class="gh-jc-tips-title">
+            <i class="bi bi-lightbulb me-1" aria-hidden="true"></i>
+            Tip
+          </p>
+          <p class="gh-jc-tips-body" *ngIf="stepper === 1">
+            A clear job title and work setup attract 3x more qualified applicants. Be specific.
+          </p>
+          <p class="gh-jc-tips-body" *ngIf="stepper === 2">
+            Showing a salary range increases application rates. Add at least a minimum.
+          </p>
+          <p class="gh-jc-tips-body" *ngIf="stepper === 3">
+            Interview questions help you filter candidates early. They're optional for publishing.
+          </p>
+          <p class="gh-jc-tips-body" *ngIf="stepper === 4">
+            Review your job post as candidates will see it before publishing.
+          </p>
+        </div>
+
+      </aside>
     </form>
-
-    <ng-template #stepperButtons>
-      <button
-        class="btn btn-add-service me-2"
-        (click)="changeStep(2)"
-        *ngIf="stepper == 1"
-        [disabled]="!initialFormValid"
-        type="submit"
-      >
-        Next<ng-container >: Job Requirements</ng-container>
-      </button>
-
-      <button
-        class="btn btn-save-draft me-2"
-        (click)="changeStep(1)"
-        *ngIf="stepper == 2"
-      >
-        <ng-container *ngIf="screenWidth < 1281">
-          <img src="/assets/images/placeholder/icons/caret-left.png" style="height: 10px">
-        </ng-container>
-        <ng-container *ngIf="screenWidth >= 1281">Prev: Job Details</ng-container>
-      </button>
-
-      <button
-        class="btn btn-add-service me-2"
-        (click)="changeStep(3)"
-        *ngIf="stepper == 2"
-        [disabled]="!jobInfoValid"
-      >
-        Next<ng-container >: Create Interview</ng-container>
-      </button>
-
-      <button
-        class="btn btn-save-draft me-2"
-        (click)="changeStep(2)"
-        *ngIf="stepper == 3"
-      >
-        <ng-container *ngIf="screenWidth < 1281">
-          <img src="/assets/images/placeholder/icons/caret-left.png" style="height: 10px">
-        </ng-container>
-        <ng-container *ngIf="screenWidth >= 1281">Prev: Job Requirements</ng-container>
-      </button>
-
-      <button
-        class="btn btn-add-service me-2"
-        (click)="changeStep(4)"
-        *ngIf="stepper == 3"
-        [disabled]="!interviewValid"
-      >
-        Next<ng-container >: Preview Job Post</ng-container>
-      </button>
-
-      <button
-        class="btn btn-save-draft me-2"
-        (click)="changeStep(3)"
-        *ngIf="stepper == 4"
-      >
-        <ng-container *ngIf="screenWidth < 1281">
-          <img src="/assets/images/placeholder/icons/caret-left.png" style="height: 10px">
-        </ng-container>
-        <ng-container *ngIf="screenWidth >= 1281">Prev: Create Interview</ng-container>
-      </button>
-
-      <!-- B05 V1: Publish button with loading state (spinner while saving)
-           and micro-scale press effect (defined in job-create.component.scss).
-           Disabled while loading to prevent double-submit. -->
-      <button
-        class="btn btn-add-service me-2 btn-publish-post"
-        (click)="publishJobPost()"
-        *ngIf="stepper == 4"
-        [disabled]="!isAllowedToPublish || loading"
-        [attr.aria-label]="loading ? 'Publishing...' : 'Publish Job Post'"
-      >
-        <span *ngIf="!loading">Publish Job Post</span>
-        <span *ngIf="loading" class="btn-publish-loading" aria-live="polite">
-          <span class="publish-spinner" aria-hidden="true"></span>
-          Publishing...
-        </span>
-      </button>
-
-      <span *ngIf="!isAllowedToPublish && stepper == 4" class="cursor-pointer" (click)="restrictJobCreation(true)"><i class="bi bi-exclamation-circle text-danger fs-3"></i></span>
-
-    </ng-template>
   </div>
-</div>
 
-<div class="mt-5">
-  <app-inline-loading *ngIf="!(!loading && restrictions$ | async)"></app-inline-loading>
+  <!-- ── MOBILE STICKY BOTTOM BAR ───────────────────────────────────────── -->
+  <div class="gh-jc-mobile-bar" role="toolbar" aria-label="Step navigation">
+    <button *ngIf="stepper > 1" class="gh-btn gh-btn--secondary gh-btn--sm" type="button"
+      (click)="changeStep(stepper - 1)">
+      <i class="bi bi-chevron-left" aria-hidden="true"></i>
+    </button>
+    <button *ngIf="stepper === 1" class="gh-btn gh-btn--ghost gh-btn--sm" type="button"
+      (click)="cancel()">Cancel</button>
+
+    <button
+      *ngIf="initialFormValid && status === 1"
+      class="gh-btn gh-btn--outline gh-btn--sm"
+      type="button"
+      (click)="saveAsDraft()"
+      [disabled]="savingDraft"
+    >
+      <i class="bi bi-floppy" aria-hidden="true"></i>
+    </button>
+
+    <button
+      *ngIf="stepper < 4"
+      class="gh-btn gh-btn--primary gh-btn--sm"
+      type="button"
+      (click)="onNextStep()"
+    >
+      Next <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+    </button>
+    <button
+      *ngIf="stepper === 4"
+      class="gh-btn gh-btn--publish gh-btn--sm"
+      type="button"
+      (click)="publishJobPost()"
+      [disabled]="!isAllowedToPublish || loading"
+    >
+      <i class="bi bi-send-fill me-1" aria-hidden="true"></i>Publish
+    </button>
+  </div>
+
 </div>

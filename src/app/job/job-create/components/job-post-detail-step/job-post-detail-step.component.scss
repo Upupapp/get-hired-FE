@@ -1,363 +1,470 @@
+// ─── Job Post Detail Step — Revamp v2 ────────────────────────────────────────
+// Phase 8+13+18 — GETHIRED_EMPLOYER_JOB_POST_CREATE_FULL_REVAMP_V1
 @import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
 
-:host ::ng-deep{
-	.uploaded-container{
-		min-height: 260px !important;
-	}
+// ─── Step wrapper ─────────────────────────────────────────────────────────────
+.gh-form-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.with-add{
-	background: white !important;
-	//border-top-right-radius: 0 !important;
-	//border-bottom-right-radius: 0 !important;
-
-	input{
-		//border-top-right-radius: 4px !important;
-		//border-bottom-right-radius: 4px !important;
-		border-right: none !important;
-		outline: none !important;
-		z-index: 9 !important;
-
-		&:focus{
-			outline: none !important;
-		}
-	}
-
-	input:focus {
-	  outline: none !important;
-	  outline-style: none !important;
-	  box-shadow: none !important;
-	  //border-color: transparent !important;
-	}
-
-	.btn-add-now{
-		margin-left: -9px;
-		background: $color-global-red-buttons;
-		box-shadow: 0px 7px 20px rgba(252, 139, 121, 0.34);
-		border-radius: 9px;
-		//border-bottom-left-radius: 0 !important;
-		//border-top-left-radius: 0 !important;
-		color: white;
-		min-width: 83px;
-		outline: none !important;
-		border: none !important;
-		z-index: 9 !important;
-		&:hover{
-			border: none !important;
-		}
-	}
+// ─── Form card ────────────────────────────────────────────────────────────────
+.gh-form-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.07);
+  padding: 24px;
 }
 
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
+.gh-form-card-header {
+  margin-bottom: 20px;
 }
 
-
-.main-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	/* or 215% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #03011A;
+.gh-form-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1830;
+  margin: 0 0 4px;
 }
 
-.title-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-	margin-bottom: 5px;
-
-	color: #282828;
+.gh-form-card-subtitle {
+  font-size: 13px;
+  color: #6b6887;
+  margin: 0;
 }
 
-.title-label-sub{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* or 131% */
-	color: #A8A8A8;
-	margin-bottom: 5px;
+// ─── Field ────────────────────────────────────────────────────────────────────
+.gh-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.card{
-	background: #FFFFFF;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	border: none;
-	padding: 30px 30px !important;
+.gh-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1830;
+  margin: 0;
 }
 
-.form-control{
-	background: #FFFFFF;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-	min-height: 50px;
+.gh-label-required {
+  color: $color-global-red-buttons;
+  margin-left: 2px;
 }
 
-.form-control-main{
-	background: #FFFFFF;
-	border: 1px solid #d9d9d9 !important;
-	min-height: 30px !important;
-	//min-height: 50px;
-	//border: 1px solid #AFBCC6 !important;
+.gh-label-optional {
+  color: #9CA3AF;
+  font-weight: 400;
+  font-size: 12px;
+  margin-left: 4px;
 }
 
-.form-select-multiple{
-	margin-bottom: 20px;
-	min-height: 170px !important;
-
-	option{
-		border-radius: 4px;
-		padding: 6px 10px;
-		margin-bottom: 5px;
-
-	}
-
-
-	option select {
-	    margin: 40px;
-	    background: red !important;
-	    color: #fff;
-	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-	}
+.gh-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
 }
 
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
+.gh-char-count {
+  font-size: 11px;
+  color: #9CA3AF;
 }
 
-.badge-selection{
-	background: #FFFFFF;
-	border: 2px dashed rgba(#AFBCC6, 0.7);
-	border-radius: 10px;
-	min-height: 170px;
-	margin-top: 30px;
-	padding: 20px;
-
-	.badge-item{
-		background: #FFFFFF;
-		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
-		border-radius: 10px;
-		padding: 10px 10px 10px 17px;
-
-		img{
-			height: 30px;
-			margin-right: 10px;
-			width: auto;
-			margin-top: 3px;
-		}
-
-		.badge-title{
-			font-family: 'Manrope';
-			font-style: normal;
-			font-weight: 400;
-			font-size: 16px;
-			line-height: 27px;
-			/* identical to box height */
-			margin-top: 3px;
-
-			color: #0C264C;
-		}
-
-		.remove-badge{
-			position: absolute;
-			right: 0px;
-			top: 3px;
-			cursor: pointer;
-			.mat-icon{
-				font-size: 16px !important;
-			}
-		}
-	}
+.gh-field-helper {
+  font-size: 12px;
+  color: #9CA3AF;
+  margin: 0;
+  line-height: 1.4;
 }
 
-.requirement-badge{
-	background: #868686;
-	border-radius: 6px;
-	color: white;
-	padding: 7px 15px;
-	cursor: pointer;
-	font-size: 12px;
-	font-weight: 500;
-	position: relative;
+.gh-field-error {
+  font-size: 12px;
+  color: #B91C1C;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.img-banner{
-	margin-bottom: 35px;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-	border-radius: 10.624px;
-	height: 150px;
-	object-position: center;
-	object-fit: cover;
+.gh-field-writing-tip {
+  font-size: 12px;
+  color: #6B7280;
+  background: #FFFBEB;
+  border-left: 3px solid #FCD34D;
+  padding: 6px 10px;
+  border-radius: 0 6px 6px 0;
+  margin: 4px 0 0;
 }
 
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
+// ─── Input / Select / Textarea ────────────────────────────────────────────────
+.gh-input,
+.gh-select {
+  height: 44px;
+  border: 1.5px solid #DDD8F0;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #1a1830;
+  background: #fff;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+  width: 100%;
+  appearance: none;
+
+  @include motion-safe;
+
+  &::placeholder { color: #C4C0D6; }
+
+  &:focus {
+    outline: none;
+    border-color: $color-global-red-buttons;
+    box-shadow: 0 0 0 3px rgba(255, 112, 98, 0.12);
+  }
+
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 1px; }
+
+  &--error {
+    border-color: #EF4444;
+    &:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12); }
+  }
+
+  &--chip {
+    flex: 1;
+    border-radius: 10px 0 0 10px !important;
+    border-right: none !important;
+  }
 }
 
-.btn-search{
-	background: $color-global-red-buttons;
-	border-radius: 4px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;	/* identical to box height */
-	color: #FFFFFF;
-	min-width: 100px;
-	padding: 10px;
+.gh-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%236b6887' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 32px;
+  cursor: pointer;
+
+  &--multi {
+    height: auto;
+    min-height: 140px;
+    background-image: none;
+    padding: 8px 6px;
+
+    option {
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:checked { background: rgba(255, 112, 98, 0.1); color: $color-global-red-buttons; }
+    }
+  }
 }
 
-.industry-skills{
-	border: none !important;
-	background: #FFFFFF;
-	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
-	border-radius: 10.624px;
-	cursor: pointer;
+.gh-textarea {
+  border: 1.5px solid #DDD8F0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #1a1830;
+  background: #fff;
+  width: 100%;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+
+  @include motion-safe;
+
+  &::placeholder { color: #C4C0D6; }
+
+  &:focus {
+    outline: none;
+    border-color: $color-global-red-buttons;
+    box-shadow: 0 0 0 3px rgba(255, 112, 98, 0.12);
+  }
+
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 1px; }
 }
 
-.industry-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 15.936px;
-	line-height: 15px;
-	letter-spacing: -0.03em;
-	color: #000000;
+// ─── Work setup toggle buttons ────────────────────────────────────────────────
+.gh-work-setup-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.industry-subtitle{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 15.936px;
-	line-height: 140%;
-	color: #4F4F4F;
+.gh-work-setup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid #DDD8F0;
+  border-radius: 10px;
+  background: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+  min-height: 44px;
+
+  @include motion-safe;
+
+  &:hover:not(:disabled) {
+    border-color: $color-global-red-buttons;
+    color: $color-global-red-buttons;
+  }
+
+  &--active {
+    border-color: $color-global-red-buttons;
+    background: rgba(255, 112, 98, 0.06);
+    color: $color-global-red-buttons;
+    font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
 }
 
-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-
-
-	color: #191919;
+.gh-work-setup-check {
+  font-size: 16px;
 }
 
-.rate-card{
-	border: solid 2px #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
+// ─── Chip input ───────────────────────────────────────────────────────────────
+.gh-chip-input-group {
+  display: flex;
+  align-items: stretch;
 }
 
+.gh-chip-add-btn {
+  background: $color-global-red-buttons;
+  color: #fff;
+  border: none;
+  border-radius: 0 10px 10px 0;
+  padding: 0 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background 140ms ease;
 
-.title-rate{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #0C264C;
+  @include motion-safe;
+
+  &:hover { background: darken($color-global-red-buttons, 8%); }
+  &:focus-visible { outline: 2px solid #1a1830; outline-offset: 2px; }
 }
 
-.check{
-	position: absolute;
-	height: 19px;
-	top: 8px;
-	right: 8px;
+// Chips list
+.gh-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
 }
 
+.gh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  background: #F4F5F9;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
 
-.rate-card-active{
-	background: #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
+  &--removable {
+    padding-right: 6px;
+  }
 }
 
-.title-rate-active{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #FFFFFF;
+.gh-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.12);
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  cursor: pointer;
+  color: #374151;
+  font-size: 11px;
+  transition: background 120ms ease;
+
+  @include motion-safe;
+
+  &:hover { background: rgba(239, 68, 68, 0.2); color: #B91C1C; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; border-radius: 50%; }
 }
 
-.rate-selection{
-	background: $color-global-sidebar-employer-user-menu;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	min-height: 300px;
-	padding: 20px;
+// ─── Badge well ───────────────────────────────────────────────────────────────
+.gh-badge-well {
+  background: #F9F8FC;
+  border: 2px dashed #DDD8F0;
+  border-radius: 12px;
+  min-height: 140px;
+  padding: 14px;
 }
 
-.title-rate-range{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	color: #FFFFFF;
+.gh-badge-empty {
+  display: flex;
+  align-items: center;
+  color: #C4C0D6;
+  font-size: 13px;
+  justify-content: center;
+  height: 100px;
 }
 
-
-.title-rate-selection{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	color: #FFFFFF;
+.gh-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #E9E5F5;
+  border-radius: 10px;
+  padding: 10px 12px;
+  position: relative;
 }
 
-.industry-badge{
-	background: #0C264C;
-	border-radius: 6px;
-	color: white;
-	padding: 5px 15px;
-	cursor: pointer;
+.gh-badge-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
-.btn-work-setup{
-	background: #FFFFFF;
-	border: 1px solid #AFBCC6;
-	border-radius: 6px !important;
-	padding: 15px 20px !important;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
+.gh-badge-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1830;
+  flex: 1;
 }
 
+.gh-badge-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #FEF2F2;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  cursor: pointer;
+  color: #B91C1C;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: background 120ms ease;
 
-.active{
-	background: #0C264D;
-	color: white !important;
+  @include motion-safe;
+
+  &:hover { background: #FECACA; }
+  &:focus-visible { outline: 2px solid #B91C1C; border-radius: 50%; }
+}
+
+// ─── Dropzone ─────────────────────────────────────────────────────────────────
+.gh-dropzone-wrap {
+  // Glow on dragover — delegated to app-drag-and-drop host styling
+  :host ::ng-deep .uploaded-container {
+    min-height: 160px;
+    border-radius: 12px;
+    transition: box-shadow 160ms ease;
+
+    @include motion-safe;
+  }
+}
+
+// ─── Certification item ───────────────────────────────────────────────────────
+.gh-cert-item {
+  background: #F9F8FC;
+  border: 1px solid #EBE7F5;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.gh-cert-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.gh-check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.gh-check {
+  width: 16px;
+  height: 16px;
+  accent-color: $color-global-red-buttons;
+  cursor: pointer;
+}
+
+// ─── Icon button (remove cert) ────────────────────────────────────────────────
+.gh-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #FEF2F2;
+  border: none;
+  border-radius: 8px;
+  color: #B91C1C;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 120ms ease;
+
+  @include motion-safe;
+
+  &:hover { background: #FECACA; }
+  &:focus-visible { outline: 2px solid #B91C1C; border-radius: 8px; }
+}
+
+// ─── Text-add button ─────────────────────────────────────────────────────────
+.gh-btn-text-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px dashed #DDD8F0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-global-red-buttons;
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+  transition: border-color 140ms ease, background 140ms ease;
+
+  @include motion-safe;
+
+  &:hover { background: rgba(255, 112, 98, 0.04); border-color: $color-global-red-buttons; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; border-radius: 10px; }
+}
+
+// ─── Reduced motion ───────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .gh-input, .gh-select, .gh-textarea,
+  .gh-work-setup-btn, .gh-chip-add-btn,
+  .gh-chip-remove, .gh-badge-remove,
+  .gh-icon-btn, .gh-btn-text-add {
+    transition: none !important;
+  }
 }

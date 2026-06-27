@@ -77,3 +77,145 @@ $gh-lift: -2px;
   50% { transform: scale(1.04); }
   100% { transform: scale(1); }
 }
+
+// ── BRAND v6 additions ──────────────────────────────────────────────────────
+// Extends v5 tokens above. CSS custom property equivalents for use in
+// component SCSS via var(). SCSS variables kept for backward compatibility.
+// Reconcile: extend, never duplicate existing tokens.
+
+:root {
+  // Duration tokens
+  --gh-motion-instant:   80ms;
+  --gh-motion-micro:     160ms;
+  --gh-motion-card:      220ms;
+  --gh-motion-drawer:    260ms;
+  --gh-motion-page:      300ms;
+  --gh-motion-reveal:    400ms;
+  --gh-motion-meter:     600ms;
+  --gh-motion-analysis:  720ms;
+  --gh-motion-countup:   900ms;
+
+  // Easing tokens
+  --gh-ease-standard:    cubic-bezier(0.4, 0, 0.2, 1);
+  --gh-ease-enter:       cubic-bezier(0.0, 0.0, 0.2, 1);
+  --gh-ease-exit:        cubic-bezier(0.4, 0.0, 1, 1);
+  --gh-ease-emphasized:  cubic-bezier(0.2, 0, 0, 1);
+  --gh-ease-scan:        cubic-bezier(0.16, 1, 0.3, 1);
+  --gh-ease-spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  // Scale tokens
+  --gh-scale-press:      0.985;
+  --gh-scale-chip-press: 0.97;
+  --gh-scale-card-enter: 0.985;
+
+  // Distance / lift tokens
+  --gh-motion-shift-xs:    2px;
+  --gh-motion-shift-sm:    4px;
+  --gh-motion-shift-md:    8px;
+  --gh-motion-shift-lg:    12px;
+  --gh-motion-lift:       -2px;
+  --gh-motion-lift-strong:-4px;
+}
+
+// Shimmer keyframe (global, reusable)
+@keyframes gh-shimmer-v6 {
+  0%   { background-position: -800px 0; }
+  100% { background-position:  800px 0; }
+}
+
+// Dashboard card entrance — fade + rise from 10px below
+@keyframes gh-dash-card-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// KPI card entrance — fade + subtle scale
+@keyframes gh-kpi-reveal {
+  from { opacity: 0; transform: scale(0.985); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+// Plan meter fill — controlled via CSS width on the meter fill element
+@keyframes gh-meter-fill {
+  from { width: 0%; }
+}
+
+// ─── Dashboard card entrance class ──────────────────────────────────────────
+.gh-dashboard-card {
+  animation: gh-dash-card-reveal var(--gh-motion-card, 220ms) var(--gh-ease-emphasized, cubic-bezier(0.2,0,0,1)) both;
+  @include motion-safe;
+
+  // Stagger first 4 children
+  &:nth-child(1) { animation-delay: 0ms; }
+  &:nth-child(2) { animation-delay: 40ms; }
+  &:nth-child(3) { animation-delay: 80ms; }
+  &:nth-child(4) { animation-delay: 120ms; }
+}
+
+// ─── Dashboard KPI card entrance class ──────────────────────────────────────
+.gh-dashboard-kpi {
+  animation: gh-kpi-reveal var(--gh-motion-card, 220ms) var(--gh-ease-standard, cubic-bezier(0.4,0,0.2,1)) both;
+  @include motion-safe;
+
+  &:nth-child(1) { animation-delay: 0ms; }
+  &:nth-child(2) { animation-delay: 30ms; }
+  &:nth-child(3) { animation-delay: 60ms; }
+  &:nth-child(4) { animation-delay: 90ms; }
+}
+
+// ─── Plan usage meter ───────────────────────────────────────────────────────
+// Apply to the meter fill <div>; set inline style --gh-meter-target: X%
+// JS drives the final width via inline style; this handles the initial
+// animation from 0 to that value.
+.gh-plan-meter {
+  animation: gh-meter-fill var(--gh-motion-meter, 600ms) var(--gh-ease-scan, cubic-bezier(0.16,1,0.3,1)) both;
+  animation-delay: 100ms;
+  @include motion-safe;
+}
+
+// ─── Employer brand health card ──────────────────────────────────────────────
+.gh-brand-health-card {
+  animation: gh-dash-card-reveal var(--gh-motion-page, 300ms) var(--gh-ease-emphasized, cubic-bezier(0.2,0,0,1)) both;
+  @include motion-safe;
+}
+
+// ─── Dashboard skeleton ──────────────────────────────────────────────────────
+// Base shimmer for dashboard loading state blocks.
+// Apply .gh-dashboard-skeleton to the hero/kpi/panel blocks while loading.
+.gh-dashboard-skeleton {
+  background: linear-gradient(90deg, #f0edf8 25%, #e6e2f2 50%, #f0edf8 75%);
+  background-size: 1600px 100%;
+  animation: gh-shimmer-v6 1.4s ease-in-out infinite;
+  border-radius: 16px;
+  @include ambient-motion-safe;
+}
+
+// ─── Plan health skeleton ────────────────────────────────────────────────────
+// Same shimmer, smaller radius for pill/meter shapes.
+.gh-plan-health-skeleton {
+  background: linear-gradient(90deg, #f0edf8 25%, #e6e2f2 50%, #f0edf8 75%);
+  background-size: 1600px 100%;
+  animation: gh-shimmer-v6 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  @include ambient-motion-safe;
+}
+
+// ─── Global prefers-reduced-motion hard override ─────────────────────────────
+// Belt-and-suspenders: complements the global styles.scss rule.
+// Disables every BRAND class explicitly.
+@media (prefers-reduced-motion: reduce) {
+  .gh-dashboard-card,
+  .gh-dashboard-kpi,
+  .gh-plan-meter,
+  .gh-brand-health-card,
+  .gh-dashboard-skeleton,
+  .gh-plan-health-skeleton,
+  .gh-pressable,
+  .gh-success-pulse,
+  .gh-card,
+  .gh-skeleton-reveal {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}

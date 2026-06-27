@@ -6,7 +6,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { distinctUntilChanged, Subject, Subscription, take, debounceTime } from 'rxjs';
 import * as Model from '../job.model';
 import * as QuestionModel from '@main/interview/interview.model';
-import { mainAnimations } from '@app-shared/animations/main-animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { map, takeUntil, tap } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,11 +15,19 @@ import { TalentProofService } from '@main/public/services/talent-proof.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 // B13: Job Readiness
-import { JobReadinessService, JobReadinessResult } from '../services/job-readiness.service';
+import { JobReadinessService, JobReadinessResult, JobReadinessLevel } from '../services/job-readiness.service';
+
+// Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
+const fadeInPage = trigger('fadeInPage', [
+  transition(':enter', [
+    style({ opacity: 0, transform: 'translateY(8px)' }),
+    animate('220ms cubic-bezier(0.2,0,0,1)', style({ opacity: 1, transform: 'translateY(0)' }))
+  ])
+]);
 
 @Component({
   selector: 'app-job-create',
-  animations: [mainAnimations],
+  animations: [fadeInPage],
   templateUrl: './job-create.component.html',
   styleUrls: ['./job-create.component.scss'],
 })
@@ -40,6 +48,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   saveSuccessPulse: boolean = false;
   // F-08 UX: error message from backend (403/404/500) — cleared on next attempt
   saveErrorMsg: string | null = null;
+
+  // ── New v2 state ──────────────────────────────────────────────────────────
+  /** Autosave indicator state: 'unsaved' | 'saving' | 'saved' | 'failed' */
+  autoSaveState: 'unsaved' | 'saving' | 'saved' | 'failed' = 'unsaved';
+  /** Validation error chips shown at step top after failed step-advance */
+  stepErrorSummary: Array<{ fieldId: string; label: string }> = [];
+  showStepErrors: boolean = false;
+  /** Readiness rail group open/close state */
+  readinessGroupOpen: { blocking: boolean; recommended: boolean; completed: boolean } = {
+    blocking: true, recommended: false, completed: false
+  };
   // QA8 FIX-10: separate bag for the form-status subscriptions added inside
   // setFormGroup(). Replaced on every call so multiple editJob$ emissions
   // don't accumulate duplicate statusChanges listeners across the lifetime of
@@ -71,26 +90,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   stepperItems: any[] = [
     {
       id: 1,
-      title: "Job Details",
+      title: 'Job Basics',
       formName: 'initialData'
     },
     {
       id: 2,
-      title: "Rates and Roles",
+      title: 'Requirements & Benefits',
       disabled: !this.initialFormValid,
       formName: 'jobInfo'
     },
-
     {
       id: 3,
-      title: "Create Interview (Optional)",
+      title: 'Screening & Interview',
       disabled: !this.jobInfoValid,
       formName: 'interview'
     },
-
     {
       id: 4,
-      title: 'Preview Job Post',
+      title: 'Preview & Publish',
       disabled: !this.interviewValid,
     },
   ];
@@ -155,6 +172,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .subscribe(err => {
           if (err && (this.savingDraft || this.loading)) {
             this.savingDraft = false;
+            this.setAutoSaveState('failed');
             // Map common error strings to user-safe copy (no security internals exposed)
             const errStr = typeof err === 'string' ? err.toLowerCase() : '';
             if (errStr.includes('permission') || errStr.includes('access') || errStr.includes('not found')) {
@@ -296,9 +314,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           this.readinessResult = this.jobReadiness.evaluate({
             ...v.initialData,
             ...v.jobInfo,
-            interviewQuestions: v.interview?.interviewQuestions,
+            interviewQuestions: v.interview && v.interview.interviewQuestions,
             companyId: this.companyId,
           });
+          // Mark form as having unsaved changes (only when not currently saving)
+          if (this.autoSaveState !== 'saving') {
+            this.setAutoSaveState('unsaved');
+          }
           this.cd.markForCheck();
         })
     );
@@ -307,7 +329,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.readinessResult = this.jobReadiness.evaluate({
       ...iv.initialData,
       ...iv.jobInfo,
-      interviewQuestions: iv.interview?.interviewQuestions,
+      interviewQuestions: iv.interview && iv.interview.interviewQuestions,
       companyId: this.companyId,
     });
 
@@ -424,6 +446,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.savingDraft = true;
     this.saveErrorMsg = null;
     this.saveSuccessPulse = false;
+    this.setAutoSaveState('saving');
     const job: Model.Job = this.formatJob(1);
     this.jobFacade.saveJob(job);
   }
@@ -515,7 +538,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (event) {
       // Brief success pulse — clears automatically after 2s
       this.saveSuccessPulse = true;
-      setTimeout(() => { this.saveSuccessPulse = false; this.cd.markForCheck(); }, 2000);
+      this.setAutoSaveState('saved');
+      setTimeout(() => {
+        this.saveSuccessPulse = false;
+        this.setAutoSaveState('unsaved');
+      }, 2000);
     }
     if (event == 'asDraft') {
       const draft = this.dialog.open(UpdatedDialogComponent, {
@@ -592,6 +619,99 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  }
+
+  /** Toggle a readiness collapsible group in the right rail */
+  toggleReadinessGroup(group: 'blocking' | 'recommended' | 'completed'): void {
+    this.readinessGroupOpen[group] = !this.readinessGroupOpen[group];
+  }
+
+  /** Status chip: class based on job status and readiness */
+  getStatusChipClass(): string {
+    if (this.status === 2) return 'gh-jc-status-chip--published';
+    if (this.readinessResult && this.readinessResult.canPublish) return 'gh-jc-status-chip--ready';
+    if (this.readinessResult && this.readinessResult.blockingItems.length > 0) return 'gh-jc-status-chip--missing';
+    return 'gh-jc-status-chip--draft';
+  }
+
+  getStatusChipIcon(): string {
+    if (this.status === 2) return 'bi-check-circle-fill';
+    if (this.readinessResult && this.readinessResult.canPublish) return 'bi-check-circle';
+    if (this.readinessResult && this.readinessResult.blockingItems.length > 0) return 'bi-exclamation-circle';
+    return 'bi-pencil';
+  }
+
+  getStatusChipLabel(): string {
+    if (this.status === 2) return 'Published';
+    if (this.readinessResult && this.readinessResult.canPublish) return 'Ready to publish';
+    if (this.readinessResult && this.readinessResult.blockingItems.length > 0) return 'Missing required fields';
+    return 'Draft';
+  }
+
+  /** Human-readable label for a readiness level */
+  getReadinessLevelLabel(level: JobReadinessLevel): string {
+    return this.jobReadiness.getLevelLabel(level);
+  }
+
+  /** Scroll to a field with error (used by error summary chips) */
+  scrollToError(fieldId: string): void {
+    const el = document.getElementById(fieldId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const input = el.querySelector('input, select, textarea') as HTMLElement;
+      if (input) input.focus();
+    }
+  }
+
+  /** Called when the user clicks Next — validates current step before advancing */
+  onNextStep(): void {
+    this.showStepErrors = false;
+    this.stepErrorSummary = [];
+    const nextStep = this.stepper + 1;
+    if (this.stepper === 1 && !this.initialFormValid) {
+      this.showStepErrors = true;
+      this.jobForm.controls['initialData'].markAllAsTouched();
+      this.buildStepErrorSummary('initialData');
+      const el = document.getElementById('gh-jc-error-summary');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.haptics.warning();
+      return;
+    }
+    if (this.stepper === 2 && !this.jobInfoValid) {
+      this.showStepErrors = true;
+      this.jobForm.controls['jobInfo'].markAllAsTouched();
+      this.buildStepErrorSummary('jobInfo');
+      const el = document.getElementById('gh-jc-error-summary');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.haptics.warning();
+      return;
+    }
+    this.changeStep(nextStep);
+  }
+
+  private buildStepErrorSummary(formGroupName: string): void {
+    const group = this.jobForm.controls[formGroupName] as FormGroup;
+    if (!group) return;
+    const labelMap: { [key: string]: { label: string; sectionId: string } } = {
+      jobTitle: { label: 'Job title is required', sectionId: 'section-job-title' },
+      jobCity: { label: 'City is required', sectionId: 'section-location' },
+      jobCountry: { label: 'Country is required', sectionId: 'section-location' },
+    };
+    Object.keys(group.controls).forEach(key => {
+      const ctrl = group.controls[key];
+      if (ctrl.invalid && labelMap[key]) {
+        this.stepErrorSummary.push({
+          fieldId: labelMap[key].sectionId,
+          label: labelMap[key].label
+        });
+      }
+    });
+  }
+
+  /** Update autosave indicator state */
+  private setAutoSaveState(state: 'unsaved' | 'saving' | 'saved' | 'failed'): void {
+    this.autoSaveState = state;
+    this.cd.markForCheck();
   }
 
   changeStep(event) {

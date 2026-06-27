@@ -197,7 +197,9 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   private loadPipelineOverview(): void {
     this.pipelineLoading = true;
     this.pipelineError = false;
-    this.companyService.getDashboardPipelineOverview().subscribe({
+    this.companyService.getDashboardPipelineOverview()
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
       next: (res: any) => {
         this.byStage = res && res.data && res.data.byStage ? res.data.byStage : [];
         this.needsReview = res && res.data && res.data.needsReview ? res.data.needsReview : [];
@@ -439,12 +441,12 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   companyProfileMissingFields(company: Model.Company): string[] {
     if (!company) { return []; }
     const missing: string[] = [];
-    if (!company.companyLogoUrl) { missing.push('logo'); }
-    if (!company.companyDetails) { missing.push('company description'); }
-    if (!company.companyCity) { missing.push('location'); }
+    if (!company.companyLogoUrl || !String(company.companyLogoUrl).trim()) { missing.push('logo'); }
+    if (!company.companyDetails || !String(company.companyDetails).trim()) { missing.push('company description'); }
+    if (!company.companyCity || !String(company.companyCity).trim()) { missing.push('location'); }
     if (company.industryId == null) { missing.push('industry'); }
     if (!company.numberOfEmployee) { missing.push('team size'); }
-    if (!company.companyContactNumber) { missing.push('contact number'); }
+    if (!company.companyContactNumber || !String(company.companyContactNumber).trim()) { missing.push('contact number'); }
     return missing;
   }
 
@@ -478,12 +480,12 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   brandingScore(company: Model.Company): { score: number; missing: string[] } {
     if (!company) { return { score: 0, missing: [] }; }
     const missing: string[] = [];
-    if (!company.companyLogoUrl) { missing.push('company logo'); }
-    if (!company.companyDetails) { missing.push('description'); }
-    if (!company.companyCity) { missing.push('location'); }
+    if (!company.companyLogoUrl || !String(company.companyLogoUrl).trim()) { missing.push('company logo'); }
+    if (!company.companyDetails || !String(company.companyDetails).trim()) { missing.push('description'); }
+    if (!company.companyCity || !String(company.companyCity).trim()) { missing.push('location'); }
     if (company.industryId == null) { missing.push('industry'); }
     if (!company.numberOfEmployee) { missing.push('team size'); }
-    if (!company.companyContactNumber) { missing.push('contact number'); }
+    if (!company.companyContactNumber || !String(company.companyContactNumber).trim()) { missing.push('contact number'); }
     const total = 6;
     const score = Math.round(((total - missing.length) / total) * 100);
     return { score, missing };
