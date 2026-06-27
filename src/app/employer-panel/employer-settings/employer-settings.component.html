@@ -43,9 +43,9 @@
       </div>
 
       <div class="ebc-hero-ctas">
-        <!-- View public profile — disabled if profile not ready -->
-        <a *ngIf="publicProfileReady"
-          href="/companies/details?id={{ companyId }}"
+        <!-- View public profile — always clickable when companyId exists -->
+        <a *ngIf="companyId"
+          [href]="companySlug ? '/companies/' + companySlug : '/companies/details?id=' + companyId"
           target="_blank"
           rel="noopener noreferrer"
           class="ebc-btn ebc-btn--azure"
@@ -57,15 +57,6 @@
           </svg>
           View public profile
         </a>
-        <span *ngIf="!publicProfileReady" class="ebc-btn ebc-btn--azure ebc-btn--disabled"
-          aria-disabled="true" title="Complete your profile to enable the public page">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
-            width="14" height="14" aria-hidden="true">
-            <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/>
-            <polyline points="10 1 15 1 15 6"/><line x1="15" y1="1" x2="7" y2="9"/>
-          </svg>
-          View public profile
-        </span>
       </div>
     </div>
   </header>

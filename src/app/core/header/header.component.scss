@@ -1,393 +1,305 @@
 @import "src/assets/styles/colors";
 
-.initial-thumbnail {
-  font-size: 14px;
-  // line-height: 2;
-  color: $color-global-red-buttons;
-  padding: 5px;
-  text-align: center;
-  border: 2px solid $color-global-red-buttons;
-  line-height: 25px;
-}
+// ─── Public nav bar — mirrors employer topbar design language ─────────────────
+// Same white surface, Manrope font, coral gradient primary, subtle shadow.
 
-.initial-thumbnail-inner {
-  font-size: 14px;
-  height: 40px;
-  width: 40px;
-  margin-top: 4px;
-  margin-right: 10px !important;
-  border-radius: 50%;
-  // line-height: 2;
-  color: $color-global-red-buttons;
-  padding: 5px;
-  text-align: center;
-  border: 2px solid $color-global-red-buttons;
-  line-height: 25px;
-}
-
-
-.fixed-top{
-  z-index: 999 !important;
-  height: 80px;
-  background: #FFFFFF;
-  left: 0;
-
+.gh-public-nav {
   position: fixed;
   top: 0;
-  margin-bottom: 80px;
-}
-
-.shadow {
   left: 0;
-  box-shadow: 0px 8px 18px rgba(0, 0, 0, 0.15);
-}
+  right: 0;
+  z-index: 999;
+  height: 68px;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 
-.main{
-  margin-top: 80px;
-  min-height: 400px;
-}
-
-.main-title{
-
-}
-
-.sub-title{
-
-}
-
-.btn{
-  outline: none !important;
-  &:hover{
-    outline: none !important;
-    border: none !important;
-  }
-
-  &:active{
-    outline: none !important;
-    border: none !important;
+  &--shadow {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
   }
 }
 
-.btn-primary {
+.gh-public-nav-inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 24px;
+  max-width: 100%;
+}
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+
+.gh-nav-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-right: 24px;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+.gh-nav-logo-img {
+  height: 36px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  // Full-color logo on white background — no filter needed.
+}
+
+// ─── Mobile toggler ──────────────────────────────────────────────────────────
+
+.gh-nav-toggler {
+  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  padding: 6px 10px !important;
+  margin-left: auto;
+
+  &:focus { box-shadow: none !important; }
+}
+
+// ─── Nav list ─────────────────────────────────────────────────────────────────
+
+.gh-nav-list {
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.gh-nav-lang {
+  margin: 0 4px;
+}
+
+// ─── Primary button (Browse jobs / Jobs) ─────────────────────────────────────
+
+.gh-nav-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
   white-space: nowrap;
+  outline: none;
+  min-height: 44px;
+  transition: opacity 120ms ease;
+
+  &:hover { opacity: 0.88; color: #ffffff; text-decoration: none; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; color: #ffffff; }
+  &:active { opacity: 0.80; color: #ffffff; }
 }
 
-.img-avatar{
-  border-radius: 50%;
-  width: 39px;
-  height: 39px;
-  margin-right: 5px;
-  margin-top: -5px;
-  outline: none !important;
-  object-fit: cover;
-  object-position: center;
+// ─── Sign In button ───────────────────────────────────────────────────────────
 
-  &:hover{
-    outline: none;
-  }
+.gh-nav-btn-signin {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  color: #ffffff;
+  border: none;
+  white-space: nowrap;
+  outline: none;
+  min-height: 44px;
+  transition: opacity 120ms ease, transform 100ms ease;
+
+  &:hover { opacity: 0.88; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:active { transform: scale(0.97); }
 }
 
-.navbar-transparent{
-  background: rgba(255, 255, 255, 1) !important;
-}
+// ─── "Start hiring" link (mobile collapse menu only) ─────────────────────────
 
-// MOBILEVIEW: "Start hiring" link shown only in mobile collapse menu.
-// Styled as a soft outlined button so it doesn't compete with Sign In.
-.btn-nav-hire {
+.gh-nav-hire-link {
   display: inline-flex;
   align-items: center;
   color: #FF7062;
+  font-family: 'Manrope', sans-serif;
   font-weight: 600;
   font-size: 15px;
   text-decoration: none;
-  padding: 10px 10px;
+  padding: 10px 12px;
   min-height: 44px;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: background 120ms ease;
 
-  &:hover, &:focus-visible {
-    background: rgba(255, 112, 98, 0.08);
-    color: #FF4D3C;
-  }
-
-  &:focus-visible {
-    outline: 2px solid #FF7062;
-    outline-offset: 2px;
-  }
+  &:hover { background: rgba(255, 112, 98, 0.08); color: #FF4D3C; }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
 }
 
-.btn-nav-gradient{
-  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
-  box-shadow: 0px 29.81px 46.8519px rgba(10, 146, 200, 0.1059), 0px 14.52px 25.4815px rgba(10, 146, 200, 0.1007) !important;
-  border-radius: 900px !important;
-  color: white;
-  font-size: 13px !important;
-  border-radius: 18px !important;
-  padding: 8px 30px !important;
-  margin-top: 1px;
-  height: 38px !important;
-  min-height: 44px !important; // MOBILEVIEW: WCAG 2.5.5 touch target — override fixed 38px on mobile
+// ─── Avatar (logged-in user) ──────────────────────────────────────────────────
 
-  &:hover{
-    opacity: 0.88;
-    transition: opacity 120ms ease !important;
-  }
+.gh-nav-avatar-wrap {
+  position: relative;
 }
 
-.search-div{
-    vertical-align: center !important;
-    background: #FFEFED;
-    color: $color-global-red-buttons;
-    padding: 10px 20px 10px 15px !important;
-    border-radius: 8px !important;
-    width: 340px !important;
-
-    //margin-right: 30px;
-    .input-group-text{
-        /* background: none;
-        border:none; */
-    }
-
-    .input-group{
-
-        padding: 0px !important;
-        outline: none !important;
-        img{
-            width: 15px !important;
-            height: 15px !important;
-            margin-right: 10px;
-            margin-top: 3px;
-        }
-    }
-
-    .form-control{
-        border-radius: 0px !important;
-        font-size: 14px !important;
-        margin-left: 10px;
-        padding: 0 !important;
-        border: none !important;
-        background: #FFEFED !important;
-        outline: none !important;
-        color: $color-global-red-buttons !important;
-        //border-color: #a8a8a8 !important;
-    }
-
-    input{
-      outline: none !important;
-      color: $color-global-red-buttons !important;
-
-    }
-
-    ::placeholder{
-      color: $color-global-red-buttons !important;
-    }
-}
-
-
-.search-div-dropdown{
-    @extend .search-div;
-    width: 240px !important;
-}
-
-
-
-.dropdown{
-  border-radius: 5px;
+.gh-nav-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: $color-global-navy;
   border: none;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  padding: 0;
+  transition: opacity 120ms ease, transform 100ms ease;
 
-  .dropdown-menu{
-    border-radius: 5px !important;
-    border: none !important;
-    box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08) !important;
-
-    li{
-      min-width: 230px;
-
-      .form-select{
-        padding: 0;
-        border: none;
-        cursor: pointer;
-        font-family: 'Manrope';
-        font-style: normal;
-        font-weight: 100;
-        font-size: 16px;
-        line-height: 24px;
-        /* identical to box height, or 150% */
-        color: #939393;
-        margin-bottom: 0;
-        margin-top: 5px;
-      }
-
-      a, span{
-        padding: 5px 20px;
-        cursor: pointer;
-        &:not(:first-child){
-          border-radius: 7px;
-        }
-      }
-
-      .nav-drop-link{
-        font-family: 'Manrope';
-        font-style: normal;
-        font-weight: 100;
-        font-size: 16px;
-        line-height: 24px;
-        /* identical to box height, or 150% */
-        color: #939393;
-        margin-bottom: 0;
-        margin-top: 5px;
-
-        &:hover{
-          color: $color-blue-primary !important;
-          //border-left: solid 4px $color-blue-primary !important;
-          background: #F5FFFE;
-          transition: all 0.5s ease;
-        }
-      }
-
-      .nav-drop-link-active{
-        @extend .nav-drop-link;
-        background: #F5FFFE;
-        color: $color-blue-primary !important;
-        border-left: solid 4px $color-blue-primary !important;
-      }
-    }
-
-    .dropdown-item{
-      .img-avatar{
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-
-      }
-
-      .title-user{
-        font-family: 'Manrope';
-        font-style: normal;
-        font-weight: 100;
-        font-size: 16px;
-        line-height: 24px;
-        /* identical to box height, or 150% */
-        color: #000000;
-        margin-bottom: 0;
-        margin-top: 1px;
-      }
-
-      .title-position{
-        font-family: 'Manrope';
-        font-style: normal;
-        font-weight: 100;
-        font-size: 14px;
-        line-height: 15px;
-        /* identical to box height, or 171% */
-        color: #939393;
-        margin-bottom: 0;
-        margin-top: 0;
-      }
-
-      .settings{
-        position: absolute;
-        right: 20px;
-        top: 25px;
-        width: 22px;
-        height: 22px;
-      }
-    }
-  }
+  &:hover { opacity: 0.85; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:active { transform: scale(0.95); }
 }
 
-.navbar{
-  .navbar-brand{
-    width: 200px;
-    margin-top: 10px;
-    //margin-left: 20px;
-  }
-
-  @media (max-width: 989px){
-    .container{
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-    }
-
-    .navbar-brand{
-      margin-left: 20px;
-      width: 200px;
-      margin-top: 5px;
-      position: absolute;
-
-    }
-
-    .navbar-toggler{
-      margin-right: 20px;
-      position: absolute;
-      right: 30px
-    }
-
-    &-collapse{
-      background: white !important;
-      margin-top: 10px !important;
-      padding: 0 !important;
-      padding-top: 20px !important;
-      padding-bottom: 20px !important;
-      //min-width: 120% !important;
-      //margin-left: -40px !important;
-
-      .nav-item, .nav-link{
-        font-family: 'Manrope', sans-serif;
-        font-weight: 400 !important;
-        font-size: 15px !important;
-        line-height: 130% !important;
-        color: $color-global-sidebar-employer-user-menu;
-        padding-left: 10px !important;
-      }
-
-      .btn-primary{
-        margin-left: -10px !important;
-      }
-
-    }
-
-  }
+.gh-nav-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
-.navbar-expand-lg .navbar-collapse {
-  max-height: 80px;
-  @media (min-width: 999px){
-    display: flex!important;
-    justify-content: space-around;
-    flex-basis: auto;
-  }
-}
-
-.nav-item{
+.gh-nav-avatar-initials {
   font-family: 'Manrope', sans-serif;
-  padding-top: 5px;
-  font-weight: 400 !important;
-  font-size: 15px !important;
-  line-height: 130% !important;
-  color: $color-global-sidebar-employer-user-menu;
-  padding-left: 10px !important;
-  //margin-top: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  user-select: none;
 }
 
-.nav-link{
+// ─── Avatar dropdown ──────────────────────────────────────────────────────────
+
+.gh-nav-dropdown {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  min-width: 220px;
+  padding: 0 !important;
+  overflow: hidden;
+  right: 0;
+  left: auto !important;
+}
+
+.gh-nav-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+
+  &:hover { background: rgba(0, 0, 0, 0.02); }
+}
+
+.gh-dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.gh-dropdown-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-global-navy;
   font-family: 'Manrope', sans-serif;
-  font-weight: 400 !important;
-  font-size: 15px !important;
-  line-height: 130% !important;
-  color: $color-global-sidebar-employer-user-menu;
-  padding-left: 10px !important;
-  //margin-top: 5px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.nav-link-active{
-  padding-bottom: 5px;
-  border-bottom: solid 4px $color-blue-primary;
+.gh-dropdown-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.navbar{
-  background: linear-gradient(90.24deg, #2A9DF4 4.55%, #187BCD 61.56%, #03254C 118.29%);;
-  border-bottom: 0px solid red !important;
-  border-image-source: linear-gradient(180deg, #000000 0%, rgba(45, 206, 189, 0.3) 100%) !important;
-  max-height: 80px !important;
+.gh-dropdown-company {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #888;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-nav-dropdown-item {
+  display: block;
+  padding: 10px 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #888;
+  cursor: pointer;
+  transition: background 100ms ease, color 100ms ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.03); color: #1a1a2e; }
+}
+
+// ─── Collapsed mobile nav ─────────────────────────────────────────────────────
+
+@media (max-width: 991px) {
+  .navbar-collapse {
+    background: #ffffff;
+    padding: 12px 16px 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+    margin-top: 0;
+
+    .gh-nav-list {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .nav-item { width: 100%; }
+
+    .gh-nav-btn-primary,
+    .gh-nav-btn-signin {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .gh-nav-lang { margin: 4px 0; }
+
+    .gh-nav-avatar-wrap { align-self: flex-start; }
+
+    .gh-nav-dropdown {
+      position: static !important;
+      float: none !important;
+      margin-top: 4px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
+    }
+  }
 }

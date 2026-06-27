@@ -1,93 +1,87 @@
-<nav class="navbar navbar-expand-lg navbar-transparent py-4 fixed-top" [ngClass]="isPublic ? 'shadow': ''">
-  <div class="container-fluid d-flex px-0 px-lg-5">
-    <a class="navbar-brand me-3 me-lg-5 d-flex" (click)="navigateToJobs()" *ngIf="isPublic">
-      <img src="/assets/images/placeholder/logo-2.png" class="hvr-grow img-fluid" style="cursor: pointer">
+<nav class="gh-public-nav fixed-top" [class.gh-public-nav--shadow]="isPublic" role="banner">
+  <div class="gh-public-nav-inner">
+
+    <!-- Logo -->
+    <a class="gh-nav-logo" routerLink="/home" aria-label="GetHired — go to home" *ngIf="isPublic">
+      <img src="assets/brand/Gethired-horizontal-logo.png?v=3"
+           class="gh-nav-logo-img"
+           alt="GetHired Online">
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#togglerButton"
-      aria-controls="togglerButton" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- Mobile hamburger (collapse) -->
+    <button class="navbar-toggler gh-nav-toggler" type="button"
+      data-bs-toggle="collapse" data-bs-target="#ghNavCollapse"
+      aria-controls="ghNavCollapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="togglerButton">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-        <!-- <li class="nav-item me-1">
-          <div class="search-div">
-            <div class="input-group">
-              <img src="/assets/images/placeholder/icons/search-red.png">
+    <!-- Nav items -->
+    <div class="collapse navbar-collapse" id="ghNavCollapse">
+      <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
 
-              <input type="text" class="form-control" placeholder="Search for Jobs"
-              aria-label="Search" >
-            </div>
-          </div>
-        </li> -->
+        <!-- Browse jobs CTA (public) -->
+        <li class="nav-item" *ngIf="isPublic">
+          <a routerLink="/jobs" class="gh-nav-btn-primary gh-pressable">Browse jobs</a>
+        </li>
 
+        <!-- Jobs link (dashboard) -->
         <li class="nav-item" *ngIf="!isPublic">
-          <button class="btn btn-primary" type="button" (click)="navigateToJobs()">
+          <button class="gh-nav-btn-primary" type="button" (click)="navigateToJobs()">
             Jobs
           </button>
         </li>
 
-        <!-- GETHIRED_JOB_SEEKERS_PORTAL_WORLD_CLASS_WOW_USP_UPGRADE_V3 --
-             upper-right "Browse jobs" CTA for guest/public visitors,
-             reusing the same existing navigateToJobs() method already
-             proven safe above (just a different visible branch: public
-             vs dashboard). Additive only -- the !isPublic branch above
-             is untouched. -->
-        <li class="nav-item me-2" *ngIf="isPublic">
-          <button class="btn btn-primary gh-pressable" type="button" (click)="navigateToJobs()">
-            Browse jobs
-          </button>
-        </li>
-
-        <!-- MOBILEVIEW: "Start hiring" in the mobile collapse menu.
-             d-lg-none keeps it off the desktop nav bar (which already has
-             this path via btn-nav-gradient Sign In → employer flow).
-             routerLink instead of click handler keeps it a crawlable link. -->
+        <!-- Start hiring (mobile collapse only) -->
         <li class="nav-item d-lg-none" *ngIf="isPublic && !isUserLoggedIn">
-          <a routerLink="/employers" class="btn-nav-hire d-block">
+          <a routerLink="/employers" class="gh-nav-hire-link d-block">
             Start hiring
           </a>
         </li>
 
-        <li class="nav-item">
+        <!-- Language selector -->
+        <li class="nav-item gh-nav-lang">
           <app-language-selection title="Language"></app-language-selection>
         </li>
+
+        <!-- Auth / Avatar -->
         <li class="nav-item">
-          <div class="dropdown d-flex ms-4" *ngIf="!isUserLoggedIn">
-            <button class="btn btn-nav-gradient" type="button" (click)="redirectToRegister()" aria-label="Sign in to your account">
+          <!-- Logged out: Sign In -->
+          <div *ngIf="!isUserLoggedIn">
+            <button class="gh-nav-btn-signin gh-pressable" type="button"
+              (click)="redirectToRegister()" aria-label="Sign in to your account">
               Sign In
             </button>
           </div>
 
-          <div class="dropdown d-flex" *ngIf="isUserLoggedIn && user">
-            <button class="btn" id="dropdownMenuButton1" style="outline: none !important; border: none !important"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <div *ngIf="!user.photoUrl" class="img-avatar initial-thumbnail">
+          <!-- Logged in: Avatar dropdown -->
+          <div class="gh-nav-avatar-wrap dropdown" *ngIf="isUserLoggedIn && user">
+            <button class="gh-nav-avatar gh-pressable" type="button"
+              id="navAvatarBtn"
+              data-bs-toggle="dropdown" aria-expanded="false"
+              [attr.aria-label]="'Account menu for ' + user.firstName">
+              <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-nav-avatar-img" alt="">
+              <span *ngIf="!user.photoUrl" class="gh-nav-avatar-initials" aria-hidden="true">
                 {{ initials }}
-              </div>
-              <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="img-avatar">
+              </span>
             </button>
-
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="position: absolute; left: -140px">
-              <li class="pt-2" (click)="goToDashboard()">
-                <span class="dropdown-item d-flex">
-                  <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="img-avatar me-3">
-                  <div *ngIf="!user.photoUrl" class="initial-thumbnail-inner">
-                    {{ initials }}
-                  </div>
-                  <div routerLink="/company">
-                    <h5 class="title-user">{{ user.firstName + ' ' +user.lastName }}</h5>
-                    <p class="title-position">{{ user.companyName }}</p>
-                  </div>
-                </span>
+            <ul class="dropdown-menu gh-nav-dropdown" aria-labelledby="navAvatarBtn">
+              <li class="gh-nav-dropdown-header" (click)="goToDashboard()">
+                <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-dropdown-avatar" alt="">
+                <div *ngIf="!user.photoUrl" class="gh-dropdown-avatar gh-dropdown-initials" aria-hidden="true">
+                  {{ initials }}
+                </div>
+                <div>
+                  <p class="gh-dropdown-name">{{ user.firstName + ' ' + user.lastName }}</p>
+                  <p class="gh-dropdown-company">{{ user.companyName }}</p>
+                </div>
               </li>
-              <li class="pb-2">
-                <span class="dropdown-item nav-drop-link" (click)="logout()">Log out</span>
+              <li>
+                <span class="gh-nav-dropdown-item" (click)="logout()">Log out</span>
               </li>
             </ul>
           </div>
         </li>
+
       </ul>
     </div>
   </div>

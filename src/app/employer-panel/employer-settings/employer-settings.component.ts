@@ -39,6 +39,7 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
   companyId: string;
   companyName: string = '';
   companyLogoUrl: string = '';
+  companySlug: string = '';
 
   // Profile completeness computed from company data
   profileCompleteness: number = 0;
@@ -64,6 +65,7 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
           this.companyId = company.companyId as string;
           this.companyName = company.companyName || '';
           this.companyLogoUrl = (company as any).companyLogoUrl || '';
+          this.companySlug = (company as any).slug || '';
           this.profileCompleteness = this.computeCompleteness(company);
           this.cd.markForCheck();
         }
