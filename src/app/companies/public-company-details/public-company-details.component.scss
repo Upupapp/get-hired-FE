@@ -90,12 +90,12 @@ $border:       rgba(0,0,0,0.07);
 // ─── Hero section ─────────────────────────────────────────────────────────────
 .cph-hero {
   position: relative;
-  min-height: 460px;
-  display: flex; align-items: flex-end;
+  min-height: 360px;
+  display: flex; align-items: center;
   overflow: hidden;
   background: $navy;
 
-  @media (max-width: 767px) { min-height: 380px; }
+  @media (max-width: 767px) { min-height: 300px; }
 }
 
 .cph-hero-banner {
@@ -128,10 +128,10 @@ $border:       rgba(0,0,0,0.07);
 
 .cph-hero-content {
   position: relative; z-index: 2;
-  width: 100%; padding: 40px 24px;
-  display: flex; align-items: flex-end; justify-content: center;
+  width: 100%; padding: 48px 24px;
+  display: flex; align-items: center; justify-content: center;
 
-  @media (max-width: 767px) { padding: 28px 16px; }
+  @media (max-width: 767px) { padding: 32px 16px; }
 }
 
 .cph-hero-card {

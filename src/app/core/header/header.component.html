@@ -38,8 +38,8 @@
           </a>
         </li>
 
-        <!-- Language selector -->
-        <li class="nav-item gh-nav-lang">
+        <!-- Language selector (hidden on public nav — unstyled Bootstrap select breaks design) -->
+        <li class="nav-item gh-nav-lang" *ngIf="!isPublic">
           <app-language-selection title="Language"></app-language-selection>
         </li>
 
