@@ -1,91 +1,86 @@
 <div class="gh-dash" *ngIf="!(loading$ | async); else ghDashSkeleton">
 <ng-container *ngIf="dashboard$ | async as dashboard; else ghDashMissing">
 
+<div class="rdb-page">
+
 <!-- ═══════════════════════════════════════════════════════════════════════════
      HERO — Hiring Command Center
 ════════════════════════════════════════════════════════════════════════════ -->
-<section class="gh-hero" aria-label="Hiring command center">
-  <div class="gh-hero-mesh" aria-hidden="true"></div>
-  <div class="gh-hero-body">
+<section class="rdb-hero" aria-label="Hiring command center">
+  <div class="rdb-hero-grid">
 
-    <!-- Left: identity, chips, CTAs -->
-    <div class="gh-hero-left">
-      <p class="gh-hero-eyebrow">Hiring command center</p>
-      <div class="gh-hero-identity">
-        <div class="gh-hero-avatar" aria-hidden="true">
-          <img *ngIf="dashboard.company?.companyLogoUrl"
-               [src]="dashboard.company.companyLogoUrl"
-               [alt]="dashboard.company?.companyName || ''"
-               class="gh-hero-avatar-img">
-          <span *ngIf="!dashboard.company?.companyLogoUrl" class="gh-hero-avatar-initial">
-            {{ (dashboard.company?.companyName || 'C').charAt(0).toUpperCase() }}
-          </span>
-        </div>
-        <div>
-          <h1 class="gh-hero-name">{{ dashboard.company?.companyName || 'Your company' }}</h1>
-          <p class="gh-hero-stats">
-            <strong>{{ dashboard.charts?.activeJobs || 0 }}</strong> active job{{ dashboard.charts?.activeJobs === 1 ? '' : 's' }}
-            &nbsp;&middot;&nbsp;
-            <strong>{{ dashboard.charts?.applicants || 0 }}</strong> applicant{{ dashboard.charts?.applicants === 1 ? '' : 's' }} this month
-            <ng-container *ngIf="cachedJobViewsThisMonth > 0">
+    <!-- LEFT: dark command card -->
+    <div class="rdb-cmd-card">
+      <div class="rdb-cmd-mesh" aria-hidden="true"></div>
+      <div class="rdb-cmd-inner">
+        <p class="rdb-cmd-eyebrow">Hiring command center</p>
+        <div class="rdb-cmd-identity">
+          <div class="rdb-cmd-avatar" aria-hidden="true">
+            <img *ngIf="dashboard.company?.companyLogoUrl"
+                 [src]="dashboard.company.companyLogoUrl"
+                 [alt]="dashboard.company?.companyName || ''"
+                 class="rdb-cmd-avatar-img">
+            <span *ngIf="!dashboard.company?.companyLogoUrl" class="rdb-cmd-avatar-initial">
+              {{ (dashboard.company?.companyName || 'C').charAt(0).toUpperCase() }}
+            </span>
+          </div>
+          <div>
+            <h1 class="rdb-cmd-name">{{ dashboard.company?.companyName || 'Your company' }}</h1>
+            <p class="rdb-cmd-stats">
+              <strong>{{ dashboard.charts?.activeJobs || 0 }}</strong> active job{{ dashboard.charts?.activeJobs === 1 ? '' : 's' }}
               &nbsp;&middot;&nbsp;
-              <strong>{{ cachedJobViewsThisMonth | number }}</strong> job views this month
-            </ng-container>
-          </p>
+              <strong>{{ dashboard.charts?.applicants || 0 }}</strong> applicant{{ dashboard.charts?.applicants === 1 ? '' : 's' }} this month
+              <ng-container *ngIf="cachedJobViewsThisMonth > 0">
+                &nbsp;&middot;&nbsp;
+                <strong>{{ cachedJobViewsThisMonth | number }}</strong> job views this month
+              </ng-container>
+            </p>
+          </div>
+        </div>
+
+        <div class="rdb-cmd-chips">
+          <ng-container *ngIf="subsRestrictions$ | async as subsHero">
+            <span class="rdb-chip rdb-chip--plan">
+              {{ subsHero.isPaid ? (subsHero.subscriptionName || 'Pro plan') : 'Free plan' }}
+            </span>
+          </ng-container>
+          <ng-container *ngIf="cachedHiringHealth !== 'unknown'">
+            <span class="rdb-chip"
+              [class.rdb-chip--good]="cachedHiringHealth === 'good'"
+              [class.rdb-chip--warn]="cachedHiringHealth === 'attention'">
+              <span class="rdb-chip-dot" aria-hidden="true"></span>
+              Hiring health: {{ cachedHiringHealth === 'good' ? 'Good' : 'Needs attention' }}
+            </span>
+          </ng-container>
+        </div>
+
+        <div class="rdb-cmd-ctas">
+          <button type="button" class="rdb-btn-coral gh-pressable" (click)="goToCreateJob()">Post a job</button>
+          <button type="button" class="rdb-btn-outline gh-pressable" (click)="goToJobsList()">Review applicants</button>
+          <button *ngIf="cachedProfilePct < 100" type="button" class="rdb-btn-ghost gh-pressable" (click)="goToCompanyProfile()">Complete profile</button>
         </div>
       </div>
-
-      <div class="gh-hero-chips">
-        <ng-container *ngIf="subsRestrictions$ | async as subsHero">
-          <span class="gh-chip gh-chip--plan">
-            {{ subsHero.isPaid ? (subsHero.subscriptionName || 'Pro plan') : 'Free plan' }}
-          </span>
-        </ng-container>
-        <ng-container *ngIf="cachedHiringHealth !== 'unknown'">
-          <span class="gh-chip"
-            [class.gh-chip--good]="cachedHiringHealth === 'good'"
-            [class.gh-chip--warn]="cachedHiringHealth === 'attention'">
-            <span class="gh-chip-dot" aria-hidden="true"></span>
-            Hiring health: {{ cachedHiringHealth === 'good' ? 'Good' : 'Needs attention' }}
-          </span>
-        </ng-container>
-      </div>
-
-      <div class="gh-hero-ctas">
-        <button type="button" class="gh-btn-coral gh-pressable" (click)="goToCreateJob()">Post a job</button>
-        <button type="button" class="gh-btn-white-outline gh-pressable" (click)="goToJobsList()">Review applicants</button>
-        <button type="button" class="gh-btn-hero-ghost gh-pressable"
-          *ngIf="cachedProfilePct < 100" (click)="goToCompanyProfile()">
-          Complete profile
-        </button>
-      </div>
     </div>
 
-    <!-- Right: profile completeness ring -->
-    <div class="gh-hero-profile" role="group" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
-      <div class="gh-profile-ring">
-        <svg viewBox="0 0 72 72" aria-hidden="true" focusable="false">
-          <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="6"/>
-          <circle cx="36" cy="36" r="30" fill="none" stroke="#FF7062" stroke-width="6"
-            stroke-linecap="round"
-            stroke-dasharray="188.5"
-            [style.stroke-dashoffset]="188.5 - (188.5 * cachedProfilePct / 100)"
-            transform="rotate(-90 36 36)"/>
+    <!-- RIGHT: profile completeness card -->
+    <div class="rdb-profile-card" role="group" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
+      <div class="rdb-profile-ring">
+        <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+          <circle cx="40" cy="40" r="33" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7"/>
+          <circle cx="40" cy="40" r="33" fill="none" stroke="#FF7062" stroke-width="7"
+            stroke-linecap="round" stroke-dasharray="207.3"
+            [style.stroke-dashoffset]="207.3 - (207.3 * cachedProfilePct / 100)"
+            transform="rotate(-90 40 40)"/>
         </svg>
-        <span class="gh-profile-ring-pct">{{ cachedProfilePct }}%</span>
+        <span class="rdb-profile-ring-pct">{{ cachedProfilePct }}%</span>
       </div>
-      <p class="gh-profile-ring-title">Profile completeness</p>
-      <p class="gh-profile-ring-sub" *ngIf="cachedProfilePct < 100">
-        Almost there! Complete your profile to attract more candidates.
-      </p>
-      <p class="gh-profile-ring-sub gh-profile-ring-sub--done" *ngIf="cachedProfilePct >= 100">
-        Profile complete!
-      </p>
-      <button type="button" class="gh-btn-hero-link gh-pressable"
-        (click)="goToCompanyProfile()" *ngIf="cachedProfilePct < 100">
-        Complete profile →
-      </button>
+      <p class="rdb-profile-ring-label">Profile completeness</p>
+      <p class="rdb-profile-ring-sub" *ngIf="cachedProfilePct < 100">Complete your profile to attract more candidates.</p>
+      <p class="rdb-profile-ring-sub rdb-profile-ring-sub--done" *ngIf="cachedProfilePct >= 100">Profile complete!</p>
+      <button type="button" class="rdb-btn-hero-link gh-pressable" (click)="goToCompanyProfile()" *ngIf="cachedProfilePct < 100">Complete profile →</button>
+      <button type="button" class="rdb-btn-hero-link gh-pressable" (click)="goToCompanyProfile()" *ngIf="cachedProfilePct >= 100">View profile →</button>
     </div>
+
   </div>
 </section>
 
@@ -259,7 +254,7 @@
 <!-- ═══════════════════════════════════════════════════════════════════════════
      MAIN INSIGHT GRID  (chart | pipeline | job performance)
 ════════════════════════════════════════════════════════════════════════════ -->
-<div class="gh-insight-grid gh-section">
+<div class="gh-insight-grid gh-section rdb-insight-cols">
 
   <!-- ── Views & Applications Chart ─────────────────────────────────────── -->
   <div class="gh-card gh-chart-card">
@@ -678,6 +673,8 @@
 
   </div>
 </section>
+
+</div><!-- /rdb-page -->
 
 </ng-container>
 

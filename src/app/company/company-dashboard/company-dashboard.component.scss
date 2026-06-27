@@ -17,6 +17,30 @@ $gh-red:        #ef4444;
 $gh-purple:     $color-pipeline-accent;
 $gh-teal:       $color-teal-accent;
 
+// ─── CSS custom properties for dashboard ─────────────────────────────────────
+:host {
+  --rdb-bg: #f6f7fb;
+  --rdb-surface: #ffffff;
+  --rdb-navy: #0b1026;
+  --rdb-navy-2: #171433;
+  --rdb-coral: #ff625d;
+  --rdb-coral-soft: rgba(255, 98, 93, 0.12);
+  --rdb-azure: #2f80ff;
+  --rdb-azure-soft: rgba(47, 128, 255, 0.12);
+  --rdb-mint: #20c997;
+  --rdb-mint-soft: rgba(32, 201, 151, 0.12);
+  --rdb-amber: #f59f00;
+  --rdb-amber-soft: rgba(245, 159, 0, 0.12);
+  --rdb-purple: #7c4dff;
+  --rdb-purple-soft: rgba(124, 77, 255, 0.12);
+  --rdb-border: rgba(15, 23, 42, 0.08);
+  --rdb-muted: #7b8198;
+  --rdb-radius: 18px;
+  --rdb-radius-lg: 24px;
+  --rdb-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  --rdb-shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
 // ─── Skeleton shimmer ────────────────────────────────────────────────────────
 @keyframes gh-shimmer {
   0%   { background-position: -800px 0; }
@@ -52,7 +76,7 @@ $gh-teal:       $color-teal-accent;
 
 // ─── Root wrapper ─────────────────────────────────────────────────────────────
 .gh-dash {
-  background: $gh-bg;
+  background: var(--rdb-bg, #f6f7fb);
   min-height: 100vh;
 }
 
@@ -69,7 +93,7 @@ $gh-teal:       $color-teal-accent;
 
 // ─── Shared section container ────────────────────────────────────────────────
 .gh-section {
-  max-width: 1240px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 28px 28px 0;
 
@@ -328,7 +352,7 @@ $gh-teal:       $color-teal-accent;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  max-width: 1240px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 20px 28px;
 
@@ -342,201 +366,300 @@ $gh-teal:       $color-teal-accent;
   flex-wrap: wrap;
 }
 
-// ─── HERO ─────────────────────────────────────────────────────────────────────
-.gh-hero {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1a1830 0%, #2a2348 60%, #1e1b3a 100%);
-  padding: 40px 32px 48px;
+// ─── Page wrapper ─────────────────────────────────────────────────────────────
+.rdb-page {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 clamp(12px, 2vw, 24px) 48px;
+}
+
+// ─── Hero grid (two-card layout) ──────────────────────────────────────────────
+.rdb-hero {
+  padding: clamp(16px, 2vw, 24px) 0 0;
   animation: gh-reveal 0.45s $motion-ease-standard both;
 }
 
-.gh-hero-mesh {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 60% at 80% 50%, rgba(254, 111, 97, 0.12) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 50% at 20% 80%, rgba(91, 70, 189, 0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.gh-hero-body {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  gap: 32px;
-  align-items: flex-start;
-  max-width: 1240px;
-  margin: 0 auto;
+.rdb-hero-grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 16px;
+  align-items: stretch;
 
   @media (max-width: 900px) {
-    flex-direction: column;
-    gap: 24px;
+    grid-template-columns: 1fr;
   }
 }
 
-.gh-hero-left { flex: 1; min-width: 0; }
+// Command card — dark navy
+.rdb-cmd-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0b1026 0%, #1a1544 60%, #0d0f1f 100%);
+  border-radius: var(--rdb-radius-lg, 24px);
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+}
 
-.gh-hero-eyebrow {
+.rdb-cmd-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 80% 50%, rgba(255, 98, 93, 0.13) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 55% at 10% 80%, rgba(91, 70, 189, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.rdb-cmd-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.rdb-cmd-eyebrow {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(254, 111, 97, 0.85);
-  margin: 0 0 14px;
+  color: rgba(255, 98, 93, 0.85);
+  margin: 0;
 }
 
-.gh-hero-identity {
+.rdb-cmd-identity {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 14px;
 }
 
-.gh-hero-avatar {
+.rdb-cmd-avatar {
   flex-shrink: 0;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.gh-hero-avatar-img {
+.rdb-cmd-avatar-img {
   width: 100%; height: 100%;
   object-fit: cover;
 }
 
-.gh-hero-avatar-initial {
+.rdb-cmd-avatar-initial {
   font-size: 22px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.9);
 }
 
-.gh-hero-name {
-  font-size: 26px;
+.rdb-cmd-name {
+  font-size: 22px;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 5px;
+  margin: 0 0 4px;
   line-height: 1.15;
+
+  @media (max-width: 600px) { font-size: 20px; }
 }
 
-.gh-hero-stats {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+.rdb-cmd-stats {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
 
-  strong { color: rgba(255, 255, 255, 0.9); }
+  strong { color: rgba(255, 255, 255, 0.85); }
 }
 
-.gh-hero-chips {
+.rdb-cmd-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 22px;
-
-  .gh-chip {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.85);
-
-    &--plan { background: rgba(91, 70, 189, 0.25); color: #c4b5fd; border-color: rgba(196, 181, 253, 0.3); }
-    &--good { background: rgba(34, 197, 94, 0.18); color: #86efac; border-color: rgba(134, 239, 172, 0.3); }
-    &--warn { background: rgba(245, 158, 11, 0.18); color: #fcd34d; border-color: rgba(252, 211, 77, 0.3); }
-  }
+  gap: 7px;
 }
 
-.gh-hero-ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+.rdb-chip {
+  display: inline-flex;
   align-items: center;
+  gap: 5px;
+  border-radius: 100px;
+  padding: 4px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  &--plan { background: rgba(91, 70, 189, 0.28); color: #c4b5fd; border-color: rgba(196, 181, 253, 0.32); }
+  &--good { background: rgba(32, 201, 151, 0.2); color: #6ee7b7; border-color: rgba(110, 231, 183, 0.3); }
+  &--warn { background: rgba(245, 159, 0, 0.2); color: #fcd34d; border-color: rgba(252, 211, 77, 0.3); }
+}
+
+.rdb-chip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.rdb-cmd-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: auto;
 
   @media (max-width: 480px) {
     flex-direction: column;
     align-items: stretch;
-    .gh-btn-coral, .gh-btn-white-outline, .gh-btn-hero-ghost {
-      text-align: center;
-      min-height: 44px;
-    }
   }
 }
 
-// Profile completeness card on hero right
-.gh-hero-profile {
-  flex-shrink: 0;
-  width: 200px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  padding: 22px 20px 18px;
+// Profile card — glass card on dark background
+.rdb-profile-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--rdb-radius-lg, 24px);
+  padding: 28px 24px 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 8px;
+  backdrop-filter: blur(4px);
 
   @media (max-width: 900px) {
-    width: 100%;
     flex-direction: row;
-    padding: 16px 20px;
     text-align: left;
-    align-items: center;
+    padding: 20px 22px;
     gap: 16px;
+    background: rgba(255,255,255,0.04);
   }
 }
 
-.gh-profile-ring {
+.rdb-profile-ring {
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: 100px;
+  height: 100px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  svg { position: absolute; inset: 0; }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  // Animate ring fill on load
+  circle:last-child {
+    animation: gh-ring-hero-fill 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 
   @media (max-width: 900px) { width: 64px; height: 64px; }
 }
 
-// SVG ring fill — animates from empty on first render
-.gh-profile-ring svg circle:last-child {
-  animation: gh-ring-hero-fill 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.gh-profile-comp-ring svg circle:last-child {
-  animation: gh-ring-comp-fill 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.gh-profile-ring-pct {
+.rdb-profile-ring-pct {
   position: relative;
   z-index: 1;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: #ffffff;
 
-  @media (max-width: 900px) { font-size: 14px; }
+  @media (max-width: 900px) { font-size: 16px; }
 }
 
-.gh-profile-ring-title {
-  font-size: 12px;
+.rdb-profile-ring-label {
+  font-size: 13px;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
 }
 
-.gh-profile-ring-sub {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.55);
+.rdb-profile-ring-sub {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.5);
   margin: 0;
   line-height: 1.4;
 
-  &--done { color: #86efac; }
+  &--done { color: #6ee7b7; }
+}
+
+// Hero buttons (new rdb variants)
+.rdb-btn-coral {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 120ms ease, transform 100ms ease;
+
+  &:hover, &:focus-visible { opacity: 0.88; outline: 2px solid #FF7062; outline-offset: 2px; }
+  &:active { transform: scale(0.985); }
+}
+
+.rdb-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 20px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover, &:focus-visible { background: rgba(255,255,255,0.08); outline: 2px solid rgba(255,255,255,0.4); outline-offset: 2px; }
+}
+
+.rdb-btn-ghost {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+
+  &:hover { color: rgba(255,255,255,0.85); }
+}
+
+.rdb-btn-hero-link {
+  background: none;
+  border: none;
+  color: #FF7062;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  margin-top: 4px;
+}
+
+// ─── Insight grid column override ────────────────────────────────────────────
+// The base .gh-insight-grid is 1fr 1fr 1fr; this modifier makes chart wider
+.rdb-insight-cols {
+  grid-template-columns: 5fr 3fr 4fr;
+
+  @media (max-width: 1100px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 767px)  { grid-template-columns: 1fr; }
 }
 
 // ─── ACTION INBOX ─────────────────────────────────────────────────────────────
@@ -736,7 +859,7 @@ $gh-teal:       $color-teal-accent;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  max-width: 1240px;
+  max-width: 1360px;
   margin: 20px auto 0;
   padding: 0 28px;
 
@@ -1443,5 +1566,15 @@ $gh-teal:       $color-teal-accent;
   .gh-kpi-strip > *,
   .gh-inbox-cards .gh-inbox-card {
     animation-delay: 0ms !important;
+  }
+
+  .rdb-cmd-card,
+  .rdb-profile-card,
+  .rdb-hero {
+    animation: none !important;
+  }
+
+  .rdb-profile-ring circle:last-child {
+    animation: none !important;
   }
 }
