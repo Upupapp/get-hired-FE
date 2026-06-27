@@ -187,7 +187,11 @@
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 1px; }
 }
 
-// ─── Work setup toggle buttons ────────────────────────────────────────────────
+// ─── Work setup choice cards ─────────────────────────────────────────────────
+.gh-work-setup-subtitle {
+  margin-bottom: 12px;
+}
+
 .gh-work-setup-grid {
   display: flex;
   flex-wrap: wrap;
@@ -198,40 +202,104 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px;
-  border: 1.5px solid #DDD8F0;
-  border-radius: 10px;
+  padding: 10px 20px;
+  border: 2px solid #DDD8F0;
+  border-radius: 12px;
   background: #fff;
   font-family: 'Manrope', sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #4B5563;
   cursor: pointer;
-  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
   min-height: 44px;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 100ms ease, color 150ms ease;
 
   @include motion-safe;
 
   &:hover:not(:disabled) {
-    border-color: $color-global-red-buttons;
-    color: $color-global-red-buttons;
+    border-color: #FF7062;
+    color: #0B1026;
+    box-shadow: 0 4px 14px rgba(255, 112, 98, 0.12);
+    transform: translateY(-1px);
   }
 
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  // Selected state — Coral+Azure gradient border, subtle glow
   &--active {
-    border-color: $color-global-red-buttons;
-    background: rgba(255, 112, 98, 0.06);
-    color: $color-global-red-buttons;
-    font-weight: 600;
+    background:
+      linear-gradient(#fff, #fff) padding-box,
+      linear-gradient(135deg, #FF7062 0%, #FF5A6F 50%, #2F80FF 100%) border-box;
+    border: 2px solid transparent;
+    color: #0B1026;
+    font-weight: 700;
+    box-shadow:
+      0 8px 24px rgba(255, 112, 98, 0.14),
+      0 0 0 4px rgba(47, 128, 255, 0.07);
   }
 
   &:focus-visible {
-    outline: 2px solid $color-global-red-buttons;
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(47, 128, 255, 0.22);
   }
 }
 
-.gh-work-setup-check {
-  font-size: 16px;
+.gh-work-setup-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FF7062;
+
+  .gh-work-setup-btn:not(.gh-work-setup-btn--active) & {
+    color: #9CA3AF;
+  }
+}
+
+.gh-work-setup-name {
+  line-height: 1;
+}
+
+.gh-work-setup-context {
+  margin-top: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: #2F80FF;
+  margin-bottom: 0;
+  animation: gh-fade-in 180ms ease;
+}
+
+@keyframes gh-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Location block ──────────────────────────────────────────────────────────
+.gh-location-block {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.gh-location-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0B1026;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 16px;
+}
+
+.gh-location-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // ─── Chip input ───────────────────────────────────────────────────────────────

@@ -76,12 +76,13 @@
         <p class="gh-form-card-subtitle">Let candidates know where and how this role is performed.</p>
       </div>
 
-      <!-- Work Setup buttons -->
-      <div class="gh-field mb-4">
-        <label class="gh-label">Work setup</label>
+      <!-- Work Setup cards -->
+      <div class="gh-field mb-4" role="group" aria-labelledby="work-setup-label">
+        <label class="gh-label mb-1" id="work-setup-label">Work setup</label>
+        <p class="gh-field-helper gh-work-setup-subtitle">Choose the arrangement candidates should expect.</p>
         <div class="gh-work-setup-grid" *ngIf="workSetup$ | async as workSetup">
           <button
-            *ngFor="let item of workSetup; let i = index"
+            *ngFor="let item of workSetup"
             class="gh-work-setup-btn"
             type="button"
             (click)="selectWorkSetUp(item.id)"
@@ -89,25 +90,30 @@
             [attr.aria-pressed]="item.id === workSetupSelected"
             [attr.aria-label]="item.name + (item.id === workSetupSelected ? ' (selected)' : '')"
           >
-            <i class="bi bi-check-circle-fill gh-work-setup-check" *ngIf="item.id === workSetupSelected" aria-hidden="true"></i>
-            <i class="bi bi-circle gh-work-setup-check" *ngIf="item.id !== workSetupSelected" aria-hidden="true"></i>
-            {{ item.name }}
+            <span class="gh-work-setup-icon" aria-hidden="true">
+              <svg *ngIf="item.id === workSetupSelected" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg *ngIf="item.id !== workSetupSelected" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+            </span>
+            <span class="gh-work-setup-name">{{ item.name }}</span>
           </button>
         </div>
+        <p class="gh-work-setup-context" *ngIf="workSetupSelected">{{ workSetupHelperText }}</p>
       </div>
 
       <!-- Location fields -->
-      <div class="row g-3" id="section-location">
-        <div class="col-12 col-md-6">
-          <div class="gh-field">
-            <label class="gh-label" for="job-address">Office address</label>
-            <p class="gh-field-helper">Your main office or work location address.</p>
-            <input id="job-address" type="text" class="gh-input" placeholder="123 Main Street"
-              formControlName="jobAddress">
-          </div>
+      <div class="gh-location-block" id="section-location">
+        <p class="gh-location-label">Location details</p>
+
+        <div class="gh-field mb-3">
+          <label class="gh-label" for="job-address">
+            Office address <span class="gh-label-optional">(optional)</span>
+          </label>
+          <p class="gh-field-helper">Your main office or work location address.</p>
+          <input id="job-address" type="text" class="gh-input" placeholder="123 Main Street"
+            formControlName="jobAddress">
         </div>
 
-        <div class="col-12 col-md-3">
+        <div class="gh-location-row">
           <div class="gh-field">
             <label class="gh-label" for="job-city">
               City <span class="gh-label-required" aria-label="required">*</span>
@@ -115,17 +121,17 @@
             <input id="job-city" type="text" class="gh-input"
               placeholder="Manila"
               formControlName="jobCity"
+              [attr.aria-invalid]="initialDetailsForm.get('jobCity').invalid && initialDetailsForm.get('jobCity').touched ? 'true' : null"
+              aria-describedby="job-city-error"
               [class.gh-input--error]="initialDetailsForm.get('jobCity').invalid && initialDetailsForm.get('jobCity').touched"
               (blur)="initialDetailsForm.get('jobCity').markAsTouched()"
             >
-            <p class="gh-field-error" role="alert"
+            <p id="job-city-error" class="gh-field-error" role="alert"
               *ngIf="initialDetailsForm.get('jobCity').invalid && initialDetailsForm.get('jobCity').touched">
-              City is required.
+              Enter the city for this job.
             </p>
           </div>
-        </div>
 
-        <div class="col-12 col-md-3">
           <div class="gh-field">
             <label class="gh-label" for="job-country">
               Country <span class="gh-label-required" aria-label="required">*</span>
@@ -133,12 +139,14 @@
             <input id="job-country" type="text" class="gh-input"
               placeholder="Philippines"
               formControlName="jobCountry"
+              [attr.aria-invalid]="initialDetailsForm.get('jobCountry').invalid && initialDetailsForm.get('jobCountry').touched ? 'true' : null"
+              aria-describedby="job-country-error"
               [class.gh-input--error]="initialDetailsForm.get('jobCountry').invalid && initialDetailsForm.get('jobCountry').touched"
               (blur)="initialDetailsForm.get('jobCountry').markAsTouched()"
             >
-            <p class="gh-field-error" role="alert"
+            <p id="job-country-error" class="gh-field-error" role="alert"
               *ngIf="initialDetailsForm.get('jobCountry').invalid && initialDetailsForm.get('jobCountry').touched">
-              Country is required.
+              Enter the country for this job.
             </p>
           </div>
         </div>

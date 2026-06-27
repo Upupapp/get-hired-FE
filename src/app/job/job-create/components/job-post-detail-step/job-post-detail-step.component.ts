@@ -28,6 +28,7 @@ export class JobPostDetailStepComponent implements OnInit {
   certificationTypes = ['certification', 'license', 'permit', 'eligibility', 'other'];
 
   workSetup$ = this.jobFacade.setup$;
+  private workSetupItems: any[] = [];
   typeList$ = this.jobFacade.typeList$;
   level$ = this.jobFacade.level$;
   badge$ = this.jobFacade.badge$;
@@ -56,6 +57,7 @@ export class JobPostDetailStepComponent implements OnInit {
     this.bannerSelected = this.initialDetailsForm.get('bannerFile') as FormArray;
     this.workSetupSelected = this.initialDetailsForm.get('workSetupId').value;
     this.bannerUrl = this.initialDetailsForm.get('jobBanner').value;
+    this.workSetup$.subscribe(items => { if (items) this.workSetupItems = items; });
   }
 
   populateOptions() {
@@ -87,6 +89,16 @@ export class JobPostDetailStepComponent implements OnInit {
   selectWorkSetUp(chosen) {
     this.workSetupSelected = chosen;
     this.initialDetailsForm.controls.workSetupId.setValue(chosen);
+  }
+
+  get workSetupHelperText(): string {
+    const item = this.workSetupItems.find(i => i.id === this.workSetupSelected);
+    if (!item) return '';
+    const n = (item.name || '').toLowerCase();
+    if (n.includes('remote'))  return 'Work can be done remotely from any location.';
+    if (n.includes('hybrid'))  return 'Mix of office and remote work.';
+    if (n.includes('on-site') || n.includes('onsite')) return 'Work happens at a company location.';
+    return item.name ? item.name + ' work arrangement.' : '';
   }
 
   addBadge(item) {
