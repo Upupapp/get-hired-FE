@@ -63,7 +63,7 @@ export class SignupComponent implements OnInit {
       firstName: [null, Validators.compose([Validators.required])],
       lastName: [null, Validators.compose([Validators.required])],
       agreeToTerms: [null, Validators.compose([Validators.required])],
-      recaptcha: [null, Validators.required],
+      recaptcha: [null],
       role: [null, Validators.compose([Validators.required])]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
 
