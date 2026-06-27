@@ -14,7 +14,7 @@ video{
 }
 
 .btn-take-interview {
-  background: #fb0242;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   backdrop-filter: blur(75px);
   border-radius: 10px;
   font-family: "Manrope";
@@ -29,7 +29,7 @@ video{
   color: #fff;
 
   &:hover {
-    background: #fe6f61;
+    opacity: 0.88;
     color: white;
   }
 }

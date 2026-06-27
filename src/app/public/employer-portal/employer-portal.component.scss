@@ -173,7 +173,7 @@
   background: #e5e7eb;
 
   &--active {
-    background: $color-global-red-buttons;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   }
 }
 
@@ -197,7 +197,7 @@
 }
 
 .employer-mockup-post-btn {
-  background: $color-global-red-buttons;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -239,7 +239,7 @@
   color: #fff;
   transition: transform 160ms $motion-ease-standard;
 
-  &--coral { background: $color-global-red-buttons; }
+  &--coral { background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%); }
   &--teal { background: #2dd4bf; }
   &--violet { background: #7c83fd; }
 

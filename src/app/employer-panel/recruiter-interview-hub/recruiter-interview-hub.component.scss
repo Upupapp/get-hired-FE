@@ -180,7 +180,7 @@
   }
 
   &--primary {
-    background: $color-global-red-buttons;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
     color: #fff;
 
     &:hover {
@@ -226,7 +226,7 @@
   @include motion-safe;
 
   &--active {
-    background: $color-global-red-buttons;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
     border-color: $color-global-red-buttons;
     color: #fff;
   }
@@ -412,7 +412,7 @@
   }
 
   &--primary {
-    background: $color-global-red-buttons;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
     color: #fff;
 
     &:hover { background: $color-global-red-buttons-hover; }

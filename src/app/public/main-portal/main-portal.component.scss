@@ -258,7 +258,7 @@
   flex-shrink: 0;
 
   &--coral {
-    background: $color-global-red-buttons;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   }
 }
 
@@ -672,7 +672,7 @@
   color: #fff;
 
   &--teal  { background: #2dd4bf; }
-  &--coral { background: $color-global-red-buttons; }
+  &--coral { background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%); }
 }
 
 .preview-name {
@@ -794,7 +794,7 @@
 
   &--teal   { background: #2dd4bf; }
   &--orange { background: #fb923c; }
-  &--coral  { background: $color-global-red-buttons; }
+  &--coral  { background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%); }
 }
 
 .preview-tracking-company {

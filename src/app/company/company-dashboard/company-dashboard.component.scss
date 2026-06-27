@@ -147,7 +147,7 @@ $gh-teal:       $color-teal-accent;
   justify-content: center;
   height: 44px;
   padding: 0 22px;
-  background: $gh-coral;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -156,11 +156,11 @@ $gh-teal:       $color-teal-accent;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background $motion-duration-micro $motion-ease-standard, transform 100ms $motion-ease-standard;
+  transition: opacity $motion-duration-micro $motion-ease-standard, transform 100ms $motion-ease-standard;
   @include motion-safe;
 
   &:hover, &:focus-visible {
-    background: darken($gh-coral, 7%);
+    opacity: 0.88;
     outline: 2px solid $gh-coral;
     outline-offset: 2px;
   }
@@ -229,7 +229,7 @@ $gh-teal:       $color-teal-accent;
 }
 
 .gh-btn-sm {
-  background: $gh-coral;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -240,7 +240,7 @@ $gh-teal:       $color-teal-accent;
   white-space: nowrap;
 
   &:hover, &:focus-visible {
-    background: darken($gh-coral, 7%);
+    opacity: 0.88;
     outline: 2px solid $gh-coral;
     outline-offset: 2px;
   }

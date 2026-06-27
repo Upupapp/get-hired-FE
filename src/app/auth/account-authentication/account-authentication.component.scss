@@ -15,7 +15,7 @@
 .btn-submit{
 	border-radius: 1232px;
 	padding: 10px;
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	font-family: 'Manrope';
 	font-style: normal;
 	font-weight: 500;
@@ -25,11 +25,7 @@
 	color: #FFFFFF;
 
 	&:hover{
-	  border: solid 2px #FF4D3C !important;
-	  color: #FF4D3C;
-	  transition: all 0.1s ease !important;
-	  background: transparent !important;
-	  padding-bottom: 9px !important;
-	  padding-top: 9px !important;
+	  opacity: 0.88;
+	  transition: opacity 120ms ease !important;
 	}
 }

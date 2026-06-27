@@ -19,11 +19,11 @@
 		width: 18px !important;
 		height: 18px !important;
 		border-radius: 3px;
-		//background: $color-global-red-buttons;
+		//background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	}
 
 	.checkbox::checked{
-		background: $color-global-red-buttons !important
+		background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important
 	}
 
 	// Background border
@@ -34,7 +34,7 @@
 	}
 
 	.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-	    background: $color-global-red-buttons
+	    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%)
 	}
 
 	.mat-slide-toggle{
@@ -80,7 +80,7 @@
 
     .btn-uploader{
         padding: 8px 15px !important;
-        background: $color-global-red-buttons !important;
+        background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
         box-shadow: 0px 8.4px 29.7231px rgba(255, 112, 98, 0.45) !important;
         border-radius: 6.46154px !important;
         font-size: 14px !important;
@@ -311,7 +311,7 @@
 
 .btn-primary{
 	color: white !important;
-	background: $color-global-red-buttons !important;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
 	border-radius: 5px !important;
 	font-style: normal !important;
 	font-weight: 400 !important;
@@ -375,7 +375,7 @@
 }
 
 .btn-upload{
-	background: $color-global-red-buttons !important;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
 	padding: 5px 10px !important;
 	font-size: 14px !important;
 	height: 34px !important;
@@ -398,7 +398,7 @@
 }
 
 .btn-add-service{
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 6px;
 	font-size: 13px;
 	color: white;

@@ -314,7 +314,7 @@ body {
 .btn-primary{
   font-size: 14px !important;
 
-  background: $color-global-red-buttons!important;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%)!important;
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
@@ -330,7 +330,7 @@ body {
   min-height: 44px;
 
   &:hover{
-    background: rgba($color-global-red-buttons, 0.9) !important;
+    opacity: 0.88;
   }
 }
 
@@ -715,18 +715,18 @@ label {
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.01em;
-  background: $color-global-red-buttons;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #ffffff;
   border: none;
   cursor: pointer;
   outline: none;
   text-decoration: none;
   white-space: nowrap;
-  transition: background 120ms $motion-ease-standard, transform 100ms $motion-ease-standard;
+  transition: opacity 120ms $motion-ease-standard, transform 100ms $motion-ease-standard;
   @include motion-safe;
 
   &:hover, &:focus {
-    background: $color-global-red-buttons-hover;
+    opacity: 0.88;
     color: #ffffff;
     text-decoration: none;
   }

@@ -1,0 +1,2096 @@
+
+Initial Chunk Files                                                                                     | Names                                              |  Raw Size
+vendor.js                                                                                               | vendor                                             |   7.21 MB |
+main.js                                                                                                 | main                                               | 741.92 kB |
+styles.css, styles.js                                                                                   | styles                                             | 708.86 kB |
+polyfills.js                                                                                            | polyfills                                          | 297.55 kB |
+scripts.js                                                                                              | scripts                                            |  78.57 kB |
+runtime.js                                                                                              | runtime                                            |  12.96 kB |
+
+| Initial Total                                      |   9.01 MB
+
+Lazy Chunk Files                                                                                        | Names                                              |  Raw Size
+default-src_app_application_application_module_ts-src_app_shared_components_updated-dialog_up-cc2054.js | employer-panel-employer-panel-module               |   1.63 MB |
+default-src_app_jobs_jobs_module_ts.js                                                                  | employer-panel-employer-panel-module               | 730.68 kB |
+default-node_modules_ng2-charts_fesm2015_ng2-charts_mjs.js                                              | employer-panel-employer-panel-module               | 590.78 kB |
+src_app_employer-panel_employer-panel_module_ts.js                                                      | employer-panel-employer-panel-module               | 439.75 kB |
+src_app_employer-panel_employer-contacts_employer-contacts_module_ts.js                                 | employer-contacts-employer-contacts-module         | 336.20 kB |
+src_app_auth_auth_module_ts.js                                                                          | auth-auth-module                                   | 297.29 kB |
+src_app_public_public_module_ts.js                                                                      | main-public-public-module                          | 198.44 kB |
+src_app_employer-panel_employer-subscription_employer-subscription_module_ts.js                         | employer-subscription-employer-subscription-module |  97.35 kB |
+src_app_admin-panel_admin-panel_module_ts.js                                                            | main-admin-panel-admin-panel-module                |  96.16 kB |
+src_app_applicant-panel_applicant-panel_module_ts.js                                                    | applicant-panel-applicant-panel-module             |  79.68 kB |
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js                            | applicant-dashboard-applicant-dashboard-module     |  70.88 kB |
+src_app_employer-panel_employer-settings_employer-settings_module_ts.js                                 | employer-settings-employer-settings-module         |  59.87 kB |
+default-src_app_core_core_module_ts.js                                                                  | main-admin-panel-admin-panel-module                |  43.55 kB |
+src_app_employer-panel_employer-jobs_employer-jobs_module_ts.js                                         | employer-jobs-employer-jobs-module                 |  15.52 kB |
+src_app_applicant-panel_applicant-profile_applicant-profile_module_ts.js                                | applicant-profile-applicant-profile-module         |   8.91 kB |
+common.js                                                                                               | common                                             |   5.03 kB |
+src_app_employer-panel_employer-interview_employer-interview_module_ts.js                               | employer-interview-employer-interview-module       |   4.66 kB |
+
+Build at: 2026-06-21T04:23:12.675Z - Hash: 748d8a98a50f7bb3 - Time: 28623ms
+
+** Angular Live Development Server is listening on localhost:4200, open your browser on http://localhost:4200/ **
+
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T05:01:28.014Z - Hash: 60550cd6e5d5bb75 - Time: 6197ms
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T05:01:38.979Z - Hash: 60f276da561f2a8c - Time: 1860ms
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   |  Raw Size
+main.js             | main    | 741.92 kB |
+runtime.js          | runtime |  12.96 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:02:20.294Z - Hash: dcddf94034e66186 - Time: 8227ms
+
+× Failed to compile.
+
+Initial Chunk Files | Names   |  Raw Size
+main.js             | main    | 761.15 kB |
+runtime.js          | runtime |  12.96 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:02:22.561Z - Hash: 766a345151c82732 - Time: 2128ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 750.59 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:03:14.083Z - Hash: 6f3a1cc0b217b0aa - Time: 7643ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 750.71 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:03:43.037Z - Hash: 9c39eddc871b262b - Time: 3076ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 751.05 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:03:50.584Z - Hash: ddbf4acd7ebbff95 - Time: 2608ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 759.35 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:04:05.781Z - Hash: 8b18811826a79197 - Time: 1406ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 768.30 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:04:49.193Z - Hash: 24fbc16fd0a10aee - Time: 4374ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 768.31 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T05:06:01.896Z - Hash: b1b0ae8d31410c28 - Time: 2276ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 816.04 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:41:51.927Z - Hash: ed4e8d5bf044ceb0 - Time: 7281ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 816.04 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:41:56.377Z - Hash: fef33fe01ae8e9c7 - Time: 2179ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 817.40 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:42:04.276Z - Hash: 336cef11fd250901 - Time: 913ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 819.49 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:42:27.315Z - Hash: 1460017fde5d57c1 - Time: 771ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 821.21 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:42:38.896Z - Hash: 97a7b750a81d122b - Time: 746ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 821.25 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:42:54.383Z - Hash: 2fe7108fa586058c - Time: 741ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 822.12 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:43:10.236Z - Hash: 8a4576e39aae2901 - Time: 948ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 822.40 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:45:02.373Z - Hash: 3c316e0c290e1a05 - Time: 2105ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 823.50 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:48:10.223Z - Hash: 81df6214a9180c13 - Time: 2892ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 198.44 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:49:23.390Z - Hash: a3cd3fcb3fcac9e1 - Time: 1942ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 198.44 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:49:54.682Z - Hash: 17f69b253977c316 - Time: 666ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 198.44 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:50:00.572Z - Hash: f514b61ee93e1434 - Time: 650ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 198.44 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:50:05.245Z - Hash: d55d52e56cc5d54e - Time: 453ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 198.97 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:50:47.586Z - Hash: eaa923d2b2f8f25f - Time: 680ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 198.69 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:50:59.586Z - Hash: 0845c72715b98c47 - Time: 515ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 191.21 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:52:11.459Z - Hash: cd2023364ff9e70f - Time: 1144ms
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T07:56:35.108Z - Hash: 6907a465540c3154 - Time: 4623ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 824.04 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:56:37.677Z - Hash: 57c992ebf5d1dae9 - Time: 791ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 850.82 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:58:21.478Z - Hash: be31b9c15b8ad721 - Time: 3052ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 852.03 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T07:58:40.949Z - Hash: 901e821fda2f9e08 - Time: 1344ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 852.52 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:02:06.860Z - Hash: 4659e73ea96e0aa7 - Time: 5527ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 191.25 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:02:20.507Z - Hash: 05611c43a1366bd1 - Time: 1754ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 854.19 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:02:46.174Z - Hash: 14226ec035b88cb0 - Time: 1778ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 854.69 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:04:05.934Z - Hash: 91d29dbb21a9127d - Time: 2631ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 854.84 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:04:21.358Z - Hash: c7174cae79d76d17 - Time: 2013ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 855.14 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:04:34.798Z - Hash: 61d2864ab60d04b2 - Time: 1107ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 858.31 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:04:48.623Z - Hash: f8be7396ce10f22f - Time: 718ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 858.73 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:05:17.402Z - Hash: bcc6f0384240a3c8 - Time: 923ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 858.79 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:05:22.987Z - Hash: daee54d50cbbffe5 - Time: 1147ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 859.68 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:05:40.358Z - Hash: 0fcc5e5ca3cdd566 - Time: 1657ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 859.68 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:08:05.033Z - Hash: fa762219f7c2530b - Time: 3253ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 859.68 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:08:08.115Z - Hash: f37692272bb31602 - Time: 786ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 866.37 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:08:16.184Z - Hash: f41b22917b3c061f - Time: 906ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 866.48 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:08:24.241Z - Hash: e62bd2469d19cdd2 - Time: 728ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 866.79 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:08:33.562Z - Hash: 44f7d70b178c261b - Time: 824ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 192.60 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:10:50.954Z - Hash: 482e9b8ae119a7bf - Time: 4100ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 193.71 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:11:23.177Z - Hash: 6191de60627d67e4 - Time: 1764ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 866.81 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:11:49.865Z - Hash: 1402f8e5c4dbbe1e - Time: 1192ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 866.84 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:11:56.070Z - Hash: 188aa534e491f989 - Time: 1018ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                              | Names                              |  Raw Size
+main.js                                                                          | main                               | 762.51 kB |
+runtime.js                                                                       | runtime                            |  12.96 kB |
+
+Lazy Chunk Files                                                                 | Names                              |  Raw Size
+src_app_auth_auth_module_ts.js                                                   | auth-auth-module                   | 283.63 kB |
+default-src_app_views_error-page_error-not-found_error-not-found_component_ts.js | auth-auth-module                   |  13.94 kB |
+src_app_views_error-page_error-page_module_ts.js                                 | views-error-page-error-page-module |   3.31 kB |
+
+20 unchanged chunks
+
+Build at: 2026-06-21T08:27:24.304Z - Hash: 59313892d383185e - Time: 5902ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                              | Names                              |  Raw Size
+runtime.js                                       | runtime                            |  12.96 kB |
+
+Lazy Chunk Files                                 | Names                              |  Raw Size
+src_app_auth_auth_module_ts.js                   | auth-auth-module                   | 278.71 kB |
+src_app_views_error-page_error-page_module_ts.js | views-error-page-error-page-module |   3.76 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T08:27:46.803Z - Hash: 5a00296c4364a6c3 - Time: 814ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                              | Names                              | Raw Size
+runtime.js                                       | runtime                            | 12.96 kB |
+
+Lazy Chunk Files                                 | Names                              | Raw Size
+src_app_views_error-page_error-page_module_ts.js | views-error-page-error-page-module |  4.18 kB |
+
+23 unchanged chunks
+
+Build at: 2026-06-21T08:28:01.389Z - Hash: b5be9643eb03f008 - Time: 378ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                              | Names                              |  Raw Size
+main.js                                          | main                               | 762.29 kB |
+runtime.js                                       | runtime                            |  12.96 kB |
+
+Lazy Chunk Files                                 | Names                              |  Raw Size
+src_app_auth_auth_module_ts.js                   | auth-auth-module                   | 277.89 kB |
+src_app_views_error-page_error-page_module_ts.js | views-error-page-error-page-module |  17.84 kB |
+
+20 unchanged chunks
+
+Build at: 2026-06-21T08:29:30.537Z - Hash: 635d8e7de3e18392 - Time: 2875ms
+
+× Failed to compile.
+
+Initial Chunk Files            | Names            |  Raw Size
+runtime.js                     | runtime          |  12.96 kB |
+
+Lazy Chunk Files               | Names            |  Raw Size
+src_app_auth_auth_module_ts.js | auth-auth-module | 283.30 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T08:29:36.431Z - Hash: fd728effeb61070a - Time: 2718ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+main.js                                | main                                 | 764.85 kB |
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 871.97 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T08:32:49.148Z - Hash: 7deed0977c4e4fac - Time: 5779ms
+
+√ Compiled successfully.
+
+Initial Chunk Files            | Names            |  Raw Size
+runtime.js                     | runtime          |  12.96 kB |
+
+Lazy Chunk Files               | Names            |  Raw Size
+src_app_auth_auth_module_ts.js | auth-auth-module | 283.81 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T09:10:03.471Z - Hash: 0b2bd4220a0ce496 - Time: 5739ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 311.92 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T09:17:11.260Z - Hash: 123c4cfa707ad57a - Time: 7882ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-21T12:24:13.851Z - Hash: 123c4cfa707ad57a - Time: 5523ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-21T12:24:14.273Z - Hash: 123c4cfa707ad57a - Time: 347ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                          | Names                                          | Raw Size
+runtime.js                                                                   | runtime                                        | 12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          | Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 95.49 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T12:26:01.315Z - Hash: 186456ad847d711d - Time: 1266ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                          | Names                                          | Raw Size
+runtime.js                                                                   | runtime                                        | 12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          | Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 96.12 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T12:26:10.732Z - Hash: 6690cf587800d870 - Time: 1230ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                  | Names                                  | Raw Size
+runtime.js                                           | runtime                                | 12.96 kB |
+
+Lazy Chunk Files                                     | Names                                  | Raw Size
+src_app_applicant-panel_applicant-panel_module_ts.js | applicant-panel-applicant-panel-module | 99.25 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T12:30:04.263Z - Hash: b0a5be7e94dd38cc - Time: 1784ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                  | Names                                  | Raw Size
+runtime.js                                           | runtime                                | 12.96 kB |
+
+Lazy Chunk Files                                     | Names                                  | Raw Size
+src_app_applicant-panel_applicant-panel_module_ts.js | applicant-panel-applicant-panel-module | 99.41 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T12:30:35.941Z - Hash: 8709eb00cde609a8 - Time: 1269ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                      | Names                                      |  Raw Size
+main.js                                                                  | main                                       | 764.88 kB |
+runtime.js                                                               | runtime                                    |  12.96 kB |
+
+Lazy Chunk Files                                                         | Names                                      |  Raw Size
+src_app_public_public_module_ts.js                                       | main-public-public-module                  | 309.22 kB |
+src_app_applicant-panel_applicant-panel_module_ts.js                     | applicant-panel-applicant-panel-module     |  99.46 kB |
+src_app_applicant-panel_applicant-profile_applicant-profile_module_ts.js | applicant-profile-applicant-profile-module |  45.97 kB |
+common.js                                                                | common                                     |   7.73 kB |
+
+18 unchanged chunks
+
+Build at: 2026-06-21T13:01:03.577Z - Hash: ca112a2379721158 - Time: 3466ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                          | Names                                          | Raw Size
+runtime.js                                                                   | runtime                                        | 12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          | Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 96.74 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:01:21.654Z - Hash: 044ff0b8e70def74 - Time: 518ms
+
+× Failed to compile.
+
+Initial Chunk Files                                                          | Names                                          | Raw Size
+runtime.js                                                                   | runtime                                        | 12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          | Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 96.83 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:01:38.075Z - Hash: 4982217bd88a2a0a - Time: 591ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                          | Names                                          | Raw Size
+runtime.js                                                                   | runtime                                        | 12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          | Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 97.35 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:01:54.496Z - Hash: d00e25319cd340f8 - Time: 1982ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                          | Names                                          | Raw Size
+runtime.js                                                                   | runtime                                        | 12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          | Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 97.35 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:18:11.064Z - Hash: 3089af3e08ab2acc - Time: 5796ms
+
+× Failed to compile.
+
+Initial Chunk Files                                                          | Names                                          |  Raw Size
+runtime.js                                                                   | runtime                                        |  12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          |  Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 102.55 kB |
+src_app_applicant-panel_applicant-panel_module_ts.js                         | applicant-panel-applicant-panel-module         |  99.52 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-21T13:18:12.484Z - Hash: da8b50d5257681c6 - Time: 960ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                          | Names                                          |  Raw Size
+runtime.js                                                                   | runtime                                        |  12.96 kB |
+
+Lazy Chunk Files                                                             | Names                                          |  Raw Size
+src_app_applicant-panel_applicant-dashboard_applicant-dashboard_module_ts.js | applicant-dashboard-applicant-dashboard-module | 103.05 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:18:21.457Z - Hash: c0be2db281cbfbd1 - Time: 1719ms
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+23 unchanged chunks
+
+Build at: 2026-06-21T13:36:05.122Z - Hash: 44ef5ebba3f65a6c - Time: 7995ms
+
+× Failed to compile.
+
+24 unchanged chunks
+
+Build at: 2026-06-21T13:36:06.126Z - Hash: 44ef5ebba3f65a6c - Time: 834ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 872.85 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:36:15.787Z - Hash: 9204d84cc4e66afc - Time: 1839ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 872.93 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:36:24.036Z - Hash: 7a9c363af617ffc5 - Time: 2167ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 874.28 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:36:35.910Z - Hash: 737e8e7862e86381 - Time: 2543ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 874.26 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:36:39.558Z - Hash: c7d14941b5eb5c10 - Time: 680ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 874.26 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:37:05.217Z - Hash: 5b85fa6d95c52ea2 - Time: 14411ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 874.48 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:37:10.164Z - Hash: 3e5795a307cd17b0 - Time: 4718ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 881.82 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:37:12.259Z - Hash: aae083227178e9e2 - Time: 2003ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 885.64 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:37:19.778Z - Hash: ee7b35ff13cda11d - Time: 2733ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 887.52 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:37:32.735Z - Hash: 2691ab4a216fbb6b - Time: 4640ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 887.61 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:44:37.455Z - Hash: 8b7e02e1e96b6d1d - Time: 11169ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 887.71 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:51:43.041Z - Hash: 4ada96acc1b95edf - Time: 5647ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 888.09 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:51:43.768Z - Hash: 4ecbebdf80a8c2eb - Time: 682ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 889.72 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-21T13:52:06.420Z - Hash: fb69c08f6d53218f - Time: 1562ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 890.10 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T06:41:41.848Z - Hash: ccba09091588c711 - Time: 6413ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 890.10 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T06:41:59.726Z - Hash: 61085a46104d8592 - Time: 1102ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 890.10 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T06:42:15.578Z - Hash: 2153bc303e4639f9 - Time: 1007ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 891.13 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T06:42:34.132Z - Hash: 1e44aaa57c1c461b - Time: 889ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 891.22 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T06:42:42.615Z - Hash: 8680af9c77609690 - Time: 678ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 892.30 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T06:42:52.406Z - Hash: 0d2201d5ded44806 - Time: 663ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 893.31 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:05:07.289Z - Hash: c8955edae49b8ca3 - Time: 5400ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 893.66 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:05:20.934Z - Hash: bb6f89e277ec23ba - Time: 1247ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.20 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:05:39.793Z - Hash: c53d50294fefb93c - Time: 2328ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                      | Names                                      | Raw Size
+runtime.js                                                               | runtime                                    | 12.96 kB |
+
+Lazy Chunk Files                                                         | Names                                      | Raw Size
+src_app_applicant-panel_applicant-profile_applicant-profile_module_ts.js | applicant-profile-applicant-profile-module | 45.99 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:30:25.152Z - Hash: 60f731056f5da02d - Time: 6266ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                      | Names                                      | Raw Size
+runtime.js                                                               | runtime                                    | 12.96 kB |
+
+Lazy Chunk Files                                                         | Names                                      | Raw Size
+src_app_applicant-panel_applicant-profile_applicant-profile_module_ts.js | applicant-profile-applicant-profile-module | 46.20 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:30:43.886Z - Hash: f981f1ebf12102bf - Time: 1587ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                                                     | Names                                | Raw Size
+runtime.js                                                                                              | runtime                              | 12.96 kB |
+
+Lazy Chunk Files                                                                                        | Names                                | Raw Size
+default-src_app_application_application_module_ts-src_app_shared_components_updated-dialog_up-cc2054.js | employer-panel-employer-panel-module |  1.63 MB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:32:49.396Z - Hash: c104e6056c2f7942 - Time: 1884ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                                                     | Names                                | Raw Size
+runtime.js                                                                                              | runtime                              | 12.96 kB |
+
+Lazy Chunk Files                                                                                        | Names                                | Raw Size
+default-src_app_application_application_module_ts-src_app_shared_components_updated-dialog_up-cc2054.js | employer-panel-employer-panel-module |  1.64 MB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:32:57.208Z - Hash: 2ccdc426c1adfd15 - Time: 630ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                                                                                     | Names                                | Raw Size
+runtime.js                                                                                              | runtime                              | 12.96 kB |
+
+Lazy Chunk Files                                                                                        | Names                                | Raw Size
+default-src_app_application_application_module_ts-src_app_shared_components_updated-dialog_up-cc2054.js | employer-panel-employer-panel-module |  1.64 MB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:33:09.028Z - Hash: c02530e16cdbfd28 - Time: 681ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.43 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:33:33.298Z - Hash: e5811bb1403bdc87 - Time: 845ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.64 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:33:46.168Z - Hash: 9f9f9fa10b5b23ea - Time: 703ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.81 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:34:25.148Z - Hash: 908e33ca95760aa2 - Time: 908ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.88 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:34:41.345Z - Hash: 97177bf5d846f268 - Time: 820ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.93 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:34:58.490Z - Hash: 63a47bc9547e0f7d - Time: 750ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.99 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:35:28.619Z - Hash: 81b904011af0fc9a - Time: 864ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 894.99 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:35:53.403Z - Hash: da8ffd991ea0e90b - Time: 808ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.58 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:36:04.732Z - Hash: 1cca66c613046ada - Time: 810ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.58 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:36:55.095Z - Hash: add8ae19b9a38a63 - Time: 924ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.58 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T07:37:03.390Z - Hash: 7afeb8e870539368 - Time: 801ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T08:34:17.876Z - Hash: 7afeb8e870539368 - Time: 4603ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.58 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:35:50.766Z - Hash: 9d23f4302743113a - Time: 1357ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.58 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:36:00.878Z - Hash: bff7d5b117588123 - Time: 759ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.69 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:36:08.381Z - Hash: 8809f8b33616ddd1 - Time: 553ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 896.81 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:36:16.442Z - Hash: 760272b262543ee5 - Time: 512ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 911.26 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:36:57.902Z - Hash: 183d20d10ed95055 - Time: 1317ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 913.00 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:37:36.653Z - Hash: a14aa86cb5300591 - Time: 761ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 920.88 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:37:56.450Z - Hash: 5360864f5c3e4c64 - Time: 782ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 921.50 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:38:06.299Z - Hash: 6464ba9c594828a2 - Time: 651ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 921.50 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:38:22.915Z - Hash: f5cc2a84e59fdfa9 - Time: 546ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 921.56 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:51:46.569Z - Hash: 5eab3d65e720f891 - Time: 1702ms
+
+× Failed to compile.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T08:51:47.369Z - Hash: 5eab3d65e720f891 - Time: 689ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 923.13 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:52:00.436Z - Hash: 36d26453061ebdec - Time: 945ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 923.81 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:52:19.243Z - Hash: ee6782fad906ca35 - Time: 611ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 924.08 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:52:37.724Z - Hash: 337b58706deaef9c - Time: 696ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 924.11 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:52:52.929Z - Hash: 2a499f0144e5d896 - Time: 833ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 924.56 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:53:04.107Z - Hash: 596333041a1296f6 - Time: 784ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 925.04 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:53:32.079Z - Hash: 9e21c1101234f5fb - Time: 973ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 924.85 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:53:43.824Z - Hash: f63ee8d64d2926ec - Time: 779ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 925.17 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:54:12.838Z - Hash: 35691d4914623a57 - Time: 572ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 929.71 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:54:33.300Z - Hash: ee783795beb82c72 - Time: 756ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 929.93 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:56:50.916Z - Hash: 0e2d6699a7dae056 - Time: 1082ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 929.88 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T08:56:59.257Z - Hash: 1ddef4a962f9b50d - Time: 641ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 930.19 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:10:07.361Z - Hash: 5f9ea4b6453b5311 - Time: 3886ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 930.89 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:13:30.670Z - Hash: fbe2717d6090d5a0 - Time: 1373ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 930.89 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:13:39.423Z - Hash: e73fe5c3b6c3fcc2 - Time: 647ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T09:29:05.283Z - Hash: e73fe5c3b6c3fcc2 - Time: 5018ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T09:29:07.800Z - Hash: e73fe5c3b6c3fcc2 - Time: 1944ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T09:29:13.081Z - Hash: e73fe5c3b6c3fcc2 - Time: 1445ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 930.99 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:29:19.298Z - Hash: 39630326c36e1b03 - Time: 1723ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 932.52 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:29:37.074Z - Hash: 58e4f85990be4d7f - Time: 893ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 932.62 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:29:46.472Z - Hash: d3772933178a83aa - Time: 1204ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 932.71 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:29:52.881Z - Hash: aa692f5cf3cd7c41 - Time: 746ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 934.23 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:30:03.091Z - Hash: f6790c5cd8abfb2a - Time: 873ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 941.99 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:30:25.706Z - Hash: 041f79bb737af7c7 - Time: 1344ms
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+23 unchanged chunks
+
+Build at: 2026-06-22T09:30:37.904Z - Hash: d46fb9fb174ddcaf - Time: 1213ms
+
+× Failed to compile.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+23 unchanged chunks
+
+Build at: 2026-06-22T09:30:43.120Z - Hash: c5fb00b71f5f7170 - Time: 886ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 942.09 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:30:55.306Z - Hash: 680ba3e92f15a5e6 - Time: 685ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 943.13 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:31:15.042Z - Hash: 4a38975ae40bf37b - Time: 1282ms
+
+× Failed to compile.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 943.13 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:31:25.380Z - Hash: 8c96eb7c4d137f68 - Time: 677ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T09:35:37.230Z - Hash: 8c96eb7c4d137f68 - Time: 570ms
+
+√ Compiled successfully.
+
+24 unchanged chunks
+
+Build at: 2026-06-22T09:35:57.357Z - Hash: 8c96eb7c4d137f68 - Time: 659ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 950.23 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:36:11.787Z - Hash: 123d6732d35582df - Time: 1125ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 953.70 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T09:36:51.010Z - Hash: c63a5d60a343e434 - Time: 965ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 955.12 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T11:56:48.137Z - Hash: 1afd533a38b6f6e6 - Time: 8210ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 955.32 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T11:57:10.161Z - Hash: 18e4128cca27bdfd - Time: 1292ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 955.52 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T11:57:20.704Z - Hash: 87d109b5b84941d2 - Time: 952ms
+
+√ Compiled successfully.
+
+Initial Chunk Files | Names   |  Raw Size
+main.js             | main    | 765.49 kB |
+runtime.js          | runtime |  12.96 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:09:49.483Z - Hash: fb362293be68cd54 - Time: 2658ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 309.22 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:14:57.693Z - Hash: f14a0b3b379ef908 - Time: 1375ms
+
+× Failed to compile.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 344.89 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:15:02.836Z - Hash: 7d5cbff989d59c12 - Time: 703ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 345.54 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:15:21.734Z - Hash: 1c8974863f47da66 - Time: 583ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 345.76 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:15:45.892Z - Hash: 0a36589fc0000f1c - Time: 511ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 346.23 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:15:54.879Z - Hash: 22dab9f6d79053bd - Time: 552ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 346.61 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:16:05.700Z - Hash: d40ce52f44a64820 - Time: 1406ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 320.39 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:36:04.515Z - Hash: b2b47fb2dd399f95 - Time: 7083ms
+
+× Failed to compile.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 12.96 kB |
+
+23 unchanged chunks
+
+Build at: 2026-06-22T12:36:21.609Z - Hash: 7b00976171dd5d6d - Time: 722ms
+
+× Failed to compile.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 322.23 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:36:42.133Z - Hash: e092672c2c865895 - Time: 804ms
+
+× Failed to compile.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 322.46 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:37:14.467Z - Hash: 279eda45bf0dc507 - Time: 832ms
+
+× Failed to compile.
+
+Initial Chunk Files | Names   |  Raw Size
+main.js             | main    | 765.49 kB |
+runtime.js          | runtime |  12.96 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:37:22.648Z - Hash: a399537c9a053538 - Time: 1788ms
+
+× Failed to compile.
+
+Initial Chunk Files                | Names                     |  Raw Size
+main.js                            | main                      | 785.71 kB |
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 317.78 kB |
+
+21 unchanged chunks
+
+Build at: 2026-06-22T12:37:29.119Z - Hash: d8b7e2b6cbc98324 - Time: 1350ms
+
+× Failed to compile.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 317.45 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:37:42.638Z - Hash: 22ae75dade71a10f - Time: 652ms
+
+× Failed to compile.
+
+Initial Chunk Files                | Names                     |  Raw Size
+runtime.js                         | runtime                   |  12.96 kB |
+
+Lazy Chunk Files                   | Names                     |  Raw Size
+src_app_public_public_module_ts.js | main-public-public-module | 328.94 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:37:51.054Z - Hash: 61c5753784cbde5c - Time: 1801ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 956.19 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:38:08.839Z - Hash: f5a510f2bb40a142 - Time: 1506ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 956.76 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:38:21.223Z - Hash: cfeea6531d848ad0 - Time: 1552ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 956.76 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:38:42.108Z - Hash: 10f179d7363ff5e1 - Time: 2407ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 957.59 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:38:58.247Z - Hash: 9f78b90cce0d2ad6 - Time: 1805ms
+
+√ Compiled successfully.
+
+Initial Chunk Files                    | Names                                |  Raw Size
+runtime.js                             | runtime                              |  12.96 kB |
+
+Lazy Chunk Files                       | Names                                |  Raw Size
+default-src_app_jobs_jobs_module_ts.js | employer-panel-employer-panel-module | 958.27 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:39:09.227Z - Hash: 96dbd1d101d4952a - Time: 1038ms
+
+√ Compiled successfully.
+
+Initial Chunk Files            | Names            |  Raw Size
+runtime.js                     | runtime          |  12.96 kB |
+
+Lazy Chunk Files               | Names            |  Raw Size
+src_app_auth_auth_module_ts.js | auth-auth-module | 284.91 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:40:23.584Z - Hash: a902f449ac1a41b3 - Time: 2097ms
+
+√ Compiled successfully.
+
+Initial Chunk Files            | Names            |  Raw Size
+runtime.js                     | runtime          |  12.96 kB |
+
+Lazy Chunk Files               | Names            |  Raw Size
+src_app_auth_auth_module_ts.js | auth-auth-module | 285.40 kB |
+
+22 unchanged chunks
+
+Build at: 2026-06-22T12:53:22.354Z - Hash: 8af489f8a7569d85 - Time: 1020ms
+
+√ Compiled successfully.

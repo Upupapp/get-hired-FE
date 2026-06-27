@@ -252,7 +252,7 @@
 }
 
 .btn-search{
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -400,7 +400,7 @@ label{
 }
 
 .btn-create-interview{
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 10px;
 	color: white;
 	border-radius: 6px;
@@ -425,7 +425,7 @@ label{
 }
 
 .btn-record{
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 10px;
 	font-family: 'Manrope';
 	font-style: normal;

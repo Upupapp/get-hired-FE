@@ -117,7 +117,7 @@
 }
 
 .btn-nav-gradient{
-  background: linear-gradient(163.18deg, #D06047 1.81%, #D06047 98.2%) !important;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
   box-shadow: 0px 29.81px 46.8519px rgba(10, 146, 200, 0.1059), 0px 14.52px 25.4815px rgba(10, 146, 200, 0.1007) !important;
   border-radius: 900px !important;
   color: white;
@@ -129,12 +129,8 @@
   min-height: 44px !important; // MOBILEVIEW: WCAG 2.5.5 touch target — override fixed 38px on mobile
 
   &:hover{
-    border: solid 2px #FF4D3C !important;
-    color: #FF4D3C;
-    transition: all 0.1s ease !important;
-    background: transparent !important;
-    padding-bottom: 8px !important;
-    padding-top: 8px !important;
+    opacity: 0.88;
+    transition: opacity 120ms ease !important;
   }
 }
 

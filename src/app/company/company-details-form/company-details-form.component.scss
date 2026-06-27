@@ -162,7 +162,7 @@
 }
 
 .btn-search{
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 4px;
 	font-family: 'Manrope';
 	font-style: normal;
@@ -310,7 +310,7 @@ label{
 }
 
 .btn-save{
-	background: $color-global-red-buttons;
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 7px;
 	font-style: normal;
 	font-weight: 500;
