@@ -123,6 +123,8 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
               if (uid) { this.employeeFacade.getEmployeeProfile(uid); }
             }
           } catch (_) {}
+          // Refresh profile$ stream so the form shows saved values (authFacade fix)
+          this.authFacade.getUserProfile();
           this.dialog.open(UpdatedDialogComponent, {
             disableClose: false,
             data: 'Profile saved.',
