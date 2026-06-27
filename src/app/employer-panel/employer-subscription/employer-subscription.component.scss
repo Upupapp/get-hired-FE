@@ -4,18 +4,26 @@
 
 // ─── Page wrapper ────────────────────────────────────────────────────────────
 .gh-sub-page {
-  padding: 0 0 48px 0;
+  padding: 0 0 56px 0;
+  max-width: 1440px;
 }
 
 // ─── Section heading ─────────────────────────────────────────────────────────
 .gh-sub-section {
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 
   &__title {
     font-family: 'Manrope', sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: var(--gh-text, #101828);
+    margin: 0 0 4px 0;
+  }
+
+  &__sub {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    color: var(--gh-text-secondary, #667085);
     margin: 0 0 16px 0;
   }
 }
@@ -245,8 +253,8 @@
 // ─── USAGE COCKPIT ───────────────────────────────────────────────────────────
 .gh-sub-cockpit-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
 }
 
 .gh-usage-card {
@@ -343,6 +351,96 @@
     color: #F59E0B;
     margin-top: 6px;
   }
+
+  &__helper {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    color: var(--gh-text-secondary, #667085);
+    margin: 6px 0 0 0;
+    line-height: 1.45;
+  }
+}
+
+// ─── SR-ONLY UTILITY ─────────────────────────────────────────────────────────
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ─── RECOMMENDATION CARD ─────────────────────────────────────────────────────
+.gh-sub-recommendation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, #0D1024 0%, #1a1f40 100%);
+  border: 1px solid rgba(255, 103, 93, 0.3);
+  border-radius: 18px;
+  padding: 22px 28px;
+  margin-bottom: 32px;
+
+  &__left {
+    flex: 1 1 320px;
+  }
+
+  &__right {
+    flex: 0 0 auto;
+  }
+
+  &__pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255, 103, 93, 0.15);
+    border: 1px solid rgba(255, 103, 93, 0.4);
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #FF675D;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 4px 0;
+
+    strong { color: #FF675D; }
+  }
+
+  &__reason {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0 0 12px 0;
+  }
+
+  &__benefits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+
+  &__benefit {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+  }
 }
 
 // ─── USAGE METER ─────────────────────────────────────────────────────────────
@@ -416,13 +514,15 @@
   }
 
   &--current {
+    background: #F8FBFF;
     border-color: #168BFF;
-    box-shadow: 0 0 0 2px rgba(22, 139, 255, 0.15);
+    border-width: 2px;
+    box-shadow: 0 0 0 3px rgba(22, 139, 255, 0.1);
   }
 
   &--trial {
     background: var(--gh-bg, #F6F7FB);
-    border-style: dashed;
+    border-color: #D1D5DB;
   }
 
   &__badges {
@@ -449,6 +549,9 @@
   }
 
   &__price {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
     margin-bottom: 20px;
   }
 
@@ -457,6 +560,13 @@
     font-size: 24px;
     font-weight: 800;
     color: var(--gh-text, #101828);
+  }
+
+  &__price-per {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gh-text-secondary, #667085);
   }
 
   &__features {
@@ -779,48 +889,79 @@
 }
 
 // ─── RESPONSIVE ──────────────────────────────────────────────────────────────
+@media (max-width: 1024px) {
+  .gh-sub-cockpit-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+
+  .gh-plan-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
+  .gh-sub-page { padding: 0 0 40px 0; }
+
+  .gh-sub-section { margin-bottom: 28px; }
+
   .gh-sub-hero {
-    padding: 24px 20px;
+    padding: 22px 18px;
+    margin-bottom: 18px;
 
-    &__inner {
-      flex-direction: column;
-    }
-
-    &__right {
-      align-items: flex-start;
-    }
+    &__inner { flex-direction: column; }
+    &__right { align-items: flex-start; width: 100%; }
 
     &__pulse {
       gap: 16px;
       padding: 12px 16px;
+      width: 100%;
+      justify-content: space-around;
     }
 
     &__pulse-val { font-size: 20px; }
-    &__title { font-size: 22px; }
+    &__title { font-size: 21px; }
+    &__cta { width: 100%; }
+  }
+
+  .gh-sub-cockpit-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .gh-plan-grid {
     grid-template-columns: 1fr;
   }
 
+  .gh-sub-recommendation {
+    flex-direction: column;
+    padding: 18px 20px;
+
+    &__right { width: 100%; .gh-btn-primary { width: 100%; } }
+  }
+
   .gh-sub-banner {
     flex-wrap: wrap;
-    .gh-sub-banner__action { width: 100%; }
-    .gh-sub-banner__btn { width: 100%; }
+    padding: 12px 14px;
+
+    &__action { width: 100%; }
+    &__btn { width: 100%; text-align: center; }
+  }
+
+  .gh-invoice-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .gh-invoice-table {
-    thead { display: none; }
-    tbody tr { display: grid; padding: 12px 0; }
-    tbody td { padding: 4px 16px; border: none; }
-    tbody td::before {
-      font-weight: 700;
-      font-size: 10px;
-      text-transform: uppercase;
-      color: var(--gh-text-secondary, #667085);
-      display: block;
-      margin-bottom: 2px;
-    }
+    min-width: 560px;
+  }
+
+  .gh-faq-item__q { padding: 14px 16px; font-size: 13.5px; }
+  .gh-faq-item__a { padding: 4px 16px 14px; }
+}
+
+@media (max-width: 430px) {
+  .gh-sub-cockpit-grid {
+    grid-template-columns: 1fr;
   }
 }

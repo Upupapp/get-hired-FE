@@ -73,7 +73,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
       priceLabel: 'Free',
       trial: true,
       features: [
-        { label: '2 active job posts', included: true },
+        { label: '5 active job posts', included: true },
         { label: 'Applicant tracking', included: true },
         { label: 'Company profile', included: true },
         { label: 'Interview questions', included: true },
@@ -237,6 +237,24 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
     return usage && usage.included === 'unlimited';
   }
 
+  // When video_response DB column is boolean, included=null but booleanIncluded is set.
+  videoResponsesIsBoolean(usage: any): boolean {
+    return usage && usage.included === null && typeof usage.booleanIncluded === 'boolean';
+  }
+
+  videoResponsesBooleanIncluded(usage: any): boolean {
+    return usage && usage.booleanIncluded === true;
+  }
+
+  get recommendedPlan() {
+    return this.summary && this.summary.recommendedPlan;
+  }
+
+  get recommendedPlanConfig(): PlanConfig | null {
+    if (!this.recommendedPlan) { return null; }
+    return this.PLAN_CONFIGS.find(p => p.code === this.recommendedPlan.planCode) || null;
+  }
+
   // --- Plan helpers ---
 
   getPlanCta(planCode: string): string {
@@ -331,10 +349,24 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
     return new Date(end).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
   }
 
-  get trialEndDate(): string {
-    const end = this.summary && this.summary.currentPlan && this.summary.currentPlan.trialEndsAt;
-    if (!end) { return '—'; }
-    return new Date(end).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  get trialEndDate(): string | null {
+    const explicit = this.summary && this.summary.currentPlan && this.summary.currentPlan.trialEndsAt;
+    if (explicit) {
+      return new Date(explicit).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+    // Fall back to currentPeriodEnd for trial statuses — BE derives trial end from plan creation + 7 days.
+    const s = this.currentStatus;
+    if (s === 'trialing' || s === 'trial_ending_soon') {
+      const fallback = this.summary && this.summary.currentPlan && this.summary.currentPlan.currentPeriodEnd;
+      if (fallback) {
+        return new Date(fallback).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+    }
+    return null;
+  }
+
+  get hasTrialEndDate(): boolean {
+    return this.trialEndDate !== null;
   }
 
   get currentStatus(): string {
