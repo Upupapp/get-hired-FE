@@ -149,9 +149,18 @@
               Enter the country for this job.
             </p>
           </div>
+        </div><!-- /gh-location-row -->
+
+        <div class="gh-field gh-location-expiry">
+          <label class="gh-label" for="job-expiration-date">
+            Post expiry date <span class="gh-label-optional">(optional)</span>
+          </label>
+          <p class="gh-field-helper">Set a date after which this job post should no longer be active. Leave blank to keep it open.</p>
+          <input id="job-expiration-date" type="date" class="gh-input gh-input--date"
+            formControlName="expirationDate">
         </div>
-      </div>
-    </div>
+      </div><!-- /gh-location-block -->
+    </div><!-- /gh-form-card -->
 
     <!-- ── CARD 3: Job Branding ────────────────────────────────────────────── -->
     <div class="gh-form-card mb-4" id="section-banner">

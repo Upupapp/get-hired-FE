@@ -247,6 +247,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         jobDuties: [data ? data.jobDuties : null],
         jobCategoryId: [data ? data.jobCategoryId : null],
         workSetupId: [data ? data.workSetupId : null],
+        expirationDate: [data ? data.expirationDate : null],
         jobBanner: [data ? data.jobBanner : null],
         bannerFile: new FormArray([]),
         badges: new FormArray([]),

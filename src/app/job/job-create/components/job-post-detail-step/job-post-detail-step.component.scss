@@ -302,6 +302,18 @@
   }
 }
 
+.gh-location-expiry {
+  margin-top: 16px;
+
+  .gh-input--date {
+    max-width: 260px;
+
+    @media (max-width: 576px) {
+      max-width: 100%;
+    }
+  }
+}
+
 // ─── Chip input ───────────────────────────────────────────────────────────────
 .gh-chip-input-group {
   display: flex;
