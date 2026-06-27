@@ -4,7 +4,7 @@
 
 // ─── Page wrapper ────────────────────────────────────────────────────────────
 .gh-sub-page {
-  padding: 0 0 56px 0;
+  padding: 0 28px 56px;
   max-width: 1440px;
 }
 
@@ -100,7 +100,7 @@
   &__cta {
     // .gh-btn-primary from styles.scss applies; just override colour for dark bg
     background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
-    &:hover { background: #F25248 !important; }:hover { opacity: 0.88; }
+    &:hover { opacity: 0.88; }
   }
 
   &__pulse {
@@ -123,6 +123,7 @@
     font-size: 24px;
     font-weight: 800;
     color: #fff;
+    &--incl { color: #34D399; }
   }
 
   &__pulse-label {
@@ -241,6 +242,13 @@
     transition: opacity 120ms ease;
     @include motion-safe;
     &:hover { opacity: 0.8; }
+
+    &--primary {
+      background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+      color: #fff;
+      border-color: transparent;
+      &:hover { opacity: 0.88; }
+    }
 
     &--danger {
       background: #EF4444;
@@ -624,7 +632,7 @@
     &--primary {
       background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
       color: #fff;
-      &:hover { background: #F25248; }:hover { opacity: 0.88; }
+      &:hover { opacity: 0.88; }
     }
 
     &--current {

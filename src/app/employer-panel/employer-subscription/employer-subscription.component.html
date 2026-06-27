@@ -62,10 +62,13 @@
               <span class="gh-sub-hero__pulse-label">Admin users</span>
             </div>
             <div class="gh-sub-hero__pulse-item">
-              <span class="gh-sub-hero__pulse-val" aria-label="Video responses">
+              <span class="gh-sub-hero__pulse-val" aria-label="Video responses"
+                [ngClass]="{'gh-sub-hero__pulse-val--incl': videoResponsesIsBoolean(summary.usage.recruitment.videoResponses) && videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses)}">
                 {{ summary.usage.recruitment.videoResponses?.included === 'unlimited'
                     ? '∞'
-                    : (summary.usage.recruitment.videoResponses?.used ?? 0) }}
+                    : videoResponsesIsBoolean(summary.usage.recruitment.videoResponses)
+                      ? (videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses) ? '✓' : '—')
+                      : (summary.usage.recruitment.videoResponses?.used ?? 0) }}
               </span>
               <span class="gh-sub-hero__pulse-label">Video responses</span>
             </div>
@@ -115,8 +118,8 @@
         <span *ngIf="currentStatus === 'expired'">Your trial or plan has ended. Choose a plan to continue hiring on GetHired.</span>
       </div>
       <div class="gh-sub-banner__action">
-        <button class="gh-sub-banner__btn" *ngIf="currentStatus === 'none' || currentStatus === 'expired'">Compare plans</button>
-        <button class="gh-sub-banner__btn" *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'">Upgrade now</button>
+        <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'none' || currentStatus === 'expired'">Compare plans</button>
+        <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'">Upgrade now</button>
         <button class="gh-sub-banner__btn gh-sub-banner__btn--danger" *ngIf="currentStatus === 'payment_failed' || currentStatus === 'past_due'">Fix payment</button>
       </div>
     </div>
