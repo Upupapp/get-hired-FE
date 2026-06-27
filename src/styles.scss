@@ -331,6 +331,8 @@ body {
 
   &:hover{
     opacity: 0.88;
+    outline: 2px solid rgba(255, 112, 98, 0.72);
+    outline-offset: 3px;
   }
 }
 
@@ -729,6 +731,8 @@ label {
     opacity: 0.88;
     color: #ffffff;
     text-decoration: none;
+    outline: 2px solid rgba(255, 112, 98, 0.72);
+    outline-offset: 3px;
   }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 3px; }
   &:active { transform: scale(0.98); }
@@ -762,6 +766,8 @@ label {
     color: $color-global-red-buttons;
     background: $color-global-red-soft;
     text-decoration: none;
+    outline: 2px solid rgba(255, 112, 98, 0.72);
+    outline-offset: 3px;
   }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 3px; }
   &:active { transform: scale(0.98); }
@@ -805,6 +811,8 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
     background: $color-global-red-soft;
     color: $color-global-red-buttons-hover;
     text-decoration: none;
+    outline: 2px solid rgba(255, 112, 98, 0.72);
+    outline-offset: 3px;
   }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 3px; }
   &:active { transform: scale(0.98); }
@@ -916,5 +924,30 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   .gh-btn-secondary:active,
   .gh-btn-ghost:active {
     transform: none !important;
+  }
+}
+
+// ─── BRAND RULE: Universal button hover ring ──────────────────────────────────
+// Coral ring (2px, 3px gap) around every interactive button on desktop hover.
+// This is the GetHired interaction signature — the same primary coral gradient
+// colour appears as a halo, making hover recognisable and on-brand across the
+// entire product surface without requiring per-component overrides.
+//
+// Implementation:
+//   • `outline` (not box-shadow) — layout-neutral, border-radius-aware, no reflow
+//   • `outline-offset: 3px` — creates the characteristic gap seen in the design
+//   • `@media (hover: hover)` — desktop/fine-pointer only; touch uses :active scale
+//   • `:not(:disabled):not([disabled])` — excludes disabled buttons
+//   • `!important` — needed to override Angular component-encapsulated styles
+//     (which add attribute selectors bumping specificity above global rules)
+//   • Transition suppressed automatically by the global prefers-reduced-motion
+//     block above — ring still appears, just without animation
+@media (hover: hover) {
+  button:not(:disabled):not([disabled]):hover,
+  .btn:not(:disabled):not([disabled]):hover,
+  [role="button"]:not([aria-disabled="true"]):hover {
+    outline: 2px solid rgba(255, 112, 98, 0.72) !important;
+    outline-offset: 3px !important;
+    transition: outline-color 100ms ease;
   }
 }
