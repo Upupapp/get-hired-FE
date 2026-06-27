@@ -16,8 +16,8 @@
       <app-talent-proof-badge variant="card" placement="employer_portal_hero"></app-talent-proof-badge>
 
       <div class="portal-hero-cta-group">
-        <button type="button" class="btn-cta-primary gh-pressable" (click)="startHiring()">Start hiring</button>
-        <button type="button" class="btn-cta-outline gh-pressable" (click)="goToSignin()">Sign in</button>
+        <a routerLink="/signup" [queryParams]="{role: 2}" class="btn-cta-primary gh-pressable">Start hiring</a>
+        <a routerLink="/signin" class="btn-cta-outline gh-pressable">Sign in</a>
       </div>
     </div>
 

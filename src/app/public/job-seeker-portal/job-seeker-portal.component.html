@@ -25,9 +25,9 @@
       </form>
 
       <div class="portal-hero-actions">
-        <button type="button" class="btn-link-cta" (click)="createAccount()">Create free account</button>
+        <a routerLink="/signup" [queryParams]="{role: 3}" class="btn-link-cta">Create free account</a>
         <span class="portal-role-divider" aria-hidden="true">|</span>
-        <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+        <a routerLink="/signin" class="btn-link-cta">Sign in</a>
       </div>
     </div>
 
@@ -119,7 +119,7 @@
       Organize your profile, keep your CV ready, and track every application from one place.
     </p>
     <div class="portal-journey-cta">
-      <button type="button" class="btn-cta-primary gh-pressable" (click)="createAccount()">Create free account</button>
+      <a routerLink="/signup" [queryParams]="{role: 3}" class="btn-cta-primary gh-pressable">Create free account</a>
       <a routerLink="/jobs" class="btn-link-cta">Browse jobs</a>
     </div>
   </div>
@@ -215,5 +215,5 @@
   (secondaryClick)="createAccount()">
 </app-portal-cta-band>
 <div class="portal-role-secondary">
-  <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+  <a routerLink="/signin" class="btn-link-cta">Sign in</a>
 </div>
