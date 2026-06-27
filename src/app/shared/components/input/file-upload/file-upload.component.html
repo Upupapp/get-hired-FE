@@ -5,8 +5,10 @@
                 <div>
                     <div *ngIf="!uploadedFile">
                         <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
-                        <button  (click)="uploadFile.click()" class="btn btn-primary float-end" type="button"
-                        id="btn-uploader">Choose File</button>
+                        <button (click)="uploadFile.click()" class="gh-btn-primary" type="button"
+                        id="btn-uploader">
+                          <i class="bi bi-upload me-1" aria-hidden="true"></i>Choose File
+                        </button>
                     </div>
 
                 </div>
@@ -61,8 +63,9 @@
             <div *ngIf="!isMultiple" class="d-flex">
                 <div *ngIf="!uploadedFile">
                     <input #uploadFile hidden type="file" (change)="onFileChangeEvent($event)" [accept]="acceptType"/>
-                    <button  (click)="uploadFile.click()" class="btn btn-primary btn-uploader float-end" type="button">
-                    {{ subtitle || 'Choose File'}}</button>
+                    <button (click)="uploadFile.click()" class="gh-btn-primary" type="button">
+                      <i class="bi bi-upload me-1" aria-hidden="true"></i>{{ subtitle || 'Choose File' }}
+                    </button>
                 </div>
 
                 <div class="upload-chips" *ngIf="uploadedFile">

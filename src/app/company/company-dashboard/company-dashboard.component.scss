@@ -142,22 +142,31 @@ $gh-teal:       $color-teal-accent;
 
 // ─── Buttons ──────────────────────────────────────────────────────────────────
 .gh-btn-coral {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 22px;
   background: $gh-coral;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 10px 22px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background $motion-duration-micro $motion-ease-standard;
+  transition: background $motion-duration-micro $motion-ease-standard, transform 100ms $motion-ease-standard;
+  @include motion-safe;
 
   &:hover, &:focus-visible {
     background: darken($gh-coral, 7%);
     outline: 2px solid $gh-coral;
     outline-offset: 2px;
   }
+
+  &:active { transform: scale(0.985); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
 }
 
 .gh-btn-white-outline {
