@@ -37,6 +37,10 @@
   max-width: 180px;
   width: auto;
   object-fit: contain;
+  // Renders any logo as a clean white silhouette on the Deep Navy sidebar.
+  // Remove this filter once a transparent/white-native PNG is in place.
+  filter: brightness(0) invert(1);
+  background: transparent;
 }
 
 // ─── Nav list ─────────────────────────────────────────────────────────────────
