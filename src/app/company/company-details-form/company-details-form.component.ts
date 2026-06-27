@@ -180,6 +180,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.updateSuccess = true;
+    // Mark all fields touched so validation errors appear immediately
+    Object.values(this.companyDetailsForm.controls).forEach(function(c) { c.markAsTouched(); });
 
     if (this.companyDetailsForm.valid) {
       if (this.company && this.company.companyId) {
@@ -224,6 +226,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       if (this.company) {
         this.updateLocalStorage();
       }
+      this.companyDetailsForm.markAsPristine();
       this.snackbarService.success('Company profile updated — your latest details are now live.');
     }
   }

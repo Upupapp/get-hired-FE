@@ -1,10 +1,30 @@
 @import "src/assets/styles/colors";
 
-.submit-container{
-	z-index: 99 !important;
-	position: fixed !important;
-	right: 20px;
-	top: 88px;
+.submit-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.submit-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #9CA3AF;
+}
+
+.submit-label--dirty {
+  color: #F59E0B;
+  font-weight: 600;
 }
 
 
@@ -378,6 +398,9 @@ select{
 .form-check-input {
 	padding-bottom: 15px;
 }
+
+// Bottom padding so the sticky save bar never obscures the last form field
+form { padding-bottom: 80px; }
 
 @keyframes cdf-shimmer {
   0%   { background-position: -400px 0; }

@@ -6,14 +6,13 @@
 </div>
 
 <form [formGroup]="companyDetailsForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
-  <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-    <!-- <button class="btn btn-save-draft me-3"
-    *ngIf="canView" type="button" (click)="redirectToPreview()">
-    Company Preview
-  </button> -->
-    <button class="btn btn-save me-2" type="submit"
-    [disabled]="!(companyDetailsForm.valid)">
-      {{ 'EDIT_COMPANY_DETAILS.SUBMIT_BUTTON' | translate }}</button>
+  <div class="submit-container">
+    <span class="submit-label" [class.submit-label--dirty]="companyDetailsForm.dirty">
+      {{ companyDetailsForm.dirty ? 'Unsaved changes' : 'All changes saved' }}
+    </span>
+    <button class="btn btn-save" type="submit">
+      Submit Changes
+    </button>
   </div>
 
   <div class="card card-body mt-3">
