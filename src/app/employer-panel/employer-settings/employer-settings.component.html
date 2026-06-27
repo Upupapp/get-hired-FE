@@ -1,29 +1,205 @@
-<div class="bg-gray" *ngIf="companyId; else noCompany">
-  <div style="position: relative;">
-    <!-- STEPPER CONTAINER changeStepper-->
-    <div class="bg-upper-gray">
-      <app-tab-selectors [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
-      </app-tab-selectors>
+<!-- ───────────────────────────────────────────────────────────────────────────
+     EMPLOYER BRAND CENTER — /recruiter/company/settings
+     GETHIRED_COMPANY_SETTINGS_PUBLIC_PROFILE_FULL_REVAMP_V2_BRAND_OS_NEXTADMIN
+     Phase 5 · 4 tabs: Company Profile | Branding & Media | Team & Access | Account
+     ─────────────────────────────────────────────────────────────────────────── -->
+<div class="ebc-page" *ngIf="companyId; else noCompany" role="main">
+
+  <!-- ── PAGE HERO ──────────────────────────────────────────────────────────── -->
+  <header class="ebc-hero" aria-label="Employer brand center">
+    <div class="ebc-hero-brand">
+      <!-- Company logo / initials avatar -->
+      <div class="ebc-hero-logo-wrap" aria-hidden="true">
+        <img *ngIf="companyLogoUrl" [src]="companyLogoUrl" class="ebc-hero-logo" alt="Company logo">
+        <div *ngIf="!companyLogoUrl" class="ebc-hero-logo-initials" aria-hidden="true">
+          {{ (companyName || 'Co').charAt(0).toUpperCase() }}
+        </div>
+      </div>
+
+      <!-- Title block -->
+      <div class="ebc-hero-text">
+        <p class="ebc-hero-eyebrow">Employer brand center</p>
+        <h1 class="ebc-hero-title">Company profile</h1>
+        <p class="ebc-hero-subtitle">
+          Manage the company details candidates see across GetHired.
+        </p>
+      </div>
     </div>
 
-    <div class="p-4" style="margin-top: 45px;">
-      <ng-container *ngIf="stepper === 1">
-        <app-employer-company-details></app-employer-company-details>
-      </ng-container>
+    <!-- Profile completeness badge + CTAs -->
+    <div class="ebc-hero-actions">
+      <div class="ebc-completeness" [attr.aria-label]="'Profile ' + profileCompleteness + '% complete'">
+        <div class="ebc-completeness-bar-wrap" aria-hidden="true">
+          <div class="ebc-completeness-bar"
+            [style.width.%]="profileCompleteness"
+            [class.ebc-completeness-bar--success]="completenessColor === 'success'"
+            [class.ebc-completeness-bar--warning]="completenessColor === 'warning'"
+            [class.ebc-completeness-bar--error]="completenessColor === 'error'">
+          </div>
+        </div>
+        <span class="ebc-completeness-label">
+          {{ profileCompleteness }}% — {{ completenessLabel }}
+        </span>
+      </div>
 
-      <ng-container *ngIf="stepper === 2">
-        <app-employer-company-users [companyId]="companyId"></app-employer-company-users>
-      </ng-container>
+      <div class="ebc-hero-ctas">
+        <!-- View public profile — disabled if profile not ready -->
+        <a *ngIf="publicProfileReady"
+          href="/companies/details?id={{ companyId }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="ebc-btn ebc-btn--azure"
+          aria-label="View public profile, opens in new tab">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+            width="14" height="14" aria-hidden="true">
+            <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/>
+            <polyline points="10 1 15 1 15 6"/><line x1="15" y1="1" x2="7" y2="9"/>
+          </svg>
+          View public profile
+        </a>
+        <span *ngIf="!publicProfileReady" class="ebc-btn ebc-btn--azure ebc-btn--disabled"
+          aria-disabled="true" title="Complete your profile to enable the public page">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+            width="14" height="14" aria-hidden="true">
+            <path d="M7 3H3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9"/>
+            <polyline points="10 1 15 1 15 6"/><line x1="15" y1="1" x2="7" y2="9"/>
+          </svg>
+          View public profile
+        </span>
+      </div>
+    </div>
+  </header>
 
-      <ng-container *ngIf="stepper === 3">
-        <app-employer-account-settings></app-employer-account-settings>
-        <!-- <app-account-setting></app-account-setting> -->
-      </ng-container>
+  <!-- ── TAB NAV ────────────────────────────────────────────────────────────── -->
+  <nav class="ebc-tabs" role="tablist" aria-label="Company settings sections">
+    <button
+      *ngFor="let tab of tabs"
+      type="button"
+      role="tab"
+      class="ebc-tab"
+      [id]="'ebc-tab-' + tab.id"
+      [attr.aria-selected]="activeTab === tab.id"
+      [attr.aria-controls]="'ebc-panel-' + tab.id"
+      [class.ebc-tab--active]="activeTab === tab.id"
+      (click)="changeTab(tab.id)"
+      (keydown.enter)="changeTab(tab.id)"
+      (keydown.space)="changeTab(tab.id)">
+      <!-- Icon -->
+      <span class="ebc-tab-icon" aria-hidden="true">
+        <ng-container [ngSwitch]="tab.icon">
+          <svg *ngSwitchCase="'building'" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><path d="M3 7l6-5 6 5v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><polyline points="7 17 7 10 11 10 11 17"/></svg>
+          <svg *ngSwitchCase="'image'" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="2" y="2" width="14" height="14" rx="2"/><circle cx="6.5" cy="6.5" r="1.5"/><polyline points="16 11 12 7 4 16"/></svg>
+          <svg *ngSwitchCase="'users'" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="7" cy="5" r="3"/><path d="M1 16v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1"/><path d="M12 3a3 3 0 0 1 0 5"/><path d="M17 16v-1a4 4 0 0 0-3-3.9"/></svg>
+          <svg *ngSwitchDefault viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><circle cx="9" cy="9" r="2.5"/><path d="M13.5 10.1a1 1 0 0 0 .2 1.1l.03.03a1.2 1.2 0 0 1-1.7 1.7l-.03-.03a1 1 0 0 0-1.1-.2 1 1 0 0 0-.6.9V14a1.2 1.2 0 0 1-2.4 0v-.06a1 1 0 0 0-.65-.91 1 1 0 0 0-1.1.2l-.03.03a1.2 1.2 0 0 1-1.7-1.7l.03-.03a1 1 0 0 0 .2-1.1 1 1 0 0 0-.91-.6H4a1.2 1.2 0 0 1 0-2.4h.06a1 1 0 0 0 .91-.65 1 1 0 0 0-.2-1.1l-.03-.03a1.2 1.2 0 0 1 1.7-1.7l.03.03a1 1 0 0 0 1.1.2h.05A1 1 0 0 0 8.2 4V4a1.2 1.2 0 0 1 2.4 0v.06a1 1 0 0 0 .6.91 1 1 0 0 0 1.1-.2l.03-.03a1.2 1.2 0 0 1 1.7 1.7l-.03.03a1 1 0 0 0-.2 1.1v.05A1 1 0 0 0 14.75 8.5h.06a1.2 1.2 0 0 1 0 2.4h-.06a1 1 0 0 0-.91.6z"/></svg>
+        </ng-container>
+      </span>
+      {{ tab.label }}
+    </button>
+  </nav>
+
+  <!-- ── TAB PANELS ─────────────────────────────────────────────────────────── -->
+
+  <!-- TAB 1: Company Profile -->
+  <div *ngIf="activeTab === 1"
+    class="ebc-panel ebc-panel--enter"
+    id="ebc-panel-1"
+    role="tabpanel"
+    aria-labelledby="ebc-tab-1">
+    <app-employer-company-details (updateCompany)="onCompanyUpdated($event)"></app-employer-company-details>
+  </div>
+
+  <!-- TAB 2: Branding & Media -->
+  <div *ngIf="activeTab === 2"
+    class="ebc-panel ebc-panel--enter"
+    id="ebc-panel-2"
+    role="tabpanel"
+    aria-labelledby="ebc-tab-2">
+    <div class="ebc-card">
+      <div class="ebc-card-header">
+        <h2 class="ebc-card-title">Company logo</h2>
+        <p class="ebc-card-desc">Your logo appears on job listings and your public company page.</p>
+      </div>
+      <!-- Logo preview + upload — delegate to tab-1 form for actual upload;
+           this panel shows a media-focused view -->
+      <div class="ebc-branding-logo-row">
+        <div class="ebc-branding-logo-preview" aria-label="Current company logo">
+          <img *ngIf="companyLogoUrl" [src]="companyLogoUrl" alt="Current company logo"
+            class="ebc-branding-logo-img">
+          <div *ngIf="!companyLogoUrl" class="ebc-branding-logo-placeholder" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"
+              width="40" height="40" aria-hidden="true">
+              <rect x="4" y="4" width="32" height="32" rx="6"/>
+              <circle cx="14" cy="14" r="3"/>
+              <polyline points="36 26 27 17 8 36"/>
+            </svg>
+          </div>
+        </div>
+        <div class="ebc-branding-logo-info">
+          <p class="ebc-branding-upload-hint">
+            Use your logo upload field in the <button type="button" class="ebc-link-btn"
+              (click)="changeTab(1)">Company Profile tab</button> to update your logo.
+          </p>
+          <ul class="ebc-branding-upload-specs">
+            <li>Recommended: 400&times;400 px or larger</li>
+            <li>Formats: PNG, JPG, SVG</li>
+            <li>Max size: 5 MB</li>
+          </ul>
+          <p class="ebc-branding-cache-note" aria-live="polite">
+            After uploading, your logo may take a moment to update across all pages.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ebc-card ebc-card--mt">
+      <div class="ebc-card-header">
+        <h2 class="ebc-card-title">Company banner</h2>
+        <p class="ebc-card-desc">A banner image shown at the top of your public company page.</p>
+      </div>
+      <div class="ebc-branding-banner-placeholder" role="img" aria-label="Banner image area">
+        <svg viewBox="0 0 48 24" fill="none" stroke="currentColor" stroke-width="1.2"
+          width="48" height="24" aria-hidden="true">
+          <rect x="1" y="1" width="46" height="22" rx="4"/>
+          <circle cx="10" cy="10" r="3"/>
+          <polyline points="47 17 34 8 14 22"/>
+        </svg>
+        <p>Banner upload coming soon</p>
+      </div>
     </div>
   </div>
+
+  <!-- TAB 3: Team & Access -->
+  <div *ngIf="activeTab === 3"
+    class="ebc-panel ebc-panel--enter"
+    id="ebc-panel-3"
+    role="tabpanel"
+    aria-labelledby="ebc-tab-3">
+    <div class="ebc-card">
+      <div class="ebc-card-header ebc-card-header--row">
+        <div>
+          <h2 class="ebc-card-title">Team members</h2>
+          <p class="ebc-card-desc">Colleagues who can post jobs and manage applications for {{ companyName || 'your company' }}.</p>
+        </div>
+        <!-- Invite CTA handled inside company-users component via its existing dialog -->
+      </div>
+      <app-employer-company-users [companyId]="companyId"></app-employer-company-users>
+    </div>
+  </div>
+
+  <!-- TAB 4: Account Settings -->
+  <div *ngIf="activeTab === 4"
+    class="ebc-panel ebc-panel--enter"
+    id="ebc-panel-4"
+    role="tabpanel"
+    aria-labelledby="ebc-tab-4">
+    <app-employer-account-settings></app-employer-account-settings>
+  </div>
+
 </div>
 
+<!-- No company state -->
 <ng-template #noCompany>
-  <!-- TODO setup company -->
+  <div class="ebc-no-company" role="alert">
+    <p>Setting up your company profile…</p>
+  </div>
 </ng-template>
-

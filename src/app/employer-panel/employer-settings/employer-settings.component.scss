@@ -1,14 +1,420 @@
+// ─── Employer Brand Center SCSS ────────────────────────────────────────────
+// GETHIRED_COMPANY_SETTINGS_PUBLIC_PROFILE_FULL_REVAMP_V2_BRAND_OS_NEXTADMIN
+// CSS custom properties (--gh-*) are globally available from _tokens.scss
+// which is imported once in styles.scss. SCSS vars from colors.scss are used
+// for any $color-* references needed at compile time.
+// ─────────────────────────────────────────────────────────────────────────────
 @import "src/assets/styles/colors";
 
-.bg-upper-gray{
-	position: fixed !important;
-	top: 80px;
-	width: 100%;
-	background: #F4F5F9;
-	z-index: 99 !important;
-	padding: 20px 20px 10px 25px;
+// ─── Page wrapper ───────────────────────────────────────────────────────────
+.ebc-page {
+  background: var(--gh-bg, #F6F7FB);
+  min-height: 100vh;
+  padding: 24px 28px 48px;
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+  color: var(--gh-text, #101828);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: ebc-page-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px 16px 60px;
+  }
 }
 
-.bg-gray{
-	background: #F4F5F9
+@keyframes ebc-page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Hero ────────────────────────────────────────────────────────────────────
+.ebc-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  background: var(--gh-navy, #0D1024);
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    flex-direction: column;
+  }
+}
+
+.ebc-hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.ebc-hero-logo-wrap {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ebc-hero-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ebc-hero-logo-initials {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+}
+
+.ebc-hero-text {
+  color: #fff;
+}
+
+.ebc-hero-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin: 0 0 4px;
+}
+
+.ebc-hero-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.ebc-hero-subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ─── Hero actions ────────────────────────────────────────────────────────────
+.ebc-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    width: 100%;
+  }
+}
+
+.ebc-hero-ctas {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────────────────────
+.ebc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: var(--gh-btn-radius, 10px);
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
+  user-select: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--gh-azure, #168BFF);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:active { transform: scale(0.985); }
+  }
+
+  &--azure {
+    background: var(--gh-azure, #168BFF);
+    color: #fff;
+
+    &:hover { background: #0c7ae6; }
+  }
+
+  &--coral {
+    background: var(--gh-coral, #FF675D);
+    color: #fff;
+
+    &:hover { background: var(--gh-coral-hover, #F25248); }
+  }
+
+  &--disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ─── Completeness badge ──────────────────────────────────────────────────────
+.ebc-completeness {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 180px;
+}
+
+.ebc-completeness-bar-wrap {
+  height: 5px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ebc-completeness-bar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+
+  &--success { background: var(--gh-success, #10B981); }
+  &--warning { background: var(--gh-warning, #F59E0B); }
+  &--error   { background: var(--gh-coral, #FF675D); }
+}
+
+.ebc-completeness-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.65);
+}
+
+// ─── Tab navigation ──────────────────────────────────────────────────────────
+.ebc-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--gh-border, #E7EAF3);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.ebc-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  background: none;
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gh-text-secondary, #667085);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  border-radius: 0;
+  transition: color 0.18s, border-color 0.18s;
+
+  &:focus-visible {
+    outline: 2px solid var(--gh-azure, #168BFF);
+    outline-offset: -2px;
+    border-radius: 6px 6px 0 0;
+  }
+
+  &:hover { color: var(--gh-text, #101828); }
+
+  &--active {
+    color: var(--gh-coral, #FF675D);
+    border-bottom-color: var(--gh-coral, #FF675D);
+    font-weight: 700;
+
+    .ebc-tab-icon { color: var(--gh-coral, #FF675D); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.ebc-tab-icon {
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+// ─── Tab panels ──────────────────────────────────────────────────────────────
+.ebc-panel {
+  @media (prefers-reduced-motion: no-preference) {
+    &--enter {
+      animation: ebc-tab-enter 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+  }
+}
+
+@keyframes ebc-tab-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Cards ───────────────────────────────────────────────────────────────────
+.ebc-card {
+  background: #fff;
+  border-radius: var(--gh-card-radius, 16px);
+  box-shadow: var(--gh-shadow-card, 0 2px 12px rgba(16,24,40,0.06));
+  border: 1px solid var(--gh-border, #E7EAF3);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+
+  &--mt {
+    margin-top: 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 18px 16px;
+    border-radius: 14px;
+  }
+}
+
+.ebc-card-header {
+  margin-bottom: 20px;
+
+  &--row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}
+
+.ebc-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+  margin: 0 0 4px;
+}
+
+.ebc-card-desc {
+  font-size: 13px;
+  color: var(--gh-text-secondary, #667085);
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ─── Branding tab ────────────────────────────────────────────────────────────
+.ebc-branding-logo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.ebc-branding-logo-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid var(--gh-border, #E7EAF3);
+  flex-shrink: 0;
+  background: var(--gh-bg, #F6F7FB);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ebc-branding-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ebc-branding-logo-placeholder {
+  color: var(--gh-text-muted, #98A2B3);
+}
+
+.ebc-branding-logo-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.ebc-branding-upload-hint {
+  font-size: 14px;
+  color: var(--gh-text, #101828);
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.ebc-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--gh-azure, #168BFF);
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover { color: #0c7ae6; }
+  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); border-radius: 3px; }
+}
+
+.ebc-branding-upload-specs {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--gh-text-secondary, #667085);
+  line-height: 1.7;
+}
+
+.ebc-branding-cache-note {
+  font-size: 12px;
+  color: var(--gh-text-muted, #98A2B3);
+  margin: 0;
+}
+
+.ebc-branding-banner-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 140px;
+  border: 2px dashed var(--gh-border, #E7EAF3);
+  border-radius: 12px;
+  color: var(--gh-text-muted, #98A2B3);
+  font-size: 13px;
+  background: var(--gh-bg, #F6F7FB);
+}
+
+// ─── No company state ────────────────────────────────────────────────────────
+.ebc-no-company {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  font-size: 15px;
+  color: var(--gh-text-secondary, #667085);
 }

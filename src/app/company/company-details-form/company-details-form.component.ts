@@ -123,7 +123,16 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
       this.companyDetailsForm.get('shownPublicly').setValue(shownPublicly);
 
-      this.profileImage = companyLogoUrl;
+      // PHASE 3 CACHE BUST: append ?v=<timestamp> to defeat browser logo cache
+      // after an upload. Only append to http(s) URLs; local blob:// previews
+      // are left as-is.
+      const bustedLogo = companyLogoUrl && companyLogoUrl.startsWith('http')
+        ? (companyLogoUrl.includes('?v=')
+            ? companyLogoUrl.replace(/\?v=\d+/, '?v=' + Date.now())
+            : companyLogoUrl + '?v=' + Date.now())
+        : companyLogoUrl;
+
+      this.profileImage = bustedLogo;
       this.canView = true;
       this.rawAddress = {
         address: companyAddress,
@@ -206,17 +215,26 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         () => this.router.navigate(['../details'], { relativeTo: this.route })
       );
     } else if (event == 'updated') {
-      this.snackbarService.success('Company details updated.');
+      // PHASE 3 DATA SYNC FIX: on successful update, re-read the latest
+      // company from the NgRx store (it was just set by updateCompanySuccess)
+      // and refresh localStorage so logo + name propagate to sidebar/topbar.
+      if (this.company) {
+        this.updateLocalStorage();
+      }
+      this.snackbarService.success('Company profile updated — your latest details are now live.');
     }
   }
 
   updateLocalStorage() {
     const user = localStorage.getItem('user');
     localStorage.removeItem('user');
+    // PHASE 3 DATA SYNC FIX: also persist companyLogoUrl so sidebar/topbar
+    // pick up the new logo without requiring a full page reload.
     localStorage.setItem('user', JSON.stringify({
       ...JSON.parse(user),
       companyName: this.company.companyName,
-      companyId: this.company.companyId
+      companyId: this.company.companyId,
+      companyLogoUrl: this.company.companyLogoUrl || null
     }));
 
     this.updateCompany.emit({

@@ -10,8 +10,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EmployerCompanyComponent } from '../employer-company/employer-company.component';
 import { EmployerAccountSettingsComponent } from './employer-account-settings/employer-account-settings.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
-// import { AuthModule } from '@main/auth/auth.module';
-// import { AuthModule } from '@main/auth/auth.module';
+import { EmployeeFacade } from '@main/employee/state/employee.facade';
 
 const routes: Routes = [
   { path: 'details', component: EmployerCompanyComponent },
@@ -32,9 +31,8 @@ const routes: Routes = [
     CompanyModule,
     MatDialogModule,
     SharedModule,
-    // AuthModule,
     RouterModule.forChild(routes)
   ],
-  providers:[AuthFacade]
+  providers: [AuthFacade, EmployeeFacade]
 })
 export class EmployerSettingsModule { }

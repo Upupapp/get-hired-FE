@@ -349,6 +349,7 @@
         "FN_INPUT_FIELD":"First Name",
         "LN_INPUT_FIELD":"Last Name",
         "PW_INPUT FIELD":"Password",
+        "PW_INPUT":"New password",
         "SUBMIT_BUTTON":"Submit Changes"
     }
 }

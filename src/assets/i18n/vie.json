@@ -347,6 +347,7 @@
         "FN_INPUT_FIELD":"Tên",
         "LN_INPUT_FIELD":"Họ",
         "PW_INPUT FIELD":"Mật khẩu",
+        "PW_INPUT":"Mật khẩu mới",
         "SUBMIT_BUTTON":"Lưu hay đổi"
     }
 }

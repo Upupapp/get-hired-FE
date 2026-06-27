@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+// GETHIRED_COMPANY_SETTINGS_PUBLIC_PROFILE_FULL_REVAMP_V2_BRAND_OS_NEXTADMIN
+// Phase 5 — passes updateCompany event up to EmployerSettingsComponent so the
+// employee profile is refreshed (topbar companyName$ updates) after a save.
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 
@@ -9,6 +12,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
   animations: [mainAnimations]
 })
 export class EmployerCompanyDetailsComponent implements OnInit {
+  @Output() updateCompany: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private employeeFacade: EmployeeFacade
@@ -17,10 +21,12 @@ export class EmployerCompanyDetailsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onUpdate(event) {
-    if(event.status) {
-      this.employeeFacade.getEmployeeProfile(event.userId)
+  onUpdate(event: any) {
+    if (event && event.status) {
+      // Refresh employee profile so topbar reads the updated companyName
+      this.employeeFacade.getEmployeeProfile(event.userId);
+      // Bubble up to parent (EmployerSettingsComponent)
+      this.updateCompany.emit(event);
     }
   }
-
 }
