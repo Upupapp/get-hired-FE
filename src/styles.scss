@@ -768,6 +768,17 @@ label {
   &:disabled { opacity: 0.55; cursor: not-allowed; }
 }
 
+// Bootstrap's `a { color: ... }` uses CSS custom properties that can cascade
+// onto <a> elements even when a class selector should win, depending on the
+// property resolution order. These type+class selectors (specificity 0-1-1)
+// guarantee anchor elements render identically to button elements.
+a.gh-btn-primary { color: #ffffff; text-decoration: none; }
+a.gh-btn-primary:hover, a.gh-btn-primary:focus { color: #ffffff; text-decoration: none; }
+a.gh-btn-secondary { color: #101828; text-decoration: none; }
+a.gh-btn-secondary:hover, a.gh-btn-secondary:focus { color: $color-global-red-buttons; text-decoration: none; }
+a.gh-btn-ghost { color: $color-global-red-buttons; text-decoration: none; }
+a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
+
 .gh-btn-ghost {
   display: inline-flex;
   align-items: center;
