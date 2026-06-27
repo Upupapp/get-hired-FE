@@ -104,7 +104,14 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   /** subsRestrictions$ wrapped with catchError so the section shows a retry state. */
   subsError = false;
   subsRestrictions$ = this.companyFacade.subsRestrictions$.pipe(
-    tap(() => { this.subsError = false; }),
+    tap(subs => {
+      this.subsError = false;
+      if (subs) {
+        this.cachedJobPostPct = this.subscriptionUsagePct(subs.jobPostCount, subs.jobPost);
+        this.cachedAdminPct = this.subscriptionUsagePct(subs.adminCount, subs.admin);
+        this.cachedVideoPct = this.subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse);
+      }
+    }),
     catchError(() => { this.subsError = true; return of(null); })
   );
 
@@ -146,6 +153,11 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
 
   /** Active time-range selector for the Views & Applications chart (UI only). */
   trendRange: '7d' | '30d' | '90d' = '30d';
+
+  /** Cached subscription usage percentages — prevents 9 calls/CD cycle. */
+  cachedJobPostPct = 0;
+  cachedAdminPct = 0;
+  cachedVideoPct = 0;
 
   asyncLocalStorage = {
     getItem: async function (key: string) {
@@ -361,6 +373,10 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
 
   retryPipelineOverview(): void {
     this.loadPipelineOverview();
+  }
+
+  retryDashboard(): void {
+    this.companyFacade.getCompanyDashboard();
   }
 
   retrySubscription(): void {

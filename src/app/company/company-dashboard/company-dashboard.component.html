@@ -1,5 +1,5 @@
 <div class="gh-dash" *ngIf="!(loading$ | async); else ghDashSkeleton">
-<ng-container *ngIf="dashboard$ | async as dashboard">
+<ng-container *ngIf="dashboard$ | async as dashboard; else ghDashMissing">
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      HERO — Hiring Command Center
@@ -69,7 +69,7 @@
           <circle cx="36" cy="36" r="30" fill="none" stroke="#FF7062" stroke-width="6"
             stroke-linecap="round"
             stroke-dasharray="188.5"
-            [attr.stroke-dashoffset]="188.5 - (188.5 * cachedProfilePct / 100)"
+            [style.stroke-dashoffset]="188.5 - (188.5 * cachedProfilePct / 100)"
             transform="rotate(-90 36 36)"/>
         </svg>
         <span class="gh-profile-ring-pct">{{ cachedProfilePct }}%</span>
@@ -477,7 +477,7 @@
               [attr.stroke]="cachedProfilePct >= 80 ? '#22c55e' : cachedProfilePct >= 50 ? '#f59e0b' : '#ef4444'"
               stroke-width="7" stroke-linecap="round"
               stroke-dasharray="213.6"
-              [attr.stroke-dashoffset]="213.6 - (213.6 * cachedProfilePct / 100)"
+              [style.stroke-dashoffset]="213.6 - (213.6 * cachedProfilePct / 100)"
               transform="rotate(-90 40 40)"/>
           </svg>
           <span class="gh-profile-comp-pct" [attr.aria-label]="'Profile completeness ' + cachedProfilePct + '%'">
@@ -553,13 +553,13 @@
               <span>{{ subs.jobPostCount || 0 }} / {{ subs.jobPost || '—' }}</span>
             </div>
             <div class="gh-sub-meter-track" role="progressbar"
-              [attr.aria-valuenow]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)"
+              [attr.aria-valuenow]="cachedJobPostPct"
               aria-valuemin="0" aria-valuemax="100"
               [attr.aria-label]="'Job slots: ' + (subs.jobPostCount || 0) + ' of ' + (subs.jobPost || 0) + ' used'">
               <div class="gh-sub-meter-fill"
-                [class.gh-sub-meter-fill--warn]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost) >= 80"
-                [class.gh-sub-meter-fill--danger]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost) >= 100"
-                [style.width.%]="subscriptionUsagePct(subs.jobPostCount, subs.jobPost)">
+                [class.gh-sub-meter-fill--warn]="cachedJobPostPct >= 80"
+                [class.gh-sub-meter-fill--danger]="cachedJobPostPct >= 100"
+                [style.width.%]="cachedJobPostPct">
               </div>
             </div>
           </div>
@@ -569,12 +569,12 @@
               <span>{{ subs.adminCount || 0 }} / {{ subs.admin || '—' }}</span>
             </div>
             <div class="gh-sub-meter-track" role="progressbar"
-              [attr.aria-valuenow]="subscriptionUsagePct(subs.adminCount, subs.admin)"
+              [attr.aria-valuenow]="cachedAdminPct"
               aria-valuemin="0" aria-valuemax="100"
               [attr.aria-label]="'Admin users: ' + (subs.adminCount || 0) + ' of ' + (subs.admin || 0) + ' used'">
               <div class="gh-sub-meter-fill"
-                [class.gh-sub-meter-fill--warn]="subscriptionUsagePct(subs.adminCount, subs.admin) >= 80"
-                [style.width.%]="subscriptionUsagePct(subs.adminCount, subs.admin)">
+                [class.gh-sub-meter-fill--warn]="cachedAdminPct >= 80"
+                [style.width.%]="cachedAdminPct">
               </div>
             </div>
           </div>
@@ -584,12 +584,12 @@
               <span>{{ subs.videoResponseCount || 0 }} / {{ subs.videoResponse || '—' }}</span>
             </div>
             <div class="gh-sub-meter-track" role="progressbar"
-              [attr.aria-valuenow]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)"
+              [attr.aria-valuenow]="cachedVideoPct"
               aria-valuemin="0" aria-valuemax="100"
               [attr.aria-label]="'Video responses: ' + (subs.videoResponseCount || 0) + ' of ' + (subs.videoResponse || 0) + ' used'">
               <div class="gh-sub-meter-fill"
-                [class.gh-sub-meter-fill--warn]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse) >= 80"
-                [style.width.%]="subscriptionUsagePct(subs.videoResponseCount, subs.videoResponse)">
+                [class.gh-sub-meter-fill--warn]="cachedVideoPct >= 80"
+                [style.width.%]="cachedVideoPct">
               </div>
             </div>
           </div>
@@ -664,6 +664,17 @@
 </section>
 
 </ng-container>
+
+<ng-template #ghDashMissing>
+  <div class="gh-dash-error-panel" role="alert">
+    <div class="gh-dash-error-icon" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" width="48" height="48"><circle cx="24" cy="24" r="20"/><path d="M24 14v12M24 34h.01" stroke-linecap="round"/></svg>
+    </div>
+    <h2 class="gh-dash-error-title">We couldn't load your dashboard</h2>
+    <p class="gh-dash-error-msg">There was a problem loading your hiring data. This is usually temporary — please try again.</p>
+    <button type="button" class="gh-btn-coral gh-pressable" (click)="retryDashboard()">Retry</button>
+  </div>
+</ng-template>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
