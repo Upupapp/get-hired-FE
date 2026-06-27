@@ -571,10 +571,10 @@ describe('CompanyDashboardComponent', () => {
       expect(spy).toHaveBeenCalledWith(['/recruiter/jobs/list']);
     });
 
-    it('goToCompanyProfile navigates to /recruiter/company/details', () => {
+    it('goToCompanyProfile navigates to /recruiter/company/settings', () => {
       const spy = spyOn(router, 'navigate');
       component.goToCompanyProfile();
-      expect(spy).toHaveBeenCalledWith(['/recruiter/company/details']);
+      expect(spy).toHaveBeenCalledWith(['/recruiter/company/settings']);
     });
 
     it('goToApplicants with jobId adds queryParams', () => {

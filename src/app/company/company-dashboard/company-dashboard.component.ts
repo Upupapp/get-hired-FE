@@ -291,7 +291,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         type: 'complete_company_profile', priority: 'high',
         title: 'Complete your company profile',
         reason: 'Candidates are more likely to apply when they can see who is hiring.',
-        ctaLabel: 'Complete profile', route: '/recruiter/company/details'
+        ctaLabel: 'Complete profile', route: '/recruiter/company/settings'
       };
     } else if (activeJobs === 0) {
       this.cachedRecommendedStep = {
@@ -320,7 +320,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         type: 'improve_employer_brand', priority: 'low',
         title: 'Strengthen your employer brand',
         reason: 'A stronger profile helps you stand out and attract more qualified candidates.',
-        ctaLabel: 'Improve branding', route: '/recruiter/company/details'
+        ctaLabel: 'Improve branding', route: '/recruiter/company/settings'
       };
     } else {
       this.cachedRecommendedStep = {
@@ -364,7 +364,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         type: 'complete_profile', priority: 'medium',
         label: 'Complete company profile',
         desc: 'Missing: ' + this.cachedProfileMissingFields.join(', ') + '.',
-        cta: 'Complete profile', route: '/recruiter/company/details'
+        cta: 'Complete profile', route: '/recruiter/company/settings'
       });
     }
     this.cachedSupportingActions = actions.slice(0, 4);
@@ -410,7 +410,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   }
 
   goToCompanyProfile(): void {
-    this.router.navigate(['/recruiter/company/details']);
+    this.router.navigate(['/recruiter/company/settings']);
   }
 
   goToMessages(): void {

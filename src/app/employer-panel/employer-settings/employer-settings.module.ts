@@ -13,8 +13,8 @@ import { AuthFacade } from '@main/auth/state/auth.facade';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 
 const routes: Routes = [
-  { path: 'details', component: EmployerCompanyComponent },
   { path: 'settings', component: EmployerSettingsComponent },
+  { path: 'details', redirectTo: 'settings', pathMatch: 'full' },
   { path: '', redirectTo: 'settings', pathMatch: 'full' }
 ];
 

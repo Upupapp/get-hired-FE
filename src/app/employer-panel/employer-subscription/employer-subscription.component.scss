@@ -99,8 +99,8 @@
 
   &__cta {
     // .gh-btn-primary from styles.scss applies; just override colour for dark bg
-    background: #FF675D !important;
-    &:hover { background: #F25248 !important; }
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
+    &:hover { background: #F25248 !important; }:hover { opacity: 0.88; }
   }
 
   &__pulse {
@@ -622,9 +622,9 @@
     @include motion-safe;
 
     &--primary {
-      background: #FF675D;
+      background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
       color: #fff;
-      &:hover { background: #F25248; }
+      &:hover { background: #F25248; }:hover { opacity: 0.88; }
     }
 
     &--current {

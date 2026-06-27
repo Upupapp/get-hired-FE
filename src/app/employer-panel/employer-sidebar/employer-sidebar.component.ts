@@ -117,10 +117,8 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
         title: 'Messages', icon: 'jobs.png', class: 'messages', route: 'messages'
       },
       {
-        // Previously "Company Profile" — renamed to "Company" for brevity.
-        // Route is unchanged (/recruiter/company/details) for backward compatibility.
         title: 'Company', icon: 'account.png', class: 'accounts',
-        route: 'company/details'
+        route: 'company/settings'
       },
       {
         title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_SUBCRIPTIONS'), icon: 'subscribe.png', class: 'subscription',

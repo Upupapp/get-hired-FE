@@ -24,7 +24,7 @@ export class CompanyNotSetupComponent implements OnInit {
   redirectToSetup() {
     this.haptics.selection();
     this.dialogRef.close();
-    this.router.navigate(['/recruiter/company/details']);
+    this.router.navigate(['/recruiter/company/settings']);
   }
 
 }
