@@ -26,7 +26,7 @@
 .rm-page-title {
   font-size: 22px;
   font-weight: 700;
-  color: #1E1B4B;
+  color: var(--gh-text, #101828);
   margin: 0 0 4px;
 }
 
@@ -78,7 +78,7 @@
 .rm-state-title {
   font-size: 16px;
   font-weight: 700;
-  color: #1E1B4B;
+  color: var(--gh-text, #101828);
   margin: 0 0 8px;
 }
 
@@ -120,14 +120,14 @@
   @include motion-safe;
 
   &:focus-visible {
-    outline: 2px solid rgba(123, 97, 255, 0.7);
+    outline: 2px solid rgba(255, 103, 93, 0.7);
     outline-offset: 2px;
   }
 
   &--active {
-    background: #1E1B4B;
+    background: var(--gh-text, #101828);
     color: #fff;
-    border-color: #1E1B4B;
+    border-color: var(--gh-text, #101828);
   }
 }
 
@@ -188,14 +188,14 @@
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(123, 97, 255, 0.7);
+    outline: 2px solid rgba(255, 103, 93, 0.7);
     outline-offset: -2px;
     border-radius: 10px;
   }
 
   &--selected {
-    background: #F5F3FF;
-    border-left: 3px solid #7B61FF;
+    background: var(--gh-coral-soft, #FFF0EE);
+    border-left: 3px solid var(--gh-coral, #FF675D);
   }
 
   &--needs-reply {
@@ -246,7 +246,7 @@
 .rm-thread-name {
   font-size: 13px;
   font-weight: 700;
-  color: #1E1B4B;
+  color: var(--gh-text, #101828);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -254,7 +254,7 @@
 
 .rm-thread-time {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--gh-text-muted, #98A2B3);
   white-space: nowrap;
 }
 
@@ -333,7 +333,7 @@
   font-family: 'Manrope', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #7B61FF;
+  color: var(--gh-coral, #FF675D);
   background: none;
   border: none;
   cursor: pointer;
@@ -341,7 +341,7 @@
   outline: none;
 
   &:focus-visible {
-    outline: 2px solid rgba(123, 97, 255, 0.7);
+    outline: 2px solid rgba(255, 103, 93, 0.7);
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -350,7 +350,7 @@
   @include motion-safe;
 
   &:active {
-    color: #1E1B4B;
+    color: var(--gh-text, #101828);
   }
 }
 
@@ -364,7 +364,7 @@
 
 .rm-detail-idle-text {
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--gh-text-muted, #98A2B3);
   text-align: center;
 }
 
@@ -405,7 +405,7 @@
 .rm-detail-name {
   font-size: 15px;
   font-weight: 700;
-  color: #1E1B4B;
+  color: var(--gh-text, #101828);
   margin: 0;
 }
 
@@ -426,9 +426,9 @@
   font-family: 'Manrope', sans-serif;
   font-size: 12px;
   font-weight: 600;
-  color: #7B61FF;
+  color: var(--gh-coral, #FF675D);
   background: none;
-  border: 1px solid #ede9fe;
+  border: 1px solid var(--gh-coral-soft, #FFF0EE);
   border-radius: 8px;
   padding: 5px 10px;
   cursor: pointer;
@@ -438,11 +438,11 @@
   @include motion-safe;
 
   &:hover {
-    background: #ede9fe;
+    background: var(--gh-coral-soft, #FFF0EE);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(123, 97, 255, 0.7);
+    outline: 2px solid rgba(255, 103, 93, 0.7);
     outline-offset: 2px;
   }
 
@@ -491,7 +491,7 @@
 .rm-empty-title {
   font-size: 16px;
   font-weight: 700;
-  color: #1E1B4B;
+  color: var(--gh-text, #101828);
   margin: 0;
 }
 
@@ -531,7 +531,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(123, 97, 255, 0.7);
+    outline: 2px solid rgba(255, 103, 93, 0.7);
     outline-offset: 2px;
   }
 

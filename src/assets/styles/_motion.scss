@@ -201,9 +201,17 @@ $gh-lift: -2px;
 }
 
 // ─── Global prefers-reduced-motion hard override ─────────────────────────────
+// REVAMP v1: universal rule first, then explicit class override.
 // Belt-and-suspenders: complements the global styles.scss rule.
-// Disables every BRAND class explicitly.
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  // Explicit class list for BRAND + REVAMP components (belt-and-suspenders)
   .gh-dashboard-card,
   .gh-dashboard-kpi,
   .gh-plan-meter,
@@ -213,9 +221,18 @@ $gh-lift: -2px;
   .gh-pressable,
   .gh-success-pulse,
   .gh-card,
-  .gh-skeleton-reveal {
+  .gh-skeleton-reveal,
+  .gh-btn-primary,
+  .gh-btn-secondary,
+  .gh-btn-ghost,
+  .gh-input,
+  .btn-cta-primary,
+  .btn-cta-outline,
+  .btn-link-cta,
+  .gh-sidebar-item,
+  .gh-drawer-nav-item {
     animation: none !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     transform: none !important;
   }
 }

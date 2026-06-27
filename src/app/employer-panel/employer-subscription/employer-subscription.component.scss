@@ -1,113 +1,120 @@
 @import "src/assets/styles/colors";
-
+@import "~assets/styles/motion";
+@import "~assets/styles/tokens";
 
 .btn-get-started{
-	background: $color-global-red-buttons;
-	border-radius: 111px;
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 27px;
-	color: #FFFFFF;
-	padding: 8px 20px;
-	margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  color: #FFFFFF;
+  padding: 0 24px;
+  height: 44px;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 120ms $motion-ease-standard;
+  @include motion-safe;
+  &:hover { opacity: 0.88; }
 }
 
 .title-main{
-	font-style: normal;
-	font-weight: 600;
-	font-size: 30px;
-	line-height: 25px;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #494949;
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.3;
+  color: var(--gh-text, #101828);
 }
 
 .bg-pink{
-	padding: 60px 30px 150px 30px;
-	background: #FFE9E7;
+  padding: 40px 30px 60px 30px;
+  background: var(--gh-coral-soft, #FFF0EE);
+  border-radius: 18px;
 }
 
 .title-sub-type{
-	font-style: normal;
-	font-weight: 600;
-	font-size: 18px;
-	line-height: 13px;
-	margin-top: 30px;
-	color: #0A0A0A;
-	margin-bottom: 12px;
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.3;
+  margin-top: 24px;
+  color: var(--gh-text, #101828);
+  margin-bottom: 10px;
 }
 
-
 .title-sub-cost{
-	margin-top: 15px;
-	margin-bottom: 15px;
-	font-style: normal;
-	font-weight: 700;
-	font-size: 30px;
-	line-height: 26px;
-	color: #494949;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.2;
+  color: var(--gh-text, #101828);
 }
 
 .title-recur{
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 16px;
-
-	color: #3F3F3F
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gh-text-secondary, #667085);
 }
 
 .bg-promotion{
-	background: $color-global-red-buttons;
-	color: white !important;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border-radius: 18px;
+  color: white !important;
 
-	.title-sub-type{
-		color: white !important;
-	}
-
-
-	.title-sub-cost{
-		color: white !important;
-	}
-
-	.title-recur{
-		color: white !important;
-	}
+  .title-sub-type { color: white !important; }
+  .title-sub-cost { color: white !important; }
+  .title-recur    { color: rgba(255,255,255,0.85) !important; }
 }
 
-
 .card{
-	background: #FFFFFF;
-	padding: 0;
-	border: 1px solid #f9f9f9;
-	border-radius: 15px !important;
-	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
+  background: #FFFFFF;
+  padding: 0;
+  border: 1px solid var(--gh-border, #E7EAF3);
+  border-radius: 18px !important;
+  box-shadow: var(--gh-shadow-card, 0 2px 12px rgba(16, 24, 40, 0.06));
 }
 
 .btn-subscribe{
-	font-style: italic;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 21px;
-	border: 1px solid #A7A7A7;
-	border-radius: 111px;
-	color: #A7A7A7;
-	padding: 10px 20px;
-	margin-bottom: 20px;
-
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1.5px solid var(--gh-border, #E7EAF3);
+  border-radius: 10px;
+  color: var(--gh-text-secondary, #667085);
+  padding: 10px 24px;
+  margin-bottom: 16px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 120ms $motion-ease-standard;
+  @include motion-safe;
+  &:hover { border-color: $color-global-red-buttons; color: $color-global-red-buttons; }
 }
 
 .btn-subscribe-active{
-	font-style: italic;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 21px;
-	background: #FFFFFF;
-	box-shadow: 0px 13px 36px rgba(255, 255, 255, 0.44);
-	border-radius: 111px;
-	color: $color-global-red;
-	padding: 10px 20px;
-	margin-bottom: 20px;
-
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
+  background: $color-global-red-soft;
+  border: 1.5px solid $color-global-red-buttons;
+  border-radius: 10px;
+  color: $color-global-red-buttons;
+  padding: 10px 24px;
+  margin-bottom: 16px;
+  cursor: pointer;
 }

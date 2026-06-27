@@ -132,7 +132,7 @@
 
 .ih-empty-icon {
   font-size: 2.5rem;
-  color: $color-blue-primary;
+  color: $color-global-red-buttons;
   margin-bottom: 16px;
   display: block;
 }
@@ -180,21 +180,21 @@
   }
 
   &--primary {
-    background: $color-blue-primary;
+    background: $color-global-red-buttons;
     color: #fff;
 
     &:hover {
-      background: $color-blue-dark;
+      background: $color-global-red-buttons-hover;
     }
   }
 
   &--ghost {
     background: transparent;
-    border: 1px solid #d1d5db;
-    color: $color-black;
+    border: 1px solid #E7EAF3;
+    color: $color-global-red-buttons;
 
     &:hover {
-      background: #f3f4f6;
+      background: $color-global-red-soft;
     }
   }
 }
@@ -226,14 +226,14 @@
   @include motion-safe;
 
   &--active {
-    background: $color-blue-primary;
-    border-color: $color-blue-primary;
+    background: $color-global-red-buttons;
+    border-color: $color-global-red-buttons;
     color: #fff;
   }
 
   &:not(&--active):hover {
-    background: #f3f4f6;
-    border-color: $color-blue-primary;
+    background: $color-global-red-soft;
+    border-color: $color-global-red-buttons;
   }
 }
 
@@ -245,8 +245,8 @@
   font-weight: 600;
 
   .ih-filter-chip:not(.ih-filter-chip--active) & {
-    background: $color-blue-light;
-    color: $color-blue-dark;
+    background: $color-global-red-soft;
+    color: $color-global-red-buttons;
   }
 }
 
@@ -372,8 +372,8 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: $color-blue-light;
-  color: $color-blue-dark;
+  background: var(--gh-azure-soft, #EAF4FF);
+  color: var(--gh-azure, #168BFF);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 3px 10px;
@@ -412,25 +412,25 @@
   }
 
   &--primary {
-    background: $color-blue-primary;
+    background: $color-global-red-buttons;
     color: #fff;
 
-    &:hover { background: $color-blue-dark; }
+    &:hover { background: $color-global-red-buttons-hover; }
   }
 
   &--secondary {
-    background: $color-blue-light;
-    color: $color-blue-dark;
+    background: $color-global-red-soft;
+    color: $color-global-red-buttons;
 
-    &:hover { background: darken($color-blue-light, 5%); }
+    &:hover { background: darken(#FFF0EE, 4%); }
   }
 
   &--ghost {
     background: transparent;
-    border: 1px solid #d1d5db;
-    color: #374151;
+    border: 1px solid #E7EAF3;
+    color: #667085;
 
-    &:hover { background: #f3f4f6; }
+    &:hover { background: #F6F7FB; }
   }
 }
 

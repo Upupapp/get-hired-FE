@@ -7,7 +7,7 @@
 .portal-hero {
   text-align: center;
   padding: 64px 24px 32px;
-  background: linear-gradient(135deg, #FFF8F6 0%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #FFF0EE 0%, #FFFFFF 60%, #EAF4FF 100%);
 }
 
 .portal-hero-inner {
@@ -159,27 +159,32 @@
 }
 
 .btn-cta-primary {
-  // MV5-B4: display:inline-flex makes both <button> and <a> variants
-  // respect min-height/padding for the 44px WCAG touch target.
+  // REVAMP v1: updated to coral gradient + 10px radius for brand consistency
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(99.75deg, $color-global-red 24.68%, #FF4D3C 91.74%);
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  // MV5-B4: 12px vertical → ≥44px total (12+20+12).
+  border-radius: 10px;
   padding: 12px 24px;
   min-height: 44px;
-  font-weight: 600;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
   white-space: nowrap;
-  text-decoration: none; // <a> variant must never show default underline
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 140ms ease;
 
-  @media (prefers-reduced-motion: no-preference) {
-    &:hover, &:focus-visible {
-      color: #fff;
-      transform: translateY(-2px);
-    }
+  &:hover, &:focus-visible {
+    color: #fff;
+    opacity: 0.88;
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 

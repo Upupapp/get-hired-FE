@@ -39,6 +39,7 @@
 // Desktop sidebar is fixed so it stays pinned during page scroll.
 // position:sticky was broken by #body-row overflow-y:hidden.
 // Out-of-flow fixed positioning bypasses that entirely.
+// REVAMP v1: Deep Navy (#0D1024)
 #sidebar-container {
   position: fixed;
   left: 0;
@@ -47,7 +48,7 @@
   width: 252px;
   z-index: 100;
   padding: 0;
-  background: $color-global-sidebar-employer-user-menu;
+  background: $color-global-navy;
 }
 
 // Offset main content so it doesn't slide under the fixed sidebar.
@@ -116,7 +117,7 @@
   right: 0;
   z-index: 1001;
   height: 56px;
-  background: $color-global-sidebar-employer-user-menu;
+  background: $color-global-navy;
   align-items: center;
   padding: 0 12px;
   gap: 12px;
@@ -240,7 +241,7 @@
   bottom: 0;
   width: 280px;
   z-index: 1001;
-  background: $color-global-sidebar-employer-user-menu;
+  background: $color-global-navy;
   transform: translateX(-100%);
   transition: transform $motion-duration-drawer $motion-ease-decelerate;
   @include motion-safe;
@@ -367,10 +368,10 @@
     }
   }
 
-  // Active / current route state
+  // Active / current route state — REVAMP v1: coral on Deep Navy
   &--active,
   &[aria-current="page"] {
-    background: $color-global-sidebar-employer-route-active;
+    background: rgba($color-global-red-buttons, 0.18);
     border-left-color: $color-global-red-buttons;
     color: #ffffff;
     font-weight: 600;
@@ -437,7 +438,7 @@
   left: 0;
   right: 0;
   z-index: 999;
-  background: $color-global-sidebar-employer-user-menu;
+  background: $color-global-navy;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding: 6px 0 env(safe-area-inset-bottom, 0px);
   justify-content: space-around;
@@ -571,7 +572,7 @@
   font-family: 'Manrope', sans-serif;
   font-size: 22px;
   font-weight: 800;
-  color: #1a1a2e;
+  color: #101828;
   margin: 0;
   letter-spacing: -0.3px;
 }
@@ -594,14 +595,14 @@
   font-weight: 700;
   cursor: pointer;
   border: none;
-  background: $color-global-red-buttons;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #ffffff;
   white-space: nowrap;
   outline: none;
-  transition: background 120ms $motion-ease-standard, transform 100ms $motion-ease-standard;
+  transition: opacity 120ms $motion-ease-standard, transform 100ms $motion-ease-standard;
   @include motion-safe;
 
-  &:hover { background: darken(#FF7062, 8%); }
+  &:hover { opacity: 0.88; }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.97); }
 }
@@ -660,7 +661,7 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: $color-global-sidebar-employer-user-menu;
+  background: $color-global-navy;
   border: none;
   cursor: pointer;
   outline: none;

@@ -9,17 +9,22 @@
 
 
 .btn-add-service{
-	background: $color-global-red-buttons;
-	border-radius: 6px;
-	padding: 7px 10px 7px 20px;
-	color: white;
-	margin-top: -10px;
-	//position: absolute;
-	//right: 0px;
-
-	&:hover{
-		background: rgba($color-global-red-buttons, 0.7);
-	}
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border-radius: 10px;
+  padding: 0 18px;
+  height: 38px;
+  color: white;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  margin-top: -10px;
+  transition: opacity 120ms ease;
+  &:hover { opacity: 0.88; }
 }
 
 .main-title{
@@ -59,11 +64,11 @@
 }
 
 .card{
-	background: #FFFFFF;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	border: none;
-	padding: 30px 30px !important;
+  background: #FFFFFF;
+  box-shadow: 0 2px 12px rgba(16, 24, 40, 0.06);
+  border-radius: 18px;
+  border: 1px solid #E7EAF3;
+  padding: 24px !important;
 }
 
 .form-control{
@@ -320,28 +325,39 @@ label{
 }
 
 .btn-save{
-	background: $color-global-red-buttons;
-	border-radius: 7px;
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #FFFFFF;
-	padding: 7px 20px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #FFFFFF;
+  padding: 0 22px !important;
+  height: 44px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 120ms ease;
+  &:hover { opacity: 0.88; }
 }
 
 .btn-save-draft{
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #a9a9a9;
-	background: #FFFFFF;
-	border: 1px solid #a9a9a9;
-	border-radius: 7px;
-	padding: 7px 20px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #667085;
+  background: #FFFFFF;
+  border: 1.5px solid #E7EAF3;
+  border-radius: 10px;
+  padding: 0 22px !important;
+  height: 44px;
+  cursor: pointer;
+  transition: border-color 120ms ease;
+  &:hover { border-color: #FF675D; color: #FF675D; }
 }
 
 
