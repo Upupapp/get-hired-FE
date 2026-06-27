@@ -22,161 +22,167 @@
     </button>
   </div>
 
-  <div class="card card-body mt-3">
-    <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-      <!-- EMPLOYMENT DETAILS -->
-      <div class="col-12">
-        <h5 class="title-label">{{ 'EDIT_COMPANY_DETAILS.COMPANY_DESCRIPTION' | translate }}</h5>
-        <hr style="border: dashed 1px #868686">
+  <!-- ── CARD 1: Company Profile ─────────────────────────────────────────────── -->
+  <div class="gh-form-card mt-3 mb-4" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+    <div class="gh-form-card-header">
+      <h2 class="gh-form-card-title">
+        <svg class="me-2" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17" aria-hidden="true"><path d="M3 8l7-6 7 6v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="8 20 8 11 12 11 12 20"/></svg>
+        Company profile
+      </h2>
+      <p class="gh-form-card-subtitle">Tell candidates about your company and culture.</p>
+    </div>
+
+    <div class="row g-3">
+      <!-- Logo avatar (shown when a logo exists) -->
+      <div class="col-12 col-lg-3" *ngIf="profileImage">
+        <div class="cdf-avatar-wrap">
+          <img [src]="profileImage" class="avatar-image" alt="Company logo">
+        </div>
       </div>
 
-      <div class="col-12 col-lg-3" *ngIf="profileImage">
-        <div>
-          <div class="text-center mb-3 bg-gray" *ngIf="profileImage">
-            <img [src]="profileImage" class="avatar-image">
+      <!-- Upload + company name beside avatar when logo exists, full-width otherwise -->
+      <div class="col-12" [ngClass]="profileImage ? 'col-lg-9' : ''">
+        <div class="gh-field mb-3">
+          <label class="gh-label">{{ 'EDIT_COMPANY_DETAILS.COMPANY_LOGO_TEXT' | translate }}</label>
+          <app-file-upload formControlName="companyLogoFile" (upload)="onUpload($event)"
+            label="Select Profile Photo" [labelTop]="false"></app-file-upload>
+        </div>
+
+        <!-- Name shown here only when a logo exists (sits next to the avatar) -->
+        <div class="gh-field" *ngIf="profileImage">
+          <label class="gh-label" for="cdf-input-name-logo">
+            {{ 'EDIT_COMPANY_DETAILS.COMPANY_NAME_TEXT' | translate }}
+            <span class="gh-label-required" aria-label="required">*</span>
+          </label>
+          <input type="text" class="gh-input"
+            id="cdf-input-name-logo"
+            placeholder="i.e. Google, Apple, Microsoft"
+            formControlName="companyName"
+            aria-describedby="cdf-err-name-logo"
+            [class.gh-input--invalid]="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+          <div class="cdf-field-error" id="cdf-err-name-logo" role="alert"
+            *ngIf="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+            Company name is required.
           </div>
         </div>
       </div>
 
-      <div class="col-12 col-lg-9" *ngIf="!profileImage"></div>
-
-      <div class="col-12 col-lg-6" [ngClass]="profileImage ? 'mt-3' : ''">
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_LOGO_TEXT' | translate }}</label>
-          <app-file-upload formControlName="companyLogoFile" (upload)="onUpload($event)" label="Select Profile Photo"
-            [labelTop]="false"></app-file-upload>
+      <!-- Name full-width when no logo -->
+      <div class="col-12" *ngIf="!profileImage">
+        <div class="gh-field">
+          <label class="gh-label" for="cdf-input-name">
+            {{ 'EDIT_COMPANY_DETAILS.COMPANY_NAME_TEXT' | translate }}
+            <span class="gh-label-required" aria-label="required">*</span>
+          </label>
+          <input type="text" class="gh-input"
+            id="cdf-input-name"
+            placeholder="i.e. Google, Apple, Microsoft"
+            formControlName="companyName"
+            aria-describedby="cdf-err-name"
+            [class.gh-input--invalid]="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+          <div class="cdf-field-error" id="cdf-err-name" role="alert"
+            *ngIf="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+            Company name is required.
+          </div>
         </div>
+      </div>
 
-        <div class="title-container mb-3" *ngIf="profileImage">
-          <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_NAME_TEXT' | translate }}</label>
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="i.e. Google, Apple, Microsoft"
-              formControlName="companyName"
-              [class.is-invalid]="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
-            <div class="cdf-field-error" role="alert"
-              *ngIf="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
-              Company name is required.
-            </div>
+      <!-- About -->
+      <div class="col-12">
+        <div class="gh-field">
+          <label class="gh-label">{{ 'EDIT_COMPANY_DETAILS.COMPANY_DESCRIPTION' | translate }}</label>
+          <textarea class="gh-input gh-textarea"
+            placeholder="Describe your company — what you do, your culture, and what makes you a great place to work."
+            rows="4" formControlName="companyDetails" maxlength="1000"></textarea>
+          <div class="d-flex justify-content-end mt-1">
+            <small class="cdf-char-count"
+              [class.cdf-char-count--warn]="(companyDetailsForm.get('companyDetails')?.value?.length || 0) >= 950"
+              aria-live="polite" aria-atomic="true">
+              {{ companyDetailsForm.get('companyDetails')?.value?.length || 0 }} / 1000
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Industry -->
+      <div class="col-12 col-lg-6" *ngIf="industry$ | async as industries">
+        <div class="gh-field">
+          <label class="gh-label">{{ 'EDIT_COMPANY_DETAILS.TYPE_INDUSTRY' | translate }}</label>
+          <select class="gh-select" formControlName="industryId">
+            <option selected disabled [ngValue]="null">Select Industry</option>
+            <ng-container *ngFor="let item of industries">
+              <option [value]="item.id">{{item.name}}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+
+      <!-- Work Setup -->
+      <div class="col-12 col-lg-4" *ngIf="workSetup$ | async as workSetup">
+        <div class="gh-field">
+          <label class="gh-label">Work setup</label>
+          <select class="gh-select" formControlName="workSetupId">
+            <option selected disabled [ngValue]="null">Select Work Setup</option>
+            <ng-container *ngFor="let item of workSetup">
+              <option [value]="item.id">{{item.name}}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+
+      <!-- Team size -->
+      <div class="col-12 col-lg-2">
+        <div class="gh-field">
+          <label class="gh-label">{{ 'EDIT_COMPANY_DETAILS.NUMBER_OF_EMPLOYEES' | translate }}</label>
+          <input type="number" class="gh-input" placeholder="0–1000" formControlName="numberOfEmployee">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 2: Contact Details ─────────────────────────────────────────────── -->
+  <div class="gh-form-card mb-4">
+    <div class="gh-form-card-header">
+      <h2 class="gh-form-card-title">
+        <svg class="me-2" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17" aria-hidden="true"><circle cx="8" cy="6" r="3"/><path d="M2 18v-1.5a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4V18"/><line x1="14" y1="2" x2="14" y2="8"/><line x1="17" y1="5" x2="11" y2="5"/></svg>
+        Contact details
+      </h2>
+      <p class="gh-form-card-subtitle">How candidates and partners can reach your company.</p>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-lg-6">
+        <div class="gh-field">
+          <label class="gh-label" for="cdf-input-email">
+            Email <span class="gh-label-required" aria-label="required">*</span>
+          </label>
+          <input type="email" class="gh-input"
+            id="cdf-input-email"
+            placeholder="sample.email@gmail.com"
+            formControlName="companyEmail"
+            aria-describedby="cdf-err-email"
+            [class.gh-input--invalid]="companyDetailsForm.get('companyEmail')?.invalid && companyDetailsForm.get('companyEmail')?.touched">
+          <div class="cdf-field-error" id="cdf-err-email" role="alert"
+            *ngIf="companyDetailsForm.get('companyEmail')?.invalid && companyDetailsForm.get('companyEmail')?.touched">
+            <span *ngIf="companyDetailsForm.get('companyEmail')?.errors?.required">Contact email is required.</span>
+            <span *ngIf="companyDetailsForm.get('companyEmail')?.errors?.email">Enter a valid email address.</span>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-lg-6">
-        <div class="title-container mb-3" *ngIf="!profileImage">
-          <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_NAME_TEXT' | translate }}</label>
-          <div class="form-group">
-            <input type="text" class="form-control" formControlName="companyName"
-              placeholder="i.e. Google, Apple, Microsoft"
-              [class.is-invalid]="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
-            <div class="cdf-field-error" role="alert"
-              *ngIf="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
-              Company name is required.
-            </div>
-          </div>
+        <div class="gh-field">
+          <label class="gh-label">Work phone <span class="gh-label-optional">(optional)</span></label>
+          <input type="text" class="gh-input" placeholder="000-000000" formControlName="companyContactNumber">
         </div>
       </div>
 
-
-      <div class="col-lg-6" *ngIf="!profileImage">
-      </div>
-
-      <div class="col-12 mb-3" *ngIf="profileImage">
-        <hr style="border: dashed 1px #868686">
-      </div>
-
-      <div class="col-12 col-lg-12 mb-3">
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_DESCRIPTION' | translate }}</label>
-          <div class="form-group">
-            <textarea type="text" class="form-control"
-              placeholder="Describe your company — what you do, your culture, and what makes you a great place to work."
-              rows="4" formControlName="companyDetails" maxlength="1000"></textarea>
-            <div class="d-flex justify-content-end mt-1">
-              <small class="text-muted" [class.text-danger]="(companyDetailsForm.get('companyDetails')?.value?.length || 0) >= 950"
-                aria-live="polite" aria-atomic="true">
-                {{ companyDetailsForm.get('companyDetails')?.value?.length || 0 }} / 1000
-              </small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-6 mb-3" *ngIf="industry$ | async as industries">
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.TYPE_INDUSTRY' | translate }}</label>
-          <select class="form-select" formControlName="industryId">
-            <option selected disabled [ngValue]="null">Select Industry</option>
-            <ng-container *ngFor="let item of industries; let i = index">
-              <option [value]="item.id">{{item.name}}</option>
-            </ng-container>
-          </select>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-4 mb-3" *ngIf="workSetup$ | async as workSetup">
-        <div class="title-container mb-3">
-          <label>Work Setup</label>
-          <select class="form-select" formControlName="workSetupId">
-            <option selected disabled [ngValue]="null">Select Work Setup</option>
-            <ng-container *ngFor="let item of workSetup; let i = index">
-              <option [value]="item.id">{{item.name}}</option>
-            </ng-container>
-          </select>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-2 mb-3">
-        <div class="title-container mb-3">
-          <label>{{ 'EDIT_COMPANY_DETAILS.NUMBER_OF_EMPLOYEES' | translate }}</label>
-          <div class="form-group">
-            <input type="number" class="form-control" placeholder="0-1000" formControlName="numberOfEmployee">
-          </div>
-        </div>
-      </div>
-
-      <!-- CONTACT DETAILS -->
-      <div class="col-12 mt-2">
-        <h5 class="title-label">Contact Details</h5>
-        <hr style="border: dashed 1px #868686">
-      </div>
-
-      <div class="row">
-        <div class="col-12 col-lg-6 mb-3">
-          <div class="title-container mb-3">
-            <label>Email</label>
-
-            <div class="form-group">
-              <input type="email" class="form-control" placeholder="sample.email@gmail.com"
-                formControlName="companyEmail"
-                [class.is-invalid]="companyDetailsForm.get('companyEmail')?.invalid && companyDetailsForm.get('companyEmail')?.touched">
-              <div class="cdf-field-error" role="alert"
-                *ngIf="companyDetailsForm.get('companyEmail')?.invalid && companyDetailsForm.get('companyEmail')?.touched">
-                <span *ngIf="companyDetailsForm.get('companyEmail')?.errors?.required">Contact email is required.</span>
-                <span *ngIf="companyDetailsForm.get('companyEmail')?.errors?.email">Enter a valid email address.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-lg-6 mb-3">
-          <div class="title-container mb-3">
-            <label>Work Phone</label>
-
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="000-000000" formControlName="companyContactNumber">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 col-lg-6 mb-3">
-          <label>Company Address</label>
-        </div>
-        <div class="col-12 col-lg-6 mb-3">
-          <div class="form-check row d-flex h-100 align-items-center justify-content-end">
-            <input class="form-check-input col-12 col-lg-8" type="checkbox" formControlName="shownPublicly">
-            <label class="form-check-label col-12 col-lg-4 m-0 text-end">
-              Publicly Shown
-            </label>
+      <div class="col-12">
+        <div class="cdf-address-header">
+          <span class="gh-label">Company address</span>
+          <div class="cdf-public-toggle">
+            <input class="cdf-check" type="checkbox" id="cdf-shown-publicly" formControlName="shownPublicly">
+            <label class="cdf-public-label" for="cdf-shown-publicly">Publicly shown</label>
           </div>
         </div>
         <app-google-address-search [rawAddress]="rawAddress"

@@ -200,6 +200,25 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // FE size guard: base64 data URLs are ~1.37× the raw file size.
+    // 4 MB of base64 ≈ 2.9 MB image — well under the 6 MB server limit.
+    const logoVal = this.companyDetailsForm.controls['companyLogoFile'].value;
+    if (logoVal && typeof logoVal === 'string' && logoVal.length > 4 * 1024 * 1024) {
+      this.haptic.warning();
+      this.dialog.open(GhFeedbackModalComponent, {
+        panelClass: 'gh-feedback-modal-panel',
+        disableClose: false,
+        autoFocus: false,
+        data: {
+          state: 'error',
+          title: 'Logo file is too large',
+          body: 'The image you selected exceeds 3 MB. Try compressing it or choosing a smaller file before uploading.',
+          primaryCta: 'Choose another file',
+        } as FeedbackModalData,
+      });
+      return;
+    }
+
     if (this.company && this.company.companyId) {
       this.saving = true;
       this.haptic.press();
@@ -291,6 +310,29 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         } as FeedbackModalData,
       }).afterClosed().subscribe(() => this.focusFirstInvalidField());
 
+      return;
+    }
+
+    // File too large — server rejected the payload (413)
+    if (errObj.httpStatus === 413) {
+      this.haptic.error();
+      this.dialog.open(GhFeedbackModalComponent, {
+        panelClass: 'gh-feedback-modal-panel',
+        disableClose: false,
+        autoFocus: false,
+        data: {
+          state: 'error',
+          title: 'File too large',
+          body: 'The logo image exceeds the maximum upload size. Please use a file under 4 MB, or compress it and try again.',
+          primaryCta: 'Choose another file',
+          secondaryCta: 'Save without logo',
+        } as FeedbackModalData,
+      }).afterClosed().subscribe(action => {
+        if (action === 'secondary') {
+          this.companyDetailsForm.controls['companyLogoFile'].setValue(null);
+          this.onSubmit();
+        }
+      });
       return;
     }
 

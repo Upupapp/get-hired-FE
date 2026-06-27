@@ -1,10 +1,9 @@
 @import "src/assets/styles/colors";
 
+// ── Submit bar ─────────────────────────────────────────────────────────────────
 .submit-container {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 0; left: 0; right: 0;
   z-index: 99;
   background: #fff;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
@@ -22,408 +21,203 @@
   color: #9CA3AF;
 }
 
-.submit-label--dirty {
-  color: #F59E0B;
-  font-weight: 600;
-}
+.submit-label--dirty { color: #F59E0B; font-weight: 600; }
 
-// Spinner inside the submit button during saving state
 .btn-spinner {
-  width: 15px;
-  height: 15px;
-  margin-right: 7px;
-  flex-shrink: 0;
+  width: 15px; height: 15px; margin-right: 7px; flex-shrink: 0;
   animation: cdf-spin 0.72s linear infinite;
 }
 
-@keyframes cdf-spin {
-  to { transform: rotate(360deg); }
+@keyframes cdf-spin { to { transform: rotate(360deg); } }
+
+.btn-save {
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+  padding: 0 24px !important;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border: none;
 }
 
-// Inline validation error messages under fields
+form { padding-bottom: 80px; }
+
+// ── Card ────────────────────────────────────────────────────────────────────────
+.gh-form-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.07);
+  padding: 24px;
+}
+
+.gh-form-card-header { margin-bottom: 20px; }
+
+.gh-form-card-title {
+  display: flex;
+  align-items: center;
+  font-family: 'Manrope', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1830;
+  margin: 0 0 4px;
+
+  svg { flex-shrink: 0; }
+}
+
+.gh-form-card-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #6b6887;
+  margin: 0;
+}
+
+// ── Field ───────────────────────────────────────────────────────────────────────
+.gh-field { display: flex; flex-direction: column; gap: 4px; }
+
+.gh-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1830;
+  margin: 0;
+}
+
+.gh-label-optional { color: #9CA3AF; font-weight: 400; font-size: 12px; margin-left: 4px; }
+.gh-label-required { color: $color-global-red-buttons; margin-left: 2px; }
+
+// ── Inputs ──────────────────────────────────────────────────────────────────────
+.gh-input {
+  height: 44px;
+  border: 1.5px solid #DDD8F0 !important;
+  border-radius: 10px !important;
+  padding: 0 14px !important;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #1a1830;
+  background: #fff;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+  width: 100%;
+  appearance: none;
+  letter-spacing: normal;
+
+  &::placeholder { color: #C4C0D6; }
+
+  &:focus {
+    outline: none;
+    border-color: $color-global-red-buttons !important;
+    box-shadow: 0 0 0 3px rgba(255, 112, 98, 0.12) !important;
+  }
+
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 1px; }
+
+  &--invalid {
+    border-color: #EF4444 !important;
+    &:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important; }
+  }
+}
+
+.gh-textarea {
+  height: auto !important;
+  padding: 12px 14px !important;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.gh-select {
+  height: 44px;
+  border: 1.5px solid #DDD8F0 !important;
+  border-radius: 10px !important;
+  padding: 0 32px 0 14px !important;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: #1a1830;
+  background: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%236b6887' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  width: 100%;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+
+  &:focus {
+    outline: none;
+    border-color: $color-global-red-buttons !important;
+    box-shadow: 0 0 0 3px rgba(255, 112, 98, 0.12) !important;
+  }
+}
+
+// ── Validation ───────────────────────────────────────────────────────────────
 .cdf-field-error {
-  margin-top: 5px;
+  margin-top: 4px;
   font-family: 'Manrope', sans-serif;
   font-size: 12px;
   color: #EF4444;
   font-weight: 500;
 }
 
-
-.bg-upper-gray{
-	background: #F5F6FA;
+.cdf-char-count {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: #9CA3AF;
+  &--warn { color: #EF4444; font-weight: 600; }
 }
 
-.main-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	/* or 215% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #03011A;
+// ── Avatar ─────────────────────────────────────────────────────────────────────
+.cdf-avatar-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 4px;
 }
 
-.title-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight:500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-	margin-bottom: 5px;
-
-	color: #464646;
+.avatar-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid #DDD8F0;
+  background: #f8f9fb;
 }
 
-.title-label-sub{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* or 131% */
-	color: #868686;
-	margin-bottom: 5px;
+// ── Address row ───────────────────────────────────────────────────────────────
+.cdf-address-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
 }
 
-.card{
-	background: #FFFFFF;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	border: none;
-	padding: 30px 30px !important;
+.cdf-public-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.form-control{
-	background: #FFFFFF;
-	min-height: 50px;
-	border: 1px solid #AFBCC6 !important;
+.cdf-check {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: $color-global-red-buttons;
+  flex-shrink: 0;
+  padding: 0;
 }
 
-.form-select-multiple{
-	margin-bottom: 20px;
-	min-height: 170px !important;
-
-	option{
-		border-radius: 4px;
-		padding: 6px 10px;
-		margin-bottom: 5px;
-
-	}
-
-
-	option select {
-	    margin: 40px;
-	    background: red !important;
-	    color: #fff;
-	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-	}
+.cdf-public-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b6887;
+  cursor: pointer;
+  margin: 0;
 }
 
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-}
-
-.badge-selection{
-	background: #FFFFFF;
-	border: 2px dashed rgba(#AFBCC6, 0.7);
-	border-radius: 10px;
-	min-height: 170px;
-	margin-top: 30px;
-	padding: 20px;
-
-	.badge-item{
-		background: #FFFFFF;
-		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
-		border-radius: 10px;
-		padding: 10px 10px 10px 17px;
-
-		img{
-			height: 30px;
-			margin-right: 10px;
-			width: auto;
-			margin-top: 3px;
-		}
-
-		.badge-title{
-			font-family: 'Manrope';
-			font-style: normal;
-			font-weight: 400;
-			font-size: 16px;
-			line-height: 27px;
-			/* identical to box height */
-			margin-top: 3px;
-
-			color: #0C264C;
-		}
-
-		.remove-badge{
-			position: absolute;
-			right: 0px;
-			top: 3px;
-			cursor: pointer;
-			.mat-icon{
-				font-size: 16px !important;
-			}
-		}
-	}
-}
-
-.requirement-badge{
-	background: #868686;
-	border-radius: 6px;
-	color: white;
-	padding: 7px 15px;
-	cursor: pointer;
-	font-size: 12px;
-	font-weight: 500;
-	position: relative;
-}
-
-.img-banner{
-	margin-bottom: 35px;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-	border-radius: 10.624px;
-	height: 150px;
-	object-position: center;
-	object-fit: cover;
-}
-
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
-}
-
-.btn-search{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 4px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;	/* identical to box height */
-	color: #FFFFFF;
-	min-width: 100px;
-	padding: 10px;
-}
-
-.industry-skills{
-	border: none !important;
-	background: #FFFFFF;
-	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
-	border-radius: 10.624px;
-	cursor: pointer;
-}
-
-.industry-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 15.936px;
-	line-height: 15px;
-	letter-spacing: -0.03em;
-	color: #000000;
-}
-
-.industry-subtitle{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 15.936px;
-	line-height: 140%;
-	color: #4F4F4F;
-}
-
-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	/* identical to box height */
-
-
-	color: #464646;
-}
-
-.rate-card{
-	border: solid 2px #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-
-.title-rate{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #0C264C;
-}
-
-.check{
-	position: absolute;
-	height: 19px;
-	top: 8px;
-	right: 8px;
-}
-
-
-.rate-card-active{
-	background: #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-.title-rate-active{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #FFFFFF;
-}
-
-.rate-selection{
-	background: $color-global-sidebar-employer-user-menu;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	min-height: 300px;
-	padding: 20px;
-}
-
-.title-rate-range{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	color: #FFFFFF;
-}
-
-
-.title-rate-selection{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	color: #FFFFFF;
-}
-
-.industry-badge{
-	background: #0C264C;
-	border-radius: 6px;
-	color: white;
-	padding: 5px 15px;
-	cursor: pointer;
-}
-
-.btn-work-setup{
-	background: #FFFFFF;
-	border: 1px solid #AFBCC6;
-	border-radius: 6px !important;
-	padding: 15px 20px !important;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-}
-
-
-.active{
-	background: #0C264D;
-	color: white !important;
-}
-
-.btn-save{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 7px;
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #FFFFFF;
-	padding: 7px 20px !important;
-}
-
-.btn-save-draft{
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #a9a9a9;
-	background: #FFFFFF;
-	border: 1px solid #a9a9a9;
-	border-radius: 7px;
-	padding: 7px 20px !important;
-}
-
-
-.bg-gray{
-	background-size: cover !important;
-	background-position: center !important;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
-	border-radius: 7px;
-	padding: 20px;
-	background-repeat: no-repeat;
-	//background-color: rgba(0, 0, 0, 0.1)!important;
-	@media(max-width: 1280px){
-		margin-top: 20px;
-	}
-
-}
-
-.avatar-image{
-	background-color: white;
-	object-fit: cover;
-	object-position: center;
-	height: 200px;
-	width: 200px;
-	border-radius: 50%;
-	border: solid 2px #c9c9c9;
-
-	@media(max-width: 1280px){
-		max-width: 150px;
-		max-height: 150px;
-	}
-}
-
-input,
-select{
-	// background: rgba(#e7e7e7, 1) !important;
-	// border: none;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px;
-	padding-left: 20px;
-	padding-top: 15px;
-	letter-spacing: 0px !important;
-}
-
-.form-check-input {
-	padding-bottom: 15px;
-}
-
-// Bottom padding so the sticky save bar never obscures the last form field
-form { padding-bottom: 80px; }
-
+// ── Loading skeleton ──────────────────────────────────────────────────────────
 @keyframes cdf-shimmer {
   0%   { background-position: -400px 0; }
   100% { background-position: 400px 0; }
@@ -443,3 +237,7 @@ form { padding-bottom: 80px; }
 .cdf-skeleton--header { height: 22px; width: 50%; margin-bottom: 20px; }
 .cdf-skeleton--row    { height: 50px; width: 100%; }
 .cdf-skeleton--short  { width: 65%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-input, .gh-select { transition: none !important; }
+}
