@@ -7,11 +7,12 @@
      HERO — Hiring Command Center
 ════════════════════════════════════════════════════════════════════════════ -->
 <section class="rdb-hero" aria-label="Hiring command center">
-  <div class="rdb-hero-grid">
+  <div class="rdb-hero-card">
+    <div class="rdb-hero-mesh" aria-hidden="true"></div>
+    <div class="rdb-hero-grid">
 
-    <!-- LEFT: dark command card -->
-    <div class="rdb-cmd-card">
-      <div class="rdb-cmd-mesh" aria-hidden="true"></div>
+    <!-- LEFT: command pane -->
+    <div class="rdb-cmd-pane">
       <div class="rdb-cmd-inner">
         <p class="rdb-cmd-eyebrow">Hiring command center</p>
         <div class="rdb-cmd-identity">
@@ -62,8 +63,8 @@
       </div>
     </div>
 
-    <!-- RIGHT: profile completeness card -->
-    <div class="rdb-profile-card" role="group" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
+    <!-- RIGHT: profile completeness pane -->
+    <div class="rdb-profile-pane" role="group" [attr.aria-label]="'Profile completeness: ' + cachedProfilePct + '%'">
       <div class="rdb-profile-ring">
         <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
           <circle cx="40" cy="40" r="33" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7"/>
@@ -81,7 +82,8 @@
       <button type="button" class="rdb-btn-hero-link gh-pressable" (click)="goToCompanyProfile()" *ngIf="cachedProfilePct >= 100">View profile →</button>
     </div>
 
-  </div>
+  </div><!-- /rdb-hero-grid -->
+</div><!-- /rdb-hero-card -->
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════

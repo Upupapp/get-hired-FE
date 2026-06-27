@@ -368,25 +368,71 @@ $gh-teal:       $color-teal-accent;
 
 // ─── Page wrapper ─────────────────────────────────────────────────────────────
 .rdb-page {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 0 clamp(12px, 2vw, 24px) 48px;
+  padding-bottom: 48px;
 }
 
 // ─── Hero grid (two-card layout) ──────────────────────────────────────────────
 .rdb-hero {
-  padding: clamp(16px, 2vw, 24px) 0 0;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 24px 28px 0;
   animation: gh-reveal 0.45s $motion-ease-standard both;
 }
 
+.rdb-hero-card {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0b1026 0%, #1a1544 60%, #0d0f1f 100%);
+  border-radius: 20px;
+  padding: 28px 32px 24px;
+}
+
+.rdb-hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 80% 50%, rgba(255, 98, 93, 0.13) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 55% at 10% 80%, rgba(91, 70, 189, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
 .rdb-hero-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 7fr 5fr;
-  gap: 16px;
-  align-items: stretch;
+  gap: 32px;
+  align-items: center;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
+  }
+}
+
+.rdb-cmd-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rdb-profile-pane {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+
+  @media (max-width: 900px) {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 0;
+    padding-top: 16px;
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+    gap: 16px;
   }
 }
 
@@ -1570,6 +1616,7 @@ $gh-teal:       $color-teal-accent;
 
   .rdb-cmd-card,
   .rdb-profile-card,
+  .rdb-hero-card,
   .rdb-hero {
     animation: none !important;
   }
