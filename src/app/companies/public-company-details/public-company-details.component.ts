@@ -114,13 +114,13 @@ export class PublicCompanyDetailsComponent implements OnInit, OnDestroy {
   }
 
   private updateSeo(profile: PublicCompanyProfile): void {
-    const seo = profile.seo || {};
+    const seo = profile.seo;
     this.seoService.setPageMeta({
-      title: seo.title || (profile.displayName + ' | GetHired'),
-      description: seo.description || '',
-      canonical: seo.canonical || ('https://gethiredonline.app/companies/' + profile.slug),
+      title: (seo && seo.title) ? seo.title : (profile.displayName + ' | GetHired'),
+      description: (seo && seo.description) ? seo.description : '',
+      canonical: (seo && seo.canonical) ? seo.canonical : ('https://gethiredonline.app/companies/' + profile.slug),
       robots: 'index, follow',
-      ogImage: seo.ogImage || null,
+      ogImage: (seo && seo.ogImage) ? seo.ogImage : null,
     });
     this.seoService.setBreadcrumbJsonLd([
       { name: 'Home', url: 'https://gethiredonline.app/home' },

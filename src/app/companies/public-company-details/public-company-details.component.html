@@ -71,7 +71,7 @@
 
   <!-- ─── HERO SECTION ──────────────────────────────────────────── -->
   <section class="cph-hero" [class.cph-hero--has-banner]="profile.heroBanner"
-    role="banner" aria-label="{{ profile.displayName }} employer brand hero">
+    role="banner" [attr.aria-label]="profile.displayName + ' employer brand hero'">
 
     <!-- Banner image layer -->
     <div class="cph-hero-banner" *ngIf="profile.heroBanner" aria-hidden="true">
@@ -276,7 +276,7 @@
 
           <div class="cph-job-card-header">
             <h3 class="cph-job-title">{{ job.jobTitle }}</h3>
-            <span *ngIf="job.jobType" class="cph-chip cph-chip--jobtype" aria-label="Job type: {{ job.jobType }}">
+            <span *ngIf="job.jobType" class="cph-chip cph-chip--jobtype" [attr.aria-label]="'Job type: ' + job.jobType">
               {{ job.jobType }}
             </span>
           </div>
@@ -291,10 +291,10 @@
               {{ job.location }}
             </span>
             <span *ngIf="job.workSetup" class="cph-chip cph-chip--setup"
-              aria-label="Work setup: {{ job.workSetup }}">{{ job.workSetup }}</span>
+              [attr.aria-label]="'Work setup: ' + job.workSetup">{{ job.workSetup }}</span>
           </div>
 
-          <div *ngIf="formatSalary(job)" class="cph-job-salary" aria-label="Salary: {{ formatSalary(job) }}">
+          <div *ngIf="formatSalary(job)" class="cph-job-salary" [attr.aria-label]="'Salary: ' + formatSalary(job)">
             <svg viewBox="0 0 14 14" fill="none" width="12" height="12"
               stroke="currentColor" stroke-width="1.4" aria-hidden="true">
               <circle cx="7" cy="7" r="5.5"/>
@@ -324,7 +324,7 @@
       <!-- No open jobs — applicant-friendly empty state -->
       <div *ngIf="!jobsLoading && jobs.length === 0"
         class="cph-no-jobs" role="status"
-        aria-label="No open roles at {{ profile.displayName }}">
+        [attr.aria-label]="'No open roles at ' + profile.displayName">
 
         <div class="cph-no-jobs-icon" aria-hidden="true">
           <svg viewBox="0 0 80 80" fill="none" width="72" height="72">
