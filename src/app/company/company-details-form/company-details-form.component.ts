@@ -8,8 +8,26 @@ import * as Model from '../company.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { GhFeedbackModalComponent, FeedbackModalData } from './gh-feedback-modal/gh-feedback-modal.component';
+import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
+
+// Human-readable labels for changed-field chips in the success modal
+const FIELD_LABELS: { [key: string]: string } = {
+  companyName: 'Company name',
+  companyEmail: 'Contact email',
+  companyContactNumber: 'Work phone',
+  companyAddress: 'Address',
+  companyCity: 'City',
+  companyCountry: 'Country',
+  companyDetails: 'About',
+  industryId: 'Industry',
+  workSetupId: 'Work setup',
+  numberOfEmployee: 'Team size',
+  companyLogoFile: 'Company logo',
+  shownPublicly: 'Public visibility',
+};
 
 @Component({
   selector: 'app-company-details-form',
@@ -27,10 +45,13 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   companyId: string;
   profileImage: any;
   canView: boolean;
-  updateSuccess: boolean = false;
   rawAddress: any;
   loading: boolean = false;
+  saving: boolean = false;          // true while PUT request is in-flight
   addressFormValid: boolean = false;
+
+  // Snapshot of company data at load time — used to compute changedFields
+  private companySnapshot: any = {};
 
   workSetup$ = this.companyFacade.setup$;
   industry$ = this.companyFacade.industry$;
@@ -41,7 +62,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private snackbarService: SnackbarService
+    private snackbarService: SnackbarService,
+    private haptic: HapticFeedbackService,
   ) { }
 
   ngOnInit(): void {
@@ -50,29 +72,28 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.companyFacade.getSetup();
 
     this.companyDetailsForm = this.formBuilder.group({
-      companyEmail: ['', [Validators.required, Validators.email]],
+      companyEmail:         ['', [Validators.required, Validators.email]],
       companyContactNumber: [''],
-      companyAddress: [null],
-      companyCity: [''],
-      companyCountry: [''],
-      companyLogoUrl: [''],
-      companyName: ['', [Validators.required]],
-      companyDetails: [''],
-      industryId: [null],
-      workSetupId: [null],
-      numberOfEmployee: [0],
-      companyLogoFile: [],
-      companyState: [],
-      companyAddressOne: [],
-      companyTown: [],
-      companyZip: [],
-      companyMapUrl: [],
-      shownPublicly: []
+      companyAddress:       [null],
+      companyCity:          [''],
+      companyCountry:       [''],
+      companyLogoUrl:       [''],
+      companyName:          ['', [Validators.required]],
+      companyDetails:       [''],
+      industryId:           [null],
+      workSetupId:          [null],
+      numberOfEmployee:     [0],
+      companyLogoFile:      [],
+      companyState:         [],
+      companyAddressOne:    [],
+      companyTown:          [],
+      companyZip:           [],
+      companyMapUrl:        [],
+      shownPublicly:        []
     });
 
-    // Drive loading from data arrival, not the shared NgRx loading$ flag.
-    // The shared flag covers getSetup/getIndustry/getCompanySubscription too —
-    // any of those failing silently could leave loading=true forever.
+    // Drive skeleton from data arrival; shared loading$ also covers
+    // getSetup/getIndustry/getSubscription and would leave the form stuck.
     this.loading = true;
     this.companyFacade.companyDetails$
       .pipe(takeUntil(this.destroy$))
@@ -81,54 +102,37 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         this.loading = false;
       });
 
+    // Success path — open branded success modal
     this.companyFacade.success$
       .pipe(takeUntil(this.destroy$))
       .subscribe(event => this.afterSubmit(event));
+
+    // Error path — open branded error/validation modal
+    this.companyFacade.error$
+      .pipe(takeUntil(this.destroy$), filter(err => !!err))
+      .subscribe(err => this.afterError(err));
   }
 
   setCompany(company: EmployeeCompany) {
     if (company && company.companyId != null) {
       this.company = company;
       const {
-        companyName,
-        companyEmail,
-        companyContactNumber,
-        companyAddress,
-        companyCity,
-        companyCountry,
-        companyState,
-        companyTown,
-        companyZip,
-        companyMapUrl,
-        companyAddressOne,
-        companyLogoUrl,
-        companyDetails,
-        industryId,
-        workSetupId,
-        numberOfEmployee,
-        shownPublicly
+        companyName, companyEmail, companyContactNumber,
+        companyAddress, companyCity, companyCountry,
+        companyState, companyTown, companyZip,
+        companyMapUrl, companyAddressOne, companyLogoUrl,
+        companyDetails, industryId, workSetupId,
+        numberOfEmployee, shownPublicly
       } = company;
 
-      this.companyDetailsForm.get('companyName')?.setValue(companyName);
-      this.companyDetailsForm.get('companyEmail')?.setValue(companyEmail);
-      this.companyDetailsForm
-        .get('companyContactNumber')
-        ?.setValue(companyContactNumber);
-      this.companyDetailsForm.get('companyAddress')?.setValue(companyAddress);
-      this.companyDetailsForm.get('companyCity')?.setValue(companyCity);
-      this.companyDetailsForm.get('companyCountry')?.setValue(companyCountry);
-      this.companyDetailsForm.get('companyDetails')?.setValue(companyDetails);
-      this.companyDetailsForm.get('industryId')?.setValue(industryId);
-      this.companyDetailsForm.get('workSetupId')?.setValue(workSetupId);
-      this.companyDetailsForm
-        .get('numberOfEmployee')
-        ?.setValue(numberOfEmployee);
-      this.companyDetailsForm.get('companyLogoUrl')?.setValue(companyLogoUrl);
-      this.companyDetailsForm.get('shownPublicly').setValue(shownPublicly);
+      this.companyDetailsForm.patchValue({
+        companyName, companyEmail, companyContactNumber,
+        companyAddress, companyCity, companyCountry,
+        companyDetails, industryId, workSetupId,
+        numberOfEmployee, companyLogoUrl, shownPublicly,
+      });
 
       // PHASE 3 CACHE BUST: append ?v=<timestamp> to defeat browser logo cache
-      // after an upload. Only append to http(s) URLs; local blob:// previews
-      // are left as-is.
       const bustedLogo = companyLogoUrl && companyLogoUrl.startsWith('http')
         ? (companyLogoUrl.includes('?v=')
             ? companyLogoUrl.replace(/\?v=\d+/, '?v=' + Date.now())
@@ -146,9 +150,17 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         city: companyCity,
         zipcode: companyZip,
         mapUrl: companyMapUrl
-      }
-      this.updateLocalStorage();
+      };
 
+      // Snapshot for changed-field computation at submit time
+      this.companySnapshot = {
+        companyName, companyEmail, companyContactNumber,
+        companyAddress, companyCity, companyCountry,
+        companyDetails, industryId, workSetupId,
+        numberOfEmployee, shownPublicly
+      };
+
+      this.updateLocalStorage();
     }
   }
 
@@ -167,85 +179,233 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.addressFormValid = status;
   }
 
-  redirectToPreview() {
-    // this.router.navigate(['../company-details'], {relativeTo: this.route });
-  }
+  redirectToPreview() {}
 
   onUpload(file: any) {
     this.profileImage = file.file;
-    this.companyDetailsForm.controls['companyLogoFile'].setValue(
-      this.profileImage
-    );
+    this.companyDetailsForm.controls['companyLogoFile'].setValue(this.profileImage);
   }
 
   onSubmit() {
-    this.updateSuccess = true;
-    // Mark all fields touched so validation errors appear immediately
-    Object.values(this.companyDetailsForm.controls).forEach(function(c) { c.markAsTouched(); });
+    // Double-submit guard: ignore while a request is in-flight
+    if (this.saving) { return; }
 
-    if (this.companyDetailsForm.valid) {
-      if (this.company && this.company.companyId) {
-        this.companyFacade.updateCompany({
-          ...this.companyDetailsForm.value,
-          companyId: this.company.companyId,
-          workSetupId: parseInt(
-            this.companyDetailsForm.controls.workSetupId.value
-          ),
-          industryId: parseInt(
-            this.companyDetailsForm.controls.industryId.value
-          ),
-        });
-      } else {
-        this.companyFacade.createCompany({
-          ...this.companyDetailsForm.value,
-          workSetupId: parseInt(
-            this.companyDetailsForm.controls.workSetupId.value
-          ),
-          industryId: parseInt(
-            this.companyDetailsForm.controls.industryId.value
-          ),
-        });
-      }
+    // Mark all fields touched to surface inline validation errors
+    Object.values(this.companyDetailsForm.controls).forEach(c => c.markAsTouched());
+
+    if (!this.companyDetailsForm.valid) {
+      // If FE validation fails, focus the first invalid field
+      this.focusFirstInvalidField();
+      return;
+    }
+
+    if (this.company && this.company.companyId) {
+      this.saving = true;
+      this.haptic.press();
+      this.companyFacade.resetStateNotif();  // clear stale error before new attempt
+
+      this.companyFacade.updateCompany({
+        ...this.companyDetailsForm.value,
+        companyId: this.company.companyId,
+        workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
+        industryId:  parseInt(this.companyDetailsForm.controls.industryId.value),
+      });
+    } else {
+      this.companyFacade.createCompany({
+        ...this.companyDetailsForm.value,
+        workSetupId: parseInt(this.companyDetailsForm.controls.workSetupId.value),
+        industryId:  parseInt(this.companyDetailsForm.controls.industryId.value),
+      });
     }
   }
 
   afterSubmit(event) {
-    if (event == 'created') {
+    if (event === 'created') {
       const create = this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
         data: 'Company successfully setup. You can now access other features',
       });
-
       create.afterClosed().subscribe(
         () => this.router.navigate(['../details'], { relativeTo: this.route })
       );
-    } else if (event == 'updated') {
-      // PHASE 3 DATA SYNC FIX: on successful update, re-read the latest
-      // company from the NgRx store (it was just set by updateCompanySuccess)
-      // and refresh localStorage so logo + name propagate to sidebar/topbar.
-      if (this.company) {
-        this.updateLocalStorage();
-      }
+    } else if (event === 'updated') {
+      this.saving = false;
+      this.haptic.success();
+
+      if (this.company) { this.updateLocalStorage(); }
       this.companyDetailsForm.markAsPristine();
-      this.snackbarService.success('Company profile updated — your latest details are now live.');
+
+      const changedFields = this.computeChangedFields();
+      const modalRef = this.dialog.open(GhFeedbackModalComponent, {
+        panelClass: 'gh-feedback-modal-panel',
+        disableClose: false,
+        autoFocus: false,
+        data: {
+          state: 'success',
+          title: 'Company profile updated',
+          body: 'Your company details are saved and ready for your hiring workspace.',
+          syncNote: 'Changes synced across your recruiter dashboard and company profile.',
+          changedFields,
+          primaryCta: 'Continue editing',
+          secondaryCta: 'Back to dashboard',
+          autoDismissMs: 4000,
+        } as FeedbackModalData,
+      });
+
+      modalRef.afterClosed().subscribe(action => {
+        if (action === 'secondary') {
+          this.router.navigate(['/recruiter/dashboard']);
+        }
+      });
+    }
+  }
+
+  afterError(err: any) {
+    this.saving = false;
+
+    // Normalise: err can be a string (legacy) or the full BE error body object
+    const errObj = (err && typeof err === 'object') ? err : { error: err };
+    const feedbackState = (errObj.feedback && errObj.feedback.state) || 'error';
+
+    // Validation error from BE — show field errors in modal
+    if (feedbackState === 'validation_error' || (errObj.fieldErrors && Object.keys(errObj.fieldErrors).length)) {
+      this.haptic.warning();
+      const fieldErrors = errObj.fieldErrors
+        ? Object.entries(errObj.fieldErrors).map(([field, message]) => ({
+            field: FIELD_LABELS[field] || field,
+            message: message as string,
+          }))
+        : [];
+
+      this.dialog.open(GhFeedbackModalComponent, {
+        panelClass: 'gh-feedback-modal-panel',
+        disableClose: false,
+        autoFocus: false,
+        data: {
+          state: 'validation',
+          title: 'Some details need a quick check',
+          body: 'We found fields that need to be fixed before saving.',
+          fieldErrors,
+          primaryCta: 'Review fields',
+        } as FeedbackModalData,
+      }).afterClosed().subscribe(() => this.focusFirstInvalidField());
+
+      return;
+    }
+
+    // Network error
+    if (err && err.status === 0) {
+      this.haptic.error();
+      this.dialog.open(GhFeedbackModalComponent, {
+        panelClass: 'gh-feedback-modal-panel',
+        disableClose: false,
+        autoFocus: false,
+        data: {
+          state: 'network',
+          title: 'Connection paused',
+          body: "We couldn’t reach GetHired. Your edits are still on this page.",
+          primaryCta: 'Try again',
+          secondaryCta: 'Keep editing',
+        } as FeedbackModalData,
+      }).afterClosed().subscribe(action => {
+        if (action === 'primary') { this.onSubmit(); }
+      });
+      return;
+    }
+
+    // Permission / BOLA error
+    if (err && (err.status === 403 || err.status === 401)) {
+      this.haptic.error();
+      this.dialog.open(GhFeedbackModalComponent, {
+        panelClass: 'gh-feedback-modal-panel',
+        disableClose: false,
+        autoFocus: false,
+        data: {
+          state: 'permission',
+          title: "We couldn’t update this company profile",
+          body: 'This account does not have permission to update these company settings.',
+          primaryCta: 'Back to company page',
+        } as FeedbackModalData,
+      }).afterClosed().subscribe(() => {
+        this.router.navigate(['/recruiter/company/details']);
+      });
+      return;
+    }
+
+    // Generic server error
+    this.haptic.error();
+    this.dialog.open(GhFeedbackModalComponent, {
+      panelClass: 'gh-feedback-modal-panel',
+      disableClose: false,
+      autoFocus: false,
+      data: {
+        state: 'error',
+        title: "Changes weren’t saved",
+        body: 'Your edits are still here. Please try again in a moment.',
+        primaryCta: 'Try again',
+        secondaryCta: 'Keep editing',
+      } as FeedbackModalData,
+    }).afterClosed().subscribe(action => {
+      if (action === 'primary') { this.onSubmit(); }
+    });
+  }
+
+  // Compute which form fields changed relative to the loaded snapshot
+  private computeChangedFields(): string[] {
+    const changed: string[] = [];
+    const val = this.companyDetailsForm.value;
+
+    if (this.companyDetailsForm.controls['companyLogoFile'].value) {
+      changed.push('Company logo');
+    }
+
+    const comparableFields = [
+      'companyName', 'companyEmail', 'companyContactNumber',
+      'companyAddress', 'companyCity', 'companyCountry',
+      'companyDetails', 'industryId', 'workSetupId',
+      'numberOfEmployee', 'shownPublicly',
+    ];
+
+    for (const key of comparableFields) {
+      const snap = (this.companySnapshot as any)[key];
+      const cur  = val[key];
+      if (String(snap || '') !== String(cur || '')) {
+        const label = FIELD_LABELS[key];
+        if (label && !changed.includes(label)) { changed.push(label); }
+      }
+    }
+
+    return changed;
+  }
+
+  // Focus the first form field with a validation error
+  private focusFirstInvalidField(): void {
+    const fieldOrder = [
+      'companyName', 'companyEmail', 'companyContactNumber',
+      'numberOfEmployee', 'companyAddress',
+    ];
+    for (const name of fieldOrder) {
+      const ctrl = this.companyDetailsForm.get(name);
+      if (ctrl && ctrl.invalid) {
+        const el = document.querySelector(`[formControlName="${name}"]`) as HTMLElement;
+        if (el) { el.focus(); }
+        return;
+      }
     }
   }
 
   updateLocalStorage() {
     const user = localStorage.getItem('user');
     localStorage.removeItem('user');
-    // PHASE 3 DATA SYNC FIX: also persist companyLogoUrl so sidebar/topbar
-    // pick up the new logo without requiring a full page reload.
     localStorage.setItem('user', JSON.stringify({
       ...JSON.parse(user),
-      companyName: this.company.companyName,
-      companyId: this.company.companyId,
+      companyName:   this.company.companyName,
+      companyId:     this.company.companyId,
       companyLogoUrl: this.company.companyLogoUrl || null
     }));
-
     this.updateCompany.emit({
       status: true,
-      userId: JSON.parse(user)._id
+      userId: JSON.parse(localStorage.getItem('user'))._id
     });
   }
 

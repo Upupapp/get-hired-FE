@@ -88,7 +88,10 @@ export class CompanyEffects {
             return CompanyActions.updateCompanySuccess({ company });
           }),
           catchError((err) => {
-            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            // Pass the full error body so the form component can read
+            // feedback.state + fieldErrors for validation errors from BE.
+            const errBody = (err && err.error) ? err.error : null;
+            const payload = errBody || (err && err.message) || 'An error occurred';
             return of(CompanyActions.updateCompanyFail({ payload }))
           })
         )

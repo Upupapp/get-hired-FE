@@ -954,3 +954,27 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
     transition: outline-color 100ms ease;
   }
 }
+
+// ── GhFeedbackModal — strip MatDialog chrome so branded card controls its own shape ──
+.gh-feedback-modal-panel .mat-dialog-container {
+  padding: 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+// Mobile: position dialog at bottom of screen (bottom-sheet behavior)
+@media (max-width: 560px) {
+  .gh-feedback-modal-panel .mat-dialog-container {
+    border-radius: 0 !important;
+  }
+  .cdk-overlay-pane:has(.gh-feedback-modal-panel) {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}

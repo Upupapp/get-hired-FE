@@ -1,0 +1,110 @@
+<div class="ghfm-wrap" [ngClass]="'ghfm-wrap--' + data.state"
+  role="dialog" aria-modal="true" [attr.aria-labelledby]="'ghfm-title-' + data.state">
+
+  <!-- ── Header: Deep Navy gradient mesh ── -->
+  <div class="ghfm-header">
+    <div class="ghfm-mesh" aria-hidden="true"></div>
+
+    <!-- Success orbit ring -->
+    <div class="ghfm-icon-wrap" aria-hidden="true">
+      <ng-container *ngIf="data.state === 'success'">
+        <svg class="ghfm-orbit-ring" viewBox="0 0 80 80" fill="none">
+          <circle class="ghfm-orbit-track" cx="40" cy="40" r="34"/>
+          <circle class="ghfm-orbit-draw" cx="40" cy="40" r="34"/>
+        </svg>
+        <svg class="ghfm-check" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </ng-container>
+
+      <!-- Error / network icon -->
+      <svg *ngIf="data.state === 'error' || data.state === 'network' || data.state === 'partial'"
+        class="ghfm-icon-svg ghfm-icon-svg--error" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+
+      <!-- Validation icon -->
+      <svg *ngIf="data.state === 'validation'"
+        class="ghfm-icon-svg ghfm-icon-svg--validation" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+
+      <!-- Conflict icon -->
+      <svg *ngIf="data.state === 'conflict'"
+        class="ghfm-icon-svg ghfm-icon-svg--conflict" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+
+      <!-- Permission / session icon -->
+      <svg *ngIf="data.state === 'permission' || data.state === 'session'"
+        class="ghfm-icon-svg ghfm-icon-svg--permission" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+
+    <h2 class="ghfm-title" [id]="'ghfm-title-' + data.state">{{ data.title }}</h2>
+  </div>
+
+  <!-- ── Body ── -->
+  <div class="ghfm-body">
+    <p class="ghfm-text">{{ data.body }}</p>
+
+    <!-- Sync note (success) -->
+    <p class="ghfm-sync-note" *ngIf="data.syncNote && data.state === 'success'">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"
+        width="13" height="13" aria-hidden="true" stroke-linecap="round">
+        <polyline points="1 4 1 10 7 10"/><polyline points="15 12 15 6 9 6"/>
+        <path d="M14.5 9A7 7 0 1 0 4.3 4.3L1 7"/>
+      </svg>
+      {{ data.syncNote }}
+    </p>
+
+    <!-- Changed-field chips (success) -->
+    <div class="ghfm-chips" *ngIf="data.changedFields && data.changedFields.length" aria-label="Updated fields">
+      <span class="ghfm-chip" *ngFor="let field of data.changedFields">{{ field }}</span>
+    </div>
+
+    <!-- Validation field errors -->
+    <ul class="ghfm-field-errors" *ngIf="data.fieldErrors && data.fieldErrors.length"
+      role="list" aria-label="Fields to review">
+      <li class="ghfm-field-error" *ngFor="let fe of data.fieldErrors" role="listitem">
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"
+          width="12" height="12" aria-hidden="true" stroke-linecap="round">
+          <circle cx="6" cy="6" r="5"/>
+          <line x1="6" y1="4" x2="6" y2="6.5"/>
+          <line x1="6" y1="8" x2="6.01" y2="8"/>
+        </svg>
+        <span><strong>{{ fe.field }}:</strong> {{ fe.message }}</span>
+      </li>
+    </ul>
+
+    <!-- Request ID (errors only) -->
+    <p class="ghfm-request-id"
+      *ngIf="data.requestId && (data.state === 'error' || data.state === 'network')">
+      Ref: {{ data.requestId }}
+    </p>
+  </div>
+
+  <!-- ── Actions ── -->
+  <div class="ghfm-actions">
+    <button class="ghfm-btn ghfm-btn--primary" type="button"
+      (click)="close('primary')" cdkFocusInitial>
+      {{ data.primaryCta }}
+    </button>
+    <button class="ghfm-btn ghfm-btn--secondary" type="button"
+      *ngIf="data.secondaryCta" (click)="secondary()">
+      {{ data.secondaryCta }}
+    </button>
+  </div>
+</div>

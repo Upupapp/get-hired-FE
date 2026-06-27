@@ -10,8 +10,15 @@
     <span class="submit-label" [class.submit-label--dirty]="companyDetailsForm.dirty">
       {{ companyDetailsForm.dirty ? 'Unsaved changes' : 'All changes saved' }}
     </span>
-    <button class="btn btn-save" type="submit">
-      Submit Changes
+    <button class="btn btn-save gh-pressable" type="submit"
+      [disabled]="saving"
+      [attr.aria-busy]="saving"
+      [attr.aria-label]="saving ? 'Saving company profile…' : 'Submit Changes'">
+      <svg *ngIf="saving" class="btn-spinner" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.35)" stroke-width="2.5"/>
+        <path d="M8 2a6 6 0 0 1 6 6" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span>{{ saving ? 'Saving…' : 'Submit Changes' }}</span>
     </button>
   </div>
 
@@ -44,7 +51,12 @@
           <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_NAME_TEXT' | translate }}</label>
           <div class="form-group">
             <input type="text" class="form-control" placeholder="i.e. Google, Apple, Microsoft"
-              formControlName="companyName">
+              formControlName="companyName"
+              [class.is-invalid]="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+            <div class="cdf-field-error" role="alert"
+              *ngIf="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+              Company name is required.
+            </div>
           </div>
         </div>
       </div>
@@ -54,7 +66,12 @@
           <label>{{ 'EDIT_COMPANY_DETAILS.COMPANY_NAME_TEXT' | translate }}</label>
           <div class="form-group">
             <input type="text" class="form-control" formControlName="companyName"
-              placeholder="i.e. Google, Apple, Microsoft">
+              placeholder="i.e. Google, Apple, Microsoft"
+              [class.is-invalid]="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+            <div class="cdf-field-error" role="alert"
+              *ngIf="companyDetailsForm.get('companyName')?.invalid && companyDetailsForm.get('companyName')?.touched">
+              Company name is required.
+            </div>
           </div>
         </div>
       </div>
@@ -130,7 +147,13 @@
 
             <div class="form-group">
               <input type="email" class="form-control" placeholder="sample.email@gmail.com"
-                formControlName="companyEmail">
+                formControlName="companyEmail"
+                [class.is-invalid]="companyDetailsForm.get('companyEmail')?.invalid && companyDetailsForm.get('companyEmail')?.touched">
+              <div class="cdf-field-error" role="alert"
+                *ngIf="companyDetailsForm.get('companyEmail')?.invalid && companyDetailsForm.get('companyEmail')?.touched">
+                <span *ngIf="companyDetailsForm.get('companyEmail')?.errors?.required">Contact email is required.</span>
+                <span *ngIf="companyDetailsForm.get('companyEmail')?.errors?.email">Enter a valid email address.</span>
+              </div>
             </div>
           </div>
         </div>

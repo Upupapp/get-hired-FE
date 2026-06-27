@@ -23,6 +23,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { JobsModule } from '@main/jobs/jobs.module';
 import { ImportAddUserComponent } from './company-users/dialogs/import-add-user.component/import-add-user.component';
 import { CompanyBasicComponent } from './company-basic/company-basic.component';
+import { GhFeedbackModalComponent } from './company-details-form/gh-feedback-modal/gh-feedback-modal.component';
 
 const exportedComponents = [
   CompanyComponent,
@@ -42,6 +43,7 @@ const exportedComponents = [
 @NgModule({
   declarations: [
     ...exportedComponents,
+    GhFeedbackModalComponent,
   ],
   imports: [
     CommonModule,
