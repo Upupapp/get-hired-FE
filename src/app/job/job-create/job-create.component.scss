@@ -292,6 +292,11 @@
   @include motion-safe;
 }
 
+// ─── Full-width proof strip (above 2-col layout) ─────────────────────────────
+.gh-jc-proof-strip {
+  margin-bottom: 20px;
+}
+
 // ─── 2-column content layout ─────────────────────────────────────────────────
 .gh-jc-content {
   display: grid;

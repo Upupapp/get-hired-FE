@@ -78,6 +78,11 @@
     </div>
   </div>
 
+  <!-- ── TALENT PROOF STRIP (full-width, step 1 only) ──────────────────── -->
+  <div class="gh-jc-proof-strip" *ngIf="stepper === 1">
+    <app-talent-proof-badge variant="strip" placement="job_builder_sidebar"></app-talent-proof-badge>
+  </div>
+
   <!-- ── MAIN CONTENT: 2-COLUMN LAYOUT ─────────────────────────────────── -->
   <div class="gh-jc-content">
     <form [formGroup]="jobForm" novalidate>
