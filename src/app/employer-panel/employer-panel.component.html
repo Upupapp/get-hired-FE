@@ -228,10 +228,58 @@
     </div>
 
     <div id="main-company-component">
-      <div style="height: 80px; ">
-        <app-header [isPublic]="false"
-        [isUserLoggedIn]="isUserLoggedIn" [user]="employee"></app-header>
-      </div>
+      <!-- New employer topbar — desktop only (md+). Mobile uses gh-mobile-topbar above. -->
+      <header class="gh-employer-topbar d-none d-md-flex" role="banner" aria-label="Employer panel">
+        <div class="gh-topbar-left">
+          <h1 class="gh-topbar-title">{{ pageTitle }}</h1>
+        </div>
+        <div class="gh-topbar-right">
+          <button type="button" class="gh-btn-coral gh-btn-topbar gh-pressable"
+            (click)="goToCreateJob()"
+            aria-label="Post a new job">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+              width="14" height="14" aria-hidden="true" focusable="false">
+              <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+            </svg>
+            Post a job
+          </button>
+          <button type="button" class="gh-btn-topbar-outline gh-pressable"
+            (click)="goToJobsList()"
+            aria-label="Review applicants">
+            Review applicants
+          </button>
+          <a routerLink="/recruiter/messages"
+            class="gh-topbar-icon-btn gh-pressable"
+            aria-label="Messages inbox">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"
+              width="20" height="20" aria-hidden="true" focusable="false">
+              <path d="M18 13a2 2 0 0 1-2 2H6l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>
+            </svg>
+          </a>
+          <div class="gh-topbar-avatar-wrap">
+            <button type="button" class="gh-topbar-avatar gh-pressable"
+              [id]="'topbarAvatarBtn'"
+              (click)="toggleAvatarMenu()"
+              [attr.aria-expanded]="avatarMenuOpen"
+              aria-haspopup="true"
+              [attr.aria-label]="'Account menu for ' + employee.firstName">
+              <span class="gh-topbar-avatar-initials" aria-hidden="true">
+                {{ employee.firstName?.charAt(0)?.toUpperCase() }}{{ employee.lastName?.charAt(0)?.toUpperCase() }}
+              </span>
+            </button>
+            <div class="gh-topbar-avatar-menu" *ngIf="avatarMenuOpen" role="menu">
+              <div class="gh-avatar-menu-header">
+                <strong>{{ employee.firstName }} {{ employee.lastName }}</strong>
+                <span>{{ companyNameForTopbar$ | async }}</span>
+              </div>
+              <a routerLink="/recruiter/company/settings" class="gh-avatar-menu-item" role="menuitem"
+                (click)="closeAvatarMenu()">Settings</a>
+              <button type="button" class="gh-avatar-menu-item gh-avatar-menu-item--danger" role="menuitem"
+                (click)="logout()">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
 
       <div id="sub-company-component">
         <router-outlet></router-outlet>

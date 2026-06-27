@@ -1366,6 +1366,46 @@ $gh-teal:       $color-teal-accent;
   letter-spacing: 0.04em;
 }
 
+// ─── Chart empty state v2 (replaces old gh-chart-empty) ──────────────────────
+.gh-chart-empty-v2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 10px;
+  min-height: 220px;
+}
+
+.gh-chart-empty-icon {
+  margin-bottom: 8px;
+  color: $gh-muted;
+}
+
+.gh-chart-empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: $gh-text;
+  margin: 0;
+}
+
+.gh-chart-empty-msg {
+  font-size: 13.5px;
+  color: $gh-muted;
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+// Subscription included note (for boolean video response plans)
+.gh-sub-included-note {
+  font-size: 11.5px;
+  color: $gh-muted;
+  margin: 6px 0 0;
+  font-style: italic;
+}
+
 // ─── Reduced motion ───────────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

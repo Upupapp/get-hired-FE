@@ -5,8 +5,8 @@ import { CompanyNotSetupComponent } from '@main/company/company-not-setup/compan
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-employer-panel',
@@ -22,6 +22,9 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
   // B02: Mobile drawer state
   mobileNavOpen = false;
+
+  avatarMenuOpen = false;
+  companyNameForTopbar$: Observable<string>;
 
   @ViewChild('mobileMenuBtn') mobileMenuBtnRef: ElementRef<HTMLButtonElement>;
   @ViewChild('firstDrawerLink') firstDrawerLinkRef: ElementRef<HTMLAnchorElement>;
@@ -39,6 +42,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
+
+    // companyName for topbar avatar menu
+    this.companyNameForTopbar$ = this.employeeFacade.employeeDetails$.pipe(
+      map(emp => (emp && emp.companyName) ? emp.companyName : '')
+    );
 
     // B02: Close mobile drawer on every successful navigation
     this.routerSub = this.router.events
@@ -75,9 +83,53 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (this.mobileNavOpen) {
       this.closeMobileNav();
     }
+    if (this.avatarMenuOpen) {
+      this.closeAvatarMenu();
+    }
+  }
+
+  // Close avatar menu on outside click
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (this.avatarMenuOpen && target && !target.closest('.gh-topbar-avatar-wrap')) {
+      this.closeAvatarMenu();
+    }
   }
 
   ngOnDestroy(): void {
     if (this.routerSub) this.routerSub.unsubscribe();
+  }
+
+  get pageTitle(): string {
+    const url = this.router.url;
+    if (url.includes('/dashboard')) return 'Dashboard';
+    if (url.includes('/jobs')) return 'Jobs';
+    if (url.includes('/contacts') || url.includes('/candidates')) return 'Candidates';
+    if (url.includes('/interview')) return 'Interviews';
+    if (url.includes('/messages')) return 'Messages';
+    if (url.includes('/company')) return 'Company';
+    if (url.includes('/subscription')) return 'Subscription';
+    return 'Dashboard';
+  }
+
+  toggleAvatarMenu(): void {
+    this.avatarMenuOpen = !this.avatarMenuOpen;
+  }
+
+  closeAvatarMenu(): void {
+    this.avatarMenuOpen = false;
+  }
+
+  goToCreateJob(): void {
+    this.router.navigate(['/recruiter/jobs/create']);
+  }
+
+  goToJobsList(): void {
+    this.router.navigate(['/recruiter/contacts/candidates']);
+  }
+
+  logout(): void {
+    this.coreService.logout();
   }
 }

@@ -280,23 +280,32 @@
           (click)="setTrendRange('90d')">90d</button>
       </div>
     </div>
-    <div class="gh-chart-wrap">
-      <app-dashboard-charts [details]="dashboard.graph"></app-dashboard-charts>
-    </div>
-    <p class="gh-chart-summary"
-      *ngIf="(dashboard.charts?.applicants || 0) > 0 || cachedJobViewsThisMonth > 0">
-      Last {{ trendRange }}:
-      {{ cachedJobViewsThisMonth | number }} views &middot;
-      {{ dashboard.charts?.applicants || 0 }} applications
-      <ng-container *ngIf="cachedConversionRate">
-        &middot; {{ cachedConversionRate }} conversion
-      </ng-container>
-    </p>
-    <div class="gh-chart-empty"
-      *ngIf="(dashboard.charts?.applicants || 0) === 0 && cachedJobViewsThisMonth === 0">
-      <p>Activity trends will appear once your jobs receive views and applications.</p>
-      <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">Manage jobs</button>
-    </div>
+    <ng-container *ngIf="(dashboard.charts?.applicants || 0) > 0 || cachedJobViewsThisMonth > 0; else ghChartNoData">
+      <div class="gh-chart-wrap">
+        <app-dashboard-charts [details]="dashboard.graph"></app-dashboard-charts>
+      </div>
+      <p class="gh-chart-summary">
+        Last {{ trendRange }}:
+        {{ cachedJobViewsThisMonth | number }} views &middot;
+        {{ dashboard.charts?.applicants || 0 }} applications
+        <ng-container *ngIf="cachedConversionRate">
+          &middot; {{ cachedConversionRate }} conversion
+        </ng-container>
+      </p>
+    </ng-container>
+    <ng-template #ghChartNoData>
+      <div class="gh-chart-empty-v2">
+        <div class="gh-chart-empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" opacity="0.35">
+            <path d="M6 36L18 24l8 8 10-14 8 10"/>
+            <rect x="4" y="4" width="40" height="40" rx="4" stroke-opacity="0.5"/>
+          </svg>
+        </div>
+        <p class="gh-chart-empty-title">No activity trends yet</p>
+        <p class="gh-chart-empty-msg">Activity trends will appear once your jobs receive views and applications.</p>
+        <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">Manage jobs →</button>
+      </div>
+    </ng-template>
   </div>
 
   <!-- ── Hiring Pipeline Health ──────────────────────────────────────────── -->
@@ -550,7 +559,7 @@
           <div class="gh-sub-meter">
             <div class="gh-sub-meter-head">
               <span>Job slots</span>
-              <span>{{ subs.jobPostCount || 0 }} / {{ subs.jobPost || '—' }}</span>
+              <span>{{ subs.jobPostCount || 0 }} / {{ $any(subs.jobPost) === true ? 'Unlimited' : (subs.jobPost || '—') }}</span>
             </div>
             <div class="gh-sub-meter-track" role="progressbar"
               [attr.aria-valuenow]="cachedJobPostPct"
@@ -566,7 +575,7 @@
           <div class="gh-sub-meter">
             <div class="gh-sub-meter-head">
               <span>Admin users</span>
-              <span>{{ subs.adminCount || 0 }} / {{ subs.admin || '—' }}</span>
+              <span>{{ subs.adminCount || 0 }} / {{ $any(subs.admin) === true ? 'Unlimited' : (subs.admin || '—') }}</span>
             </div>
             <div class="gh-sub-meter-track" role="progressbar"
               [attr.aria-valuenow]="cachedAdminPct"
@@ -581,9 +590,13 @@
           <div class="gh-sub-meter">
             <div class="gh-sub-meter-head">
               <span>Video responses</span>
-              <span>{{ subs.videoResponseCount || 0 }} / {{ subs.videoResponse || '—' }}</span>
+              <span *ngIf="$any(subs.videoResponse) === true || $any(subs.videoResponse) === false">Included</span>
+              <span *ngIf="$any(subs.videoResponse) !== true && $any(subs.videoResponse) !== false">
+                {{ subs.videoResponseCount || 0 }} / {{ subs.videoResponse || '—' }}
+              </span>
             </div>
             <div class="gh-sub-meter-track" role="progressbar"
+              *ngIf="$any(subs.videoResponse) !== true && $any(subs.videoResponse) !== false"
               [attr.aria-valuenow]="cachedVideoPct"
               aria-valuemin="0" aria-valuemax="100"
               [attr.aria-label]="'Video responses: ' + (subs.videoResponseCount || 0) + ' of ' + (subs.videoResponse || 0) + ' used'">
@@ -592,6 +605,9 @@
                 [style.width.%]="cachedVideoPct">
               </div>
             </div>
+            <p class="gh-sub-included-note" *ngIf="$any(subs.videoResponse) === true">
+              Video responses are included in your plan.
+            </p>
           </div>
         </div>
         <button type="button" class="gh-btn-link gh-health-cta gh-pressable" (click)="goToSubscription()">
