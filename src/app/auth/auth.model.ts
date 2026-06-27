@@ -22,8 +22,21 @@ export interface User {
     phoneNumber: string;
     cellNumber: string;
     photoURL: string;
+    photoUrl?: string;
     address: string;
     zip: string;
     city: string;
     addressB: string;
+    avatar?: string;
+    roleTitle?: string;
+    department?: string;
+    shortBio?: string;
+    linkedinUrl?: string;
+    publicProfileEnabled?: boolean;
+    showPhotoPublicly?: boolean;
+    showTitlePublicly?: boolean;
+    showBioPublicly?: boolean;
+    showLinkedinPublicly?: boolean;
+    showEmailPublicly?: boolean;
+    showPhonePublicly?: boolean;
 }

@@ -57,6 +57,14 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadUserFromStorage();
 
+    // Open a specific tab if ?tab=N is in the URL (e.g. from Team & Access "Edit my profile")
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const tabParam = parseInt(params['tab'], 10);
+      if (tabParam >= 1 && tabParam <= this.tabs.length) {
+        this.activeTab = tabParam;
+      }
+    });
+
     // Subscribe to company details for completeness badge + logo preview
     this.companyFacade.companyDetails$
       .pipe(takeUntil(this.destroy$))

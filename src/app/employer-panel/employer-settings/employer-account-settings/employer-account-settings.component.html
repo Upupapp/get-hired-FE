@@ -1,11 +1,48 @@
 <div class="as-wrap" [@animate]="{value:'*', params:{y:'30px', delay:'100ms'}}">
 
-  <!-- ── Card 1: Account Profile ─────────────────────────────────────────────── -->
+  <!-- ── Card 1: Profile Photo ───────────────────────────────────────────────── -->
+  <div class="as-card">
+    <div class="as-card-header">
+      <h3 class="as-card-title">Profile photo</h3>
+      <p class="as-card-sub">This appears on your team list and across GetHired.</p>
+    </div>
+
+    <div class="as-avatar-section">
+      <!-- Preview -->
+      <div class="as-avatar-preview" [class.as-avatar-preview--photo]="avatarPreviewUrl">
+        <img *ngIf="avatarPreviewUrl" [src]="avatarPreviewUrl" alt="Your profile photo" class="as-avatar-img">
+        <span *ngIf="!avatarPreviewUrl" class="as-avatar-initials" aria-hidden="true">{{ avatarInitials }}</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="as-avatar-actions">
+        <input #avatarInput type="file" accept="image/jpeg,image/png,image/webp"
+          class="as-avatar-file-input" aria-label="Upload profile photo"
+          (change)="onAvatarFileSelected($event)">
+        <button type="button" class="as-btn as-btn--secondary" (click)="triggerAvatarPicker()">
+          {{ avatarPreviewUrl ? 'Change photo' : 'Upload photo' }}
+        </button>
+        <button *ngIf="avatarPreviewUrl" type="button" class="as-btn as-btn--ghost" (click)="removeAvatar()">
+          Remove
+        </button>
+        <p class="as-avatar-hint">JPG, PNG, or WebP. Max 2 MB.</p>
+        <p *ngIf="avatarError" class="as-avatar-err" role="alert">{{ avatarError }}</p>
+        <p *ngIf="pendingAvatarBase64" class="as-avatar-pending">
+          Photo staged — save profile below to apply.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Card 2: Account Details + Professional ─────────────────────────────── -->
   <div class="as-card">
     <div class="as-card-header">
       <h3 class="as-card-title">{{ 'ACCOUNT_SETTINGS.TITLE_TEXT' | translate }}</h3>
     </div>
     <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+
+      <!-- Identity -->
+      <div class="as-section-label">Identity</div>
       <div class="as-grid">
         <div class="as-field">
           <label class="as-label" for="asFirstName">{{ 'ACCOUNT_SETTINGS.FN_INPUT_FIELD' | translate }}</label>
@@ -24,18 +61,128 @@
           <span class="as-hint">Contact support to change your email address.</span>
         </div>
       </div>
+
+      <!-- Professional details -->
+      <div class="as-section-label as-section-label--mt">Professional details</div>
+      <div class="as-grid">
+        <div class="as-field">
+          <label class="as-label" for="asRoleTitle">Job title</label>
+          <input id="asRoleTitle" type="text" class="as-input" formControlName="roleTitle"
+            placeholder="e.g. Senior Recruiter" autocomplete="organization-title">
+        </div>
+        <div class="as-field">
+          <label class="as-label" for="asDept">Department</label>
+          <input id="asDept" type="text" class="as-input" formControlName="department"
+            placeholder="e.g. Talent Acquisition">
+        </div>
+        <div class="as-field as-field--full">
+          <label class="as-label" for="asLinkedin">LinkedIn URL</label>
+          <input id="asLinkedin" type="url" class="as-input" formControlName="linkedinUrl"
+            placeholder="https://linkedin.com/in/yourprofile" autocomplete="url">
+        </div>
+        <div class="as-field as-field--full">
+          <label class="as-label" for="asBio">Short bio
+            <span class="as-label-hint">
+              {{ (profileForm.get('shortBio')?.value || '').length }}/300
+            </span>
+          </label>
+          <textarea id="asBio" class="as-input as-textarea" formControlName="shortBio"
+            placeholder="A brief line about your focus or expertise…" rows="3"
+            maxlength="300"></textarea>
+        </div>
+      </div>
+
+      <!-- Visibility -->
+      <div class="as-section-label as-section-label--mt">Profile visibility</div>
+      <p class="as-visibility-intro">Control what candidates and the public can see on your company profile page.</p>
+
+      <div class="as-toggle-row as-toggle-row--primary">
+        <div class="as-toggle-info">
+          <span class="as-toggle-label">Enable public profile</span>
+          <span class="as-toggle-sub">Allow your name and title to appear on the company's public page</span>
+        </div>
+        <label class="as-switch" [attr.aria-label]="'Toggle public profile'">
+          <input type="checkbox" formControlName="publicProfileEnabled" role="switch">
+          <span class="as-switch-track"></span>
+        </label>
+      </div>
+
+      <div class="as-visibility-grid" [class.as-visibility-grid--disabled]="!profileForm.get('publicProfileEnabled')?.value">
+        <label class="as-toggle-row as-toggle-row--sub">
+          <span class="as-toggle-info">
+            <span class="as-toggle-label">Show photo</span>
+          </span>
+          <span class="as-switch as-switch--sm">
+            <input type="checkbox" formControlName="showPhotoPublicly" role="switch"
+              [attr.disabled]="!profileForm.get('publicProfileEnabled')?.value ? true : null">
+            <span class="as-switch-track"></span>
+          </span>
+        </label>
+        <label class="as-toggle-row as-toggle-row--sub">
+          <span class="as-toggle-info">
+            <span class="as-toggle-label">Show job title</span>
+          </span>
+          <span class="as-switch as-switch--sm">
+            <input type="checkbox" formControlName="showTitlePublicly" role="switch"
+              [attr.disabled]="!profileForm.get('publicProfileEnabled')?.value ? true : null">
+            <span class="as-switch-track"></span>
+          </span>
+        </label>
+        <label class="as-toggle-row as-toggle-row--sub">
+          <span class="as-toggle-info">
+            <span class="as-toggle-label">Show bio</span>
+          </span>
+          <span class="as-switch as-switch--sm">
+            <input type="checkbox" formControlName="showBioPublicly" role="switch"
+              [attr.disabled]="!profileForm.get('publicProfileEnabled')?.value ? true : null">
+            <span class="as-switch-track"></span>
+          </span>
+        </label>
+        <label class="as-toggle-row as-toggle-row--sub">
+          <span class="as-toggle-info">
+            <span class="as-toggle-label">Show LinkedIn</span>
+          </span>
+          <span class="as-switch as-switch--sm">
+            <input type="checkbox" formControlName="showLinkedinPublicly" role="switch"
+              [attr.disabled]="!profileForm.get('publicProfileEnabled')?.value ? true : null">
+            <span class="as-switch-track"></span>
+          </span>
+        </label>
+        <label class="as-toggle-row as-toggle-row--sub">
+          <span class="as-toggle-info">
+            <span class="as-toggle-label">Show email</span>
+          </span>
+          <span class="as-switch as-switch--sm">
+            <input type="checkbox" formControlName="showEmailPublicly" role="switch"
+              [attr.disabled]="!profileForm.get('publicProfileEnabled')?.value ? true : null">
+            <span class="as-switch-track"></span>
+          </span>
+        </label>
+        <label class="as-toggle-row as-toggle-row--sub">
+          <span class="as-toggle-info">
+            <span class="as-toggle-label">Show phone</span>
+          </span>
+          <span class="as-switch as-switch--sm">
+            <input type="checkbox" formControlName="showPhonePublicly" role="switch"
+              [attr.disabled]="!profileForm.get('publicProfileEnabled')?.value ? true : null">
+            <span class="as-switch-track"></span>
+          </span>
+        </label>
+      </div>
+
       <div class="as-card-footer">
         <button class="as-btn as-btn--primary" type="submit"
           [disabled]="profileSaving || profileForm.invalid"
           [attr.aria-busy]="profileSaving">
-          <span *ngIf="!profileSaving">Save account details</span>
-          <span *ngIf="profileSaving" class="as-spinner" aria-label="Saving…"></span>
+          <span class="as-spinner" *ngIf="profileSaving" aria-hidden="true"></span>
+          <span>{{ profileSaving ? 'Saving…' : 'Save profile' }}</span>
         </button>
       </div>
+
     </form>
   </div>
 
-  <!-- ── Card 2: Change Password ─────────────────────────────────────────────── -->
+  <!-- ── Card 3: Change Password ────────────────────────────────────────────── -->
   <div class="as-card">
 
     <!-- Success state -->
@@ -183,36 +330,24 @@
           <div class="as-check" [class.as-check--pass]="checks.length">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
               width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <ng-container *ngIf="checks.length">
-                <polyline points="2 8 6 12 14 4"/>
-              </ng-container>
-              <ng-container *ngIf="!checks.length">
-                <circle cx="8" cy="8" r="5.5"/>
-              </ng-container>
+              <ng-container *ngIf="checks.length"><polyline points="2 8 6 12 14 4"/></ng-container>
+              <ng-container *ngIf="!checks.length"><circle cx="8" cy="8" r="5.5"/></ng-container>
             </svg>
             <span>At least 12 characters</span>
           </div>
           <div class="as-check" [class.as-check--pass]="checks.notCommon">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
               width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <ng-container *ngIf="checks.notCommon">
-                <polyline points="2 8 6 12 14 4"/>
-              </ng-container>
-              <ng-container *ngIf="!checks.notCommon">
-                <circle cx="8" cy="8" r="5.5"/>
-              </ng-container>
+              <ng-container *ngIf="checks.notCommon"><polyline points="2 8 6 12 14 4"/></ng-container>
+              <ng-container *ngIf="!checks.notCommon"><circle cx="8" cy="8" r="5.5"/></ng-container>
             </svg>
             <span>Avoid common passwords</span>
           </div>
           <div class="as-check" [class.as-check--pass]="checks.matches && checks.confirmHasValue">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
               width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <ng-container *ngIf="checks.matches && checks.confirmHasValue">
-                <polyline points="2 8 6 12 14 4"/>
-              </ng-container>
-              <ng-container *ngIf="!(checks.matches && checks.confirmHasValue)">
-                <circle cx="8" cy="8" r="5.5"/>
-              </ng-container>
+              <ng-container *ngIf="checks.matches && checks.confirmHasValue"><polyline points="2 8 6 12 14 4"/></ng-container>
+              <ng-container *ngIf="!(checks.matches && checks.confirmHasValue)"><circle cx="8" cy="8" r="5.5"/></ng-container>
             </svg>
             <span>Passwords match</span>
           </div>

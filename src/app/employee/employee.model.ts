@@ -1,5 +1,6 @@
 export interface Employee {
   id?: string;
+  uid?: string;
   firstName: string;
   middleName?: string;
   lastName: string;
@@ -10,8 +11,10 @@ export interface Employee {
   address?: string;
   zip?: string;
   city?: string;
-  isProfileUpdated: boolean,
+  isProfileUpdated: boolean;
   companyName?: string;
+  photoUrl?: string;
+  roleTitle?: string;
 }
 
 export interface EmployeeCompany {

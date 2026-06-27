@@ -1,36 +1,130 @@
-<div *ngIf="users$ | async as companyUserLists">
-	<div class="card card-body" *ngIf="listView && !loading">
-		<h5 class="title-label mt-2">Company Users
-			<span class="float-end">
-				<button class="gh-btn-primary" (click)="addAccess()" [disabled]="!companyId">
-					<i class="bi bi-plus-lg" aria-hidden="true"></i>
-					{{ 'EDIT_COMPANY_USERS.ADD_NEW_ACCESS_BUTTON' | translate }}
-				</button>
-			</span>
-		</h5>
+<div class="cu-wrap" *ngIf="!loading; else cuLoading" [@animate]="{value:'*', params:{y:'20px', delay:'0ms'}}">
 
-		<hr style="border: dashed 1px #868686">
-		<!-- <app-reusable-org-chart></app-reusable-org-chart>
-		 -->
-     	<app-reusable-table
-			[loading]="loading"
-			(updateSelectedRowDialog)="viewMenu($event)"
-			(viewDetails)="viewMenu($event)"
-			[componentTitle]="'Company Users'"
-			[displayedColumns]="displayedColumns"
-			[selectedColumns]="selectedColumns"
-			[selectedColumnsMobile]="selectedColumns"
-			[searchSource]="searchSource"
-			[maxRows]="10"
-			[listDataSource]="companyUserLists">
-		</app-reusable-table>
-	</div>
+  <!-- Header row -->
+  <div class="cu-header">
+    <div>
+      <p class="cu-header-count" *ngIf="users$ | async as members">
+        {{ members.length }} team member{{ members.length !== 1 ? 's' : '' }}
+      </p>
+    </div>
+    <button class="cu-add-btn" type="button" (click)="addAccess()" [disabled]="!companyId"
+      aria-label="Add new team member">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
+        width="13" height="13" stroke-linecap="round" aria-hidden="true">
+        <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+      </svg>
+      {{ 'EDIT_COMPANY_USERS.ADD_NEW_ACCESS_BUTTON' | translate }}
+    </button>
+  </div>
 
-	<!-- LOADING ANIMATION SCREEN -->
+  <ng-container *ngIf="users$ | async as members">
 
+    <!-- Desktop table -->
+    <div class="cu-table-wrap d-none d-md-block" role="region" aria-label="Team members">
+      <table class="cu-table" role="table">
+        <thead>
+          <tr>
+            <th scope="col" class="cu-th">Team member</th>
+            <th scope="col" class="cu-th">Employee ID</th>
+            <th scope="col" class="cu-th">Email</th>
+            <th scope="col" class="cu-th">Date added</th>
+            <th scope="col" class="cu-th cu-th--action"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of members" class="cu-row"
+            [class.cu-row--self]="member.uid === currentUserUid">
+
+            <!-- Member identity cell -->
+            <td class="cu-td">
+              <div class="cu-identity">
+                <!-- Avatar -->
+                <div class="cu-avatar" [class.cu-avatar--photo]="member.photoUrl"
+                  [attr.aria-label]="member.fullName + ' profile photo'">
+                  <img *ngIf="member.photoUrl" [src]="member.photoUrl"
+                    [alt]="member.fullName" class="cu-avatar-img">
+                  <span *ngIf="!member.photoUrl" class="cu-avatar-initials" aria-hidden="true">
+                    {{ member.initials || getInitials(member.fullName) }}
+                  </span>
+                </div>
+                <!-- Name + title -->
+                <div class="cu-identity-info">
+                  <span class="cu-name">
+                    {{ member.fullName }}
+                    <span *ngIf="member.uid === currentUserUid" class="cu-you-chip" aria-label="this is you">
+                      You
+                    </span>
+                  </span>
+                  <span *ngIf="member.roleTitle" class="cu-role-title">{{ member.roleTitle }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td class="cu-td cu-td--mono">{{ member.employeeId }}</td>
+            <td class="cu-td">{{ member.email }}</td>
+            <td class="cu-td">{{ member.assignedAt | date:'mediumDate' }}</td>
+
+            <!-- Action -->
+            <td class="cu-td cu-td--action">
+              <button *ngIf="member.uid === currentUserUid" class="cu-action-btn cu-action-btn--primary"
+                type="button" (click)="openProfile(member)"
+                [attr.aria-label]="'Edit your profile'">
+                Edit my profile
+              </button>
+            </td>
+
+          </tr>
+
+          <tr *ngIf="members.length === 0">
+            <td colspan="5" class="cu-empty">No team members yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="cu-cards d-block d-md-none" role="list">
+      <div *ngFor="let member of members" class="cu-card"
+        [class.cu-card--self]="member.uid === currentUserUid"
+        role="listitem">
+        <div class="cu-card-identity">
+          <div class="cu-avatar" [class.cu-avatar--photo]="member.photoUrl">
+            <img *ngIf="member.photoUrl" [src]="member.photoUrl"
+              [alt]="member.fullName" class="cu-avatar-img">
+            <span *ngIf="!member.photoUrl" class="cu-avatar-initials" aria-hidden="true">
+              {{ member.initials || getInitials(member.fullName) }}
+            </span>
+          </div>
+          <div class="cu-card-info">
+            <span class="cu-name">
+              {{ member.fullName }}
+              <span *ngIf="member.uid === currentUserUid" class="cu-you-chip">You</span>
+            </span>
+            <span *ngIf="member.roleTitle" class="cu-role-title">{{ member.roleTitle }}</span>
+            <span class="cu-card-email">{{ member.email }}</span>
+          </div>
+        </div>
+        <div class="cu-card-meta">
+          <span class="cu-card-meta-label">Employee ID</span>
+          <span class="cu-card-meta-value">{{ member.employeeId }}</span>
+          <span class="cu-card-meta-label">Date added</span>
+          <span class="cu-card-meta-value">{{ member.assignedAt | date:'mediumDate' }}</span>
+        </div>
+        <div class="cu-card-actions" *ngIf="member.uid === currentUserUid">
+          <button class="cu-action-btn cu-action-btn--primary cu-action-btn--block"
+            type="button" (click)="openProfile(member)">
+            Edit my profile
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="members.length === 0" class="cu-empty">No team members yet.</div>
+    </div>
+
+  </ng-container>
 </div>
-<custom-profile-loader
-	[withSideBar]="false"
-	[fromDetailTab]="true"
-	[loading]="loading">
-</custom-profile-loader>
+
+<ng-template #cuLoading>
+  <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="true">
+  </custom-profile-loader>
+</ng-template>

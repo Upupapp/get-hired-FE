@@ -263,9 +263,15 @@
               [attr.aria-expanded]="avatarMenuOpen"
               aria-haspopup="true"
               [attr.aria-label]="'Account menu for ' + employee.firstName">
-              <ng-container *ngIf="companyLogoUrl$ | async as logoUrl; else topbarInitials">
-                <img [src]="logoUrl" alt="" class="gh-topbar-avatar-img">
+              <!-- Personal photo > company logo > initials -->
+              <ng-container *ngIf="employee?.photoUrl; else topbarCompanyLogo">
+                <img [src]="employee.photoUrl" alt="" class="gh-topbar-avatar-img">
               </ng-container>
+              <ng-template #topbarCompanyLogo>
+                <ng-container *ngIf="companyLogoUrl$ | async as logoUrl; else topbarInitials">
+                  <img [src]="logoUrl" alt="" class="gh-topbar-avatar-img">
+                </ng-container>
+              </ng-template>
               <ng-template #topbarInitials>
                 <span class="gh-topbar-avatar-initials" aria-hidden="true">
                   {{ employee.firstName?.charAt(0)?.toUpperCase() }}{{ employee.lastName?.charAt(0)?.toUpperCase() }}

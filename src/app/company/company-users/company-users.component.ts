@@ -1,16 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { mainAnimations } from '@main/shared/animations/main-animations';
-// import { AddAccessModalComponent } from '@main/shared/components/add-access-modal/add-access-modal.component';
-import { TableHeader } from '@main/views/home/utils/job-list-model-interface';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, Subject } from 'rxjs';
-import { takeUntil, filter, take } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { CompanyFacade } from '@app-company/state/company.facade';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
-import { TranslateService } from '@ngx-translate/core';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { mainAnimations } from '@main/shared/animations/main-animations';
 import * as Model from '../company.model';
 
 @Component({
@@ -19,84 +15,53 @@ import * as Model from '../company.model';
   styleUrls: ['./company-users.component.scss'],
   animations: [mainAnimations]
 })
-export class CompanyUsersComponent implements OnInit {
+export class CompanyUsersComponent implements OnInit, OnDestroy {
   @Input() companyId: string;
+
   subscriptions$ = new Subscription();
   private unsubscribe$ = new Subject<void>();
 
-  public profileDetailsForm!: FormGroup;
-  // public companyUserLists: CompanyUser[] = companyUserLists;
-
-  displayedColumns: TableHeader[] = [
-    { col_name: 'employeeId', title: this.translate.instant('EDIT_COMPANY_USERS.TABLE_COLUMN_ID') },
-    { col_name: 'fullName', title: 'Full Name' },
-    { col_name: 'email', title: 'Email Address' },
-    { col_name: 'assignedAt', title: this.translate.instant('EDIT_COMPANY_USERS.TABLE_COLUMN_DATE_ADDED'), type: 'date' },
-  ];
-
-  selectedColumns: string[] = [
-    'employeeId',
-    'fullName',
-    'email',
-    'assignedAt',
-  ];
-
-  public listView: boolean = true;
-  public searchSource: any = (el) => {
-    return {
-      fullName: el.fullName,
-      email: el.email,
-      employeeId: el.employeeId,
-    };
-  };
-
   users$ = this.companyFacade.users$;
+  loading = true;
+  currentUserUid = '';
 
-  public loading: boolean = true;
   constructor(
     private companyFacade: CompanyFacade,
-    private formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private translate: TranslateService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.companyFacade.getCompanyUsers(this.companyId);
 
-    this.profileDetailsForm = this.formBuilder.group({
-      first_name: [''],
-      last_name: [''],
-      email: ['',/* [Validators.required]*/],
-      password: ['']
-    });
-
-    // this.companyUserLists.forEach((el) => {
-    //   el['full_name'] = `${el?.first_name} ${el.last_name}`;
-    // });
+    try {
+      const raw = localStorage.getItem('user');
+      if (raw) {
+        const u = JSON.parse(raw);
+        this.currentUserUid = u._id || u.id || u.uid || '';
+      }
+    } catch (_) {}
 
     setTimeout(() => this.loading = false, 1500);
   }
 
-
-  viewMenu(event?) {
-
+  getInitials(fullName: string): string {
+    if (!fullName) { return '?'; }
+    const parts = fullName.trim().split(' ');
+    const first = (parts[0] || '').charAt(0).toUpperCase();
+    const last = (parts[1] || '').charAt(0).toUpperCase();
+    return first + last || first;
   }
 
-  checkSubs(subs: Model.CompanySubscriptions) {
-    if (subs) {
-      if (subs.adminCount === subs.admin) {
-        this.restrictUserCreation();
-      } else {
-        this.addUserToCompany()
-      }
-    } else {
-      // Subscription data unavailable — silently no-op; addAccess() will re-fetch
+  openProfile(member: Model.CompanyUser): void {
+    if (member.uid && member.uid === this.currentUserUid) {
+      this.router.navigate(['/recruiter/company/settings'], { queryParams: { tab: 4 } });
     }
+    // read-only view for other members: no-op in V1 (no profile drawer yet)
   }
 
-  addAccess() {
+  addAccess(): void {
     this.companyFacade.getCompanySubscription(this.companyId);
     this.companyFacade.subsRestrictions$.pipe(
       filter(subs => !!subs),
@@ -105,44 +70,41 @@ export class CompanyUsersComponent implements OnInit {
     ).subscribe(subs => this.checkSubs(subs));
   }
 
-  restrictUserCreation() {
-    let openChecker = this.dialog.open(
-      SubscriptionAlertComponent,
-      {
-        width: '34vw',
-        data: {
-          isError: true
-        }
+  checkSubs(subs: Model.CompanySubscriptions): void {
+    if (subs) {
+      if (subs.adminCount === subs.admin) {
+        this.restrictUserCreation();
+      } else {
+        this.addUserToCompany();
       }
-    );
+    }
+  }
 
+  restrictUserCreation(): void {
+    const ref = this.dialog.open(SubscriptionAlertComponent, {
+      width: '34vw',
+      data: { isError: true }
+    });
     this.subscriptions$.add(
-      openChecker
-        .afterClosed()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(result => {
-          if (result == 1) {
-            this.router.navigate(['../../subscription'], { relativeTo: this.route })
-          }
-        })
+      ref.afterClosed().pipe(takeUntil(this.unsubscribe$)).subscribe(result => {
+        if (result === 1) {
+          this.router.navigate(['../../subscription'], { relativeTo: this.route });
+        }
+      })
     );
   }
 
-  addUserToCompany() {
-    let openDialog = this.dialog.open(
-      ImportAddUserComponent,
-      {
-        width: '34vw',
-        maxWidth: '100vw',    // MOBILEVIEW: prevent overflow on small screens
-        maxHeight: '90vh',    // MOBILEVIEW: ensure dialog scrolls on mobile
-        data: event,
-      }
-    );
+  addUserToCompany(): void {
+    this.dialog.open(ImportAddUserComponent, {
+      width: '34vw',
+      maxWidth: '100vw',
+      maxHeight: '90vh',
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.subscriptions$) {
-      this.subscriptions$.unsubscribe();
-    }
+    this.subscriptions$.unsubscribe();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

@@ -68,9 +68,15 @@
   <div class="gh-sidebar-footer" *ngIf="screenHeight > 500">
     <div class="gh-sidebar-user">
       <div class="gh-sidebar-user-avatar" aria-hidden="true">
-        <ng-container *ngIf="companyLogoUrl$ | async as logoUrl; else sidebarInitials">
-          <img [src]="logoUrl" alt="" class="gh-sidebar-user-avatar-img">
+        <!-- Personal photo takes precedence over company logo -->
+        <ng-container *ngIf="user?.photoUrl; else sidebarCompanyLogo">
+          <img [src]="user.photoUrl" alt="" class="gh-sidebar-user-avatar-img">
         </ng-container>
+        <ng-template #sidebarCompanyLogo>
+          <ng-container *ngIf="companyLogoUrl$ | async as logoUrl; else sidebarInitials">
+            <img [src]="logoUrl" alt="" class="gh-sidebar-user-avatar-img">
+          </ng-container>
+        </ng-template>
         <ng-template #sidebarInitials>
           {{ user.firstName?.substr(0,1) }}{{ user.lastName?.substr(0,1) }}
         </ng-template>

@@ -86,7 +86,11 @@ export interface Options {
 export interface CompanyUser {
   employeeId: string;
   companyId: string;
+  uid?: string;
   assignedAt: Date;
   email: string;
   fullName: string;
+  photoUrl?: string;
+  roleTitle?: string;
+  initials?: string;
 }
