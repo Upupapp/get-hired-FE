@@ -110,6 +110,12 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
     );
 
     this.subs.push(
+      this.authFacade.error$.subscribe((err: any) => {
+        if (err) { this.profileSaving = false; }
+      })
+    );
+
+    this.subs.push(
       this.authFacade.success$.subscribe((msg: any) => {
         if (msg === 'updated') {
           this.profileSaving = false;

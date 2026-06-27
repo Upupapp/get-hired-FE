@@ -19,9 +19,12 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const browserLang: any = this.translateService.getBrowserLang();
-    const selectedLang: any = localStorage.getItem("selectedLang");
-    this.translateService.use(selectedLang ? selectedLang : browserLang.match(/en|vie/) ? browserLang : 'en');
+    const browserLang: string = this.translateService.getBrowserLang() || 'en';
+    let selectedLang: string | null = null;
+    if (isPlatformBrowser(this.platformId)) {
+      selectedLang = localStorage.getItem("selectedLang");
+    }
+    this.translateService.use(selectedLang || (browserLang.match(/en|vie/) ? browserLang : 'en'));
 
     if (isPlatformBrowser(this.platformId)) {
       this.router.events.pipe(

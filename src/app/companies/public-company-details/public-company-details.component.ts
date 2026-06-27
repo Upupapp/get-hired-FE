@@ -217,7 +217,7 @@ export class PublicCompanyDetailsComponent implements OnInit, OnDestroy {
   }
 
   promptLogin(): void {
-    this.router.navigateByUrl('/login');
+    this.router.navigateByUrl('/signin');
   }
 
   // ─── SEO helpers ──────────────────────────────────────────────────────────
