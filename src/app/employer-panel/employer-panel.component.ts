@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } fro
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
+import { CompanyFacade } from '@main/company/state/company.facade';
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
@@ -34,6 +35,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   constructor(
     private coreService: CoreService,
     private employeeFacade: EmployeeFacade,
+    private companyFacade: CompanyFacade,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router
@@ -43,9 +45,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
 
-    // companyName for topbar avatar menu
-    this.companyNameForTopbar$ = this.employeeFacade.employeeDetails$.pipe(
-      map(emp => (emp && emp.companyName) ? emp.companyName : '')
+    // companyName for topbar avatar menu — reads from companyFacade.companyDetails$
+    // (the authoritative store slice) so it updates immediately when the recruiter
+    // saves company settings, without waiting for a getEmployeeProfile() re-fetch.
+    this.companyNameForTopbar$ = this.companyFacade.companyDetails$.pipe(
+      map(company => (company && company.companyName) ? company.companyName : '')
     );
 
     // B02: Close mobile drawer on every successful navigation

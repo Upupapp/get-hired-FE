@@ -943,9 +943,12 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
 //   • Transition suppressed automatically by the global prefers-reduced-motion
 //     block above — ring still appears, just without animation
 @media (hover: hover) {
-  button:not(:disabled):not([disabled]):hover,
+  // Sidebar nav items excluded: .gh-sidebar-settings (button) and
+  // .gh-sidebar-item / .gh-sidebar-subitem (role=button divs) keep their
+  // original subtle background highlight on the dark navy background.
+  button:not(:disabled):not([disabled]):not(.gh-sidebar-settings):hover,
   .btn:not(:disabled):not([disabled]):hover,
-  [role="button"]:not([aria-disabled="true"]):hover {
+  [role="button"]:not([aria-disabled="true"]):not(.gh-sidebar-item):not(.gh-sidebar-subitem):hover {
     outline: 2px solid rgba(255, 112, 98, 0.72) !important;
     outline-offset: 3px !important;
     transition: outline-color 100ms ease;
