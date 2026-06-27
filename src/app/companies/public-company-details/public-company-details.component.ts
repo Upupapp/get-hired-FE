@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+// GETHIRED_PUBLIC_COMPANY_PROFILE_REDESIGN_TRUST_JOBS_SEO_FULLSTACK_V3
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { mainAnimations } from '@app-shared/animations/main-animations';
-import { CompaniesFacade } from '../state/companies.facade';
-import { Company } from '../companies.model';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { environment } from "@environments/environment";
-import { SnackbarService } from '@app-core/services/snackbar.service';
+import { Subscription, of } from 'rxjs';
+import { switchMap, catchError, take } from 'rxjs/operators';
+
 import { CompaniesService } from '../companies.service';
-import { catchError, of, Subscription, tap, filter, take } from 'rxjs';
 import { SeoService } from '@app-core/services/seo.service';
+import { SnackbarService } from '@app-core/services/snackbar.service';
+import { PublicCompanyProfile, PublicJob } from '../companies.model';
+import { mainAnimations } from '@app-shared/animations/main-animations';
 
 @Component({
   selector: 'app-public-company-details',
@@ -16,108 +17,182 @@ import { SeoService } from '@app-core/services/seo.service';
   styleUrls: ['./public-company-details.component.scss'],
   animations: [mainAnimations]
 })
-export class PublicCompanyDetailsComponent implements OnInit {
+export class PublicCompanyDetailsComponent implements OnInit, OnDestroy {
 
-  companyId: string;
-  private loadedViaLegacyId = false;
+  profile: PublicCompanyProfile | null = null;
+  jobs: PublicJob[] = [];
+  loading = true;
+  jobsLoading = true;
+  notFound = false;
+  copied = false;
 
-  public firstSentence: string;
-  public bannerImage: any = undefined;
-  public bannerEdit: boolean = false;
-  public bannerHeight: number = 0;
-
-  details$ = this.companiesFacade.companyDetails$;
-  link$: Subscription;
+  private subs = new Subscription();
+  private copyTimer: any = null;
 
   constructor(
-    private companiesFacade: CompaniesFacade,
-    private router: Router,
-    private route: ActivatedRoute,
-    private clipboard: Clipboard,
-    private snackbarService: SnackbarService,
     private companiesService: CompaniesService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private clipboard: Clipboard,
     private seoService: SeoService,
-  ) {
+    private snackbar: SnackbarService,
+  ) {}
+
+  ngOnInit(): void {
     const slug = this.route.snapshot.params['slug'];
     const legacyId = this.route.snapshot.queryParams['id'];
 
     if (slug) {
-      this.loadedViaLegacyId = false;
-      this.companiesFacade.getCompanyBySlug(slug);
+      this.loadBySlug(slug);
     } else if (legacyId) {
-      this.loadedViaLegacyId = true;
-      this.companyId = legacyId;
-      this.companiesFacade.getCompany(legacyId);
+      this.resolveLegacyId(legacyId);
+    } else {
+      this.notFound = true;
+      this.loading = false;
     }
   }
 
-  ngOnInit(): void {
-    this.details$.pipe(
-      filter((company: Company) => !!company && !!company.companyName),
-      take(1),
-    ).subscribe((company: Company) => {
-      // Redirect legacy ?id= URLs to clean slug URL
-      if (this.loadedViaLegacyId && company.slug) {
-        this.router.navigate(['/companies', company.slug], { replaceUrl: true });
-        return;
-      }
+  private loadBySlug(slug: string): void {
+    this.loading = true;
+    this.jobsLoading = true;
 
-      const slug = company.slug || this.companyId;
-      this.seoService.setPageMeta({
-        title: `${company.companyName} | GetHired Online`,
-        description: `Explore ${company.companyName} on GetHired Online — view their company profile and open job positions in the Philippines.`,
-        canonical: `https://gethiredonline.app/companies/${slug}`,
-        robots: 'index, follow',
+    const profileSub = this.companiesService.getPublicCompanyProfile(slug)
+      .pipe(
+        switchMap((res: any) => {
+          const data = res && res.data ? res.data : null;
+          this.profile = data;
+          this.loading = false;
+
+          if (data && data.seo) {
+            this.updateSeo(data);
+          }
+
+          this.jobsLoading = true;
+          return this.companiesService.getPublicCompanyJobs(slug).pipe(
+            catchError(function() { return of(null); })
+          );
+        }),
+        catchError((err) => {
+          const status = err && err.status ? err.status : 0;
+          if (status === 404) {
+            this.notFound = true;
+          }
+          this.loading = false;
+          this.jobsLoading = false;
+          this.setNotFoundSeo();
+          return of(null);
+        })
+      )
+      .subscribe((jobsRes: any) => {
+        if (jobsRes && jobsRes.data) {
+          this.jobs = jobsRes.data.jobs || [];
+        }
+        this.jobsLoading = false;
       });
-      this.seoService.setBreadcrumbJsonLd([
-        { name: 'Home', url: 'https://gethiredonline.app/home' },
-        { name: 'Companies', url: 'https://gethiredonline.app/companies' },
-        { name: company.companyName, url: `https://gethiredonline.app/companies/${slug}` },
-      ]);
+
+    this.subs.add(profileSub);
+  }
+
+  private resolveLegacyId(companyId: string): void {
+    this.loading = true;
+    const resolveSub = this.companiesService.resolveCompanyIdToSlug(companyId)
+      .pipe(
+        catchError(function() { return of(null); })
+      )
+      .subscribe((res: any) => {
+        const slug = res && res.data && res.data.slug ? res.data.slug : null;
+        if (slug) {
+          this.router.navigate(['/companies', slug], { replaceUrl: true });
+        } else {
+          // No slug — show not found; legacy ID-only profiles not publicly routable
+          this.notFound = true;
+          this.loading = false;
+          this.setNotFoundSeo();
+        }
+      });
+    this.subs.add(resolveSub);
+  }
+
+  private updateSeo(profile: PublicCompanyProfile): void {
+    const seo = profile.seo || {};
+    this.seoService.setPageMeta({
+      title: seo.title || (profile.displayName + ' | GetHired'),
+      description: seo.description || '',
+      canonical: seo.canonical || ('https://gethiredonline.app/companies/' + profile.slug),
+      robots: 'index, follow',
+      ogImage: seo.ogImage || null,
+    });
+    this.seoService.setBreadcrumbJsonLd([
+      { name: 'Home', url: 'https://gethiredonline.app/home' },
+      { name: 'Companies', url: 'https://gethiredonline.app/companies' },
+      { name: profile.displayName, url: 'https://gethiredonline.app/companies/' + profile.slug },
+    ]);
+  }
+
+  private setNotFoundSeo(): void {
+    this.seoService.setPageMeta({
+      title: 'Company Not Found | GetHired',
+      description: 'This company profile may be unavailable or not published yet.',
+      canonical: 'https://gethiredonline.app/companies',
+      robots: 'noindex, nofollow',
     });
   }
 
-  getDetails(){
-    this.details$.subscribe((result) => {
-      if(result){
-        let banner_sub_id = document.getElementById('banner-details');
+  copyLink(): void {
+    const url = this.profile
+      ? 'https://gethiredonline.app/companies/' + this.profile.slug
+      : window.location.href;
+    this.clipboard.copy(url);
+    this.copied = true;
 
-        if(banner_sub_id){
-          let bannerHeight = banner_sub_id?.offsetHeight;
-          this.bannerHeight = bannerHeight;
-        }
-      }
-    })
+    if ('vibrate' in navigator) {
+      try { navigator.vibrate(10); } catch(e) {}
+    }
+
+    if (this.copyTimer) { clearTimeout(this.copyTimer); }
+    this.copyTimer = setTimeout(() => { this.copied = false; }, 2500);
   }
 
-  ngAfterViewInit(){
-    setTimeout(() => {
-      this.getDetails()
-    }, 1000)
-  }
-
-  getShareableLink() {
-    this.link$ = this.companiesService.getShareableLink(this.companyId)
-      .pipe(
-        tap(res => {
-          if(res.data) {
-            // this.clipboard.copy(`${environment.app_url}/companies/details?id=${this.companyId}`);
-            console.log(res.data);
-            this.clipboard.copy(res.data.shortLink)
-            this.snackbarService.success(`Link copied to your clipboard`, '');
-          }
-        }),
-        catchError(err => of(err))
-      ).subscribe();
-
-  }
-
-  ngOnDestroy(): void {
-    // Clear company-specific breadcrumb structured data when leaving this page
-    this.seoService.clearBreadcrumbJsonLd();
-    if(this.link$) {
-      this.link$.unsubscribe();
+  scrollToJobs(): void {
+    const el = document.getElementById('open-jobs');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
+  viewJob(job: PublicJob): void {
+    this.router.navigateByUrl('/jobs/details/' + job.jobId);
+  }
+
+  formatSalary(job: PublicJob): string {
+    if (!job.salaryMin) { return ''; }
+    const cur = job.currency || 'PHP';
+    const rate = job.rate || 'month';
+    const min = Math.round(job.salaryMin).toLocaleString();
+    const max = job.salaryMax ? Math.round(job.salaryMax).toLocaleString() : null;
+    return cur + ' ' + min + (max ? ' – ' + max : '') + ' / ' + rate;
+  }
+
+  getPostedLabel(postedAt: string | null): string {
+    if (!postedAt) { return ''; }
+    const diff = Date.now() - new Date(postedAt).getTime();
+    const days = Math.floor(diff / 86400000);
+    if (days === 0) { return 'Today'; }
+    if (days === 1) { return 'Yesterday'; }
+    if (days < 7) { return days + 'd ago'; }
+    if (days < 30) { return Math.floor(days / 7) + 'w ago'; }
+    if (days < 365) { return Math.floor(days / 30) + 'mo ago'; }
+    return Math.floor(days / 365) + 'y ago';
+  }
+
+  get initials(): string {
+    if (!this.profile || !this.profile.displayName) { return '?'; }
+    return this.profile.displayName.charAt(0).toUpperCase();
+  }
+
+  ngOnDestroy(): void {
+    this.seoService.clearBreadcrumbJsonLd();
+    this.subs.unsubscribe();
+    if (this.copyTimer) { clearTimeout(this.copyTimer); }
+  }
 }
