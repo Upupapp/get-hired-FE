@@ -1,3 +1,10 @@
+<div *ngIf="loading" class="cdf-loading-skeleton" aria-busy="true" aria-label="Loading company profile">
+  <div class="cdf-skeleton cdf-skeleton--header"></div>
+  <div class="cdf-skeleton cdf-skeleton--row"></div>
+  <div class="cdf-skeleton cdf-skeleton--row cdf-skeleton--short"></div>
+  <div class="cdf-skeleton cdf-skeleton--row"></div>
+</div>
+
 <form [formGroup]="companyDetailsForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
   <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
     <!-- <button class="btn btn-save-draft me-3"

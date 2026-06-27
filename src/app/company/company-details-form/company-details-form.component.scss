@@ -1,10 +1,10 @@
 @import "src/assets/styles/colors";
 
 .submit-container{
-	z-index: 99 !important;;
+	z-index: 99 !important;
 	position: fixed !important;
 	right: 20px;
-	top: 105px;
+	top: 88px;
 }
 
 
@@ -378,3 +378,23 @@ select{
 .form-check-input {
 	padding-bottom: 15px;
 }
+
+@keyframes cdf-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.cdf-loading-skeleton { padding: 8px 0; }
+
+.cdf-skeleton {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+  background-size: 800px 100%;
+  animation: cdf-shimmer 1.4s infinite ease-in-out;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  @media (prefers-reduced-motion: reduce) { animation: none; background: #eeeeee; }
+}
+
+.cdf-skeleton--header { height: 22px; width: 50%; margin-bottom: 20px; }
+.cdf-skeleton--row    { height: 50px; width: 100%; }
+.cdf-skeleton--short  { width: 65%; }

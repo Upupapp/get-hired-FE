@@ -3,12 +3,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { EmployeeCompany } from '@main/employee/employee.model';
 import { mainAnimations } from '@main/shared/animations/main-animations';
-import { LoadingComponent } from '@main/shared/components/loading/loading.component';
 import { CompanyFacade } from '../state/company.facade';
 import * as Model from '../company.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnackbarService } from '@app-core/services/snackbar.service';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 
 @Component({
@@ -18,22 +18,9 @@ import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/up
   animations: [mainAnimations],
 })
 export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
-  public unsubscribe$ = new Subject<void>();
-  subscriptions$ = new Subscription();
+  private destroy$ = new Subject<void>();
+
   @Output() updateCompany: EventEmitter<any> = new EventEmitter();
-
-  asyncLocalStorage = {
-    setItem: async function (key, value) {
-      await Promise.resolve();
-      localStorage.setItem(key, value);
-    },
-    getItem: async function (key) {
-      await Promise.resolve();
-      return localStorage.getItem(key);
-    },
-  };
-
-
 
   companyDetailsForm!: FormGroup;
   company: Model.Company;
@@ -42,31 +29,18 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   canView: boolean;
   updateSuccess: boolean = false;
   rawAddress: any;
-  loading: boolean = true;
+  loading: boolean = false;
   addressFormValid: boolean = false;
 
   workSetup$ = this.companyFacade.setup$;
   industry$ = this.companyFacade.industry$;
 
-  success$ = this.companyFacade.success$
-    .pipe()
-    .subscribe(this.afterSubmit.bind(this));
-
-  company$ = this.companyFacade.companyDetails$
-    .pipe()
-    .subscribe(this.setCompany.bind(this));
-
-  loading$ = this.companyFacade.loading$
-    .pipe()
-    .subscribe(this.formLoading.bind(this));
-
   constructor(
     private formBuilder: FormBuilder,
     private companyFacade: CompanyFacade,
-    private loadingDialog: MatDialog,
+    private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog,
     private snackbarService: SnackbarService
   ) { }
 
@@ -96,6 +70,17 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       shownPublicly: []
     });
 
+    this.companyFacade.companyDetails$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(company => this.setCompany(company as EmployeeCompany));
+
+    this.companyFacade.loading$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loading => { this.loading = loading; });
+
+    this.companyFacade.success$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(event => this.afterSubmit(event));
   }
 
   setCompany(company: EmployeeCompany) {
@@ -217,12 +202,10 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         data: 'Company successfully setup. You can now access other features',
       });
 
-      this.subscriptions$.add(create
-        .afterClosed()
-        .pipe()
-        .subscribe(() => this.router.navigate(['../details'], { relativeTo: this.route })));
+      create.afterClosed().subscribe(
+        () => this.router.navigate(['../details'], { relativeTo: this.route })
+      );
     } else if (event == 'updated') {
-      this.loadingDialog.closeAll();
       this.snackbarService.success('Company details updated.');
     }
   }
@@ -242,31 +225,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  formLoading(loading: boolean) {
-    this.loading = loading;
-    if (loading) {
-      const ref = this.loadingDialog.open(LoadingComponent, {
-        disableClose: true,
-        data: {
-          selfClose: true
-        },
-      });
-    } else {
-      // dont close automatically all modal
-      // if (!this.updateSuccess) {
-      // setTimeout(() => this.loadingDialog.closeAll(), 3000);
-      // }
-    }
-  }
-
   ngOnDestroy(): void {
     this.companyFacade.resetStateNotif();
-    if(this.success$) {
-      this.success$.unsubscribe();
-    }
-
-    if(this.loading$) {
-      this.loading$.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
