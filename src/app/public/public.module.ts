@@ -72,6 +72,11 @@ const routes: Routes = [
     JobBoardEmployerCtaComponent
   ],
   imports: [
+    // RouterModule MUST be first so public routes (/home, /jobs, etc.) are
+    // registered before CompaniesModule's forChild routes (which include
+    // { path: ':slug' } at the public level due to eager-import merging).
+    // Angular collects ROUTES multi-providers in import order; first match wins.
+    RouterModule.forChild(routes),
     CommonModule,
     FormsModule,
     CompaniesModule,
@@ -79,7 +84,6 @@ const routes: Routes = [
     CoreModule,
     SharedModule,
     ApplicationModule,
-    RouterModule.forChild(routes)
   ], providers: [JobFacade]
 })
 export class PublicModule { }
