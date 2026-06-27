@@ -17,6 +17,8 @@ enum AllCompaniesActionTypes {
   GetCompanySuccess = '[companies] - Get Company Success',
   GetCompanyFail = '[companies] - Get Company Fail',
 
+  GetCompanyBySlug = '[companies] - Get Company By Slug',
+
   ResetState = '[companies] - Reset State'
 
 }
@@ -66,4 +68,9 @@ export const getCompanySuccess = createAction(
 export const getCompanyFail = createAction(
   AllCompaniesActionTypes.GetCompanyFail,
   props<{ payload: any }>()
+);
+
+export const getCompanyBySlug = createAction(
+  AllCompaniesActionTypes.GetCompanyBySlug,
+  props<{ slug: string }>()
 );

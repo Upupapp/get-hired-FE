@@ -5,6 +5,7 @@ export interface BasicInfo {
   companyCategory?: string;
   companyJobsOpening: number;
   companyIndustry: string;
+  slug?: string;
 }
 
 export interface Company {
@@ -28,4 +29,5 @@ export interface Company {
   createdAt: Date;
   createdBy: string;
   updatedAt: Date;
+  slug?: string;
 }

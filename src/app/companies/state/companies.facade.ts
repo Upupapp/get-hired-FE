@@ -24,6 +24,10 @@ export class CompaniesFacade {
     this.store.dispatch(CompanyAction.getCompany({ companyId }));
   }
 
+  getCompanyBySlug(slug: string) {
+    this.store.dispatch(CompanyAction.getCompanyBySlug({ slug }));
+  }
+
   // resetStateNotif() {
   //   this.store.dispatch(CompanyAction.resetState());
   // }

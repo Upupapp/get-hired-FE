@@ -23,6 +23,10 @@ export class CompaniesService {
     return this.baseService.get<Model.Company>(`${this.companyUrl}/details?id=${companyId}`);
   }
 
+  getCompanyBySlug(slug: string) {
+    return this.baseService.get<Model.Company>(`${this.companyUrl}/slug/${slug}`);
+  }
+
   getShareableLink(companyId: string) {
     return this.baseService.get<any>(`${this.companyUrl}/sharelink?id=${companyId}`);
   }

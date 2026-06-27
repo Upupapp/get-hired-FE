@@ -18,7 +18,8 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      { path: 'details', component: PublicCompanyDetailsComponent }
+      { path: 'details', component: PublicCompanyDetailsComponent },
+      { path: ':slug', component: PublicCompanyDetailsComponent },
     ]
   }
 ];

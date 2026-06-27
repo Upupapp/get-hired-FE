@@ -19,6 +19,7 @@ import { SeoService } from '@app-core/services/seo.service';
 export class PublicCompanyDetailsComponent implements OnInit {
 
   companyId: string;
+  private loadedViaLegacyId = false;
 
   public firstSentence: string;
   public bannerImage: any = undefined;
@@ -37,36 +38,43 @@ export class PublicCompanyDetailsComponent implements OnInit {
     private companiesService: CompaniesService,
     private seoService: SeoService,
   ) {
-    this.route.queryParams.subscribe(params => {
-      this.companyId = params.id;
-    });
+    const slug = this.route.snapshot.params['slug'];
+    const legacyId = this.route.snapshot.queryParams['id'];
+
+    if (slug) {
+      this.loadedViaLegacyId = false;
+      this.companiesFacade.getCompanyBySlug(slug);
+    } else if (legacyId) {
+      this.loadedViaLegacyId = true;
+      this.companyId = legacyId;
+      this.companiesFacade.getCompany(legacyId);
+    }
   }
 
   ngOnInit(): void {
-    this.companiesFacade.getCompany(this.companyId);
-
-    // SEO: set company page metadata once data loads
-    // Phase 6: use typed Company (not `any`) — companyName is defined on the model.
     this.details$.pipe(
       filter((company: Company) => !!company && !!company.companyName),
       take(1),
     ).subscribe((company: Company) => {
+      // Redirect legacy ?id= URLs to clean slug URL
+      if (this.loadedViaLegacyId && company.slug) {
+        this.router.navigate(['/companies', company.slug], { replaceUrl: true });
+        return;
+      }
+
+      const slug = company.slug || this.companyId;
       this.seoService.setPageMeta({
         title: `${company.companyName} | GetHired Online`,
         description: `Explore ${company.companyName} on GetHired Online — view their company profile and open job positions in the Philippines.`,
-        canonical: `https://gethiredonline.app/companies/details?id=${this.companyId}`,
+        canonical: `https://gethiredonline.app/companies/${slug}`,
         robots: 'index, follow',
       });
       this.seoService.setBreadcrumbJsonLd([
         { name: 'Home', url: 'https://gethiredonline.app/home' },
         { name: 'Companies', url: 'https://gethiredonline.app/companies' },
-        { name: company.companyName, url: `https://gethiredonline.app/companies/details?id=${this.companyId}` },
+        { name: company.companyName, url: `https://gethiredonline.app/companies/${slug}` },
       ]);
     });
-
-    if(this.companyId){
-
-    }
   }
 
   getDetails(){

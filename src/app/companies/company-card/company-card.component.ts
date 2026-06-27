@@ -20,6 +20,10 @@ export class CompanyCardComponent implements OnInit {
   }
 
   gotToDetails() {
-    this.router.navigateByUrl(`companies/details?id=${this.company.companyId}`);
+    if (this.company.slug) {
+      this.router.navigate(['/companies', this.company.slug]);
+    } else {
+      this.router.navigateByUrl(`/companies/details?id=${this.company.companyId}`);
+    }
   }
 }
