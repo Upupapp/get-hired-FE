@@ -68,7 +68,12 @@
   <div class="gh-sidebar-footer" *ngIf="screenHeight > 500">
     <div class="gh-sidebar-user">
       <div class="gh-sidebar-user-avatar" aria-hidden="true">
-        {{ user.firstName?.substr(0,1) }}{{ user.lastName?.substr(0,1) }}
+        <ng-container *ngIf="companyLogoUrl$ | async as logoUrl; else sidebarInitials">
+          <img [src]="logoUrl" alt="" class="gh-sidebar-user-avatar-img">
+        </ng-container>
+        <ng-template #sidebarInitials>
+          {{ user.firstName?.substr(0,1) }}{{ user.lastName?.substr(0,1) }}
+        </ng-template>
       </div>
       <div class="gh-sidebar-user-info">
         <span class="gh-sidebar-user-name">{{ user.firstName }} {{ user.lastName }}</span>

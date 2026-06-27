@@ -26,6 +26,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
   avatarMenuOpen = false;
   companyNameForTopbar$: Observable<string>;
+  companyLogoUrl$: Observable<string>;
 
   @ViewChild('mobileMenuBtn') mobileMenuBtnRef: ElementRef<HTMLButtonElement>;
   @ViewChild('firstDrawerLink') firstDrawerLinkRef: ElementRef<HTMLAnchorElement>;
@@ -50,6 +51,9 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     // saves company settings, without waiting for a getEmployeeProfile() re-fetch.
     this.companyNameForTopbar$ = this.companyFacade.companyDetails$.pipe(
       map(company => (company && company.companyName) ? company.companyName : '')
+    );
+    this.companyLogoUrl$ = this.companyFacade.companyDetails$.pipe(
+      map(company => (company && company.companyLogoUrl) ? company.companyLogoUrl : '')
     );
 
     // B02: Close mobile drawer on every successful navigation

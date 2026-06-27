@@ -205,6 +205,15 @@
   font-weight: 700;
   color: #fff;
   text-transform: uppercase;
+  overflow: hidden;
+}
+
+.gh-sidebar-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 
 .gh-sidebar-user-info {

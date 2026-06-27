@@ -17,6 +17,7 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   @Input() sidebarWidth;
   @Input() user;
   companyName$: Observable<string>;
+  companyLogoUrl$: Observable<string>;
   withActiveSubscription = localStorage.getItem('withActiveSubscription');
   public location: any = '';
   public screenHeight: number = 300;
@@ -54,6 +55,9 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
     this.screenHeight = window.innerHeight;
     this.companyName$ = this.companyFacade.companyDetails$.pipe(
       map(company => (company && company.companyName) ? company.companyName : (this.user && this.user.companyName ? this.user.companyName : ''))
+    );
+    this.companyLogoUrl$ = this.companyFacade.companyDetails$.pipe(
+      map(company => (company && company.companyLogoUrl) ? company.companyLogoUrl : '')
     );
   }
 
