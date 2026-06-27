@@ -88,10 +88,14 @@ export class CompanyEffects {
             return CompanyActions.updateCompanySuccess({ company });
           }),
           catchError((err) => {
-            // Pass the full error body so the form component can read
-            // feedback.state + fieldErrors for validation errors from BE.
+            // Pass the full error body + httpStatus so afterError() can route
+            // to the correct modal state (network/permission/validation/generic).
             const errBody = (err && err.error) ? err.error : null;
-            const payload = errBody || (err && err.message) || 'An error occurred';
+            const payload = Object.assign(
+              {},
+              errBody || { error: (err && err.message) || 'An error occurred' },
+              { httpStatus: err ? err.status : undefined }
+            );
             return of(CompanyActions.updateCompanyFail({ payload }))
           })
         )

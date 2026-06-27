@@ -21,6 +21,7 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   public location: any = '';
   public screenHeight: number = 300;
   sidebarItems: any[];
+  private collapsedRoutes = new Set<string>();
 
   constructor(
     private router: Router,
@@ -29,6 +30,12 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
+      // Auto-expand any parent whose child route is now active
+      this.collapsedRoutes.forEach(route => {
+        if (this.router.url.includes(route)) {
+          this.collapsedRoutes.delete(route);
+        }
+      });
       window.scrollTo({
         top: 0,
         left: 0,
@@ -129,6 +136,19 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.req) this.req.unsubscribe();
+  }
+
+  isSubnavOpen(route: string): boolean {
+    return !!this.location?.match(route) && !this.collapsedRoutes.has(route);
+  }
+
+  toggleCollapse(event: MouseEvent, route: string): void {
+    event.stopPropagation();
+    if (this.collapsedRoutes.has(route)) {
+      this.collapsedRoutes.delete(route);
+    } else {
+      this.collapsedRoutes.add(route);
+    }
   }
 
   changeRoute(route) {

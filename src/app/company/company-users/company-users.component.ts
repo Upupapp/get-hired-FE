@@ -4,7 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 // import { AddAccessModalComponent } from '@main/shared/components/add-access-modal/add-access-modal.component';
 import { TableHeader } from '@main/views/home/utils/job-list-model-interface';
-import { Subscription, Subject, takeUntil } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
+import { takeUntil, filter, take } from 'rxjs/operators';
 import { CompanyFacade } from '@app-company/state/company.facade';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,8 +51,6 @@ export class CompanyUsersComponent implements OnInit {
   };
 
   users$ = this.companyFacade.users$;
-  restrictions$ = this.companyFacade.subsRestrictions$
-    .pipe().subscribe(this.checkSubs.bind(this));
 
   public loading: boolean = true;
   constructor(
@@ -99,6 +98,11 @@ export class CompanyUsersComponent implements OnInit {
 
   addAccess() {
     this.companyFacade.getCompanySubscription(this.companyId);
+    this.companyFacade.subsRestrictions$.pipe(
+      filter(subs => !!subs),
+      take(1),
+      takeUntil(this.unsubscribe$)
+    ).subscribe(subs => this.checkSubs(subs));
   }
 
   restrictUserCreation() {

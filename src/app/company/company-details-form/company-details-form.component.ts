@@ -103,8 +103,9 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       });
 
     // Success path — open branded success modal
+    // filter(!!event) guards against the empty-string initial store emission
     this.companyFacade.success$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$), filter(event => !!event))
       .subscribe(event => this.afterSubmit(event));
 
     // Error path — open branded error/validation modal
@@ -293,8 +294,8 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Network error
-    if (err && err.status === 0) {
+    // Network error (httpStatus is attached by the NgRx effect)
+    if (errObj.httpStatus === 0) {
       this.haptic.error();
       this.dialog.open(GhFeedbackModalComponent, {
         panelClass: 'gh-feedback-modal-panel',
@@ -314,7 +315,7 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     }
 
     // Permission / BOLA error
-    if (err && (err.status === 403 || err.status === 401)) {
+    if (errObj.httpStatus === 403 || errObj.httpStatus === 401) {
       this.haptic.error();
       this.dialog.open(GhFeedbackModalComponent, {
         panelClass: 'gh-feedback-modal-panel',
