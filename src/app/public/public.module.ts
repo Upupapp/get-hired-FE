@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { PublicComponent } from './public.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CompaniesModule } from '@main/companies/companies.module';
+import { CompaniesComponent } from '@main/companies/companies.component';
+import { PublicCompanyDetailsComponent } from '@main/companies/public-company-details/public-company-details.component';
 import { SharedModule } from '@app-shared/shared.module';
 import { CoreModule } from '@app-core/core.module';
 import { BannerComponent } from './components/banner/banner.component';
@@ -41,9 +43,18 @@ const routes: Routes = [
       { path: 'jobs/details/:id', component: PublicDetailsComponent },
       { path: 'jobs', component: PublicListComponent },
       { path: 'jobs/search/:keyword', component: PublicSearchComponent },
+      // Company routes defined inline (not via loadChildren) because
+      // CompaniesModule is eagerly imported for its components. Using
+      // loadChildren + eager import caused RouterModule.forChild in
+      // CompaniesModule to register ':slug' at the public scope, matching
+      // '/home', '/jobs', etc before their correct named routes.
       {
         path: 'companies',
-        loadChildren: () => import('@main/companies/companies.module').then(m => m.CompaniesModule),
+        children: [
+          { path: '', component: CompaniesComponent, pathMatch: 'full' },
+          { path: 'details', component: PublicCompanyDetailsComponent },
+          { path: ':slug', component: PublicCompanyDetailsComponent },
+        ],
       },
       // GETHIRED PORTAL v2: the main URL now hosts a dedicated
       // role-selection portal instead of redirecting straight to /jobs.

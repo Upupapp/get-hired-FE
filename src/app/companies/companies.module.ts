@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CompaniesComponent } from './companies.component';
-import { RouterModule, Routes } from '@angular/router';
 import { CompanyCardComponent } from './company-card/company-card.component';
 import { PublicCompanyDetailsComponent } from './public-company-details/public-company-details.component';
 import { PublicCompaniesRecommendedComponent } from './public-companies-recommended/public-companies-recommended.component';
@@ -14,25 +13,21 @@ import { CompaniesEffects } from './state/companies.effects';
 import { JobsModule } from '@main/jobs/jobs.module';
 import { SharedModule } from '@app-shared/shared.module';
 
-const routes: Routes = [
-  {
-    path: '',
-    children: [
-      { path: '', component: CompaniesComponent, pathMatch: 'full' },
-      { path: 'details', component: PublicCompanyDetailsComponent },
-      { path: ':slug', component: PublicCompanyDetailsComponent },
-    ]
-  }
-];
+// NOTE: RouterModule.forChild() deliberately NOT included here.
+// CompaniesModule is eagerly imported by PublicModule (for its exported
+// components). If RouterModule.forChild() were present, Angular would
+// merge company routes ({path:':slug'}) at the PublicModule scope,
+// which causes ':slug' to match '/home', '/jobs', etc before the correct
+// named routes. Company routing is defined inline in public.module.ts.
 
 const exportedComponents = [
+  CompaniesComponent,
   PublicCompanyDetailsComponent,
   PublicCompaniesRecommendedComponent
 ];
 
 @NgModule({
   declarations: [
-    CompaniesComponent,
     CompanyCardComponent,
     ...exportedComponents,
   ],
@@ -42,7 +37,6 @@ const exportedComponents = [
     SharedModule,
     StoreModule.forFeature('companies', companiesReducer),
     EffectsModule.forFeature([CompaniesEffects]),
-    RouterModule.forChild(routes)
   ],
   exports: [
     ...exportedComponents
