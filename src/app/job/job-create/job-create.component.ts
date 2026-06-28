@@ -707,6 +707,89 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     return this.jobReadiness.getLevelLabel(level);
   }
 
+  // ── B09: Two-axis strength/readiness explainability ────────────────────────
+
+  /** Disclosure open/close state for the "What this means" panel */
+  whatMeansOpen = false;
+
+  toggleWhatMeans(): void {
+    this.whatMeansOpen = !this.whatMeansOpen;
+  }
+
+  /** Strength chip label for the quality axis */
+  getStrengthLabel(): string {
+    if (!this.readinessResult) return '';
+    switch (this.readinessResult.readinessLevel) {
+      case 'basic':     return 'Needs improvement';
+      case 'strong':    return 'Strong';
+      case 'excellent': return 'Excellent';
+      default:          return '';
+    }
+  }
+
+  getStrengthChipClass(): string {
+    if (!this.readinessResult) return '';
+    switch (this.readinessResult.readinessLevel) {
+      case 'basic':     return 'gh-jc-strength-chip--needs-improvement';
+      case 'strong':    return 'gh-jc-strength-chip--strong';
+      case 'excellent': return 'gh-jc-strength-chip--excellent';
+      default:          return '';
+    }
+  }
+
+  getStrengthIcon(): string {
+    if (!this.readinessResult) return 'bi-circle';
+    switch (this.readinessResult.readinessLevel) {
+      case 'basic':     return 'bi-arrow-up-circle';
+      case 'strong':    return 'bi-star';
+      case 'excellent': return 'bi-star-fill';
+      default:          return 'bi-circle';
+    }
+  }
+
+  /** Inline next-step guidance below the chips */
+  getStrengthGuidance(): string {
+    if (!this.readinessResult) return '';
+    const r = this.readinessResult;
+    if (!r.canPublish) {
+      return 'Complete the required fields to publish. Then add recommended details to improve post strength.';
+    }
+    const remaining = r.recommendationItems.length;
+    switch (r.readinessLevel) {
+      case 'basic': {
+        const toStrong = Math.max(0, 3 - r.recommendedComplete);
+        if (toStrong <= 0 || remaining === 0) return 'Ready to publish.';
+        return 'Ready to publish. Add ' + toStrong + ' improvement' + (toStrong !== 1 ? 's' : '') + ' to reach Strong.';
+      }
+      case 'strong':
+        if (remaining === 0) return 'Strong post.';
+        return 'Strong post. Add ' + remaining + ' improvement' + (remaining !== 1 ? 's' : '') + ' to reach Excellent.';
+      case 'excellent':
+        return 'Excellent post. Your post includes the key details candidates need.';
+      default:
+        return '';
+    }
+  }
+
+  /** Visually labelled improvement count for the recommended-items toggle */
+  getImprovementCountLabel(): string {
+    if (!this.readinessResult) return '';
+    const r = this.readinessResult;
+    const count = r.recommendationItems.length;
+    if (count === 0) return 'All recommended details added';
+    switch (r.readinessLevel) {
+      case 'basic': {
+        const toStrong = Math.max(0, 3 - r.recommendedComplete);
+        if (toStrong > 0 && toStrong <= count) return toStrong + ' to Strong';
+        return count + ' improvement' + (count !== 1 ? 's' : '');
+      }
+      case 'strong':
+        return count + ' to Excellent';
+      default:
+        return count + ' improvement' + (count !== 1 ? 's' : '');
+    }
+  }
+
   /** Scroll to a field with error (used by error summary chips) */
   scrollToError(fieldId: string): void {
     const el = document.getElementById(fieldId);

@@ -49,12 +49,12 @@ export class JobReadinessBarComponent implements OnChanges {
   }
 
   get levelLabel(): string {
-    if (!this.result) return 'Draft — required fields missing';
+    if (!this.result) return 'Required fields missing';
     switch (this.result.readinessLevel) {
-      case 'draft':      return 'Draft — required fields missing';
-      case 'basic':      return 'Required fields complete';
-      case 'strong':     return 'Strong job post';
-      case 'excellent':  return 'Excellent readiness';
+      case 'draft':      return 'Required fields missing';
+      case 'basic':      return 'Needs improvement';
+      case 'strong':     return 'Strong';
+      case 'excellent':  return 'Excellent';
     }
   }
 

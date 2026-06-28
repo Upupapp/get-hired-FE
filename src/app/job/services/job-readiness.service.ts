@@ -333,10 +333,25 @@ export class JobReadinessService {
   /** Convenience: return display copy for a readiness level */
   getLevelLabel(level: JobReadinessLevel): string {
     switch (level) {
-      case 'draft':      return 'Draft — required fields missing';
-      case 'basic':      return 'Required fields complete';
-      case 'strong':     return 'Strong job post';
-      case 'excellent':  return 'Excellent readiness';
+      case 'draft':      return 'Required fields missing';
+      case 'basic':      return 'Needs improvement';
+      case 'strong':     return 'Strong';
+      case 'excellent':  return 'Excellent';
+    }
+  }
+
+  /** B09: Readiness axis label (publish gate only) */
+  getReadinessChipLabel(canPublish: boolean): string {
+    return canPublish ? 'Required fields complete' : 'Required fields missing';
+  }
+
+  /** B09: Strength axis label (quality guidance) */
+  getStrengthLabel(level: JobReadinessLevel): string {
+    switch (level) {
+      case 'basic':     return 'Needs improvement';
+      case 'strong':    return 'Strong';
+      case 'excellent': return 'Excellent';
+      default:          return '';
     }
   }
 }

@@ -570,7 +570,7 @@
   color: #1a1830;
 }
 
-// Readiness level chip (inside the rail card)
+// Readiness level chip (inside the rail card) — kept for backward compat
 .gh-jc-readiness-level-chip {
   display: inline-block;
   padding: 3px 10px;
@@ -583,6 +583,185 @@
   &.gh-chip--info    { background: #EFF6FF; color: #1D4ED8; }
   &.gh-chip--warning { background: #FFFBEB; color: #92400E; }
   &.gh-chip--draft   { background: #F5F5F5; color: #6B7280; }
+}
+
+// ─── B09: Two-axis readiness + strength chips ─────────────────────────────────
+
+// Easy Job Posting assistant banner
+.gh-jc-assistant-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 112, 98, 0.07);
+  border: 1px solid rgba(255, 112, 98, 0.22);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  animation: gh-dash-card-reveal 220ms cubic-bezier(0.2,0,0,1) both;
+  @include motion-safe;
+}
+
+.gh-jc-assistant-banner-icon {
+  font-size: 15px;
+  color: $color-global-red-buttons;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.gh-jc-assistant-banner-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gh-jc-assistant-banner-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-global-red-buttons;
+}
+
+.gh-jc-assistant-banner-body {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.4;
+}
+
+// Chips row: readiness + strength side by side
+.gh-jc-b09-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+// Readiness chip (publish gate axis)
+.gh-jc-readiness-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background 200ms ease, color 200ms ease;
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+
+  &--ready {
+    background: #F0FDF4;
+    color: #15803D;
+    box-shadow: 0 0 0 1.5px rgba(21, 128, 61, 0.18);
+  }
+
+  &--missing {
+    background: #FFF1F1;
+    color: #B91C1C;
+    box-shadow: 0 0 0 1.5px rgba(185, 28, 28, 0.15);
+  }
+}
+
+// Strength chip (quality guidance axis)
+.gh-jc-strength-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease;
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+
+  &--needs-improvement {
+    background: #FFFBEB;
+    color: #92400E;
+    box-shadow: 0 0 0 1.5px rgba(146, 64, 14, 0.15);
+  }
+
+  &--strong {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    box-shadow: 0 0 0 1.5px rgba(29, 78, 216, 0.15);
+
+    // One-shot glow when tier changes to Strong
+    animation: gh-strength-pulse 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    @media (prefers-reduced-motion: reduce) { animation: none; }
+  }
+
+  &--excellent {
+    background: #F0FDF4;
+    color: #15803D;
+    box-shadow: 0 0 0 1.5px rgba(21, 128, 61, 0.18);
+
+    // One-shot glow when tier changes to Excellent
+    animation: gh-strength-pulse 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    @media (prefers-reduced-motion: reduce) { animation: none; }
+  }
+}
+
+@keyframes gh-strength-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
+  50%  { box-shadow: 0 0 0 5px rgba(21, 128, 61, 0.12); }
+  100% { box-shadow: 0 0 0 1.5px rgba(21, 128, 61, 0.18); }
+}
+
+// Inline next-step guidance
+.gh-jc-strength-guidance {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.45;
+  margin: 0 0 10px;
+  min-height: 18px; // prevent layout shift while computing
+}
+
+// "What this means" mobile-safe disclosure
+.gh-jc-what-means {
+  margin-bottom: 8px;
+}
+
+.gh-jc-what-means-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 5px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+
+  &:hover  { color: $color-global-red-buttons; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; border-radius: 6px; }
+}
+
+.gh-jc-what-means-panel {
+  background: #F9F8FC;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 4px;
+  animation: gh-dash-card-reveal 160ms cubic-bezier(0.2,0,0,1) both;
+  @include motion-safe;
+}
+
+.gh-jc-what-means-list {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1.5;
+
+  dt {
+    font-weight: 700;
+    color: #333;
+    margin-top: 6px;
+
+    &:first-child { margin-top: 0; }
+  }
+
+  dd {
+    margin: 0 0 0 0;
+    color: #666;
+  }
 }
 
 // Collapsible readiness section

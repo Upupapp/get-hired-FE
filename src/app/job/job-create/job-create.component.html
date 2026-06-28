@@ -220,9 +220,18 @@
           <div class="gh-jc-readiness-header">
             <span class="gh-jc-readiness-title">
               <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
-              Job readiness
+              Job post strength
             </span>
             <span class="gh-jc-readiness-percent">{{ readinessResult.readinessPercent }}%</span>
+          </div>
+
+          <!-- B09: Easy Job Posting assistant banner -->
+          <div class="gh-jc-assistant-banner" *ngIf="assistantPrefilled" role="status">
+            <i class="bi bi-stars gh-jc-assistant-banner-icon" aria-hidden="true"></i>
+            <div class="gh-jc-assistant-banner-copy">
+              <span class="gh-jc-assistant-banner-title">Draft created with GetHired Assistant</span>
+              <span class="gh-jc-assistant-banner-body">Review imported details and complete any missing fields before publishing.</span>
+            </div>
           </div>
 
           <!-- Progress ring (CSS-only, reduced-motion safe) -->
@@ -239,12 +248,53 @@
             <span class="gh-jc-readiness-ring-label">{{ readinessResult.readinessPercent }}%</span>
           </div>
 
-          <div class="gh-jc-readiness-level-chip"
-            [ngClass]="readinessResult.readinessLevel === 'excellent' ? 'gh-chip--success'
-              : readinessResult.readinessLevel === 'strong' ? 'gh-chip--info'
-              : readinessResult.readinessLevel === 'basic' ? 'gh-chip--warning'
-              : 'gh-chip--draft'">
-            {{ getReadinessLevelLabel(readinessResult.readinessLevel) }}
+          <!-- B09: Two-axis chips — readiness (publish gate) + strength (quality) -->
+          <div class="gh-jc-b09-chips-row">
+            <span
+              class="gh-jc-readiness-chip"
+              [ngClass]="readinessResult.canPublish ? 'gh-jc-readiness-chip--ready' : 'gh-jc-readiness-chip--missing'"
+              [attr.aria-label]="readinessResult.canPublish ? 'Publish readiness: Required fields complete' : 'Publish readiness: Required fields missing'">
+              <i class="bi me-1" [ngClass]="readinessResult.canPublish ? 'bi-check-circle' : 'bi-x-circle'" aria-hidden="true"></i>
+              {{ readinessResult.canPublish ? 'Required fields complete' : 'Required fields missing' }}
+            </span>
+            <span *ngIf="readinessResult.canPublish"
+              class="gh-jc-strength-chip"
+              [ngClass]="getStrengthChipClass()"
+              [attr.aria-label]="'Post strength: ' + getStrengthLabel()">
+              <i class="bi me-1" [ngClass]="getStrengthIcon()" aria-hidden="true"></i>
+              {{ getStrengthLabel() }}
+            </span>
+          </div>
+
+          <!-- B09: Inline next-step guidance (visible, not tooltip-only) -->
+          <p class="gh-jc-strength-guidance" role="status" aria-live="polite" aria-atomic="true">
+            {{ getStrengthGuidance() }}
+          </p>
+
+          <!-- B09: "What this means" disclosure (mobile-safe, no hover-only) -->
+          <div class="gh-jc-what-means">
+            <button type="button" class="gh-jc-what-means-btn"
+              (click)="toggleWhatMeans()"
+              [attr.aria-expanded]="whatMeansOpen"
+              aria-controls="gh-jc-what-means-panel">
+              <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+              What this means
+              <i class="bi ms-auto" [ngClass]="whatMeansOpen ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
+            </button>
+            <div id="gh-jc-what-means-panel" class="gh-jc-what-means-panel" *ngIf="whatMeansOpen" role="region" aria-label="Post strength explanation">
+              <dl class="gh-jc-what-means-list">
+                <dt>Required fields complete</dt>
+                <dd>This job can be published. It does not mean the post is optimised — add recommended details to reach Strong or Excellent.</dd>
+                <dt>Needs improvement</dt>
+                <dd>Ready to publish, but missing recommended details that help candidates understand the role.</dd>
+                <dt>Strong</dt>
+                <dd>Includes required fields plus useful details such as responsibilities, qualifications, skills, or company overview.</dd>
+                <dt>Excellent</dt>
+                <dd>Includes most key details candidates use to decide whether to apply.</dd>
+                <dt>Suggested improvements</dt>
+                <dd>Not required to publish, but make the post clearer and more useful to candidates.</dd>
+              </dl>
+            </div>
           </div>
 
           <!-- Blocking items -->
@@ -276,7 +326,7 @@
               (click)="toggleReadinessGroup('recommended')"
               [attr.aria-expanded]="readinessGroupOpen.recommended">
               <i class="bi bi-star-fill text-warning me-1" aria-hidden="true"></i>
-              <span>Recommended ({{ readinessResult.recommendationItems.length }})</span>
+              <span>Suggested improvements — <strong>{{ getImprovementCountLabel() }}</strong></span>
               <i class="bi ms-auto" [ngClass]="readinessGroupOpen.recommended ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
             </button>
             <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.recommended">
@@ -346,7 +396,7 @@
             Tip
           </p>
           <p class="gh-jc-tips-body" *ngIf="stepper === 1">
-            A clear job title and work setup attract 3x more qualified applicants. Be specific.
+            A clear job title and work setup help candidates understand if the role is right for them. Be specific.
           </p>
           <p class="gh-jc-tips-body" *ngIf="stepper === 2">
             Showing a salary range increases application rates. Add at least a minimum.
