@@ -1,11 +1,13 @@
 @import "src/assets/styles/colors";
 
 // Search mode layout
+// top: 68px — matches the fixed public nav height so the sticky header
+// docks below the nav instead of sliding underneath it (nav is z-999).
 .gh-search-page-header {
   background: #1a1830;
   padding: 24px 20px;
   position: sticky;
-  top: 0;
+  top: 68px;
   z-index: 100;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 

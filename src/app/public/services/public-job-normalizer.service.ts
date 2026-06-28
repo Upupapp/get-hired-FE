@@ -22,12 +22,12 @@ export class PublicJobNormalizerService {
     const interviewQuestions = this.toArray(raw.interviewQuestions ?? raw.interview_questions);
     const interviewTemplateId = raw.interviewTemplateId ?? raw.interview_template_id ?? null;
 
-    const city = this.toStringOrNull(raw.jobCity ?? raw.job_city);
+    const city = this.sanitizeCity(this.toStringOrNull(raw.jobCity ?? raw.job_city));
     const country = this.toStringOrNull(raw.jobCountry ?? raw.job_country);
 
     return {
       jobId: this.toStringOrNull(raw.jobId ?? raw.job_id) ?? '',
-      title: this.toStringOrNull(raw.jobTitle ?? raw.job_title) ?? 'Untitled role',
+      title: this.sanitizeTitle(this.toStringOrNull(raw.jobTitle ?? raw.job_title)) ?? 'Untitled role',
 
       companyId: this.toStringOrNull(raw.companyId ?? raw.company_id) ?? '',
       companyName: this.toStringOrNull(raw.companyName ?? raw.company_name) ?? 'Company',
@@ -199,5 +199,34 @@ export class PublicJobNormalizerService {
     }
     const single = min ?? max ?? 0;
     return `${cur} ${fmt(single)}`.trim();
+  }
+
+  /**
+   * Strip web-scraper artifacts from job titles. Common scraper bug: the
+   * `<title>` tag is captured instead of the job posting title itself, giving
+   * strings like "Finance Analyst Job Details | San Miguel Corporation".
+   * We strip the " Job Details | *" or bare " | *" suffix when a pipe
+   * separator is present, keeping only the leading role name.
+   */
+  private sanitizeTitle(title: string | null): string | null {
+    if (!title) return title;
+    const pipeIdx = title.indexOf(' | ');
+    if (pipeIdx !== -1) {
+      return title.substring(0, pipeIdx).replace(/\s*(Job Details?|Job Post)\s*$/i, '').trim() || title;
+    }
+    return title;
+  }
+
+  /**
+   * Reject city values that are clearly scraped UI text rather than real
+   * place names (dropdown labels, form hints, very long sentences).
+   */
+  private sanitizeCity(city: string | null): string | null {
+    if (!city) return city;
+    if (city.length > 80) return null;
+    if (/select\s/i.test(city)) return null;
+    if (/\?\s*$/.test(city)) return null;
+    if (/:\s*$/.test(city)) return null;
+    return city;
   }
 }
