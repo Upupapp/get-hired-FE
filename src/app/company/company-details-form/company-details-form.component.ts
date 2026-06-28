@@ -187,6 +187,21 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.companyDetailsForm.controls['companyLogoFile'].setValue(this.profileImage);
   }
 
+  onLogoUploaded(result: any) {
+    this.profileImage = result.primaryUrl;
+    // Store the already-uploaded URL so the save form skips re-uploading
+    this.companyDetailsForm.controls['companyLogoFile'].setValue(null);
+    // Patch the existing logo URL field so the backend uses the pre-uploaded image
+    if (this.companyDetailsForm.controls['companyLogoUrl']) {
+      this.companyDetailsForm.controls['companyLogoUrl'].setValue(result.primaryUrl);
+    }
+  }
+
+  onLogoClear() {
+    this.profileImage = null;
+    this.companyDetailsForm.controls['companyLogoFile'].setValue(null);
+  }
+
   onSubmit() {
     // Double-submit guard: ignore while a request is in-flight
     if (this.saving) { return; }

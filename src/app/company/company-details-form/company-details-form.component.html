@@ -44,8 +44,15 @@
       <div class="col-12" [ngClass]="profileImage ? 'col-lg-9' : ''">
         <div class="gh-field mb-3">
           <label class="gh-label">{{ 'EDIT_COMPANY_DETAILS.COMPANY_LOGO_TEXT' | translate }}</label>
-          <app-file-upload formControlName="companyLogoFile" (upload)="onUpload($event)"
-            label="Select Profile Photo" [labelTop]="false"></app-file-upload>
+          <app-gh-image-upload
+            purpose="company_logo"
+            label=""
+            hint="JPG, PNG, or WebP · Max 5 MB · Recommended 512×512"
+            [currentUrl]="profileImage || ''"
+            previewShape="square"
+            (uploaded)="onLogoUploaded($event)"
+            (cleared)="onLogoClear()">
+          </app-gh-image-upload>
         </div>
 
         <!-- Name shown here only when a logo exists (sits next to the avatar) -->

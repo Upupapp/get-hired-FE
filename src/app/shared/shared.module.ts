@@ -45,6 +45,8 @@ import { ApplicationCompletenessBadgeComponent } from './components/application-
 import { ApplicationCompletenessCardComponent } from './components/application-completeness-card/application-completeness-card.component';
 import { ViewedOnceDirective } from './directives/viewed-once.directive';
 import { PortalRevealDirective } from './directives/portal-reveal.directive';
+import { GhImageUploadComponent } from './components/gh-image-upload/gh-image-upload.component';
+import { GhResponsiveImageComponent } from './components/gh-responsive-image/gh-responsive-image.component';
 
 
 const classesToInclude: any[] = [
@@ -80,7 +82,9 @@ const classesToInclude: any[] = [
   TalentProofBadgeComponent,
   MessageThreadComponent,
   ApplicationCompletenessBadgeComponent,
-  ApplicationCompletenessCardComponent
+  ApplicationCompletenessCardComponent,
+  GhImageUploadComponent,
+  GhResponsiveImageComponent
 ];
 
 @NgModule({

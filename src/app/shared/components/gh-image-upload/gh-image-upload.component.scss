@@ -1,0 +1,234 @@
+.gh-image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+  }
+
+  &__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3B3C4A;
+    letter-spacing: -0.01em;
+  }
+
+  &__zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 160px;
+    border: 1.5px dashed #DDD8F0;
+    border-radius: 18px;
+    background: #FAFAFA;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    outline: none;
+    overflow: hidden;
+
+    &:hover,
+    &:focus-visible {
+      border-color: #7B61FF;
+      background: #F7F5FF;
+      box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.12);
+    }
+
+    &--wide {
+      width: 100%;
+      min-width: 200px;
+      height: 120px;
+      max-width: 480px;
+    }
+
+    &--circle {
+      border-radius: 50%;
+      width: 96px;
+      height: 96px;
+    }
+
+    &--has-preview {
+      border-style: solid;
+      border-color: #DDD8F0;
+
+      .gh-image-upload__overlay {
+        opacity: 0;
+        transition: opacity 0.18s ease;
+      }
+
+      &:hover .gh-image-upload__overlay,
+      &:focus-visible .gh-image-upload__overlay {
+        opacity: 1;
+      }
+    }
+
+    &--uploading {
+      cursor: not-allowed;
+      border-color: #7B61FF;
+      background: #F7F5FF;
+    }
+
+    &--error {
+      border-color: #E53935;
+      background: #FFF5F5;
+    }
+  }
+
+  &--drag-over .gh-image-upload__zone {
+    border-color: #7B61FF;
+    background: #F0EDFF;
+    box-shadow: 0 0 0 3px rgba(123, 97, 255, 0.18);
+  }
+
+  &--disabled .gh-image-upload__zone {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  &__preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+
+    &--circle {
+      border-radius: 50%;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.42);
+    border-radius: inherit;
+    gap: 4px;
+  }
+
+  &__overlay-icon {
+    font-size: 22px;
+    line-height: 1;
+    filter: brightness(10);
+  }
+
+  &__overlay-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+
+  &__spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &__spinner-svg {
+    width: 36px;
+    height: 36px;
+    animation: gh-spin 0.9s linear infinite;
+
+    circle {
+      stroke: #7B61FF;
+      stroke-dasharray: 80;
+      stroke-dashoffset: 20;
+      stroke-linecap: round;
+    }
+  }
+
+  &__spinner-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #7B61FF;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  &__empty-icon {
+    width: 28px;
+    height: 28px;
+    color: #A5B4C4;
+  }
+
+  &__empty-cta {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5A5F7A;
+  }
+
+  &__hint {
+    font-size: 11px;
+    color: #9DA3AE;
+    line-height: 1.4;
+  }
+
+  &__savings {
+    display: flex;
+    align-items: center;
+  }
+
+  &__savings-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #E8F5E9;
+    color: #2E7D32;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+
+    &::before {
+      content: '✓';
+      font-size: 10px;
+    }
+  }
+
+  &__error {
+    font-size: 12px;
+    color: #E53935;
+    font-weight: 500;
+  }
+
+  &__clear {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 2px 0;
+    font-size: 12px;
+    color: #9DA3AE;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: #E53935;
+    }
+  }
+}
+
+@keyframes gh-spin {
+  to { transform: rotate(360deg); }
+}
