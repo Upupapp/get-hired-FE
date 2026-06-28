@@ -1,165 +1,863 @@
-<section class="portal-hero portal-hero--upgraded">
-  <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="portal-hero-mesh" aria-hidden="true" width="400" height="300" loading="lazy">
-  <div class="portal-hero-glow portal-hero-glow--one" aria-hidden="true"></div>
-  <div class="portal-hero-glow portal-hero-glow--two" aria-hidden="true"></div>
+<main class="ep-portal" id="main-content">
 
-  <div class="portal-hero-inner portal-hero-inner--split">
-    <div class="portal-hero-copy">
-      <h1 class="portal-hero-title">Hire smarter. Build winning teams.</h1>
-      <p class="portal-hero-subtitle">
-        The all-in-one hiring workspace to post jobs, review applicants, use video answers and match
-        signals, and manage hiring in one organized platform.
-      </p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       EMPLOYER PORTAL HEADER
+  ════════════════════════════════════════════════════════════════════════ -->
+  <header class="ep-header" role="banner">
+    <nav class="ep-header-inner" aria-label="Employer portal navigation">
 
-      <!-- GETHIRED 500K TALENT PROOF SYSTEM v1 -- placed directly beside
-           the primary employer conversion action. -->
-      <app-talent-proof-badge variant="card" placement="employer_portal_hero"></app-talent-proof-badge>
+      <!-- Logo -->
+      <a routerLink="/home" class="ep-logo" aria-label="GetHired Online — Home">
+        <svg class="ep-logo-mark" width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="url(#ep-logo-grad)"/>
+          <path d="M8 16c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M16 10v6l3.5 3.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="ep-logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF7062"/>
+              <stop offset="1" stop-color="#7C83FD"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="ep-logo-text">GetHired</span>
+      </a>
 
-      <div class="portal-hero-cta-group">
-        <a routerLink="/signup" [queryParams]="{role: 2}" class="btn-cta-primary gh-pressable">Start hiring</a>
-        <a routerLink="/signin" class="btn-cta-outline gh-pressable">Sign in</a>
+      <!-- Desktop nav -->
+      <ul class="ep-nav-desktop" role="list">
+        <li><a class="ep-nav-link" href="#why-gethired">Why GetHired</a></li>
+        <li><a class="ep-nav-link" href="#easy-job-posting">Easy Job Posting</a></li>
+        <li><a class="ep-nav-link" href="#cv-doctor">CV Doctor</a></li>
+        <li><a class="ep-nav-link" href="#how-it-works">How it works</a></li>
+        <li><a class="ep-nav-link" href="#faq">FAQ</a></li>
+        <li><button type="button" class="ep-nav-link" (click)="browseJobs()">Browse jobs</button></li>
+      </ul>
+
+      <!-- Desktop CTA cluster -->
+      <div class="ep-header-ctas">
+        <button type="button" class="ep-btn ep-btn--ghost" (click)="goToSignin()">Sign in</button>
+        <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button
+        class="ep-hamburger"
+        type="button"
+        [attr.aria-expanded]="mobileMenuOpen"
+        aria-controls="ep-mobile-menu"
+        aria-label="Open navigation menu"
+        (click)="toggleMobileMenu()">
+        <span class="ep-hamburger-line" [class.ep-hamburger-line--open]="mobileMenuOpen"></span>
+        <span class="ep-hamburger-line" [class.ep-hamburger-line--open]="mobileMenuOpen"></span>
+        <span class="ep-hamburger-line" [class.ep-hamburger-line--open]="mobileMenuOpen"></span>
+      </button>
+
+    </nav>
+
+    <!-- Mobile menu overlay -->
+    <div
+      id="ep-mobile-menu"
+      class="ep-mobile-menu"
+      [class.ep-mobile-menu--open]="mobileMenuOpen"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation menu"
+      (keydown)="onMenuKeydown($event)">
+      <ul class="ep-mobile-nav" role="list">
+        <li><button type="button" class="ep-mobile-nav-link ep-mobile-nav-link--primary" (click)="startHiring(); closeMobileMenu()">Start hiring</button></li>
+        <li><button type="button" class="ep-mobile-nav-link" (click)="goToSignin(); closeMobileMenu()">Sign in</button></li>
+        <li><button type="button" class="ep-mobile-nav-link" (click)="browseJobs(); closeMobileMenu()">Browse jobs</button></li>
+        <li><a class="ep-mobile-nav-link" href="#why-gethired" (click)="closeMobileMenu()">Why GetHired</a></li>
+        <li><a class="ep-mobile-nav-link" href="#easy-job-posting" (click)="closeMobileMenu()">Easy Job Posting</a></li>
+        <li><a class="ep-mobile-nav-link" href="#cv-doctor" (click)="closeMobileMenu()">CV Doctor</a></li>
+        <li><a class="ep-mobile-nav-link" href="#how-it-works" (click)="closeMobileMenu()">How it works</a></li>
+        <li><a class="ep-mobile-nav-link" href="#faq" (click)="closeMobileMenu()">FAQ</a></li>
+      </ul>
+    </div>
+    <div *ngIf="mobileMenuOpen" class="ep-mobile-overlay" aria-hidden="true" (click)="closeMobileMenu()"></div>
+
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-hero" aria-label="Hire smarter with GetHired">
+    <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="ep-hero-mesh" aria-hidden="true" width="400" height="300" loading="eager">
+    <div class="ep-hero-glow ep-hero-glow--a" aria-hidden="true"></div>
+    <div class="ep-hero-glow ep-hero-glow--b" aria-hidden="true"></div>
+
+    <div class="ep-hero-inner">
+
+      <!-- Copy -->
+      <div class="ep-hero-copy ep-reveal">
+        <p class="ep-hero-eyebrow">Workforce Growth OS for Philippine Employers</p>
+        <h1 class="ep-hero-h1">Post jobs faster.<br>Hire with more context.</h1>
+        <p class="ep-hero-sub">
+          GetHired is a modern hiring workspace for Philippine employers. Create job posts faster with
+          GetHired Assistant, reach&nbsp;<strong>500,000+ registered job seekers</strong>, review structured
+          applicants, use video answers and match signals, and manage hiring in one organized platform.
+        </p>
+
+        <app-talent-proof-badge variant="card" placement="employer_portal_hero"></app-talent-proof-badge>
+
+        <div class="ep-hero-bullets" aria-label="Key features at a glance">
+          <span class="ep-hero-bullet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Create jobs from a file or link
+          </span>
+          <span class="ep-hero-bullet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Review structured applicants
+          </span>
+          <span class="ep-hero-bullet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Video answers &amp; match signals
+          </span>
+          <span class="ep-hero-bullet">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Track applicants from applied to hired
+          </span>
+        </div>
+
+        <div class="ep-hero-ctas">
+          <button type="button" class="ep-btn ep-btn--primary ep-btn--lg" (click)="startHiring()">Start hiring</button>
+          <button type="button" class="ep-btn ep-btn--outline ep-btn--lg" (click)="goToSignin()">Sign in</button>
+          <button type="button" class="ep-btn ep-btn--ghost-sm" (click)="browseJobs()">Browse public jobs →</button>
+        </div>
+      </div>
+
+      <!-- Dashboard mockup -->
+      <div class="ep-hero-visual ep-reveal ep-reveal--delay" aria-hidden="true">
+        <div class="ep-dash">
+          <div class="ep-dash-topbar">
+            <span class="ep-dash-dot ep-dash-dot--r"></span>
+            <span class="ep-dash-dot ep-dash-dot--y"></span>
+            <span class="ep-dash-dot ep-dash-dot--g"></span>
+            <span class="ep-dash-label">Hiring workspace</span>
+          </div>
+          <div class="ep-dash-body">
+            <aside class="ep-dash-sidebar">
+              <span class="ep-dash-sitem ep-dash-sitem--active"></span>
+              <span class="ep-dash-sitem"></span>
+              <span class="ep-dash-sitem"></span>
+              <span class="ep-dash-sitem"></span>
+            </aside>
+            <div class="ep-dash-main">
+              <!-- Metrics row -->
+              <div class="ep-dash-metrics">
+                <div class="ep-dash-metric">
+                  <span class="ep-dash-metric-val">3</span>
+                  <span class="ep-dash-metric-lbl">Open jobs</span>
+                </div>
+                <div class="ep-dash-metric">
+                  <span class="ep-dash-metric-val">12</span>
+                  <span class="ep-dash-metric-lbl">New applicants</span>
+                </div>
+              </div>
+              <!-- Pipeline -->
+              <div class="ep-dash-section-lbl">Pipeline</div>
+              <div class="ep-dash-pipeline">
+                <div class="ep-dash-stage">
+                  <span class="ep-dash-stage-lbl">Applied</span>
+                  <span class="ep-dash-avatar ep-dash-avatar--coral">JD</span>
+                </div>
+                <div class="ep-dash-stage">
+                  <span class="ep-dash-stage-lbl">Screening</span>
+                  <span class="ep-dash-avatar ep-dash-avatar--azure">MR</span>
+                </div>
+                <div class="ep-dash-stage">
+                  <span class="ep-dash-stage-lbl">Interview</span>
+                  <span class="ep-dash-avatar ep-dash-avatar--violet">AS</span>
+                </div>
+                <div class="ep-dash-stage">
+                  <span class="ep-dash-stage-lbl">Offer</span>
+                  <span class="ep-dash-avatar ep-dash-avatar--coral">KP</span>
+                </div>
+                <div class="ep-dash-stage">
+                  <span class="ep-dash-stage-lbl">Hired</span>
+                  <span class="ep-dash-avatar ep-dash-avatar--teal">RL</span>
+                </div>
+              </div>
+              <!-- Chips -->
+              <div class="ep-dash-chips">
+                <span class="ep-dash-chip ep-dash-chip--video">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                  Video answer
+                </span>
+                <span class="ep-dash-chip ep-dash-chip--match">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                  Match signal
+                </span>
+                <span class="ep-dash-chip ep-dash-chip--health">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  CV Health
+                </span>
+              </div>
+              <!-- Missing fields warning -->
+              <div class="ep-dash-warn">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                3 fields missing before publish
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Floating proof -->
+        <div class="ep-hero-float-proof">
+          <app-talent-proof-badge variant="pill" placement="employer_portal_hero_mockup"></app-talent-proof-badge>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       TRUST STRIP
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-trust" aria-label="Platform proof points" appViewedOnce (viewedOnce)="onTrustStripViewed()">
+    <div class="ep-trust-inner">
+      <div class="ep-trust-chip ep-trust-chip--highlight">
+        <app-talent-proof-badge variant="pill" placement="employer_portal_trust_strip"></app-talent-proof-badge>
+      </div>
+      <span class="ep-trust-chip">Easy Job Posting</span>
+      <span class="ep-trust-chip">CV Doctor</span>
+      <span class="ep-trust-chip">CV Health</span>
+      <span class="ep-trust-chip">Structured applicants</span>
+      <span class="ep-trust-chip">Video answers</span>
+      <span class="ep-trust-chip">Match signals</span>
+      <span class="ep-trust-chip">Candidate pipeline</span>
+      <span class="ep-trust-chip">Employer dashboard</span>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       PLATFORM SNAPSHOT — WHAT EMPLOYERS GET
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section id="why-gethired" class="ep-section ep-snapshot" scroll-margin-top="88px" aria-label="What employers get">
+    <div class="ep-container">
+      <h2 class="ep-section-h2 ep-reveal">Everything employers need to move from job post to hire</h2>
+      <div class="ep-snapshot-grid">
+        <div class="ep-snapshot-card ep-reveal" *ngFor="let s of platformSnapshots" [class]="'ep-snapshot-card--' + s.color">
+          <div class="ep-snapshot-icon" aria-hidden="true">
+            <ng-container [ngSwitch]="s.icon">
+              <svg *ngSwitchCase="'create'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 5v14M5 12h14"/></svg>
+              <svg *ngSwitchCase="'review'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="12" cy="12" r="3"/><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>
+              <svg *ngSwitchCase="'decide'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg *ngSwitchCase="'manage'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </ng-container>
+          </div>
+          <h3 class="ep-snapshot-title">{{ s.title }}</h3>
+          <p class="ep-snapshot-body">{{ s.body }}</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- Product dashboard mockup -- CSS/HTML only, no external images, no
-         real people, no fabricated production metrics. Labels are generic
-         UI illustration ("Open jobs", "Pipeline", initials-only candidate
-         cards) per this command's explicit "no fake numbers" rule. -->
-    <div class="employer-mockup" aria-hidden="true">
-      <div class="employer-mockup-shell">
-        <div class="employer-mockup-topbar">
-          <span class="employer-mockup-dot"></span>
-          <span class="employer-mockup-dot"></span>
-          <span class="employer-mockup-dot"></span>
-          <span class="employer-mockup-title">Hiring workspace</span>
+  <!-- ════════════════════════════════════════════════════════════════════
+       WHAT IS GETHIRED?
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-what" aria-label="What is GetHired?">
+    <div class="ep-container">
+      <div class="ep-what-inner">
+        <div class="ep-what-copy ep-reveal">
+          <p class="ep-eyebrow">The platform</p>
+          <h2 class="ep-section-h2">What is GetHired?</h2>
+          <p class="ep-section-body">
+            GetHired is a hiring platform for employers that combines job posting, applicant management,
+            structured profiles, CV review, video answers, match signals, messaging, and hiring status
+            tracking in one workspace. It is not just a job board — it's an employer workspace built for
+            the full hiring journey.
+          </p>
         </div>
-        <div class="employer-mockup-body">
-          <div class="employer-mockup-sidebar">
-            <span class="employer-mockup-sidebar-item employer-mockup-sidebar-item--active"></span>
-            <span class="employer-mockup-sidebar-item"></span>
-            <span class="employer-mockup-sidebar-item"></span>
-            <span class="employer-mockup-sidebar-item"></span>
+        <div class="ep-what-grid">
+          <div class="ep-what-card ep-reveal" *ngFor="let w of whatIsCards">
+            <div class="ep-what-card-dot" aria-hidden="true"></div>
+            <h3 class="ep-what-card-title">{{ w.title }}</h3>
+            <p class="ep-what-card-body">{{ w.body }}</p>
           </div>
-          <div class="employer-mockup-main">
-            <div class="employer-mockup-header-row">
-              <span class="employer-mockup-header-label">Open jobs</span>
-              <span class="employer-mockup-post-btn">Post a job</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       USP PILLARS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-usp" aria-label="Why employers choose GetHired" appViewedOnce (viewedOnce)="onUspSectionViewed()">
+    <img src="/assets/brand/gethired-wow/gethired-connection-bridge.svg" alt="" class="ep-usp-bridge" aria-hidden="true" loading="lazy">
+    <div class="ep-container">
+      <div class="ep-usp-grid">
+        <div class="ep-usp-card ep-reveal" *ngFor="let u of uspPillars">
+          <img [src]="u.icon" alt="" class="ep-usp-icon" aria-hidden="true" loading="lazy">
+          <h3 class="ep-usp-title">{{ u.title }}</h3>
+          <p class="ep-usp-body">{{ u.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — EASY JOB POSTING
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section id="easy-job-posting" class="ep-section ep-banner" scroll-margin-top="88px" aria-label="Easy Job Posting with GetHired Assistant" appViewedOnce (viewedOnce)="onEasyJobPostingViewed()">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--left-visual">
+
+        <!-- Visual -->
+        <div class="ep-banner-visual ep-reveal" aria-hidden="true">
+          <div class="ep-ejp-modal">
+            <div class="ep-ejp-modal-title">
+              <span class="ep-ejp-orb"></span>
+              GetHired Assistant
             </div>
-            <div class="employer-mockup-pipeline">
-              <div class="employer-mockup-stage">
-                <span class="employer-mockup-stage-label">Applied</span>
-                <span class="employer-mockup-card employer-mockup-card--coral">JD</span>
+            <p class="ep-ejp-modal-sub">How would you like to create this job?</p>
+            <div class="ep-ejp-options">
+              <div class="ep-ejp-option ep-ejp-option--coral">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div>
+                  <strong>Upload job post file</strong>
+                  <small>Word, PDF, or text file</small>
+                </div>
               </div>
-              <div class="employer-mockup-stage">
-                <span class="employer-mockup-stage-label">Screening</span>
-                <span class="employer-mockup-card employer-mockup-card--teal">MR</span>
+              <div class="ep-ejp-option ep-ejp-option--azure">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <div>
+                  <strong>Paste job post link</strong>
+                  <small>Existing public job URL</small>
+                </div>
               </div>
-              <div class="employer-mockup-stage">
-                <span class="employer-mockup-stage-label">Interview</span>
-                <span class="employer-mockup-card employer-mockup-card--violet">AS</span>
-              </div>
-              <div class="employer-mockup-stage">
-                <span class="employer-mockup-stage-label">Offer</span>
-                <span class="employer-mockup-card employer-mockup-card--coral">KP</span>
-              </div>
-              <div class="employer-mockup-stage">
-                <span class="employer-mockup-stage-label">Hired</span>
-                <span class="employer-mockup-card employer-mockup-card--teal">RL</span>
+              <div class="ep-ejp-option ep-ejp-option--muted">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <div>
+                  <strong>Continue manually</strong>
+                  <small>Use the guided form</small>
+                </div>
               </div>
             </div>
-            <div class="employer-mockup-bottom-row">
-              <div class="employer-mockup-chart">
-                <svg viewBox="0 0 100 32" preserveAspectRatio="none">
-                  <polyline points="0,28 15,22 30,24 45,14 60,16 75,8 100,10" fill="none" stroke="#FE6F61" stroke-width="2"/>
+            <div class="ep-ejp-note">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Nothing is posted until you approve it.
+            </div>
+            <div class="ep-ejp-scan" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">Easy Job Posting</p>
+          <h2 class="ep-banner-h2">Create job posts from a file, link, or guided form</h2>
+          <p class="ep-banner-body">Already have a job description? Upload a Word, PDF, or text file, or paste an existing public job post link. GetHired Assistant can draft the job post, prefill the form, and show what still needs your review before publishing.</p>
+          <ul class="ep-banner-bullets" aria-label="Easy job posting features">
+            <li>Upload an existing job post file</li>
+            <li>Paste an existing job post link</li>
+            <li>Continue manually at any time</li>
+            <li>Prefill job creation stages</li>
+            <li>Highlight missing required fields before publishing</li>
+            <li>Nothing is posted until you approve it</li>
+          </ul>
+          <p class="ep-banner-note">If a file or link cannot be read, you can try another source or continue manually.</p>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+            <a class="ep-btn ep-btn--ghost-sm" href="#how-it-works">See how it works →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — CV DOCTOR / CV HEALTH
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section id="cv-doctor" class="ep-section ep-banner ep-banner--alt" scroll-margin-top="88px" aria-label="CV Doctor and CV Health" appViewedOnce (viewedOnce)="onCvDoctorViewed()">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--right-visual">
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">CV Doctor</p>
+          <h2 class="ep-banner-h2">Understand applicant readiness with CV Health</h2>
+          <p class="ep-banner-body">CV Doctor helps evaluate CV quality and readiness through CV Health. Where available in GetHired, employers can use stronger applicant context while job seekers get clearer guidance on improving their CV.</p>
+          <ul class="ep-banner-bullets" aria-label="CV Doctor features">
+            <li>CV Doctor scans and evaluates CV quality where implemented</li>
+            <li>CV Health gives a clearer signal of resume readiness</li>
+            <li>Helps applicants improve their profile quality</li>
+            <li>Helps employers review with more structured context</li>
+          </ul>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+
+        <!-- Visual: CV Health card mockup -->
+        <div class="ep-banner-visual ep-reveal ep-reveal--delay" aria-hidden="true">
+          <div class="ep-cvh-card">
+            <div class="ep-cvh-header">
+              <div class="ep-cvh-ring">
+                <svg viewBox="0 0 60 60" class="ep-cvh-ring-svg" aria-hidden="true">
+                  <circle cx="30" cy="30" r="26" fill="none" stroke="#EDE9F8" stroke-width="5"/>
+                  <circle cx="30" cy="30" r="26" fill="none" stroke="#FF7062" stroke-width="5"
+                    stroke-dasharray="131" stroke-dashoffset="33" stroke-linecap="round"
+                    transform="rotate(-90 30 30)"/>
                 </svg>
-                <span class="employer-mockup-chart-label">Applicants</span>
+                <span class="ep-cvh-ring-val">75</span>
               </div>
-              <div class="employer-mockup-source-card">
-                <span class="employer-mockup-source-label">Recent applicants</span>
-                <span class="employer-mockup-chip employer-mockup-chip--video">Video answer</span>
-                <span class="employer-mockup-chip employer-mockup-chip--match">Match signal</span>
+              <div class="ep-cvh-summary">
+                <div class="ep-cvh-label">CV Health</div>
+                <div class="ep-cvh-status">Strong signals</div>
+              </div>
+            </div>
+            <div class="ep-cvh-rows">
+              <div class="ep-cvh-row ep-cvh-row--ok">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Work experience present
+              </div>
+              <div class="ep-cvh-row ep-cvh-row--warn">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Skills section incomplete
+              </div>
+              <div class="ep-cvh-row ep-cvh-row--ok">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Education confirmed
+              </div>
+              <div class="ep-cvh-row ep-cvh-row--ok">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Ready for review
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Floating Talent Proof card overlapping the mockup corner. -->
-      <div class="employer-mockup-floating-proof">
-        <app-talent-proof-badge variant="pill" placement="employer_portal_hero_mockup"></app-talent-proof-badge>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Trust strip -- safe items only, no unverified counts. -->
-<section class="portal-trust-strip" aria-label="Why employers trust GetHired" appViewedOnce (viewedOnce)="onTrustStripViewed()">
-  <div class="portal-trust-strip-item">
-    <app-talent-proof-badge variant="pill" placement="employer_portal_trust_strip"></app-talent-proof-badge>
-  </div>
-  <span class="portal-trust-chip">Structured hiring</span>
-  <span class="portal-trust-chip">Candidate pipeline</span>
-  <span class="portal-trust-chip">Secure workspace</span>
-  <span class="portal-trust-chip">Employer dashboard</span>
-</section>
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — STRUCTURED APPLICANT REVIEW
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-banner" aria-label="Structured applicant review">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--left-visual">
 
-<!-- GETHIRED PUBLIC PORTAL WOW FACTOR USP UPGRADE -- scoped addition,
-     reuses the same local SVG assets and approved-safe copy as /home. -->
-<section class="portal-usp" aria-label="Why employers choose GetHired" appViewedOnce (viewedOnce)="onUspSectionViewed()">
-  <img src="/assets/brand/gethired-wow/gethired-connection-bridge.svg" alt="" class="portal-usp-bridge" aria-hidden="true" width="320" height="80" loading="lazy">
-  <div class="portal-usp-grid portal-usp-grid--employer">
-    <div class="portal-usp-card" *ngFor="let item of employerUspPillars">
-      <img [src]="item.icon" alt="" class="portal-usp-icon" aria-hidden="true">
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.description }}</p>
+        <!-- Visual: applicant profile card -->
+        <div class="ep-banner-visual ep-reveal" aria-hidden="true">
+          <div class="ep-app-card">
+            <div class="ep-app-card-top">
+              <span class="ep-app-avatar">JD</span>
+              <div>
+                <div class="ep-app-name">J. Dela Cruz</div>
+                <div class="ep-app-role">Applied for: Software Engineer</div>
+              </div>
+              <span class="ep-app-status">Screening</span>
+            </div>
+            <div class="ep-app-chips" role="list">
+              <span class="ep-app-chip ep-app-chip--doc" role="listitem">CV attached</span>
+              <span class="ep-app-chip ep-app-chip--doc" role="listitem">Portfolio</span>
+              <span class="ep-app-chip ep-app-chip--video" role="listitem">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                Video answer
+              </span>
+              <span class="ep-app-chip ep-app-chip--match" role="listitem">Match signal</span>
+            </div>
+            <div class="ep-app-skills" role="list" aria-label="Skills">
+              <span class="ep-app-skill" role="listitem">Angular</span>
+              <span class="ep-app-skill" role="listitem">Node.js</span>
+              <span class="ep-app-skill" role="listitem">PostgreSQL</span>
+              <span class="ep-app-skill" role="listitem">+3 more</span>
+            </div>
+            <div class="ep-app-actions">
+              <span class="ep-app-next">Next: Schedule interview</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">Applicant Review</p>
+          <h2 class="ep-banner-h2">Review profiles, not scattered attachments</h2>
+          <p class="ep-banner-body">GetHired brings applicant profiles, CVs, documents, interview answers, and job-specific details into one structured view so employers can compare applicants more clearly.</p>
+          <ul class="ep-banner-bullets" aria-label="Applicant review features">
+            <li>Structured applicant profiles</li>
+            <li>CV and document review in one place</li>
+            <li>Job-specific answers alongside the profile</li>
+            <li>Consistent comparison across applicants</li>
+          </ul>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="portal-pain-points" aria-label="Common hiring challenges">
-  <h2 class="portal-section-title">Hiring shouldn't be this scattered</h2>
-  <div class="portal-bento-grid">
-    <div class="portal-bento-card" *ngFor="let item of painPoints">
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.description }}</p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — VIDEO ANSWERS + INTERVIEW QUESTIONS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-banner ep-banner--alt" aria-label="Interview questions and video answers" appViewedOnce (viewedOnce)="onVideoAnswersViewed()">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--right-visual">
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">Interview Questions + Video Answers</p>
+          <h2 class="ep-banner-h2">See candidates beyond the CV</h2>
+          <p class="ep-banner-body">Some roles need more than a written resume. GetHired preserves job-specific interview questions and video answers so applicants can respond before review where the job requires it.</p>
+          <ul class="ep-banner-bullets" aria-label="Video answer features">
+            <li>Add interview questions during job creation</li>
+            <li>Applicants answer role-specific questions</li>
+            <li>Video answers available where helpful</li>
+            <li>Review responses alongside profile and CV</li>
+          </ul>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+
+        <!-- Visual: video answer card -->
+        <div class="ep-banner-visual ep-reveal ep-reveal--delay" aria-hidden="true">
+          <div class="ep-video-card">
+            <div class="ep-video-card-preview">
+              <div class="ep-video-play">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <div class="ep-video-timer">0:45</div>
+            </div>
+            <div class="ep-video-question">
+              <span class="ep-video-qlbl">Question 1 of 2</span>
+              <span class="ep-video-qtext">Tell us about a challenge you solved at work.</span>
+            </div>
+            <div class="ep-video-status">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Video response submitted
+            </div>
+            <div class="ep-video-ctx">Review alongside CV and profile</div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="portal-benefits" aria-label="How GetHired helps employers">
-  <h2 class="portal-section-title">How GetHired helps you hire</h2>
-  <div class="portal-bento-grid">
-    <div class="portal-bento-card" *ngFor="let item of benefits">
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.description }}</p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — MATCH SIGNALS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-banner" aria-label="Explainable match signals" appViewedOnce (viewedOnce)="onMatchSignalsViewed()">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--left-visual">
+
+        <!-- Visual -->
+        <div class="ep-banner-visual ep-reveal" aria-hidden="true">
+          <img src="/assets/brand/gethired-wow/match-signal-rings.svg" alt="" class="ep-match-rings" loading="lazy">
+          <div class="ep-match-cards">
+            <div class="ep-match-card ep-match-card--ok">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Skills aligned
+            </div>
+            <div class="ep-match-card ep-match-card--ok">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Location match
+            </div>
+            <div class="ep-match-card ep-match-card--warn">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              Experience: needs review
+            </div>
+            <div class="ep-match-card ep-match-card--ok">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              CV Health: strong
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">Explainable Match Signals</p>
+          <h2 class="ep-banner-h2">Shortlist with more context, not a black box</h2>
+          <p class="ep-banner-body">GetHired match signals are designed as decision-support indicators. They help employers understand possible fit using available applicant and job information while keeping the hiring decision with the employer.</p>
+          <ul class="ep-banner-bullets" aria-label="Match signal features">
+            <li>Explainable compatibility indicators</li>
+            <li>Structured profile and job information</li>
+            <li>Helpful review context, not hidden rankings</li>
+            <li>Human hiring decision remains central</li>
+            <li>No automatic hiring decisions or rejections</li>
+          </ul>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="employer-how-it-works" aria-label="How it works" appViewedOnce (viewedOnce)="onHowItWorksViewed()">
-  <h2 class="portal-section-title">How it works</h2>
-  <div class="employer-how-it-works-steps">
-    <div class="employer-how-it-works-step" *ngFor="let step of howItWorksSteps; let i = index">
-      <span class="employer-how-it-works-number">{{ i + 1 }}</span>
-      <h3>{{ step.title }}</h3>
-      <p>{{ step.description }}</p>
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — PIPELINE + MESSAGING
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-banner ep-banner--alt" aria-label="Candidate pipeline and messaging">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--right-visual">
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">Candidate Pipeline</p>
+          <h2 class="ep-banner-h2">Keep every applicant moving</h2>
+          <p class="ep-banner-body">Track applicants by status, see who needs attention, and keep conversations connected to the job and candidate record instead of losing updates across inboxes and chat threads.</p>
+          <ul class="ep-banner-bullets" aria-label="Pipeline features">
+            <li>Applicant status tracking</li>
+            <li>Candidate pipeline stages from applied to hired</li>
+            <li>Job-specific messaging</li>
+            <li>Next-step visibility</li>
+            <li>Organized follow-ups</li>
+          </ul>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+
+        <!-- Visual: pipeline stages -->
+        <div class="ep-banner-visual ep-reveal ep-reveal--delay" aria-hidden="true">
+          <img src="/assets/brand/gethired-wow/hiring-pipeline-lines.svg" alt="" class="ep-pipeline-img" loading="lazy">
+          <div class="ep-pipeline-stages">
+            <span class="ep-pipeline-stage">Applied</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="ep-pipeline-stage">Screening</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="ep-pipeline-stage ep-pipeline-stage--active">Interview</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="ep-pipeline-stage">Offer</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="ep-pipeline-stage ep-pipeline-stage--hired">Hired</span>
+          </div>
+          <div class="ep-msg-thread">
+            <div class="ep-msg-bubble ep-msg-bubble--out">Interview follow-up sent</div>
+            <div class="ep-msg-bubble ep-msg-bubble--in">
+              <span class="ep-msg-unread"></span>
+              Unread response
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="portal-faq-section" aria-label="Frequently asked questions">
-  <h2 class="portal-section-title">Frequently asked questions</h2>
-  <app-portal-faq [items]="faqItems" (itemOpened)="onFaqOpened($event)"></app-portal-faq>
-</section>
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE BANNER — EMPLOYER BRANDING + COMPANY PROFILE
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-banner" aria-label="Employer branding and company profile" appViewedOnce (viewedOnce)="onCompanyProfileViewed()">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--left-visual">
 
-<app-portal-cta-band
-  title="Ready to build your next team?"
-  description="Post your job and reach registered job seekers across the Philippines."
-  primaryLabel="Start hiring"
-  primaryRoute="/signup"
-  [primaryQueryParams]="{role: 2}"
-  secondaryLabel="Sign in"
-  secondaryRoute="/signin"
-  (primaryClick)="startHiring()"
-  (secondaryClick)="goToSignin()">
-</app-portal-cta-band>
+        <!-- Visual: company profile mockup -->
+        <div class="ep-banner-visual ep-reveal" aria-hidden="true">
+          <div class="ep-company-card">
+            <div class="ep-company-banner"></div>
+            <div class="ep-company-body">
+              <div class="ep-company-logo">GH</div>
+              <div class="ep-company-info">
+                <div class="ep-company-name">GetHired Online</div>
+                <div class="ep-company-meta">Technology · Makati City</div>
+              </div>
+              <div class="ep-company-complete">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                Profile complete
+              </div>
+            </div>
+            <div class="ep-company-jobs-label">Active jobs</div>
+            <div class="ep-company-jobs">
+              <span class="ep-company-job-chip">Software Engineer</span>
+              <span class="ep-company-job-chip">Product Manager</span>
+              <span class="ep-company-job-chip">+5 more</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy -->
+        <div class="ep-banner-copy ep-reveal">
+          <p class="ep-eyebrow">Employer Branding</p>
+          <h2 class="ep-banner-h2">Show candidates why they should apply</h2>
+          <p class="ep-banner-body">Your company profile helps job seekers understand who you are before they apply. Add company details, logo, banner, and public profile content to build trust with candidates.</p>
+          <ul class="ep-banner-bullets" aria-label="Employer branding features">
+            <li>Company profile with logo and banner</li>
+            <li>Company description and public page</li>
+            <li>Active jobs visible on your company profile</li>
+            <li>Employer Branding Health / profile completeness</li>
+          </ul>
+          <div class="ep-banner-ctas">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       OPTIONAL: PLANOS / SUBSCRIPTION VISIBILITY
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-banner ep-banner--alt ep-banner--planos" aria-label="PlanOS — Subscription and billing visibility" appViewedOnce (viewedOnce)="onPlanOsViewed()">
+    <div class="ep-container">
+      <div class="ep-banner-inner ep-banner-inner--centered">
+        <div class="ep-planos-inner ep-reveal">
+          <p class="ep-eyebrow">PlanOS</p>
+          <h2 class="ep-banner-h2">Know your plan, limits, and next billing action</h2>
+          <p class="ep-banner-body ep-banner-body--center">GetHired's employer Subscription &amp; Billing area helps teams understand their current plan, job posting limits, usage, invoices, payment status, and upgrade path in one clear view.</p>
+          <div class="ep-planos-chips">
+            <span class="ep-planos-chip">Current plan visibility</span>
+            <span class="ep-planos-chip">Job post usage</span>
+            <span class="ep-planos-chip">Video response entitlement</span>
+            <span class="ep-planos-chip">Admin seat usage</span>
+            <span class="ep-planos-chip">Payment recovery</span>
+          </div>
+          <div class="ep-banner-ctas ep-banner-ctas--center">
+            <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       PROBLEM SECTION
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-problems" aria-label="Common hiring challenges">
+    <div class="ep-container">
+      <h2 class="ep-section-h2 ep-reveal">Hiring should not be this scattered</h2>
+      <div class="ep-problem-grid">
+        <div class="ep-problem-card ep-reveal" *ngFor="let p of painPoints">
+          <div class="ep-problem-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v4M12 16h.01"/>
+            </svg>
+          </div>
+          <h3 class="ep-problem-title">{{ p.title }}</h3>
+          <p class="ep-problem-body">{{ p.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       FEATURE DEEP DIVE GRID
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-features" aria-label="How GetHired helps you hire">
+    <div class="ep-container">
+      <h2 class="ep-section-h2 ep-reveal">How GetHired helps you hire</h2>
+      <div class="ep-features-grid">
+        <div class="ep-feature-card ep-reveal" *ngFor="let f of featureCards">
+          <div class="ep-feature-icon" aria-hidden="true">
+            <ng-container [ngSwitch]="f.icon">
+              <svg *ngSwitchCase="'lightning'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <svg *ngSwitchCase="'doc'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <svg *ngSwitchCase="'building'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              <svg *ngSwitchCase="'inbox'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+              <svg *ngSwitchCase="'health'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+              <svg *ngSwitchCase="'questions'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <svg *ngSwitchCase="'video'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              <svg *ngSwitchCase="'match'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              <svg *ngSwitchCase="'message'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <svg *ngSwitchCase="'pipeline'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              <svg *ngSwitchCase="'jobs'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              <svg *ngSwitchCase="'plan'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </ng-container>
+          </div>
+          <h3 class="ep-feature-title">{{ f.title }}</h3>
+          <p class="ep-feature-body">{{ f.body }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       HOW IT WORKS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section id="how-it-works" class="ep-section ep-hiw" scroll-margin-top="88px" aria-label="How it works" appViewedOnce (viewedOnce)="onHowItWorksViewed()">
+    <div class="ep-container">
+      <h2 class="ep-section-h2 ep-reveal">How it works</h2>
+      <div class="ep-hiw-steps">
+        <div class="ep-hiw-step ep-reveal" *ngFor="let step of howItWorksSteps">
+          <div class="ep-hiw-num" aria-hidden="true">{{ step.num }}</div>
+          <div class="ep-hiw-connector" aria-hidden="true"></div>
+          <h3 class="ep-hiw-title">{{ step.title }}</h3>
+          <p class="ep-hiw-body">{{ step.body }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       STRUCTURED HIRING + FAIR REVIEW
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-structured" aria-label="Structured hiring with explainable signals">
+    <div class="ep-container">
+      <h2 class="ep-section-h2 ep-reveal">Structured hiring with explainable signals</h2>
+      <p class="ep-section-sub ep-reveal">
+        GetHired helps employers review applicants with more context. Interview questions, applicant
+        answers, CV Health, video responses, and match signals support consistent review while keeping
+        final hiring decisions with the employer.
+      </p>
+      <div class="ep-structured-grid">
+        <div class="ep-structured-card ep-reveal" *ngFor="let s of structuredCards">
+          <div class="ep-structured-dot" aria-hidden="true"></div>
+          <h3 class="ep-structured-title">{{ s.title }}</h3>
+          <p class="ep-structured-body">{{ s.body }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       TRUST / SECURITY
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-security" aria-label="Responsible and organized hiring">
+    <div class="ep-container">
+      <div class="ep-security-inner">
+        <div class="ep-security-copy ep-reveal">
+          <img src="/assets/brand/gethired-wow/trust-shield-glow.svg" alt="" class="ep-security-icon" aria-hidden="true" loading="lazy">
+          <h2 class="ep-section-h2">Built for organized, responsible hiring</h2>
+          <p class="ep-section-body">GetHired keeps hiring structured and employer-led — from validated job drafts to explainable match support.</p>
+        </div>
+        <div class="ep-trust-grid">
+          <div class="ep-trust-card ep-reveal" *ngFor="let t of trustCards">
+            <div class="ep-trust-card-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3 class="ep-trust-card-title">{{ t.title }}</h3>
+            <p class="ep-trust-card-body">{{ t.body }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       FAQ
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section id="faq" class="ep-section ep-faq" scroll-margin-top="88px" aria-label="Frequently asked questions">
+    <div class="ep-container ep-container--narrow">
+      <h2 class="ep-section-h2 ep-reveal">Frequently asked questions</h2>
+      <app-portal-faq [items]="faqItems" (itemOpened)="onFaqOpened($event)"></app-portal-faq>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       FINAL CTA
+  ════════════════════════════════════════════════════════════════════════ -->
+  <section class="ep-section ep-final-cta" aria-label="Start hiring" appViewedOnce (viewedOnce)="onFinalCtaViewed()">
+    <div class="ep-container">
+      <div class="ep-final-cta-card ep-reveal">
+        <div class="ep-final-cta-glow" aria-hidden="true"></div>
+        <h2 class="ep-final-cta-h2">Ready to hire with more context?</h2>
+        <p class="ep-final-cta-body">
+          Create job posts faster, reach 500,000+ registered job seekers, review structured applicants,
+          and manage hiring from one GetHired workspace.
+        </p>
+        <div class="ep-final-cta-btns">
+          <button type="button" class="ep-btn ep-btn--primary ep-btn--lg" (click)="startHiring()">Start hiring</button>
+          <button type="button" class="ep-btn ep-btn--outline-white ep-btn--lg" (click)="goToSignin()">Sign in</button>
+        </div>
+        <p class="ep-final-cta-note">Create your employer account, publish roles, and manage applicants from one hiring workspace.</p>
+      </div>
+    </div>
+  </section>
+
+</main>

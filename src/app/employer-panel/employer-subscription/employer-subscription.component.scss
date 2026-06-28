@@ -105,17 +105,27 @@
 
   &__pulse {
     display: flex;
-    gap: 20px;
+    gap: 0;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 14px;
     padding: 14px 20px;
+    align-items: stretch;
   }
 
   &__pulse-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+    padding: 0 12px;
+
+    // divider between items
+    + .gh-sub-hero__pulse-item {
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+    }
   }
 
   &__pulse-val {
@@ -123,6 +133,11 @@
     font-size: 24px;
     font-weight: 800;
     color: #fff;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 29px; // keeps checkmark + numbers at same row height
     &--incl { color: #34D399; }
   }
 
@@ -131,6 +146,7 @@
     font-size: 11px;
     color: rgba(255, 255, 255, 0.55);
     white-space: nowrap;
+    text-align: center;
   }
 
   &__renewal {
@@ -920,10 +936,13 @@
     &__right { align-items: flex-start; width: 100%; }
 
     &__pulse {
-      gap: 16px;
-      padding: 12px 16px;
+      gap: 0;
+      padding: 12px 8px;
       width: 100%;
-      justify-content: space-around;
+    }
+
+    &__pulse-item {
+      padding: 0 8px;
     }
 
     &__pulse-val { font-size: 20px; }
