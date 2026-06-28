@@ -10,13 +10,16 @@ export class AuthInterceptor implements HttpInterceptor {
         let token = localStorage.getItem("token");
 
         if (token) {
-            request = request.clone({
-                setHeaders: {
-                    "Authorization": token,
-                    "content-language": "en",
-                    "Content-Type": "application/json"
-                }
-            });
+            const headers: Record<string, string> = {
+                "Authorization": token,
+                "content-language": "en",
+            };
+            // Don't set Content-Type for FormData — browser sets it automatically
+            // with the correct multipart boundary. Overriding it breaks file uploads.
+            if (!(request.body instanceof FormData)) {
+                headers["Content-Type"] = "application/json";
+            }
+            request = request.clone({ setHeaders: headers });
         }
 
         return next.handle(request);
