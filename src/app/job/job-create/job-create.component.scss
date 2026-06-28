@@ -733,8 +733,8 @@
     right: 0;
     background: #fff;
     border-top: 1px solid #E5E7EB;
-    padding: 10px 16px;
-    z-index: 200;
+    padding: 10px 16px max(10px, env(safe-area-inset-bottom)) 16px;
+    z-index: 1000;
     box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
   }
 }
