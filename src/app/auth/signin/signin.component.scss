@@ -119,6 +119,12 @@
 	@media (max-width: 759px){
 		padding: 80px 20px 80px 20px;
 	}
+
+	// SI-01 MOBILEVIEW: 80px vertical padding is too heavy on 320px phones;
+	// reduce to comfortable 24px so the form fits without excessive scroll.
+	@media (max-width: 575px){
+		padding: 24px 16px;
+	}
 }
 
 .bg-white{
@@ -184,7 +190,7 @@
 	border-radius: 50px;
 	min-height: 580px;
 	height: 100%;
-	z-index: 99999 !important;
+	z-index: 10; // SI-03 MOBILEVIEW: 99999 was needlessly high; 10 is sufficient
 
 	@media (max-width: 998px){
 		min-height: 100% !important;

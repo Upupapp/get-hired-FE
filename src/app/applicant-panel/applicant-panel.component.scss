@@ -445,5 +445,16 @@
   #body-main-container {
     padding-top: 56px;
   }
+
+  // AP-01 MOBILEVIEW: flex-wrap: nowrap forces the layout off-screen on narrow
+  // viewports. Override to wrap so sidebar and content stack correctly.
+  #body-row {
+    flex-wrap: wrap !important;
+  }
+
+  // AP-02 MOBILEVIEW: hide desktop sidebar on mobile — the drawer takes over.
+  #sidebar-container {
+    display: none !important;
+  }
 }
 

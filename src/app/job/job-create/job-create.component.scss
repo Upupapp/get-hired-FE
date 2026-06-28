@@ -129,6 +129,8 @@
   box-shadow: 0 4px 22px rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
   overflow-x: auto;
+  // JC-01 MOBILEVIEW: smooth momentum scrolling on iOS for the step pill row
+  -webkit-overflow-scrolling: touch;
 }
 
 .gh-jc-stepper {
@@ -497,7 +499,9 @@
   flex-direction: column;
   gap: 16px;
   position: sticky;
-  top: 80px;
+  // JC-03 MOBILEVIEW: 80px was clipping under the 68px employer topbar + 8px
+  // gap. Raised to 84px so the rail card's top edge clears the topbar.
+  top: 84px;
 
   @media (max-width: 1024px) {
     position: static;

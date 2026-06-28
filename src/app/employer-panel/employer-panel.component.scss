@@ -59,6 +59,14 @@
   }
 }
 
+// EP-01 MOBILEVIEW: Hide the desktop fixed sidebar below the mobile breakpoint.
+// The mobile drawer (.gh-mobile-drawer) takes its place.
+@media (max-width: 767px) {
+  #sidebar-container {
+    display: none !important;
+  }
+}
+
 /* Menu item*/
 #sidebar-container .list-group a {
   /* height: 50px; */
@@ -700,6 +708,8 @@
   top: calc(100% + 8px);
   right: 0;
   width: 220px;
+  // EP-05 MOBILEVIEW: prevent the dropdown from overflowing narrow viewports
+  max-width: calc(100vw - 24px);
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
@@ -761,4 +771,25 @@
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: -2px; }
 
   &--danger { color: $color-global-red-buttons; }
+}
+
+// EP-03/04 MOBILEVIEW: Topbar refinements for small viewports — reduce side
+// padding so content doesn't clip, and raise button/icon hit targets to the
+// 44px minimum required by WCAG 2.5.5.
+@media (max-width: 767px) {
+  .gh-employer-topbar {
+    padding: 0 12px;
+  }
+
+  .gh-btn-topbar,
+  .gh-btn-topbar-outline {
+    height: 44px;
+  }
+
+  .gh-topbar-icon-btn,
+  .gh-topbar-avatar {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
 }

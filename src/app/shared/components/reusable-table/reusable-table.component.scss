@@ -608,8 +608,12 @@ tr:last-child{
 		overflow-x: auto !important;
 		width: 100%;
 
+		// RT-01 MOBILEVIEW: was `width: 600px !important` which forced a 600px
+		// table on every viewport, causing horizontal overflow on mobile/tablet.
+		// Now uses min-width so the table scrolls when narrow but fills when wide.
 		@media (max-width: 1200px){
-			width: 600px !important;
+			min-width: 600px;
+			width: 100%;
 		}
 
 	}
@@ -1082,4 +1086,46 @@ tr:last-child{
 
 @media (max-width: 767px) {
   section { overflow-x: hidden; }
+}
+
+// ─── RT-02..05 MOBILEVIEW: absolute-positioned table chrome ──────────────────
+// These elements use absolute positioning + pixel offsets sized for a 1440px
+// desktop. On mobile they overflow the viewport and obscure table content.
+// The #table-container-mobile card list replaces the table on small screens,
+// so hiding/resetting these is safe — they will not be visible anyway.
+@media (max-width: 767px) {
+  // RT-02: 400px absolute empty-state illustration overflows 320px screens.
+  .empty-table-img {
+    position: static;
+    width: 100%;
+    max-width: 280px;
+    right: auto;
+    top: auto;
+    display: block;
+    margin: 24px auto 0;
+  }
+
+  // RT-03: "Create client" CTA positioned at right:13.9%/top:51% is off-screen.
+  .create-client {
+    position: static;
+    top: auto;
+    right: auto;
+    text-align: center;
+    padding-top: 12px;
+  }
+
+  // RT-04: negative margin-top pulls controls over the table header, causing
+  // overlap and misalignment at small widths.
+  .table-controls-container {
+    margin-top: 0 !important;
+    margin-left: 0;
+  }
+
+  // RT-05: search-container at right:-30px clips off the right edge of
+  // narrow viewports.
+  .table-statistics .search-container {
+    position: static;
+    right: auto;
+    top: auto;
+  }
 }

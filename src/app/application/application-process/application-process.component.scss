@@ -30,6 +30,9 @@
 	width: 100%;
 	z-index: 999 !important;
 	padding: 20px 35px 10px 20px;
+	// APP-01 MOBILEVIEW: include safe-area inset so the submit bar clears
+	// the home indicator on notched iPhones.
+	padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
 }
 
 // LAUNCH-01: Inline result panels — success, duplicate, error

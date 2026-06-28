@@ -29,11 +29,23 @@
 	    //right: 20px;
 	    //background: green;
 	  }
-	  
+
 	  &--secondary {
 	    @include center-v;
 	    transform: scale(1.1) !important;
 	    //left: 20px;
+	  }
+
+	  // JV-04 MOBILEVIEW: center-v uses bottom:-55% causing severe viewport
+	  // overflow at narrow widths. Override to flow normally on mobile.
+	  @media (max-width: 767px) {
+	    &--primary,
+	    &--secondary {
+	      position: static !important;
+	      bottom: auto !important;
+	      transform: none !important;
+	      z-index: auto !important;
+	    }
 	  }
 	}
 
@@ -61,8 +73,12 @@
 		position: relative;
 		height: 260px;
 
+		// JV-01 MOBILEVIEW: was `height: 400px !important` at ≤1099px — banner
+		// was growing on mobile instead of shrinking. Fixed to auto/min-height.
 		@media (max-width: 1099px){
-			height: 400px !important;
+			height: auto !important;
+			min-height: 200px !important;
+			padding: 24px 16px !important;
 		}
 	}
 
@@ -482,4 +498,33 @@
   padding: 40px 20px;
 
   i { font-size: 3rem; color: #aaa; margin-bottom: 12px; }
+}
+
+// JV-02/03 MOBILEVIEW: Logo thumbnails are 100px on desktop (fine for list
+// cards) but too large on narrow phones. Buttons with fixed min-width: 150px
+// overflow 320px mobile. Stack them full-width instead.
+@media (max-width: 575px) {
+  #interview-list {
+    .logo-thumbnail,
+    .logo-thumbnail-2 {
+      height: 64px;
+      width: 64px;
+      min-width: 64px;
+    }
+
+    .btn-create-interview {
+      min-width: unset;
+      width: 100%;
+      margin-left: 0;
+      margin-top: 8px;
+    }
+  }
+
+  .btn-view-more {
+    min-width: unset;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 8px;
+  }
 }

@@ -180,6 +180,10 @@
   border: 1.5px solid #FF7062;
   border-radius: 20px;
   white-space: nowrap;
+  // SJC-01 MOBILEVIEW: ensure 44px touch target per WCAG 2.5.5
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   transition: background 0.15s, color 0.15s;
 
   .gh-search-job-card:hover & {

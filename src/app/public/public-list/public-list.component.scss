@@ -67,8 +67,9 @@
   align-items: center;
   border-radius: 50%;
   transition: color 0.15s, background 0.15s;
-  min-width: 22px;
-  min-height: 22px;
+  // PL-01 MOBILEVIEW: raise chip-remove button to 44px touch target
+  min-width: 44px;
+  min-height: 44px;
   justify-content: center;
 
   &:hover { color: #FF7062; background: rgba(255,112,98,0.1); }
@@ -111,7 +112,8 @@
   background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
-  min-height: 38px;
+  // PL-02 MOBILEVIEW: raise from 38px to 44px touch target
+  min-height: 44px;
   transition: border-color 0.15s;
 
   &:hover { border-color: #6C6BAD; }
@@ -220,6 +222,8 @@
   color: #9CA3AF;
   cursor: pointer;
   white-space: nowrap;
+  // PL-04 MOBILEVIEW: 44px min-height for tab touch targets
+  min-height: 44px;
   transition: color 0.15s, border-color 0.15s;
 
   &:hover { color: #6C6BAD; }
@@ -292,4 +296,12 @@
   padding: 12px 16px;
   margin: 8px 0 16px;
   text-align: center;
+}
+
+// PL-03 MOBILEVIEW: add bottom padding so the last result card is never
+// obscured by the public nav or any fixed bottom controls on mobile.
+@media (max-width: 767px) {
+  .gh-search-page-body {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
 }

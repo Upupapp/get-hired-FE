@@ -115,11 +115,23 @@
     //right: 20px;
     //background: green;
   }
-  
+
   &--secondary {
     @include center-v;
     transform: scale(1.1) !important;
     //left: 20px;
+  }
+
+  // PD-01 MOBILEVIEW: center-v uses bottom:-55% causing severe viewport
+  // overflow at narrow widths. Override to flow normally on mobile.
+  @media (max-width: 767px) {
+    &--primary,
+    &--secondary {
+      position: static !important;
+      bottom: auto !important;
+      transform: none !important;
+      z-index: auto !important;
+    }
   }
 }
 

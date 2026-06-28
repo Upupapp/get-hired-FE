@@ -39,6 +39,12 @@ a{
 	font-weight: 600;
 	font-size: 45px;
 	line-height: 49px;
+
+	// FO-01 MOBILEVIEW: 45px is too large for narrow viewports.
+	@media (max-width: 575px) {
+		font-size: 28px;
+		line-height: 34px;
+	}
 }
 
 .title-about{
@@ -120,6 +126,13 @@ a{
 
 	@media(max-width: 1560px) and (min-width:1300px){
 		width: 125% !important;
+	}
+
+	// FO-02 MOBILEVIEW: prevent the absolute image from overflowing horizontally
+	// on very narrow screens.
+	@media (max-width: 480px) {
+		max-width: 100%;
+		width: 100%;
 	}
 }
 

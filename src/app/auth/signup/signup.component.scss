@@ -162,6 +162,11 @@
 	@media (max-width: 759px){
 		padding: 80px 20px 80px 20px;
 	}
+
+	// SU-01 MOBILEVIEW: reduce heavy vertical padding on 320px phones.
+	@media (max-width: 575px){
+		padding: 24px 16px;
+	}
 }
 
 .bg-white{
@@ -232,7 +237,7 @@
 	border-radius: 50px;
 	min-height: 580px;
 	height: 100%;
-	z-index: 99999 !important;
+	z-index: 10; // SU-02 MOBILEVIEW: 99999 was needlessly high; 10 is sufficient
 
 
 

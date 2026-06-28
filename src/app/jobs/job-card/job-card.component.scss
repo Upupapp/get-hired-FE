@@ -205,3 +205,19 @@
     padding: 1.5rem 0.9rem 0.9rem;
   }
 }
+
+// JCA-01/02 MOBILEVIEW: raise company-link and match-link to 44px touch
+// targets (WCAG 2.5.5) on mobile without changing desktop visual layout.
+@media (max-width: 767px) {
+  .job-card__company {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .job-card__full-match-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}

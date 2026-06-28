@@ -66,10 +66,14 @@ $text-muted: #667085;
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
   cursor: pointer;
 
-  &:hover {
-    border-color: rgba($coral, 0.35);
-    box-shadow: 0 4px 20px rgba($coral, 0.1);
-    transform: translateY(-2px);
+  // CO-02 MOBILEVIEW: only apply hover lift on devices that actually support
+  // hover — prevents the lifted state from getting "stuck" on touch devices.
+  @media (hover: hover) {
+    &:hover {
+      border-color: rgba($coral, 0.35);
+      box-shadow: 0 4px 20px rgba($coral, 0.1);
+      transform: translateY(-2px);
+    }
   }
 }
 
