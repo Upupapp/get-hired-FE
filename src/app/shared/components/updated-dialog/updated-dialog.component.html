@@ -1,10 +1,25 @@
 <div class="p-2 text-center">
   <i class="bi bi-check-circle fa-lg"></i>
-  <h5 class="fs-5">{{ data }}</h5>
-  <div class="w-100 my-4">
-    <!-- BL-011: cdkFocusInitial — focus lands on the only action button on dialog open. -->
-    <button type="button" (click)="closeDialog()" class="btn btn-primary px-4" cdkFocusInitial>
-      Close
-    </button>
+  <h5 class="fs-5">{{ message }}</h5>
+
+  <!-- Action-button mode: custom action cards -->
+  <div *ngIf="actions && actions.length; else simpleClose" class="ud-actions mt-4">
+    <button
+      *ngFor="let a of actions"
+      type="button"
+      class="ud-action-btn"
+      [class.ud-action-btn--primary]="a.primary"
+      [class.ud-action-btn--ghost]="!a.primary"
+      (click)="doAction(a.value)"
+    >{{ a.label }}</button>
   </div>
+
+  <!-- Simple close mode (backward-compat) -->
+  <ng-template #simpleClose>
+    <div class="w-100 my-4">
+      <button type="button" (click)="closeDialog()" class="btn btn-primary px-4" cdkFocusInitial>
+        Close
+      </button>
+    </div>
+  </ng-template>
 </div>

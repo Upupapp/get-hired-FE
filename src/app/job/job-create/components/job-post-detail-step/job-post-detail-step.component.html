@@ -187,43 +187,66 @@
 
       <!-- Badges -->
       <div class="gh-field" *ngIf="badge$ | async as badge">
-        <label class="gh-label">Add badges <span class="gh-label-optional">(optional)</span></label>
-        <p class="gh-field-helper">Highlight up to 3 perks or qualities of this role.</p>
-
-        <div class="row g-3">
-          <div class="col-12 col-md-5">
-            <select class="gh-select gh-select--multi" size="4" multiple aria-label="Available badges">
-              <option
-                *ngFor="let item of badge"
-                [ngValue]="item.id"
-                (click)="addBadge(item)"
-                style="cursor:pointer"
-              >{{ item?.name }}</option>
-            </select>
+        <div class="gh-badge-header">
+          <div>
+            <label class="gh-label">Add badges <span class="gh-label-optional">(optional)</span></label>
+            <p class="gh-field-helper">Choose up to 3 highlights that are true for this role. These badges appear on the public job post.</p>
           </div>
+          <span class="gh-badge-counter" [class.gh-badge-counter--max]="badges.value.length >= 3" aria-live="polite">
+            {{ badges.value.length }}/3 selected
+          </span>
+        </div>
 
-          <div class="col-12 col-md-7">
-            <div class="gh-badge-well" aria-label="Selected badges" aria-live="polite">
-              <div class="gh-badge-empty" *ngIf="badges.value.length === 0">
-                <i class="bi bi-patch-check me-1" aria-hidden="true"></i>
-                No badges selected yet
-              </div>
-              <div class="row g-2">
-                <div class="col-12 col-md-6" *ngFor="let item of badges.value; let i = index">
-                  <div class="gh-badge-item">
-                    <img [src]="'/assets/images/placeholder/icons/' + item.icon"
-                      [alt]="item.name" aria-hidden="true" class="gh-badge-icon">
-                    <span class="gh-badge-name">{{ item.name }}</span>
-                    <button class="gh-badge-remove" type="button"
-                      (click)="removeItem(i, badges)"
-                      [attr.aria-label]="'Remove badge ' + item.name">
-                      <i class="bi bi-x" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+        <div class="gh-badge-grid" role="group" aria-label="Available job badges">
+          <button
+            *ngFor="let item of badge"
+            type="button"
+            class="gh-badge-option"
+            [class.gh-badge-option--selected]="isBadgeSelected(item.id)"
+            [class.gh-badge-option--ineligible]="!isBadgeEligible(item)"
+            [attr.aria-pressed]="isBadgeSelected(item.id)"
+            [attr.aria-label]="item.name + (isBadgeSelected(item.id) ? ' (selected)' : '') + (!isBadgeEligible(item) ? ': ' + getBadgeIneligibleReason(item) : '')"
+            [title]="!isBadgeEligible(item) ? getBadgeIneligibleReason(item) : item.name"
+            (click)="addBadge(item)"
+          >
+            <span class="gh-badge-option__icon" aria-hidden="true">
+              <i class="bi bi-{{item.icon}}"></i>
+            </span>
+            <span class="gh-badge-option__label">{{ item.name }}</span>
+            <span class="gh-badge-option__check" aria-hidden="true">
+              <i class="bi bi-check2"></i>
+            </span>
+            <span *ngIf="!isBadgeEligible(item)" class="gh-badge-option__lock" aria-hidden="true">
+              <i class="bi bi-lock-fill"></i>
+            </span>
+          </button>
+        </div>
+
+        <!-- Ineligible helper -->
+        <p class="gh-field-helper mt-2" *ngIf="badge.length > 0">
+          <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+          Locked badges require matching job details (work setup, salary, etc.) to be selected first.
+        </p>
+
+        <!-- Selected preview -->
+        <div class="gh-badge-well mt-3" aria-label="Selected badges" aria-live="polite" *ngIf="badges.value.length > 0">
+          <p class="gh-badge-well__title">Selected badges preview</p>
+          <div class="gh-badge-selected-row">
+            <div class="gh-badge-selected-chip" *ngFor="let item of badges.value; let i = index">
+              <i class="bi bi-{{item.icon}}" aria-hidden="true"></i>
+              <span>{{ item.name }}</span>
+              <button type="button" class="gh-badge-remove"
+                (click)="removeItem(i, badges)"
+                [attr.aria-label]="'Remove ' + item.name">
+                <i class="bi bi-x" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
+        </div>
+
+        <div class="gh-badge-empty-state" *ngIf="badges.value.length === 0">
+          <i class="bi bi-patch-check" aria-hidden="true"></i>
+          <span>No badges selected yet. Pick up to 3 highlights above.</span>
         </div>
       </div>
     </div>

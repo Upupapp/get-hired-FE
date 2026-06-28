@@ -58,6 +58,12 @@ export class JobPostDetailStepComponent implements OnInit {
     this.workSetupSelected = this.initialDetailsForm.get('workSetupId').value;
     this.bannerUrl = this.initialDetailsForm.get('jobBanner').value;
     this.workSetup$.subscribe(items => { if (items) this.workSetupItems = items; });
+
+    // Revalidate work-setup badges if the recruiter changes the work setup
+    this.initialDetailsForm.get('workSetupId').valueChanges.subscribe(val => {
+      this.workSetupSelected = val;
+      this.revalidateWorkSetupBadges();
+    });
   }
 
   populateOptions() {
@@ -95,20 +101,70 @@ export class JobPostDetailStepComponent implements OnInit {
     return item.name ? item.name + ' work arrangement.' : '';
   }
 
-  addBadge(item) {
-    if (this.badges.controls.length != 3) {
-      let index = this.badges?.value?.findIndex(el => el?.id === item?.id);
+  // Work-setup badge IDs — mutually exclusive
+  private readonly WS_BADGE_IDS = [1, 2, 3];
 
-      if(index === -1){
-        this.badges.push(new FormGroup({
-          icon: new FormControl(item.icon),
-          name: new FormControl(item.name),
-          id: new FormControl(item.id)
-        }));
+  isBadgeSelected(badgeId: number): boolean {
+    return this.badges && this.badges.value.some((b: any) => b.id === badgeId);
+  }
+
+  isBadgeEligible(badge: any): boolean {
+    const ws = this.workSetupSelected;
+    if (badge.id === 1) return ws === 2; // Remote-Friendly → Remote
+    if (badge.id === 2) return ws === 3; // Hybrid Work → Hybrid
+    if (badge.id === 3) return ws === 1; // Onsite Collaboration → On-site
+    if (badge.id === 4) {                // Salary Posted → salary filled
+      const sal = this.initialDetailsForm && this.initialDetailsForm.get('salaryMinimum');
+      return !!(sal && sal.value);
+    }
+    return true; // badges 5-10: recruiter attestation, always eligible
+  }
+
+  getBadgeIneligibleReason(badge: any): string {
+    const ws = this.workSetupSelected;
+    if (badge.id === 1 && ws !== 2) return 'Set work setup to "Remote" to use this badge.';
+    if (badge.id === 2 && ws !== 3) return 'Set work setup to "Hybrid" to use this badge.';
+    if (badge.id === 3 && ws !== 1) return 'Set work setup to "On-site" to use this badge.';
+    if (badge.id === 4) {
+      const sal = this.initialDetailsForm && this.initialDetailsForm.get('salaryMinimum');
+      if (!(sal && sal.value)) return 'Add a salary amount to use this badge.';
+    }
+    return '';
+  }
+
+  addBadge(item: any) {
+    // Toggle off if already selected
+    const existingIdx = this.badges.value.findIndex((b: any) => b.id === item.id);
+    if (existingIdx !== -1) {
+      this.removeItem(existingIdx, this.badges);
+      return;
+    }
+    if (!this.isBadgeEligible(item)) {
+      this.snackbarService.warning(this.getBadgeIneligibleReason(item), '');
+      return;
+    }
+    if (this.badges.controls.length >= 3) {
+      this.snackbarService.warning('You can select up to 3 badges.', '');
+      return;
+    }
+    // Mutual exclusivity: remove existing work-setup badge before adding another
+    if (this.WS_BADGE_IDS.includes(item.id)) {
+      const existingWsIdx = this.badges.value.findIndex((b: any) => this.WS_BADGE_IDS.includes(b.id));
+      if (existingWsIdx !== -1) this.removeItem(existingWsIdx, this.badges);
+    }
+    this.badges.push(new FormGroup({
+      icon: new FormControl(item.icon),
+      name: new FormControl(item.name),
+      id: new FormControl(item.id)
+    }));
+  }
+
+  private revalidateWorkSetupBadges() {
+    for (let i = (this.badges.controls.length - 1); i >= 0; i--) {
+      const b = this.badges.value[i];
+      if (this.WS_BADGE_IDS.includes(b.id) && !this.isBadgeEligible(b)) {
+        this.removeItem(i, this.badges);
       }
-
-    } else {
-      this.snackbarService.warning(`You are only allowed to add up to 3 badges`, '');
     }
   }
 

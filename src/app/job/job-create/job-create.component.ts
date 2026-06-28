@@ -611,45 +611,38 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
 
     } else if (event == 'published') {
-      const published = this.dialog.open(UpdatedDialogComponent, {
-        disableClose: true,
-        data: 'Job successfully Published.',
-      });
+      this.haptics.jobPublished();
+      this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
 
-      published
-        .afterClosed()
-        .pipe()
-        .subscribe(() => {
-          // GETHIRED 500K TALENT PROOF SYSTEM -- publish-success proof,
-          // added as a snackbar (not a second modal) so it never repeats
-          // or stacks with the existing UpdatedDialogComponent (9 other
-          // call sites use that dialog -- not modified here, see
-          // GETHIRED_TALENT_PROOF_500K_PUBLISH_SUCCESS_JOB_DASHBOARD_LOG.md).
-          this.haptics.jobPublished();
-          this.snackbarService.success(
-            `Your job is published and ready to be discovered by ${this.talentProof.getDisplayCopy('short')}.`,
-            '', 5000
-          );
-          this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
-          // B05 V1: Navigate to the job-level dashboard after publish so the
-          // recruiter lands on their specific job command center instead of the
-          // generic jobs list. For existing jobs (this.jobId is set from query
-          // params at load time), use it directly. For newly created jobs,
-          // read the job ID from state.selected (set by saveJobSuccess in the
-          // reducer). Falls back to jobs list with a message if no ID found.
-          if (this.jobId) {
-            this.router.navigate(['/recruiter/jobs/dashboard'], { queryParams: { id: this.jobId } });
+      // Resolve the published job ID before opening the success dialog
+      const resolveIdAndShow = (resolvedId: string | null) => {
+        const published = this.dialog.open(UpdatedDialogComponent, {
+          disableClose: true,
+          data: {
+            message: `Your job is live and ready to be discovered by ${this.talentProof.getDisplayCopy('short')}.`,
+            actions: [
+              { label: 'View public job post', value: 'viewPublic', primary: true },
+              { label: 'Back to my jobs', value: 'goToList' },
+            ],
+          },
+        });
+
+        published.afterClosed().pipe().subscribe((action: string) => {
+          if (action === 'viewPublic' && resolvedId) {
+            this.router.navigate(['/jobs/details', resolvedId]);
           } else {
-            this.jobFacade.jobDetails$.pipe(take(1)).subscribe(job => {
-              if (job && job.jobId) {
-                this.router.navigate(['/recruiter/jobs/dashboard'], { queryParams: { id: job.jobId } });
-              } else {
-                this.snackbarService.success('Your job was published. View all jobs.', '', 5000);
-                this.router.navigate(['/recruiter/jobs/list']);
-              }
-            });
+            this.router.navigate(['/recruiter/jobs/list']);
           }
         });
+      };
+
+      if (this.jobId) {
+        resolveIdAndShow(this.jobId);
+      } else {
+        this.jobFacade.jobDetails$.pipe(take(1)).subscribe(job => {
+          resolveIdAndShow(job && job.jobId ? job.jobId : null);
+        });
+      }
     }
 
   }

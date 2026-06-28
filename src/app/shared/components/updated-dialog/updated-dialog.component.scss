@@ -4,3 +4,37 @@ i {
   color: #3abb6f;
   font-size: 100px;
 }
+
+// Action-card buttons for publish-success and other multi-action dialogs
+.ud-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0 4px;
+}
+
+.ud-action-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.12s;
+
+  &:hover { opacity: 0.9; transform: translateY(-1px); }
+  &:active { transform: translateY(0); }
+
+  &--primary {
+    background: #FF6B4A;
+    color: #fff;
+  }
+
+  &--ghost {
+    background: #f0f0f5;
+    color: #1A2341;
+    border: 1.5px solid #ddd;
+  }
+}
