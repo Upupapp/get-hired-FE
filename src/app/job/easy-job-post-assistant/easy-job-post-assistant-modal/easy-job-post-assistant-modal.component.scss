@@ -21,6 +21,7 @@
   overflow: hidden;
   width: 520px;
   max-width: 96vw;
+  max-height: 88vh;
   display: flex;
   flex-direction: column;
 }
@@ -94,6 +95,9 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .eja-body__lead {
@@ -449,6 +453,13 @@
   flex-direction: column;
   gap: 10px;
   margin-top: 4px;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 12px;
+  padding-bottom: 4px;
+  margin-bottom: -4px;
+  border-top: 1px solid #F3F4F6;
 }
 
 // ── Responsive ────────────────────────────────────────────────────
