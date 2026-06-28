@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CompanyFacade } from '../state/company.facade';
 import { CompanyService } from '../company.service';
 import { SeoService } from '@app-core/services/seo.service';
 import * as Model from '../company.model';
 import { map, tap, catchError, of, Subject, takeUntil } from 'rxjs';
+import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 
 interface PipelineStage {
   statusId: number;
@@ -171,6 +173,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     private companyService: CompanyService,
     private router: Router,
     private seoService: SeoService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -394,7 +397,11 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   }
 
   goToCreateJob(): void {
-    this.router.navigate(['/recruiter/jobs/create']);
+    this.dialog.open(EasyJobPostAssistantModalComponent, {
+      width: '560px',
+      maxWidth: '96vw',
+      panelClass: 'gh-assistant-dialog',
+    });
   }
 
   goToApplicants(jobId?: string): void {

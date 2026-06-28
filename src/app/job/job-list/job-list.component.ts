@@ -21,6 +21,7 @@ import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/up
 import { CurrencyPipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
+import { EasyJobPostAssistantModalComponent } from '../easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 
 import * as Model from '../job.model';
 
@@ -168,7 +169,11 @@ export class JobListComponent implements OnInit, OnDestroy {
 
   getCompanyRestrictions() {
     if (this.isAllowed) {
-      this.router.navigate(['../create'], { relativeTo: this.route });
+      this.dialog.open(EasyJobPostAssistantModalComponent, {
+        width: '560px',
+        maxWidth: '96vw',
+        panelClass: 'gh-assistant-dialog',
+      });
     } else {
       this.restrictJobCreation(false);
     }

@@ -1,0 +1,276 @@
+<div class="eja-modal" role="dialog" aria-modal="true" aria-labelledby="eja-modal-title">
+
+  <!-- Header -->
+  <div class="eja-header">
+    <div class="eja-header__icon" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="eja-header__text">
+      <h2 class="eja-header__title" id="eja-modal-title">GetHired Job Posting Assistant</h2>
+      <p class="eja-header__sub">Import a job post and we'll prefill your form</p>
+    </div>
+    <button class="eja-close" type="button" (click)="close()" aria-label="Close assistant">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ── Step: choose ────────────────────────────────────────────── -->
+  <div *ngIf="step === 'choose'" class="eja-body" @fadeSlide>
+    <p class="eja-body__lead">How would you like to start?</p>
+    <div class="eja-options">
+
+      <button class="eja-option" type="button" (click)="chooseUpload()" aria-describedby="opt-upload-desc">
+        <span class="eja-option__icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="eja-option__text">
+          <strong>Upload a file</strong>
+          <span id="opt-upload-desc">PDF, DOC, DOCX, TXT, RTF — up to 10MB</span>
+        </span>
+        <span class="eja-option__arrow" aria-hidden="true">›</span>
+      </button>
+
+      <button class="eja-option" type="button" (click)="chooseLink()" aria-describedby="opt-link-desc">
+        <span class="eja-option__icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="eja-option__text">
+          <strong>Paste a job link</strong>
+          <span id="opt-link-desc">Import from an existing job posting URL</span>
+        </span>
+        <span class="eja-option__arrow" aria-hidden="true">›</span>
+      </button>
+
+      <button class="eja-option eja-option--manual" type="button" (click)="chooseManual()" aria-describedby="opt-manual-desc">
+        <span class="eja-option__icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="eja-option__text">
+          <strong>Start from scratch</strong>
+          <span id="opt-manual-desc">Fill in the job form manually</span>
+        </span>
+        <span class="eja-option__arrow" aria-hidden="true">›</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ── Step: upload ────────────────────────────────────────────── -->
+  <div *ngIf="step === 'upload'" class="eja-body" @fadeSlide>
+    <button class="eja-back" type="button" (click)="backToChoose()">
+      <span aria-hidden="true">‹</span> Back
+    </button>
+
+    <input
+      #fileInput
+      type="file"
+      accept=".pdf,.doc,.docx,.txt,.rtf"
+      class="sr-only"
+      aria-label="Upload job post file"
+      (change)="onFileInputChange($event)"
+    />
+
+    <div
+      class="eja-dropzone"
+      [class.eja-dropzone--over]="dragOver"
+      [class.eja-dropzone--selected]="selectedFile"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+      (click)="triggerFileInput()"
+      (keydown.enter)="triggerFileInput()"
+      (keydown.space)="triggerFileInput()"
+      tabindex="0"
+      role="button"
+      [attr.aria-label]="selectedFile ? 'Change file: ' + selectedFile.name : 'Click or drag to upload a job post file'"
+    >
+      <ng-container *ngIf="!selectedFile">
+        <span class="eja-dropzone__icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+            <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12M8 8l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <p class="eja-dropzone__label">Drag &amp; drop or <span class="eja-dropzone__browse">browse</span></p>
+        <p class="eja-dropzone__hint">PDF, DOC, DOCX, TXT, RTF — max 10MB</p>
+      </ng-container>
+
+      <ng-container *ngIf="selectedFile">
+        <span class="eja-dropzone__file-icon" aria-hidden="true">{{ getFileIcon() }}</span>
+        <p class="eja-dropzone__file-name">{{ selectedFile.name }}</p>
+        <p class="eja-dropzone__file-size">{{ formatFileSize(selectedFile.size) }} · Click to change</p>
+      </ng-container>
+    </div>
+
+    <div *ngIf="errorMsg" class="eja-error" role="alert">{{ errorMsg }}</div>
+
+    <button
+      class="eja-btn eja-btn--primary"
+      type="button"
+      [disabled]="!selectedFile || loading"
+      (click)="uploadFile()"
+    >
+      <span *ngIf="!loading">Extract &amp; prefill form</span>
+      <span *ngIf="loading" class="eja-spinner" aria-label="Extracting…">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="eja-spin" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="15"/>
+        </svg>
+        Extracting…
+      </span>
+    </button>
+  </div>
+
+  <!-- ── Step: link ──────────────────────────────────────────────── -->
+  <div *ngIf="step === 'link'" class="eja-body" @fadeSlide>
+    <button class="eja-back" type="button" (click)="backToChoose()">
+      <span aria-hidden="true">‹</span> Back
+    </button>
+
+    <label class="eja-label" for="eja-link-input">Job posting URL</label>
+    <input
+      id="eja-link-input"
+      class="eja-input"
+      [class.eja-input--error]="linkUrlError"
+      type="url"
+      placeholder="https://company.com/careers/job-title"
+      [(ngModel)]="linkUrl"
+      [disabled]="loading"
+      (keydown.enter)="importLink()"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <div *ngIf="linkUrlError" class="eja-error" role="alert">{{ linkUrlError }}</div>
+
+    <div *ngIf="errorMsg" class="eja-error" role="alert">{{ errorMsg }}</div>
+
+    <button
+      class="eja-btn eja-btn--primary"
+      type="button"
+      [disabled]="!linkUrl.trim() || loading"
+      (click)="importLink()"
+    >
+      <span *ngIf="!loading">Import job post</span>
+      <span *ngIf="loading" class="eja-spinner" aria-label="Importing…">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="eja-spin" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="15"/>
+        </svg>
+        Importing…
+      </span>
+    </button>
+  </div>
+
+  <!-- ── Step: review ────────────────────────────────────────────── -->
+  <div *ngIf="step === 'review' && extractionResult" class="eja-body" @fadeSlide>
+    <button class="eja-back" type="button" (click)="backToChoose()">
+      <span aria-hidden="true">‹</span> Start over
+    </button>
+
+    <div class="eja-review-summary">
+      <div class="eja-review-summary__badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ fieldCount }} field{{ fieldCount !== 1 ? 's' : '' }} detected
+      </div>
+      <p class="eja-review-summary__label">From: <em>{{ extractionSource }}</em></p>
+    </div>
+
+    <div class="eja-review-fields">
+
+      <div *ngIf="extractionResult.jobTitle" class="eja-review-field">
+        <span class="eja-review-field__label">Job Title</span>
+        <span class="eja-review-field__val">{{ extractionResult.jobTitle }}</span>
+      </div>
+
+      <div *ngIf="extractionResult.jobCity" class="eja-review-field">
+        <span class="eja-review-field__label">City</span>
+        <span class="eja-review-field__val">{{ extractionResult.jobCity }}, {{ extractionResult.jobCountry }}</span>
+      </div>
+
+      <div *ngIf="extractionResult.jobTypeHint" class="eja-review-field">
+        <span class="eja-review-field__label">Job Type <span class="eja-review-field__hint">(suggestion)</span></span>
+        <span class="eja-review-field__val">{{ extractionResult.jobTypeHint }}</span>
+      </div>
+
+      <div *ngIf="extractionResult.jobLevelHint" class="eja-review-field">
+        <span class="eja-review-field__label">Level <span class="eja-review-field__hint">(suggestion)</span></span>
+        <span class="eja-review-field__val">{{ extractionResult.jobLevelHint }}</span>
+      </div>
+
+      <div *ngIf="extractionResult.workSetupHint" class="eja-review-field">
+        <span class="eja-review-field__label">Work Setup <span class="eja-review-field__hint">(suggestion)</span></span>
+        <span class="eja-review-field__val">{{ extractionResult.workSetupHint }}</span>
+      </div>
+
+      <div *ngIf="extractionResult.salaryMinimum" class="eja-review-field">
+        <span class="eja-review-field__label">Salary</span>
+        <span class="eja-review-field__val">
+          {{ extractionResult.salaryCurrency }} {{ extractionResult.salaryMinimum | number }}
+          <ng-container *ngIf="extractionResult.salaryMaximum"> – {{ extractionResult.salaryMaximum | number }}</ng-container>
+        </span>
+      </div>
+
+      <div *ngIf="extractionResult.requirements?.length" class="eja-review-field">
+        <span class="eja-review-field__label">Requirements</span>
+        <span class="eja-review-field__val">{{ extractionResult.requirements.length }} items detected</span>
+      </div>
+
+      <div *ngIf="extractionResult.skills?.length" class="eja-review-field">
+        <span class="eja-review-field__label">Skills</span>
+        <span class="eja-review-field__val">{{ extractionResult.skills.join(', ') }}</span>
+      </div>
+
+    </div>
+
+    <!-- Missing required fields notice -->
+    <div *ngIf="requiredStillNeeded.length" class="eja-notice eja-notice--warn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>You'll still need to add: <strong>{{ requiredStillNeeded.join(', ') }}</strong></span>
+    </div>
+
+    <!-- Always need banner -->
+    <div class="eja-notice eja-notice--info">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>A job banner image is always required before publishing.</span>
+    </div>
+
+    <!-- Warnings from extractor -->
+    <div *ngFor="let w of extractionResult.warnings" class="eja-notice eja-notice--warn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 9v5M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>{{ w }}</span>
+    </div>
+
+    <div class="eja-review-actions">
+      <button class="eja-btn eja-btn--primary" type="button" (click)="fillJobForm()">
+        Fill in job form
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="eja-btn eja-btn--ghost" type="button" (click)="chooseManual()">
+        Skip and start fresh
+      </button>
+    </div>
+  </div>
+
+</div>

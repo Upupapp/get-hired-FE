@@ -53,6 +53,7 @@ import { SearchSkeletonComponent } from './components/gh-search/search-skeleton/
 import { SearchEmptyStateComponent } from './components/gh-search/search-empty-state/search-empty-state.component';
 import { SearchCompanyCardComponent } from './components/gh-search/search-company-card/search-company-card.component';
 import { SearchSpotlightCardComponent } from './components/gh-search/search-spotlight-card/search-spotlight-card.component';
+import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 
 
 const classesToInclude: any[] = [
@@ -97,6 +98,7 @@ const classesToInclude: any[] = [
   SearchEmptyStateComponent,
   SearchCompanyCardComponent,
   SearchSpotlightCardComponent,
+  EasyJobPostAssistantModalComponent,
 ];
 
 @NgModule({

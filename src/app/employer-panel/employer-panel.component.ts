@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { CompanyFacade } from '@main/company/state/company.facade';
@@ -130,7 +131,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   }
 
   goToCreateJob(): void {
-    this.router.navigate(['/recruiter/jobs/create']);
+    this.dialog.open(EasyJobPostAssistantModalComponent, {
+      width: '560px',
+      maxWidth: '96vw',
+      panelClass: 'gh-assistant-dialog',
+    });
   }
 
   goToJobsList(): void {

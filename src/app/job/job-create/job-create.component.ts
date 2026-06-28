@@ -16,6 +16,7 @@ import { PublicPortalAnalyticsService } from '@main/public/services/public-porta
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 // B13: Job Readiness
 import { JobReadinessService, JobReadinessResult, JobReadinessLevel } from '../services/job-readiness.service';
+import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job-post-assistant.service';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -84,6 +85,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   // B13: Job Readiness
   readinessResult: JobReadinessResult | null = null;
+  // Easy Job Post Assistant prefill banner
+  assistantPrefilled: boolean = false;
   initial$: any;
   info$: any;
   status: any = 1;
@@ -140,7 +143,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private talentProofAnalytics: PublicPortalAnalyticsService,
     private haptics: HapticFeedbackService,
     // B13: Job Readiness
-    private jobReadiness: JobReadinessService
+    private jobReadiness: JobReadinessService,
+    private assistantService: EasyJobPostAssistantService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -213,10 +217,59 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     );
 
     if (this.jobId) {
-      this.getJobById()
+      this.getJobById();
     } else {
-      this.setFormGroup();
+      // Check for assistant prefill data before calling setFormGroup
+      const assistantData = this.assistantService.getExtractionResult();
+      if (assistantData) {
+        this.assistantService.clearExtractionResult();
+        this.assistantPrefilled = true;
+        this.applyAssistantPrefill(assistantData);
+      } else {
+        this.setFormGroup();
+      }
     }
+  }
+
+  applyAssistantPrefill(data: any): void {
+    // Build a partial job object that setFormGroup understands
+    const prefillData: any = {
+      jobTitle: data.jobTitle || null,
+      jobCity: data.jobCity || null,
+      jobCountry: data.jobCountry || 'Philippines',
+      jobDescription: data.jobDescription || null,
+      jobDuties: data.jobDuties || null,
+      salaryMinimum: data.salaryMinimum || null,
+      salaryMaximum: data.salaryMaximum || null,
+      salaryCurrency: data.salaryCurrency || 'PHP',
+    };
+
+    this.setFormGroup(prefillData);
+
+    // Populate FormArrays from extracted arrays
+    if (data.requirements && data.requirements.length) {
+      const reqArray = this.jobForm.get('initialData.requirements') as FormArray;
+      data.requirements.forEach((item: string) => reqArray.push(new FormControl(item)));
+    }
+    if (data.goodToHave && data.goodToHave.length) {
+      const gthArray = this.jobForm.get('initialData.goodToHave') as FormArray;
+      data.goodToHave.forEach((item: string) => gthArray.push(new FormControl(item)));
+    }
+    if (data.skills && data.skills.length) {
+      const skillsArray = this.jobForm.get('jobInfo.skills') as FormArray;
+      data.skills.forEach((item: string) => skillsArray.push(new FormControl(item)));
+    }
+
+    // Show a welcome snackbar
+    const hints: string[] = [];
+    if (data.jobTypeHint) hints.push(`Job type: ${data.jobTypeHint}`);
+    if (data.jobLevelHint) hints.push(`Level: ${data.jobLevelHint}`);
+    if (data.workSetupHint) hints.push(`Work setup: ${data.workSetupHint}`);
+    const hintText = hints.length ? ` Suggested: ${hints.join(' · ')}.` : '';
+    this.snackbarService.success(
+      `Job form prefilled from your import.${hintText} Please review and complete the required fields.`,
+      '', 7000
+    );
   }
 
   @HostListener('window:resize', ['$event'])
