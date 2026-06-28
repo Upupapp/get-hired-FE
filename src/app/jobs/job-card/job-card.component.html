@@ -16,14 +16,17 @@
       </div>
     </ng-template>
 
-    <div class="job-card__icon-badges" *ngIf="data?.badges?.length > 0">
-      <img
-        *ngFor="let badge of data?.badges"
-        [src]="'/assets/images/placeholder/icons/' + badge?.icon"
-        [title]="badge?.name"
-        [alt]="badge?.name"
-        class="job-card__icon-badge"
-      />
+    <div class="job-card__icon-badges" *ngIf="normalized?.badges?.length > 0">
+      <span
+        *ngFor="let badge of normalized.badges.slice(0, 2)"
+        class="job-card__badge-chip"
+        [title]="badge.name">
+        <i *ngIf="badge.icon && !badge.icon.includes('.')" class="bi bi-{{badge.icon}}" aria-hidden="true"></i>
+        <img *ngIf="badge.icon && badge.icon.includes('.')"
+             [src]="'/assets/images/placeholder/icons/' + badge.icon"
+             [alt]="badge.name" class="job-card__icon-badge-img">
+        <span>{{ badge.name }}</span>
+      </span>
     </div>
   </div>
 

@@ -18,6 +18,8 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
 
   details$ = this.jobFacade.getJobById$;
   jobId: string;
+  public loading: boolean = true;
+  public loadError: boolean = false;
   public screenSize: number = 1600;
 
   private seoSub: Subscription;
@@ -35,6 +37,12 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
 
+    // Turn off loading when data or error arrives
+    this.jobFacade.getJobLoading$.pipe(
+      filter(loading => !loading),
+      take(1),
+    ).subscribe(() => { this.loading = false; });
+
     // Error state: set noindex and (on the server) HTTP 404 when the job
     // fetch fails so error pages are never indexed as thin content.
     // RESPONSE is null on the browser (@Optional), so the status call is guarded.
@@ -42,6 +50,8 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
       filter(err => !!err),
       take(1),
     ).subscribe(() => {
+      this.loading = false;
+      this.loadError = true;
       if (this.response) {
         this.response.status(404);
       }

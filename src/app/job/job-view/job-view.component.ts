@@ -23,11 +23,10 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 })
 export class JobViewComponent implements OnInit {
 
-  public loading: boolean = false;
+  public loading: boolean = true;
   public screenSize: number = 1600;
   public companyLists: Company[] = companyLists;
   public listView: boolean = false;
-  // public selectedJobPost: any;
   public selectedCompany: Company;
   public jobId: any;
 

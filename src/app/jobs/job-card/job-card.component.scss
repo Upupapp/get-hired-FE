@@ -51,14 +51,33 @@
   &__icon-badges {
     margin-left: auto;
     display: flex;
-    gap: 0.4rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
     align-items: flex-end;
     padding-bottom: 0.3rem;
+    max-width: calc(100% - 64px);
   }
 
-  &__icon-badge {
-    width: 26px;
-    height: 26px;
+  &__badge-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255,107,74,0.3);
+    border-radius: 20px;
+    padding: 3px 8px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #FF6B4A;
+    white-space: nowrap;
+
+    i { font-size: 0.72rem; }
+  }
+
+  &__icon-badge-img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
   }
 
   &__body {

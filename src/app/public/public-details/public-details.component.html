@@ -1,5 +1,19 @@
+<!-- Loading state -->
+<div *ngIf="loading" class="pd-loading" role="status" aria-live="polite">
+  <div class="spinner-border text-primary" aria-hidden="true"></div>
+  <p class="mt-3 text-muted">Loading job details…</p>
+</div>
+
+<!-- Error / not found state -->
+<div *ngIf="!loading && loadError" class="pd-error" role="alert">
+  <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+  <h2>Job not found</h2>
+  <p>This job posting may have been removed or is no longer available.</p>
+  <a routerLink="/jobs" class="btn btn-primary mt-2">Browse all jobs</a>
+</div>
+
 <!-- Breadcrumb — visible nav matching the BreadcrumbList JSON-LD already in <head> -->
-<nav class="job-breadcrumb" aria-label="Breadcrumb" *ngIf="details$ | async as selectedJobPost">
+<nav class="job-breadcrumb" aria-label="Breadcrumb" *ngIf="!loading && !loadError && (details$ | async) as selectedJobPost">
   <ol class="job-breadcrumb__list">
     <li class="job-breadcrumb__item"><a routerLink="/home">Home</a></li>
     <li class="job-breadcrumb__item"><a routerLink="/jobs">Jobs</a></li>
@@ -8,7 +22,7 @@
 </nav>
 
 <!-- CUSTOM BANNER -->
-<div class="p-0" style="overflow-x: hidden;" *ngIf="details$ | async as selectedJobPost">
+<div class="p-0" style="overflow-x: hidden;" *ngIf="!loading && !loadError && (details$ | async) as selectedJobPost">
   <div class="row">
     <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
       <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}"
@@ -26,7 +40,7 @@
   </div>
 </div>
 
-<div class="container-fluid px-3 px-lg-5 mb-4" style="margin-top: -105px" *ngIf="details$ | async as selectedJobPost">
+<div class="container-fluid px-3 px-lg-5 mb-4" style="margin-top: -105px" *ngIf="!loading && !loadError && (details$ | async) as selectedJobPost">
   <div class="row">
     <div class="col-12 col-md-12 col-lg-3">
       <app-job-details-sidecard [data]="selectedJobPost" [company]="selectedJobPost" [screenSize]="screenSize">
