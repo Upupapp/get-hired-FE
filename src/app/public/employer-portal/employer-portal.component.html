@@ -156,7 +156,10 @@
   title="Ready to build your next team?"
   description="Post your job and reach registered job seekers across the Philippines."
   primaryLabel="Start hiring"
+  primaryRoute="/signup"
+  [primaryQueryParams]="{role: 2}"
   secondaryLabel="Sign in"
+  secondaryRoute="/signin"
   (primaryClick)="startHiring()"
   (secondaryClick)="goToSignin()">
 </app-portal-cta-band>

@@ -2,11 +2,30 @@
   <h2 class="portal-cta-band-title">{{ title }}</h2>
   <p class="portal-cta-band-description" *ngIf="description">{{ description }}</p>
   <div class="portal-cta-band-actions">
-    <button type="button" class="btn btn-cta-primary gh-pressable" (click)="primaryClick.emit()">
-      {{ primaryLabel }}
-    </button>
-    <button type="button" class="btn btn-cta-secondary gh-pressable" *ngIf="secondaryLabel" (click)="secondaryClick.emit()">
-      {{ secondaryLabel }}
-    </button>
+    <ng-container *ngIf="primaryRoute; else primaryBtn">
+      <a [routerLink]="primaryRoute" [queryParams]="primaryQueryParams"
+         class="btn btn-cta-primary gh-pressable" (click)="primaryClick.emit()">
+        {{ primaryLabel }}
+      </a>
+    </ng-container>
+    <ng-template #primaryBtn>
+      <button type="button" class="btn btn-cta-primary gh-pressable" (click)="primaryClick.emit()">
+        {{ primaryLabel }}
+      </button>
+    </ng-template>
+
+    <ng-container *ngIf="secondaryLabel">
+      <ng-container *ngIf="secondaryRoute; else secondaryBtn">
+        <a [routerLink]="secondaryRoute" [queryParams]="secondaryQueryParams"
+           class="btn btn-cta-secondary gh-pressable" (click)="secondaryClick.emit()">
+          {{ secondaryLabel }}
+        </a>
+      </ng-container>
+      <ng-template #secondaryBtn>
+        <button type="button" class="btn btn-cta-secondary gh-pressable" (click)="secondaryClick.emit()">
+          {{ secondaryLabel }}
+        </button>
+      </ng-template>
+    </ng-container>
   </div>
 </section>

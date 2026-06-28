@@ -210,7 +210,10 @@
   title="Ready to show more than your resume?"
   description="Build your profile, browse open roles, and apply with more confidence."
   primaryLabel="Browse jobs"
+  primaryRoute="/jobs"
   secondaryLabel="Create free account"
+  secondaryRoute="/signup"
+  [secondaryQueryParams]="{role: 3}"
   (primaryClick)="goToJobs()"
   (secondaryClick)="createAccount()">
 </app-portal-cta-band>

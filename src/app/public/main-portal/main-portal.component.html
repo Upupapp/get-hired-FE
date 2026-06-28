@@ -26,9 +26,9 @@
       </div>
 
       <div class="portal-role-secondary portal-hero-secondary">
-        <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</button>
+        <a routerLink="/jobs" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</a>
         <span class="portal-role-divider" aria-hidden="true">|</span>
-        <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+        <a routerLink="/signin" class="btn-link-cta" (click)="goToSignin()">Sign in</a>
       </div>
     </div>
 
@@ -91,7 +91,7 @@
         ariaLabel="Continue as Job Seeker"
         (activated)="goToJobSeekerPortal()">
       </app-role-card>
-      <button type="button" class="btn-link-cta portal-role-card-secondary" (click)="goToJobs()">Browse jobs</button>
+      <a routerLink="/jobs" class="btn-link-cta portal-role-card-secondary" (click)="goToJobs()">Browse jobs</a>
     </div>
 
     <div class="portal-role-card-wrap portal-role-card-wrap--employer">
@@ -437,14 +437,16 @@
     title="Ready to get started?"
     description="Choose your path and start moving forward with GetHired."
     primaryLabel="Find jobs"
+    primaryRoute="/jobs"
     secondaryLabel="Start hiring"
+    secondaryRoute="/employers"
     (primaryClick)="finalCTAFindJobs()"
     (secondaryClick)="finalCTAStartHiring()">
   </app-portal-cta-band>
   <div class="portal-role-secondary">
-    <button type="button" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</button>
+    <a routerLink="/jobs" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</a>
     <span class="portal-role-divider" aria-hidden="true">|</span>
-    <button type="button" class="btn-link-cta" (click)="goToSignin()">Sign in</button>
+    <a routerLink="/signin" class="btn-link-cta" (click)="goToSignin()">Sign in</a>
   </div>
 </section>
 
