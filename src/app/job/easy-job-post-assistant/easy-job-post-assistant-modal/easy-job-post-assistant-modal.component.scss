@@ -130,6 +130,10 @@
     outline: none;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    &:hover, &:focus-visible { transform: none; }
+  }
+
   &:active { transform: translateY(0); }
 
   &--manual {
@@ -290,11 +294,12 @@
   &:not(:disabled):active { transform: scale(0.98); }
 
   &--primary {
-    background: linear-gradient(135deg, #7C3AED, #5B21B6);
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
     color: #fff;
     width: 100%;
+    box-shadow: 0 12px 28px rgba(255, 112, 98, 0.18);
 
-    &:not(:disabled):hover { opacity: 0.92; }
+    &:not(:disabled):hover { opacity: 0.88; }
   }
 
   &--ghost {
