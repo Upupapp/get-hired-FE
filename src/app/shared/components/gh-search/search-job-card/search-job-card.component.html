@@ -1,0 +1,56 @@
+<article class="gh-search-job-card" (click)="viewJob()" role="article" tabindex="0"
+  (keydown.enter)="viewJob()" (keydown.space)="viewJob()">
+
+  <!-- Company logo -->
+  <div class="gh-sjc-logo-wrap">
+    <img
+      *ngIf="job.companyLogoUrl && !logoError"
+      [src]="job.companyLogoUrl"
+      [alt]="job.companyName + ' logo'"
+      class="gh-sjc-logo"
+      loading="lazy"
+      decoding="async"
+      (error)="onLogoError()" />
+    <span *ngIf="!job.companyLogoUrl || logoError" class="gh-sjc-logo-fallback" aria-hidden="true">
+      {{ (job.companyName || 'C').charAt(0).toUpperCase() }}
+    </span>
+  </div>
+
+  <!-- Content -->
+  <div class="gh-sjc-body">
+    <div class="gh-sjc-top">
+      <h3 class="gh-sjc-title">{{ job.title }}</h3>
+      <span class="gh-sjc-time" [attr.aria-label]="'Posted ' + getRelativeTime()">{{ getRelativeTime() }}</span>
+    </div>
+
+    <button
+      *ngIf="showCompanyLink && job.companySlug"
+      class="gh-sjc-company-btn"
+      type="button"
+      [attr.aria-label]="'View ' + job.companyName + ' company page'"
+      (click)="viewCompany($event)">
+      {{ job.companyName }}
+    </button>
+    <span *ngIf="!showCompanyLink || !job.companySlug" class="gh-sjc-company-text">
+      {{ job.companyName }}
+    </span>
+
+    <!-- Meta chips -->
+    <div class="gh-sjc-meta" role="list" aria-label="Job details">
+      <span *ngIf="job.location" class="gh-sjc-chip gh-sjc-chip--location" role="listitem">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        {{ job.location }}
+      </span>
+      <span *ngIf="job.workSetup" class="gh-sjc-chip gh-sjc-chip--setup" role="listitem">{{ job.workSetup }}</span>
+      <span *ngIf="job.employmentType" class="gh-sjc-chip" role="listitem">{{ job.employmentType }}</span>
+      <span *ngIf="formatSalary()" class="gh-sjc-chip gh-sjc-chip--salary" role="listitem">{{ formatSalary() }}</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="gh-sjc-cta" aria-hidden="true">
+    <span class="gh-sjc-apply-btn">View</span>
+  </div>
+</article>

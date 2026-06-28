@@ -1,0 +1,65 @@
+.gh-search-skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gh-sk-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  background: #fff;
+  border: 1.5px solid #EDE9F8;
+  border-radius: 16px;
+}
+
+.gh-sk-shimmer {
+  background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: gh-shimmer 1.4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: #F3F4F6;
+  }
+}
+
+@keyframes gh-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.gh-sk-logo {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+
+.gh-sk-body { flex: 1; }
+
+.gh-sk-title {
+  height: 18px;
+  width: 60%;
+  margin-bottom: 8px;
+}
+
+.gh-sk-company {
+  height: 13px;
+  width: 35%;
+  margin-bottom: 12px;
+}
+
+.gh-sk-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.gh-sk-chip {
+  height: 22px;
+  width: 60px;
+  border-radius: 20px;
+}

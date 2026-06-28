@@ -1,1 +1,194 @@
 @import "src/assets/styles/colors";
+
+// Search mode layout
+.gh-search-page-header {
+  background: #1a1830;
+  padding: 24px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  &--browse {
+    background: linear-gradient(135deg, #1a1830 0%, #2d2b5e 100%);
+    padding: 28px 20px;
+  }
+}
+
+.gh-search-page-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.gh-search-page-body {
+  padding: 24px 20px;
+  min-height: 60vh;
+}
+
+// Filter chips
+.gh-search-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.gh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EDE9F8;
+  color: #6C6BAD;
+  border: 1.5px solid #DDD8F0;
+  border-radius: 20px;
+  padding: 4px 10px 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  animation: gh-chip-in 0.15s ease;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+@keyframes gh-chip-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.gh-chip-remove {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  border-radius: 50%;
+  transition: color 0.15s, background 0.15s;
+  min-width: 22px;
+  min-height: 22px;
+  justify-content: center;
+
+  &:hover { color: #FF7062; background: rgba(255,112,98,0.1); }
+  &:focus-visible { outline: 2px solid #6C6BAD; }
+}
+
+.gh-chip-clear-all {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #9CA3AF;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.15s;
+
+  &:hover { color: #FF7062; }
+  &:focus-visible { outline: 2px solid #FF7062; }
+}
+
+// Controls row
+.gh-search-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.gh-search-select {
+  border: 1.5px solid #DDD8F0;
+  border-radius: 10px;
+  padding: 8px 32px 8px 12px;
+  font-size: 13px;
+  color: #1a1830;
+  background: #fff;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-height: 38px;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: #6C6BAD; }
+  &:focus { outline: none; border-color: #6C6BAD; box-shadow: 0 0 0 2px rgba(108,107,173,0.15); }
+
+  &--sort { margin-left: auto; }
+}
+
+.gh-search-count {
+  font-size: 13px;
+  color: #9CA3AF;
+  white-space: nowrap;
+
+  @media (max-width: 640px) { display: none; }
+}
+
+.gh-search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gh-search-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b6887;
+  p { margin-bottom: 16px; }
+}
+
+.gh-se-btn--primary {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  min-height: 44px;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  color: #fff;
+  &:hover { opacity: 0.9; }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+}
+
+// Pagination
+.gh-search-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+  padding-bottom: 40px;
+}
+
+.gh-pag-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #DDD8F0;
+  background: #fff;
+  color: #1a1830;
+  min-height: 44px;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover { border-color: #6C6BAD; background: #F8F7FF; }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+
+  &--primary {
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+    color: #fff;
+    border-color: transparent;
+    &:hover { opacity: 0.9; border-color: transparent; }
+  }
+}
+
+.gh-pag-info {
+  font-size: 14px;
+  color: #9CA3AF;
+  min-width: 60px;
+  text-align: center;
+}

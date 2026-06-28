@@ -47,6 +47,10 @@ import { ViewedOnceDirective } from './directives/viewed-once.directive';
 import { PortalRevealDirective } from './directives/portal-reveal.directive';
 import { GhImageUploadComponent } from './components/gh-image-upload/gh-image-upload.component';
 import { GhResponsiveImageComponent } from './components/gh-responsive-image/gh-responsive-image.component';
+import { SearchAutocompleteComponent } from './components/gh-search/search-autocomplete/search-autocomplete.component';
+import { SearchJobCardComponent } from './components/gh-search/search-job-card/search-job-card.component';
+import { SearchSkeletonComponent } from './components/gh-search/search-skeleton/search-skeleton.component';
+import { SearchEmptyStateComponent } from './components/gh-search/search-empty-state/search-empty-state.component';
 
 
 const classesToInclude: any[] = [
@@ -84,7 +88,11 @@ const classesToInclude: any[] = [
   ApplicationCompletenessBadgeComponent,
   ApplicationCompletenessCardComponent,
   GhImageUploadComponent,
-  GhResponsiveImageComponent
+  GhResponsiveImageComponent,
+  SearchAutocompleteComponent,
+  SearchJobCardComponent,
+  SearchSkeletonComponent,
+  SearchEmptyStateComponent,
 ];
 
 @NgModule({

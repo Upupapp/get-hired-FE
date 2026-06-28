@@ -1,0 +1,43 @@
+<div class="gh-search-empty" role="region" aria-label="No results found">
+  <div class="gh-se-illustration" aria-hidden="true">
+    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+      <circle cx="40" cy="40" r="38" fill="#F8F7FF" stroke="#EDE9F8" stroke-width="1.5"/>
+      <circle cx="36" cy="36" r="16" fill="none" stroke="#DDD8F0" stroke-width="3"/>
+      <line x1="47" y1="47" x2="60" y2="60" stroke="#DDD8F0" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="30" y1="36" x2="42" y2="36" stroke="#FF7062" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="36" y1="30" x2="36" y2="42" stroke="#FF7062" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <h3 class="gh-se-title">No results found</h3>
+
+  <p class="gh-se-body">
+    <ng-container *ngIf="query">
+      No jobs matched <strong>&#8220;{{ query }}&#8221;</strong>.
+      Try different keywords or remove a filter.
+    </ng-container>
+    <ng-container *ngIf="!query">
+      No jobs match your current filters. Try removing some to see more results.
+    </ng-container>
+  </p>
+
+  <div class="gh-se-actions">
+    <button
+      *ngIf="hasFilters"
+      class="gh-se-btn gh-se-btn--secondary"
+      type="button"
+      (click)="clearFilters.emit()">
+      Clear all filters
+    </button>
+    <button
+      class="gh-se-btn gh-se-btn--primary"
+      type="button"
+      (click)="browseAll.emit()">
+      Browse all jobs
+    </button>
+  </div>
+
+  <a class="gh-se-cv-link" routerLink="/user/cv-doctor">
+    Not getting callbacks? Check your CV Health →
+  </a>
+</div>

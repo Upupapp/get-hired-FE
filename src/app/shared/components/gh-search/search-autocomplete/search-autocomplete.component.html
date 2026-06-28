@@ -1,0 +1,96 @@
+<div class="gh-search-autocomplete" role="combobox"
+     [attr.aria-expanded]="isOpen"
+     aria-haspopup="listbox"
+     [attr.aria-owns]="isOpen ? 'gh-autocomplete-list' : null">
+
+  <div class="gh-search-input-wrap">
+    <!-- Search icon -->
+    <span class="gh-search-icon" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </span>
+
+    <input
+      #searchInput
+      type="search"
+      class="gh-search-input"
+      [attr.aria-label]="placeholder"
+      [placeholder]="placeholder"
+      [value]="query"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      role="searchbox"
+      [attr.aria-autocomplete]="'list'"
+      [attr.aria-controls]="isOpen ? 'gh-autocomplete-list' : null"
+      [attr.aria-activedescendant]="activeIndex >= 0 ? ('gh-suggestion-' + activeIndex) : null"
+      (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      (blur)="onBlur()"
+    />
+
+    <!-- Loading spinner -->
+    <span class="gh-search-spinner" *ngIf="isLoading" aria-label="Searching..." role="status">
+      <span class="gh-spinner-ring"></span>
+    </span>
+
+    <!-- Clear button -->
+    <button
+      *ngIf="query && !isLoading"
+      class="gh-search-clear"
+      type="button"
+      aria-label="Clear search"
+      (click)="clearSearch()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <!-- Submit button -->
+    <button
+      class="gh-search-submit"
+      type="button"
+      aria-label="Search"
+      (click)="submitSearch()">
+      Search
+    </button>
+  </div>
+
+  <!-- Autocomplete dropdown -->
+  <ul
+    *ngIf="isOpen && suggestions.length > 0"
+    id="gh-autocomplete-list"
+    class="gh-autocomplete-list"
+    role="listbox"
+    aria-label="Search suggestions">
+
+    <li
+      *ngFor="let suggestion of suggestions; let i = index; trackBy: trackBySuggestion"
+      [id]="'gh-suggestion-' + i"
+      class="gh-autocomplete-item"
+      [class.gh-autocomplete-item--active]="i === activeIndex"
+      [class.gh-autocomplete-item--shortcut]="suggestion.type === 'shortcut'"
+      role="option"
+      [attr.aria-selected]="i === activeIndex"
+      (mousedown)="selectSuggestion(suggestion)">
+
+      <!-- Icon by type -->
+      <span class="gh-ac-icon" aria-hidden="true">
+        <svg *ngIf="suggestion.type === 'job_title'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <svg *ngIf="suggestion.type === 'company'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M8 21V7M16 21V7"/><rect x="9" y="3" width="6" height="6" rx="1"/></svg>
+        <svg *ngIf="suggestion.type === 'location'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg *ngIf="suggestion.type === 'shortcut'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </span>
+
+      <span class="gh-ac-label">{{ suggestion.label }}</span>
+
+      <span class="gh-ac-type" aria-hidden="true">
+        <span *ngIf="suggestion.type === 'job_title'">Job</span>
+        <span *ngIf="suggestion.type === 'company'">Company</span>
+        <span *ngIf="suggestion.type === 'location'">Location</span>
+      </span>
+    </li>
+  </ul>
+</div>

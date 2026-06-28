@@ -1,18 +1,157 @@
-<!-- Banner section -->
-<app-public-banner [screenSize]="screenSize"></app-public-banner>
+<!-- ── SEARCH MODE: server-side results ─────────────────────────────────── -->
+<ng-container *ngIf="isSearchMode; else browseMode">
 
-<!-- Companies -->
-<app-public-companies-recommended></app-public-companies-recommended>
-
-<!-- JOB POSTS -->
-<div class="container-fluid mb-2">
-  <div class="mt-5 px-lg-5">
-    <!-- GETHIRED 500K TALENT PROOF SYSTEM v1 -- dismissible, never
-         blocks job search/apply. See JobBoardEmployerCtaComponent. -->
-    <app-job-board-employer-cta></app-job-board-employer-cta>
-
-    <app-job-posts-list label="{{ 'PUBLIC_PAGE.JOB_POST_SECTION_MESSAGE' | translate }}"></app-job-posts-list>
+  <!-- Search header bar -->
+  <div class="gh-search-page-header">
+    <div class="gh-search-page-inner">
+      <app-search-autocomplete
+        [initialQuery]="activeQuery"
+        placeholder="Search jobs, companies, skills, or locations"
+        scope="jobs"
+        (searchSubmit)="onSearchSubmit($event)">
+      </app-search-autocomplete>
+    </div>
   </div>
-</div>
 
-<app-public-explore-users [userRole]="userRole"></app-public-explore-users>
+  <!-- Results content -->
+  <div class="gh-search-page-body">
+    <div class="gh-search-page-inner">
+
+      <!-- Active filter chips -->
+      <div *ngIf="activeFilterChips.length > 0" class="gh-search-chips" aria-label="Active filters">
+        <span
+          *ngFor="let chip of activeFilterChips"
+          class="gh-chip"
+          role="status">
+          {{ chip.label }}
+          <button
+            class="gh-chip-remove"
+            type="button"
+            [attr.aria-label]="'Remove filter: ' + chip.label"
+            (click)="removeChip(chip)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </span>
+        <button *ngIf="activeFilterChips.length > 1" class="gh-chip-clear-all" type="button" (click)="clearAllFilters()">
+          Clear all
+        </button>
+      </div>
+
+      <!-- Filter row -->
+      <div class="gh-search-controls">
+        <!-- Work setup filter -->
+        <select class="gh-search-select" aria-label="Work setup filter"
+          [value]="activeFilters.workSetup || ''"
+          (change)="applyFilter('workSetup', $any($event.target).value || null)">
+          <option value="">All setups</option>
+          <option value="remote">Remote</option>
+          <option value="onsite">Onsite</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+
+        <!-- Employment type filter -->
+        <select class="gh-search-select" aria-label="Employment type filter"
+          [value]="activeFilters.employmentType || ''"
+          (change)="applyFilter('employmentType', $any($event.target).value || null)">
+          <option value="">All types</option>
+          <option value="full-time">Full-time</option>
+          <option value="part-time">Part-time</option>
+          <option value="contractor">Contractor</option>
+        </select>
+
+        <!-- Sort -->
+        <select class="gh-search-select gh-search-select--sort" aria-label="Sort results"
+          [value]="activeFilters.sort || 'relevance'"
+          (change)="applyFilter('sort', $any($event.target).value)">
+          <option value="relevance">Most relevant</option>
+          <option value="newest">Newest</option>
+          <option value="salary_high">Highest salary</option>
+        </select>
+
+        <!-- Result count -->
+        <span class="gh-search-count" aria-live="polite" aria-atomic="true">
+          <ng-container *ngIf="!searchLoading && searchTotal > 0">
+            {{ searchTotal | number }} result{{ searchTotal === 1 ? '' : 's' }}
+          </ng-container>
+        </span>
+      </div>
+
+      <!-- Loading skeleton -->
+      <app-search-skeleton *ngIf="searchLoading" [count]="6"></app-search-skeleton>
+
+      <!-- Error state -->
+      <div *ngIf="!searchLoading && searchError" class="gh-search-error" role="alert">
+        <p>Search is temporarily unavailable. Please try again in a moment.</p>
+        <button class="gh-se-btn gh-se-btn--primary" type="button"
+          (click)="onSearchSubmit(activeQuery)">Try again</button>
+      </div>
+
+      <!-- Results list -->
+      <div *ngIf="!searchLoading && !searchError" class="gh-search-results" role="region" aria-label="Search results">
+        <app-search-job-card
+          *ngFor="let job of searchResults; trackBy: trackByJobId"
+          [job]="job">
+        </app-search-job-card>
+
+        <!-- No results -->
+        <app-search-empty-state
+          *ngIf="searchResults.length === 0"
+          [query]="activeQuery"
+          [hasFilters]="hasActiveFilters"
+          (clearFilters)="clearAllFilters()"
+          (browseAll)="browseAll()">
+        </app-search-empty-state>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="!searchLoading && searchResults.length > 0" class="gh-search-pagination" aria-label="Results pagination">
+        <button
+          *ngIf="searchPage > 1"
+          class="gh-pag-btn"
+          type="button"
+          (click)="changePage(searchPage - 1)">
+          ← Previous
+        </button>
+        <span class="gh-pag-info">Page {{ searchPage }}</span>
+        <button
+          *ngIf="hasMoreResults"
+          class="gh-pag-btn gh-pag-btn--primary"
+          type="button"
+          (click)="changePage(searchPage + 1)">
+          Next →
+        </button>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
+
+<!-- ── BROWSE MODE: existing job board ─────────────────────────────────────── -->
+<ng-template #browseMode>
+
+  <!-- Search bar at top of browse mode -->
+  <div class="gh-search-page-header gh-search-page-header--browse">
+    <div class="gh-search-page-inner">
+      <app-search-autocomplete
+        placeholder="Search jobs, companies, skills, or locations"
+        scope="jobs"
+        (searchSubmit)="onSearchSubmit($event)">
+      </app-search-autocomplete>
+    </div>
+  </div>
+
+  <!-- Companies -->
+  <app-public-companies-recommended></app-public-companies-recommended>
+
+  <!-- JOB POSTS (existing) -->
+  <div class="container-fluid mb-2">
+    <div class="mt-5 px-lg-5">
+      <app-job-board-employer-cta></app-job-board-employer-cta>
+      <app-job-posts-list label="{{ 'PUBLIC_PAGE.JOB_POST_SECTION_MESSAGE' | translate }}"></app-job-posts-list>
+    </div>
+  </div>
+
+  <app-public-explore-users [userRole]="userRole"></app-public-explore-users>
+</ng-template>

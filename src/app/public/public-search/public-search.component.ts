@@ -93,26 +93,12 @@ export class PublicSearchComponent implements OnInit {
   }
 
   findJobs() {
-    // GH-ACT-021 fix: the previous implementation relied on a fragile
-    // navigate-away-then-back round trip (`/jobs` then `jobs/search/:kw`)
-    // purely to force this component to re-construct and re-read
-    // sessionStorage in its field initializer -- and even then, the
-    // work_setup/job_type values were captured but never actually used by
-    // JobPostsListComponent's filter (see job-posts-list.component.ts fix).
-    // Updating `jobSearch` directly lets the existing
-    // [searchData]="jobSearch" binding take effect immediately, with no
-    // navigation trick required.
-    const jobSearchData = {
-      keyword: this.keyword || '',
-      work_setup: this.work_setup,
-      job_type: this.job_type,
-    };
-
-    this.jobSearch = jobSearchData;
-    sessionStorage.setItem('job-search', JSON.stringify(jobSearchData));
-
-    // Keep the URL shareable/bookmarkable without forcing a re-navigation
-    // round trip.
-    this.router.navigate([`/jobs/search/${this.keyword || ''}`]);
+    // Navigate to the new server-side search URL (/jobs?q=...) instead of
+    // the old /jobs/search/:keyword path format.
+    const qp: any = {};
+    if (this.keyword) qp['q'] = this.keyword;
+    if (this.work_setup && this.work_setup !== 'Work Setup') qp['workSetup'] = this.work_setup;
+    if (this.job_type && this.job_type !== 'Job Type') qp['employmentType'] = this.job_type;
+    this.router.navigate(['/jobs'], { queryParams: qp });
   }
 }
