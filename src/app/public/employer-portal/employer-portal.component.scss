@@ -54,7 +54,6 @@
 // ─── Base utilities ────────────────────────────────────────────
 .ep-portal {
   min-height: 100vh;
-  padding-top: 68px;
 }
 
 .ep-section {
@@ -338,9 +337,9 @@
   position: relative;
   background: linear-gradient(135deg, var(--ep-dark) 0%, var(--ep-dark-2) 100%);
   overflow: hidden;
-  padding: 80px 24px 72px;
+  padding: 148px 24px 72px;
 
-  @media (max-width: 768px) { padding: 56px 20px 60px; }
+  @media (max-width: 768px) { padding: 124px 20px 60px; }
 }
 
 .ep-hero-mesh {
