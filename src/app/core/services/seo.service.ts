@@ -9,6 +9,7 @@ export interface PageMetaConfig {
   robots?: string;        // default: 'index, follow'
   canonical?: string;     // full canonical URL
   ogImage?: string;       // full OG image URL
+  ogImageAlt?: string;    // alt text for OG image (e.g. "Job Title at Company")
   ogType?: string;        // default: 'website'
   twitterCard?: string;   // default: 'summary_large_image'
 }
@@ -73,6 +74,7 @@ export class SeoService {
       robots = 'index, follow',
       canonical,
       ogImage = DEFAULT_OG_IMAGE,
+      ogImageAlt,
       ogType = 'website',
       twitterCard = 'summary_large_image',
     } = config;
@@ -95,9 +97,13 @@ export class SeoService {
     });
     if (ogImage) {
       this.meta.updateTag({ property: 'og:image', content: ogImage });
+      this.meta.updateTag({ property: 'og:image:secure_url', content: ogImage });
       this.meta.updateTag({ property: 'og:image:width', content: '1200' });
       this.meta.updateTag({ property: 'og:image:height', content: '630' });
       this.meta.updateTag({ property: 'og:image:type', content: 'image/jpeg' });
+      if (ogImageAlt) {
+        this.meta.updateTag({ property: 'og:image:alt', content: ogImageAlt });
+      }
     }
 
     // Twitter
@@ -106,6 +112,9 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:description', content: description });
     if (ogImage) {
       this.meta.updateTag({ name: 'twitter:image', content: ogImage });
+      if (ogImageAlt) {
+        this.meta.updateTag({ name: 'twitter:image:alt', content: ogImageAlt });
+      }
     }
 
     // Canonical link element — set when provided, clear when omitted
@@ -245,6 +254,9 @@ export class SeoService {
       title: job.jobTitle || '',
       description: this.stripHtml(job.jobDescription || '') || job.jobTitle || '',
       datePosted: this.toIso(job.createdAt),
+      // V3: job banner is a real employer-uploaded image — safe to include in schema.
+      // Only add when truthy so we never emit an empty `image` field.
+      ...((job as any).jobBanner ? { image: (job as any).jobBanner } : {}),
       // FIX: API returns company_name (snake_case); match the same fallback
       // chain used in public-details.component.ts line 41.
       // companyDetails is a bio/description field — only use as last resort.

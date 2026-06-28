@@ -21,9 +21,22 @@
   </nav>
 
   <div class="p-0" style="overflow-x: hidden;" id="banner" *ngIf="withBanner">
-    <div class="row">
-      <div class="row px-5 text-white py-5  bg-banner col-12 col-lg-12">
-        <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
+    <!-- V3: When employer has uploaded a hero banner, display it as a real
+         image (LCP element — not lazy loaded, fetchpriority high).
+         Fallback to the CSS gradient when no banner exists. -->
+    <ng-container *ngIf="selectedJobPost?.jobBanner; else cssHeroBanner">
+      <div class="gh-job-hero-media" role="img" [attr.aria-label]="(selectedJobPost?.jobTitle || '') + ' hero image'">
+        <img
+          class="gh-job-hero-img"
+          [src]="selectedJobPost.jobBanner"
+          [alt]="selectedJobPost.jobTitle + ' — hero image'"
+          loading="eager"
+          fetchpriority="high"
+          width="1200"
+          height="400"
+        />
+        <div class="gh-job-hero-overlay" aria-hidden="true"></div>
+        <div class="gh-job-hero-text" [@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
           <h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
           <p class="title-banner-description mb-2" *ngIf="normalizedJob$ | async as nJob">
             <ng-container *ngIf="selectedJobPost?.industryId">
@@ -31,13 +44,31 @@
             </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} /
             {{nJob.salaryDisplay}}
           </p>
-
           <div class="job-signal-badges mt-2" *ngIf="jobSignals$ | async as signals">
             <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{badge.label}}</span>
           </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-template #cssHeroBanner>
+      <div class="row">
+        <div class="row px-5 text-white py-5 bg-banner col-12 col-lg-12">
+          <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
+            <h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
+            <p class="title-banner-description mb-2" *ngIf="normalizedJob$ | async as nJob">
+              <ng-container *ngIf="selectedJobPost?.industryId">
+                {{selectedJobPost?.industryName}} /
+              </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} /
+              {{nJob.salaryDisplay}}
+            </p>
+            <div class="job-signal-badges mt-2" *ngIf="jobSignals$ | async as signals">
+              <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{badge.label}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   </div>
 
 

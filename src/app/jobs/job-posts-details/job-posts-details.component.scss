@@ -244,6 +244,78 @@
 		border-radius: 2px !important;
 	}
 
+  // V3: Hero image section — shown when employer has uploaded a banner.
+  // fetchpriority="high" on the <img> makes it the LCP candidate; no lazy load.
+  .gh-job-hero-media {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    min-height: 220px;
+    max-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gh-job-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    min-height: 220px;
+    max-height: 420px;
+    // Fixed aspect-ratio container avoids CLS: 1200×400 = 3:1
+    aspect-ratio: 3 / 1;
+
+    @media (max-width: 768px) {
+      max-height: 280px;
+      aspect-ratio: 16 / 9;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      // Subtle fade-in as image loads
+      animation: gh-hero-img-reveal 0.3s ease both;
+    }
+  }
+
+  @keyframes gh-hero-img-reveal {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .gh-job-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.55) 60%,
+      rgba(0, 0, 0, 0.70) 100%
+    );
+    pointer-events: none;
+  }
+
+  .gh-job-hero-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    color: #fff;
+
+    .title-banner {
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    .title-banner-description {
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+  }
+
 	.bg-banner{
 		background: url(~/src/assets/images/placeholder/job-post-banner.png);
 		background-repeat: no-repeat;

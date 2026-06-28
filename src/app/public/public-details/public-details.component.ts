@@ -63,12 +63,18 @@ export class PublicDetailsComponent implements OnInit, OnDestroy {
       const description = `Apply for ${job.jobTitle} at ${companyName}. ` +
         `View job details, location, requirements, and apply on GetHired Online.`;
 
+      // V3: use job's own hero banner as the OG/social image when available;
+      // falls back to seoService DEFAULT_OG_IMAGE automatically when undefined.
+      const bannerUrl: string | undefined = (job as any).jobBanner || undefined;
+
       this.seoService.setPageMeta({
         title,
         description,
         canonical: `https://gethiredonline.app/jobs/details/${this.jobId}`,
         robots: job.jobStatusId === 2 ? 'index, follow' : 'noindex, nofollow',
         ogType: 'article',
+        ogImage: bannerUrl,
+        ogImageAlt: `${job.jobTitle} at ${companyName}`,
       });
 
       this.seoService.setBreadcrumbJsonLd([
