@@ -4,7 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { SeoService } from '@app-core/services/seo.service';
-import { SearchService, SearchResponse, SearchJobResult } from '@app-core/services/search.service';
+import {
+  SearchService, FederatedSearchResponse, SearchJobResult, SearchCompanyResult,
+  CompanySpotlight, SearchCounts, EmptyRecovery,
+} from '@app-core/services/search.service';
+
+export type SearchTab = 'all' | 'jobs' | 'companies';
 
 @Component({
   selector: 'app-public-list',
@@ -23,7 +28,7 @@ export class PublicListComponent implements OnInit, OnDestroy {
     }
   };
 
-  userRole: string = '';
+  userRole = '';
   screenSize = 1600;
 
   // Search state
@@ -31,11 +36,20 @@ export class PublicListComponent implements OnInit, OnDestroy {
   searchLoading = false;
   searchError = false;
   activeQuery = '';
+  activeTab: SearchTab = 'all';
   activeFilters: { workSetup?: string; employmentType?: string; location?: string; sort?: string } = {};
-  searchResults: SearchJobResult[] = [];
-  searchTotal = 0;
   searchPage = 1;
-  hasMoreResults = false;
+
+  // Federated results
+  jobResults: SearchJobResult[] = [];
+  companyResults: SearchCompanyResult[] = [];
+  counts: SearchCounts = { all: 0, jobs: 0, companies: 0 };
+  jobsTotal = 0;
+  companiesTotal = 0;
+  jobsHasMore = false;
+  companiesHasMore = false;
+  companySpotlight: CompanySpotlight | null = null;
+  emptyRecovery: EmptyRecovery | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -53,7 +67,6 @@ export class PublicListComponent implements OnInit, OnDestroy {
     }
     this.getUserRole();
 
-    // React to query param changes (supports back/forward navigation)
     this.route.queryParams.pipe(
       distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
       switchMap(params => {
@@ -63,10 +76,12 @@ export class PublicListComponent implements OnInit, OnDestroy {
         const employmentType = params['employmentType'] || null;
         const sort = params['sort'] || 'relevance';
         const page = parseInt(params['page'], 10) || 1;
+        const tab = (params['type'] || 'all') as SearchTab;
 
         this.activeQuery = q;
         this.activeFilters = { workSetup, employmentType, location, sort };
         this.searchPage = page;
+        this.activeTab = ['all', 'jobs', 'companies'].indexOf(tab) !== -1 ? tab : 'all';
         this.isSearchMode = !!(q || workSetup || employmentType || location);
 
         this.updateSeo(q);
@@ -74,12 +89,13 @@ export class PublicListComponent implements OnInit, OnDestroy {
         if (this.isSearchMode) {
           this.searchLoading = true;
           this.searchError = false;
+          this.clearResults();
           return this.searchService.searchPublic({
             q, location, workSetup: workSetup || undefined, employmentType: employmentType || undefined,
-            sort: (sort as any), scope: 'jobs', page,
+            sort: sort || undefined, type: this.activeTab, page,
           });
         }
-        // Browse-all: SEO
+
         this.seoService.setPageMeta({
           title: 'Browse Jobs in the Philippines | GetHired Online',
           description: 'Search thousands of job opportunities in the Philippines. Apply online and track your applications with GetHired Online.',
@@ -95,38 +111,65 @@ export class PublicListComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     ).subscribe({
       next: (res: any) => {
-        if (res && res.results) {
-          this.searchResults = res.results as SearchJobResult[];
-          this.searchTotal = res.pagination ? res.pagination.total : 0;
-          this.hasMoreResults = res.pagination ? res.pagination.hasMore : false;
+        if (res && res.counts !== undefined) {
+          // New federated response
+          const fed = res as FederatedSearchResponse;
+          this.counts = fed.counts || { all: 0, jobs: 0, companies: 0 };
+          this.jobResults = (fed.groups && fed.groups.jobs) ? fed.groups.jobs.items : [];
+          this.companyResults = (fed.groups && fed.groups.companies) ? fed.groups.companies.items : [];
+          this.jobsTotal = (fed.groups && fed.groups.jobs) ? fed.groups.jobs.total : 0;
+          this.companiesTotal = (fed.groups && fed.groups.companies) ? fed.groups.companies.total : 0;
+          this.jobsHasMore = !!(fed.groups && fed.groups.jobs && fed.groups.jobs.hasMore);
+          this.companiesHasMore = !!(fed.groups && fed.groups.companies && fed.groups.companies.hasMore);
+          this.companySpotlight = fed.companySpotlight || null;
+          this.emptyRecovery = fed.emptyRecovery || null;
         }
         this.searchLoading = false;
       },
       error: () => {
         this.searchLoading = false;
         this.searchError = true;
-      }
+      },
     });
+  }
+
+  private clearResults() {
+    this.jobResults = [];
+    this.companyResults = [];
+    this.counts = { all: 0, jobs: 0, companies: 0 };
+    this.companySpotlight = null;
+    this.emptyRecovery = null;
   }
 
   private updateSeo(q: string) {
     const title = q
-      ? `"${q}" Jobs in the Philippines | GetHired Online`
+      ? `"${q}" Jobs & Companies in the Philippines | GetHired Online`
       : 'Job Search Results | GetHired Online';
     this.seoService.setPageMeta({
       title,
       description: q
-        ? `Find "${q}" jobs in the Philippines on GetHired Online. Filter by location, work setup, and job type.`
+        ? `Find "${q}" jobs and companies in the Philippines on GetHired Online. Filter by location, work setup, and job type.`
         : 'Search job opportunities in the Philippines on GetHired Online.',
       canonical: 'https://gethiredonline.app/jobs',
       robots: 'noindex, follow',
     });
   }
 
+  switchTab(tab: SearchTab) {
+    const qp = this.buildCurrentParams();
+    if (tab !== 'all') {
+      qp['type'] = tab;
+    } else {
+      delete qp['type'];
+    }
+    qp['page'] = '1';
+    this.router.navigate(['/jobs'], { queryParams: qp });
+    this.vibrate(5);
+  }
+
   onSearchSubmit(q: string) {
     const qp: any = {};
     if (q) qp['q'] = q;
-    Object.assign(qp, this.activeFilters);
     qp['page'] = '1';
     this.router.navigate(['/jobs'], { queryParams: qp });
   }
@@ -139,7 +182,10 @@ export class PublicListComponent implements OnInit, OnDestroy {
   }
 
   clearAllFilters() {
-    this.router.navigate(['/jobs'], { queryParams: this.activeQuery ? { q: this.activeQuery } : {} });
+    const qp: any = {};
+    if (this.activeQuery) qp['q'] = this.activeQuery;
+    if (this.activeTab !== 'all') qp['type'] = this.activeTab;
+    this.router.navigate(['/jobs'], { queryParams: qp });
   }
 
   browseAll() {
@@ -150,6 +196,9 @@ export class PublicListComponent implements OnInit, OnDestroy {
     const qp = this.buildCurrentParams();
     qp['page'] = String(p);
     this.router.navigate(['/jobs'], { queryParams: qp });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   private buildCurrentParams(): any {
@@ -159,6 +208,7 @@ export class PublicListComponent implements OnInit, OnDestroy {
     if (this.activeFilters.employmentType) qp['employmentType'] = this.activeFilters.employmentType;
     if (this.activeFilters.location) qp['location'] = this.activeFilters.location;
     if (this.activeFilters.sort && this.activeFilters.sort !== 'relevance') qp['sort'] = this.activeFilters.sort;
+    if (this.activeTab !== 'all') qp['type'] = this.activeTab;
     return qp;
   }
 
@@ -178,11 +228,55 @@ export class PublicListComponent implements OnInit, OnDestroy {
     this.applyFilter(chip.key, null);
   }
 
+  // Visible jobs/companies based on active tab
+  get visibleJobs(): SearchJobResult[] {
+    return this.activeTab === 'companies' ? [] : this.jobResults;
+  }
+
+  get visibleCompanies(): SearchCompanyResult[] {
+    return this.activeTab === 'jobs' ? [] : this.companyResults;
+  }
+
+  get hasJobsNextPage(): boolean {
+    return this.activeTab !== 'companies' && this.jobsHasMore;
+  }
+
+  get hasCompaniesNextPage(): boolean {
+    return this.activeTab !== 'jobs' && this.companiesHasMore;
+  }
+
+  get countSummary(): string {
+    const tab = this.activeTab;
+    if (tab === 'jobs') return this.counts.jobs + ' job' + (this.counts.jobs === 1 ? '' : 's');
+    if (tab === 'companies') return this.counts.companies + ' compan' + (this.counts.companies === 1 ? 'y' : 'ies');
+    return this.counts.all + ' result' + (this.counts.all === 1 ? '' : 's');
+  }
+
+  get emptyRecoveryMessage(): string {
+    if (!this.emptyRecovery) return '';
+    return this.emptyRecovery.message;
+  }
+
+  get isAllEmpty(): boolean {
+    return !this.searchLoading && !this.searchError && this.counts.all === 0;
+  }
+
+  get showSpotlight(): boolean {
+    return !!(this.activeTab === 'all' && this.companySpotlight);
+  }
+
   async getUserRole() {
     this.userRole = await this.asyncLocalStorage.getItem('role') || '';
   }
 
   trackByJobId(_: number, job: SearchJobResult) { return job.jobId; }
+  trackByCompanyId(_: number, company: SearchCompanyResult) { return company.companyId; }
+
+  vibrate(ms: number) {
+    if (isPlatformBrowser(this.platformId) && typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(ms);
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

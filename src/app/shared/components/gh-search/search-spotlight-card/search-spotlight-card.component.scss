@@ -1,0 +1,202 @@
+.gh-spotlight {
+  background: linear-gradient(135deg, #1a1830 0%, #2d2b5e 100%);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  animation: gh-spotlight-in 0.25s ease-out;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+@keyframes gh-spotlight-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gh-spotlight-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #FFB347;
+  margin-bottom: 14px;
+
+  svg { stroke: #FFB347; }
+}
+
+.gh-spotlight-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gh-spotlight-logo-wrap {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,0.15);
+}
+
+.gh-spotlight-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gh-spotlight-logo-fallback {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.gh-spotlight-info {
+  flex: 1;
+  min-width: 140px;
+}
+
+.gh-spotlight-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+}
+
+.gh-spotlight-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gh-spotlight-meta-item {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+
+  &--jobs {
+    color: #6EE7B7;
+    font-weight: 700;
+  }
+}
+
+.gh-spotlight-ctas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+.gh-spotlight-btn {
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  min-height: 40px;
+  border: none;
+  white-space: nowrap;
+
+  &:active { transform: scale(0.97); }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+
+  &--primary {
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+    color: #fff;
+    &:hover { opacity: 0.9; }
+  }
+
+  &--secondary {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    &:hover { background: rgba(255,255,255,0.18); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    transform: none !important;
+  }
+}
+
+.gh-spotlight-jobs {
+  margin-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 14px;
+}
+
+.gh-spotlight-jobs-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 8px;
+}
+
+.gh-spotlight-job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gh-spotlight-job-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+
+  &:hover { background: rgba(255,255,255,0.12); }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+
+  svg { flex-shrink: 0; stroke: rgba(255,255,255,0.35); margin-left: auto; }
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+
+.gh-spotlight-job-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gh-spotlight-job-chips {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) { display: none; }
+}
+
+.gh-spotlight-job-chip {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.08);
+  border-radius: 6px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}

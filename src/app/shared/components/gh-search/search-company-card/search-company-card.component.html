@@ -1,0 +1,75 @@
+<article class="gh-company-card"
+  role="article"
+  tabindex="0"
+  (click)="viewCompany()"
+  (keydown.enter)="viewCompany()"
+  (keydown.space)="viewCompany()">
+
+  <!-- Logo -->
+  <div class="gh-cc-logo-wrap" aria-hidden="true">
+    <img
+      *ngIf="company.companyLogoUrl && !logoError"
+      [src]="company.companyLogoUrl"
+      [alt]="company.companyName + ' logo'"
+      class="gh-cc-logo"
+      loading="lazy"
+      decoding="async"
+      (error)="onLogoError()" />
+    <span *ngIf="!company.companyLogoUrl || logoError" class="gh-cc-logo-fallback">
+      {{ initial }}
+    </span>
+  </div>
+
+  <!-- Content -->
+  <div class="gh-cc-body">
+
+    <!-- Top row -->
+    <div class="gh-cc-top">
+      <h3 class="gh-cc-name">{{ company.companyName }}</h3>
+      <span class="gh-cc-badge" aria-label="Company result type">Company</span>
+    </div>
+
+    <!-- Meta -->
+    <div class="gh-cc-meta" role="list">
+      <span *ngIf="company.industry" class="gh-cc-meta-item" role="listitem">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        </svg>
+        {{ company.industry }}
+      </span>
+      <span *ngIf="company.location" class="gh-cc-meta-item" role="listitem">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        {{ company.location }}
+      </span>
+      <span class="gh-cc-meta-item gh-cc-meta-item--jobs" role="listitem">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+        </svg>
+        {{ company.openJobsCount }} open role{{ company.openJobsCount === 1 ? '' : 's' }}
+      </span>
+    </div>
+
+    <!-- CTAs -->
+    <div class="gh-cc-actions">
+      <button
+        *ngIf="company.companySlug"
+        class="gh-cc-btn gh-cc-btn--secondary"
+        type="button"
+        [attr.aria-label]="'View ' + company.companyName + ' company profile'"
+        (click)="$event.stopPropagation(); viewCompany()">
+        View company
+      </button>
+      <button
+        class="gh-cc-btn gh-cc-btn--primary"
+        type="button"
+        [attr.aria-label]="'View jobs at ' + company.companyName"
+        (click)="$event.stopPropagation(); vibrate(5); viewJobs()">
+        View {{ company.openJobsCount }} job{{ company.openJobsCount === 1 ? '' : 's' }}
+      </button>
+    </div>
+
+  </div>
+
+</article>

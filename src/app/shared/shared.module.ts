@@ -51,6 +51,8 @@ import { SearchAutocompleteComponent } from './components/gh-search/search-autoc
 import { SearchJobCardComponent } from './components/gh-search/search-job-card/search-job-card.component';
 import { SearchSkeletonComponent } from './components/gh-search/search-skeleton/search-skeleton.component';
 import { SearchEmptyStateComponent } from './components/gh-search/search-empty-state/search-empty-state.component';
+import { SearchCompanyCardComponent } from './components/gh-search/search-company-card/search-company-card.component';
+import { SearchSpotlightCardComponent } from './components/gh-search/search-spotlight-card/search-spotlight-card.component';
 
 
 const classesToInclude: any[] = [
@@ -93,6 +95,8 @@ const classesToInclude: any[] = [
   SearchJobCardComponent,
   SearchSkeletonComponent,
   SearchEmptyStateComponent,
+  SearchCompanyCardComponent,
+  SearchSpotlightCardComponent,
 ];
 
 @NgModule({

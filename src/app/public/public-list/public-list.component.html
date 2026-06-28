@@ -1,7 +1,7 @@
-<!-- ── SEARCH MODE: server-side results ─────────────────────────────────── -->
+<!-- ── SEARCH MODE ──────────────────────────────────────────────────────────── -->
 <ng-container *ngIf="isSearchMode; else browseMode">
 
-  <!-- Search header bar -->
+  <!-- Search header -->
   <div class="gh-search-page-header">
     <div class="gh-search-page-inner">
       <app-search-autocomplete
@@ -13,16 +13,47 @@
     </div>
   </div>
 
-  <!-- Results content -->
+  <!-- Results body -->
   <div class="gh-search-page-body">
     <div class="gh-search-page-inner">
 
+      <!-- ── TABS ───────────────────────────────────────────────────────────── -->
+      <nav class="gh-search-tabs" role="tablist" aria-label="Filter results by type">
+        <button
+          class="gh-search-tab"
+          [class.gh-search-tab--active]="activeTab === 'all'"
+          role="tab"
+          [attr.aria-selected]="activeTab === 'all'"
+          type="button"
+          (click)="switchTab('all')">
+          All
+          <span *ngIf="!searchLoading && counts.all > 0" class="gh-tab-count">{{ counts.all }}</span>
+        </button>
+        <button
+          class="gh-search-tab"
+          [class.gh-search-tab--active]="activeTab === 'jobs'"
+          role="tab"
+          [attr.aria-selected]="activeTab === 'jobs'"
+          type="button"
+          (click)="switchTab('jobs')">
+          Jobs
+          <span *ngIf="!searchLoading && counts.jobs > 0" class="gh-tab-count">{{ counts.jobs }}</span>
+        </button>
+        <button
+          class="gh-search-tab"
+          [class.gh-search-tab--active]="activeTab === 'companies'"
+          role="tab"
+          [attr.aria-selected]="activeTab === 'companies'"
+          type="button"
+          (click)="switchTab('companies')">
+          Companies
+          <span *ngIf="!searchLoading && counts.companies > 0" class="gh-tab-count">{{ counts.companies }}</span>
+        </button>
+      </nav>
+
       <!-- Active filter chips -->
       <div *ngIf="activeFilterChips.length > 0" class="gh-search-chips" aria-label="Active filters">
-        <span
-          *ngFor="let chip of activeFilterChips"
-          class="gh-chip"
-          role="status">
+        <span *ngFor="let chip of activeFilterChips" class="gh-chip" role="status">
           {{ chip.label }}
           <button
             class="gh-chip-remove"
@@ -41,7 +72,6 @@
 
       <!-- Filter row -->
       <div class="gh-search-controls">
-        <!-- Work setup filter -->
         <select class="gh-search-select" aria-label="Work setup filter"
           [value]="activeFilters.workSetup || ''"
           (change)="applyFilter('workSetup', $any($event.target).value || null)">
@@ -51,7 +81,6 @@
           <option value="hybrid">Hybrid</option>
         </select>
 
-        <!-- Employment type filter -->
         <select class="gh-search-select" aria-label="Employment type filter"
           [value]="activeFilters.employmentType || ''"
           (change)="applyFilter('employmentType', $any($event.target).value || null)">
@@ -61,7 +90,6 @@
           <option value="contractor">Contractor</option>
         </select>
 
-        <!-- Sort -->
         <select class="gh-search-select gh-search-select--sort" aria-label="Sort results"
           [value]="activeFilters.sort || 'relevance'"
           (change)="applyFilter('sort', $any($event.target).value)">
@@ -70,68 +98,112 @@
           <option value="salary_high">Highest salary</option>
         </select>
 
-        <!-- Result count -->
         <span class="gh-search-count" aria-live="polite" aria-atomic="true">
-          <ng-container *ngIf="!searchLoading && searchTotal > 0">
-            {{ searchTotal | number }} result{{ searchTotal === 1 ? '' : 's' }}
-          </ng-container>
+          <ng-container *ngIf="!searchLoading && counts.all > 0">{{ countSummary }}</ng-container>
         </span>
       </div>
 
-      <!-- Loading skeleton -->
+      <!-- ── LOADING ─────────────────────────────────────────────────────────── -->
       <app-search-skeleton *ngIf="searchLoading" [count]="6"></app-search-skeleton>
 
-      <!-- Error state -->
+      <!-- ── ERROR ──────────────────────────────────────────────────────────── -->
       <div *ngIf="!searchLoading && searchError" class="gh-search-error" role="alert">
         <p>Search is temporarily unavailable. Please try again in a moment.</p>
-        <button class="gh-se-btn gh-se-btn--primary" type="button"
-          (click)="onSearchSubmit(activeQuery)">Try again</button>
+        <button class="gh-se-btn gh-se-btn--primary" type="button" (click)="onSearchSubmit(activeQuery)">Try again</button>
       </div>
 
-      <!-- Results list -->
-      <div *ngIf="!searchLoading && !searchError" class="gh-search-results" role="region" aria-label="Search results">
-        <app-search-job-card
-          *ngFor="let job of searchResults; trackBy: trackByJobId"
-          [job]="job">
-        </app-search-job-card>
+      <!-- ── RESULTS ─────────────────────────────────────────────────────────── -->
+      <ng-container *ngIf="!searchLoading && !searchError">
 
-        <!-- No results -->
+        <!-- Company spotlight (All tab, strong company match) -->
+        <app-search-spotlight-card
+          *ngIf="showSpotlight"
+          [spotlight]="companySpotlight"
+          [query]="activeQuery">
+        </app-search-spotlight-card>
+
+        <!-- Jobs section -->
+        <section
+          *ngIf="activeTab !== 'companies'"
+          class="gh-search-section"
+          aria-label="Job results">
+
+          <h2 *ngIf="activeTab === 'all' && visibleJobs.length > 0" class="gh-search-section-title">
+            Jobs <span class="gh-section-count">{{ counts.jobs }}</span>
+          </h2>
+
+          <div class="gh-search-results" role="list">
+            <app-search-job-card
+              *ngFor="let job of visibleJobs; trackBy: trackByJobId"
+              [job]="job"
+              role="listitem">
+            </app-search-job-card>
+          </div>
+
+          <!-- Jobs pagination -->
+          <div *ngIf="visibleJobs.length > 0 && (searchPage > 1 || hasJobsNextPage)" class="gh-search-pagination" aria-label="Jobs pagination">
+            <button *ngIf="searchPage > 1" class="gh-pag-btn" type="button" (click)="changePage(searchPage - 1)">← Previous</button>
+            <span class="gh-pag-info">Page {{ searchPage }}</span>
+            <button *ngIf="hasJobsNextPage" class="gh-pag-btn gh-pag-btn--primary" type="button" (click)="changePage(searchPage + 1)">Next →</button>
+          </div>
+        </section>
+
+        <!-- Companies section -->
+        <section
+          *ngIf="activeTab !== 'jobs'"
+          class="gh-search-section"
+          [class.gh-search-section--companies]="true"
+          aria-label="Company results">
+
+          <h2 *ngIf="activeTab === 'all' && visibleCompanies.length > 0" class="gh-search-section-title">
+            Companies <span class="gh-section-count">{{ counts.companies }}</span>
+          </h2>
+
+          <div class="gh-company-results" role="list">
+            <app-search-company-card
+              *ngFor="let company of visibleCompanies; trackBy: trackByCompanyId"
+              [company]="company"
+              role="listitem">
+            </app-search-company-card>
+          </div>
+
+          <!-- Companies pagination -->
+          <div *ngIf="visibleCompanies.length > 0 && (searchPage > 1 || hasCompaniesNextPage)" class="gh-search-pagination" aria-label="Companies pagination">
+            <button *ngIf="searchPage > 1" class="gh-pag-btn" type="button" (click)="changePage(searchPage - 1)">← Previous</button>
+            <span class="gh-pag-info">Page {{ searchPage }}</span>
+            <button *ngIf="hasCompaniesNextPage" class="gh-pag-btn gh-pag-btn--primary" type="button" (click)="changePage(searchPage + 1)">Next →</button>
+          </div>
+        </section>
+
+        <!-- Empty state: partial results (jobs only) -->
+        <div *ngIf="!isAllEmpty && activeTab === 'all' && emptyRecovery?.type === 'companies_missing'" class="gh-search-partial-note" role="status">
+          No matching companies found. Showing job results only.
+        </div>
+
+        <!-- Empty state: partial results (companies only) -->
+        <div *ngIf="!isAllEmpty && activeTab === 'all' && emptyRecovery?.type === 'jobs_missing'" class="gh-search-partial-note" role="status">
+          No matching jobs found. Showing companies only.
+        </div>
+
+        <!-- Fully empty state -->
         <app-search-empty-state
-          *ngIf="searchResults.length === 0"
+          *ngIf="isAllEmpty"
           [query]="activeQuery"
           [hasFilters]="hasActiveFilters"
           (clearFilters)="clearAllFilters()"
           (browseAll)="browseAll()">
         </app-search-empty-state>
-      </div>
 
-      <!-- Pagination -->
-      <div *ngIf="!searchLoading && searchResults.length > 0" class="gh-search-pagination" aria-label="Results pagination">
-        <button
-          *ngIf="searchPage > 1"
-          class="gh-pag-btn"
-          type="button"
-          (click)="changePage(searchPage - 1)">
-          ← Previous
-        </button>
-        <span class="gh-pag-info">Page {{ searchPage }}</span>
-        <button
-          *ngIf="hasMoreResults"
-          class="gh-pag-btn gh-pag-btn--primary"
-          type="button"
-          (click)="changePage(searchPage + 1)">
-          Next →
-        </button>
-      </div>
+      </ng-container>
 
     </div>
   </div>
+
 </ng-container>
 
-<!-- ── BROWSE MODE: existing job board ─────────────────────────────────────── -->
+<!-- ── BROWSE MODE ─────────────────────────────────────────────────────────── -->
 <ng-template #browseMode>
 
-  <!-- Search bar at top of browse mode -->
   <div class="gh-search-page-header gh-search-page-header--browse">
     <div class="gh-search-page-inner">
       <app-search-autocomplete
@@ -142,10 +214,8 @@
     </div>
   </div>
 
-  <!-- Companies -->
   <app-public-companies-recommended></app-public-companies-recommended>
 
-  <!-- JOB POSTS (existing) -->
   <div class="container-fluid mb-2">
     <div class="mt-5 px-lg-5">
       <app-job-board-employer-cta></app-job-board-employer-cta>
@@ -154,4 +224,5 @@
   </div>
 
   <app-public-explore-users [userRole]="userRole"></app-public-explore-users>
+
 </ng-template>
