@@ -124,9 +124,16 @@ export class ProfileBasicInfoComponent implements OnInit {
     }
   }
 
-  onUpload(item: any) {
-    this.profileImage = item;
-    this.profileDetailsForm.controls['profileImage'].setValue(item.file)
+  onAvatarUploaded(result: any): void {
+    this.photo = result.primaryUrl;
+    this.profileImage = null;
+    this.profileDetailsForm.get('photoUrl').setValue(result.primaryUrl);
+  }
+
+  onAvatarClear(): void {
+    this.photo = null;
+    this.profileImage = null;
+    this.profileDetailsForm.get('photoUrl').setValue(null);
   }
 
   submitForm() {
@@ -135,7 +142,7 @@ export class ProfileBasicInfoComponent implements OnInit {
 
       const isProfileReady = applicant.firstName != ""
         && applicant.lastName != ""
-        && applicant.profileImage
+        && (applicant.photoUrl != null && applicant.photoUrl != '')
         && applicant.jobTitle != ""
         && applicant.email != ""
         && applicant.contactNumber != ""

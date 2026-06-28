@@ -173,17 +173,16 @@
 
       <!-- Banner upload -->
       <div class="gh-field mb-4">
-        <label class="gh-label">Job banner image <span class="gh-label-required" aria-label="required">*</span></label>
-        <p class="gh-field-helper">Recommended size: 1200 × 400 px. Max 300 MB.</p>
-        <div class="gh-dropzone-wrap">
-          <app-drag-and-drop
-            [maxSize]="300000000"
-            (upload)="getBanner($event)"
-            multipleAttachmentTitle="Upload banner image"
-            [isMultiple]="false"
-            [fileArray]="bannerSelected.value"
-          ></app-drag-and-drop>
-        </div>
+        <label class="gh-label">Job banner image <span class="gh-label-optional">(optional)</span></label>
+        <app-gh-image-upload
+          purpose="job_banner"
+          label=""
+          hint="JPG, PNG, or WebP · Max 12 MB · Recommended 1200 × 400 px"
+          [currentUrl]="bannerUrl || ''"
+          previewShape="wide"
+          (uploaded)="onBannerUploaded($event)"
+          (cleared)="onBannerClear()"
+        ></app-gh-image-upload>
       </div>
 
       <!-- Badges -->

@@ -8,29 +8,15 @@
     </div>
 
     <div class="as-avatar-section">
-      <!-- Preview -->
-      <div class="as-avatar-preview" [class.as-avatar-preview--photo]="avatarPreviewUrl">
-        <img *ngIf="avatarPreviewUrl" [src]="avatarPreviewUrl" alt="Your profile photo" class="as-avatar-img">
-        <span *ngIf="!avatarPreviewUrl" class="as-avatar-initials" aria-hidden="true">{{ avatarInitials }}</span>
-      </div>
-
-      <!-- Actions -->
-      <div class="as-avatar-actions">
-        <input #avatarInput type="file" accept="image/jpeg,image/png,image/webp"
-          class="as-avatar-file-input" aria-label="Upload profile photo"
-          (change)="onAvatarFileSelected($event)">
-        <button type="button" class="as-btn as-btn--secondary" (click)="triggerAvatarPicker()">
-          {{ avatarPreviewUrl ? 'Change photo' : 'Upload photo' }}
-        </button>
-        <button *ngIf="avatarPreviewUrl" type="button" class="as-btn as-btn--ghost" (click)="removeAvatar()">
-          Remove
-        </button>
-        <p class="as-avatar-hint">JPG, PNG, or WebP. Max 2 MB.</p>
-        <p *ngIf="avatarError" class="as-avatar-err" role="alert">{{ avatarError }}</p>
-        <p *ngIf="pendingAvatarBase64" class="as-avatar-pending">
-          Photo staged — save profile below to apply.
-        </p>
-      </div>
+      <app-gh-image-upload
+        purpose="recruiter_avatar"
+        label=""
+        hint="JPG, PNG, or WebP · Max 2 MB"
+        [currentUrl]="avatarPreviewUrl || ''"
+        previewShape="circle"
+        (uploaded)="onAvatarUploaded($event)"
+        (cleared)="removeAvatar()"
+      ></app-gh-image-upload>
     </div>
   </div>
 

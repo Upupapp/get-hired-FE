@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -10,9 +10,6 @@ import { Subscription } from 'rxjs';
 
 type PwState = 'idle' | 'saving' | 'success' | 'wrong_current' | 'weak' | 'same_as_old' | 'rate_limited' | 'network' | 'server';
 
-const AVATAR_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
-const AVATAR_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-
 @Component({
   selector: 'app-employer-account-settings',
   templateUrl: './employer-account-settings.component.html',
@@ -20,7 +17,6 @@ const AVATAR_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   animations: [mainAnimations]
 })
 export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
-  @ViewChild('avatarInput') avatarInput!: ElementRef<HTMLInputElement>;
 
   profileForm!: FormGroup;
   pwForm!: FormGroup;
@@ -142,35 +138,10 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
 
   // ── Avatar ──────────────────────────────────────────────────────────────────
 
-  triggerAvatarPicker(): void {
-    if (this.avatarInput) { this.avatarInput.nativeElement.click(); }
-  }
-
-  onAvatarFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files && input.files[0];
+  onAvatarUploaded(result: any): void {
+    this.avatarPreviewUrl = result.primaryUrl;
+    this.pendingAvatarBase64 = '';
     this.avatarError = '';
-
-    if (!file) { return; }
-
-    if (!AVATAR_ALLOWED_TYPES.includes(file.type)) {
-      this.avatarError = 'Please upload a JPG, PNG, or WebP image.';
-      input.value = '';
-      return;
-    }
-    if (file.size > AVATAR_MAX_BYTES) {
-      this.avatarError = 'Photo must be under 2 MB.';
-      input.value = '';
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      this.pendingAvatarBase64 = e.target.result;
-      this.avatarPreviewUrl = e.target.result;
-    };
-    reader.readAsDataURL(file);
-    input.value = '';
   }
 
   removeAvatar(): void {
