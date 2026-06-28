@@ -85,8 +85,7 @@ export class PublicJobNormalizerService {
       badges: this.toBadges(raw.badges),
 
       applyStatus: raw.isApplied === true ? 'applied' : 'not_applied',
-      // No saved-job endpoint exists today — see backend optional changes doc.
-      savedStatus: 'unknown',
+      savedStatus: raw.isSaved === true ? 'saved' : (raw.isSaved === false ? 'not_saved' : 'unknown'),
     };
   }
 

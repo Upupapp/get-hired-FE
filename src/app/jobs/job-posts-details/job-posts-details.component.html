@@ -20,10 +20,8 @@
     </ol>
   </nav>
 
-  <div class="p-0" style="overflow-x: hidden;" id="banner" *ngIf="withBanner">
-    <!-- V3: When employer has uploaded a hero banner, display it as a real
-         image (LCP element — not lazy loaded, fetchpriority high).
-         Fallback to the CSS gradient when no banner exists. -->
+  <!-- HERO: employer image or CSS gradient fallback -->
+  <div class="p-0" id="banner" *ngIf="withBanner">
     <ng-container *ngIf="selectedJobPost?.jobBanner; else cssHeroBanner">
       <div class="gh-job-hero-media" role="img" [attr.aria-label]="(selectedJobPost?.jobTitle || '') + ' hero image'">
         <img
@@ -37,15 +35,18 @@
         />
         <div class="gh-job-hero-overlay" aria-hidden="true"></div>
         <div class="gh-job-hero-text" [@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
-          <h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
-          <p class="title-banner-description mb-2" *ngIf="normalizedJob$ | async as nJob">
-            <ng-container *ngIf="selectedJobPost?.industryId">
-              {{selectedJobPost?.industryName}} /
-            </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} /
-            {{nJob.salaryDisplay}}
+          <div class="gh-hero-company-row" *ngIf="$any(selectedJobPost)?.companyLogo || selectedJobPost?.companyName">
+            <img *ngIf="$any(selectedJobPost)?.companyLogo" [src]="$any(selectedJobPost).companyLogo" [alt]="selectedJobPost.companyName + ' logo'" class="gh-hero-company-logo" />
+            <div *ngIf="!$any(selectedJobPost)?.companyLogo && selectedJobPost?.companyName" class="gh-hero-company-logo gh-hero-company-logo--fallback" aria-hidden="true">{{ selectedJobPost.companyName.charAt(0) }}</div>
+            <span class="gh-hero-company-name">{{ selectedJobPost?.companyName }}</span>
+          </div>
+          <h1 class="title-banner">{{ selectedJobPost?.jobTitle }}</h1>
+          <p class="title-banner-description mb-2">
+            <ng-container *ngIf="selectedJobPost?.industryId">{{ selectedJobPost?.industryName }} &middot; </ng-container>
+            {{ selectedJobPost?.jobTypeName }} &middot; {{ selectedJobPost?.workSetupName }}
           </p>
           <div class="job-signal-badges mt-2" *ngIf="jobSignals$ | async as signals">
-            <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{badge.label}}</span>
+            <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{ badge.label }}</span>
           </div>
         </div>
       </div>
@@ -55,15 +56,18 @@
       <div class="row">
         <div class="row px-5 text-white py-5 bg-banner col-12 col-lg-12">
           <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
-            <h5 class="title-banner">{{selectedJobPost?.jobTitle}}</h5>
-            <p class="title-banner-description mb-2" *ngIf="normalizedJob$ | async as nJob">
-              <ng-container *ngIf="selectedJobPost?.industryId">
-                {{selectedJobPost?.industryName}} /
-              </ng-container> {{selectedJobPost?.jobTypeName}} / {{selectedJobPost?.workSetupName}} /
-              {{nJob.salaryDisplay}}
+            <div class="gh-hero-company-row gh-hero-company-row--centered mb-2" *ngIf="$any(selectedJobPost)?.companyLogo || selectedJobPost?.companyName">
+              <img *ngIf="$any(selectedJobPost)?.companyLogo" [src]="$any(selectedJobPost).companyLogo" [alt]="selectedJobPost.companyName + ' logo'" class="gh-hero-company-logo" />
+              <div *ngIf="!$any(selectedJobPost)?.companyLogo && selectedJobPost?.companyName" class="gh-hero-company-logo gh-hero-company-logo--fallback" aria-hidden="true">{{ selectedJobPost.companyName.charAt(0) }}</div>
+              <span class="gh-hero-company-name">{{ selectedJobPost?.companyName }}</span>
+            </div>
+            <h1 class="title-banner">{{ selectedJobPost?.jobTitle }}</h1>
+            <p class="title-banner-description mb-2">
+              <ng-container *ngIf="selectedJobPost?.industryId">{{ selectedJobPost?.industryName }} &middot; </ng-container>
+              {{ selectedJobPost?.jobTypeName }} &middot; {{ selectedJobPost?.workSetupName }}
             </p>
             <div class="job-signal-badges mt-2" *ngIf="jobSignals$ | async as signals">
-              <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{badge.label}}</span>
+              <span class="signal-badge" *ngFor="let badge of signals.primaryBadges">{{ badge.label }}</span>
             </div>
           </div>
         </div>
@@ -71,218 +75,358 @@
     </ng-template>
   </div>
 
+  <!-- Two-column layout -->
+  <ng-container *ngIf="normalizedJob$ | async as nJob">
+    <div class="gh-detail-layout">
 
-  <div class="card card-body" style="min-height: 400px;" [@animate]="{value:'*', params:{ y:'10px', delay:'400ms' }}">
-    <div class="row">
-      <div class="col-12 col-md-9 d-flex flex-row flex-wrap">
-        <div class="mb-3 pe-lg-2" *ngFor="let badge of selectedJobPost?.badges; let i = index">
-          <div class="d-flex badge-card" [ngClass]="'badge-' + i">
-            <img src="/assets/images/placeholder/icons/{{badge?.icon}}" [title]="badge?.name" style="height:30px"
-              class="me-2">
+      <!-- LEFT: main content -->
+      <main class="gh-detail-main" id="gh-detail-main">
 
-            <h5 class="title-badge">{{badge?.name}}</h5>
+        <!-- Quick facts snapshot grid -->
+        <div class="gh-snapshot-grid card card-body mb-3">
+          <div class="gh-snapshot-item" *ngIf="nJob.jobType">
+            <i class="bi bi-briefcase gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Job type</span>
+              <span class="gh-snapshot-value">{{ nJob.jobType }}</span>
+            </div>
+          </div>
+          <div class="gh-snapshot-item" *ngIf="nJob.workSetup">
+            <i class="bi bi-laptop gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Work setup</span>
+              <span class="gh-snapshot-value">{{ nJob.workSetup }}</span>
+            </div>
+          </div>
+          <div class="gh-snapshot-item" *ngIf="nJob.location || nJob.city">
+            <i class="bi bi-geo-alt gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Location</span>
+              <span class="gh-snapshot-value">{{ nJob.location || nJob.city }}</span>
+            </div>
+          </div>
+          <div class="gh-snapshot-item">
+            <i class="bi bi-cash-stack gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Salary</span>
+              <span class="gh-snapshot-value" [class.gh-snapshot-value--muted]="!nJob.hasSalary">{{ nJob.salaryDisplay }}</span>
+            </div>
+          </div>
+          <div class="gh-snapshot-item" *ngIf="nJob.jobLevel">
+            <i class="bi bi-bar-chart-line gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Level</span>
+              <span class="gh-snapshot-value">{{ nJob.jobLevel }}</span>
+            </div>
+          </div>
+          <div class="gh-snapshot-item" *ngIf="nJob.industry">
+            <i class="bi bi-building gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Industry</span>
+              <span class="gh-snapshot-value">{{ nJob.industry }}</span>
+            </div>
+          </div>
+          <div class="gh-snapshot-item" *ngIf="nJob.companyNumberOfEmployee">
+            <i class="bi bi-people gh-snapshot-icon" aria-hidden="true"></i>
+            <div class="gh-snapshot-content">
+              <span class="gh-snapshot-label">Company size</span>
+              <span class="gh-snapshot-value">{{ nJob.companyNumberOfEmployee }} employees</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="col-12 col-md-3">
-        <div class="d-flex justify-content-end align-items-end mb-3 flex-wrap" title="Share now!">
-
-
-          <div class="bg-applied d-flex"
-          *ngIf="userRole == '3' && selectedJobPost.isApplied">
-            <img src="/assets/images/placeholder/icons/applied.png"
-            class="img-fluid me-2 mt-1" style="height: 30px;">
-            <span >
-              {{ 'APPLY_PAGE.DUPLICATE_APPLICATION_MESSAGE' | translate }}
-            </span>
+        <!-- Badges row -->
+        <div class="card card-body mb-3" *ngIf="selectedJobPost?.badges?.length > 0">
+          <div class="d-flex flex-row flex-wrap" style="gap: 8px;">
+            <div class="d-flex badge-card" *ngFor="let badge of selectedJobPost?.badges; let i = index" [ngClass]="'badge-' + i">
+              <img src="/assets/images/placeholder/icons/{{badge?.icon}}" [title]="badge?.name" style="height:26px" class="me-2" aria-hidden="true">
+              <span class="title-badge align-self-center">{{ badge?.name }}</span>
+            </div>
           </div>
-
-          <button class="btn btn-apply-now w-100" (click)="toApply()" *ngIf="userRole == '3' && !selectedJobPost.isApplied">
-            {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
-          </button>
-
-          <button class="btn btn-apply-now w-100" (click)="toLogin()" *ngIf="!userRole" aria-label="Sign in to apply for this job">
-            Sign In to Apply
-          </button>
-
-          <img src="/assets/images/placeholder/icons/share.png" class="img-fluid ms-2"
-            style="height: 45px; cursor: pointer;" (click)="getShareableLink(selectedJobPost.jobId)">
-        </div>
-      </div>
-
-      <div class="col-12 mb-3" *ngIf="normalizedJob$ | async as nJob">
-        <app-video-interview-badge [job]="nJob"></app-video-interview-badge>
-        <app-job-match-panel [job]="nJob" (applyClicked)="toApply()"></app-job-match-panel>
-        <app-company-snapshot [job]="nJob"></app-company-snapshot>
-      </div>
-
-      <div class="col-12 mb-2 mt-2 pe-lg-5 ps-lg-4">
-        <div class="job-description mb-3">
-          <h5 class="title-job-description">
-            <strong> {{ 'APPLY_PAGE.JOB_DESCRIPTION' | translate }}</strong><br>
-            {{selectedJobPost?.jobDescription}}
-          </h5>
         </div>
 
-        <div class="job-description mb-3">
-          <h5 class="title-job-description">
-            <strong>{{ 'APPLY_PAGE.DUTIES_RESPONSIBILITIES' | translate }}</strong><br>
-            {{selectedJobPost?.jobDuties}}
-          </h5>
+        <!-- Video interview badge -->
+        <div class="mb-3">
+          <app-video-interview-badge [job]="nJob"></app-video-interview-badge>
         </div>
 
-        <div class="job-requirements mb-3">
-          <h5 class="title-job-description">
-            <strong>{{ 'APPLY_PAGE.REQUIREMENTS' | translate }}</strong>
-          </h5>
-
-          <ul>
-            <li *ngFor="let item of selectedJobPost?.requirements">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
-            </li>
-          </ul>
+        <!-- Match panel with required disclaimer -->
+        <div class="gh-match-section mb-3">
+          <app-job-match-panel [job]="nJob" (applyClicked)="toApply()"></app-job-match-panel>
+          <p class="gh-match-disclaimer" *ngIf="userRole === '3'">
+            Your match score helps you understand how your profile aligns with this job. Employers make their own hiring decisions, and this score is not an automated rejection or approval.
+          </p>
         </div>
 
-        <div class="job-requirements mb-4">
-          <h5 class="title-job-description">
-            <strong>{{ 'APPLY_PAGE.SKILLS_EXPERIENCE' | translate }}</strong>
-          </h5>
-
-          <ul>
-            <li *ngFor="let item of selectedJobPost?.skills">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
-            </li>
-          </ul>
+        <!-- Company trust card -->
+        <div class="mb-3">
+          <app-company-snapshot [job]="nJob"></app-company-snapshot>
         </div>
 
-        <hr>
+        <!-- Content sections -->
+        <div class="card card-body gh-detail-sections pe-lg-5 ps-lg-4">
 
-        <div class="job-requirements mb-3">
-          <h5 class="title-job-description">
-            <strong>{{ 'APPLY_PAGE.BACKGROUND_EDUCATION' | translate }}</strong>
-          </h5>
+          <!-- About this role -->
+          <section class="gh-section" *ngIf="selectedJobPost?.jobDescription">
+            <h2 class="gh-section-title">About this role</h2>
+            <div class="gh-prose-wrap" [class.gh-prose-wrap--collapsed]="!descriptionExpanded && selectedJobPost?.jobDescription?.length > 350">
+              <p class="gh-prose">{{ selectedJobPost?.jobDescription }}</p>
+            </div>
+            <button *ngIf="selectedJobPost?.jobDescription?.length > 350" type="button" class="gh-show-more-btn" (click)="toggleDescription()" [attr.aria-expanded]="descriptionExpanded">
+              {{ descriptionExpanded ? 'Show less' : 'Show more' }}
+              <i class="bi" [class.bi-chevron-up]="descriptionExpanded" [class.bi-chevron-down]="!descriptionExpanded" aria-hidden="true"></i>
+            </button>
+          </section>
 
-          <ul>
-            <li *ngFor="let item of selectedJobPost?.educationalBackground">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
-            </li>
-          </ul>
-        </div>
+          <!-- What you'll do -->
+          <section class="gh-section" *ngIf="selectedJobPost?.jobDuties">
+            <h2 class="gh-section-title">What you'll do</h2>
+            <p class="gh-prose">{{ selectedJobPost?.jobDuties }}</p>
+          </section>
 
-        <!-- GETHIRED JOB CERTIFICATION REQUIREMENTS v1 -- hides cleanly
-             when the job has no certification/license requirements
-             (existing jobs created before this feature shipped). -->
-        <div class="job-requirements mb-3" *ngIf="selectedJobPost?.certificationRequirements?.length > 0">
-          <h5 class="title-job-description">
-            <strong>{{ 'APPLY_PAGE.CERTIFICATIONS_LICENSES' | translate }}</strong>
-          </h5>
+          <!-- What you need -->
+          <section class="gh-section" *ngIf="nJob.requirements?.length > 0 || nJob.skills?.length > 0">
+            <h2 class="gh-section-title">What you need</h2>
+            <ul class="gh-bullet-list" *ngIf="nJob.requirements?.length > 0">
+              <li *ngFor="let item of nJob.requirements">{{ item }}</li>
+            </ul>
+            <ng-container *ngIf="nJob.skills?.length > 0">
+              <h3 class="gh-section-subtitle" *ngIf="nJob.requirements?.length > 0">Skills</h3>
+              <ul class="gh-bullet-list">
+                <li *ngFor="let item of nJob.skills">{{ item }}</li>
+              </ul>
+            </ng-container>
+          </section>
 
-          <ul>
-            <li *ngFor="let item of selectedJobPost?.certificationRequirements">
-              <h5 class="title-requirements">
-                {{item.name}}
-                <span class="badge" [ngClass]="item.importance === 'required' ? 'bg-danger' : 'bg-secondary'">
+          <!-- Education & background -->
+          <section class="gh-section" *ngIf="nJob.educationalBackground?.length > 0">
+            <h2 class="gh-section-title">Education &amp; background</h2>
+            <ul class="gh-bullet-list">
+              <li *ngFor="let item of nJob.educationalBackground">{{ item }}</li>
+            </ul>
+          </section>
+
+          <!-- Certifications & licenses -->
+          <section class="gh-section" *ngIf="nJob.certificationRequirements?.length > 0">
+            <h2 class="gh-section-title">Certifications &amp; licenses</h2>
+            <ul class="gh-cert-list">
+              <li *ngFor="let item of nJob.certificationRequirements" class="gh-cert-item">
+                <span class="gh-cert-name">{{ item.name }}</span>
+                <span class="badge ms-2" [ngClass]="item.importance === 'required' ? 'bg-danger' : 'bg-secondary'">
                   {{ (item.importance === 'required' ? 'APPLY_PAGE.REQUIRED_LABEL' : 'APPLY_PAGE.PREFERRED_LABEL') | translate }}
                 </span>
-                <span class="text-muted ms-1" *ngIf="item.type">({{item.type | titlecase}})</span>
-                <br>
-                <small class="text-muted" *ngIf="item.issuingAuthority">{{item.issuingAuthority}}</small>
-                <small class="text-muted d-block" *ngIf="item.verificationRequired">{{ 'APPLY_PAGE.VERIFICATION_REQUIRED_LABEL' | translate }}</small>
-                <small class="text-muted d-block" *ngIf="item.expiryRequired">{{ 'APPLY_PAGE.EXPIRY_REQUIRED_LABEL' | translate }}</small>
-              </h5>
-            </li>
-          </ul>
+                <span class="text-muted ms-1" *ngIf="item.type">({{ item.type | titlecase }})</span>
+                <small class="text-muted d-block gh-cert-meta" *ngIf="item.issuingAuthority">{{ item.issuingAuthority }}</small>
+                <small class="text-muted d-block gh-cert-meta" *ngIf="item.verificationRequired">{{ 'APPLY_PAGE.VERIFICATION_REQUIRED_LABEL' | translate }}</small>
+                <small class="text-muted d-block gh-cert-meta" *ngIf="item.expiryRequired">{{ 'APPLY_PAGE.EXPIRY_REQUIRED_LABEL' | translate }}</small>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Benefits & compensation -->
+          <section class="gh-section" *ngIf="nJob.benefits?.length > 0">
+            <h2 class="gh-section-title">Benefits &amp; compensation</h2>
+            <ul class="gh-benefit-list">
+              <li *ngFor="let item of nJob.benefits" class="gh-benefit-item">
+                <i class="bi bi-check-circle-fill gh-benefit-icon" aria-hidden="true"></i>
+                <span>{{ item }}</span>
+              </li>
+            </ul>
+          </section>
+
+          <!-- Nice to have -->
+          <section class="gh-section" *ngIf="nJob.goodToHave?.length > 0">
+            <h2 class="gh-section-title">Nice to have</h2>
+            <ul class="gh-bullet-list">
+              <li *ngFor="let item of nJob.goodToHave">{{ item }}</li>
+            </ul>
+          </section>
         </div>
 
-        <div class="job-requirements mb-3">
-          <h5 class="title-job-description">
-            <strong>{{ 'APPLY_PAGE.ADVANTAGES' | translate }}</strong>
-          </h5>
-
-          <ul>
-            <li *ngFor="let item of selectedJobPost?.goodToHave">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card card-body mt-3" *ngIf="selectedJobPost?.tags?.length > 0">
-    <div class="row">
-      <div class="col-12">
-        <div class="job-requirements mb-3">
-          <!-- <h5 class="title-job-description mb-0">
-              <strong class="me-2">External Link</strong><br>
-              <a routerLink="/">Click this link to view job details in other site</a>
-            </h5>
- -->
-
-          <h5 class="title-job-description mb-0 mt-3 d-flex">
-            <strong class="me-3 mt-1">Tags</strong>
-
-            <div class="tags mt-2">
-              <div class="title-tags me-2 mb-2" *ngFor="let tag of selectedJobPost?.tags">{{tag}}</div>
+        <!-- Tags -->
+        <div class="card card-body mt-3" *ngIf="nJob.tags?.length > 0">
+          <div class="gh-tags-row">
+            <strong class="gh-tags-label me-3">Tags</strong>
+            <div class="tags">
+              <div class="title-tags me-2 mb-2" *ngFor="let tag of nJob.tags">{{ tag }}</div>
             </div>
-          </h5>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <section class="card card-body my-3">
-    <div class="p-1">
-      <label class="title-job-interview text-capitalize mb-3">{{ 'APPLY_PAGE.INTERVIEW_QUESTIONS' | translate }}</label>
+        <!-- How to apply -->
+        <div class="card card-body mt-3 gh-apply-req-section">
+          <h2 class="gh-section-title">How to apply</h2>
+          <ul class="gh-apply-req-list">
+            <li class="gh-apply-req-item">
+              <i class="bi bi-file-earmark-text gh-apply-req-icon" aria-hidden="true"></i>
+              <div>
+                <span class="gh-apply-req-name">Resume / CV</span>
+                <span class="d-block gh-apply-req-note text-muted">Required to submit your application</span>
+              </div>
+            </li>
+            <li class="gh-apply-req-item" *ngIf="nJob.hasVideoInterview">
+              <i class="bi bi-camera-video gh-apply-req-icon" aria-hidden="true"></i>
+              <div>
+                <span class="gh-apply-req-name">Video interview</span>
+                <span class="d-block gh-apply-req-note text-muted">{{ nJob.interviewQuestionCount }} question{{ nJob.interviewQuestionCount !== 1 ? 's' : '' }} to answer after applying</span>
+              </div>
+            </li>
+          </ul>
+        </div>
 
-      <section class="p-2 px-1 mb-1">
-        <!-- INTERVIEWS -->
-        <div class="row">
-          <div class="col-12 col-lg-6" *ngFor="let item of selectedJobPost?.interviewQuestions; let i = index"
-            [@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
-            <!-- <div class="float-end">
-							<div class="mt-3 me-2">
-								<button class="btn btn-upload me-2">Upload</button>
+        <!-- What happens next (hiring process) -->
+        <div class="card card-body mt-3 gh-hiring-process">
+          <h2 class="gh-section-title mb-3">What happens next</h2>
+          <ol class="gh-timeline" aria-label="Hiring process steps">
+            <li class="gh-timeline-step">
+              <div class="gh-timeline-dot" aria-hidden="true"><span>1</span></div>
+              <div class="gh-timeline-content">
+                <h3 class="gh-timeline-step-title">Application submitted</h3>
+                <p class="gh-timeline-step-desc">Your profile and resume are sent to the employer for review.</p>
+              </div>
+            </li>
+            <li class="gh-timeline-step">
+              <div class="gh-timeline-dot" aria-hidden="true"><span>2</span></div>
+              <div class="gh-timeline-content">
+                <h3 class="gh-timeline-step-title">Resume review</h3>
+                <p class="gh-timeline-step-desc">The hiring team reviews your application and qualifications.</p>
+              </div>
+            </li>
+            <li class="gh-timeline-step" *ngIf="nJob.hasVideoInterview">
+              <div class="gh-timeline-dot" aria-hidden="true"><span>3</span></div>
+              <div class="gh-timeline-content">
+                <h3 class="gh-timeline-step-title">Video interview</h3>
+                <p class="gh-timeline-step-desc">Answer {{ nJob.interviewQuestionCount }} recorded question{{ nJob.interviewQuestionCount !== 1 ? 's' : '' }} at your own pace.</p>
+              </div>
+            </li>
+            <li class="gh-timeline-step">
+              <div class="gh-timeline-dot" aria-hidden="true"><span>{{ nJob.hasVideoInterview ? 4 : 3 }}</span></div>
+              <div class="gh-timeline-content">
+                <h3 class="gh-timeline-step-title">Employer decision</h3>
+                <p class="gh-timeline-step-desc">The employer contacts shortlisted candidates directly.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
 
-								<button class="btn btn-record"
-								routerLink="/job-post/answer-interview/{{selectedJobPost?.id}}/{{i + 1}}"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record Interview</button>
-							</div>
-						</div> -->
-            <div class="interview-card card-body " id="interview-list">
-              <div class="d-flex">
-                <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
-                  <img src="/assets/images/placeholder/icons/interview-logo-4.png">
-                </div>
-
-                <div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
-                  <img src="/assets/images/placeholder/icons/interview-logo-4-active.png">
-                </div>
-
-                <div class="mt-2">
-                  <p class="title-label-sub">
-                    <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
-                    Question {{i + 1}}
-                  </p>
-                  <h5 class="title-label">{{item.question}}</h5>
-                  <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{item.answerDuration }} minutes
-                  </p>
+        <!-- Interview questions -->
+        <section class="card card-body my-3" *ngIf="selectedJobPost?.interviewQuestions?.length > 0">
+          <label class="title-job-interview text-capitalize mb-3">{{ 'APPLY_PAGE.INTERVIEW_QUESTIONS' | translate }}</label>
+          <section class="p-2 px-1 mb-1">
+            <div class="row">
+              <div class="col-12 col-lg-6" *ngFor="let item of selectedJobPost?.interviewQuestions; let i = index"
+                [@animate]="{value:'*', params:{ y:'10px', delay: (i + 150) + 'ms' }}">
+                <div class="interview-card card-body" id="interview-list">
+                  <div class="d-flex">
+                    <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+                      <img src="/assets/images/placeholder/icons/interview-logo-4.png" alt="">
+                    </div>
+                    <div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
+                      <img src="/assets/images/placeholder/icons/interview-logo-4-active.png" alt="">
+                    </div>
+                    <div class="mt-2">
+                      <p class="title-label-sub">
+                        <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;" aria-hidden="true">
+                        Question {{ i + 1 }}
+                      </p>
+                      <h3 class="title-label">{{ item.question }}</h3>
+                      <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{ item.answerDuration }} minutes</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+          </section>
+        </section>
 
-
+        <!-- Safety & no-fees notice -->
+        <div class="card card-body mt-3 mb-4 gh-safety-section">
+          <div class="gh-safety-row">
+            <i class="bi bi-shield-check gh-safety-icon" aria-hidden="true"></i>
+            <div class="gh-safety-content">
+              <p class="gh-safety-notice mb-2">
+                <strong>No fees, ever.</strong> GetHired is free for job seekers. If anyone asks you to pay to apply, that is not part of this hiring process.
+              </p>
+              <button type="button" class="gh-report-btn" (click)="reportJob(selectedJobPost.jobId)">
+                <i class="bi bi-flag" aria-hidden="true"></i> Report this job
+              </button>
+            </div>
           </div>
         </div>
-      </section>
+
+      </main>
+
+      <!-- RIGHT: sticky apply panel (desktop) -->
+      <aside class="gh-detail-rail" aria-label="Application actions">
+        <div class="gh-apply-card">
+          <div class="gh-apply-card__company">
+            <img *ngIf="nJob.companyLogo" [src]="nJob.companyLogo" [alt]="nJob.companyName + ' logo'" class="gh-apply-card__logo" />
+            <div *ngIf="!nJob.companyLogo" class="gh-apply-card__logo gh-apply-card__logo--fallback" aria-hidden="true">{{ nJob.companyName?.charAt(0) }}</div>
+            <div class="gh-apply-card__company-name">{{ nJob.companyName }}</div>
+          </div>
+
+          <div class="gh-apply-card__salary" [class.gh-apply-card__salary--muted]="!nJob.hasSalary">
+            {{ nJob.salaryDisplay }}
+          </div>
+
+          <div class="bg-applied d-flex align-items-center mb-3" *ngIf="userRole == '3' && selectedJobPost.isApplied">
+            <img src="/assets/images/placeholder/icons/applied.png" class="img-fluid me-2" style="height: 24px;" alt="">
+            <span>{{ 'APPLY_PAGE.DUPLICATE_APPLICATION_MESSAGE' | translate }}</span>
+          </div>
+
+          <button class="btn btn-apply-now w-100 gh-apply-card__cta" (click)="toApply()"
+            *ngIf="userRole == '3' && !selectedJobPost.isApplied">
+            {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
+          </button>
+
+          <button class="btn btn-apply-now w-100 gh-apply-card__cta" (click)="toLogin()"
+            *ngIf="!userRole" aria-label="Sign in to apply for this job">
+            Sign In to Apply
+          </button>
+
+          <p class="gh-apply-card__register-hint" *ngIf="!userRole">
+            New to GetHired? <a routerLink="/signup">Create a free account</a>
+          </p>
+
+          <div class="gh-apply-card__divider"></div>
+
+          <div class="gh-apply-card__actions">
+            <button type="button" class="gh-action-btn"
+              [class.gh-action-btn--active]="savedStatus === 'saved'"
+              [disabled]="saveLoading"
+              (click)="toggleSave(selectedJobPost.jobId)"
+              [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save this job'">
+              <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
+              {{ savedStatus === 'saved' ? 'Saved' : 'Save job' }}
+            </button>
+            <button type="button" class="gh-action-btn" (click)="getShareableLink(selectedJobPost.jobId)" aria-label="Share this job">
+              <i class="bi bi-share" aria-hidden="true"></i>
+              Share
+            </button>
+          </div>
+        </div>
+      </aside>
     </div>
-  </section>
+
+    <!-- Mobile sticky bottom bar -->
+    <div class="gh-mobile-sticky-bar" [class.gh-mobile-sticky-bar--visible]="showMobileBar" role="region" aria-label="Quick apply">
+      <div class="gh-mobile-sticky-bar__inner">
+        <div class="gh-mobile-sticky-bar__title" aria-hidden="true">{{ nJob.title }}</div>
+        <div class="gh-mobile-sticky-bar__actions">
+          <span class="gh-applied-mobile-chip" *ngIf="userRole == '3' && selectedJobPost.isApplied">Applied</span>
+          <button class="btn btn-apply-now gh-mobile-sticky-bar__cta" (click)="toApply()"
+            *ngIf="userRole == '3' && !selectedJobPost.isApplied">Apply Now</button>
+          <button class="btn btn-apply-now gh-mobile-sticky-bar__cta" (click)="toLogin()"
+            *ngIf="!userRole">Sign In to Apply</button>
+          <button type="button" class="gh-mobile-action-btn ms-2"
+            [class.gh-mobile-action-btn--active]="savedStatus === 'saved'"
+            [disabled]="saveLoading"
+            (click)="toggleSave(selectedJobPost.jobId)"
+            [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save job'">
+            <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 </section>

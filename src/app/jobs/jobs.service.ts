@@ -23,4 +23,8 @@ export class JobsService {
     return this.baseService.get<any>(`${this.jobUrl}/sharelink?id=${jobId}`);
   }
 
+  toggleSaveJob(jobId: string) {
+    return this.baseService.post<{ isSaved: boolean }>(`${this.jobUrl}/save`, { jobId });
+  }
+
 }

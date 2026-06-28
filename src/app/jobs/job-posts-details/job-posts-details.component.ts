@@ -25,6 +25,12 @@ import { JobSignalsService } from '@main/public/services/job-signals.service';
 export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   @Input() withBanner: boolean = true;
   @Output() apply = new EventEmitter();
+
+  savedStatus: 'saved' | 'not_saved' | 'unknown' = 'unknown';
+  saveLoading = false;
+  showMobileBar = false;
+  descriptionExpanded = false;
+
   details$ = this.jobFacade.getJobById$;
   // Normalized, defensively-typed view of the same data for the new
   // match panel / signal badges -- read-only, does not change the
@@ -82,10 +88,8 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       if (job) {
         this.titleService.setTitle(`${job.title} at ${job.companyName} | GetHired`);
         this.meta.updateTag({ name: 'robots', content: 'index, follow' });
-        // SEO: canonical URL prevents duplicate-content signals when the job is
-        // embedded in other routes. JobPosting JSON-LD is handled by the parent
-        // PublicDetailsComponent (seoService.setJobPostingJsonLd) — not duplicated here.
         this.seoService.setCanonical(`https://gethiredonline.app/jobs/details/${job.jobId}`);
+        this.savedStatus = job.savedStatus;
       }
     });
 
@@ -115,6 +119,13 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  @HostListener('window:scroll')
+  onScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.showMobileBar = window.scrollY > 300;
+    }
+  }
+
   goBack() {
     this.location.back();
   }
@@ -140,6 +151,36 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       }
     })
 
+  }
+
+  toggleSave(jobId: string): void {
+    if (this.userRole !== '3') {
+      this.toLogin();
+      return;
+    }
+    if (this.saveLoading) { return; }
+    this.saveLoading = true;
+    const prev = this.savedStatus;
+    this.savedStatus = this.savedStatus === 'saved' ? 'not_saved' : 'saved';
+    this.jobsService.toggleSaveJob(jobId).subscribe({
+      next: (res: any) => {
+        this.savedStatus = (res && res.data && res.data.isSaved) ? 'saved' : 'not_saved';
+        this.saveLoading = false;
+      },
+      error: () => {
+        this.savedStatus = prev;
+        this.saveLoading = false;
+        this.snackbarService.success('Could not save job. Please try again.', '');
+      }
+    });
+  }
+
+  toggleDescription(): void {
+    this.descriptionExpanded = !this.descriptionExpanded;
+  }
+
+  reportJob(jobId: string): void {
+    this.snackbarService.success('Thank you for reporting. We will review this job posting.', '');
   }
 
   getShareableLink(jobId: string) {

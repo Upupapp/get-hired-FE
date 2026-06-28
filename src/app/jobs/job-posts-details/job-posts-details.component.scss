@@ -729,3 +729,635 @@
 	margin-bottom: -10px;
 	margin-right: 10px;
 }
+
+// ─── V6: Two-column layout ────────────────────────────────────────────────────
+
+.gh-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  align-items: start;
+  padding: 0;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 1fr 320px;
+    gap: 0 24px;
+    padding: 16px 0 0;
+  }
+}
+
+.gh-detail-main {
+  min-width: 0;
+}
+
+// ─── V6: Hero upgrades ────────────────────────────────────────────────────────
+
+.gh-hero-company-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+
+  &--centered {
+    justify-content: center;
+  }
+}
+
+.gh-hero-company-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.5);
+  flex-shrink: 0;
+
+  &--fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    background: rgba(255,255,255,0.25);
+    border: 2px solid rgba(255,255,255,0.5);
+  }
+}
+
+.gh-hero-company-name {
+  color: rgba(255,255,255,0.92);
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+// ─── V6: Quick facts snapshot grid ───────────────────────────────────────────
+
+.gh-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+
+  @media (min-width: 576px) { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 992px) { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
+}
+
+.gh-snapshot-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.gh-snapshot-icon {
+  font-size: 18px;
+  color: #6366f1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.gh-snapshot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.gh-snapshot-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9ca3af;
+}
+
+.gh-snapshot-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+
+  &--muted { color: #9ca3af; }
+}
+
+// ─── V6: Content sections ────────────────────────────────────────────────────
+
+.gh-detail-sections {
+  padding: 24px 24px 12px !important;
+}
+
+.gh-section {
+  margin-bottom: 24px;
+
+  &:last-child { margin-bottom: 4px; }
+}
+
+.gh-section-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+.gh-section-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 12px 0 6px;
+}
+
+.gh-prose {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #374151;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.gh-prose-wrap {
+  overflow: hidden;
+
+  &--collapsed {
+    max-height: 6.5em;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2em;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), #fff);
+    }
+  }
+}
+
+.gh-show-more-btn {
+  background: none;
+  border: none;
+  padding: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6366f1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover { text-decoration: underline; }
+  &:focus-visible { outline: 2px solid #6366f1; border-radius: 2px; }
+}
+
+.gh-bullet-list {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+
+  li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+}
+
+.gh-cert-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gh-cert-item {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.gh-cert-name { font-weight: 500; }
+.gh-cert-meta { font-size: 12px; }
+
+.gh-benefit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gh-benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.gh-benefit-icon {
+  color: #22c55e;
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.gh-match-section { }
+
+.gh-match-disclaimer {
+  font-size: 11px;
+  color: #9ca3af;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-left: 3px solid #e5e7eb;
+  margin: 8px 0 0;
+}
+
+.gh-tags-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.gh-tags-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+// ─── V6: How to apply section ────────────────────────────────────────────────
+
+.gh-apply-req-section {
+  .gh-section-title { margin-bottom: 14px; }
+}
+
+.gh-apply-req-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gh-apply-req-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.gh-apply-req-icon {
+  font-size: 20px;
+  color: #6366f1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.gh-apply-req-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.gh-apply-req-note {
+  font-size: 12px;
+}
+
+// ─── V6: Hiring process timeline ─────────────────────────────────────────────
+
+.gh-hiring-process {
+  .gh-section-title { margin-bottom: 4px; }
+}
+
+.gh-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 15px;
+    width: 2px;
+    background: #e5e7eb;
+  }
+}
+
+.gh-timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 20px;
+  position: relative;
+
+  &:last-child { padding-bottom: 0; }
+}
+
+.gh-timeline-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+  position: relative;
+}
+
+.gh-timeline-content {
+  padding-top: 4px;
+  flex: 1;
+}
+
+.gh-timeline-step-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 2px;
+}
+
+.gh-timeline-step-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+// ─── V6: Safety section ──────────────────────────────────────────────────────
+
+.gh-safety-section { }
+
+.gh-safety-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.gh-safety-icon {
+  font-size: 24px;
+  color: #22c55e;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.gh-safety-content { flex: 1; }
+
+.gh-safety-notice {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.gh-report-btn {
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  transition: border-color 0.15s, color 0.15s;
+
+  &:hover { border-color: #9ca3af; color: #374151; }
+  &:focus-visible { outline: 2px solid #6366f1; border-radius: 6px; }
+}
+
+// ─── V6: Sticky apply panel (desktop rail) ───────────────────────────────────
+
+.gh-detail-rail {
+  display: none;
+
+  @media (min-width: 992px) {
+    display: block;
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+}
+
+.gh-apply-card {
+  background: #fff;
+  border: 1px solid rgba(231,231,231,0.65);
+  box-shadow: 0 10px 19px rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.gh-apply-card__company {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.gh-apply-card__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+
+  &--fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: #6366f1;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+  }
+}
+
+.gh-apply-card__company-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.gh-apply-card__salary {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+
+  &--muted { color: #9ca3af; font-weight: 400; }
+}
+
+.gh-apply-card__cta {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 11px 16px;
+  margin-bottom: 8px;
+}
+
+.gh-apply-card__register-hint {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  margin: 6px 0 0;
+
+  a {
+    color: #6366f1;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.gh-apply-card__divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 16px 0;
+}
+
+.gh-apply-card__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.gh-action-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  min-height: 44px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+  }
+
+  &--active {
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #6366f1;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible { outline: 2px solid #6366f1; border-radius: 8px; }
+}
+
+// ─── V6: Mobile sticky bottom bar ────────────────────────────────────────────
+
+.gh-mobile-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+  display: block;
+
+  @media (min-width: 992px) { display: none; }
+
+  &--visible { transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.gh-mobile-sticky-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.gh-mobile-sticky-bar__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.gh-mobile-sticky-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.gh-mobile-sticky-bar__cta {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.gh-mobile-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+
+  &--active {
+    border-color: #6366f1;
+    color: #6366f1;
+  }
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid #6366f1; }
+}
+
+.gh-applied-mobile-chip {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-mobile-sticky-bar {
+    transition: none;
+  }
+  .gh-action-btn,
+  .gh-mobile-action-btn,
+  .gh-report-btn {
+    transition: none;
+  }
+}
