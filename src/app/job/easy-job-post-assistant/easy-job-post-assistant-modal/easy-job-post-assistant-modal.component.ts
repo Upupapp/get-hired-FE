@@ -242,11 +242,19 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     return count;
   }
 
+  private readonly FIELD_LABELS: { [key: string]: string } = {
+    jobTitle: 'Job title',
+    jobCity: 'City',
+    jobDescription: 'Job description',
+    jobTypeId: 'Job type',
+    jobLevelId: 'Experience level',
+    workSetupId: 'Work setup',
+  };
+
   get requiredStillNeeded(): string[] {
     if (!this.extractionResult) return [];
-    const alwaysNeeded = ['jobBanner'];
-    const need = (this.extractionResult.missingRequiredFields || []).filter(f => alwaysNeeded.indexOf(f) === -1);
-    return need;
+    const need = (this.extractionResult.missingRequiredFields || []);
+    return need.map(f => this.FIELD_LABELS[f] || f);
   }
 
   fillJobForm(): void {
