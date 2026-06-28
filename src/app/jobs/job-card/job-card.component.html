@@ -1,7 +1,12 @@
 <article
   class="job-card"
+  [class.job-card--selected]="isSelected"
   [@animate]="{value:'*', params:{ y:'-10px', delay: animationDelayMs + 'ms' }}"
   [attr.aria-label]="(normalized?.title || 'Job') + ' at ' + (normalized?.companyName || 'company')"
+  (click)="onCardBodyClick()"
+  (keydown.enter)="onCardBodyClick()"
+  tabindex="0"
+  role="button"
 >
   <div class="job-card__banner">
     <img
@@ -90,7 +95,7 @@
     <button
       type="button"
       class="btn btn-primary job-card__apply-btn"
-      (click)="applyNow()"
+      (click)="applyNow($event)"
       [attr.aria-label]="'View and apply for ' + normalized?.title"
     >
       {{ 'EMPLOYER_BRANDING.CALL_TO_ACTION_BUTTON' | translate }}

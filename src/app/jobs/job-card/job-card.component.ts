@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CoreService } from '@app-core/services/core.service';
@@ -32,6 +32,10 @@ import { PublicPortalAnalyticsService } from '@main/public/services/public-porta
 export class JobCardComponent implements OnInit {
   @Input() data: Model.BasicJob;
   @Input() i: number;
+  /** When true the card renders with a selected/active highlight ring. */
+  @Input() isSelected = false;
+  /** Emits the raw BasicJob when the card body is clicked (not Apply button). */
+  @Output() selectJob = new EventEmitter<Model.BasicJob>();
 
   normalized: NormalizedJob;
   signals: JobSignals;
@@ -66,7 +70,12 @@ export class JobCardComponent implements OnInit {
     this.animationDelayMs = prefersReducedMotion ? 0 : (this.i ?? 0) * 100;
   }
 
-  applyNow(): void {
+  onCardBodyClick(): void {
+    this.selectJob.emit(this.data);
+  }
+
+  applyNow(event: Event): void {
+    event.stopPropagation();
     this.analytics.trackPublicJobCardClicked(this.normalized?.jobId);
     this.analytics.trackApplyPromptClicked(this.normalized?.jobId, this.isLoggedIn ? 'logged_in' : 'anonymous');
     this.router.navigateByUrl(`jobs/details/${this.data?.jobId}`);

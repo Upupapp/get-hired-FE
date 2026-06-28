@@ -37,7 +37,12 @@
         <div [ngClass]="listView ? 'col-12 col-md-12 col-lg-6' : 'col-12 col-md-6 col-lg-3'"
           [@animate]="{value:'*', params:{ y:'-10px', delay: (i * 150) + 'ms' }}">
           <ng-container *ngIf="!listView">
-            <app-job-card [data]="data" [i]="i"></app-job-card>
+            <app-job-card
+              [data]="data"
+              [i]="i"
+              [isSelected]="selectedJobId === data?.jobId"
+              (selectJob)="jobSelected.emit($event)">
+            </app-job-card>
           </ng-container>
 
           <ng-container *ngIf="listView">

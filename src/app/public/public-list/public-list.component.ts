@@ -228,6 +228,46 @@ export class PublicListComponent implements OnInit, OnDestroy {
     this.applyFilter(chip.key, null);
   }
 
+  // ── Browse-mode split preview ──────────────────────────────────────────────
+  previewJob: any = null;
+
+  onJobSelected(job: any): void {
+    if (!job) return;
+    // On mobile/tablet (≤991px) the preview panel is hidden — navigate directly
+    if (this.screenSize <= 991) {
+      this.navigateToDetail(job.jobId);
+      return;
+    }
+    this.previewJob = job;
+    this.vibrate(5);
+  }
+
+  closePreview(): void {
+    this.previewJob = null;
+  }
+
+  navigateToDetail(jobId: string): void {
+    this.router.navigateByUrl('/jobs/details/' + jobId);
+  }
+
+  previewSalary(job: any): string {
+    const min = (job && job.salaryMinimum) ? job.salaryMinimum : 0;
+    const max = (job && job.salaryMaximum) ? job.salaryMaximum : 0;
+    const currency = (job && job.salaryCurrency) ? job.salaryCurrency : '₱';
+    if (!min && !max) return 'Salary not disclosed';
+    const fmt = function(n: number) { return Number(n).toLocaleString(); };
+    if (min && max) return currency + ' ' + fmt(min) + ' – ' + fmt(max);
+    if (min) return 'From ' + currency + ' ' + fmt(min);
+    return 'Up to ' + currency + ' ' + fmt(max);
+  }
+
+  previewLocation(job: any): string {
+    const city = (job && job.jobCity) ? job.jobCity : '';
+    const country = (job && job.jobCountry) ? job.jobCountry : '';
+    if (city && country) return city + ', ' + country;
+    return city || country || 'Location not specified';
+  }
+
   // Visible jobs/companies based on active tab
   get visibleJobs(): SearchJobResult[] {
     return this.activeTab === 'companies' ? [] : this.jobResults;

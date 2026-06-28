@@ -3,6 +3,8 @@ import {
   ElementRef,
   Inject,
   Input,
+  Output,
+  EventEmitter,
   ViewChild,
   OnChanges,
   OnInit,
@@ -29,6 +31,8 @@ export class JobPostsListComponent implements OnInit, OnDestroy {
   @Input() subLabel: string = this.translate.instant('COMPANY_DETAILS.JOBS_CAREERS_MESSAGE');
   @Input() companyId?: string;
   @Input() searchData?: any;
+  @Input() selectedJobId: string | null = null;
+  @Output() jobSelected = new EventEmitter<any>();
 
   public loading: boolean = true;
   public screenSize: number = 1600;
