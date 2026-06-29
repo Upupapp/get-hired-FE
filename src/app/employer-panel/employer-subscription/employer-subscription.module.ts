@@ -14,6 +14,8 @@ import { SubscriptionStatusBannerComponent } from './components/subscription-sta
 import { SubscriptionLimitModalComponent } from './components/subscription-limit-modal/subscription-limit-modal.component';
 import { CheckoutReturnStatusComponent } from './components/checkout-return-status/checkout-return-status.component';
 import { BillingStatusBannerComponent } from './components/billing-status-banner/billing-status-banner.component';
+import { UpgradePromptCardComponent } from './components/upgrade-prompt-card/upgrade-prompt-card.component';
+import { PlanComparisonStripComponent } from './components/plan-comparison-strip/plan-comparison-strip.component';
 
 // Services
 import { SubscriptionSummaryService } from './subscription-summary.service';
@@ -21,6 +23,8 @@ import { SubscriptionPricingCatalogService } from './services/subscription-prici
 import { SubscriptionGuardrailService } from './services/subscription-guardrail.service';
 import { SubscriptionCheckoutIntentService } from './services/subscription-checkout-intent.service';
 import { SubscriptionLifecycleService } from './services/subscription-lifecycle.service';
+import { SubscriptionUpgradeRecommendationService } from './services/subscription-upgrade-recommendation.service';
+import { UpgradePromptCooldownService } from './services/upgrade-prompt-cooldown.service';
 
 const routes: Routes = [
   { path: '', component: EmployerSubscriptionComponent },
@@ -39,6 +43,8 @@ const routes: Routes = [
     SubscriptionLimitModalComponent,
     CheckoutReturnStatusComponent,
     BillingStatusBannerComponent,
+    UpgradePromptCardComponent,
+    PlanComparisonStripComponent,
   ],
   imports: [
     CommonModule,
@@ -51,6 +57,8 @@ const routes: Routes = [
     SubscriptionGuardrailService,
     SubscriptionCheckoutIntentService,
     SubscriptionLifecycleService,
+    SubscriptionUpgradeRecommendationService,
+    UpgradePromptCooldownService,
   ],
   entryComponents: [
     SubscriptionLimitModalComponent,

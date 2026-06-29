@@ -1,9 +1,10 @@
-<!-- Annual-First Upgrade Landing Page -->
+<!-- Annual-First Upgrade Landing Page V4 -->
 <div class="upgrade-landing">
 
   <!-- Loading skeleton -->
   <div *ngIf="loading" class="upgrade-landing__skeleton" aria-busy="true" aria-label="Loading plan details">
     <div class="skel skel--title"></div>
+    <div class="skel skel--subtitle"></div>
     <div class="skel skel--tabs"></div>
     <div class="skel skel--card"></div>
   </div>
@@ -16,7 +17,7 @@
   </div>
 
   <!-- Main content -->
-  <div *ngIf="!loading && !loadError && plan" class="upgrade-landing__content" @upgradeReveal>
+  <div *ngIf="!loading && !loadError && plan" class="upgrade-landing__content">
 
     <!-- Back link -->
     <button class="upgrade-landing__back" type="button" (click)="goBack()" aria-label="Back to pricing">
@@ -26,12 +27,17 @@
       Back to pricing
     </button>
 
-    <div class="upgrade-landing__header">
-      <span class="upgrade-landing__plan-badge" [attr.aria-label]="plan.name + ' plan'">{{ plan.name }}</span>
-      <h1 class="upgrade-landing__title">Choose your billing cycle</h1>
-      <p class="upgrade-landing__subtitle">
-        Your selected billing cycle will be confirmed before payment.
-      </p>
+    <!-- Hero panel -->
+    <div class="upgrade-landing__hero">
+      <div class="upgrade-landing__hero-badges">
+        <span class="upgrade-landing__plan-badge" [attr.aria-label]="plan.name + ' plan'">{{ plan.name }}</span>
+        <span *ngIf="recommendation && recommendation.recommendedPlan && recommendation.recommendedPlan.slug === plan.slug"
+          class="upgrade-landing__recommended-badge" aria-label="Recommended plan">
+          Recommended
+        </span>
+      </div>
+      <h1 class="upgrade-landing__title">{{ heroTitle }}</h1>
+      <p class="upgrade-landing__subtitle">{{ heroSubtitle }}</p>
     </div>
 
     <!-- Billing Cycle Tabs -->
@@ -46,7 +52,7 @@
         type="button"
         (click)="selectCycle('annual')">
         <span class="billing-tabs__tab-label">{{ tabAnnualLabel }}</span>
-        <span class="billing-tabs__tab-badge" aria-label="Save 2 months">Save 2 mo</span>
+        <span class="billing-tabs__tab-badge" aria-label="Save 2 months with annual billing">Save 2 mo</span>
       </button>
       <button
         class="billing-tabs__tab"
@@ -66,17 +72,24 @@
       class="billing-panel billing-panel--annual"
       id="panel-annual"
       role="tabpanel"
-      aria-labelledby="tab-annual"
-      @cycleSwitch>
+      aria-labelledby="tab-annual">
 
       <div class="billing-panel__price-block">
+        <!-- Effective monthly — clearly labeled -->
         <div class="billing-panel__effective">
           <span class="billing-panel__price-main">{{ displayPrice }}</span>
-          <span class="billing-panel__price-label" aria-label="Effective monthly rate">effective monthly</span>
+          <span class="billing-panel__price-label">effective monthly</span>
         </div>
-        <div class="billing-panel__due-today">
+        <!-- Annual due-today — must be prominent -->
+        <div class="billing-panel__due-today" aria-label="Annual amount due today">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="6" width="18" height="13" rx="2" stroke="#6C6BAD" stroke-width="2"/>
+            <path d="M3 10h18" stroke="#6C6BAD" stroke-width="2"/>
+          </svg>
           <span class="billing-panel__due-label">{{ dueTodayLabel }}</span>
+          <span class="billing-panel__due-sublabel">due today</span>
         </div>
+        <!-- Annual savings -->
         <div class="billing-panel__savings" *ngIf="annualSavingsCopy" aria-live="polite">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
@@ -84,7 +97,11 @@
           </svg>
           <strong>{{ annualSavingsCopy }}</strong>
         </div>
+        <p class="billing-panel__helper">Pay once today and get 12 months of GetHired access.</p>
         <p class="billing-panel__renewal">{{ renewalLabel }}</p>
+        <div class="billing-panel__clarification">
+          Annual plans are billed upfront. The monthly amount shown is the effective monthly equivalent.
+        </div>
       </div>
 
       <div class="billing-panel__entitlements" aria-label="Plan features">
@@ -107,8 +124,7 @@
       class="billing-panel billing-panel--monthly"
       id="panel-monthly"
       role="tabpanel"
-      aria-labelledby="tab-monthly"
-      @cycleSwitch>
+      aria-labelledby="tab-monthly">
 
       <div class="billing-panel__price-block">
         <div class="billing-panel__effective">
@@ -120,12 +136,12 @@
         <p class="billing-panel__renewal">{{ renewalLabel }}</p>
       </div>
 
-      <div class="billing-panel__note">
+      <div class="billing-panel__note" role="note">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
           <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
-        <span>Pay monthly with recurring billing. Switch or upgrade later from your billing settings.</span>
+        <span>Paid monthly, recurring. Cancel or switch anytime from your subscription settings.</span>
       </div>
 
       <div class="billing-panel__entitlements" aria-label="Plan features">
@@ -143,7 +159,41 @@
       </div>
     </div>
 
-    <!-- Error message -->
+    <!-- Plan comparison strip (lazy-shown) -->
+    <div *ngIf="comparisonData" class="upgrade-landing__comparison-toggle">
+      <button class="upgrade-btn upgrade-btn--link" type="button" (click)="toggleComparison()"
+        [attr.aria-expanded]="showComparison">
+        {{ showComparison ? 'Hide comparison' : 'Compare with current plan' }}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path [attr.d]="showComparison ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <app-plan-comparison-strip
+      *ngIf="showComparison && comparisonData"
+      [comparison]="comparisonData"
+      [currentPlanName]="currentPlanName"
+      [recommendedPlanName]="plan.name">
+    </app-plan-comparison-strip>
+
+    <!-- GetHired value / feature panel -->
+    <div class="upgrade-landing__features" aria-label="What's included with GetHired">
+      <p class="upgrade-landing__features-title">What's included with GetHired</p>
+      <ul class="upgrade-landing__feature-list">
+        <li *ngFor="let feat of featureList" class="upgrade-landing__feature-row">
+          <span class="upgrade-landing__feature-dot" aria-hidden="true"></span>
+          <div>
+            <span class="upgrade-landing__feature-label">{{ feat.label }}</span>
+            <span class="upgrade-landing__feature-detail">{{ feat.detail }}</span>
+          </div>
+        </li>
+      </ul>
+      <p class="upgrade-landing__ph-note">Local Philippine payments powered through GetHired's payment flow.</p>
+    </div>
+
+    <!-- Checkout error -->
     <div *ngIf="checkoutError" class="upgrade-landing__checkout-error" role="alert" aria-live="assertive">
       {{ checkoutError }}
     </div>
@@ -155,7 +205,8 @@
         type="button"
         [disabled]="checkoutLoading"
         (click)="startCheckout()"
-        [attr.aria-busy]="checkoutLoading">
+        [attr.aria-busy]="checkoutLoading"
+        [attr.aria-label]="primaryCtaLabel">
         <span *ngIf="!checkoutLoading">
           {{ primaryCtaLabel }}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -170,14 +221,15 @@
         </span>
       </button>
       <button class="upgrade-btn upgrade-btn--ghost" type="button" (click)="goCompare()">
-        Compare plans
+        Compare all plans
       </button>
     </div>
 
-    <!-- No fake urgency, no hidden costs -->
-    <p class="upgrade-landing__clarity" aria-label="Billing transparency notice">
-      No hidden costs. No automatic upgrades. Your selected billing cycle will be confirmed before payment.
-    </p>
+    <!-- Trust footer -->
+    <div class="upgrade-landing__trust-footer" role="contentinfo" aria-label="Billing transparency">
+      <p>Your selected billing cycle will be confirmed before payment. Annual plans are paid up front. Monthly plans renew monthly.</p>
+      <p>Your jobs, applicants, messages, and company page stay available. No hidden charges before checkout.</p>
+    </div>
 
   </div>
 </div>
