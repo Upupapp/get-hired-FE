@@ -433,7 +433,7 @@ $gh-red-border: #fecaca;
 
 // ── Footer ───────────────────────────────────────────────────
 .gh-jac-footer {
-  padding: 8px 20px 12px;
+  padding: 8px 20px calc(12px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid $gh-gray-100;
   flex-shrink: 0;
 }
