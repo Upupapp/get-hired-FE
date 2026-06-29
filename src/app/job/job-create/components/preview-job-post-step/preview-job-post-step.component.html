@@ -2,23 +2,13 @@
   <!-- TITLE -->
   <div [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <h5 class="main-title">Job Post Preview</h5>
+    <p class="pv-edit-hint">
+      <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>
+      Click any section to edit it
+    </p>
   </div>
 
-  <!-- B13: Job Readiness Summary in preview step (employer only, never visible to applicants) -->
-  <section
-    class="card card-body mb-3 jrc-preview-readiness-card"
-    [@animate]="{value:'*', params:{ y:'10px', delay:'150ms' }}"
-  >
-    <div class="jrc-preview-readiness-header">
-      <span class="jrc-preview-readiness-title">
-        <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
-        Job readiness
-      </span>
-    </div>
-    <app-job-readiness-bar [result]="previewReadiness"></app-job-readiness-bar>
-    <app-job-readiness-chips [result]="previewReadiness"></app-job-readiness-chips>
-  </section>
-
+  <!-- Matching clarity score (informational only, not a duplicate of right-rail checklist) -->
   <section class="card card-body mb-3 match-v3-matchability-card" *ngIf="matchability" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <div class="match-v3-matchability-header">
       <span class="match-v3-matchability-label">{{ matchability.label }}</span>
@@ -30,161 +20,190 @@
     </ul>
   </section>
 
+  <!-- ── MAIN JOB POST CARD ─────────────────────────────────────────────────── -->
   <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-    <div class="banner-container">
-      <div class="bg-opacity" style="height:360px; overflow: hidden;
-			background: #c9c9c9; border-radius: 7px; position: relative;">
-        <img *ngIf="!( preview && (preview.jobBanner || preview?.bannerFile[0]?.file))"
-          src="assets/images/placeholder/job-post-banner.png" class="banner-image">
 
-        <img *ngIf="(preview.jobBanner || preview?.bannerFile[0]?.file)"
-          [src]="preview?.bannerFile ? preview?.bannerFile[0]?.file: preview.jobBanner" id="banner-source-file"
-          cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
-          class="banner-image">
-
-        <div class="drag-position-container">
-          <h5>Drag to Reposition</h5>
-        </div>
-
+    <!-- BANNER -->
+    <div class="pv-section-wrap" role="group" aria-label="Job banner image">
+      <div class="pv-section-edit-bar">
+        <span class="pv-section-label">Banner image</span>
+        <button type="button" class="pv-edit-btn" (click)="goToStep(1)" aria-label="Edit job banner in step 1">
+          <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+        </button>
       </div>
 
-      <div class="floating-card" *ngIf="preview?.badges && preview?.badges.length != 0">
-        <div>
-          <ng-container *ngFor="let item of preview.badges; let i = index">
-            <div class="d-flex align-items-center justify-content-center badge-card my-2" [ngClass]="'badge-' + i">
-              <img src="/assets/images/placeholder/icons/{{item?.icon}}" [title]="item?.name" style="height:20px"
-                class="me-2">
+      <div class="banner-container">
+        <div class="bg-opacity" style="height:360px; overflow: hidden; background: #c9c9c9; border-radius: 7px; position: relative;">
+          <img *ngIf="!(preview && (preview.jobBanner || preview?.bannerFile[0]?.file))"
+            src="assets/images/placeholder/job-post-banner.png" class="banner-image">
 
-              <h5 class="title-badge">{{item?.name}}</h5>
-            </div>
-          </ng-container>
+          <img *ngIf="(preview.jobBanner || preview?.bannerFile[0]?.file)"
+            [src]="preview?.bannerFile ? preview?.bannerFile[0]?.file : preview.jobBanner" id="banner-source-file"
+            cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
+            class="banner-image">
+
+          <div class="drag-position-container">
+            <h5>Drag to reposition</h5>
+          </div>
+
+          <!-- Upload/change overlay -->
+          <button type="button" class="pv-banner-change-btn" (click)="goToStep(1)"
+            aria-label="Change or upload banner image">
+            <i class="bi bi-camera me-1" aria-hidden="true"></i>
+            {{ (preview.jobBanner || preview?.bannerFile?.[0]?.file) ? 'Change banner' : 'Upload banner' }}
+          </button>
         </div>
 
-        <div class="tags ms-0 mt-3" *ngIf="preview.tags">
-          <div class="title-tags me-2 mb-2" *ngFor="let tag of preview.tags">{{tag}}</div>
+        <div class="floating-card" *ngIf="preview?.badges && preview?.badges.length != 0">
+          <div>
+            <ng-container *ngFor="let item of preview.badges; let i = index">
+              <div class="d-flex align-items-center justify-content-center badge-card my-2" [ngClass]="'badge-' + i">
+                <img src="/assets/images/placeholder/icons/{{item?.icon}}" [title]="item?.name" style="height:20px" class="me-2">
+                <h5 class="title-badge">{{item?.name}}</h5>
+              </div>
+            </ng-container>
+          </div>
+          <div class="tags ms-0 mt-3" *ngIf="preview.tags">
+            <div class="title-tags me-2 mb-2" *ngFor="let tag of preview.tags">{{tag}}</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="job-details-container p-5">
-      <h5 class="job-title text-capitalize">
-        {{ preview.jobTitle }}
-      </h5>
+    <!-- JOB TITLE & DETAILS -->
+    <div class="job-details-container p-5 pv-section-wrap">
+      <div class="pv-section-edit-bar">
+        <span class="pv-section-label">Job details</span>
+        <button type="button" class="pv-edit-btn" (click)="goToStep(1)" aria-label="Edit job details in step 1">
+          <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+        </button>
+      </div>
+
+      <h5 class="job-title text-capitalize">{{ preview.jobTitle }}</h5>
       <h5 class="title-label" *ngIf="preview.industryId">
         {{ getFilteredArray('industries', preview.industryId) }}
-        <span class="mx-2" *ngIf="preview.jobRoleId">| {{ getFilteredArray('roles', preview.jobRoleId) }}
-        </span>
+        <span class="mx-2" *ngIf="preview.jobRoleId">| {{ getFilteredArray('roles', preview.jobRoleId) }}</span>
       </h5>
 
       <div class="mt-3">
         <div class="d-flex">
           <h5 class="d-flex title-details me-3 ms-1" *ngIf="preview.jobTypeId">
-            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2"
-              style="width: 15px; height: 15px; margin-top: 4px;">
+            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
             {{ getFilteredArray('types', preview.jobTypeId) }}
           </h5>
-
           <h5 class="d-flex title-details me-3" *ngIf="preview.workSetupId">
-            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2"
-              style="width: 15px; height: 15px; margin-top: 4px;">
+            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
             {{ getFilteredArray('setups', preview.workSetupId) }}
           </h5>
-
           <h5 class="d-flex title-details me-2" *ngIf="preview.jobLevelId">
-            <img src="/assets/images/placeholder/icons/certification.png" class="me-1"
-              style="width: 15px; height: 15px; margin-top: 2px;">
-            {{ getFilteredArray('levels', preview.jobLevelId)}}
+            <img src="/assets/images/placeholder/icons/certification.png" class="me-1" style="width: 15px; height: 15px; margin-top: 2px;">
+            {{ getFilteredArray('levels', preview.jobLevelId) }}
           </h5>
         </div>
-
         <div class="d-flex mt-1" *ngIf="preview.jobAddress && preview.jobAddress != ''">
           <h5 class="d-flex title-details me-3 ms-1">
-            <img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1"
-              style="width: 17px; height: 17px; margin-top: 3px;">
+            <img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;">
             {{ preview.jobAddress }} {{ preview.jobCity }}, {{ preview.jobCountry }}
           </h5>
-
         </div>
-
         <div class="d-flex mt-1" *ngIf="preview.salaryMinimum">
           <h5 class="d-flex title-details me-3 ms-1">
-            <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2"
-              style="width: 15px; height: 15px; margin-top: 4px;">
-            PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} -
-            PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
+            <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+            PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} - PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
             <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
           </h5>
         </div>
       </div>
 
       <div class="col-12 mb-2 mt-2 pe-5">
-        <div class="job-description mb-3">
+
+        <!-- Job Description -->
+        <div class="job-description mb-3 pv-section-wrap">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Description</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit job description in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
           <h5 class="title-job-description">
             <strong>Job Description</strong><br>
-            {{ preview.jobDescription == '' ? "None": preview.jobDescription }}
+            {{ preview.jobDescription == '' ? "None" : preview.jobDescription }}
           </h5>
         </div>
 
-        <div class="job-description mb-3">
+        <!-- Duties -->
+        <div class="job-description mb-3 pv-section-wrap">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Duties &amp; Responsibilities</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit duties in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
           <h5 class="title-job-description">
             <strong>Duties and Responsibilities</strong><br>
-            {{ preview.jobDuties == '' ? "None": preview.jobDuties }}
+            {{ preview.jobDuties == '' ? "None" : preview.jobDuties }}
           </h5>
         </div>
 
-        <!-- REQUIRED EXPERIENCE -->
-        <div class="job-requirements mb-3">
-          <h5 class="title-job-description">
-            <strong>Requirements</strong>
-          </h5>
-
+        <!-- Requirements -->
+        <div class="job-requirements mb-3 pv-section-wrap">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Requirements</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit requirements in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
+          <h5 class="title-job-description"><strong>Requirements</strong></h5>
           <ul *ngIf="preview.requirements && preview.requirements.length > 0; else emptyList">
             <li *ngFor="let item of preview.requirements">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
+              <h5 class="title-requirements">{{item}}</h5>
             </li>
           </ul>
         </div>
 
-        <!-- REQUIRED SKILLS -->
-        <div class="job-requirements mb-4">
-          <h5 class="title-job-description">
-            <strong>Skills & Experience</strong>
-          </h5>
-
+        <!-- Skills -->
+        <div class="job-requirements mb-4 pv-section-wrap">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Skills &amp; Experience</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit skills in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
+          <h5 class="title-job-description"><strong>Skills & Experience</strong></h5>
           <ul *ngIf="preview.skills && preview.skills.length > 0; else emptyList">
             <li *ngFor="let item of preview.skills">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
+              <h5 class="title-requirements">{{item}}</h5>
             </li>
           </ul>
         </div>
 
         <hr>
 
-        <!-- EDUCATIONAL BACKGROUND -->
-        <div class="job-requirements mb-3">
-          <h5 class="title-job-description">
-            <strong>Educational Background</strong>
-          </h5>
-
+        <!-- Educational Background -->
+        <div class="job-requirements mb-3 pv-section-wrap">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Educational Background</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit education in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
+          <h5 class="title-job-description"><strong>Educational Background</strong></h5>
           <ul *ngIf="preview.educationalBackground && preview.educationalBackground.length > 0; else emptyList">
             <li *ngFor="let item of preview.educationalBackground">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
+              <h5 class="title-requirements">{{item}}</h5>
             </li>
           </ul>
         </div>
 
-        <!-- CERTIFICATIONS & LICENSES (GETHIRED JOB CERTIFICATION REQUIREMENTS v1) -->
-        <div class="job-requirements mb-3" *ngIf="preview.certificationRequirements && preview.certificationRequirements.length > 0">
-          <h5 class="title-job-description">
-            <strong>Certifications & Licenses</strong>
-          </h5>
-
+        <!-- Certifications -->
+        <div class="job-requirements mb-3 pv-section-wrap" *ngIf="preview.certificationRequirements && preview.certificationRequirements.length > 0">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Certifications</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit certifications in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
+          <h5 class="title-job-description"><strong>Certifications & Licenses</strong></h5>
           <ul>
             <li *ngFor="let item of preview.certificationRequirements">
               <h5 class="title-requirements">
@@ -198,56 +217,55 @@
           </ul>
         </div>
 
-        <!-- GOOD-TO-HAVE SKILLS -->
-        <div class="job-requirements mb-3">
-          <h5 class="title-job-description">
-            <strong>Good-to-have skills</strong>
-          </h5>
-
+        <!-- Good-to-have -->
+        <div class="job-requirements mb-3 pv-section-wrap">
+          <div class="pv-section-edit-bar">
+            <span class="pv-section-label">Good-to-have skills</span>
+            <button type="button" class="pv-edit-btn pv-edit-btn--sm" (click)="goToStep(2)" aria-label="Edit good-to-have skills in step 2">
+              <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
+            </button>
+          </div>
+          <h5 class="title-job-description"><strong>Good-to-have skills</strong></h5>
           <ul *ngIf="preview.goodToHave && preview.goodToHave.length > 0; else emptyList">
             <li *ngFor="let item of preview.goodToHave">
-              <h5 class="title-requirements">
-                {{item}}
-              </h5>
+              <h5 class="title-requirements">{{item}}</h5>
             </li>
           </ul>
         </div>
+
       </div>
     </div>
   </section>
 
+  <!-- INTERVIEW QUESTIONS -->
   <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <div class="p-4">
-      <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
-        <label class="title-job-interview text-capitalize mb-0">
-          Interview Questions <i>(Candidate view)</i>
-        </label>
-        <!-- B04: Optional badge in preview — always shown; questions are never required to publish -->
-        <span class="preview-optional-badge">Optional for publishing</span>
+      <div class="pv-section-wrap">
+        <div class="pv-section-edit-bar">
+          <div class="d-flex align-items-center flex-wrap gap-2">
+            <label class="title-job-interview text-capitalize mb-0">
+              Interview Questions <i>(Candidate view)</i>
+            </label>
+            <span class="preview-optional-badge">Optional for publishing</span>
+          </div>
+          <button type="button" class="pv-edit-btn" (click)="goToStep(3)" aria-label="Add or edit interview questions in step 3">
+            <i class="bi bi-pencil me-1" aria-hidden="true"></i>
+            {{ (preview.interviewQuestions && preview.interviewQuestions.length > 0) ? 'Edit questions' : 'Add questions' }}
+          </button>
+        </div>
       </div>
 
-      <!-- B04: Questions list (only shown when questions exist) -->
+      <!-- Questions list -->
       <ng-container *ngIf="preview.interviewQuestions && preview.interviewQuestions.length > 0; else noQuestions">
         <section class="interview-card card-body mt-3 p-4" id="interview-list"
           *ngFor="let item of preview.interviewQuestions; let i = index"
-          [@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
-          <!-- INTERVIEWS -->
+          [@animate]="{value:'*', params:{ y:'10px', delay: (i + 150) + 'ms' }}">
           <div class="mt-2 row">
             <div class="col-12">
-              <div class="float-end">
-                <div class="mt-3">
-                  <button class="btn btn-upload me-2">Upload</button>
-
-                  <button class="btn btn-record"><img src="/assets/images/placeholder/icons/make-video.png"
-                      style="height: 10px" class="me-2">Record Interview</button>
-                </div>
-              </div>
-
               <div class="d-flex">
                 <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
                   <img src="/assets/images/placeholder/icons/interview-logo-4.png">
                 </div>
-
                 <div class="mt-2">
                   <p class="title-label-sub">
                     <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
@@ -262,12 +280,19 @@
         </section>
       </ng-container>
 
-      <!-- B04: Empty-state — shown in preview when no questions have been added -->
+      <!-- Empty state -->
       <ng-template #noQuestions>
-        <div class="preview-no-questions" [@animate]="{value:'*', params:{ y:'8px', delay:'250ms' }}">
-          <p class="preview-no-questions-title">No interview questions added yet.</p>
-          <p class="preview-no-questions-sub">You can publish now and add questions later. Applicants can still apply to this job.</p>
-        </div>
+        <button type="button" class="preview-no-questions preview-no-questions--clickable"
+          [@animate]="{value:'*', params:{ y:'8px', delay:'250ms' }}"
+          (click)="goToStep(3)"
+          aria-label="Add interview questions in step 3">
+          <i class="bi bi-mic-fill pv-iq-icon" aria-hidden="true"></i>
+          <p class="preview-no-questions-title">No interview questions added yet</p>
+          <p class="preview-no-questions-sub">Click to add interview questions. You can also publish now and add them later.</p>
+          <span class="pv-iq-cta">
+            <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>Add interview questions
+          </span>
+        </button>
       </ng-template>
     </div>
   </section>

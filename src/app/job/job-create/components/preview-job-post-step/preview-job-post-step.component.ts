@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { combineLatest, Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ import { JobReadinessService, JobReadinessResult } from '../../../services/job-r
 })
 export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
   @Input() jobPostData: any = {};
+  @Output() navigateToStep = new EventEmitter<number>();
   subscriptions = new Subscription();
 
   asyncLocalStorage = {
@@ -92,12 +93,16 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
 
     });
 
+  goToStep(step: number): void {
+    this.navigateToStep.emit(step);
+  }
+
   constructor(
     private jobFacade: JobFacade,
     private normalizer: PublicJobNormalizerService,
     private matchabilityService: JobMatchabilityService,
-    // B13: Job Readiness
     private readinessService: JobReadinessService,
+    private cd: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {

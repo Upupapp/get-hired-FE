@@ -519,6 +519,107 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+// ── Preview "click to edit" affordances ──────────────────────────────────────
+.pv-edit-hint {
+  font-size: 12px;
+  color: #6C6BAD;
+  margin: -8px 0 12px;
+}
+
+.pv-section-wrap {
+  position: relative;
+}
+
+.pv-section-edit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 6px 0;
+}
+
+.pv-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.pv-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6C6BAD;
+  background: rgba(108, 107, 173, 0.07);
+  border: 1px solid rgba(108, 107, 173, 0.2);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(108, 107, 173, 0.14);
+    border-color: rgba(108, 107, 173, 0.35);
+  }
+  &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
+
+  &--sm {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}
+
+// Banner change button (bottom-right of banner image)
+.pv-banner-change-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.15s;
+  z-index: 10;
+
+  &:hover { background: rgba(0, 0, 0, 0.75); }
+  &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+}
+
+// ── Interview questions CTA ──────────────────────────────────────────────────
+.pv-iq-icon {
+  font-size: 28px;
+  color: #6C6BAD;
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.pv-iq-cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6C6BAD;
+  background: rgba(108, 107, 173, 0.08);
+  border: 1px solid rgba(108, 107, 173, 0.2);
+  border-radius: 8px;
+  padding: 7px 16px;
+  transition: background 0.15s;
+}
+
 // B04: Empty-state for preview when no interview questions have been added
 .preview-no-questions {
   text-align: center;
@@ -526,11 +627,23 @@
   border: 2px dashed #e5e7eb;
   border-radius: 8px;
   background: #fafafa;
-  // One-shot reveal (260ms = $motion-duration-drawer)
   animation: b04-empty-reveal 260ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
 
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+
+  &--clickable {
+    width: 100%;
+    cursor: pointer;
+    border-color: rgba(108, 107, 173, 0.25);
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+      border-color: #6C6BAD;
+      background: rgba(108, 107, 173, 0.03);
+
+      .pv-iq-cta { background: rgba(108, 107, 173, 0.14); }
+    }
+    &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
   }
 }
 

@@ -315,13 +315,32 @@
   }
 }
 
-// ── Generate option variant ────────────────────────────────────────
+// ── Generate / AI Create option ────────────────────────────────────
 .eja-option--generate {
   background: linear-gradient(135deg, rgba(108, 107, 173, 0.04) 0%, rgba(255, 112, 98, 0.04) 100%);
   border-color: rgba(108, 107, 173, 0.25);
 
   .eja-option__icon { color: #6C6BAD; background: rgba(108, 107, 173, 0.1); border-radius: 10px; padding: 4px; }
   &:hover { border-color: #6C6BAD; box-shadow: 0 2px 8px rgba(108, 107, 173, 0.15); }
+}
+
+.eja-option--primary {
+  background: linear-gradient(135deg, rgba(108, 107, 173, 0.08) 0%, rgba(255, 112, 98, 0.06) 100%);
+  border: 1.5px solid #6C6BAD;
+  position: relative;
+
+  &::before {
+    content: 'Recommended';
+    position: absolute;
+    top: -1px; right: 12px;
+    background: #6C6BAD; color: #fff;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+    padding: 2px 8px; border-radius: 0 0 6px 6px;
+    text-transform: uppercase;
+  }
+
+  strong { color: #6C6BAD; }
+  &:hover { border-color: #5a59a0; box-shadow: 0 4px 12px rgba(108, 107, 173, 0.2); }
 }
 
 // ── Generate form ──────────────────────────────────────────────────

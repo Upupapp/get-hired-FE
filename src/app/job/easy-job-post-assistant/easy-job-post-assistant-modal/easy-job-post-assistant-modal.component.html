@@ -24,6 +24,21 @@
     <p class="eja-body__lead">How would you like to start?</p>
     <div class="eja-options">
 
+      <!-- Option 1: AI Create (primary) -->
+      <button class="eja-option eja-option--generate eja-option--primary" type="button" (click)="chooseGenerate()" aria-describedby="opt-generate-desc">
+        <span class="eja-option__icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="eja-option__text">
+          <strong>AI Create</strong>
+          <span id="opt-generate-desc">Type a job title and we'll build a complete structured draft</span>
+        </span>
+        <span class="eja-option__arrow" aria-hidden="true">›</span>
+      </button>
+
       <button class="eja-option" type="button" (click)="chooseUpload()" aria-describedby="opt-upload-desc">
         <span class="eja-option__icon" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
@@ -47,20 +62,6 @@
         <span class="eja-option__text">
           <strong>Paste a job link</strong>
           <span id="opt-link-desc">Import from an existing job posting URL</span>
-        </span>
-        <span class="eja-option__arrow" aria-hidden="true">›</span>
-      </button>
-
-      <button class="eja-option eja-option--generate" type="button" (click)="chooseGenerate()" aria-describedby="opt-generate-desc">
-        <span class="eja-option__icon" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </span>
-        <span class="eja-option__text">
-          <strong>Generate from inputs</strong>
-          <span id="opt-generate-desc">Type a job title and we'll build a structured draft</span>
         </span>
         <span class="eja-option__arrow" aria-hidden="true">›</span>
       </button>
