@@ -1625,3 +1625,64 @@ $gh-teal:       $color-teal-accent;
     animation: none !important;
   }
 }
+
+// ── Upgrade nudge ─────────────────────────────────────────────────────────────
+.gh-upgrade-nudge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  margin: 0 0 24px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+
+  &--limit {
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.18);
+  }
+  &--warn {
+    background: rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.18);
+  }
+
+  &__icon { flex-shrink: 0; display: flex; align-items: center; }
+
+  &__body { flex: 1; min-width: 0; }
+  &__title {
+    font-size: 14px; font-weight: 600; color: #1a1a2e; margin: 0 0 2px;
+  }
+  &__sub {
+    font-size: 13px; color: #64748b; margin: 0;
+  }
+
+  &__actions {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  &__cta {
+    font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border-radius: 8px;
+    background: #FF7062; color: #fff; border: none; cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+    &:hover { opacity: 0.88; }
+    &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+  }
+  &__dismiss {
+    color: #94a3b8; background: transparent; border: none; cursor: pointer;
+    padding: 4px; border-radius: 6px; display: flex; align-items: center;
+    transition: color 0.15s;
+    &:hover { color: #475569; }
+    &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
+  }
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+    &__actions { width: 100%; }
+    &__cta { flex: 1; text-align: center; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-upgrade-nudge__cta,
+  .gh-upgrade-nudge__dismiss { transition: none; }
+}

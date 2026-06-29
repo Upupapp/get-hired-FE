@@ -159,6 +159,41 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
+     UPGRADE NUDGE (priority ≤ 3 only; respects session cooldown)
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="gh-upgrade-nudge"
+     *ngIf="upgradeRec && !upgradeDismissed"
+     [class.gh-upgrade-nudge--limit]="upgradeNudgeVariant === 'limit'"
+     [class.gh-upgrade-nudge--warn]="upgradeNudgeVariant === 'warn'"
+     role="region" aria-label="Upgrade recommendation">
+  <div class="gh-upgrade-nudge__icon" aria-hidden="true">
+    <svg *ngIf="upgradeNudgeVariant === 'limit'" width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" fill="rgba(239,68,68,0.15)"/>
+      <path d="M12 8v5M12 16h.01" stroke="#dc2626" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <svg *ngIf="upgradeNudgeVariant === 'warn'" width="18" height="18" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" fill="rgba(245,158,11,0.15)"/>
+      <path d="M12 8v5M12 16h.01" stroke="#b45309" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="gh-upgrade-nudge__body">
+    <p class="gh-upgrade-nudge__title">{{ upgradeNudgeCopy.title }}</p>
+    <p class="gh-upgrade-nudge__sub">{{ upgradeNudgeCopy.sub }}</p>
+  </div>
+  <div class="gh-upgrade-nudge__actions">
+    <button type="button" class="gh-upgrade-nudge__cta gh-pressable" (click)="goToUpgrade()">
+      {{ upgradeRec.primaryCta || 'See plans' }}
+    </button>
+    <button *ngIf="upgradeNudgeDismissible" type="button" class="gh-upgrade-nudge__dismiss"
+            aria-label="Dismiss upgrade suggestion" (click)="dismissUpgradeNudge()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
      KPI STRIP
 ════════════════════════════════════════════════════════════════════════════ -->
 <section class="gh-kpi-strip" aria-label="Key metrics">

@@ -7,6 +7,8 @@ import { SeoService } from '@app-core/services/seo.service';
 import * as Model from '../company.model';
 import { map, tap, catchError, of, Subject, takeUntil } from 'rxjs';
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
+import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from '../../employer-panel/employer-subscription/services/subscription-upgrade-recommendation.service';
+import { UpgradePromptCooldownService } from '../../employer-panel/employer-subscription/services/upgrade-prompt-cooldown.service';
 
 interface PipelineStage {
   statusId: number;
@@ -161,6 +163,10 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   cachedAdminPct = 0;
   cachedVideoPct = 0;
 
+  /** Upgrade nudge — shown for priority ≤ 3 only, respects session cooldown. */
+  upgradeRec: UpgradeRecommendation | null = null;
+  upgradeDismissed = false;
+
   asyncLocalStorage = {
     getItem: async function (key: string) {
       await Promise.resolve();
@@ -174,6 +180,8 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     private seoService: SeoService,
     private dialog: MatDialog,
+    private upgradeRecommendationService: SubscriptionUpgradeRecommendationService,
+    private upgradeCooldown: UpgradePromptCooldownService,
   ) { }
 
   ngOnInit(): void {
@@ -190,11 +198,67 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.upgradeRecommendationService.getRecommendation('dashboard_cta', 'dashboard')
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (res) => {
+          const rec = res && res.recommendation;
+          if (rec && rec.showPrompt && rec.priority <= 3 && this.upgradeCooldown.shouldShow(rec.trigger, rec.priority)) {
+            this.upgradeRec = rec;
+            this.upgradeCooldown.markShown(rec.trigger);
+          }
+        },
+        error: () => {}
+      });
   }
 
   ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  get upgradeNudgeCopy(): { title: string; sub: string } {
+    if (!this.upgradeRec) { return { title: '', sub: '' }; }
+    const copyMap: Record<string, { title: string; sub: string }> = {
+      trial_expired: { title: 'Your free trial has ended', sub: 'Choose a plan to keep your jobs active and manage applicants.' },
+      trial_ending: { title: 'Your free trial is ending soon', sub: 'Upgrade now to keep your jobs, applicants, and video responses active.' },
+      job_limit_reached: { title: "You've reached your job post limit", sub: 'Your job was saved as a draft. Upgrade to publish more active roles.' },
+      admin_limit_reached: { title: "You've reached your admin user limit", sub: 'Upgrade to add more team members to your hiring workspace.' },
+      video_limit_reached: { title: "You've reached your video response limit", sub: 'Upgrade to keep collecting video answers from applicants.' },
+      job_near_90: { title: 'Almost at your job post limit', sub: 'You\'re close to your active job limit. Upgrade for more capacity.' },
+      video_near_90: { title: 'Almost at your video response limit', sub: 'Upgrade to keep receiving video answers from applicants.' },
+    };
+    return copyMap[this.upgradeRec.copyKey] || { title: 'Upgrade your hiring plan', sub: 'Unlock more jobs, team members, and video responses.' };
+  }
+
+  get upgradeNudgeVariant(): 'limit' | 'warn' {
+    return this.upgradeRec && this.upgradeRec.priority <= 2 ? 'limit' : 'warn';
+  }
+
+  get upgradeNudgeDismissible(): boolean {
+    return !this.upgradeRec || !this.upgradeCooldown.isNonDismissible(this.upgradeRec.trigger);
+  }
+
+  goToUpgrade(): void {
+    if (this.upgradeRec) {
+      this.upgradeRecommendationService.recordEvent('upgrade_cta_clicked', {
+        trigger: this.upgradeRec.trigger,
+        surface: 'dashboard',
+        priority: this.upgradeRec.priority,
+      });
+      if (this.upgradeRec.recommendedPlan && this.upgradeRec.recommendedPlan.route) {
+        this.router.navigateByUrl(this.upgradeRec.recommendedPlan.route);
+        return;
+      }
+    }
+    this.router.navigate(['/recruiter/subscription']);
+  }
+
+  dismissUpgradeNudge(): void {
+    if (this.upgradeRec) {
+      this.upgradeCooldown.dismiss(this.upgradeRec.trigger);
+    }
+    this.upgradeDismissed = true;
   }
 
   private loadPipelineOverview(): void {
