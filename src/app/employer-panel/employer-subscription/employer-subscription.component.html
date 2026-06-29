@@ -119,7 +119,8 @@
       </div>
       <div class="gh-sub-banner__action">
         <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'none' || currentStatus === 'expired'">Compare plans</button>
-        <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'">Upgrade now</button>
+        <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'"
+          (click)="navigateToUpgrade(recommendedPlan?.planCode || 'growth')">Upgrade now</button>
         <button class="gh-sub-banner__btn gh-sub-banner__btn--danger" *ngIf="currentStatus === 'payment_failed' || currentStatus === 'past_due'">Fix payment</button>
       </div>
     </div>
@@ -316,7 +317,7 @@
         </div>
       </div>
       <div class="gh-sub-recommendation__right">
-        <button class="gh-btn-primary gh-pressable">{{ recommendedPlan.ctaLabel }}</button>
+        <button class="gh-btn-primary gh-pressable" (click)="navigateToUpgrade(recommendedPlan.planCode)">{{ recommendedPlan.ctaLabel }}</button>
       </div>
     </div>
 
@@ -373,9 +374,10 @@
                 'gh-plan-card__cta-btn--current': isCurrentPlan(plan.code),
                 'gh-plan-card__cta-btn--enterprise': plan.enterprise
               }"
-              [disabled]="isCurrentPlan(plan.code)"
+              [disabled]="isCurrentPlan(plan.code) || plan.enterprise === true"
               [attr.aria-disabled]="isCurrentPlan(plan.code) ? 'true' : null"
-              [attr.aria-label]="isCurrentPlan(plan.code) ? 'Currently on ' + plan.name + ' plan' : getPlanCta(plan.code) + ' to ' + plan.name">
+              [attr.aria-label]="isCurrentPlan(plan.code) ? 'Currently on ' + plan.name + ' plan' : getPlanCta(plan.code) + ' to ' + plan.name"
+              (click)="navigateToUpgrade(plan.code)">
               {{ isCurrentPlan(plan.code) ? 'Current plan' : getPlanCta(plan.code) }}
             </button>
           </div>

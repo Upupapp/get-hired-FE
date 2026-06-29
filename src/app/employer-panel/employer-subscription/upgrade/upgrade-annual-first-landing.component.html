@@ -1,0 +1,183 @@
+<!-- Annual-First Upgrade Landing Page -->
+<div class="upgrade-landing">
+
+  <!-- Loading skeleton -->
+  <div *ngIf="loading" class="upgrade-landing__skeleton" aria-busy="true" aria-label="Loading plan details">
+    <div class="skel skel--title"></div>
+    <div class="skel skel--tabs"></div>
+    <div class="skel skel--card"></div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && loadError" class="upgrade-landing__error" role="alert">
+    <p>We couldn't load the latest plan details. Please try again.</p>
+    <button class="upgrade-btn upgrade-btn--ghost" type="button" (click)="loadPlan()">Retry</button>
+    <button class="upgrade-btn upgrade-btn--link" type="button" (click)="goBack()">Back to pricing</button>
+  </div>
+
+  <!-- Main content -->
+  <div *ngIf="!loading && !loadError && plan" class="upgrade-landing__content" @upgradeReveal>
+
+    <!-- Back link -->
+    <button class="upgrade-landing__back" type="button" (click)="goBack()" aria-label="Back to pricing">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Back to pricing
+    </button>
+
+    <div class="upgrade-landing__header">
+      <span class="upgrade-landing__plan-badge" [attr.aria-label]="plan.name + ' plan'">{{ plan.name }}</span>
+      <h1 class="upgrade-landing__title">Choose your billing cycle</h1>
+      <p class="upgrade-landing__subtitle">
+        Your selected billing cycle will be confirmed before payment.
+      </p>
+    </div>
+
+    <!-- Billing Cycle Tabs -->
+    <div class="billing-tabs" role="tablist" aria-label="Billing cycle">
+      <button
+        class="billing-tabs__tab"
+        [class.billing-tabs__tab--active]="isAnnual"
+        role="tab"
+        [attr.aria-selected]="isAnnual"
+        id="tab-annual"
+        aria-controls="panel-annual"
+        type="button"
+        (click)="selectCycle('annual')">
+        <span class="billing-tabs__tab-label">{{ tabAnnualLabel }}</span>
+        <span class="billing-tabs__tab-badge" aria-label="Save 2 months">Save 2 mo</span>
+      </button>
+      <button
+        class="billing-tabs__tab"
+        [class.billing-tabs__tab--active]="!isAnnual"
+        role="tab"
+        [attr.aria-selected]="!isAnnual"
+        id="tab-monthly"
+        aria-controls="panel-monthly"
+        type="button"
+        (click)="selectCycle('monthly')">
+        <span class="billing-tabs__tab-label">{{ tabMonthlyLabel }}</span>
+      </button>
+    </div>
+
+    <!-- Annual Panel -->
+    <div *ngIf="isAnnual"
+      class="billing-panel billing-panel--annual"
+      id="panel-annual"
+      role="tabpanel"
+      aria-labelledby="tab-annual"
+      @cycleSwitch>
+
+      <div class="billing-panel__price-block">
+        <div class="billing-panel__effective">
+          <span class="billing-panel__price-main">{{ displayPrice }}</span>
+          <span class="billing-panel__price-label" aria-label="Effective monthly rate">effective monthly</span>
+        </div>
+        <div class="billing-panel__due-today">
+          <span class="billing-panel__due-label">{{ dueTodayLabel }}</span>
+        </div>
+        <div class="billing-panel__savings" *ngIf="annualSavingsCopy" aria-live="polite">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5"/>
+          </svg>
+          <strong>{{ annualSavingsCopy }}</strong>
+        </div>
+        <p class="billing-panel__renewal">{{ renewalLabel }}</p>
+      </div>
+
+      <div class="billing-panel__entitlements" aria-label="Plan features">
+        <p class="billing-panel__ent-title">Included in {{ plan.name }}</p>
+        <ul class="billing-panel__ent-list">
+          <li *ngFor="let row of entitlementRows" class="billing-panel__ent-row">
+            <span class="billing-panel__ent-label">{{ row.label }}</span>
+            <span class="billing-panel__ent-value"
+              [class.billing-panel__ent-value--included]="row.value === 'Included'"
+              [class.billing-panel__ent-value--not]="row.value === 'Not included'">
+              {{ row.value }}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Monthly Panel -->
+    <div *ngIf="!isAnnual"
+      class="billing-panel billing-panel--monthly"
+      id="panel-monthly"
+      role="tabpanel"
+      aria-labelledby="tab-monthly"
+      @cycleSwitch>
+
+      <div class="billing-panel__price-block">
+        <div class="billing-panel__effective">
+          <span class="billing-panel__price-main">{{ displayPrice }}</span>
+        </div>
+        <div class="billing-panel__due-today">
+          <span class="billing-panel__due-label">{{ dueTodayLabel }}</span>
+        </div>
+        <p class="billing-panel__renewal">{{ renewalLabel }}</p>
+      </div>
+
+      <div class="billing-panel__note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span>Pay monthly with recurring billing. Switch or upgrade later from your billing settings.</span>
+      </div>
+
+      <div class="billing-panel__entitlements" aria-label="Plan features">
+        <p class="billing-panel__ent-title">Included in {{ plan.name }}</p>
+        <ul class="billing-panel__ent-list">
+          <li *ngFor="let row of entitlementRows" class="billing-panel__ent-row">
+            <span class="billing-panel__ent-label">{{ row.label }}</span>
+            <span class="billing-panel__ent-value"
+              [class.billing-panel__ent-value--included]="row.value === 'Included'"
+              [class.billing-panel__ent-value--not]="row.value === 'Not included'">
+              {{ row.value }}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="checkoutError" class="upgrade-landing__checkout-error" role="alert" aria-live="assertive">
+      {{ checkoutError }}
+    </div>
+
+    <!-- CTA row -->
+    <div class="upgrade-landing__cta-row">
+      <button
+        class="upgrade-btn upgrade-btn--primary"
+        type="button"
+        [disabled]="checkoutLoading"
+        (click)="startCheckout()"
+        [attr.aria-busy]="checkoutLoading">
+        <span *ngIf="!checkoutLoading">
+          {{ primaryCtaLabel }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span *ngIf="checkoutLoading" class="upgrade-spinner" aria-label="Preparing checkout…">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="upgrade-spin" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="15"/>
+          </svg>
+          Preparing checkout…
+        </span>
+      </button>
+      <button class="upgrade-btn upgrade-btn--ghost" type="button" (click)="goCompare()">
+        Compare plans
+      </button>
+    </div>
+
+    <!-- No fake urgency, no hidden costs -->
+    <p class="upgrade-landing__clarity" aria-label="Billing transparency notice">
+      No hidden costs. No automatic upgrades. Your selected billing cycle will be confirmed before payment.
+    </p>
+
+  </div>
+</div>

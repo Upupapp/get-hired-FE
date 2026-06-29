@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { SubscriptionSummaryService } from './subscription-summary.service';
@@ -146,6 +147,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
   constructor(
     public companyFacade: CompanyFacade,
     private subscriptionSummaryService: SubscriptionSummaryService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -253,6 +255,17 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
   get recommendedPlanConfig(): PlanConfig | null {
     if (!this.recommendedPlan) { return null; }
     return this.PLAN_CONFIGS.find(p => p.code === this.recommendedPlan.planCode) || null;
+  }
+
+  // --- Upgrade routing (annual-first) ---
+
+  navigateToUpgrade(planCode: string): void {
+    if (this.isCurrentPlan(planCode)) return;
+    const order = ['free_trial', 'starter', 'growth', 'business', 'enterprise'];
+    // Remap legacy 'premium' alias used in PLAN_CONFIGS
+    const normalizedCode = planCode === 'premium' ? 'business' : planCode;
+    if (normalizedCode === 'enterprise') { return; }
+    this.router.navigate(['/recruiter/subscription/upgrade', normalizedCode]);
   }
 
   // --- Plan helpers ---
