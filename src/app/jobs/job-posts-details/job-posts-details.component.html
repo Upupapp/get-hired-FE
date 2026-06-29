@@ -12,14 +12,6 @@
 </div>
 
 <section *ngIf="details$ | async as selectedJobPost" class="gh-job-content-reveal">
-  <nav aria-label="Breadcrumb" class="gh-breadcrumb-nav">
-    <ol class="gh-breadcrumb">
-      <li class="gh-breadcrumb-item"><a routerLink="/home">Home</a></li>
-      <li class="gh-breadcrumb-item"><a routerLink="/jobs">Jobs</a></li>
-      <li class="gh-breadcrumb-item gh-breadcrumb-item--current" aria-current="page">{{ selectedJobPost?.jobTitle }}</li>
-    </ol>
-  </nav>
-
   <!-- HERO: employer image or CSS gradient fallback -->
   <div class="p-0" id="banner" *ngIf="withBanner">
     <ng-container *ngIf="selectedJobPost?.jobBanner; else cssHeroBanner">

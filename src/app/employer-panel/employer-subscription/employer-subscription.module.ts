@@ -12,16 +12,20 @@ import { TrialDaysRemainingBadgeComponent } from './components/trial-days-remain
 import { SubscriptionUsageMeterComponent } from './components/subscription-usage-meter/subscription-usage-meter.component';
 import { SubscriptionStatusBannerComponent } from './components/subscription-status-banner/subscription-status-banner.component';
 import { SubscriptionLimitModalComponent } from './components/subscription-limit-modal/subscription-limit-modal.component';
+import { CheckoutReturnStatusComponent } from './components/checkout-return-status/checkout-return-status.component';
+import { BillingStatusBannerComponent } from './components/billing-status-banner/billing-status-banner.component';
 
 // Services
 import { SubscriptionSummaryService } from './subscription-summary.service';
 import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
 import { SubscriptionGuardrailService } from './services/subscription-guardrail.service';
 import { SubscriptionCheckoutIntentService } from './services/subscription-checkout-intent.service';
+import { SubscriptionLifecycleService } from './services/subscription-lifecycle.service';
 
 const routes: Routes = [
   { path: '', component: EmployerSubscriptionComponent },
   { path: 'upgrade/:planSlug', component: UpgradeAnnualFirstLandingComponent },
+  { path: 'checkout-return', component: CheckoutReturnStatusComponent },
 ];
 
 @NgModule({
@@ -33,6 +37,8 @@ const routes: Routes = [
     SubscriptionUsageMeterComponent,
     SubscriptionStatusBannerComponent,
     SubscriptionLimitModalComponent,
+    CheckoutReturnStatusComponent,
+    BillingStatusBannerComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +50,7 @@ const routes: Routes = [
     SubscriptionPricingCatalogService,
     SubscriptionGuardrailService,
     SubscriptionCheckoutIntentService,
+    SubscriptionLifecycleService,
   ],
   entryComponents: [
     SubscriptionLimitModalComponent,

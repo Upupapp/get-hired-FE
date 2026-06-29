@@ -1,0 +1,182 @@
+.checkout-return {
+  max-width: 480px;
+  margin: 60px auto;
+  padding: 0 24px;
+  text-align: center;
+  font-family: var(--gh-font, 'Inter', sans-serif);
+
+  &__checking {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__checking-label {
+    font-size: 14px;
+    color: #9CA3AF;
+    margin-top: 8px;
+  }
+
+  &__success, &__pending, &__failed, &__expired, &__unknown, &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    animation: checkout-reveal 0.25s ease;
+  }
+
+  &__icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+
+    &--success { background: rgba(22, 163, 74, 0.08); animation: success-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+    &--pending { background: rgba(108, 107, 173, 0.08); }
+    &--failed  { background: rgba(220, 38, 38, 0.08); animation: failed-shake 0.4s ease 0.1s both; }
+    &--expired { background: rgba(245, 158, 11, 0.08); }
+  }
+
+  &__title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+  }
+
+  &__message {
+    font-size: 14px;
+    color: #374151;
+    margin: 0;
+    line-height: 1.6;
+    max-width: 380px;
+  }
+
+  &__billing-pill {
+    background: rgba(22, 163, 74, 0.08);
+    color: #16a34a;
+    border: 1.5px solid rgba(22, 163, 74, 0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 700;
+
+    &--monthly {
+      background: rgba(108, 107, 173, 0.08);
+      color: #6C6BAD;
+      border-color: rgba(108, 107, 173, 0.2);
+    }
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 46px;
+    padding: 0 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.12s;
+    min-width: 200px;
+
+    &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
+    &:active { transform: scale(0.98); }
+
+    &--primary {
+      background: #6C6BAD;
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(108, 107, 173, 0.35);
+      &:hover { box-shadow: 0 5px 16px rgba(108, 107, 173, 0.5); }
+    }
+
+    &--danger {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+      &:hover { box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); }
+    }
+
+    &--ghost {
+      background: #F3F4F6;
+      color: #374151;
+      border: 1.5px solid #E5E7EB;
+      &:hover { background: #E5E7EB; }
+    }
+  }
+
+  &__link {
+    font-size: 13px;
+    color: #6B7280;
+    text-decoration: none;
+    margin-top: -6px;
+    &:hover { text-decoration: underline; color: #374151; }
+    &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; border-radius: 4px; }
+  }
+}
+
+// Skeleton shimmers
+.checkout-shimmer {
+  background: linear-gradient(90deg, #F3F4F6 25%, #E5E7EB 50%, #F3F4F6 75%);
+  background-size: 400% 100%;
+  animation: skel-shimmer 1.4s ease infinite;
+  border-radius: 10px;
+
+  &--icon  { width: 72px; height: 72px; border-radius: 50%; }
+  &--title { height: 28px; width: 200px; }
+  &--body  { height: 18px; width: 320px; max-width: 90vw; }
+}
+
+// The check path gets a draw-on animation after success pop
+.checkout-return__check-path { stroke-dasharray: 30; stroke-dashoffset: 30; animation: check-draw 0.4s ease 0.4s forwards; }
+
+.checkout-return__pending-ring { animation: pending-pulse 2s ease infinite; }
+
+@keyframes checkout-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes success-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  70%  { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes failed-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+@keyframes check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pending-pulse {
+  0%, 100% { stroke-opacity: 1; }
+  50%       { stroke-opacity: 0.4; }
+}
+
+@keyframes skel-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout-return__icon--success,
+  .checkout-return__icon--failed,
+  .checkout-return__success,
+  .checkout-return__check-path,
+  .checkout-return__pending-ring,
+  .checkout-shimmer { animation: none !important; }
+}
