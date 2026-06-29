@@ -124,4 +124,8 @@ export class JobService {
   getCategoryList() {
     return this.baseService.get<Model.Options>(`${this.jobUrl}/categories`);
   }
+
+  getJobActionSummary(jobId: string) {
+    return this.baseService.get<any>(`${this.jobUrl}/action-summary?jobId=${encodeURIComponent(jobId)}`);
+  }
 }

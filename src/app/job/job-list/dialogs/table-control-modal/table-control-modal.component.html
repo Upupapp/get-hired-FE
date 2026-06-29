@@ -1,23 +1,242 @@
-<div class="side-sub-menu px-0">
+<!-- ================================================================
+  GetHired Job Action Command Center
+  Replaces: plain 2-column pastel block grid
+  Aligned with: GETHIRED_EMPLOYER_JOB_POST_ACTION_MODAL_COMMAND_CENTER_FULLSTACK_V1
+================================================================ -->
 
-	<h6 class="pb-3" style="border-bottom: dashed 1px #d9d9d9;">
-		{{data?.jobId}} - {{data?.jobTitle}} ({{data?.workSetupName}})
+<div class="gh-jac" role="dialog" aria-modal="true" [attr.aria-labelledby]="'gh-jac-title-' + jobId">
 
-		<span class="close float-end">
-			<img src="/assets/images/placeholder/icons/remove-gray.png"
-			style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
-		</span>
-	</h6>
+  <!-- ── HEADER ────────────────────────────────────────────── -->
+  <header class="gh-jac-header">
+    <div class="gh-jac-header-meta">
+      <span class="gh-jac-job-id">{{ jobId }}</span>
+      <span class="gh-jac-status gh-jac-status--{{ statusKey }}">{{ statusLabel }}</span>
+      <span class="gh-jac-work-setup" *ngIf="workSetupName">{{ workSetupName }}</span>
+    </div>
+    <h2 class="gh-jac-title" [id]="'gh-jac-title-' + jobId">{{ jobTitle }}</h2>
+    <button
+      class="gh-jac-close"
+      type="button"
+      aria-label="Close job actions"
+      (click)="close()"
+      (keydown.escape)="close()">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </header>
 
-	<div class="row">
-		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls; let i = index">
-			<div class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center"
-			[style]="{ background: menu?.background }"
-			(click)="openControlMenu(menu)">
-				<!-- <img [src]="menu?.icon" width="18px"> -->
-				<span class="side-sub-menu-title">{{menu.title}}</span>
-			</div>
-		</div>
-	</div>
+  <!-- ── SUMMARY STRIP (skeleton while loading) ────────────── -->
+  <div class="gh-jac-summary" aria-label="Job summary">
+    <ng-container *ngIf="!summaryLoading; else summaryShimmer">
+      <div class="gh-jac-summary-chip">
+        <i class="bi bi-people" aria-hidden="true"></i>
+        <span>{{ totalApplicants }}</span>
+        <span class="gh-jac-summary-label">Applicant{{ totalApplicants !== 1 ? 's' : '' }}</span>
+      </div>
+      <div class="gh-jac-summary-chip" *ngIf="interviewQuestionsCount > 0">
+        <i class="bi bi-chat-square-text" aria-hidden="true"></i>
+        <span>{{ interviewQuestionsCount }}</span>
+        <span class="gh-jac-summary-label">Question{{ interviewQuestionsCount !== 1 ? 's' : '' }}</span>
+      </div>
+      <div class="gh-jac-summary-chip gh-jac-summary-chip--live" *ngIf="statusKey === 'published'">
+        <i class="bi bi-globe2" aria-hidden="true"></i>
+        <span class="gh-jac-summary-label">Live</span>
+      </div>
+      <div class="gh-jac-summary-chip gh-jac-summary-chip--draft" *ngIf="statusKey === 'draft'">
+        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+        <span class="gh-jac-summary-label">Draft</span>
+      </div>
+    </ng-container>
+    <ng-template #summaryShimmer>
+      <div class="gh-jac-shimmer gh-jac-shimmer--chip" aria-hidden="true"></div>
+      <div class="gh-jac-shimmer gh-jac-shimmer--chip" aria-hidden="true"></div>
+    </ng-template>
+  </div>
+
+  <!-- ── BODY ──────────────────────────────────────────────── -->
+  <div class="gh-jac-body">
+
+    <!-- ── DELETE CONFIRMATION PANEL ── Phase 5 -->
+    <div class="gh-jac-delete-confirm" *ngIf="confirmDelete" role="alertdialog" aria-labelledby="gh-jac-delete-title">
+      <div class="gh-jac-delete-confirm-inner">
+        <i class="bi bi-exclamation-triangle gh-jac-delete-icon" aria-hidden="true"></i>
+        <h3 class="gh-jac-delete-title" id="gh-jac-delete-title">Delete job post?</h3>
+        <p class="gh-jac-delete-desc">
+          You are about to delete <strong>{{ jobId }}</strong> &mdash; <strong>{{ jobTitle }}</strong>.
+          This will permanently remove the job from your dashboard and public job pages.
+        </p>
+        <p class="gh-jac-delete-warning" *ngIf="totalApplicants > 0">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          This job has <strong>{{ totalApplicants }}</strong> applicant{{ totalApplicants !== 1 ? 's' : '' }}.
+          Review applicants before deleting.
+        </p>
+        <div class="gh-jac-delete-actions">
+          <button
+            class="gh-jac-btn gh-jac-btn--cancel"
+            type="button"
+            (click)="cancelDelete()"
+            cdkFocusInitial>
+            Cancel
+          </button>
+          <button
+            class="gh-jac-btn gh-jac-btn--danger"
+            type="button"
+            (click)="confirmDeleteJob()">
+            Delete job post
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NORMAL ACTION PANELS ── (hidden when in delete-confirm) -->
+    <ng-container *ngIf="!confirmDelete">
+
+      <!-- Group 1: Manage Job -->
+      <section class="gh-jac-group" aria-label="Manage job">
+        <h3 class="gh-jac-group-label">Manage job</h3>
+
+        <!-- View public job / Preview draft -->
+        <button
+          class="gh-jac-action gh-jac-action--primary"
+          type="button"
+          [class.gh-jac-action--disabled]="!canView && statusKey !== 'draft'"
+          (click)="canView ? viewPublicJob() : (statusKey === 'draft' ? previewJob() : null)"
+          [attr.aria-disabled]="!canView && statusKey !== 'draft'"
+          [attr.aria-label]="canView ? 'View public job post for ' + jobTitle : 'Preview draft for ' + jobTitle">
+          <span class="gh-jac-action-icon gh-jac-action-icon--coral">
+            <i class="bi bi-eye" aria-hidden="true"></i>
+          </span>
+          <span class="gh-jac-action-text">
+            <span class="gh-jac-action-label">
+              {{ canView ? 'View public job post' : 'Preview job post' }}
+            </span>
+            <span class="gh-jac-action-desc">
+              {{ canView
+                ? 'Open the candidate-facing job page.'
+                : (statusKey === 'draft' ? 'See how this job will look before publishing.' : 'Publish this job to make it visible publicly.') }}
+            </span>
+          </span>
+          <i class="bi bi-chevron-right gh-jac-action-chevron" aria-hidden="true"></i>
+        </button>
+
+        <!-- Update Job Post -->
+        <button
+          class="gh-jac-action"
+          type="button"
+          (click)="editJob()"
+          [attr.aria-label]="'Update job post for ' + jobTitle">
+          <span class="gh-jac-action-icon gh-jac-action-icon--navy">
+            <i class="bi bi-pencil" aria-hidden="true"></i>
+          </span>
+          <span class="gh-jac-action-text">
+            <span class="gh-jac-action-label">Update job post</span>
+            <span class="gh-jac-action-desc">Edit details, requirements, media, badges, and application settings.</span>
+          </span>
+          <i class="bi bi-chevron-right gh-jac-action-chevron" aria-hidden="true"></i>
+        </button>
+      </section>
+
+      <!-- Group 2: Applicants & Interviews -->
+      <section class="gh-jac-group" aria-label="Applicants and interviews">
+        <h3 class="gh-jac-group-label">Applicants &amp; interviews</h3>
+
+        <!-- Review Applicants -->
+        <button
+          class="gh-jac-action"
+          type="button"
+          (click)="viewApplicants()"
+          [attr.aria-label]="'Review applicants for ' + jobTitle">
+          <span class="gh-jac-action-icon gh-jac-action-icon--azure">
+            <i class="bi bi-people" aria-hidden="true"></i>
+          </span>
+          <span class="gh-jac-action-text">
+            <span class="gh-jac-action-label">
+              Review applicants
+              <span class="gh-jac-count-badge" *ngIf="!summaryLoading && totalApplicants > 0">
+                {{ totalApplicants }}
+              </span>
+            </span>
+            <span class="gh-jac-action-desc">Open applications, statuses, answers, and video responses.</span>
+          </span>
+          <i class="bi bi-chevron-right gh-jac-action-chevron" aria-hidden="true"></i>
+        </button>
+
+        <!-- Create Interview -->
+        <button
+          class="gh-jac-action"
+          type="button"
+          (click)="createInterview()"
+          [attr.aria-label]="'Create interview for ' + jobTitle">
+          <span class="gh-jac-action-icon gh-jac-action-icon--azure">
+            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+          </span>
+          <span class="gh-jac-action-text">
+            <span class="gh-jac-action-label">Create interview</span>
+            <span class="gh-jac-action-desc">
+              Schedule or create an interview for applicants to this job.
+              <ng-container *ngIf="!summaryLoading && interviewQuestionsCount > 0">
+                &nbsp;<span class="gh-jac-inline-badge">{{ interviewQuestionsCount }} question{{ interviewQuestionsCount !== 1 ? 's' : '' }} ready</span>
+              </ng-container>
+            </span>
+          </span>
+          <i class="bi bi-chevron-right gh-jac-action-chevron" aria-hidden="true"></i>
+        </button>
+      </section>
+
+      <!-- Group 3: Promote & Share -->
+      <section class="gh-jac-group" aria-label="Promote and share">
+        <h3 class="gh-jac-group-label">Promote &amp; share</h3>
+
+        <!-- Copy public link -->
+        <button
+          class="gh-jac-action"
+          type="button"
+          [class.gh-jac-action--disabled]="!canShare"
+          [attr.aria-disabled]="!canShare"
+          (click)="canShare ? copyLink() : null"
+          [attr.aria-label]="canShare ? 'Copy public link for ' + jobTitle : 'Job must be published to share'">
+          <span class="gh-jac-action-icon" [class.gh-jac-action-icon--coral]="canShare" [class.gh-jac-action-icon--muted]="!canShare">
+            <i class="bi" [class.bi-link-45deg]="!linkCopied" [class.bi-check-lg]="linkCopied" aria-hidden="true"></i>
+          </span>
+          <span class="gh-jac-action-text">
+            <span class="gh-jac-action-label">
+              {{ linkCopied ? 'Link copied!' : 'Copy public link' }}
+            </span>
+            <span class="gh-jac-action-desc" *ngIf="!canShare">
+              Publish this job first to get a shareable link.
+            </span>
+            <span class="gh-jac-action-desc" *ngIf="canShare && !linkCopied">
+              Copy the candidate-facing job URL to share anywhere.
+            </span>
+          </span>
+          <i class="bi bi-chevron-right gh-jac-action-chevron" *ngIf="!linkCopied" aria-hidden="true"></i>
+        </button>
+      </section>
+
+      <!-- Group 4: Danger Zone -->
+      <section class="gh-jac-danger-zone" aria-label="Danger zone">
+        <button
+          class="gh-jac-action gh-jac-action--delete"
+          type="button"
+          (click)="openDeleteConfirm()"
+          [attr.aria-label]="'Delete job post for ' + jobTitle">
+          <span class="gh-jac-action-icon gh-jac-action-icon--red">
+            <i class="bi bi-trash3" aria-hidden="true"></i>
+          </span>
+          <span class="gh-jac-action-text">
+            <span class="gh-jac-action-label">Delete job post</span>
+            <span class="gh-jac-action-desc">Permanently remove this job post.</span>
+          </span>
+          <i class="bi bi-chevron-right gh-jac-action-chevron" aria-hidden="true"></i>
+        </button>
+      </section>
+
+    </ng-container>
+
+  </div><!-- /.gh-jac-body -->
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer class="gh-jac-footer" *ngIf="!confirmDelete">
+    <span class="gh-jac-footer-note">Actions are based on your workspace access.</span>
+  </footer>
+
 </div>
-

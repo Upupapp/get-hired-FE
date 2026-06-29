@@ -978,3 +978,29 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
     width: 100% !important;
   }
 }
+
+// ── Job Action Command Center dialog — strip default MatDialog chrome ──────
+// The .gh-jac component controls its own border-radius, background, padding.
+.gh-jac-dialog.mat-dialog-container,
+.gh-jac-dialog .mat-dialog-container {
+  padding: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+// Mobile: slide up from bottom as a bottom sheet
+@media (max-width: 600px) {
+  .gh-jac-dialog.mat-dialog-container,
+  .gh-jac-dialog .mat-dialog-container {
+    border-radius: 16px 16px 0 0 !important;
+  }
+  .cdk-overlay-pane:has(.gh-jac-dialog) {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}

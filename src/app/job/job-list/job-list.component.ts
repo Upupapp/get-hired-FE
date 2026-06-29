@@ -210,8 +210,10 @@ export class JobListComponent implements OnInit, OnDestroy {
 
   viewMenu(event: any): void {
     let openDialog = this.dialog.open(TableControlModalComponent, {
-      width: '34vw',
-      data: event?.data,
+      width: '560px',
+      maxWidth: '96vw',
+      panelClass: 'gh-jac-dialog',
+      data: event && event.data ? event.data : null,
     });
 
     openDialog

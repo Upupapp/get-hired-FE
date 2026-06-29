@@ -1,70 +1,444 @@
-@import "src/assets/styles/colors";
+// ================================================================
+// GetHired Job Action Command Center — SCSS
+// Brand OS: Deep Navy (#1a1830), Coral (#FF7062), Azure (#6C6BAD)
+// ================================================================
 
+$gh-navy: #1a1830;
+$gh-coral: #FF7062;
+$gh-azure: #6C6BAD;
+$gh-azure-light: #DDD8F0;
+$gh-gray-50: #f9fafb;
+$gh-gray-100: #f3f4f6;
+$gh-gray-200: #e5e7eb;
+$gh-gray-500: #6b7280;
+$gh-red: #dc2626;
+$gh-red-light: #fef2f2;
+$gh-red-border: #fecaca;
 
-:host ::ng-deep{
-  ::-webkit-scrollbar {
-    width: 3px !important;
-    height: 10px;
-    cursor: move; /* fallback if grab cursor is unsupported */
+.gh-jac {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  min-width: 480px;
+  max-width: 560px;
+  max-height: 90vh;
+  font-family: inherit;
+
+  @media (max-width: 600px) {
+    min-width: unset;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 92dvh;
   }
 }
 
-.side-sub-menu{
-    &-container{
-        cursor: pointer;
-
-        &:hover{
-            img{
-                //transform: rotate(-360deg);
-                -webkit-transform: scaleX(-1);
-                transform: scaleX(-1);
-                transition: transform 0.4s ease; 
-            }
-        }
-
-        img{
-            margin-top: -3px;
-            margin-right: 10px;
-        }
-    }
-
-    &-title{
-        color: #666;
-        font-size: 14px;
-        font-weight: bold;
-
-    }
+// ── Header ──────────────────────────────────────────────────
+.gh-jac-header {
+  background: $gh-navy;
+  padding: 20px 52px 18px 20px; // right pad for close button
+  position: relative;
+  flex-shrink: 0;
 }
 
-.btn-header-gray{
-  background: #D0D0D0;
-  color: #666;
+.gh-jac-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
 }
 
-
-
-.btn-header{
-  border-radius: 5px !important;
-  padding: 7px 30px !important;
+.gh-jac-job-id {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
+.gh-jac-status {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
 
-.dialog-responsive .mat-dialog-container
-{
-    //min-height: 70% !important;
-    min-width: 660px !important;
-    //max-height: 70% !important;
+  &--published { background: rgba(34, 197, 94, 0.25); color: #4ade80; }
+  &--draft     { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+  &--expired   { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+  &--archived  { background: rgba(107, 114, 128, 0.3); color: #d1d5db; }
+}
 
-    @media (max-width: 768px){
-      min-width: unset !important;
-      width: 100% !important;
-      min-height: 50%;
-      min-height: 500px;
+.gh-jac-work-setup {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+
+  &::before { content: '·'; margin-right: 8px; }
+}
+
+.gh-jac-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.gh-jac-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-size: 13px;
+
+  &:hover { background: rgba(255, 255, 255, 0.22); color: #fff; }
+  &:focus-visible { outline: 2px solid $gh-azure-light; outline-offset: 2px; }
+}
+
+// ── Summary strip ────────────────────────────────────────────
+.gh-jac-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: $gh-gray-50;
+  border-bottom: 1px solid $gh-gray-200;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.gh-jac-summary-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $gh-gray-500;
+  background: #fff;
+  border: 1.5px solid $gh-gray-200;
+  border-radius: 20px;
+  padding: 3px 10px;
+
+  i { font-size: 12px; }
+
+  &--live {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #16a34a;
+    i { color: #16a34a; }
+  }
+
+  &--draft {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.35);
+    color: #b45309;
+    i { color: #b45309; }
+  }
+}
+
+.gh-jac-summary-label {
+  font-weight: 500;
+}
+
+// ── Shimmer skeleton ─────────────────────────────────────────
+@keyframes gh-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.gh-jac-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: gh-shimmer 1.4s infinite;
+  border-radius: 20px;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; background: #f0f0f0; }
+
+  &--chip { width: 72px; height: 26px; }
+}
+
+// ── Body ─────────────────────────────────────────────────────
+.gh-jac-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0 0;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: $gh-gray-200; border-radius: 4px; }
+}
+
+// ── Group ────────────────────────────────────────────────────
+.gh-jac-group {
+  padding: 0 20px 12px;
+
+  & + .gh-jac-group { border-top: 1px solid $gh-gray-100; padding-top: 12px; }
+}
+
+.gh-jac-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gh-gray-500;
+  margin: 0 0 8px;
+}
+
+// ── Action row ───────────────────────────────────────────────
+.gh-jac-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1.5px solid $gh-gray-200;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+  margin-bottom: 7px;
+
+  &:last-child { margin-bottom: 0; }
+
+  &:hover:not(.gh-jac-action--disabled) {
+    border-color: $gh-azure;
+    box-shadow: 0 2px 8px rgba(108, 107, 173, 0.12);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $gh-azure;
+    outline-offset: 1px;
+  }
+
+  &--primary {
+    border-color: rgba($gh-coral, 0.3);
+    background: rgba($gh-coral, 0.03);
+
+    &:hover:not(.gh-jac-action--disabled) {
+      border-color: $gh-coral;
+      box-shadow: 0 2px 10px rgba($gh-coral, 0.15);
     }
+  }
+
+  &--disabled {
+    opacity: 0.52;
+    cursor: not-allowed;
+    &:hover { transform: none; box-shadow: none; }
+  }
+
+  &--delete {
+    border-color: $gh-red-border;
+    background: $gh-red-light;
+
+    &:hover {
+      border-color: $gh-red;
+      box-shadow: 0 2px 10px rgba($gh-red, 0.12);
+    }
+  }
 }
 
-.hvr-underline-from-center{
-    &::before{
-        background: $color-global-red;
-    }
+// ── Action icon ──────────────────────────────────────────────
+.gh-jac-action-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+
+  &--coral { background: rgba($gh-coral, 0.12); color: $gh-coral; }
+  &--navy  { background: rgba($gh-navy, 0.08); color: $gh-navy; }
+  &--azure { background: rgba($gh-azure, 0.12); color: $gh-azure; }
+  &--red   { background: rgba($gh-red, 0.1); color: $gh-red; }
+  &--muted { background: $gh-gray-100; color: $gh-gray-500; }
+}
+
+// ── Action text ──────────────────────────────────────────────
+.gh-jac-action-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gh-jac-action-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  .gh-jac-action--delete & { color: $gh-red; }
+  .gh-jac-action--disabled & { color: $gh-gray-500; }
+}
+
+.gh-jac-action-desc {
+  font-size: 12px;
+  color: $gh-gray-500;
+  line-height: 1.4;
+}
+
+.gh-jac-action-chevron {
+  color: $gh-gray-200;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+
+  .gh-jac-action:hover & { color: $gh-azure; }
+  .gh-jac-action--primary:hover & { color: $gh-coral; }
+  .gh-jac-action--delete:hover & { color: $gh-red; }
+  .gh-jac-action--disabled:hover & { color: $gh-gray-200; }
+}
+
+// ── Count badge ──────────────────────────────────────────────
+.gh-jac-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $gh-azure;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 1px 7px;
+  min-width: 18px;
+  line-height: 1.6;
+}
+
+.gh-jac-inline-badge {
+  background: rgba($gh-azure, 0.12);
+  color: $gh-azure;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 1px 7px;
+  display: inline-block;
+}
+
+// ── Danger zone (wraps the delete action row) ─────────────────
+.gh-jac-danger-zone {
+  padding: 12px 20px 16px;
+  border-top: 1px dashed $gh-red-border;
+  margin-top: 4px;
+}
+
+// ── Delete confirmation panel ────────────────────────────────
+.gh-jac-delete-confirm {
+  padding: 8px 20px 16px;
+}
+
+.gh-jac-delete-confirm-inner {
+  background: $gh-red-light;
+  border: 1.5px solid $gh-red-border;
+  border-radius: 12px;
+  padding: 20px;
+  animation: gh-confirm-fade 0.18s ease;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+}
+
+@keyframes gh-confirm-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gh-jac-delete-icon {
+  font-size: 28px;
+  color: $gh-red;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.gh-jac-delete-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.gh-jac-delete-desc {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.gh-jac-delete-warning {
+  font-size: 12px;
+  color: #b91c1c;
+  background: rgba($gh-red, 0.07);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 0 16px;
+
+  i { flex-shrink: 0; margin-top: 1px; }
+}
+
+.gh-jac-delete-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+// ── Buttons (delete confirmation) ────────────────────────────
+.gh-jac-btn {
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, box-shadow 0.15s;
+
+  &:focus-visible { outline: 2px solid $gh-azure; outline-offset: 2px; }
+
+  &--cancel {
+    background: #fff;
+    color: #374151;
+    border: 1.5px solid $gh-gray-200;
+    &:hover { background: $gh-gray-50; }
+  }
+
+  &--danger {
+    background: $gh-red;
+    color: #fff;
+    &:hover { background: #b91c1c; box-shadow: 0 2px 8px rgba($gh-red, 0.3); }
+  }
+}
+
+// ── Footer ───────────────────────────────────────────────────
+.gh-jac-footer {
+  padding: 8px 20px 12px;
+  border-top: 1px solid $gh-gray-100;
+  flex-shrink: 0;
+}
+
+.gh-jac-footer-note {
+  font-size: 11px;
+  color: $gh-gray-500;
 }
