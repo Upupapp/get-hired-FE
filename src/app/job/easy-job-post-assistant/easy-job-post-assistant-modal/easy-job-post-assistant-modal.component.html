@@ -51,6 +51,20 @@
         <span class="eja-option__arrow" aria-hidden="true">›</span>
       </button>
 
+      <button class="eja-option eja-option--generate" type="button" (click)="chooseGenerate()" aria-describedby="opt-generate-desc">
+        <span class="eja-option__icon" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="eja-option__text">
+          <strong>Generate from inputs</strong>
+          <span id="opt-generate-desc">Type a job title and we'll build a structured draft</span>
+        </span>
+        <span class="eja-option__arrow" aria-hidden="true">›</span>
+      </button>
+
       <button class="eja-option eja-option--manual" type="button" (click)="chooseManual()" aria-describedby="opt-manual-desc">
         <span class="eja-option__icon" aria-hidden="true">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
@@ -168,6 +182,193 @@
         Importing…
       </span>
     </button>
+  </div>
+
+  <!-- ── Step: generate ─────────────────────────────────────────── -->
+  <div *ngIf="step === 'generate'" class="eja-body" @fadeSlide>
+    <button class="eja-back" type="button" (click)="backToChoose()">
+      <span aria-hidden="true">‹</span> Back
+    </button>
+
+    <p class="eja-body__lead">Tell us about the role</p>
+    <p class="eja-body__sub">We'll generate a structured job draft aligned with GetHired fields.</p>
+
+    <div class="eja-generate-form">
+      <div class="eja-field-group">
+        <label class="eja-label" for="gen-title">Job title <span class="eja-required" aria-hidden="true">*</span></label>
+        <input
+          id="gen-title"
+          class="eja-input"
+          [class.eja-input--error]="generateErrors.jobTitle"
+          type="text"
+          placeholder="e.g. Senior Events Manager, Finance Analyst"
+          [(ngModel)]="generateInputs.jobTitle"
+          [disabled]="loading"
+          autocomplete="off"
+          maxlength="120"
+        />
+        <div *ngIf="generateErrors.jobTitle" class="eja-error" role="alert">{{ generateErrors.jobTitle }}</div>
+      </div>
+
+      <div class="eja-field-group">
+        <label class="eja-label" for="gen-location">Location</label>
+        <input
+          id="gen-location"
+          class="eja-input"
+          type="text"
+          placeholder="e.g. Makati, Metro Manila or Remote"
+          [(ngModel)]="generateInputs.location"
+          [disabled]="loading"
+          autocomplete="off"
+          maxlength="120"
+        />
+      </div>
+
+      <div class="eja-field-row">
+        <div class="eja-field-group eja-field-group--half">
+          <label class="eja-label" for="gen-work-setup">Work setup</label>
+          <select id="gen-work-setup" class="eja-select" [(ngModel)]="generateInputs.workSetup" [disabled]="loading">
+            <option value="">Not specified</option>
+            <option value="Onsite">Onsite</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+        </div>
+        <div class="eja-field-group eja-field-group--half">
+          <label class="eja-label" for="gen-emp-type">Employment type</label>
+          <select id="gen-emp-type" class="eja-select" [(ngModel)]="generateInputs.employmentType" [disabled]="loading">
+            <option value="">Not specified</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Freelance">Freelance</option>
+            <option value="Contract">Contract</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="eja-field-group">
+        <label class="eja-label" for="gen-industry">Industry (optional)</label>
+        <input
+          id="gen-industry"
+          class="eja-input"
+          type="text"
+          placeholder="e.g. Civic Technology, BPO, Finance, Retail"
+          [(ngModel)]="generateInputs.industry"
+          [disabled]="loading"
+          autocomplete="off"
+          maxlength="80"
+        />
+      </div>
+    </div>
+
+    <div class="eja-notice eja-notice--info" aria-live="polite">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>The generated draft uses role templates — no salary, benefits, or company details are invented. You review and edit before publishing.</span>
+    </div>
+
+    <div *ngIf="errorMsg" class="eja-error" role="alert">{{ errorMsg }}</div>
+
+    <button
+      class="eja-btn eja-btn--primary"
+      type="button"
+      [disabled]="!generateInputs.jobTitle.trim() || loading"
+      (click)="runGenerate()">
+      <span *ngIf="!loading">Generate job draft</span>
+      <span *ngIf="loading" class="eja-spinner" aria-label="Generating…">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="eja-spin" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="60" stroke-dashoffset="15"/>
+        </svg>
+        Generating…
+      </span>
+    </button>
+  </div>
+
+  <!-- ── Step: generate_review ──────────────────────────────────── -->
+  <div *ngIf="step === 'generate_review' && generatedDraft" class="eja-body" @fadeSlide>
+    <button class="eja-back" type="button" (click)="step = 'generate'">
+      <span aria-hidden="true">‹</span> Edit inputs
+    </button>
+
+    <div class="eja-gen-intent">
+      <div class="eja-gen-intent__row">
+        <span class="eja-gen-badge eja-gen-badge--family">{{ generatedDraft.hiringIntent.roleFamily }}</span>
+        <span class="eja-gen-badge eja-gen-badge--seniority">{{ generatedDraft.hiringIntent.likelySeniority }}</span>
+        <span class="eja-gen-badge"
+          [class.eja-gen-badge--high]="generatedDraft.hiringIntent.intentConfidence === 'high'"
+          [class.eja-gen-badge--medium]="generatedDraft.hiringIntent.intentConfidence === 'medium'"
+          [class.eja-gen-badge--low]="generatedDraft.hiringIntent.intentConfidence === 'low'">
+          {{ generatedDraft.hiringIntent.intentConfidence }} confidence
+        </span>
+      </div>
+      <p class="eja-gen-intent__outcome">{{ generatedDraft.hiringIntent.likelyRoleOutcome }}</p>
+
+      <div *ngIf="generatedDraft.hiringIntent.clarificationQuestions.length > 0" class="eja-gen-clarify">
+        <strong>Suggested review:</strong>
+        <ul class="eja-gen-clarify__list">
+          <li *ngFor="let q of generatedDraft.hiringIntent.clarificationQuestions">{{ q }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="eja-gen-preview">
+      <h3 class="eja-gen-preview__title">{{ generatedDraft.basics.jobTitle }}</h3>
+      <p class="eja-gen-preview__summary">{{ generatedDraft.content.roleSummary }}</p>
+
+      <div class="eja-gen-section">
+        <h4 class="eja-gen-section__label">Key responsibilities</h4>
+        <ul class="eja-gen-list">
+          <li *ngFor="let r of generatedDraft.content.responsibilities.slice(0, 4)">{{ r }}</li>
+        </ul>
+        <p *ngIf="generatedDraft.content.responsibilities.length > 4" class="eja-gen-more">
+          +{{ generatedDraft.content.responsibilities.length - 4 }} more in the full draft
+        </p>
+      </div>
+
+      <div class="eja-gen-section">
+        <h4 class="eja-gen-section__label">Required qualifications</h4>
+        <ul class="eja-gen-list">
+          <li *ngFor="let q of generatedDraft.content.requiredQualifications.slice(0, 3)">{{ q }}</li>
+        </ul>
+      </div>
+
+      <div class="eja-gen-section">
+        <h4 class="eja-gen-section__label">Skills suggested</h4>
+        <div class="eja-gen-tags">
+          <span *ngFor="let s of generatedDraft.content.skills.slice(0, 8)" class="eja-gen-tag">{{ s }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review flags summary -->
+    <div *ngIf="reviewFlagsWarning.length > 0" class="eja-gen-flags">
+      <strong>Review before publishing:</strong>
+      <ul class="eja-gen-flags__list">
+        <li *ngFor="let f of reviewFlagsWarning.slice(0, 3)">{{ f.message }}</li>
+      </ul>
+    </div>
+
+    <div class="eja-notice eja-notice--info">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>This draft is pre-filled from role templates. You can edit every field in the job form before publishing.</span>
+    </div>
+
+    <div class="eja-review-actions">
+      <button class="eja-btn eja-btn--primary" type="button" (click)="fillFromGenerated()">
+        Use this draft
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="eja-btn eja-btn--ghost" type="button" (click)="chooseManual()">
+        Skip and start fresh
+      </button>
+    </div>
   </div>
 
   <!-- ── Step: review ────────────────────────────────────────────── -->

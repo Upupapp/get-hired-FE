@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant.service';
-import { AssistantExtractionResult, AssistantStep } from '../easy-job-post-assistant.models';
+import { AssistantExtractionResult, AssistantStep, GenerateIntentInputs, InstantJobDraft, ReviewFlag } from '../easy-job-post-assistant.models';
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 
 @Component({
@@ -50,9 +50,20 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   linkUrl: string = '';
   linkUrlError: string | null = null;
 
-  // Extraction result
+  // Extraction result (upload/link flow)
   extractionResult: AssistantExtractionResult | null = null;
   extractionSource: string | null = null;
+
+  // Generate flow (V4)
+  generateInputs: GenerateIntentInputs = {
+    jobTitle: '',
+    location: '',
+    workSetup: '',
+    employmentType: '',
+    industry: '',
+  };
+  generateErrors: { jobTitle?: string } = {};
+  generatedDraft: InstantJobDraft | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -91,6 +102,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     this.assistantService.clearExtractionResult();
     this.dialogRef.close({ navigateTo: '/recruiter/jobs/create' });
     this.router.navigate(['/recruiter/jobs/create']);
+  }
+
+  chooseGenerate(): void {
+    this.haptics.selection();
+    this.step = 'generate';
+    this.errorMsg = null;
   }
 
   backToChoose(): void {
@@ -221,6 +238,78 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
           this.errorMsg = msg;
         },
       });
+  }
+
+  // --- Generate flow (V4) ---
+
+  runGenerate(): void {
+    this.generateErrors = {};
+    if (!this.generateInputs.jobTitle.trim()) {
+      this.generateErrors.jobTitle = 'Job title is required.';
+      return;
+    }
+    if (this.generateInputs.jobTitle.trim().length < 2) {
+      this.generateErrors.jobTitle = 'Job title is too short.';
+      return;
+    }
+    if (this.loading) return;
+
+    this.loading = true;
+    this.errorMsg = null;
+
+    this.assistantService.generateFromInputs({
+      ...this.generateInputs,
+      jobTitle: this.generateInputs.jobTitle.trim(),
+    }).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.loading = false;
+        this.haptics.success();
+        this.generatedDraft = res.draft;
+        this.assistantService.setGeneratedDraft(res.draft);
+        this.step = 'generate_review';
+      },
+      error: (err) => {
+        this.loading = false;
+        this.haptics.error();
+        const msg = (err && err.error && err.error.message) || 'Could not generate job draft. Please try again.';
+        this.errorMsg = msg;
+      },
+    });
+  }
+
+  get reviewFlagsWarning(): ReviewFlag[] {
+    if (!this.generatedDraft) return [];
+    const flags: ReviewFlag[] = (this.generatedDraft.quality && this.generatedDraft.quality.reviewFlags) || [];
+    return flags.filter(f => f.severity === 'warning' || f.severity === 'blocking');
+  }
+
+  fillFromGenerated(): void {
+    if (!this.generatedDraft) return;
+    this.haptics.success();
+    // Map generated draft basics into the extraction result format for the job form prefill
+    const draft = this.generatedDraft;
+    const mapped: AssistantExtractionResult = {
+      jobTitle: draft.basics.jobTitle || null,
+      jobCity: (draft.basics.jobLocation && draft.basics.jobLocation.city) || null,
+      jobCountry: (draft.basics.jobLocation && draft.basics.jobLocation.country) || 'Philippines',
+      jobDescription: draft.content.roleSummary || null,
+      jobDuties: draft.content.responsibilities.join('\n') || null,
+      workSetupHint: draft.basics.workSetup || null,
+      jobTypeHint: draft.basics.employmentType || null,
+      jobLevelHint: draft.basics.seniority || null,
+      salaryMinimum: null,
+      salaryMaximum: null,
+      salaryCurrency: 'PHP',
+      requirements: draft.content.requiredQualifications || [],
+      goodToHave: draft.content.preferredQualifications || [],
+      skills: draft.content.skills || [],
+      confidence: {},
+      missingRequiredFields: [],
+      warnings: (draft.quality.reviewFlags || []).filter(f => f.severity === 'warning').map(f => f.message),
+    };
+    this.assistantService.setExtractionResult(mapped);
+    this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', fromGenerate: true });
+    this.router.navigate(['/recruiter/jobs/create'], { queryParams: { fromAssistant: '1', mode: 'generated' } });
   }
 
   // --- Review + prefill ---
