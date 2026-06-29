@@ -169,13 +169,26 @@
           <!-- About this role -->
           <section class="gh-section" *ngIf="selectedJobPost?.jobDescription">
             <h2 class="gh-section-title">About this role</h2>
-            <div class="gh-prose-wrap" [class.gh-prose-wrap--collapsed]="!descriptionExpanded && selectedJobPost?.jobDescription?.length > 350">
-              <p class="gh-prose">{{ selectedJobPost?.jobDescription }}</p>
-            </div>
-            <button *ngIf="selectedJobPost?.jobDescription?.length > 350" type="button" class="gh-show-more-btn" (click)="toggleDescription()" [attr.aria-expanded]="descriptionExpanded">
-              {{ descriptionExpanded ? 'Show less' : 'Show more' }}
-              <i class="bi" [class.bi-chevron-up]="descriptionExpanded" [class.bi-chevron-down]="!descriptionExpanded" aria-hidden="true"></i>
-            </button>
+
+            <!-- Content quality guard: if description looks like imported privacy/legal
+                 boilerplate (e.g. Easy Job Posting Assistant picked up the wrong document),
+                 show a safe fallback instead of publishing foreign company text publicly. -->
+            <ng-container *ngIf="isPrivacyBoilerplate(selectedJobPost?.jobDescription); else realDescription">
+              <div class="gh-content-quality-notice" role="status">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <span>The employer hasn't added a full job description yet. Check back soon for more details.</span>
+              </div>
+            </ng-container>
+
+            <ng-template #realDescription>
+              <div class="gh-prose-wrap" [class.gh-prose-wrap--collapsed]="!descriptionExpanded && selectedJobPost?.jobDescription?.length > 350">
+                <p class="gh-prose">{{ selectedJobPost?.jobDescription }}</p>
+              </div>
+              <button *ngIf="selectedJobPost?.jobDescription?.length > 350" type="button" class="gh-show-more-btn" (click)="toggleDescription()" [attr.aria-expanded]="descriptionExpanded">
+                {{ descriptionExpanded ? 'Show less' : 'Show more' }}
+                <i class="bi" [class.bi-chevron-up]="descriptionExpanded" [class.bi-chevron-down]="!descriptionExpanded" aria-hidden="true"></i>
+              </button>
+            </ng-template>
           </section>
 
           <!-- What you'll do -->

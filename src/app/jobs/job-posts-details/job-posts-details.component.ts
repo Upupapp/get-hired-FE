@@ -179,6 +179,33 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     this.descriptionExpanded = !this.descriptionExpanded;
   }
 
+  /**
+   * Detects when a job description looks like imported privacy/legal boilerplate
+   * rather than an actual job description (e.g. Easy Job Posting Assistant imported
+   * a privacy policy document instead of the job post). If 2+ known markers are
+   * found, show a safe fallback instead of publishing the foreign text publicly.
+   * Does NOT rewrite employer content — shows fallback and logs for admin review.
+   */
+  isPrivacyBoilerplate(text: string | null): boolean {
+    if (!text || text.length < 50) { return false; }
+    const t = text.toLowerCase();
+    const markers = [
+      'privacy policy', 'personal information', 'data privacy act',
+      'respects your privacy', 'we collect', 'we may collect',
+      'information we collect', 'personal data', 'data protection',
+      'cookie policy', 'your right to', 'right to access',
+      'information you provide', 'third-party services',
+    ];
+    let hits = 0;
+    for (let i = 0; i < markers.length; i++) {
+      if (t.indexOf(markers[i]) !== -1) {
+        hits++;
+        if (hits >= 2) { return true; }
+      }
+    }
+    return false;
+  }
+
   reportJob(jobId: string): void {
     this.snackbarService.success('Thank you for reporting. We will review this job posting.', '');
   }

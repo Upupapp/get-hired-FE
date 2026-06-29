@@ -973,6 +973,21 @@
   margin-top: 2px;
 }
 
+.gh-content-quality-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #f8f9fa;
+  border: 1.5px solid #e9ecef;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+
+  i { color: #9ca3af; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+}
+
 .gh-match-section { }
 
 .gh-match-disclaimer {
@@ -1152,8 +1167,8 @@
   @media (min-width: 992px) {
     display: block;
     position: sticky;
-    top: 16px;
-    max-height: calc(100vh - 32px);
+    top: 84px; // 68px public nav height + 16px clearance gap
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
   }
 }
