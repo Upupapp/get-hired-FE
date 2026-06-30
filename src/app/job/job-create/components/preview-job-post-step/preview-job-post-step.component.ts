@@ -162,8 +162,23 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** The banner src to display — prefers an uploaded file data-URL over the stored URL. */
+  /** The banner src to display.
+   *  Priority: live form data from parent (jobPostData) → NgRx store (preview).
+   *  jobPostData is the current initialData form value passed by job-create.component,
+   *  ensuring a newly uploaded banner is always visible even before the first API save.
+   */
   get previewBannerSrc(): string | null {
+    const d = this.jobPostData as any;
+    // Check live form value first (covers newly uploaded banners not yet in NgRx store)
+    if (d) {
+      if (d.bannerFile && Array.isArray(d.bannerFile) && d.bannerFile.length && d.bannerFile[0] && d.bannerFile[0].file) {
+        return d.bannerFile[0].file;
+      }
+      if (d.jobBanner) {
+        return d.jobBanner;
+      }
+    }
+    // Fall back to NgRx store data (populated for existing jobs loaded via API)
     const p = this.preview as any;
     if (p && p.bannerFile && Array.isArray(p.bannerFile) && p.bannerFile.length && p.bannerFile[0] && p.bannerFile[0].file) {
       return p.bannerFile[0].file;

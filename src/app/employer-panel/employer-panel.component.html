@@ -385,7 +385,10 @@
     <div class="gh-fallback-page" role="alert" style="margin-top: 30vh; text-align: center; padding: 2rem;">
       <p style="font-family: Manrope, sans-serif; font-size: 1rem; color: #444;">
         We couldn't load your profile. Please refresh the page or
-        <a href="/signin" style="color: #FF7062;">sign in again</a>.
+        <button type="button" (click)="signInAgain()"
+          style="color: #FF7062; background: none; border: none; cursor: pointer; text-decoration: underline; font-size: inherit; font-family: inherit; padding: 0;">
+          sign in again
+        </button>.
       </p>
     </div>
   </ng-template>

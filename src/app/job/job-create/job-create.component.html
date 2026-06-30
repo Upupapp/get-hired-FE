@@ -124,7 +124,9 @@
 
         <!-- ── STEP 4: Preview & Publish ──────────────────────────────── -->
         <ng-container *ngIf="stepper === 4">
-          <app-preview-job-post-step (navigateToStep)="changeStep($event)"></app-preview-job-post-step>
+          <app-preview-job-post-step
+            [jobPostData]="jobForm.value.initialData"
+            (navigateToStep)="changeStep($event)"></app-preview-job-post-step>
         </ng-container>
 
         <!-- ── STEP NAVIGATION (bottom of form col) ───────────────────── -->

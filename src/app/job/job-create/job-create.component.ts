@@ -533,10 +533,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.saveSuccessPulse = false;
     const job: Model.Job = this.formatJob(2);
 
+    // null != "" is always true in JS — must check explicitly for null/empty banner
+    const hasBanner = !!(
+      (job.bannerFile && job.bannerFile[0]) ||
+      (job.jobBanner && job.jobBanner.trim())
+    );
+
     // B04 V5: Interview questions are now optional for publish.
-    // Required fields: jobTypeId, jobLevelId, jobCity, jobCountry,
-    // jobDescription, workSetupId, banner (file or URL), companyId.
-    // Interview questions are encouraged but not blocking.
     this.isReadyToPublish = !!(
       job.jobTypeId &&
       job.jobLevelId &&
@@ -544,49 +547,72 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       job.jobCountry != null && job.jobCountry !== '' &&
       job.jobDescription != null && job.jobDescription !== '' &&
       job.workSetupId &&
-      (job.bannerFile[0] || job.jobBanner != "") &&
+      hasBanner &&
       job.companyId
-    )
+    );
 
     if (this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
     } else {
-      let missingJob = '';
+      // Build missing-field list with step + section mapping so the dialog can navigate
+      const missingFields: Array<{ label: string; step: number; sectionId: string }> = [];
 
       if (!job.jobTypeId) {
-        missingJob += 'job type ';
+        missingFields.push({ label: 'Employment type', step: 1, sectionId: 'section-employment' });
       }
-
       if (!job.jobLevelId) {
-        missingJob += 'job level ';
+        missingFields.push({ label: 'Job level', step: 1, sectionId: 'section-job-level' });
       }
-
-      if (job.jobCity == "") {
-        missingJob += 'job city ';
+      if (!job.jobCity) {
+        missingFields.push({ label: 'City', step: 1, sectionId: 'section-location' });
       }
-
-      if (job.jobCountry == "") {
-        missingJob += 'job country ';
+      if (!job.jobCountry) {
+        missingFields.push({ label: 'Country', step: 1, sectionId: 'section-location' });
       }
-
-      if (job.jobDescription == "") {
-        missingJob += 'job description ';
+      if (!job.jobDescription) {
+        missingFields.push({ label: 'Job description', step: 2, sectionId: 'section-description' });
       }
-
       if (!job.workSetupId) {
-        missingJob += 'work setup ';
+        missingFields.push({ label: 'Work setup', step: 1, sectionId: 'section-work-setup' });
       }
-
-      if (!job.bannerFile[0] && job.jobBanner == "") {
-        missingJob += 'job banner ';
+      if (!hasBanner) {
+        missingFields.push({ label: 'Banner image', step: 1, sectionId: 'section-banner' });
       }
-
       if (!job.companyId) {
-        missingJob += 'company ';
+        missingFields.push({ label: 'Company profile', step: 1, sectionId: 'section-company' });
       }
 
       this.haptics.warning();
-      this.snackbarService.warning(`Your job post can't be published yet. Missing: ${missingJob.trim()}.`, '', 5000);
+
+      const fieldActions = missingFields.map(f => ({
+        label: 'Fix: ' + f.label,
+        value: 'fix:' + f.step + ':' + f.sectionId,
+        primary: false as boolean,
+      }));
+      fieldActions.push({ label: 'Close', value: 'close', primary: false });
+
+      const blockDialog = this.dialog.open(UpdatedDialogComponent, {
+        data: {
+          message: "Your job can't be published yet. Tap a field below to fix it:",
+          actions: fieldActions,
+        },
+      });
+
+      blockDialog.afterClosed().subscribe((action: string) => {
+        if (!action || action === 'close') return;
+        if (action.startsWith('fix:')) {
+          const parts = action.split(':');
+          const targetStep = parseInt(parts[1], 10);
+          const sectionId = parts.slice(2).join(':');
+          if (targetStep !== this.stepper) {
+            this.changeStep(targetStep);
+          }
+          setTimeout(() => {
+            const el = document.getElementById(sectionId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 300);
+        }
+      });
     }
   }
 
@@ -636,22 +662,50 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.haptics.jobPublished();
       this.talentProofAnalytics.trackTalentProofViewed('publish_success', this.talentProof.isVerified());
 
-      // Resolve the published job ID before opening the success dialog
       const resolveIdAndShow = (resolvedId: string | null) => {
+        const initialCtrl = this.jobForm.get('initialData');
+        const jobTitle = (initialCtrl && initialCtrl.get('jobTitle') && initialCtrl.get('jobTitle').value)
+          ? initialCtrl.get('jobTitle').value
+          : 'your job';
+        const publicPath = resolvedId ? ('/jobs/details/' + resolvedId) : null;
+        const absoluteUrl = publicPath
+          ? (window.location.protocol + '//' + window.location.host + publicPath)
+          : null;
+
+        const actions: Array<{ label: string; value: string; primary?: boolean }> = [];
+        if (absoluteUrl) {
+          actions.push({ label: 'View live job', value: 'viewPublic', primary: true });
+        }
+        actions.push({ label: 'Go to Job Posts', value: 'goToList' });
+        if (absoluteUrl) {
+          actions.push({ label: 'Copy public link', value: 'copyLink' });
+        }
+
         const published = this.dialog.open(UpdatedDialogComponent, {
           disableClose: true,
           data: {
-            message: `Your job is live and ready to be discovered by ${this.talentProof.getDisplayCopy('short')}.`,
-            actions: [
-              { label: 'View public job post', value: 'viewPublic', primary: true },
-              { label: 'Back to my jobs', value: 'goToList' },
-            ],
+            message: '"' + jobTitle + '" is now live and ready to be discovered by ' + this.talentProof.getDisplayCopy('short') + '.',
+            actions,
           },
         });
 
-        published.afterClosed().pipe().subscribe((action: string) => {
-          if (action === 'viewPublic' && resolvedId) {
-            this.router.navigate(['/jobs/details', resolvedId]);
+        published.afterClosed().subscribe((action: string) => {
+          if (action === 'viewPublic' && absoluteUrl) {
+            // Open public job in new tab; never reuse current employer tab for the public page
+            const tab = window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
+            if (!tab) {
+              // Browser blocked the popup — show fallback with the URL
+              this.snackbarService.warning('Popup blocked. Link: ' + absoluteUrl, 'OK', 10000);
+            }
+            this.router.navigate(['/recruiter/jobs/list']);
+          } else if (action === 'copyLink' && absoluteUrl) {
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(absoluteUrl).catch(() => this.fallbackCopyToClipboard(absoluteUrl));
+            } else {
+              this.fallbackCopyToClipboard(absoluteUrl);
+            }
+            this.snackbarService.warning('Public link copied to clipboard!', '', 3000);
+            this.router.navigate(['/recruiter/jobs/list']);
           } else {
             this.router.navigate(['/recruiter/jobs/list']);
           }
@@ -820,25 +874,64 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.showStepErrors = false;
     this.stepErrorSummary = [];
     const nextStep = this.stepper + 1;
+
     if (this.stepper === 1 && !this.initialFormValid) {
-      this.showStepErrors = true;
       this.jobForm.controls['initialData'].markAllAsTouched();
       this.buildStepErrorSummary('initialData');
-      const el = document.getElementById('gh-jc-error-summary');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.haptics.warning();
+      this.openStepErrorDialog();
       return;
     }
     if (this.stepper === 2 && !this.jobInfoValid) {
-      this.showStepErrors = true;
       this.jobForm.controls['jobInfo'].markAllAsTouched();
       this.buildStepErrorSummary('jobInfo');
-      const el = document.getElementById('gh-jc-error-summary');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       this.haptics.warning();
+      this.openStepErrorDialog();
       return;
     }
     this.changeStep(nextStep);
+  }
+
+  /** Show a dialog listing missing required fields; clicking a field scrolls to it in the current step. */
+  private openStepErrorDialog(): void {
+    const actions = this.stepErrorSummary.map(e => ({
+      label: e.label,
+      value: 'scroll:' + e.fieldId,
+      primary: false as boolean,
+    }));
+    actions.push({ label: 'Continue editing', value: 'close', primary: false });
+
+    const errDialog = this.dialog.open(UpdatedDialogComponent, {
+      data: {
+        message: 'Please fill in the required fields to continue:',
+        actions,
+      },
+    });
+
+    errDialog.afterClosed().subscribe((action: string) => {
+      if (!action || action === 'close') return;
+      if (action.startsWith('scroll:')) {
+        const sectionId = action.slice('scroll:'.length);
+        this.showStepErrors = true;
+        setTimeout(() => {
+          const el = document.getElementById(sectionId);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    });
+  }
+
+  /** Clipboard fallback for browsers without navigator.clipboard */
+  private fallbackCopyToClipboard(text: string): void {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
   }
 
   private buildStepErrorSummary(formGroupName: string): void {

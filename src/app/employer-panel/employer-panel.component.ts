@@ -106,6 +106,13 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Called from the "sign in again" button on the profile-load-error fallback.
+   *  Clears the session and navigates to /signin so the guard doesn't re-admit. */
+  signInAgain(): void {
+    this.coreService.logout();
+    this.router.navigate(['/signin']);
+  }
+
   ngOnDestroy(): void {
     if (this.routerSub) this.routerSub.unsubscribe();
   }
