@@ -1,4 +1,4 @@
-// This file can be replaced during build by using the `fileReplacements` array.
+﻿// This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
@@ -25,8 +25,8 @@ export const environment = {
     appId: "1:818317489154:web:d849afade1105af929631b",
     measurementId: "G-4C797NXLJF",
   },
-  // Google OAuth web client ID — from Firebase Console → Authentication → Sign-in method → Google → Web client ID
-  googleClientId: '818317489154-laldaic42nbnj3rra0o87bsa3buuo78g.apps.googleusercontent.com'
+  // Google OAuth web client ID â€” from Firebase Console â†’ Authentication â†’ Sign-in method â†’ Google â†’ Web client ID
+  googleClientId: '818317489154-s5mc0m5rd06qdpj3bh1sdrfqessaca8u.apps.googleusercontent.com'
 };
 
 /*
