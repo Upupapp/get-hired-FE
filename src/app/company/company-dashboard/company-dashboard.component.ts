@@ -157,7 +157,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   cachedCities: Array<{ city: string; count: string }> = [];
 
   /** Active time-range selector for the Views & Applications chart. */
-  trendRange: '7d' | '30d' | '90d' = '30d';
+  trendRange: '7d' | '30d' | '90d' = '7d';
 
   /** Analytics data from the new analytics endpoint. */
   analyticsData: DashboardAnalytics | null = null;

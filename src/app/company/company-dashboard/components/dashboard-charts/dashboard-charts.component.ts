@@ -50,45 +50,56 @@ export class DashboardChartsComponent implements OnInit, OnChanges {
   @Input() error = false;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
-  // Chart.js config — clean, accessible, GetHired brand colors
+  // Chart.js config — GetHired brand colors, zero-safe
   public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: { duration: 400, easing: 'easeInOutQuart' },
     interaction: { mode: 'index', intersect: false },
-    elements: { line: { tension: 0.35, borderWidth: 2 }, point: { radius: 3, hitRadius: 10 } },
+    elements: {
+      line: { tension: 0.38, borderWidth: 2.5, borderJoinStyle: 'round' },
+      point: { radius: 3.5, hitRadius: 12, hoverRadius: 5 },
+    },
     scales: {
       x: {
-        grid: { display: false },
+        grid: { display: false, drawBorder: false },
         ticks: {
-          color: '#6b7280',
-          font: { size: 11, family: 'Manrope' },
+          color: '#94a3b8',
+          font: { size: 11, family: 'Manrope, sans-serif' },
           maxTicksLimit: 8,
           maxRotation: 0,
         },
       },
       y: {
-        grid: { color: 'rgba(0,0,0,0.04)' },
+        grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
         ticks: {
-          color: '#6b7280',
-          font: { size: 11, family: 'Manrope' },
+          color: '#94a3b8',
+          font: { size: 11, family: 'Manrope, sans-serif' },
           precision: 0,
+          stepSize: 1,
         },
         beginAtZero: true,
+        suggestedMax: 5,
       },
     },
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#1e293b',
+        backgroundColor: '#1a1830',
         titleColor: '#e2e8f0',
         bodyColor: '#cbd5e1',
-        padding: 10,
-        cornerRadius: 8,
+        borderColor: 'rgba(108,107,173,0.3)',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 10,
+        displayColors: true,
+        boxWidth: 8,
+        boxHeight: 8,
         callbacks: {
           label: (context) => {
             const label = context.dataset.label || '';
             const value = context.parsed.y;
-            return ` ${label}: ${value}`;
+            return '  ' + label + ': ' + value;
           },
         },
       },
