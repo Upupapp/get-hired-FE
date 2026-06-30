@@ -1,5 +1,6 @@
 <article class="gh-search-job-card" (click)="viewJob()" role="article" tabindex="0"
-  (keydown.enter)="viewJob()" (keydown.space)="viewJob()">
+  (keydown.enter)="viewJob()" (keydown.space)="viewJob()"
+  [attr.aria-label]="job.title + ' at ' + job.companyName">
 
   <!-- Company logo -->
   <div class="gh-sjc-logo-wrap">
@@ -10,6 +11,8 @@
       class="gh-sjc-logo"
       loading="lazy"
       decoding="async"
+      width="48"
+      height="48"
       (error)="onLogoError()" />
     <span *ngIf="!job.companyLogoUrl || logoError" class="gh-sjc-logo-fallback" aria-hidden="true">
       {{ (job.companyName || 'C').charAt(0).toUpperCase() }}
@@ -24,21 +27,22 @@
     </div>
 
     <button
-      *ngIf="showCompanyLink && job.companySlug"
+      *ngIf="showCompanyLink && (job.hasPublicProfile || job.companySlug)"
       class="gh-sjc-company-btn"
       type="button"
       [attr.aria-label]="'View ' + job.companyName + ' company page'"
       (click)="viewCompany($event)">
       {{ job.companyName }}
+      <span class="gh-sjc-company-badge" aria-label="Company profile available">&#x2713;</span>
     </button>
-    <span *ngIf="!showCompanyLink || !job.companySlug" class="gh-sjc-company-text">
+    <span *ngIf="!showCompanyLink || (!job.hasPublicProfile && !job.companySlug)" class="gh-sjc-company-text">
       {{ job.companyName }}
     </span>
 
     <!-- Meta chips -->
     <div class="gh-sjc-meta" role="list" aria-label="Job details">
       <span *ngIf="job.location" class="gh-sjc-chip gh-sjc-chip--location" role="listitem">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
         </svg>
         {{ job.location }}
@@ -47,10 +51,25 @@
       <span *ngIf="job.employmentType" class="gh-sjc-chip" role="listitem">{{ job.employmentType }}</span>
       <span *ngIf="formatSalary()" class="gh-sjc-chip gh-sjc-chip--salary" role="listitem">{{ formatSalary() }}</span>
     </div>
+
+    <!-- Compact locked Match Grade panel (anonymous only) -->
+    <div class="gh-sjc-match" *ngIf="!isLoggedIn" role="group" aria-label="Unlock your Match Grade for this job">
+      <svg class="gh-sjc-match-lock" width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <span class="gh-sjc-match-label">Unlock Match Grade</span>
+      <button type="button" class="gh-sjc-match-cta" (click)="createProfile($event)">
+        Create profile
+      </button>
+      <button type="button" class="gh-sjc-match-login" (click)="logIn($event)">
+        Log in
+      </button>
+    </div>
   </div>
 
   <!-- CTA -->
   <div class="gh-sjc-cta" aria-hidden="true">
-    <span class="gh-sjc-apply-btn">View</span>
+    <span class="gh-sjc-apply-btn">View &amp; Apply</span>
   </div>
 </article>

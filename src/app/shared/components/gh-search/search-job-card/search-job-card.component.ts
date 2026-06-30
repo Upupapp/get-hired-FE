@@ -1,4 +1,5 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { SearchJobResult } from '@app-core/services/search.service';
 
@@ -12,8 +13,16 @@ export class SearchJobCardComponent {
   @Input() job!: SearchJobResult;
   @Input() showCompanyLink = true;
   logoError = false;
+  isLoggedIn = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: object,
+  ) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isLoggedIn = !!localStorage.getItem('role');
+    }
+  }
 
   viewJob() {
     this.router.navigate(['/jobs/details', this.job.jobId]);
@@ -52,5 +61,15 @@ export class SearchJobCardComponent {
 
   onLogoError() {
     this.logoError = true;
+  }
+
+  createProfile(event: MouseEvent) {
+    event.stopPropagation();
+    this.router.navigate(['/register']);
+  }
+
+  logIn(event: MouseEvent) {
+    event.stopPropagation();
+    this.router.navigate(['/login'], { queryParams: { returnUrl: '/jobs/details/' + this.job.jobId } });
   }
 }

@@ -25,6 +25,7 @@ export interface SearchJobResult {
   companyName: string;
   companyLogoUrl: string | null;
   companySlug: string | null;
+  hasPublicProfile?: boolean;
   location: string;
   workSetup: string | null;
   employmentType: string | null;
@@ -83,6 +84,12 @@ export interface EmptyRecovery {
   message: string;
 }
 
+export interface LowResultRecovery {
+  enabled: boolean;
+  title: string;
+  suggestions: string[];
+}
+
 export interface FederatedSearchResponse {
   query: string;
   type: string;
@@ -100,6 +107,7 @@ export interface FederatedSearchResponse {
     sort: string;
   };
   emptyRecovery: EmptyRecovery | null;
+  lowResultRecovery: LowResultRecovery | null;
   latencyMs?: number;
 }
 
@@ -162,6 +170,7 @@ const EMPTY_FEDERATED: FederatedSearchResponse = {
   companySpotlight: null,
   appliedFilters: { location: null, workSetup: null, employmentType: null, salary: { min: null, max: null }, sort: 'relevance' },
   emptyRecovery: null,
+  lowResultRecovery: null,
 };
 
 @Injectable({ providedIn: 'root' })

@@ -6,7 +6,7 @@ import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { SeoService } from '@app-core/services/seo.service';
 import {
   SearchService, FederatedSearchResponse, SearchJobResult, SearchCompanyResult,
-  CompanySpotlight, SearchCounts, EmptyRecovery,
+  CompanySpotlight, SearchCounts, EmptyRecovery, LowResultRecovery,
 } from '@app-core/services/search.service';
 
 export type SearchTab = 'all' | 'jobs' | 'companies';
@@ -50,6 +50,7 @@ export class PublicListComponent implements OnInit, OnDestroy {
   companiesHasMore = false;
   companySpotlight: CompanySpotlight | null = null;
   emptyRecovery: EmptyRecovery | null = null;
+  lowResultRecovery: LowResultRecovery | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -123,6 +124,7 @@ export class PublicListComponent implements OnInit, OnDestroy {
           this.companiesHasMore = !!(fed.groups && fed.groups.companies && fed.groups.companies.hasMore);
           this.companySpotlight = fed.companySpotlight || null;
           this.emptyRecovery = fed.emptyRecovery || null;
+          this.lowResultRecovery = fed.lowResultRecovery || null;
         }
         this.searchLoading = false;
       },
@@ -139,6 +141,7 @@ export class PublicListComponent implements OnInit, OnDestroy {
     this.counts = { all: 0, jobs: 0, companies: 0 };
     this.companySpotlight = null;
     this.emptyRecovery = null;
+    this.lowResultRecovery = null;
   }
 
   private updateSeo(q: string) {
@@ -299,6 +302,23 @@ export class PublicListComponent implements OnInit, OnDestroy {
 
   get isAllEmpty(): boolean {
     return !this.searchLoading && !this.searchError && this.counts.all === 0;
+  }
+
+  get isLowResultSearch(): boolean {
+    return !this.searchLoading && !this.searchError && this.counts.jobs > 0 && this.counts.jobs <= 3;
+  }
+
+  get dynamicResultTitle(): string {
+    const q = this.activeQuery;
+    const ws = this.activeFilters.workSetup;
+    const loc = this.activeFilters.location;
+    if (q && ws && loc) return q + ' · ' + ws + ' · ' + loc;
+    if (q && ws) return q + ' · ' + ws;
+    if (q && loc) return q + ' in ' + loc;
+    if (q) return q;
+    if (ws) return ws + ' jobs';
+    if (loc) return 'Jobs in ' + loc;
+    return 'Search results';
   }
 
   get showSpotlight(): boolean {

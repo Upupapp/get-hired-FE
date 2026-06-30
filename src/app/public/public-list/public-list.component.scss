@@ -306,6 +306,127 @@
   }
 }
 
+// ── V3 Dynamic result heading ─────────────────────────────────────────────────
+.gh-search-result-head {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gh-search-result-h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1830;
+  margin: 0;
+  line-height: 1.2;
+  text-transform: capitalize;
+
+  @media (max-width: 640px) { font-size: 18px; }
+}
+
+.gh-search-result-count {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #9CA3AF;
+  margin: 0;
+  white-space: nowrap;
+}
+
+// ── V3 Low-result recovery panel ────────────────────────────────────────────
+.gh-low-result-recovery {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 8px 0 24px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(108,107,173,0.05) 0%, rgba(255,112,98,0.04) 100%);
+  border: 1.5px solid #EDE9F8;
+  border-radius: 14px;
+  animation: gh-lrr-in 0.2s ease;
+
+  @media (prefers-reduced-motion: reduce) { animation: none; }
+  @media (max-width: 640px) { flex-direction: column; }
+}
+
+@keyframes gh-lrr-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gh-lrr-icon {
+  width: 40px;
+  height: 40px;
+  background: #F3F1FC;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #6C6BAD;
+}
+
+.gh-lrr-body { flex: 1; min-width: 0; }
+
+.gh-lrr-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1830;
+  margin: 0 0 4px;
+}
+
+.gh-lrr-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  color: #6b6887;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.gh-lrr-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+
+  @media (max-width: 640px) { width: 100%; }
+}
+
+.gh-lrr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 34px;
+  text-decoration: none;
+  border: 1.5px solid #FF7062;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  color: #fff;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.88; color: #fff; }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+
+  &--sec {
+    background: #fff;
+    color: #6C6BAD;
+    border-color: #DDD8F0;
+    &:hover { border-color: #6C6BAD; opacity: 1; color: #6C6BAD; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+
 // ── Browse-mode split-view preview panel ──────────────────────────────────────
 
 .jb-browse-split {
