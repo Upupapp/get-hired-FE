@@ -3,6 +3,7 @@ import {
   ElementRef, ViewChild, PLATFORM_ID, Inject, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-google-signin-button',
@@ -58,7 +59,7 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
     if (!this.containerRef || !this.containerRef.nativeElement) return;
     try {
       google.accounts.id.initialize({
-        client_id: (window as any).__GH_GOOGLE_CLIENT_ID__ || '',
+        client_id: environment.googleClientId,
         callback: this.handleCredential.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true
