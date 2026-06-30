@@ -159,6 +159,17 @@ export class JobListComponent implements OnInit, OnDestroy {
     );
 
     setTimeout(() => (this.loading = false), 1500);
+
+    // Post-publish: show success toast and clear the param so refresh doesn't repeat it
+    const publishedId = this.route.snapshot.queryParamMap.get('published');
+    if (publishedId) {
+      this.snackbarService.success('Your job is now published!', '', 5000);
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {},
+        replaceUrl: true,
+      });
+    }
   }
 
   checkJobRestriction(subs: Model.CompanySubscriptions) {

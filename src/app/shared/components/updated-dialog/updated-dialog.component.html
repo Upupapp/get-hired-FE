@@ -2,6 +2,13 @@
   <i class="bi bi-check-circle fa-lg"></i>
   <h5 class="fs-5">{{ message }}</h5>
 
+  <!-- External link (e.g. popup-blocked fallback: "Open live job →") -->
+  <div *ngIf="linkUrl" class="ud-link-row mt-2 mb-1">
+    <a [href]="linkUrl" target="_blank" rel="noopener noreferrer" class="ud-ext-link">
+      {{ linkText || linkUrl }}
+    </a>
+  </div>
+
   <!-- Action-button mode: custom action cards -->
   <div *ngIf="actions && actions.length; else simpleClose" class="ud-actions mt-4">
     <button

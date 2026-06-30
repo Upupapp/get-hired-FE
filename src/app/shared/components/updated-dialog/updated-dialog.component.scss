@@ -5,6 +5,21 @@ i {
   font-size: 100px;
 }
 
+// External link row — used for popup-blocked fallback
+.ud-link-row {
+  text-align: center;
+}
+
+.ud-ext-link {
+  display: inline-block;
+  color: #2563EB;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  padding: 6px 0;
+  &:hover { color: #1D4ED8; }
+}
+
 // Action-card buttons for publish-success and other multi-action dialogs
 .ud-actions {
   display: flex;

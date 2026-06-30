@@ -671,6 +671,18 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         const absoluteUrl = publicPath
           ? (window.location.protocol + '//' + window.location.host + publicPath)
           : null;
+        // Redirect to job list with ?published= so the list can show a success toast
+        const jobListQueryParams = resolvedId ? { published: resolvedId } : {};
+
+        // Reusable clipboard helper
+        const copyToClipboard = (url: string) => {
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).catch(() => this.fallbackCopyToClipboard(url));
+          } else {
+            this.fallbackCopyToClipboard(url);
+          }
+          this.snackbarService.success('Public link copied!', '', 3000);
+        };
 
         const actions: Array<{ label: string; value: string; primary?: boolean }> = [];
         if (absoluteUrl) {
@@ -681,34 +693,49 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           actions.push({ label: 'Copy public link', value: 'copyLink' });
         }
 
+        // copyLink is registered as a callback — it copies without closing the dialog
+        // so the employer can also click "View live job" or "Go to Job Posts" after copying
+        const callbacks: { [key: string]: () => void } = absoluteUrl
+          ? { copyLink: () => copyToClipboard(absoluteUrl) }
+          : {};
+
         const published = this.dialog.open(UpdatedDialogComponent, {
           disableClose: true,
           data: {
             message: '"' + jobTitle + '" is now live and ready to be discovered by ' + this.talentProof.getDisplayCopy('short') + '.',
             actions,
+            callbacks,
           },
         });
 
         published.afterClosed().subscribe((action: string) => {
           if (action === 'viewPublic' && absoluteUrl) {
-            // Open public job in new tab; never reuse current employer tab for the public page
+            // Open public job in new tab with safe openers; current tab → job list
             const tab = window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
             if (!tab) {
-              // Browser blocked the popup — show fallback with the URL
-              this.snackbarService.warning('Popup blocked. Link: ' + absoluteUrl, 'OK', 10000);
+              // Popup blocked — show a second dialog with a real clickable link + copy option
+              const fallback = this.dialog.open(UpdatedDialogComponent, {
+                disableClose: false,
+                data: {
+                  message: 'Your browser blocked the new tab. Open the live job using the link below.',
+                  linkUrl: absoluteUrl,
+                  linkText: 'Open live job →',
+                  actions: [
+                    { label: 'Copy public link', value: 'copyFallback' },
+                    { label: 'Go to Job Posts', value: 'doneFallback' },
+                  ],
+                  callbacks: { copyFallback: () => copyToClipboard(absoluteUrl) },
+                },
+              });
+              fallback.afterClosed().subscribe(() => {
+                this.router.navigate(['/recruiter/jobs/list'], { queryParams: jobListQueryParams });
+              });
+              return; // navigate happens when fallback closes
             }
-            this.router.navigate(['/recruiter/jobs/list']);
-          } else if (action === 'copyLink' && absoluteUrl) {
-            if (navigator.clipboard) {
-              navigator.clipboard.writeText(absoluteUrl).catch(() => this.fallbackCopyToClipboard(absoluteUrl));
-            } else {
-              this.fallbackCopyToClipboard(absoluteUrl);
-            }
-            this.snackbarService.warning('Public link copied to clipboard!', '', 3000);
-            this.router.navigate(['/recruiter/jobs/list']);
-          } else {
-            this.router.navigate(['/recruiter/jobs/list']);
           }
+          // All other closes (goToList, ESC/backdrop, undefined) → job list
+          // copyLink is handled by callback and never closes the dialog, so never arrives here
+          this.router.navigate(['/recruiter/jobs/list'], { queryParams: jobListQueryParams });
         });
       };
 
