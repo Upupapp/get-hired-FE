@@ -189,6 +189,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.loading = false;
           this.haptics.error();
+          if (err && err.status === 401) { this.dialogRef.close(); return; }
           const msg = (err && err.error && err.error.message) || 'Upload failed. Please try again.';
           this.errorMsg = msg;
         },
@@ -234,6 +235,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.loading = false;
           this.haptics.error();
+          if (err && err.status === 401) { this.dialogRef.close(); return; }
           const msg = (err && err.error && err.error.message) || 'Could not import from URL. Please try again.';
           this.errorMsg = msg;
         },
@@ -271,6 +273,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.loading = false;
         this.haptics.error();
+        if (err && err.status === 401) {
+          // Session expired — the auth interceptor already shows a sign-in toast.
+          // Close the modal so the user isn't stuck on a broken screen.
+          this.dialogRef.close();
+          return;
+        }
         const msg = (err && err.error && err.error.message) || 'Could not generate job draft. Please try again.';
         this.errorMsg = msg;
       },
