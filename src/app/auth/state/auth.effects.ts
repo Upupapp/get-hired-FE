@@ -39,10 +39,15 @@ export class AuthEffects {
             ];
           }),
           catchError((err) => {
-            const { error } = err.error;
+            // Safely extract message — err.error may be null (network error) or a plain
+            // string (non-JSON response); never destructure blindly to avoid observer crash
+            const body = err && err.error;
+            const message = (body && body.error) || (body && body.message)
+              || (typeof body === 'string' ? body : null)
+              || 'Sign in failed. Please try again.';
             localStorage.setItem('notFound', 'true');
-            localStorage.setItem('loginError', error);
-            return of(AuthActions.getAuthCredentialsFail({payload: error}))
+            localStorage.setItem('loginError', message);
+            return of(AuthActions.getAuthCredentialsFail({ payload: message }));
           })
         ))
     )

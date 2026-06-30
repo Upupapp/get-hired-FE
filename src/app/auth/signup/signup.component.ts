@@ -46,6 +46,13 @@ export class SignupComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Clear stale signin errors — loginError is written by the signin flow and
+    // should never bleed into the signup page's error state
+    localStorage.removeItem('loginError');
+    localStorage.removeItem('loginMessage');
+    this.error = null;
+    this.message = null;
+
     // SEO Phase 5 V4: signup is not a public indexable page — noindex + nofollow.
     // robots.txt already disallows /signup; this adds defense-in-depth at the
     // component level so Googlebot cannot mistake a JS-rendered page for indexable.
