@@ -2,10 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { SubscriptionSummaryService } from './subscription-summary.service';
-import { EmployerSubscriptionSummary, EntitlementUsage, BooleanEntitlement } from './subscription.models';
+import { EmployerSubscriptionSummary, EntitlementUsage, BooleanEntitlement, InvoiceListItem } from './subscription.models';
+import { BillingService } from './services/billing.service';
+import { InvoiceSendModalComponent } from './components/invoice-send-modal/invoice-send-modal.component';
 
 interface PlanConfig {
   code: string;
@@ -31,6 +34,16 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
   loadError = false;
   summary: EmployerSubscriptionSummary | null = null;
   companyDetails: any = null;
+
+  // ── Subscription subtab state ───────────────────────────────────────────────
+  activeTab: 'plan' | 'invoices' | 'billing-profile' = 'plan';
+
+  // ── Invoice Vault state ─────────────────────────────────────────────────────
+  invoices: InvoiceListItem[] = [];
+  invoicesLoading = false;
+  invoicesError: string | null = null;
+  invoicesTotal = 0;
+  selectedInvoiceId: string | null = null;
 
   // FAQ accordion state — each index tracks open/closed
   faqOpen: boolean[] = [false, false, false, false, false, false, false];
@@ -148,6 +161,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
     public companyFacade: CompanyFacade,
     private subscriptionSummaryService: SubscriptionSummaryService,
     private router: Router,
+    private dialog: MatDialog,
+    private billing: BillingService,
   ) {}
 
   ngOnInit(): void {
@@ -423,5 +438,76 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // ── Subtab navigation ───────────────────────────────────────────────────────
+
+  switchTab(tab: 'plan' | 'invoices' | 'billing-profile'): void {
+    this.activeTab = tab;
+    if (tab === 'invoices' && this.invoices.length === 0 && !this.invoicesLoading) {
+      this.loadInvoices();
+    }
+  }
+
+  // ── Invoice Vault methods ───────────────────────────────────────────────────
+
+  loadInvoices(): void {
+    this.invoicesLoading = true;
+    this.invoicesError = null;
+
+    this.billing.listInvoices({ limit: 20, offset: 0 })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.invoicesLoading = false;
+          if (res && res.success) {
+            this.invoices = res.invoices || [];
+            this.invoicesTotal = res.total || 0;
+          } else {
+            this.invoicesError = 'We couldn\'t load your invoices.';
+          }
+        },
+        error: () => {
+          this.invoicesLoading = false;
+          this.invoicesError = 'We couldn\'t load your invoices. Please try again.';
+        }
+      });
+  }
+
+  openInvoiceDrawer(invoiceId: string): void {
+    this.selectedInvoiceId = invoiceId;
+  }
+
+  closeInvoiceDrawer(): void {
+    this.selectedInvoiceId = null;
+  }
+
+  openInvoiceSend(invoice: InvoiceListItem): void {
+    this.dialog.open(InvoiceSendModalComponent, {
+      width: '480px',
+      maxWidth: '96vw',
+      panelClass: 'gh-dialog',
+      data: {
+        invoiceId: invoice.id,
+        invoiceNumber: invoice.invoiceNumber,
+        currentEmail: null,
+      }
+    });
+  }
+
+  formatInvoiceDate(d: string | null | undefined): string {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  formatInvoicePeriod(start: string | null | undefined, end: string | null | undefined): string {
+    if (!start || !end) return '—';
+    const opts: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(start).toLocaleDateString('en-PH', opts) + ' – ' + new Date(end).toLocaleDateString('en-PH', opts);
+  }
+
+  viewInvoicePdf(invoice: InvoiceListItem): void {
+    const url = this.billing.getInvoiceViewUrl(invoice.id);
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

@@ -1,3 +1,88 @@
+// ── Invoice Vault types ───────────────────────────────────────────────────────
+
+export type InvoiceStatus =
+  | 'draft' | 'issued' | 'paid' | 'pending' | 'failed'
+  | 'voided' | 'refunded' | 'trial' | 'manual' | string;
+
+export interface InvoiceLineItem {
+  description: string;
+  qty: number;
+  unit_price: number;
+  total: number;
+}
+
+export interface InvoiceEvent {
+  id: string;
+  eventType: string;
+  eventSource: string;
+  actorUid?: string | null;
+  metadataJson?: any;
+  createdAt: string;
+}
+
+export interface InvoiceListItem {
+  id: string;
+  invoiceNumber: string;
+  status: InvoiceStatus;
+  currency: string;
+  totalAmount: number;
+  planName?: string | null;
+  billingCycle?: string | null;
+  billingPeriodStart?: string | null;
+  billingPeriodEnd?: string | null;
+  issuedAt?: string | null;
+  paidAt?: string | null;
+  createdAt: string;
+  paymentMethodLabel?: string | null;
+  hasDownload: boolean;
+}
+
+export interface InvoiceDetail extends InvoiceListItem {
+  subtotalAmount: number;
+  discountAmount: number;
+  taxAmount: number;
+  amountPaid: number;
+  amountDue: number;
+  planSlug?: string | null;
+  dueAt?: string | null;
+  voidedAt?: string | null;
+  updatedAt?: string | null;
+  customerName?: string | null;
+  customerEmail?: string | null;
+  lineItems: InvoiceLineItem[];
+  paymentReference?: string | null;
+  events: InvoiceEvent[];
+  downloadToken?: string | null;
+}
+
+export interface InvoiceListResponse {
+  success: boolean;
+  invoices: InvoiceListItem[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface BillingProfile {
+  companyId?: string;
+  legalName?: string | null;
+  billingEmail?: string | null;
+  financeContactName?: string | null;
+  financeContactEmail?: string | null;
+  billingAddressLine1?: string | null;
+  billingAddressLine2?: string | null;
+  city?: string | null;
+  provinceState?: string | null;
+  country?: string | null;
+  postalCode?: string | null;
+  taxIdentifier?: string | null;
+  autoSendInvoices?: boolean;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+}
+
+// ── Entitlement types ─────────────────────────────────────────────────────────
+
 export interface EntitlementUsage {
   used: number;
   included: number | 'unlimited' | null;

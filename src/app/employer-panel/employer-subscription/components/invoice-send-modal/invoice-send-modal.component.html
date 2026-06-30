@@ -1,0 +1,77 @@
+<div class="inv-send-modal">
+  <!-- Header -->
+  <div class="inv-send-modal__header">
+    <div class="inv-send-modal__icon" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M22 2L11 13" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <h2 class="inv-send-modal__title">Send Invoice</h2>
+      <p class="inv-send-modal__sub">{{ invoiceNumber }}</p>
+    </div>
+    <button type="button" class="inv-send-modal__close" (click)="close()" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#64748B" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- Success state -->
+  <div class="inv-send-modal__success" *ngIf="sent" role="status" aria-live="polite">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" fill="#D1FAE5"/>
+      <path d="M8 12l3 3 5-5" stroke="#065F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="inv-send-modal__success-msg">Invoice sent successfully!</p>
+  </div>
+
+  <!-- Form -->
+  <ng-container *ngIf="!sent">
+    <p class="inv-send-modal__desc">
+      We'll email a copy of this invoice with a link to view and save it as PDF.
+    </p>
+
+    <div class="inv-send-modal__field">
+      <label class="inv-send-modal__label" for="inv-send-email">Send to</label>
+      <input
+        id="inv-send-email"
+        type="email"
+        [formControl]="emailControl"
+        class="inv-send-modal__input"
+        [class.inv-send-modal__input--error]="emailControl.invalid && emailControl.touched"
+        placeholder="billing@yourcompany.com"
+        autocomplete="email"
+        aria-describedby="inv-send-email-err"
+      >
+      <p *ngIf="emailControl.invalid && emailControl.touched"
+         id="inv-send-email-err"
+         class="inv-send-modal__field-error"
+         role="alert">
+        <span *ngIf="emailControl.hasError('required')">Email address is required.</span>
+        <span *ngIf="emailControl.hasError('email')">Please enter a valid email address.</span>
+      </p>
+    </div>
+
+    <div class="inv-send-modal__error" *ngIf="errorMsg" role="alert" aria-live="polite">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="#EF4444" stroke-width="2"/>
+        <path d="M12 8v4M12 16h.01" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      {{ errorMsg }}
+    </div>
+
+    <div class="inv-send-modal__actions">
+      <button type="button" class="inv-send-modal__btn inv-send-modal__btn--cancel" (click)="close()">Cancel</button>
+      <button
+        type="button"
+        class="inv-send-modal__btn inv-send-modal__btn--send"
+        [disabled]="emailControl.invalid || sending"
+        (click)="send()"
+        [attr.aria-busy]="sending"
+      >
+        <span *ngIf="!sending">Send Invoice</span>
+        <span *ngIf="sending" aria-hidden="true">Sending…</span>
+      </button>
+    </div>
+  </ng-container>
+</div>

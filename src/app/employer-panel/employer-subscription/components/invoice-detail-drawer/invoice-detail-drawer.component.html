@@ -1,0 +1,156 @@
+<div class="inv-drawer" [class.inv-drawer--open]="!!invoiceId" role="dialog" aria-label="Invoice details" [attr.aria-hidden]="!invoiceId">
+
+  <!-- Backdrop -->
+  <div class="inv-drawer__backdrop" (click)="close()" aria-hidden="true"></div>
+
+  <!-- Panel -->
+  <div class="inv-drawer__panel" tabindex="-1">
+
+    <!-- Header -->
+    <div class="inv-drawer__header">
+      <div class="inv-drawer__header-left">
+        <div class="inv-drawer__logo-mark" aria-hidden="true">GH</div>
+        <div>
+          <h2 class="inv-drawer__title">Invoice Details</h2>
+          <p class="inv-drawer__inv-num" *ngIf="invoice">{{ invoice.invoiceNumber }}</p>
+        </div>
+      </div>
+      <button type="button" class="inv-drawer__close" (click)="close()" aria-label="Close invoice details">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="inv-drawer__loading" *ngIf="loading" aria-live="polite" aria-busy="true">
+      <div class="inv-drawer__skeleton inv-drawer__skeleton--title"></div>
+      <div class="inv-drawer__skeleton inv-drawer__skeleton--line"></div>
+      <div class="inv-drawer__skeleton inv-drawer__skeleton--line inv-drawer__skeleton--short"></div>
+      <div class="inv-drawer__skeleton inv-drawer__skeleton--block"></div>
+    </div>
+
+    <!-- Error -->
+    <div class="inv-drawer__error" *ngIf="errorMsg && !loading" role="alert">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" stroke="#EF4444" stroke-width="2"/>
+        <path d="M12 8v4M12 16h.01" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>{{ errorMsg }}</span>
+      <button type="button" class="inv-drawer__error-retry" (click)="load(invoiceId)" *ngIf="invoiceId">Retry</button>
+    </div>
+
+    <!-- Invoice content -->
+    <div class="inv-drawer__body" *ngIf="invoice && !loading">
+
+      <!-- Status + amount hero -->
+      <div class="inv-drawer__hero">
+        <div class="inv-drawer__amount">{{ totalFormatted }}</div>
+        <app-invoice-status-chip [status]="invoice.status"></app-invoice-status-chip>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="inv-drawer__actions">
+        <button type="button" class="inv-drawer__action-btn inv-drawer__action-btn--primary" (click)="openInvoice()"
+          aria-label="View and download invoice as PDF">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download PDF
+        </button>
+        <button type="button" class="inv-drawer__action-btn inv-drawer__action-btn--secondary" (click)="openSendModal()"
+          aria-label="Send invoice by email">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Send by email
+        </button>
+      </div>
+
+      <!-- Key info grid -->
+      <div class="inv-drawer__info-grid">
+        <div class="inv-drawer__info-item">
+          <span class="inv-drawer__info-label">Invoice #</span>
+          <span class="inv-drawer__info-value inv-drawer__info-value--mono">{{ invoice.invoiceNumber }}</span>
+        </div>
+        <div class="inv-drawer__info-item">
+          <span class="inv-drawer__info-label">Plan</span>
+          <span class="inv-drawer__info-value">{{ invoice.planName || '—' }}</span>
+        </div>
+        <div class="inv-drawer__info-item">
+          <span class="inv-drawer__info-label">Billing Cycle</span>
+          <span class="inv-drawer__info-value">{{ invoice.billingCycle === 'annual' ? 'Annual' : 'Monthly' }}</span>
+        </div>
+        <div class="inv-drawer__info-item">
+          <span class="inv-drawer__info-label">Billing Period</span>
+          <span class="inv-drawer__info-value">{{ billingPeriod }}</span>
+        </div>
+        <div class="inv-drawer__info-item" *ngIf="invoice.issuedAt">
+          <span class="inv-drawer__info-label">Issued</span>
+          <span class="inv-drawer__info-value">{{ formatDate(invoice.issuedAt) }}</span>
+        </div>
+        <div class="inv-drawer__info-item" *ngIf="invoice.paidAt">
+          <span class="inv-drawer__info-label">Paid</span>
+          <span class="inv-drawer__info-value inv-drawer__info-value--success">{{ formatDate(invoice.paidAt) }}</span>
+        </div>
+        <div class="inv-drawer__info-item" *ngIf="invoice.paymentMethodLabel">
+          <span class="inv-drawer__info-label">Payment Method</span>
+          <span class="inv-drawer__info-value">{{ invoice.paymentMethodLabel }}</span>
+        </div>
+        <div class="inv-drawer__info-item" *ngIf="invoice.paymentReference">
+          <span class="inv-drawer__info-label">Reference</span>
+          <span class="inv-drawer__info-value inv-drawer__info-value--mono">{{ invoice.paymentReference }}</span>
+        </div>
+        <div class="inv-drawer__info-item" *ngIf="invoice.customerEmail">
+          <span class="inv-drawer__info-label">Billed To</span>
+          <span class="inv-drawer__info-value">{{ invoice.customerName || '' }} {{ invoice.customerEmail }}</span>
+        </div>
+      </div>
+
+      <!-- Line items -->
+      <div class="inv-drawer__section" *ngIf="invoice.lineItems && invoice.lineItems.length">
+        <h3 class="inv-drawer__section-title">Items</h3>
+        <div class="inv-drawer__line-items">
+          <div class="inv-drawer__line-item" *ngFor="let item of invoice.lineItems">
+            <span class="inv-drawer__line-desc">{{ item.description }}</span>
+            <span class="inv-drawer__line-total">{{ formatAmount(item.total, invoice.currency) }}</span>
+          </div>
+        </div>
+        <div class="inv-drawer__totals">
+          <div class="inv-drawer__total-row" *ngIf="invoice.discountAmount > 0">
+            <span>Discount</span><span>-{{ formatAmount(invoice.discountAmount, invoice.currency) }}</span>
+          </div>
+          <div class="inv-drawer__total-row" *ngIf="invoice.taxAmount > 0">
+            <span>Tax</span><span>{{ formatAmount(invoice.taxAmount, invoice.currency) }}</span>
+          </div>
+          <div class="inv-drawer__total-row inv-drawer__total-row--grand">
+            <span>Total</span><span>{{ totalFormatted }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit trail -->
+      <div class="inv-drawer__section" *ngIf="invoice.events && invoice.events.length">
+        <button type="button" class="inv-drawer__events-toggle" (click)="showEvents = !showEvents"
+          [attr.aria-expanded]="showEvents">
+          Activity log
+          <svg [style.transform]="showEvents ? 'rotate(180deg)' : ''" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="inv-drawer__events" *ngIf="showEvents">
+          <div class="inv-drawer__event" *ngFor="let ev of invoice.events">
+            <span class="inv-drawer__event-dot" aria-hidden="true"></span>
+            <div class="inv-drawer__event-content">
+              <span class="inv-drawer__event-type">{{ formatEventType(ev.eventType) }}</span>
+              <span class="inv-drawer__event-date">{{ formatDate(ev.createdAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

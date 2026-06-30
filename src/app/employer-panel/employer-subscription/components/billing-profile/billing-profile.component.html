@@ -1,0 +1,126 @@
+<div class="bp-section">
+  <div class="bp-section__header">
+    <h2 class="bp-section__title">Billing Profile</h2>
+    <p class="bp-section__sub">This information appears on your invoices. Fill in your company billing details for accurate records.</p>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div class="bp-skeleton" *ngIf="loading" aria-busy="true">
+    <div class="bp-skeleton__row" *ngFor="let i of [1,2,3,4,5]"></div>
+  </div>
+
+  <!-- Error -->
+  <div class="bp-error" *ngIf="errorMsg && !loading" role="alert">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" stroke="#EF4444" stroke-width="2"/>
+      <path d="M12 8v4M12 16h.01" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    {{ errorMsg }}
+    <button type="button" class="bp-error__retry" (click)="load()">Retry</button>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="save()" *ngIf="!loading" class="bp-form" novalidate>
+    <div class="bp-form__grid">
+
+      <div class="bp-form__field bp-form__field--full">
+        <label class="bp-form__label" for="bp-legal-name">Legal / Company Name</label>
+        <input id="bp-legal-name" type="text" formControlName="legalName" class="bp-form__input"
+          placeholder="Your registered company name">
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-billing-email">Billing Email</label>
+        <input id="bp-billing-email" type="email" formControlName="billingEmail" class="bp-form__input"
+          [class.bp-form__input--error]="billingEmailCtrl.invalid && billingEmailCtrl.touched"
+          placeholder="billing@yourcompany.com" autocomplete="email">
+        <p class="bp-form__field-error" *ngIf="billingEmailCtrl.hasError('email') && billingEmailCtrl.touched" role="alert">
+          Enter a valid email address.
+        </p>
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-finance-name">Finance Contact Name</label>
+        <input id="bp-finance-name" type="text" formControlName="financeContactName" class="bp-form__input"
+          placeholder="e.g. Maria Santos">
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-finance-email">Finance Contact Email</label>
+        <input id="bp-finance-email" type="email" formControlName="financeContactEmail" class="bp-form__input"
+          [class.bp-form__input--error]="financeEmailCtrl.invalid && financeEmailCtrl.touched"
+          placeholder="finance@yourcompany.com">
+        <p class="bp-form__field-error" *ngIf="financeEmailCtrl.hasError('email') && financeEmailCtrl.touched" role="alert">
+          Enter a valid email address.
+        </p>
+      </div>
+
+      <div class="bp-form__field bp-form__field--full">
+        <label class="bp-form__label" for="bp-addr1">Billing Address</label>
+        <input id="bp-addr1" type="text" formControlName="billingAddressLine1" class="bp-form__input"
+          placeholder="Street address / Unit no." autocomplete="address-line1">
+        <input type="text" formControlName="billingAddressLine2" class="bp-form__input bp-form__input--addr2"
+          placeholder="Building, floor (optional)" autocomplete="address-line2">
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-city">City</label>
+        <input id="bp-city" type="text" formControlName="city" class="bp-form__input"
+          placeholder="e.g. Makati" autocomplete="address-level2">
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-province">Province / State</label>
+        <input id="bp-province" type="text" formControlName="provinceState" class="bp-form__input"
+          placeholder="e.g. Metro Manila" autocomplete="address-level1">
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-country">Country</label>
+        <input id="bp-country" type="text" formControlName="country" class="bp-form__input"
+          autocomplete="country-name">
+      </div>
+
+      <div class="bp-form__field">
+        <label class="bp-form__label" for="bp-postal">Postal Code</label>
+        <input id="bp-postal" type="text" formControlName="postalCode" class="bp-form__input"
+          placeholder="e.g. 1234" autocomplete="postal-code">
+      </div>
+
+      <div class="bp-form__field bp-form__field--full">
+        <label class="bp-form__label" for="bp-tax-id">TIN / Tax Identifier <span class="bp-form__optional">(Optional)</span></label>
+        <input id="bp-tax-id" type="text" formControlName="taxIdentifier" class="bp-form__input"
+          placeholder="Your TIN if applicable">
+        <p class="bp-form__hint">
+          We do not file taxes on your behalf. This field is for your own records only.
+        </p>
+      </div>
+
+      <div class="bp-form__field bp-form__field--full">
+        <label class="bp-form__toggle-label">
+          <input type="checkbox" formControlName="autoSendInvoices" class="bp-form__checkbox">
+          <span class="bp-form__toggle-text">
+            <span class="bp-form__toggle-title">Automatically email invoices</span>
+            <span class="bp-form__toggle-sub">Send a copy of each invoice to the billing email above after payment is confirmed.</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Save bar -->
+    <div class="bp-form__save-bar">
+      <div class="bp-form__saved" *ngIf="saved" role="status" aria-live="polite">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="#D1FAE5"/>
+          <path d="M8 12l3 3 5-5" stroke="#065F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Saved
+      </div>
+      <div class="bp-form__save-error" *ngIf="errorMsg && !loading" role="alert">{{ errorMsg }}</div>
+      <button type="submit" class="bp-form__save-btn" [disabled]="form.invalid || saving" [attr.aria-busy]="saving">
+        <span *ngIf="!saving">Save Billing Profile</span>
+        <span *ngIf="saving">Saving…</span>
+      </button>
+    </div>
+  </form>
+</div>
