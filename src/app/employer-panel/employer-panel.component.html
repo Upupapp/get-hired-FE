@@ -26,7 +26,7 @@
         <line class="gh-menu-line gh-menu-line--bot" x1="3" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
-    <span class="gh-mobile-topbar-title" aria-hidden="true">GetHired</span>
+    <span class="gh-mobile-topbar-title">{{ pageTitle }}</span>
   </div>
 
   <!-- B02: Scrim overlay — dismisses drawer on tap; aria-hidden so screen
@@ -231,7 +231,11 @@
       <!-- New employer topbar — desktop only (md+). Mobile uses gh-mobile-topbar above. -->
       <header class="gh-employer-topbar d-none d-md-flex" role="banner" aria-label="Employer panel">
         <div class="gh-topbar-left">
-          <h1 class="gh-topbar-title">{{ pageTitle }}</h1>
+          <div class="gh-topbar-context">
+            <span class="gh-topbar-eyebrow" *ngIf="parentLabel" aria-hidden="true">{{ parentLabel }}</span>
+            <h1 class="gh-topbar-title">{{ pageTitle }}</h1>
+            <p class="gh-topbar-subtitle" *ngIf="pageSubtitle">{{ pageSubtitle }}</p>
+          </div>
         </div>
         <div class="gh-topbar-right">
           <button type="button" class="gh-btn-coral gh-btn-topbar gh-pressable"

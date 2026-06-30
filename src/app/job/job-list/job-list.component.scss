@@ -72,6 +72,32 @@
   color: var(--gh-text, #101828);
 }
 
+.gh-job-list-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 12px;
+  gap: 12px;
+}
+
+.gh-job-list-post-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .card{
   background: #FFFFFF;
   border-radius: 18px;

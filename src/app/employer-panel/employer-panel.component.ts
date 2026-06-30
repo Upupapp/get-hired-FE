@@ -119,14 +119,60 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
   get pageTitle(): string {
     const url = this.router.url;
-    if (url.includes('/dashboard')) return 'Dashboard';
-    if (url.includes('/jobs')) return 'Jobs';
-    if (url.includes('/contacts') || url.includes('/candidates')) return 'Candidates';
-    if (url.includes('/interview')) return 'Interviews';
-    if (url.includes('/messages')) return 'Messages';
-    if (url.includes('/company')) return 'Company';
-    if (url.includes('/subscription')) return 'Subscription';
+    if (url.includes('/jobs/list'))           return 'Job Posts';
+    if (url.includes('/jobs/expired'))        return 'Expired Jobs';
+    if (url.includes('/jobs/create'))         return 'Post a Job';
+    if (url.includes('/jobs/edit'))           return 'Edit Job';
+    if (url.includes('/jobs/applicants'))     return 'Applicants';
+    if (url.includes('/jobs/view'))           return 'Job Preview';
+    if (url.includes('/jobs/dashboard'))      return 'Job Overview';
+    if (url.includes('/jobs'))                return 'Jobs';
+    if (url.includes('/contacts/list'))       return 'Contact List';
+    if (url.includes('/contacts/candidates')) return 'Applicants';
+    if (url.includes('/contacts/candidate-list')) return 'Candidate Profile';
+    if (url.includes('/contacts/groups'))     return 'Contact Groups';
+    if (url.includes('/contacts/group-list')) return 'Contact Group';
+    if (url.includes('/contacts'))            return 'Candidates';
+    if (url.includes('/interview'))           return 'Interviews';
+    if (url.includes('/messages'))            return 'Messages';
+    if (url.includes('/company'))             return 'Company';
+    if (url.includes('/subscription'))        return 'Subscription';
+    if (url.includes('/dashboard'))           return 'Dashboard';
     return 'Dashboard';
+  }
+
+  get parentLabel(): string {
+    const url = this.router.url;
+    if (url.includes('/jobs/list') || url.includes('/jobs/expired') ||
+        url.includes('/jobs/create') || url.includes('/jobs/edit') ||
+        url.includes('/jobs/applicants') || url.includes('/jobs/view') ||
+        url.includes('/jobs/dashboard'))      return 'Jobs';
+    if (url.includes('/contacts/list') || url.includes('/contacts/candidates') ||
+        url.includes('/contacts/candidate-list') || url.includes('/contacts/groups') ||
+        url.includes('/contacts/group-list')) return 'Candidates';
+    if (url.includes('/interview') || url.includes('/messages')) return 'Hiring Workspace';
+    if (url.includes('/company'))             return 'Company';
+    if (url.includes('/subscription'))        return 'Account';
+    return '';
+  }
+
+  get pageSubtitle(): string {
+    const url = this.router.url;
+    if (url.includes('/dashboard'))               return 'Track job activity, applicants, and hiring health.';
+    if (url.includes('/jobs/list'))               return 'Manage published, draft, and expired job posts.';
+    if (url.includes('/jobs/expired'))            return 'Review closed or expired jobs for reference or reuse.';
+    if (url.includes('/jobs/create'))             return 'Build and publish your job post step by step.';
+    if (url.includes('/jobs/edit'))               return 'Update this job post and republish changes.';
+    if (url.includes('/jobs/applicants'))         return 'Review candidates who applied to this job.';
+    if (url.includes('/contacts/list'))           return 'Manage candidate contacts and outreach records.';
+    if (url.includes('/contacts/candidates'))     return 'Review all candidates who applied to your jobs.';
+    if (url.includes('/contacts/candidate-list')) return 'Review this candidate\'s application and profile.';
+    if (url.includes('/contacts/groups'))         return 'Organise contacts into groups for hiring campaigns.';
+    if (url.includes('/interview'))               return 'Review interview activity and candidate video responses.';
+    if (url.includes('/messages'))                return 'Manage candidate conversations across your jobs.';
+    if (url.includes('/company'))                 return 'Manage your employer brand and public company profile.';
+    if (url.includes('/subscription'))            return 'Manage your GetHired plan and billing settings.';
+    return '';
   }
 
   toggleAvatarMenu(): void {

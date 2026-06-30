@@ -1,23 +1,14 @@
 <div class="mt-4 ps-4 pe-4" id="job-order-main-container">
   <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
-    <div class="card card-body py-3">
-      <div class="w-100">
-        <span class="main-title mt-3">{{ 'JOB_POSTS_PAGE.SIDEBAR_JOB_POSTS' | translate }}</span>
-
-        <div class="float-end">
-          <button class="gh-btn-primary gh-pressable" (click)="getCompanyRestrictions()">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i>
-            {{ 'JOB_POSTS_PAGE.NEW_JOB_BUTTON' | translate }}
-          </button>
-        </div>
-      </div>
-      <!-- GETHIRED 500K TALENT PROOF SYSTEM -- persistent, low-key
-           reminder for returning employers, not tied to any specific
-           empty/non-empty state (no tailored dashboard states exist in
-           this codebase to safely detect -- see placement log). -->
+    <!-- Talent proof badge — persists across empty/loaded states -->
+    <div class="gh-job-list-topbar">
       <app-talent-proof-badge variant="pill" placement="employer_dashboard_job_list"></app-talent-proof-badge>
+      <button class="gh-btn-primary gh-pressable gh-job-list-post-btn" (click)="getCompanyRestrictions()"
+        aria-label="Post a new job">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Post a job
+      </button>
     </div>
-    <br>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">
       <!-- Empty state: when no jobs exist, guide the employer to post their first job
            rather than showing a blank table. -->

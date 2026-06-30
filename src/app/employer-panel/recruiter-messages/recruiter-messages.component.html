@@ -1,13 +1,5 @@
 <section class="rm-page" aria-label="Messages inbox">
 
-  <!-- Page header -->
-  <div class="rm-page-header">
-    <div class="rm-page-header-text">
-      <h1 class="rm-page-title">Messages</h1>
-      <p class="rm-page-subtitle">Manage candidate conversations across your jobs.</p>
-    </div>
-  </div>
-
   <!-- Loading skeleton -->
   <div *ngIf="loading" class="rm-skeleton-wrap" aria-busy="true" aria-label="Loading messages">
     <div class="rm-skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>

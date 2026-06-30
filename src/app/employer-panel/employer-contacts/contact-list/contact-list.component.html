@@ -1,18 +1,11 @@
   <div class="mt-4 ps-4 pe-4" id="job-order-main-container">
   <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
-    <div class="card card-body py-3">
-      <div class="w-100">
-        <span class="main-title mt-3">Contact List</span>
-
-        <div class="float-end">
-          <button class="gh-btn-primary" (click)="addContacts()">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i>
-            Add Contact
-          </button>
-        </div>
-      </div>
+    <div class="gh-contact-list-topbar">
+      <button class="gh-btn-primary" (click)="addContacts()" aria-label="Add a new contact">
+        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+        Add Contact
+      </button>
     </div>
-    <br>
     <div class="card card-body" *ngIf="listView && !loading">
       <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="editContact($event)"
         (viewDetails)="editContact($event)" [componentTitle]="'Contacts'" [displayedColumns]="displayedColumns"
