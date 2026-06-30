@@ -61,6 +61,10 @@ export class CompanyService {
     return this.baseService.get<any>(`${this.companyUrl}/dashboard/pipeline-overview`);
   }
 
+  getDashboardAnalytics(range: '7d' | '30d' | '90d' = '30d') {
+    return this.baseService.get<any>(`${environment.api_url}/recruiter/dashboard/analytics?range=${range}`);
+  }
+
   getSetupList() {
     return this.baseService.get<Model.Options>(`${this.optionUrl}/setuplist`);
   }

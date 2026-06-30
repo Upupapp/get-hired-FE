@@ -294,9 +294,12 @@
 <div class="gh-insight-grid gh-section rdb-insight-cols">
 
   <!-- ── Views & Applications Chart ─────────────────────────────────────── -->
-  <div class="gh-card gh-chart-card">
+  <div class="gh-card gh-chart-card" aria-label="Views and applications chart">
     <div class="gh-card-head">
-      <h2 class="gh-card-title">Views and applications</h2>
+      <div>
+        <h2 class="gh-card-title">Views and applications</h2>
+        <p class="gh-card-sub">{{ analyticsData ? analyticsData.range.label : 'Last 30 days' }} across all active jobs</p>
+      </div>
       <div class="gh-trend-tabs" role="tablist" aria-label="Chart time range">
         <button role="tab" type="button" class="gh-trend-tab"
           [class.gh-trend-tab--on]="trendRange === '7d'"
@@ -312,32 +315,30 @@
           (click)="setTrendRange('90d')">90d</button>
       </div>
     </div>
-    <ng-container *ngIf="(dashboard.charts?.applicants || 0) > 0 || cachedJobViewsThisMonth > 0; else ghChartNoData">
-      <div class="gh-chart-wrap">
-        <app-dashboard-charts [details]="dashboard.graph" [range]="trendRange"></app-dashboard-charts>
-      </div>
-      <p class="gh-chart-summary">
-        Last {{ trendRange }}:
-        {{ cachedJobViewsThisMonth | number }} views &middot;
-        {{ dashboard.charts?.applicants || 0 }} applications
-        <ng-container *ngIf="cachedConversionRate">
-          &middot; {{ cachedConversionRate }} conversion
-        </ng-container>
-      </p>
-    </ng-container>
-    <ng-template #ghChartNoData>
-      <div class="gh-chart-empty-v2">
-        <div class="gh-chart-empty-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" opacity="0.35">
-            <path d="M6 36L18 24l8 8 10-14 8 10"/>
-            <rect x="4" y="4" width="40" height="40" rx="4" stroke-opacity="0.5"/>
-          </svg>
-        </div>
-        <p class="gh-chart-empty-title">No activity trends yet</p>
-        <p class="gh-chart-empty-msg">Activity trends will appear once your jobs receive views and applications.</p>
-        <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">Manage jobs →</button>
-      </div>
-    </ng-template>
+
+    <!-- Analytics error -->
+    <div class="gh-error-sm" *ngIf="analyticsError && !analyticsLoading" role="alert">
+      <p>Couldn't load analytics.</p>
+      <button type="button" class="gh-btn-link" (click)="retryAnalytics()">Retry</button>
+    </div>
+
+    <!-- Chart component (handles its own loading/empty states internally) -->
+    <app-dashboard-charts
+      *ngIf="!analyticsError"
+      [analytics]="analyticsData"
+      [loading]="analyticsLoading"
+      [error]="analyticsError">
+    </app-dashboard-charts>
+
+    <!-- Footer CTAs -->
+    <div class="gh-chart-footer" *ngIf="!analyticsLoading && !analyticsError">
+      <ng-container *ngIf="analyticsData && analyticsData.summary.activeJobs.value === 0; else chartFooterHasJobs">
+        <button type="button" class="gh-btn-link gh-pressable" (click)="goToCreateJob()">Post a job →</button>
+      </ng-container>
+      <ng-template #chartFooterHasJobs>
+        <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">View all jobs →</button>
+      </ng-template>
+    </div>
   </div>
 
   <!-- ── Hiring Pipeline Health ──────────────────────────────────────────── -->
@@ -357,8 +358,22 @@
     </div>
 
     <div class="gh-pipeline-empty" *ngIf="!pipelineLoading && !pipelineError && byStage.length === 0">
-      <p>Applicants will appear here once candidates start applying to your jobs.</p>
-      <button type="button" class="gh-btn-link gh-pressable" (click)="goToCreateJob()">Post a job</button>
+      <div class="gh-pipeline-empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" opacity="0.3">
+          <circle cx="16" cy="12" r="5"/>
+          <path d="M6 28c0-5.5 4.5-9 10-9s10 3.5 10 9"/>
+        </svg>
+      </div>
+      <ng-container *ngIf="analyticsData && analyticsData.summary.activeJobs.value === 0; else pipelineNoApplicants">
+        <p class="gh-pipeline-empty-title">Start your hiring pipeline</p>
+        <p class="gh-pipeline-empty-sub">Post a job to begin receiving applications from candidates.</p>
+        <button type="button" class="gh-btn-link gh-pressable" (click)="goToCreateJob()">Post a job →</button>
+      </ng-container>
+      <ng-template #pipelineNoApplicants>
+        <p class="gh-pipeline-empty-title">No applicants yet</p>
+        <p class="gh-pipeline-empty-sub">Your pipeline will appear here once candidates start applying.</p>
+        <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">View job posts →</button>
+      </ng-template>
     </div>
 
     <div class="gh-pipeline-stages" *ngIf="!pipelineLoading && !pipelineError && byStage.length > 0"
@@ -401,48 +416,99 @@
       </button>
     </div>
 
-    <div class="gh-skeleton gh-skeleton--jobperf" *ngIf="pipelineLoading" aria-hidden="true"></div>
+    <!-- Loading skeleton -->
+    <div class="gh-skeleton gh-skeleton--jobperf" *ngIf="analyticsLoading" aria-hidden="true"></div>
 
-    <div class="gh-error-sm" *ngIf="pipelineError && !pipelineLoading" role="alert">
+    <!-- Error -->
+    <div class="gh-error-sm" *ngIf="analyticsError && !analyticsLoading" role="alert">
       <p>Couldn't load job data.</p>
-      <button type="button" class="gh-btn-link" (click)="retryPipelineOverview()">Retry</button>
+      <button type="button" class="gh-btn-link" (click)="retryAnalytics()">Retry</button>
     </div>
 
-    <div class="gh-jobperf-empty" *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length === 0">
-      <p>No jobs are currently awaiting applicant review.</p>
-      <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">View all jobs</button>
+    <!-- No jobs at all -->
+    <div class="gh-jobperf-empty"
+      *ngIf="!analyticsLoading && !analyticsError && analyticsData && analyticsData.jobPerformance.length === 0">
+      <div class="gh-jobperf-empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" opacity="0.3">
+          <rect x="4" y="6" width="24" height="20" rx="3"/>
+          <path d="M11 2v4M21 2v4M4 12h24"/>
+        </svg>
+      </div>
+      <p class="gh-jobperf-empty-title">No job posts yet</p>
+      <p class="gh-jobperf-empty-sub">Create a job post to start tracking views and applications.</p>
+      <button type="button" class="gh-btn-coral gh-pressable" (click)="goToCreateJob()">Post a job</button>
     </div>
 
-    <table class="gh-jobperf-table"
-      *ngIf="!pipelineLoading && !pipelineError && cachedJobGroups.length > 0"
-      aria-label="Jobs awaiting applicant review">
-      <thead>
-        <tr>
-          <th scope="col">Job title</th>
-          <th scope="col">Status</th>
-          <th scope="col">Needs review</th>
-          <th scope="col"><span class="gh-visually-hidden">Actions</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let job of cachedJobGroups; trackBy: trackByIndex">
-          <td class="gh-jobperf-title" [title]="job.jobTitle">{{ job.jobTitle }}</td>
-          <td><span class="gh-status-badge gh-status-badge--active">Active</span></td>
-          <td>
-            <span class="gh-review-chip" [class.gh-review-chip--has]="job.count > 0">
-              {{ job.count }}
+    <!-- Job performance rows from analytics -->
+    <div class="gh-jobperf-rows"
+      *ngIf="!analyticsLoading && !analyticsError && analyticsData && analyticsData.jobPerformance.length > 0"
+      role="list">
+
+      <!-- Column headers (desktop only) -->
+      <div class="gh-jobperf-header" aria-hidden="true">
+        <span class="gh-jobperf-col gh-jobperf-col--title">Job</span>
+        <span class="gh-jobperf-col gh-jobperf-col--metric">Views</span>
+        <span class="gh-jobperf-col gh-jobperf-col--metric">Apps</span>
+        <span class="gh-jobperf-col gh-jobperf-col--metric">Conv.</span>
+        <span class="gh-jobperf-col gh-jobperf-col--action"></span>
+      </div>
+
+      <div class="gh-jobperf-row"
+        *ngFor="let job of analyticsData.jobPerformance; trackBy: trackByIndex"
+        role="listitem"
+        [class.gh-jobperf-row--has-review]="job.newApplicants > 0">
+
+        <!-- Job title + status -->
+        <div class="gh-jobperf-title-cell">
+          <span class="gh-jobperf-job-title" [title]="job.title">{{ job.title }}</span>
+          <div class="gh-jobperf-badges">
+            <span class="gh-status-badge"
+              [class.gh-status-badge--active]="job.status === 'Published'"
+              [class.gh-status-badge--draft]="job.status !== 'Published'">
+              {{ job.status }}
             </span>
-          </td>
-          <td>
-            <button type="button" class="gh-btn-sm gh-pressable"
-              (click)="goToApplicants(job.jobId)"
-              [attr.aria-label]="'Review applicants for ' + job.jobTitle">
-              Review
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <span class="gh-review-chip gh-review-chip--has" *ngIf="job.newApplicants > 0">
+              {{ job.newApplicants }} to review
+            </span>
+          </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="gh-jobperf-metric">
+          <span class="gh-jobperf-metric-val">{{ job.views | number }}</span>
+          <span class="gh-jobperf-metric-lbl">views</span>
+        </div>
+        <div class="gh-jobperf-metric">
+          <span class="gh-jobperf-metric-val">{{ job.applications | number }}</span>
+          <span class="gh-jobperf-metric-lbl">apps</span>
+        </div>
+        <div class="gh-jobperf-metric">
+          <span class="gh-jobperf-metric-val"
+            [class.gh-jobperf-metric-val--warn]="job.applications === 0 && job.views > 0">
+            {{ job.conversionRate }}
+          </span>
+          <span class="gh-jobperf-metric-lbl">conv.</span>
+        </div>
+
+        <!-- Next action -->
+        <div class="gh-jobperf-action">
+          <button type="button" class="gh-btn-sm gh-pressable"
+            [class.gh-btn-sm--coral]="job.newApplicants > 0"
+            (click)="job.newApplicants > 0 ? goToApplicants(job.jobId) : navigateToJobEdit(job.jobId)"
+            [attr.aria-label]="job.nextAction.label + ' for ' + job.title"
+            [title]="job.nextAction.reason">
+            {{ job.nextAction.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight: all caught up (has jobs but all analytics data is there, none need review) -->
+    <div class="gh-jobperf-allclear"
+      *ngIf="!analyticsLoading && !analyticsError && analyticsData && analyticsData.jobPerformance.length > 0 && needsReviewCount === 0">
+      <span class="gh-jobperf-allclear-text">No applicants waiting for review right now.</span>
+    </div>
+
   </div>
 
 </div><!-- /gh-insight-grid -->

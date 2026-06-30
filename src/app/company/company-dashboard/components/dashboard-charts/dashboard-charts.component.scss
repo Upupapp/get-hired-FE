@@ -1,73 +1,263 @@
-@import "src/assets/styles/colors";
+// GetHired Dashboard Charts V1
+// Brand: Azure Blue (#3b82f6) for views, Coral (#FF7062) for applications
 
-.chart-container{
-	height: 300px;
-	border-radius: 15px;
+// ── KPI mini-strip ────────────────────────────────────────────────────────
+.dc-kpi-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 12px 0 16px;
+  flex-wrap: wrap;
 }
 
-.card{
-	border: none;
-	box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.06);
-	border-radius: 15px;
+.dc-kpi {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 20px 4px 0;
+
+  &-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    &--blue { background: #3b82f6; }
+    &--coral { background: #FF7062; }
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  &-val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+
+    &--conversion {
+      color: #7c3aed;
+    }
+  }
+
+  &-lbl {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &-delta {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    &--up { color: #16a34a; }
+    &--down { color: #dc2626; }
+
+    &-arrow { font-size: 10px; }
+  }
+
+  &-tooltip-trigger {
+    color: #94a3b8;
+    cursor: help;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+
+    &:focus-visible {
+      outline: 2px solid #3b82f6;
+      border-radius: 4px;
+    }
+  }
 }
 
-.title-main{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 20px;
-	line-height: 30px;
-	/* identical to box height */
-
-
-	color: #121212;
+.dc-kpi-divider {
+  width: 1px;
+  height: 32px;
+  background: #e2e8f0;
+  margin: 0 20px 0 0;
+  flex-shrink: 0;
 }
 
-.chart-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 16px;
-	line-height: 12px;
-	/* identical to box height, or 75% */
+// ── Legend ───────────────────────────────────────────────────────────────
+.dc-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
 
-	display: flex;
-	align-items: center;
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-	color: #9D9D9D;
+  &-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+
+    &--blue { background: #3b82f6; }
+    &--coral { background: #FF7062; }
+  }
+
+  &-label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: #475569;
+    font-weight: 500;
+  }
 }
 
-.chart-symbol-green{
-	border-radius: 50%;
-	height: 15px;
-	width: 15px;
-	border: solid 2px #35C768;
-	margin-right: 5px;
+// ── Chart area ───────────────────────────────────────────────────────────
+.dc-chart-area {
+  height: 280px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    height: 200px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    canvas { transition: none !important; }
+  }
 }
 
-.chart-symbol-red{
-	border-radius: 50%;
-	height: 15px;
-	width: 15px;
-	border: solid 2px $color-global-red;
-	margin-right: 5px;
+// ── Insight row ───────────────────────────────────────────────────────────
+.dc-insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.06);
+  border-left: 3px solid #3b82f6;
+
+  &--good {
+    background: rgba(34, 197, 94, 0.06);
+    border-color: #22c55e;
+  }
+  &--warn {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: #f59e0b;
+  }
+  &--empty {
+    background: rgba(100, 116, 139, 0.06);
+    border-color: #94a3b8;
+  }
+
+  &-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  &-msg {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: #475569;
+    line-height: 1.4;
+  }
 }
 
-.chart-container-2{
-	canvas{
-	    height: auto !important;
-	    width: 100%;
-	    //min-width: 300px;
-	    background: #fff;
-	    padding: 5px 10px;
-	    border-radius: 7px !important;
-	    z-index: 9999;
-	    font-size: 16px !important;
+// ── Empty chart state ─────────────────────────────────────────────────────
+.dc-empty-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  gap: 10px;
 
-	   // background-size: 50% 100% !important;
-	   // background-position: 20% 50% !important;
-	   // background-repeat: no-repeat !important;
-	   // background: radial-gradient(circle at center, rgba(0,0,0,0) 0, rgba(0,0,0,0) 55%, rgba(0,0,0,0.2) 56%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.2) 64%, rgba(0,0,0,0) 65%,rgba(0,0,0,0) 100%);
-	}
+  &-msg {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+    line-height: 1.5;
+    max-width: 320px;
+  }
+}
 
+// ── Loading skeleton ──────────────────────────────────────────────────────
+.dc-skeleton { padding: 4px 0; }
+
+.dc-skel {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: dc-shimmer 1.5s infinite;
+  border-radius: 8px;
+
+  &--kpi-row { height: 52px; width: 100%; margin-bottom: 12px; }
+  &--chart { height: 280px; width: 100%; }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: #f1f5f9;
+  }
+}
+
+@keyframes dc-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// ── Error/placeholder ─────────────────────────────────────────────────────
+.dc-error {
+  padding: 24px 0;
+  text-align: center;
+
+  &-msg {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    color: #64748b;
+  }
+}
+
+.dc-placeholder {
+  padding: 40px 0;
+  text-align: center;
+
+  &-msg {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+}
+
+// ── Screen reader only ───────────────────────────────────────────────────
+.dc-sr-summary {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

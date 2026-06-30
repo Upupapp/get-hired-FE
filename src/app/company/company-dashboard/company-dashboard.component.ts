@@ -9,6 +9,7 @@ import { map, tap, catchError, of, Subject, takeUntil } from 'rxjs';
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from '../../employer-panel/employer-subscription/services/subscription-upgrade-recommendation.service';
 import { UpgradePromptCooldownService } from '../../employer-panel/employer-subscription/services/upgrade-prompt-cooldown.service';
+import { DashboardAnalytics } from './components/dashboard-charts/dashboard-charts.component';
 
 interface PipelineStage {
   statusId: number;
@@ -155,8 +156,13 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   /** Cities data (array) computed from stat.cities (handles nested or flat). */
   cachedCities: Array<{ city: string; count: string }> = [];
 
-  /** Active time-range selector for the Views & Applications chart (UI only). */
+  /** Active time-range selector for the Views & Applications chart. */
   trendRange: '7d' | '30d' | '90d' = '30d';
+
+  /** Analytics data from the new analytics endpoint. */
+  analyticsData: DashboardAnalytics | null = null;
+  analyticsLoading = true;
+  analyticsError = false;
 
   /** Cached subscription usage percentages — prevents 9 calls/CD cycle. */
   cachedJobPostPct = 0;
@@ -190,6 +196,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
 
     this.companyFacade.getCompanyDashboard();
     this.loadPipelineOverview();
+    this.loadAnalytics(this.trendRange);
     this.asyncLocalStorage.getItem('user').then(details => {
       if (details) {
         const user = JSON.parse(details);
@@ -277,6 +284,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         this.cachedJobGroups = this._buildJobGroups(this.needsReview);
         this.pipelineLoading = false;
         this._refreshV5Cache();
+        this._mergeAnalyticsJobPerf();
       },
       error: () => {
         this.pipelineLoading = false;
@@ -504,9 +512,52 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** V5: sets the active time range for the views/applications chart UI. */
+  /** V5: sets the active time range and re-fetches analytics for the new range. */
   setTrendRange(range: '7d' | '30d' | '90d'): void {
     this.trendRange = range;
+    this.loadAnalytics(range);
+  }
+
+  private loadAnalytics(range: '7d' | '30d' | '90d'): void {
+    this.analyticsLoading = true;
+    this.analyticsError = false;
+    this.companyService.getDashboardAnalytics(range)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.analyticsData = res && res.data ? res.data : null;
+          this.analyticsLoading = false;
+          // Sync analytics job performance with needsReview counts from pipeline
+          this._mergeAnalyticsJobPerf();
+        },
+        error: () => {
+          this.analyticsLoading = false;
+          this.analyticsError = true;
+        },
+      });
+  }
+
+  retryAnalytics(): void {
+    this.loadAnalytics(this.trendRange);
+  }
+
+  /** Merge pipeline needsReview counts into analytics job performance rows. */
+  private _mergeAnalyticsJobPerf(): void {
+    if (!this.analyticsData || !this.analyticsData.jobPerformance) { return; }
+    const reviewMap: Record<string, number> = {};
+    for (const item of this.needsReview) {
+      if (item.jobId) {
+        reviewMap[item.jobId] = (reviewMap[item.jobId] || 0) + 1;
+      }
+    }
+    this.analyticsData.jobPerformance = this.analyticsData.jobPerformance.map(job => ({
+      ...job,
+      newApplicants: reviewMap[job.jobId] !== undefined ? reviewMap[job.jobId] : job.newApplicants,
+    }));
+  }
+
+  navigateToJobEdit(jobId: string): void {
+    this.router.navigate(['/recruiter/jobs/edit', jobId]);
   }
 
   companyProfileMissingFields(company: Model.Company): string[] {

@@ -1,44 +1,143 @@
-<div class="px-4 px-lg-5 mb-4" [@animate]="{value:'*', params:{ y:'10px', delay:'150ms' }}">
-	<div class="card card-body">
-		<div class="row">
-			<div class=" col-12 col-lg-8 px-4">
-				<h5 class="title-main mt-4 mb-3">
-					Current Activity
+<!-- Loading skeleton -->
+<div class="dc-skeleton" *ngIf="loading" aria-hidden="true">
+  <div class="dc-skel dc-skel--kpi-row"></div>
+  <div class="dc-skel dc-skel--chart"></div>
+</div>
 
-					<div class="float-end mt-3">
-						<div class="d-flex">
-							<h5 class="chart-label d-flex me-3">
-								<div class="chart-symbol-green"></div> Job Applicants
-							</h5>
-							<h5 class="chart-label d-flex">
-								<div class="chart-symbol-red"></div> Job Views
-							</h5>
-						</div>
-					</div>
-				</h5>
+<!-- Error state -->
+<div class="dc-error" *ngIf="error && !loading" role="alert">
+  <p class="dc-error-msg">Couldn't load analytics data right now.</p>
+</div>
 
-				<div class="chart-container">
-					<canvas
-						baseChart
-						height="300"
-						width="300"
-						[data]="lineChartData"
-						[options]="activityGraphChartOptions"
-						[legend]="activityGraphChartLegend"
-						[type]="activityGraphChartType">
-					</canvas>
-				</div>
-			</div>
+<!-- Analytics content -->
+<ng-container *ngIf="!loading && !error && analytics">
 
-			<div class="chart-container-2 col-12 col-lg-4 px-4 py-lg-3 mt-lg-5">
-				<canvas baseChart
-					[data]="doughnutChartData"
-					[legend]="doughnutChartLegend"
-					[labels]="doughnutChartLabels"
-					[options]="doughnutChartOptions"
-					[type]="doughnutChartType">
-				</canvas>
-			</div>
-		</div>
-	</div>
+  <!-- KPI mini-strip -->
+  <div class="dc-kpi-row" role="group" aria-label="Analytics summary">
+
+    <div class="dc-kpi" [class.dc-kpi--has-data]="totalViews > 0">
+      <span class="dc-kpi-dot dc-kpi-dot--blue" aria-hidden="true"></span>
+      <div class="dc-kpi-body">
+        <span class="dc-kpi-val">{{ totalViews | number }}</span>
+        <span class="dc-kpi-lbl">Views</span>
+      </div>
+      <span class="dc-kpi-delta"
+        *ngIf="viewsDelta"
+        [class.dc-kpi-delta--up]="viewsTrend === 'up'"
+        [class.dc-kpi-delta--down]="viewsTrend === 'down'"
+        [attr.aria-label]="viewsDelta + ' vs previous period'">
+        <span class="dc-kpi-delta-arrow" aria-hidden="true">{{ viewsTrend === 'up' ? '↑' : viewsTrend === 'down' ? '↓' : '—' }}</span>
+        {{ viewsDelta }}
+      </span>
+    </div>
+
+    <div class="dc-kpi-divider" aria-hidden="true"></div>
+
+    <div class="dc-kpi" [class.dc-kpi--has-data]="totalApplications > 0">
+      <span class="dc-kpi-dot dc-kpi-dot--coral" aria-hidden="true"></span>
+      <div class="dc-kpi-body">
+        <span class="dc-kpi-val">{{ totalApplications | number }}</span>
+        <span class="dc-kpi-lbl">Applications</span>
+      </div>
+      <span class="dc-kpi-delta"
+        *ngIf="appsDelta"
+        [class.dc-kpi-delta--up]="appsTrend === 'up'"
+        [class.dc-kpi-delta--down]="appsTrend === 'down'"
+        [attr.aria-label]="appsDelta + ' vs previous period'">
+        <span class="dc-kpi-delta-arrow" aria-hidden="true">{{ appsTrend === 'up' ? '↑' : appsTrend === 'down' ? '↓' : '—' }}</span>
+        {{ appsDelta }}
+      </span>
+    </div>
+
+    <div class="dc-kpi-divider" aria-hidden="true"></div>
+
+    <div class="dc-kpi">
+      <div class="dc-kpi-body">
+        <span class="dc-kpi-val dc-kpi-val--conversion">{{ conversionLabel }}</span>
+        <span class="dc-kpi-lbl">Conversion</span>
+      </div>
+      <span class="dc-kpi-tooltip-trigger" tabindex="0"
+        aria-label="Conversion rate: applications divided by views"
+        title="Applications ÷ views. Shows how many people who saw your job actually applied.">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 7v5M8 5h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </div>
+
+  </div>
+
+  <!-- Chart legend (above chart, not overlapping) -->
+  <div class="dc-legend" aria-hidden="true">
+    <span class="dc-legend-item">
+      <span class="dc-legend-dot dc-legend-dot--blue"></span>
+      <span class="dc-legend-label">Job views</span>
+    </span>
+    <span class="dc-legend-item">
+      <span class="dc-legend-dot dc-legend-dot--coral"></span>
+      <span class="dc-legend-label">Applications</span>
+    </span>
+  </div>
+
+  <!-- Chart area -->
+  <div *ngIf="hasActivity; else dcEmptyChart">
+    <div class="dc-chart-area">
+      <canvas
+        baseChart
+        [attr.aria-label]="ariaChartSummary"
+        role="img"
+        [data]="chartData"
+        [options]="chartOptions"
+        [type]="chartType">
+      </canvas>
+    </div>
+    <!-- Screen reader text summary (visually hidden) -->
+    <p class="dc-sr-summary">{{ ariaChartSummary }}</p>
+  </div>
+
+  <ng-template #dcEmptyChart>
+    <div class="dc-empty-chart" aria-live="polite">
+      <svg viewBox="0 0 48 32" fill="none" stroke="currentColor" stroke-width="1.5"
+        width="48" height="32" opacity="0.25" aria-hidden="true">
+        <polyline points="2,28 12,20 20,22 30,10 38,14 46,6"/>
+        <line x1="2" y1="30" x2="46" y2="30" stroke-opacity="0.5"/>
+      </svg>
+      <p class="dc-empty-chart-msg">{{ insightBody || 'Activity trends will appear once your jobs receive views.' }}</p>
+    </div>
+  </ng-template>
+
+  <!-- Insight row -->
+  <div class="dc-insight"
+    *ngIf="insightTitle"
+    [class.dc-insight--good]="insightSeverity === 'good'"
+    [class.dc-insight--warn]="insightSeverity === 'warn'"
+    [class.dc-insight--info]="insightSeverity === 'info'"
+    [class.dc-insight--empty]="insightSeverity === 'empty'"
+    role="status">
+    <svg class="dc-insight-icon" viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true">
+      <ng-container *ngIf="insightSeverity === 'good'">
+        <circle cx="8" cy="8" r="7" fill="rgba(34,197,94,0.15)"/>
+        <path d="M5 8l2 2 4-4" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </ng-container>
+      <ng-container *ngIf="insightSeverity === 'warn'">
+        <path d="M8 2L15 14H1L8 2z" fill="rgba(245,158,11,0.15)"/>
+        <path d="M8 7v3M8 12h.01" stroke="#b45309" stroke-width="1.5" stroke-linecap="round"/>
+      </ng-container>
+      <ng-container *ngIf="insightSeverity === 'info' || insightSeverity === 'empty'">
+        <circle cx="8" cy="8" r="7" fill="rgba(59,130,246,0.15)"/>
+        <path d="M8 7v5M8 5h.01" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round"/>
+      </ng-container>
+    </svg>
+    <div class="dc-insight-body">
+      <span class="dc-insight-title">{{ insightTitle }}</span>
+      <span class="dc-insight-msg" *ngIf="insightBody !== insightTitle"> {{ insightBody }}</span>
+    </div>
+  </div>
+
+</ng-container>
+
+<!-- No analytics yet (initial state before data loads) -->
+<div class="dc-placeholder" *ngIf="!loading && !error && !analytics" aria-live="polite">
+  <p class="dc-placeholder-msg">Analytics loading…</p>
 </div>

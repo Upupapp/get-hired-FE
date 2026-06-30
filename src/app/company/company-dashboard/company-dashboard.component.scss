@@ -1149,11 +1149,31 @@ $gh-teal:       $color-teal-accent;
 }
 
 .gh-pipeline-empty {
-  padding: 24px 0 8px;
+  padding: 20px 8px 8px;
   text-align: center;
-  color: $gh-muted;
-  font-size: 13px;
-  p { margin: 0 0 10px; }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  &-icon { margin-bottom: 4px; }
+
+  &-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+  }
+
+  &-sub {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: #64748b;
+    max-width: 240px;
+    line-height: 1.4;
+    margin: 0 0 4px;
+  }
 }
 
 // Job performance table
@@ -1685,4 +1705,200 @@ $gh-teal:       $color-teal-accent;
 @media (prefers-reduced-motion: reduce) {
   .gh-upgrade-nudge__cta,
   .gh-upgrade-nudge__dismiss { transition: none; }
+}
+
+// ─── Analytics V1 — Chart card subtitle ─────────────────────────────────────
+.gh-card-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+// ─── Chart footer CTA row ─────────────────────────────────────────────────────
+.gh-chart-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+// ─── Job performance rows (analytics-driven) ─────────────────────────────────
+.gh-jobperf-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.gh-jobperf-header {
+  display: grid;
+  grid-template-columns: 1fr 48px 48px 52px 100px;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 2px;
+
+  @media (max-width: 640px) { display: none; }
+}
+
+.gh-jobperf-col {
+  font-family: 'Manrope', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &--metric { text-align: right; }
+  &--action { text-align: right; }
+}
+
+.gh-jobperf-row {
+  display: grid;
+  grid-template-columns: 1fr 48px 48px 52px 100px;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 8px;
+  transition: background 0.12s;
+
+  &:hover { background: rgba(107, 104, 141, 0.05); }
+
+  &--has-review {
+    background: rgba(255, 112, 98, 0.04);
+    &:hover { background: rgba(255, 112, 98, 0.08); }
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.gh-jobperf-title-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  @media (max-width: 640px) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+.gh-jobperf-job-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-jobperf-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.gh-jobperf-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+
+  &-val {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+
+    &--warn { color: #b45309; }
+  }
+
+  &-lbl {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.gh-jobperf-action {
+  display: flex;
+  justify-content: flex-end;
+
+  @media (max-width: 640px) {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+}
+
+.gh-jobperf-allclear {
+  padding: 10px 8px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 4px;
+
+  &-text {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: #22c55e;
+    font-weight: 500;
+  }
+}
+
+// Empty state for job perf
+.gh-jobperf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  gap: 8px;
+  text-align: center;
+
+  &-icon { margin-bottom: 4px; }
+
+  &-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  &-sub {
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    color: #64748b;
+    max-width: 260px;
+    line-height: 1.4;
+  }
+}
+
+// Status badge variants
+.gh-status-badge--draft {
+  background: rgba(100, 116, 139, 0.12);
+  color: #475569;
+}
+
+// Button size / coral variant
+.gh-btn-sm--coral {
+  background: rgba(255, 112, 98, 0.1);
+  color: #FF7062;
+  border: 1px solid rgba(255, 112, 98, 0.2);
+  font-weight: 600;
+
+  &:hover { background: rgba(255, 112, 98, 0.18); }
 }
