@@ -195,6 +195,9 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       'information we collect', 'personal data', 'data protection',
       'cookie policy', 'your right to', 'right to access',
       'information you provide', 'third-party services',
+      'pursuant to', 'implementing rules', 'confidential all personal',
+      'right to be informed', 'data subject', 'processing of personal',
+      'national privacy commission', 'privacy notice', 'lawful basis',
     ];
     let hits = 0;
     for (let i = 0; i < markers.length; i++) {

@@ -98,8 +98,18 @@
                         <div class="ms-4 ps-1 text-start">
                             <h5 class="title-job-details">Salary</h5>
                             <p class="title-job-details-description">
-                                {{data?.salaryMinimum | currency: data.salaryCurrency: 'symbol' }} -
-                                {{data?.salaryMaximum | currency: data.salaryCurrency: 'symbol' }}
+                              <ng-container *ngIf="data?.salaryMinimum && data?.salaryMaximum">
+                                {{ data.salaryMinimum | currency: data.salaryCurrency: 'symbol':'1.0-0' }} &ndash; {{ data.salaryMaximum | currency: data.salaryCurrency: 'symbol':'1.0-0' }}
+                              </ng-container>
+                              <ng-container *ngIf="data?.salaryMinimum && !data?.salaryMaximum">
+                                {{ data.salaryMinimum | currency: data.salaryCurrency: 'symbol':'1.0-0' }}
+                              </ng-container>
+                              <ng-container *ngIf="!data?.salaryMinimum && data?.salaryMaximum">
+                                {{ data.salaryMaximum | currency: data.salaryCurrency: 'symbol':'1.0-0' }}
+                              </ng-container>
+                              <ng-container *ngIf="!data?.salaryMinimum && !data?.salaryMaximum">
+                                Salary not listed
+                              </ng-container>
                             </p>
                         </div>
                     </div>
