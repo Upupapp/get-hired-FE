@@ -78,14 +78,17 @@ export class SignupComponent implements OnInit {
 
     this.req$ = combineLatest([this.success$, this.loading$]).pipe(
       map(([success, loading]) => {
-        if (success && !loading) {
+        if (!loading) {
+          // Always clear spinner when the store stops loading (success OR fail)
           this.submitting = false;
+        }
+        if (success && !loading) {
           this.openVerification(this.email);
         }
       }),
       catchError(err => {
         this.submitting = false;
-        return of(err)
+        return of(err);
       })
     ).subscribe();
   }
@@ -118,8 +121,9 @@ export class SignupComponent implements OnInit {
   }
 
   showError(err: any) {
+    // Always clear spinner on error, even when payload is undefined/null
+    this.submitting = false;
     if (err) {
-      this.submitting = false;
       window.scroll(0, 0);
       this.error = err;
     }

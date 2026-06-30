@@ -58,10 +58,15 @@ export class AuthEffects {
             return AuthActions.createAuthCredentialsSuccess({ credentials });
           }),
           catchError((err) => {
-            const { error } = err.error;
+            // Safely extract message — err.error can be null (network error)
+            // or a plain string (non-JSON response); never destructure blindly
+            const body = err && err.error;
+            const message = (body && body.error) || (body && body.message)
+              || (typeof body === 'string' ? body : null)
+              || 'Registration failed. Please try again.';
             localStorage.setItem('notFound', 'true');
-            localStorage.setItem('signupError', error);
-            return of(AuthActions.createAuthCredentialsFail({payload: error}))
+            localStorage.setItem('signupError', message);
+            return of(AuthActions.createAuthCredentialsFail({ payload: message }));
           })
         ))
     )
