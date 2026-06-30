@@ -76,7 +76,20 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     private haptics: HapticFeedbackService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.data) {
+      if (this.data.companyCity) {
+        this.generateInputs.location = this.data.companyCity;
+      }
+      if (this.data.companyIndustryName) {
+        this.generateInputs.industry = this.data.companyIndustryName;
+      }
+      if (this.data.workSetupId) {
+        const wsNames: { [key: number]: string } = { 1: 'On-site', 2: 'Remote', 3: 'Hybrid' };
+        this.generateInputs.workSetup = wsNames[this.data.workSetupId] || '';
+      }
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

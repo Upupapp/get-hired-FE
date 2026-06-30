@@ -34,11 +34,11 @@
 
       <div class="banner-container">
         <div class="bg-opacity" style="height:360px; overflow: hidden; background: #c9c9c9; border-radius: 7px; position: relative;">
-          <img *ngIf="!(preview && (preview.jobBanner || preview?.bannerFile[0]?.file))"
+          <img *ngIf="!(preview && hasBannerSrc)"
             src="assets/images/placeholder/job-post-banner.png" class="banner-image">
 
-          <img *ngIf="(preview.jobBanner || preview?.bannerFile[0]?.file)"
-            [src]="preview?.bannerFile ? preview?.bannerFile[0]?.file : preview.jobBanner" id="banner-source-file"
+          <img *ngIf="hasBannerSrc"
+            [src]="previewBannerSrc" id="banner-source-file"
             cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
             class="banner-image">
 
@@ -50,7 +50,7 @@
           <button type="button" class="pv-banner-change-btn" (click)="goToStep(1)"
             aria-label="Change or upload banner image">
             <i class="bi bi-camera me-1" aria-hidden="true"></i>
-            {{ (preview.jobBanner || preview?.bannerFile?.[0]?.file) ? 'Change banner' : 'Upload banner' }}
+            {{ hasBannerSrc ? 'Change banner' : 'Upload banner' }}
           </button>
         </div>
 

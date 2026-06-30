@@ -231,6 +231,26 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  private resolveWorkSetupId(hint: string | null): number | null {
+    if (!hint) return null;
+    const h = hint.toLowerCase().trim();
+    if (h.includes('remote') || h === 'wfh' || h.includes('work from home')) return 2;
+    if (h.includes('hybrid')) return 3;
+    if (h.includes('onsite') || h.includes('on-site') || h.includes('on site') || h.includes('office')) return 1;
+    return null;
+  }
+
+  private resolveJobTypeId(hint: string | null): number | null {
+    if (!hint) return null;
+    const h = hint.toLowerCase().trim();
+    if (h.includes('full') && h.includes('time')) return 1;
+    if (h.includes('part') && h.includes('time')) return 2;
+    if (h.includes('contract')) return 3;
+    if (h.includes('intern')) return 4;
+    if (h.includes('freelance')) return 5;
+    return null;
+  }
+
   applyAssistantPrefill(data: any): void {
     // Build a partial job object that setFormGroup understands
     const prefillData: any = {
@@ -242,6 +262,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       salaryMinimum: data.salaryMinimum || null,
       salaryMaximum: data.salaryMaximum || null,
       salaryCurrency: data.salaryCurrency || 'PHP',
+      workSetupId: data.workSetupId || this.resolveWorkSetupId(data.workSetupHint),
+      jobTypeId: data.jobTypeId || this.resolveJobTypeId(data.jobTypeHint),
     };
 
     this.setFormGroup(prefillData);

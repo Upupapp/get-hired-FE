@@ -469,10 +469,16 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   }
 
   goToCreateJob(): void {
+    const co = this._lastDashboardCompany;
     this.dialog.open(EasyJobPostAssistantModalComponent, {
       width: '560px',
       maxWidth: '96vw',
       panelClass: 'gh-assistant-dialog',
+      data: {
+        companyCity: co && co.companyCity || null,
+        companyIndustryName: co && co.companyIndustryName || null,
+        workSetupId: co && co.workSetupId || null,
+      }
     });
   }
 

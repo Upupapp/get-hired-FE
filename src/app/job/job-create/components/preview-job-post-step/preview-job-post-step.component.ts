@@ -162,6 +162,20 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** The banner src to display — prefers an uploaded file data-URL over the stored URL. */
+  get previewBannerSrc(): string | null {
+    const p = this.preview as any;
+    if (p && p.bannerFile && Array.isArray(p.bannerFile) && p.bannerFile.length && p.bannerFile[0] && p.bannerFile[0].file) {
+      return p.bannerFile[0].file;
+    }
+    return (p && p.jobBanner) || null;
+  }
+
+  /** True when any banner image is available (uploaded file or stored URL). */
+  get hasBannerSrc(): boolean {
+    return !!this.previewBannerSrc;
+  }
+
   getFilteredArray(arrayName, id: number) {
     let chosenArray = [];
 
