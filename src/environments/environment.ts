@@ -24,7 +24,9 @@ export const environment = {
     messagingSenderId: "818317489154",
     appId: "1:818317489154:web:d849afade1105af929631b",
     measurementId: "G-4C797NXLJF",
-  }
+  },
+  // Google OAuth web client ID — from Firebase Console → Authentication → Sign-in method → Google → Web client ID
+  googleClientId: '818317489154-laldaic42nbnj3rra0o87bsa3buuo78g.apps.googleusercontent.com'
 };
 
 /*

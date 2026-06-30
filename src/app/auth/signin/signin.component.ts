@@ -7,6 +7,8 @@ import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
 import { TranslateService } from '@ngx-translate/core';
 import { SeoService } from '@app-core/services/seo.service';
+import { GoogleAuthService } from '../services/google-auth.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signin',
@@ -22,6 +24,8 @@ export class SigninComponent implements OnInit {
   error: any = localStorage.getItem('loginError');
   verify: boolean;
   email: string;
+  googleLoading = false;
+  googleError: string | null = null;
 
   credentials$ = this.authFacade.credentials$
     .pipe().subscribe(
@@ -36,6 +40,7 @@ export class SigninComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,
     private seoService: SeoService,
+    private googleAuthService: GoogleAuthService,
   ) { }
 
   ngOnInit(): void {
@@ -161,6 +166,40 @@ export class SigninComponent implements OnInit {
         email: this.email
       }
     });
+  }
+
+  // Handle Google credential from GIS button
+  onGoogleCredential(googleIdToken: string): void {
+    if (this.googleLoading) return;
+    this.googleLoading = true;
+    this.googleError = null;
+
+    this.googleAuthService.exchangeGoogleToken(googleIdToken)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          this.googleLoading = false;
+          if (response.status === 'role_required') {
+            this.googleAuthService.handleGoogleSessionResponse(response);
+            this.router.navigate(['/auth/choose-role']);
+          } else {
+            const outcome = this.googleAuthService.handleGoogleSessionResponse(response);
+            if (outcome === 'error') {
+              this.googleError = response.message || 'Google sign-in failed. Please try again.';
+            }
+          }
+        },
+        error: (err) => {
+          this.googleLoading = false;
+          const body = err && err.error;
+          this.googleError = (body && body.message) || 'Google sign-in did not complete. Try again or use email.';
+        }
+      });
+  }
+
+  onGoogleError(errorCode: string): void {
+    if (errorCode === 'google_popup_closed' || errorCode === 'google_prompt_dismissed') return;
+    this.googleError = 'Google sign-in did not complete. Try again or use email.';
   }
 
   // Clear error message

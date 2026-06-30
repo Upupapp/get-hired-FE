@@ -1,0 +1,132 @@
+<div class="gh-role-page">
+  <div class="gh-role-card">
+    <!-- Header -->
+    <div class="gh-role-header">
+      <img src="assets/brand/Gethired-horizontal-logo.png?v=3" alt="GetHired Online" class="gh-role-logo">
+      <div class="gh-role-google-user" *ngIf="email">
+        <img *ngIf="photoUrl" [src]="photoUrl" [alt]="displayName" class="gh-role-avatar" referrerpolicy="no-referrer">
+        <div>
+          <div class="gh-role-user-name" *ngIf="displayName">{{ displayName }}</div>
+          <div class="gh-role-user-email">{{ email }}</div>
+        </div>
+      </div>
+      <h1 class="gh-role-title">Choose how you'll use GetHired</h1>
+      <p class="gh-role-subtitle">We'll set up your workspace based on what you want to do first.</p>
+    </div>
+
+    <!-- Error -->
+    <div class="gh-role-error" *ngIf="error" role="alert">
+      <span>{{ error }}</span>
+    </div>
+
+    <!-- Role cards -->
+    <div class="gh-role-choices" role="radiogroup" aria-label="Choose your role">
+      <!-- Job Seeker card -->
+      <button
+        type="button"
+        class="gh-role-choice"
+        [class.gh-role-choice--selected]="selectedRole === 'job_seeker'"
+        [class.gh-role-choice--recommended]="recommendedRole === 'job_seeker'"
+        (click)="selectRole('job_seeker')"
+        role="radio"
+        [attr.aria-checked]="selectedRole === 'job_seeker'"
+        aria-label="Job Seeker — find jobs, apply faster, check CV Health, and unlock Match Grade">
+
+        <div class="gh-role-badge gh-role-badge--recommended" *ngIf="recommendedRole === 'job_seeker'">
+          {{ recommendedLabel }}
+        </div>
+
+        <div class="gh-role-icon gh-role-icon--seeker" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <path d="M12 12C14.21 12 16 10.21 16 8S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#3B82F6"/>
+          </svg>
+        </div>
+
+        <div class="gh-role-info">
+          <h2 class="gh-role-name">Job Seeker</h2>
+          <ul class="gh-role-benefits" aria-label="Job Seeker benefits">
+            <li>Apply to jobs in seconds</li>
+            <li>Check your CV Health score</li>
+            <li>Unlock your Match Grade</li>
+            <li>Save jobs and track applications</li>
+          </ul>
+        </div>
+
+        <div class="gh-role-check" aria-hidden="true">
+          <svg *ngIf="selectedRole === 'job_seeker'" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="#3B82F6"/>
+            <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div *ngIf="selectedRole !== 'job_seeker'" class="gh-role-check-empty"></div>
+        </div>
+      </button>
+
+      <!-- Employer card -->
+      <button
+        type="button"
+        class="gh-role-choice"
+        [class.gh-role-choice--selected]="selectedRole === 'employer'"
+        [class.gh-role-choice--recommended]="recommendedRole === 'employer'"
+        (click)="selectRole('employer')"
+        role="radio"
+        [attr.aria-checked]="selectedRole === 'employer'"
+        aria-label="Employer — post jobs, review applicants, use GetHired Assistant, and manage hiring">
+
+        <div class="gh-role-badge gh-role-badge--recommended" *ngIf="recommendedRole === 'employer'">
+          {{ recommendedLabel }}
+        </div>
+
+        <div class="gh-role-icon gh-role-icon--employer" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <path d="M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm0 12H4V9h16v10zM14 5H10c-.55 0-1 .45-1 1v1h6V6c0-.55-.45-1-1-1z" fill="#FF6B5B"/>
+          </svg>
+        </div>
+
+        <div class="gh-role-info">
+          <h2 class="gh-role-name">Employer</h2>
+          <ul class="gh-role-benefits" aria-label="Employer benefits">
+            <li>Post jobs with AI assistance</li>
+            <li>Review and shortlist applicants</li>
+            <li>Use GetHired Assistant</li>
+            <li>Manage your hiring pipeline</li>
+          </ul>
+        </div>
+
+        <div class="gh-role-check" aria-hidden="true">
+          <svg *ngIf="selectedRole === 'employer'" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="11" fill="#FF6B5B"/>
+            <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div *ngIf="selectedRole !== 'employer'" class="gh-role-check-empty"></div>
+        </div>
+      </button>
+    </div>
+
+    <!-- AI Job draft hint -->
+    <div class="gh-role-hint" *ngIf="hasEmployerDraft">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="#FF6B5B"/>
+      </svg>
+      <span>You have a saved AI job draft waiting. Choose Employer to claim it.</span>
+    </div>
+
+    <!-- Continue button -->
+    <button
+      type="button"
+      class="gh-role-continue"
+      [disabled]="!selectedRole || submitting"
+      (click)="submit()">
+      <span *ngIf="!submitting">Continue as {{ selectedRole === 'job_seeker' ? 'Job Seeker' : selectedRole === 'employer' ? 'Employer' : '…' }}</span>
+      <span *ngIf="submitting" class="gh-role-loading">
+        <span class="gh-role-spinner"></span>
+        Setting up your account…
+      </span>
+    </button>
+
+    <p class="gh-role-terms">
+      By continuing, you agree to GetHired's
+      <a href="/terms" target="_blank" rel="noopener">Terms of Service</a> and
+      <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.
+    </p>
+  </div>
+</div>

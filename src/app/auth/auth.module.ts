@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SignupComponent } from './signup/signup.component';
 import { SigninComponent } from './signin/signin.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '@app-shared/shared.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthEffects } from './state/auth.effects';
 import { authReducer } from './state/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
@@ -15,13 +15,21 @@ import { AccountAuthenticationComponent } from './account-authentication/account
 import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
 import { UnauthGuard } from '@app-shared/guard/unauth.guard';
+import { RoleClassificationComponent } from './role-classification/role-classification.component';
+import { environment } from '@environments/environment';
+
+// Expose Google OAuth client ID as a window property for the GIS button component.
+// This runs synchronously at module load — no async required.
+function provideGoogleClientId() {
+  return () => {
+    if (typeof window !== 'undefined') {
+      (window as any).__GH_GOOGLE_CLIENT_ID__ = environment.googleClientId;
+    }
+  };
+}
 
 const routes: Routes = [
   {
-    // canActivate moved here from the lazy-module mount point in
-    // app.routing.module.ts -- see the comment there for why. Preserves
-    // the exact same protection (redirect already-logged-in users away
-    // from these pages) at the leaf level instead of the parent.
     path: 'signin', component: SigninComponent,
     canActivate: [UnauthGuard],
   },
@@ -29,14 +37,9 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent, canActivate: [UnauthGuard] },
   { path: 'change-password', component: ChangePwComponent, canActivate: [UnauthGuard] },
   { path: 'verify', component: AccountAuthenticationComponent, canActivate: [UnauthGuard] },
-  // No `path: ''` entry here on purpose: AuthModule is mounted at the
-  // root path in app.routing.module.ts alongside PublicModule. A bare
-  // '' -> redirectTo: 'signin' here used to hijack every guest visit to
-  // '/' before PublicModule's MainPortalComponent (the information
-  // portal) ever got a chance to match -- guests always landed on
-  // /signin instead of the portal. Removing it lets unmatched '' fall
-  // through to PublicModule's own '' route. /signin and /signup remain
-  // fully reachable directly, unchanged.
+  // Role classification page — shown after Google sign-in for new users
+  // No UnauthGuard here: Google-authed user has no GetHired session yet
+  { path: 'choose-role', component: RoleClassificationComponent },
 ];
 
 @NgModule({
@@ -46,17 +49,26 @@ const routes: Routes = [
     ResetPasswordComponent,
     ChangePwComponent,
     AccountAuthenticationComponent,
-    AccountSettingComponent
+    AccountSettingComponent,
+    RoleClassificationComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
+    FormsModule,
     StoreModule.forFeature('status', authReducer),
     EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)
   ],
-  providers: [AuthFacade],
+  providers: [
+    AuthFacade,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: provideGoogleClientId,
+      multi: true
+    }
+  ],
   exports: [AccountSettingComponent]
 })
 export class AuthModule { }

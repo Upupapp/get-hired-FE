@@ -7,8 +7,10 @@ import { AuthService } from '../auth.service';
 import { AuthFacade } from '../state/auth.facade';
 import * as Model from '../auth.model';
 import { catchError, combineLatest, map, of, Subject, Subscription, takeUntil } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { SeoService } from '@app-core/services/seo.service';
+import { GoogleAuthService } from '../services/google-auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -35,6 +37,9 @@ export class SignupComponent implements OnInit {
   error$ = this.authFacade.error$
     .pipe().subscribe(this.showError.bind(this));
 
+  googleLoading = false;
+  googleError: string | null = null;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -43,6 +48,7 @@ export class SignupComponent implements OnInit {
     private authService: AuthService,
     private authFacade: AuthFacade,
     private seoService: SeoService,
+    private googleAuthService: GoogleAuthService,
   ) { }
 
   ngOnInit(): void {
@@ -117,6 +123,39 @@ export class SignupComponent implements OnInit {
     } else {
       this.submitting = false;
     }
+  }
+
+  onGoogleCredential(googleIdToken: string): void {
+    if (this.googleLoading) return;
+    this.googleLoading = true;
+    this.googleError = null;
+
+    this.googleAuthService.exchangeGoogleToken(googleIdToken)
+      .pipe(take(1))
+      .subscribe({
+        next: (response) => {
+          this.googleLoading = false;
+          if (response.status === 'role_required') {
+            this.googleAuthService.handleGoogleSessionResponse(response);
+            this.router.navigate(['/auth/choose-role']);
+          } else {
+            const outcome = this.googleAuthService.handleGoogleSessionResponse(response);
+            if (outcome === 'error') {
+              this.googleError = response.message || 'Google sign-up failed. Please try again.';
+            }
+          }
+        },
+        error: (err) => {
+          this.googleLoading = false;
+          const body = err && err.error;
+          this.googleError = (body && body.message) || 'Google sign-up did not complete. Try again or use email.';
+        }
+      });
+  }
+
+  onGoogleError(errorCode: string): void {
+    if (errorCode === 'google_popup_closed' || errorCode === 'google_prompt_dismissed') return;
+    this.googleError = 'Google sign-up did not complete. Try again or use email.';
   }
 
   openVerification(email: string) {

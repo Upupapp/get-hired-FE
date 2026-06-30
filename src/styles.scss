@@ -1004,3 +1004,41 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
     width: 100% !important;
   }
 }
+
+
+// ── Google Auth — divider + button row (global, used in signin + signup) ──
+.gh-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 16px;
+
+  .gh-auth-divider-line {
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+  }
+
+  .gh-auth-divider-text {
+    font-size: 13px;
+    color: #9ca3af;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+.gh-google-btn-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+
+  app-google-signin-button {
+    width: 100%;
+    display: block;
+  }
+
+  // Ensure GIS iframe button fills the row width
+  .gh-google-btn-wrapper {
+    width: 100%;
+  }
+}

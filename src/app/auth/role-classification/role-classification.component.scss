@@ -1,0 +1,322 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.gh-role-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px 60px;
+  background: linear-gradient(160deg, #f8f9fa 0%, #eef2ff 100%);
+}
+
+.gh-role-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: 0 4px 32px rgba(13, 27, 42, 0.10);
+}
+
+.gh-role-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.gh-role-logo {
+  height: 36px;
+  margin-bottom: 20px;
+}
+
+.gh-role-google-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.gh-role-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.gh-role-user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0D1B2A;
+}
+
+.gh-role-user-email {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.gh-role-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0D1B2A;
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.gh-role-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.gh-role-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.gh-role-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.gh-role-choice {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  width: 100%;
+
+  &:hover {
+    border-color: #c7d2fe;
+    background: #f9fafb;
+  }
+
+  &:focus-visible {
+    outline: 3px solid #3B82F6;
+    outline-offset: 2px;
+  }
+
+  &--selected {
+    border-color: #3B82F6;
+    background: #eff6ff;
+
+    .gh-role-name { color: #3B82F6; }
+  }
+
+  &--selected.gh-role-choice--selected + .gh-role-choice--selected .gh-role-name {
+    color: #FF6B5B;
+  }
+}
+
+// Employer card selected — use coral
+.gh-role-choice:nth-child(2).gh-role-choice--selected {
+  border-color: #FF6B5B;
+  background: #fff5f4;
+
+  .gh-role-name { color: #FF6B5B; }
+}
+
+.gh-role-badge {
+  position: absolute;
+  top: -1px;
+  right: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 0 0 8px 8px;
+  letter-spacing: 0.01em;
+
+  &--recommended {
+    background: #FF6B5B;
+    color: #fff;
+  }
+}
+
+.gh-role-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--seeker { background: #eff6ff; }
+  &--employer { background: #fff5f4; }
+}
+
+.gh-role-info {
+  flex: 1;
+}
+
+.gh-role-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0D1B2A;
+  margin: 0 0 6px;
+  transition: color 0.18s;
+}
+
+.gh-role-benefits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  li {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &::before {
+      content: '✓';
+      color: #34D399;
+      font-weight: 700;
+      font-size: 12px;
+    }
+  }
+}
+
+.gh-role-check {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gh-role-check-empty {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+}
+
+.gh-role-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fff5f4;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #FF6B5B;
+  margin-bottom: 20px;
+
+  svg { flex-shrink: 0; margin-top: 1px; }
+}
+
+.gh-role-continue {
+  display: block;
+  width: 100%;
+  padding: 15px 24px;
+  background: linear-gradient(135deg, #FF6B5B 0%, #e85a4a 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.18s, transform 0.12s;
+  margin-bottom: 16px;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    opacity: 0.93;
+    transform: translateY(-1px);
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.985);
+  }
+
+  &:focus-visible {
+    outline: 3px solid #FF6B5B;
+    outline-offset: 3px;
+  }
+}
+
+.gh-role-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.gh-role-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: gh-role-spin 0.75s linear infinite;
+}
+
+@keyframes gh-role-spin {
+  to { transform: rotate(360deg); }
+}
+
+.gh-role-terms {
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+  margin: 0;
+
+  a {
+    color: #6b7280;
+    text-decoration: underline;
+
+    &:hover { color: #3B82F6; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-role-spinner,
+  .gh-role-choice,
+  .gh-role-continue {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .gh-role-card {
+    padding: 28px 20px;
+    border-radius: 14px;
+  }
+
+  .gh-role-title { font-size: 19px; }
+  .gh-role-name { font-size: 15px; }
+}

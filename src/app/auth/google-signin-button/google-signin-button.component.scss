@@ -1,0 +1,44 @@
+.gh-google-btn-wrapper {
+  display: inline-flex;
+  justify-content: center;
+  min-height: 44px;
+  position: relative;
+
+  &.gh-google-btn-full {
+    width: 100%;
+    display: flex;
+  }
+}
+
+.gh-gis-container {
+  transition: opacity 0.2s ease;
+
+  &.gh-gis-hidden {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+}
+
+.gh-google-btn-skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 44px;
+  width: 100%;
+  border: 1.5px solid #dadce0;
+  border-radius: 4px;
+  background: #fff;
+  color: #3c4043;
+  font-family: 'Roboto', 'Google Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 16px;
+  animation: gh-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes gh-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}

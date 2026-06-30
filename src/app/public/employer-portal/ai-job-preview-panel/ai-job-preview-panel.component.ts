@@ -12,12 +12,13 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import {
   AnonPreviewResponse,
   PublicJobPreviewService,
 } from '../../services/public-job-preview.service';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
+import { GoogleAuthService } from '@main/auth/services/google-auth.service';
 
 type PanelStep = 'input' | 'loading' | 'preview' | 'error';
 
@@ -38,6 +39,8 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
   titleError = '';
   errorMsg = '';
   previewData: AnonPreviewResponse | null = null;
+  googleLoading = false;
+  googleError: string | null = null;
 
   readonly workSetupOptions = [
     { value: '', label: 'Any' },
@@ -61,6 +64,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     private previewService: PublicJobPreviewService,
     private router: Router,
     private haptics: HapticFeedbackService,
+    private googleAuthService: GoogleAuthService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -165,6 +169,49 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     this.haptics.selection();
     this.closed.emit();
     this.router.navigate(['/signin']);
+  }
+
+  // Google sign-in directly from the AI Job Create panel gate
+  onGoogleCredential(googleIdToken: string): void {
+    if (this.googleLoading) return;
+    // Save preview token before any navigation
+    if (this.previewData && this.previewData.previewToken) {
+      this.previewService.savePendingToken(this.previewData.previewToken);
+    }
+    this.googleLoading = true;
+    this.googleError = null;
+
+    this.googleAuthService.exchangeGoogleToken(googleIdToken)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.googleLoading = false;
+          if (response.status === 'role_required') {
+            // New user — store pending state and navigate to role classification
+            this.googleAuthService.handleGoogleSessionResponse(response);
+            this.closed.emit();
+            this.router.navigate(['/auth/choose-role']);
+          } else {
+            const outcome = this.googleAuthService.handleGoogleSessionResponse(response);
+            if (outcome === 'authenticated') {
+              // Existing user — session stored, employer panel will claim the draft
+              this.closed.emit();
+            } else {
+              this.googleError = response.message || 'Google sign-in failed. Please try again.';
+            }
+          }
+        },
+        error: (err) => {
+          this.googleLoading = false;
+          const body = err && err.error;
+          this.googleError = (body && body.message) || 'Google sign-in did not complete. Try again or use email.';
+        }
+      });
+  }
+
+  onGoogleError(errorCode: string): void {
+    if (errorCode === 'google_popup_closed' || errorCode === 'google_prompt_dismissed') return;
+    this.googleError = 'Google sign-in did not complete. Try again or use email.';
   }
 
   tryAgain(): void {

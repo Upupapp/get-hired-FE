@@ -176,11 +176,29 @@
             500,000+ registered job seekers in the Philippines
           </div>
           <div class="aijp-gate-ctas">
+            <!-- Google sign-in (fastest path — one click if Google session active) -->
+            <div class="aijp-google-btn-row" *ngIf="!googleLoading">
+              <app-google-signin-button
+                label="continue_with"
+                [fullWidth]="true"
+                (credential)="onGoogleCredential($event)"
+                (errorEvent)="onGoogleError($event)">
+              </app-google-signin-button>
+            </div>
+            <div *ngIf="googleLoading" class="aijp-google-loading" aria-live="polite">
+              Connecting to Google…
+            </div>
+            <div *ngIf="googleError" class="aijp-google-error" role="alert">{{ googleError }}</div>
+
+            <div class="aijp-gate-or" aria-hidden="true">
+              <span></span><span class="aijp-or-text">or</span><span></span>
+            </div>
+
             <button
               type="button"
               class="aijp-btn-primary"
               (click)="goSignup()">
-              Create free employer account
+              Create account with email
             </button>
             <button
               type="button"
