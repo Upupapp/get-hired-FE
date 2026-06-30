@@ -786,3 +786,9 @@
   </section>
 
 </main>
+
+<!-- AI Job Preview Panel — fixed overlay rendered outside main -->
+<app-ai-job-preview-panel
+  [open]="aiPanelOpen"
+  (closed)="onAiPanelClosed()">
+</app-ai-job-preview-panel>

@@ -8,7 +8,8 @@ import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
+import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
 
 @Component({
   selector: 'app-employer-panel',
@@ -40,12 +41,14 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     private companyFacade: CompanyFacade,
     private dialog: MatDialog,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private jobPreviewService: PublicJobPreviewService,
   ) { }
 
   ngOnInit(): void {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
+    this.checkAndClaimAiPreview();
 
     // companyName for topbar avatar menu — reads from companyFacade.companyDetails$
     // (the authoritative store slice) so it updates immediately when the recruiter
@@ -104,6 +107,31 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (this.avatarMenuOpen && target && !target.closest('.gh-topbar-avatar-wrap')) {
       this.closeAvatarMenu();
     }
+  }
+
+  // ─── AI Preview Claim — runs once on employer panel init ────────────────
+  // If the user arrived here via the public AI preview flow (signed up / signed
+  // in after generating a preview), claim the draft and navigate to job list.
+  private checkAndClaimAiPreview(): void {
+    const token = this.jobPreviewService.getPendingToken();
+    if (!token) return;
+
+    this.jobPreviewService.claimPreview(token)
+      .pipe(take(1))
+      .subscribe({
+        next: (res) => {
+          this.jobPreviewService.clearPendingToken();
+          if (res && res.jobId) {
+            this.router.navigate(['/recruiter/jobs/list'], {
+              queryParams: { claimedDraft: '1' },
+            });
+          }
+        },
+        error: () => {
+          // Non-fatal — token may have expired; clear it silently and continue
+          this.jobPreviewService.clearPendingToken();
+        },
+      });
   }
 
   /** Called from the "sign in again" button on the profile-load-error fallback.

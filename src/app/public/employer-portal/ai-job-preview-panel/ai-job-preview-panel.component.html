@@ -1,0 +1,218 @@
+<ng-container *ngIf="open">
+  <div
+    class="aijp-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Create your job post with GetHired Assistant"
+    (click)="onBackdropClick($event)"
+    (keydown)="onKeydown($event)"
+    tabindex="-1">
+
+    <div class="aijp-panel" role="document">
+
+      <!-- Panel header -->
+      <div class="aijp-header">
+        <div class="aijp-header-brand">
+          <span class="aijp-orb" aria-hidden="true"></span>
+          <span class="aijp-header-label">GetHired Assistant</span>
+        </div>
+        <button
+          type="button"
+          class="aijp-close"
+          (click)="close()"
+          aria-label="Close panel">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ─── STEP: INPUT ─────────────────────────────────────────────────── -->
+      <div *ngIf="step === 'input'" class="aijp-body" role="main">
+        <h2 class="aijp-title">See your job post in seconds</h2>
+        <p class="aijp-sub">
+          Enter a job title and GetHired Assistant will draft your job post.
+          Sign up to save it and start receiving applicants.
+        </p>
+
+        <div class="aijp-form">
+          <div class="aijp-field" [class.aijp-field--error]="!!titleError">
+            <label for="aijp-job-title" class="aijp-label">
+              Job title <span class="aijp-required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="aijp-job-title"
+              type="text"
+              class="aijp-input"
+              placeholder="e.g. Marketing Manager, Software Engineer…"
+              [(ngModel)]="jobTitle"
+              [attr.aria-describedby]="titleError ? 'aijp-title-error' : null"
+              (keydown.enter)="generate()"
+              autocomplete="off"
+              maxlength="120"
+              autofocus>
+            <p *ngIf="titleError" id="aijp-title-error" class="aijp-field-error" role="alert">
+              {{ titleError }}
+            </p>
+          </div>
+
+          <div class="aijp-optional-row">
+            <div class="aijp-field">
+              <label for="aijp-location" class="aijp-label">Location <span class="aijp-optional-tag">optional</span></label>
+              <input
+                id="aijp-location"
+                type="text"
+                class="aijp-input"
+                placeholder="e.g. Makati City"
+                [(ngModel)]="location"
+                maxlength="80">
+            </div>
+
+            <div class="aijp-field">
+              <label for="aijp-work-setup" class="aijp-label">Work setup <span class="aijp-optional-tag">optional</span></label>
+              <select id="aijp-work-setup" class="aijp-select" [(ngModel)]="workSetup">
+                <option *ngFor="let o of workSetupOptions" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+
+            <div class="aijp-field">
+              <label for="aijp-emp-type" class="aijp-label">Employment type <span class="aijp-optional-tag">optional</span></label>
+              <select id="aijp-emp-type" class="aijp-select" [(ngModel)]="employmentType">
+                <option *ngFor="let o of employmentTypeOptions" [value]="o.value">{{ o.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="aijp-btn-primary"
+            (click)="generate()"
+            [disabled]="!jobTitle.trim()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Generate my job post
+          </button>
+        </div>
+
+        <p class="aijp-privacy-note">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Nothing is posted until you review and publish.
+        </p>
+      </div>
+
+      <!-- ─── STEP: LOADING ──────────────────────────────────────────────── -->
+      <div *ngIf="step === 'loading'" class="aijp-body aijp-body--loading" aria-live="polite" aria-label="Generating your job post">
+        <div class="aijp-scan-orb" aria-hidden="true">
+          <span class="aijp-scan-ring aijp-scan-ring--a"></span>
+          <span class="aijp-scan-ring aijp-scan-ring--b"></span>
+          <svg class="aijp-scan-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <p class="aijp-loading-title">Creating your draft…</p>
+        <p class="aijp-loading-sub">GetHired Assistant is drafting a job post for <strong>{{ jobTitle }}</strong></p>
+        <div class="aijp-loading-steps" aria-hidden="true">
+          <span class="aijp-loading-step aijp-loading-step--done">Understanding your role</span>
+          <span class="aijp-loading-step aijp-loading-step--active">Writing job description</span>
+          <span class="aijp-loading-step">Building requirements</span>
+        </div>
+      </div>
+
+      <!-- ─── STEP: PREVIEW ──────────────────────────────────────────────── -->
+      <div *ngIf="step === 'preview'" class="aijp-body aijp-body--preview">
+
+        <!-- Preview badge -->
+        <div class="aijp-preview-badge" aria-label="Preview ready">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Job draft preview
+        </div>
+
+        <!-- Job title -->
+        <h2 class="aijp-preview-title">{{ previewTitle }}</h2>
+
+        <!-- Visible snippet -->
+        <div class="aijp-preview-visible">
+          <p class="aijp-preview-section-label">About the role</p>
+          <p class="aijp-preview-snippet">{{ previewSnippet }}</p>
+
+          <div *ngIf="previewSkills.length" class="aijp-preview-skills" aria-label="Key skills">
+            <span *ngFor="let s of previewSkills" class="aijp-skill-pill">{{ s }}</span>
+          </div>
+        </div>
+
+        <!-- Locked / blurred section — visual placeholder only (no real content) -->
+        <div class="aijp-preview-locked" aria-hidden="true">
+          <div class="aijp-preview-blur-block">
+            <div class="aijp-blur-line aijp-blur-line--w80"></div>
+            <div class="aijp-blur-line aijp-blur-line--w60"></div>
+            <div class="aijp-blur-line aijp-blur-line--w90"></div>
+            <div class="aijp-blur-line aijp-blur-line--w50"></div>
+            <div class="aijp-blur-line aijp-blur-line--w70"></div>
+            <div class="aijp-blur-line aijp-blur-line--w85"></div>
+          </div>
+          <div class="aijp-preview-lock-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Gate card -->
+        <div class="aijp-gate-card">
+          <p class="aijp-gate-headline">Sign up to get your full job post</p>
+          <p class="aijp-gate-sub">
+            Your complete job description, requirements, and responsibilities are ready.
+            Create a free employer account to save and publish.
+          </p>
+          <div class="aijp-gate-proof">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            500,000+ registered job seekers in the Philippines
+          </div>
+          <div class="aijp-gate-ctas">
+            <button
+              type="button"
+              class="aijp-btn-primary"
+              (click)="goSignup()">
+              Create free employer account
+            </button>
+            <button
+              type="button"
+              class="aijp-btn-ghost"
+              (click)="goSignin()">
+              Already have an account? Sign in
+            </button>
+          </div>
+          <p class="aijp-gate-note">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+            </svg>
+            Your draft is saved for 30 minutes. Nothing is posted until you review and publish.
+          </p>
+        </div>
+      </div>
+
+      <!-- ─── STEP: ERROR ────────────────────────────────────────────────── -->
+      <div *ngIf="step === 'error'" class="aijp-body aijp-body--error" role="alert">
+        <div class="aijp-error-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+          </svg>
+        </div>
+        <p class="aijp-error-title">Could not generate preview</p>
+        <p class="aijp-error-body">{{ errorMsg }}</p>
+        <div class="aijp-error-actions">
+          <button type="button" class="aijp-btn-primary" (click)="tryAgain()">Try again</button>
+          <button type="button" class="aijp-btn-ghost" (click)="close()">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-container>

@@ -150,6 +150,9 @@ export class EmployerPortalComponent implements OnInit, AfterViewInit, OnDestroy
     },
   ];
 
+  // ─── AI Job Preview Panel state ───────────────────────────────────────────
+  aiPanelOpen = false;
+
   // ─── Mobile menu state ────────────────────────────────────────────────────
   mobileMenuOpen = false;
 
@@ -205,7 +208,15 @@ export class EmployerPortalComponent implements OnInit, AfterViewInit, OnDestroy
 
   startHiring(): void {
     this.haptics.selection();
-    this.router.navigate(['/signup'], { queryParams: { role: 2 } });
+    this.aiPanelOpen = true;
+    if (this.mobileMenuOpen) this.closeMobileMenu();
+  }
+
+  onAiPanelClosed(): void {
+    this.aiPanelOpen = false;
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
   }
 
   goToSignin(): void {
