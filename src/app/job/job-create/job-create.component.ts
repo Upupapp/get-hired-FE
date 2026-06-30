@@ -17,6 +17,7 @@ import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/hap
 // B13: Job Readiness
 import { JobReadinessService, JobReadinessResult, JobReadinessLevel } from '../services/job-readiness.service';
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job-post-assistant.service';
+import { JobService } from '../job.service';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -65,6 +66,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // don't accumulate duplicate statusChanges listeners across the lifetime of
   // the component. Unsubscribed in ngOnDestroy via the main subscriptions bag.
   private formSubs = new Subscription();
+  // Autosave: timer ID for the debounced background draft save.
+  // Only fires when jobId is already set (edit mode) to avoid creating
+  // duplicate draft records on every keystroke during new-job creation.
+  private autosaveTimerId: any = null;
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -145,6 +150,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // B13: Job Readiness
     private jobReadiness: JobReadinessService,
     private assistantService: EasyJobPostAssistantService,
+    private jobService: JobService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -397,6 +403,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           if (this.autoSaveState !== 'saving') {
             this.setAutoSaveState('unsaved');
           }
+          // Schedule a background autosave — only in edit mode (jobId set) to
+          // avoid creating a new draft record on every keystroke during creation.
+          this.scheduleAutosave();
           this.cd.markForCheck();
         })
     );
@@ -980,6 +989,36 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Schedules a background autosave 2 seconds after the last form change.
+   * Only fires when jobId is already known (edit mode). New-job drafts must
+   * be saved manually first so we don't create a new record on every keystroke.
+   */
+  private scheduleAutosave(): void {
+    if (!this.jobId) return;
+    if (this.autosaveTimerId) clearTimeout(this.autosaveTimerId);
+    this.autosaveTimerId = setTimeout(() => this.performAutosave(), 2000);
+  }
+
+  /** Executes the background draft save via JobService (not NgRx store) to
+   *  avoid triggering the editJob$ → setFormGroup() form-reset side effect. */
+  private performAutosave(): void {
+    if (!this.jobId || this.autoSaveState === 'saving') return;
+    const job = this.formatJob(1);
+    this.setAutoSaveState('saving');
+    this.jobService.saveJob(job).pipe(take(1)).subscribe({
+      next: () => {
+        this.setAutoSaveState('saved');
+        setTimeout(() => {
+          if (this.autoSaveState === 'saved') this.setAutoSaveState('unsaved');
+        }, 3000);
+      },
+      error: () => {
+        this.setAutoSaveState('failed');
+      },
+    });
+  }
+
   /** Update autosave indicator state */
   private setAutoSaveState(state: 'unsaved' | 'saving' | 'saved' | 'failed'): void {
     this.autoSaveState = state;
@@ -1038,5 +1077,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.jobFacade.resetFormState();
     this.subscriptions.unsubscribe();
     this.formSubs.unsubscribe(); // QA8 FIX-10: clean up form-status subscriptions
+    if (this.autosaveTimerId) clearTimeout(this.autosaveTimerId);
   }
 }
