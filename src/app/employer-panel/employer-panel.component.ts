@@ -225,5 +225,6 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.coreService.logout();
+    this.router.navigate(['/signin']);
   }
 }
