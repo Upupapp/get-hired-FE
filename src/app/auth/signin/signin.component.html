@@ -103,6 +103,15 @@
             </app-google-signin-button>
           </div>
 
+          <!-- LinkedIn sign-in button -->
+          <div class="gh-google-btn-row mt-2">
+            <app-linkedin-button
+              label="Sign in with LinkedIn"
+              intent="auto"
+              [fullWidth]="true">
+            </app-linkedin-button>
+          </div>
+
           <div class="text-center mt-5 join-us">
             <br><br>
             {{ 'SIGNIN.REGISTRATION_PROMPT' | translate }} <a [routerLink]="'/signup'" class="register"> {{ 'SIGNIN.REGISTER' | translate }}</a>

@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { GoogleAuthService } from '../services/google-auth.service';
+import { LinkedInAuthService } from '../services/linkedin-auth.service';
 import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
 
 @Component({
@@ -15,42 +16,49 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
   submitting = false;
   error: string | null = null;
 
-  // Pre-fill user details from Google account
   displayName = '';
   email = '';
   photoUrl = '';
 
-  // Recommended role from pending intent
   recommendedRole: 'job_seeker' | 'employer' | null = null;
   recommendedLabel = '';
 
-  // Pending intent hint (from sessionStorage, if any)
   hasEmployerDraft = false;
   hasJobApplyIntent = false;
 
+  private _provider: 'google' | 'linkedin' = 'google';
   private _sub: Subscription;
 
   constructor(
     private googleAuthService: GoogleAuthService,
+    private linkedInAuthService: LinkedInAuthService,
     private jobPreviewService: PublicJobPreviewService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // If no pending Google auth state, redirect to signin
-    if (!this.googleAuthService.hasPendingRoleClassification) {
+    const hasGoogle   = this.googleAuthService.hasPendingRoleClassification;
+    const hasLinkedIn = this.linkedInAuthService.hasPendingRoleClassification;
+
+    if (!hasGoogle && !hasLinkedIn) {
       this.router.navigate(['/signin']);
       return;
     }
 
-    this.displayName = this.googleAuthService.pendingDisplayName;
-    this.email = this.googleAuthService.pendingEmail;
-    this.photoUrl = this.googleAuthService.pendingPhotoUrl;
+    if (hasLinkedIn) {
+      this._provider = 'linkedin';
+      this.displayName = this.linkedInAuthService.pendingDisplayName;
+      this.email       = this.linkedInAuthService.pendingEmail;
+      this.photoUrl    = this.linkedInAuthService.pendingPhotoUrl;
+    } else {
+      this._provider = 'google';
+      this.displayName = this.googleAuthService.pendingDisplayName;
+      this.email       = this.googleAuthService.pendingEmail;
+      this.photoUrl    = this.googleAuthService.pendingPhotoUrl;
+    }
 
-    // Detect pending intents to pre-select recommended role
     this.hasEmployerDraft = this.jobPreviewService.hasPendingToken();
-    // Job apply intent stored separately (if wired)
     const pendingApply = localStorage.getItem('gh_pending_apply_job_id');
     this.hasJobApplyIntent = !!pendingApply;
 
@@ -71,55 +79,55 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
   submit(): void {
     if (!this.selectedRole || this.submitting) return;
 
-    // Warn if role conflicts with pending intent
     if (this.hasEmployerDraft && this.selectedRole === 'job_seeker') {
-      const confirm = window.confirm(
+      const ok = window.confirm(
         'You started creating a job post. To continue with that draft, choose Employer. Continue as Job Seeker instead?'
       );
-      if (!confirm) {
-        this.selectedRole = 'employer';
-        return;
-      }
+      if (!ok) { this.selectedRole = 'employer'; return; }
     }
 
     if (this.hasJobApplyIntent && this.selectedRole === 'employer') {
-      const confirm = window.confirm(
+      const ok = window.confirm(
         'Applying to jobs requires a Job Seeker profile. Continue as Employer instead?'
       );
-      if (!confirm) {
-        this.selectedRole = 'job_seeker';
-        return;
-      }
+      if (!ok) { this.selectedRole = 'job_seeker'; return; }
     }
 
     this.submitting = true;
     this.error = null;
 
-    this.googleAuthService.submitRoleSelection(this.selectedRole)
-      .pipe(take(1))
-      .subscribe({
-        next: (response) => {
-          this.submitting = false;
-          if (response && response.success && response.data) {
+    const request$ = this._provider === 'linkedin'
+      ? this.linkedInAuthService.submitRoleSelection(this.selectedRole)
+      : this.googleAuthService.submitRoleSelection(this.selectedRole);
+
+    request$.pipe(take(1)).subscribe({
+      next: (response) => {
+        this.submitting = false;
+        if (response && response.success && response.data) {
+          if (this._provider === 'linkedin') {
+            this.linkedInAuthService.clearPendingRoleState();
+            this.linkedInAuthService.storeSession(response.data);
+          } else {
             this.googleAuthService.clearPendingRoleState();
             this.googleAuthService.storeSession(response.data);
-          } else {
-            this.error = 'Could not complete sign-up. Please try again.';
           }
-        },
-        error: (err) => {
-          this.submitting = false;
-          const body = err && err.error;
-          this.error = (body && body.message) || 'Sign-up failed. Please try again.';
-          if (err && err.status === 401) {
-            // Token expired — send back to signin
-            this.googleAuthService.clearPendingRoleState();
-            this.router.navigate(['/signin'], {
-              queryParams: { message: 'Your Google session expired. Please sign in again.' }
-            });
-          }
+        } else {
+          this.error = 'Could not complete sign-up. Please try again.';
         }
-      });
+      },
+      error: (err) => {
+        this.submitting = false;
+        const body = err && err.error;
+        this.error = (body && body.message) || 'Sign-up failed. Please try again.';
+        if (err && err.status === 401) {
+          this.googleAuthService.clearPendingRoleState();
+          this.linkedInAuthService.clearPendingRoleState();
+          this.router.navigate(['/signin'], {
+            queryParams: { message: 'Your session expired. Please sign in again.' }
+          });
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {

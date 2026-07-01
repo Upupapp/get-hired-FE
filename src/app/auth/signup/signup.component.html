@@ -265,6 +265,15 @@
             </app-google-signin-button>
           </div>
 
+          <!-- LinkedIn sign-up button -->
+          <div class="gh-google-btn-row mt-2">
+            <app-linkedin-button
+              label="Sign up with LinkedIn"
+              intent="auto"
+              [fullWidth]="true">
+            </app-linkedin-button>
+          </div>
+
           <div class="text-center mt-5 join-us">
             <br><br>
             <ng-container *ngIf="role_validators?.value === 2">

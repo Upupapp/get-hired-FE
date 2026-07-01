@@ -16,6 +16,7 @@ import { AuthFacade } from './state/auth.facade';
 import { AccountSettingComponent } from './account-setting/account-setting.component';
 import { UnauthGuard } from '@app-shared/guard/unauth.guard';
 import { RoleClassificationComponent } from './role-classification/role-classification.component';
+import { LinkedInCompleteComponent } from './linkedin-complete/linkedin-complete.component';
 import { environment } from '@environments/environment';
 
 // Expose Google OAuth client ID as a window property for the GIS button component.
@@ -37,9 +38,11 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent, canActivate: [UnauthGuard] },
   { path: 'change-password', component: ChangePwComponent, canActivate: [UnauthGuard] },
   { path: 'verify', component: AccountAuthenticationComponent, canActivate: [UnauthGuard] },
-  // Role classification page — shown after Google sign-in for new users
-  // No UnauthGuard here: Google-authed user has no GetHired session yet
+  // Role classification page — shown after Google/LinkedIn sign-in for new users
+  // No UnauthGuard here: social-authed user has no GetHired session yet
   { path: 'choose-role', component: RoleClassificationComponent },
+  // LinkedIn OIDC callback landing — no UnauthGuard, user is mid-auth flow
+  { path: 'linkedin/complete', component: LinkedInCompleteComponent },
 ];
 
 @NgModule({
@@ -51,6 +54,7 @@ const routes: Routes = [
     AccountAuthenticationComponent,
     AccountSettingComponent,
     RoleClassificationComponent,
+    LinkedInCompleteComponent,
   ],
   imports: [
     CommonModule,

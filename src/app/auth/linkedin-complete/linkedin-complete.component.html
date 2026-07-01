@@ -1,0 +1,23 @@
+<div class="li-complete-wrap">
+  <div class="li-complete-card">
+
+    <ng-container *ngIf="loading">
+      <div class="li-complete-loading" aria-live="polite">
+        <div class="li-complete-spinner" role="status" aria-label="Completing LinkedIn sign-in"></div>
+        <p class="li-complete-label">Completing LinkedIn sign-in…</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!loading && errorCode">
+      <svg class="li-complete-error-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <h2 class="li-complete-error-title">Sign-in failed</h2>
+      <p class="li-complete-error-msg">{{ errorMessage }}</p>
+      <button class="li-complete-retry-btn" (click)="retry()">Try again</button>
+    </ng-container>
+
+  </div>
+</div>
