@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { SeoService } from '@app-core/services/seo.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-privacy',
@@ -129,7 +130,7 @@ export class PrivacyComponent implements OnInit, OnDestroy {
     this.submitting = true;
     this.submitError = '';
     this.cd.markForCheck();
-    this.http.post('/api/privacy/request', this.requestForm.value).subscribe({
+    this.http.post(`${environment.api_url}/privacy/request`, this.requestForm.value).subscribe({
       next: () => {
         this.submitted = true;
         this.submitting = false;
