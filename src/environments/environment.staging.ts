@@ -11,5 +11,5 @@
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   mapRestrictions: ['sg', 'ph'],
   recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U",
-  googleClientId: '818317489154-s5mc0m5rd06qdpj3bh1sdrfqessaca8u.apps.googleusercontent.com'
+  googleClientId: '818317489154-iikcv1s2gno5ubsuvcoosetbpi9b0a6d.apps.googleusercontent.com'
 };
