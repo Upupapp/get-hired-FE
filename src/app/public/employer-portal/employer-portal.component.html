@@ -7,17 +7,18 @@
     <img src="/assets/brand/gethired-wow/portal-gradient-mesh.svg" alt="" class="ep-hero-mesh" aria-hidden="true" width="400" height="300" loading="eager">
     <div class="ep-hero-glow ep-hero-glow--a" aria-hidden="true"></div>
     <div class="ep-hero-glow ep-hero-glow--b" aria-hidden="true"></div>
+    <div class="ep-hero-glow ep-hero-glow--c" aria-hidden="true"></div>
 
     <div class="ep-hero-inner">
 
       <!-- Copy -->
       <div class="ep-hero-copy ep-reveal">
         <p class="ep-hero-eyebrow">Workforce Growth OS for Philippine Employers</p>
-        <h1 class="ep-hero-h1">Post jobs faster.<br>Hire with more context.</h1>
+        <h1 class="ep-hero-h1">Post jobs faster.<br>Hire with more confidence.</h1>
         <p class="ep-hero-sub">
-          GetHired is a modern hiring workspace for Philippine employers. Create job posts faster with
-          GetHired Assistant, reach&nbsp;<strong>500,000+ registered job seekers</strong>, review structured
-          applicants, use video answers and match signals, and manage hiring in one organized platform.
+          Create job posts with GetHired Assistant, reach&nbsp;<strong>500,000+ registered job seekers</strong>,
+          review structured applicants, use video answers, compare match signals, and manage every hiring
+          step in one organized platform.
         </p>
 
         <div class="ep-hero-proof-card">
@@ -27,31 +28,46 @@
         <div class="ep-hero-bullets" aria-label="Key features at a glance">
           <span class="ep-hero-bullet">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Create jobs from a file or link
+            AI-assisted job post creation
           </span>
           <span class="ep-hero-bullet">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Review structured applicants
+            Structured applicant review
           </span>
           <span class="ep-hero-bullet">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Video answers &amp; match signals
+            Interview questions and video answers
           </span>
           <span class="ep-hero-bullet">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Track applicants from applied to hired
+            CV Health and match signals
           </span>
         </div>
 
         <div class="ep-hero-ctas">
-          <button type="button" class="ep-btn ep-btn--primary ep-btn--lg" (click)="startHiring()">Start hiring</button>
+          <button type="button" class="ep-btn ep-btn--grad ep-btn--lg" (click)="startHiring()">Start hiring</button>
           <button type="button" class="ep-btn ep-btn--outline-white ep-btn--lg" (click)="goToSignin()">Sign in</button>
           <button type="button" class="ep-btn ep-btn--ghost-sm" (click)="browseJobs()">Browse public jobs →</button>
         </div>
+
+        <p class="ep-hero-micro-trust" aria-hidden="true">Built for Philippine employers&nbsp;·&nbsp;Applicant tracking&nbsp;·&nbsp;Video answers&nbsp;·&nbsp;CV Health&nbsp;·&nbsp;Match signals</p>
       </div>
 
       <!-- Dashboard mockup -->
       <div class="ep-hero-visual ep-reveal ep-reveal--delay" aria-hidden="true">
+
+        <!-- AI job creation floating card -->
+        <div class="ep-hero-ai-float">
+          <div class="ep-hero-ai-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="ep-hero-ai-body">
+            <div class="ep-hero-ai-label">GetHired Assistant</div>
+            <div class="ep-hero-ai-status">Generating job post from uploaded file&hellip;</div>
+            <div class="ep-hero-ai-bar"><div class="ep-hero-ai-progress"></div></div>
+          </div>
+        </div>
+
         <div class="ep-dash">
           <div class="ep-dash-topbar">
             <span class="ep-dash-dot ep-dash-dot--r"></span>
@@ -77,9 +93,13 @@
                   <span class="ep-dash-metric-val">12</span>
                   <span class="ep-dash-metric-lbl">New applicants</span>
                 </div>
+                <div class="ep-dash-metric ep-dash-metric--accent">
+                  <span class="ep-dash-metric-val ep-dash-metric-val--sm">500K+</span>
+                  <span class="ep-dash-metric-lbl">Talent pool</span>
+                </div>
               </div>
               <!-- Pipeline -->
-              <div class="ep-dash-section-lbl">Pipeline</div>
+              <div class="ep-dash-section-lbl">Applicant pipeline</div>
               <div class="ep-dash-pipeline">
                 <div class="ep-dash-stage">
                   <span class="ep-dash-stage-lbl">Applied</span>
@@ -117,15 +137,20 @@
                   CV Health
                 </span>
               </div>
-              <!-- Missing fields warning -->
-              <div class="ep-dash-warn">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                3 fields missing before publish
+              <!-- Applicant row -->
+              <div class="ep-dash-applicant-row">
+                <span class="ep-dash-avatar ep-dash-avatar--azure" style="width:22px;height:22px;font-size:0.55rem;">JD</span>
+                <span class="ep-dash-appl-name">J. Dela Cruz</span>
+                <span class="ep-dash-chip ep-dash-chip--health" style="margin-left:auto;">
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  CV 82
+                </span>
               </div>
             </div>
           </div>
         </div>
-        <!-- Floating proof -->
+
+        <!-- Floating proof — bottom-right, clear of content -->
         <div class="ep-hero-float-proof">
           <app-talent-proof-badge variant="pill" placement="employer_portal_hero_mockup"></app-talent-proof-badge>
         </div>

@@ -169,6 +169,18 @@
     font-size: 1rem;
     border-radius: 14px;
   }
+
+  &--grad {
+    background: linear-gradient(135deg, #FF7062 0%, #FF4FA8 60%, #7C83FD 100%);
+    color: #fff;
+    box-shadow: 0 4px 22px rgba(255, 112, 98, 0.38);
+    &:hover {
+      background: linear-gradient(135deg, #e65c50 0%, #e63d96 60%, #6870f0 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(255, 79, 168, 0.45);
+    }
+    &:active { transform: translateY(0); }
+  }
 }
 
 // ─── HEADER ───────────────────────────────────────────────────
@@ -335,11 +347,17 @@
 // ─── HERO ─────────────────────────────────────────────────────
 .ep-hero {
   position: relative;
-  background: linear-gradient(135deg, var(--ep-dark) 0%, var(--ep-dark-2) 100%);
+  background:
+    radial-gradient(ellipse 70% 60% at 75% 40%, rgba(124, 131, 253, 0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(255, 112, 98, 0.14) 0%, transparent 60%),
+    linear-gradient(155deg, #1A1830 0%, #1E1A42 50%, #2A1F58 100%);
   overflow: hidden;
-  padding: 148px 24px 72px;
+  min-height: calc(100svh - var(--ep-header-h));
+  display: flex;
+  align-items: center;
+  padding: 52px 24px 60px;
 
-  @media (max-width: 768px) { padding: 124px 20px 60px; }
+  @media (max-width: 768px) { padding: 44px 20px 52px; min-height: auto; }
 }
 
 .ep-hero-mesh {
@@ -348,39 +366,47 @@
   width: 50%;
   min-width: 280px;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.35;
 }
 
 .ep-hero-glow {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(80px);
+  filter: blur(90px);
 
   &--a {
-    width: 480px; height: 480px;
-    background: rgba(255, 112, 98, 0.18);
-    top: -140px; right: -80px;
+    width: 520px; height: 520px;
+    background: rgba(255, 79, 168, 0.16);
+    top: -160px; right: -60px;
   }
 
   &--b {
-    width: 360px; height: 360px;
-    background: rgba(124, 131, 253, 0.14);
-    bottom: -100px; left: -60px;
+    width: 380px; height: 380px;
+    background: rgba(96, 165, 250, 0.13);
+    bottom: -80px; left: -80px;
+  }
+
+  &--c {
+    width: 300px; height: 300px;
+    background: rgba(124, 131, 253, 0.12);
+    top: 30%; right: 30%;
+    filter: blur(60px);
   }
 }
 
 .ep-hero-inner {
-  max-width: 1160px;
+  max-width: 1240px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 56px;
+  grid-template-columns: 5.5fr 6.5fr;
+  gap: 48px;
   align-items: center;
+  width: 100%;
 
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     grid-template-columns: 1fr;
-    gap: 48px;
+    gap: 44px;
   }
 }
 
@@ -439,20 +465,129 @@
   gap: 12px;
 }
 
+.ep-hero-micro-trust {
+  margin: 14px 0 0;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
 // Hero dashboard mockup
 .ep-hero-visual {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 52px;
 
-  @media (max-width: 900px) { display: none; }
+  @media (max-width: 960px) { display: none; }
 }
 
 .ep-hero-float-proof {
   position: absolute;
-  bottom: -12px;
-  left: -12px;
+  bottom: -16px;
+  right: -8px;
+}
+
+// AI job creation floating card
+.ep-hero-ai-float {
+  position: absolute;
+  top: 0;
+  left: -16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(26, 24, 48, 0.72);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(124, 131, 253, 0.35);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 32px rgba(124, 131, 253, 0.18);
+  max-width: 240px;
+  z-index: 2;
+}
+
+.ep-hero-ai-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--ep-violet) 0%, var(--ep-azure) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.ep-hero-ai-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ep-hero-ai-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.02em;
+}
+
+.ep-hero-ai-status {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ep-hero-ai-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ep-hero-ai-progress {
+  height: 100%;
+  width: 72%;
+  background: linear-gradient(90deg, var(--ep-violet), var(--ep-azure));
+  border-radius: 2px;
+  animation: ep-ai-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ep-ai-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+// Extra applicant row in mockup
+.ep-dash-applicant-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 7px;
+}
+
+.ep-dash-appl-name {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.65);
+  flex: 1;
+}
+
+.ep-dash-metric--accent .ep-dash-metric-val {
+  background: linear-gradient(135deg, var(--ep-coral), var(--ep-violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ep-dash-metric-val--sm {
+  font-size: 0.95rem !important;
 }
 
 .ep-dash {
