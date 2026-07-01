@@ -1037,6 +1037,14 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
     display: block;
   }
 
+  // MV6-F3: LinkedIn button must also fill the row width on narrow viewports.
+  // Without this, `--full` modifier's max-width: 400px centers inside a flex
+  // container and can appear narrower than the Google button on 320px screens.
+  app-linkedin-button {
+    width: 100%;
+    display: block;
+  }
+
   // Ensure GIS iframe button fills the row width
   .gh-google-btn-wrapper {
     width: 100%;
@@ -1057,7 +1065,36 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   .gh-setup-success-dialog .mat-dialog-container {
     border-radius: 18px 18px 0 0 !important;
   }
+  // MV6-NOTE: :has() requires Chrome ≥105 (Sept 2022), Safari ≥15.4 (Mar 2022),
+  // Firefox ≥103 (Aug 2022). Angular 13 CDK targets older environments where this
+  // selector may silently no-op, leaving the modal centered instead of bottom-sheeted.
+  // FALLBACK: In the modal's TypeScript, pass panelClass: ['gh-setup-success-dialog',
+  // 'gh-bottom-sheet-active'] and add a rule for .gh-bottom-sheet-active below
+  // that sets the pane position without relying on :has().
+  // Current :has() rule is KEPT as progressive enhancement; add the class-based
+  // fallback rule below for bulletproof cross-browser support:
+  //
+  //   .cdk-overlay-pane.gh-bottom-sheet-active {
+  //     position: fixed !important;
+  //     bottom: 0 !important;
+  //     left: 0 !important;
+  //     right: 0 !important;
+  //     max-width: 100% !important;
+  //     width: 100% !important;
+  //   }
+  //
   .cdk-overlay-pane:has(.gh-setup-success-dialog) {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  // MV6-F5: Class-based fallback for browsers without :has() support.
+  // Apply panelClass: ['gh-setup-success-dialog', 'gh-bottom-sheet-pane']
+  // in the MatDialog open() call alongside the existing panelClass.
+  .gh-bottom-sheet-pane {
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;

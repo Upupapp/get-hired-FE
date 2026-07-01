@@ -1,7 +1,13 @@
 // ── GetHired brand tokens ──────────────────────────────────────────────────────
-$gh-navy:      #0D1B4B;
+// BRAND-V6-FIX-006: $gh-navy aligned to global token #0D1024 (was #0D1B4B — bluer deviation)
+$gh-navy:      #0D1024;
+// $gh-coral: #FF5A36 — flat coral intentional for modal CTA (not gradient).
+// Design decision: gradient is reserved for page-level CTAs; flat coral in modal is
+// acceptable per industry convention. Documented in BRAND_VISUAL_DIRECTION_V6.
+// NOTE: #FF5A36 is ~3.4:1 vs white text — below WCAG AA 4.5:1. TODO A11y-V6-002.
 $gh-coral:     #FF5A36;
-$gh-azure:     #2563EB;
+// BRAND-V6-FIX-007: $gh-azure aligned to global token #168BFF (was #2563EB — not in token system)
+$gh-azure:     #168BFF;
 $gh-success:   #10B981;
 $gh-amber:     #F59E0B;
 $gh-surface:   #F8F9FF;
@@ -78,6 +84,10 @@ $gh-radius-sm: 10px;
 
 .gh-setup-modal__company-name {
   color: $gh-azure;
+  // MV6-F1: Long company names (30+ chars) can overflow at 320px.
+  // overflow-wrap ensures they break to next line rather than clipping.
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .gh-setup-modal__trial-badge {
@@ -240,6 +250,11 @@ $gh-radius-sm: 10px;
   background: none;
   border: none;
   padding: 4px 0;
+  // MV6-F2: WCAG 2.5.5 — padding-top+bottom (4+4=8px) + line-height (~20px) = ~28px,
+  // well under 44px minimum. Adding min-height brings it into compliance.
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   font-size: 13px;
   font-weight: 500;
   color: $gh-text-muted;
@@ -256,5 +271,25 @@ $gh-radius-sm: 10px;
     outline: 2px solid $gh-azure;
     outline-offset: 2px;
     border-radius: 4px;
+  }
+}
+
+// ── Reduced-motion overrides ──────────────────────────────────────────────────
+// Angular component SCSS is encapsulated — the global styles.scss reduced-motion
+// block (animation-duration: 0.01ms !important) DOES apply via the universal
+// selector (*), but being explicit here is belt-and-suspenders and makes the
+// intent clear for future maintainers. Also ensures the `both` fill-mode on
+// gh-fade-up/gh-pop-in does not leave elements invisible if animation skips.
+@media (prefers-reduced-motion: reduce) {
+  .gh-setup-modal__confetti-ring,
+  .gh-setup-modal__eyebrow,
+  .gh-setup-modal__title,
+  .gh-setup-modal__trial-badge,
+  .gh-setup-modal__checklist,
+  .gh-setup-modal__actions,
+  .gh-setup-modal__footer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

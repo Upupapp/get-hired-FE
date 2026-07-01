@@ -165,7 +165,11 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
       disableClose: false,
       width: '520px',
       maxWidth: '96vw',
-      panelClass: 'gh-setup-success-dialog',
+      // MV6-F5: Array panelClass adds gh-bottom-sheet-pane as a :has()-free fallback
+      // for mobile bottom-sheet positioning on browsers without CSS :has() support
+      // (Chrome <105, Firefox <103, older Safari). The CSS rule for .gh-bottom-sheet-pane
+      // is defined in styles.scss inside the @media (max-width: 560px) block.
+      panelClass: ['gh-setup-success-dialog', 'gh-bottom-sheet-pane'],
       data: {
         companyName: this.companyName,
         companySlug: this.companySlug,

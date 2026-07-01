@@ -22,6 +22,8 @@ Disallow: /signup
 Disallow: /reset-password
 Disallow: /change-password
 Disallow: /verify
+Disallow: /linkedin/complete
+Disallow: /choose-role
 
 # Prevent indexing paginated/filtered search result pages (duplicate content).
 # The meta-robots noindex in PublicSearchComponent is a JS-rendered fallback;
