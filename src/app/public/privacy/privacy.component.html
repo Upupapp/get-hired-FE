@@ -1,0 +1,716 @@
+<!-- ─── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="pp-hero" aria-label="Privacy Policy page header">
+  <div class="pp-hero-orb pp-hero-orb--one" aria-hidden="true"></div>
+  <div class="pp-hero-orb pp-hero-orb--two" aria-hidden="true"></div>
+
+  <div class="pp-hero-inner">
+    <p class="pp-hero-eyebrow">GETHIRED PRIVACY</p>
+    <h1 class="pp-hero-title">Privacy Policy</h1>
+    <p class="pp-hero-subtitle">
+      How GetHired handles personal data for job seekers, employers, applications,
+      CV Health, match signals, messaging, and hiring services.
+    </p>
+    <span class="pp-hero-date">Last updated: {{ lastUpdated }}</span>
+  </div>
+</section>
+
+<!-- ─── Legal review notice ───────────────────────────────────────────────── -->
+<div class="pp-legal-banner" role="note" aria-label="Legal review notice">
+  <div class="pp-legal-banner__inner">
+    <strong>For GetHired internal use:</strong> This Privacy Policy is a platform-protective
+    draft. <strong>Legal counsel should review and approve this document before production
+    publication.</strong> Placeholders marked [LEGAL ENTITY NAME], [BUSINESS ADDRESS],
+    [PRIVACY EMAIL], and [DPO/PRIVACY CONTACT] must be confirmed before public release.
+  </div>
+</div>
+
+<!-- ─── Plain-English Summary ─────────────────────────────────────────────── -->
+<section class="pp-summary-band" aria-label="Plain-English summary">
+  <div class="pp-summary-card">
+    <p class="pp-summary-title">Plain-English Summary</p>
+    <ul class="pp-summary-list" role="list">
+      <li>We collect account, profile, application, CV, document, video, message, device, usage, employer, billing, and support information so GetHired can operate as a hiring platform.</li>
+      <li>When you apply to a job, your application, profile, CV, documents, interview answers, video answers, and contact details may be shared with the employer connected to that job.</li>
+      <li>Employers are responsible for how they use applicant data after receiving it through GetHired — including their own recruitment, storage, compliance, and communication practices.</li>
+      <li>CV Doctor, CV Health, match signals, and AI-assisted features are guidance tools. They do not guarantee jobs, interviews, hiring, suitability, or accuracy.</li>
+      <li>We use reasonable safeguards to protect your data, but no online system can be guaranteed 100% secure.</li>
+      <li>You may contact us to request access, correction, deletion, or other privacy assistance — subject to verification, legal limits, and legitimate business requirements.</li>
+      <li>Do not upload unnecessary sensitive personal information unless it is required for a legitimate job application.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── Main layout: TOC + Content ──────────────────────────────────────────── -->
+<div class="pp-layout">
+
+  <!-- TOC Sidebar -->
+  <aside class="pp-toc-wrap">
+    <nav class="pp-toc" aria-label="Privacy Policy table of contents">
+      <p class="pp-toc-header">On This Page</p>
+      <ul class="pp-toc-list" role="list">
+        <li *ngFor="let item of tocItems; trackBy: trackById">
+          <a class="pp-toc-link"
+             [class.pp-toc-link--active]="activeSection === item.id"
+             [href]="'#' + item.id"
+             (click)="scrollTo(item.id, $event)">
+            {{ item.label }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <main class="pp-content">
+
+    <!-- ─── 1. Overview / Who This Policy Applies To ───────────────────────── -->
+    <section id="overview" class="pp-section pp-section--important" aria-labelledby="sec-overview">
+      <p class="pp-section-number">Section 1</p>
+      <h2 class="pp-section-title" id="sec-overview">Who This Policy Applies To</h2>
+      <div class="pp-section-body">
+        <p>
+          This Privacy Policy explains how GetHired, operated by <strong>[LEGAL ENTITY NAME]</strong>
+          ("GetHired," "we," "us," or "our"), collects, uses, shares, protects, and retains personal data
+          when you use gethiredonline.app, our job seeker portal, employer portal, public job board,
+          CV Doctor, CV Health, application tools, messaging tools, video-answer features,
+          subscription/payment services, and related services.
+        </p>
+        <p>This Policy applies to:</p>
+        <ul>
+          <li>job seekers and applicants</li>
+          <li>employers, recruiters, company admins, and hiring team members</li>
+          <li>visitors to public GetHired pages</li>
+          <li>users who create accounts, browse jobs, save jobs, apply to jobs, upload CVs or documents, answer interview questions, submit video answers, send messages, or use CV Doctor or CV Health</li>
+          <li>users who sign in through email/password, social login, LinkedIn login, or other authentication methods if available</li>
+          <li>people who contact support, sales, or privacy channels</li>
+        </ul>
+        <p>
+          This Policy does not control the privacy practices of employers, recruiters, payment processors,
+          social login providers, or other third-party services that operate their own systems and policies.
+        </p>
+        <p>
+          This Policy is intended to be clear and practical. It does not replace any separate agreement,
+          employer agreement, subscription terms, applicant terms, data processing agreement, or other
+          contract that may apply to specific GetHired services.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── 2. Data We Collect ─────────────────────────────────────────────── -->
+    <section id="data-we-collect" class="pp-section" aria-labelledby="sec-data">
+      <p class="pp-section-number">Section 2</p>
+      <h2 class="pp-section-title" id="sec-data">Data We Collect</h2>
+      <div class="pp-section-body">
+        <p>Depending on how you use GetHired, we may collect the following categories of data.</p>
+
+        <h3>Account and Identity Data</h3>
+        <p>This may include name, email address, phone number, password/authentication information, social login identifiers (if you use social login), account role (job seeker, employer, recruiter, admin, or company user), verification status, account settings, language preferences, and login and security logs.</p>
+
+        <h3>Job Seeker Profile Data</h3>
+        <p>This may include profile details, work experience, education, skills, certifications or licenses, preferred roles, preferred locations, city/municipality, industry, function, years of experience, career preferences, uploaded CV or resume, portfolio links (if provided), profile photo (if provided), documents you choose to upload, and profile completion indicators.</p>
+
+        <h3>Application Data</h3>
+        <p>When you apply for jobs, we may collect: job application records, CV or resume submitted for a job, application answers, employer screening questions, interview question answers, video answers or video interview submissions, application status, application timestamps, job match or compatibility signals, employer review activity, messages connected to the application, and application-time profile snapshots.</p>
+
+        <h3>CV Doctor, CV Health, Match, and Recommendation Data</h3>
+        <p>If you use CV Doctor, CV Health, matching, recommendations, or related features, we may process: uploaded CV or resume content, parsed CV sections, CV readability and completeness signals, profile readiness signals, job compatibility indicators, match explanations, missing information indicators, recommendations, and usage activity.</p>
+        <div class="pp-notice">
+          <strong>Important:</strong> These features are designed to support job search and hiring workflows. They are not guarantees, final decisions, professional advice, legal advice, or promises of hiring results.
+        </div>
+
+        <h3>Employer and Company Data</h3>
+        <p>For employer, recruiter, and company users, we may collect: company name, company profile details, business contact details, recruiter/admin user details, job posts, hiring team settings, applicant review activity, interview questions, hiring pipeline data, subscription plan and billing status, company logo and branding content, communications with applicants, and support and sales communications.</p>
+
+        <h3>Payment and Billing Data</h3>
+        <p>If payment or subscription features are used, we may collect: plan details, invoices or receipts, billing status, payment reference numbers, and transaction metadata. Payment card, wallet, bank, or checkout information may be processed by third-party payment processors. GetHired does not store full payment card details unless explicitly stated by the payment processor integration.</p>
+
+        <h3>Messages, Communications, and Support Data</h3>
+        <p>We may collect: messages between applicants and employers through GetHired, support requests, sales inquiries, email communications, notification preferences, delivery and engagement logs, feedback, reports, and complaints.</p>
+
+        <h3>Device, Log, Cookie, and Usage Data</h3>
+        <p>We may automatically collect: IP address, device type, browser type, operating system, approximate location based on IP, pages viewed, actions taken, referral URLs, session identifiers, authentication logs, security logs, cookies, local storage, and similar technologies, error logs, and performance data.</p>
+
+        <h3>Content You Choose to Provide</h3>
+        <p>You are responsible for the content you upload or submit to GetHired. This may include personal data inside CVs, documents, messages, application answers, or videos.</p>
+        <div class="pp-notice">
+          Please do not upload sensitive personal information unless it is necessary for a legitimate job application or employer requirement.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 3. How We Collect Data ────────────────────────────────────────── -->
+    <section id="how-we-collect" class="pp-section" aria-labelledby="sec-how-collect">
+      <p class="pp-section-number">Section 3</p>
+      <h2 class="pp-section-title" id="sec-how-collect">How We Collect Data</h2>
+      <div class="pp-section-body">
+        <p>We collect data when:</p>
+        <ul>
+          <li>you create an account</li>
+          <li>you sign in</li>
+          <li>you complete or update your profile</li>
+          <li>you upload a CV, resume, video, or document</li>
+          <li>you apply to a job</li>
+          <li>you answer application or interview questions</li>
+          <li>you send or receive messages</li>
+          <li>you save jobs or browse listings</li>
+          <li>an employer reviews or manages applications</li>
+          <li>you use CV Doctor, CV Health, match, or recommendation features</li>
+          <li>you subscribe, pay, or manage billing</li>
+          <li>you contact support, sales, or privacy channels</li>
+          <li>you interact with emails, notifications, pages, or platform features</li>
+          <li>our systems automatically generate logs, analytics, security events, and usage records</li>
+        </ul>
+        <p>We may also receive information from third parties such as authentication providers, payment processors, employers, analytics providers, hosting providers, communication tools, and other service providers used to operate GetHired.</p>
+      </div>
+    </section>
+
+    <!-- ─── 4. How We Use Data ────────────────────────────────────────────── -->
+    <section id="how-we-use" class="pp-section" aria-labelledby="sec-how-use">
+      <p class="pp-section-number">Section 4</p>
+      <h2 class="pp-section-title" id="sec-how-use">How We Use Data</h2>
+      <div class="pp-section-body">
+        <p>We may use personal data for the following purposes.</p>
+
+        <h3>To Provide the Platform</h3>
+        <ul>
+          <li>create and manage accounts</li>
+          <li>authenticate users</li>
+          <li>operate applicant and employer portals</li>
+          <li>publish and manage job posts</li>
+          <li>support job search and applications</li>
+          <li>process CV uploads and profile updates</li>
+          <li>support application tracking</li>
+          <li>provide messaging and notifications</li>
+          <li>manage employer hiring workflows</li>
+          <li>support subscriptions and payments</li>
+        </ul>
+
+        <h3>To Support Job Applications and Hiring Workflows</h3>
+        <ul>
+          <li>submit applications to employers</li>
+          <li>show applicant profiles, CVs, documents, answers, and videos to employers</li>
+          <li>help employers review applicants</li>
+          <li>support interview questions and video answers</li>
+          <li>maintain application status and history</li>
+          <li>generate application-time snapshots</li>
+          <li>prevent duplicate or fraudulent applications</li>
+          <li>preserve records for disputes, security, audit, and compliance</li>
+        </ul>
+
+        <h3>To Provide CV Doctor, CV Health, Match Signals, and Recommendations</h3>
+        <ul>
+          <li>parse and analyze CVs or profiles</li>
+          <li>identify missing or incomplete profile information</li>
+          <li>generate CV Health indicators</li>
+          <li>support job relevance and recommendations</li>
+          <li>display match or compatibility guidance</li>
+          <li>improve job seeker and employer experience</li>
+        </ul>
+
+        <h3>To Communicate With You</h3>
+        <ul>
+          <li>send account notifications</li>
+          <li>send application updates</li>
+          <li>send employer or applicant messages</li>
+          <li>send security alerts</li>
+          <li>respond to support requests</li>
+          <li>send product updates, service notices, or administrative messages</li>
+          <li>send marketing communications where allowed and subject to preferences</li>
+        </ul>
+
+        <h3>To Protect GetHired, Users, and the Platform</h3>
+        <ul>
+          <li>detect abuse, spam, fraud, scraping, fake accounts, suspicious activity, and security incidents</li>
+          <li>enforce Terms, policies, and employer rules</li>
+          <li>investigate disputes or reports</li>
+          <li>protect platform integrity</li>
+          <li>maintain logs and audit trails</li>
+          <li>comply with legal obligations and lawful requests</li>
+        </ul>
+
+        <h3>To Improve and Develop Services</h3>
+        <ul>
+          <li>analyze usage trends</li>
+          <li>debug and improve performance</li>
+          <li>improve job relevance</li>
+          <li>improve applicant and employer workflows</li>
+          <li>test new features</li>
+          <li>improve accessibility, design, and reliability</li>
+          <li>develop future workforce growth, e-learning, events, or employer platform features</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── 5. Job Applications and Employers ────────────────────────────── -->
+    <section id="applications-employers" class="pp-section pp-section--important" aria-labelledby="sec-apps">
+      <p class="pp-section-number">Section 5</p>
+      <h2 class="pp-section-title" id="sec-apps">Job Applications and Sharing With Employers</h2>
+      <div class="pp-section-body">
+        <p>When you apply to a job, you direct GetHired to share relevant application information with the employer, recruiter, company admin, or hiring team connected to that job.</p>
+        <p>This may include:</p>
+        <ul>
+          <li>your name and contact details</li>
+          <li>profile information</li>
+          <li>CV/resume</li>
+          <li>documents submitted for the application</li>
+          <li>application answers</li>
+          <li>interview question answers</li>
+          <li>video answers</li>
+          <li>CV Health or readiness indicators, where available</li>
+          <li>match or compatibility signals, where available</li>
+          <li>messages and application status</li>
+          <li>application-time profile snapshots</li>
+        </ul>
+        <p>Employers may use this information to evaluate, contact, interview, hire, reject, shortlist, or manage applicants.</p>
+        <p>After an employer receives or exports applicant data from GetHired, that employer may act as an independent controller or responsible party for its own use of the data. Employers are responsible for complying with applicable employment, privacy, labor, anti-discrimination, retention, and recruitment laws in their own hiring process.</p>
+        <div class="pp-notice">
+          GetHired is not responsible for an employer's independent decisions, offline processing, external systems, or misuse of applicant data outside GetHired, except where applicable law provides otherwise.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 6. Employer Responsibilities ─────────────────────────────────── -->
+    <section id="employer-responsibilities" class="pp-section" aria-labelledby="sec-employer">
+      <p class="pp-section-number">Section 6</p>
+      <h2 class="pp-section-title" id="sec-employer">Employer Responsibilities</h2>
+      <div class="pp-section-body">
+        <p>Employers, recruiters, and hiring team users agree that they must:</p>
+        <ul>
+          <li>use applicant data only for legitimate recruitment and hiring purposes</li>
+          <li>protect applicant data they access through GetHired</li>
+          <li>avoid requesting unnecessary sensitive personal information</li>
+          <li>avoid discriminatory, unlawful, misleading, or abusive hiring practices</li>
+          <li>comply with applicable privacy, labor, employment, anti-discrimination, and recordkeeping laws</li>
+          <li>secure access to employer accounts</li>
+          <li>ensure their team members use applicant data responsibly</li>
+          <li>handle exported or downloaded applicant data securely</li>
+          <li>respond to applicant privacy requests where the employer is responsible for the relevant data</li>
+        </ul>
+        <p>GetHired may suspend, restrict, investigate, or remove employer access where needed to protect applicants, comply with law, enforce Terms, prevent abuse, or protect the platform.</p>
+      </div>
+    </section>
+
+    <!-- ─── 7. CV Doctor, CV Health, Match, AI ───────────────────────────── -->
+    <section id="ai-tools" class="pp-section" aria-labelledby="sec-ai">
+      <p class="pp-section-number">Section 7</p>
+      <h2 class="pp-section-title" id="sec-ai">CV Doctor, CV Health, Match Signals, AI, and Automated Tools</h2>
+      <div class="pp-section-body">
+        <p>GetHired may provide CV Doctor, CV Health, match signals, recommendations, AI-assisted job creation, AI-assisted parsing, structured applicant review, or similar tools. These features may process profile data, CVs, job posts, application data, and platform activity to provide guidance.</p>
+
+        <div class="pp-notice">
+          <strong>Important limits:</strong>
+          <ul>
+            <li>These tools are assistive only.</li>
+            <li>They do not make final hiring decisions.</li>
+            <li>They do not guarantee jobs, interviews, offers, accuracy, suitability, or legal compliance.</li>
+            <li>Employers remain responsible for their hiring decisions.</li>
+            <li>Job seekers remain responsible for the accuracy of their profiles, CVs, answers, and submitted materials.</li>
+            <li>GetHired may improve, adjust, or discontinue these tools over time.</li>
+          </ul>
+        </div>
+
+        <p>Where required by law or platform policy, GetHired may provide explanations, labels, or disclaimers for automated or AI-assisted outputs.</p>
+      </div>
+    </section>
+
+    <!-- ─── 8. Cookies and Analytics ─────────────────────────────────────── -->
+    <section id="cookies" class="pp-section" aria-labelledby="sec-cookies">
+      <p class="pp-section-number">Section 8</p>
+      <h2 class="pp-section-title" id="sec-cookies">Cookies, Local Storage, and Analytics</h2>
+      <div class="pp-section-body">
+        <p>GetHired may use cookies, local storage, session storage, pixels, analytics tools, and similar technologies to:</p>
+        <ul>
+          <li>keep users signed in</li>
+          <li>secure sessions</li>
+          <li>remember preferences</li>
+          <li>improve performance</li>
+          <li>understand usage</li>
+          <li>detect fraud or abuse</li>
+          <li>measure feature performance</li>
+          <li>support marketing or campaign analytics where allowed</li>
+        </ul>
+        <p>Some cookies or storage technologies are necessary for the platform to work. Others may support analytics, preferences, or improvement.</p>
+        <p>You can control cookies through your browser settings. Some features may not work properly if necessary cookies or storage are disabled.</p>
+        <p>If GetHired later adds a cookie preferences center, users may be able to manage certain optional cookies from that tool.</p>
+      </div>
+    </section>
+
+    <!-- ─── 9. How We Share Data ──────────────────────────────────────────── -->
+    <section id="sharing" class="pp-section" aria-labelledby="sec-sharing">
+      <p class="pp-section-number">Section 9</p>
+      <h2 class="pp-section-title" id="sec-sharing">How We Share Data</h2>
+      <div class="pp-section-body">
+        <p>We may share personal data with:</p>
+
+        <h3>Employers and Recruiters</h3>
+        <p>When job seekers apply, communicate, submit materials, or otherwise choose to participate in employer hiring workflows.</p>
+
+        <h3>Service Providers</h3>
+        <p>We may use vendors for hosting, authentication, database, storage, email delivery, payments, analytics, error monitoring, security, support, and other operations. Examples may include cloud infrastructure, Firebase/Google services, payment processors, email providers, analytics tools, and similar service providers, depending on the current implementation.</p>
+
+        <h3>Payment Processors</h3>
+        <p>For subscription, billing, checkout, and payment processing.</p>
+
+        <h3>Legal, Safety, and Compliance Recipients</h3>
+        <p>We may disclose information when necessary to: comply with law, respond to lawful requests, protect rights, safety, or security, investigate fraud or abuse, enforce Terms, resolve disputes, or protect GetHired, users, employers, or the public.</p>
+
+        <h3>Business Transfers</h3>
+        <p>If GetHired is involved in a merger, acquisition, investment, financing, restructuring, sale of assets, joint venture, or similar transaction, personal data may be transferred as part of that transaction, subject to appropriate protections where required.</p>
+
+        <div class="pp-notice">
+          We do not sell applicant CVs or application data as a standalone data broker product. If future advertising or data-sharing features trigger additional legal disclosure or opt-out requirements, GetHired will update this Policy and provide required controls.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 10. Retention ─────────────────────────────────────────────────── -->
+    <section id="retention" class="pp-section" aria-labelledby="sec-retention">
+      <p class="pp-section-number">Section 10</p>
+      <h2 class="pp-section-title" id="sec-retention">Data Retention</h2>
+      <div class="pp-section-body">
+        <p>We retain personal data for as long as reasonably necessary for:</p>
+        <ul>
+          <li>providing GetHired services</li>
+          <li>maintaining accounts</li>
+          <li>supporting job applications and employer records</li>
+          <li>complying with legal obligations</li>
+          <li>resolving disputes</li>
+          <li>enforcing agreements</li>
+          <li>preventing fraud and abuse</li>
+          <li>maintaining security logs</li>
+          <li>accounting, billing, tax, and audit requirements</li>
+          <li>backup and disaster recovery</li>
+          <li>legitimate business operations</li>
+        </ul>
+        <p>Some data may remain in backups, logs, application snapshots, employer records, dispute records, or legal archives after account deletion or deletion requests, where allowed or required.</p>
+        <p>When data is no longer needed, we will delete, de-identify, aggregate, or archive it according to applicable law and operational requirements.</p>
+      </div>
+    </section>
+
+    <!-- ─── 11. Security ──────────────────────────────────────────────────── -->
+    <section id="security" class="pp-section" aria-labelledby="sec-security">
+      <p class="pp-section-number">Section 11</p>
+      <h2 class="pp-section-title" id="sec-security">Security</h2>
+      <div class="pp-section-body">
+        <p>We use reasonable administrative, technical, and organizational safeguards designed to protect personal data. These may include access controls, authentication, encryption where appropriate, audit logs, role-based permissions, secure hosting, backups, monitoring, and internal controls.</p>
+        <div class="pp-notice">
+          No online platform, database, transmission, or storage system can be guaranteed to be 100% secure. Users are responsible for keeping their login credentials secure and notifying GetHired of suspected unauthorized access.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 12. Your Privacy Rights ───────────────────────────────────────── -->
+    <section id="your-rights" class="pp-section pp-section--important" aria-labelledby="sec-rights">
+      <p class="pp-section-number">Section 12</p>
+      <h2 class="pp-section-title" id="sec-rights">Your Privacy Rights</h2>
+      <div class="pp-section-body">
+        <p>Depending on applicable law, you may have rights to:</p>
+        <ul>
+          <li>be informed about how your data is processed</li>
+          <li>request access to your personal data</li>
+          <li>request correction of inaccurate or outdated data</li>
+          <li>request deletion, subject to legal and operational limits</li>
+          <li>object to certain processing</li>
+          <li>withdraw consent where processing is based on consent</li>
+          <li>request a copy or portability where feasible</li>
+          <li>file a complaint with the appropriate privacy authority</li>
+          <li>contact GetHired about privacy concerns</li>
+        </ul>
+        <p>To protect users, GetHired may need to verify your identity before acting on a request.</p>
+        <p>Some requests may be limited or denied where necessary for legal obligations, employer hiring records, dispute handling, fraud prevention, security, backups, legitimate business purposes, or the rights of others.</p>
+      </div>
+    </section>
+
+    <!-- ─── 13. How to Make a Privacy Request ────────────────────────────── -->
+    <section id="contact-privacy" class="pp-section" aria-labelledby="sec-contact-priv">
+      <p class="pp-section-number">Section 13</p>
+      <h2 class="pp-section-title" id="sec-contact-priv">How to Make a Privacy Request</h2>
+      <div class="pp-section-body">
+        <p>You may contact us about privacy using the channels below or using the request form at the bottom of this page.</p>
+
+        <div class="pp-contact-grid">
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Privacy Email</p>
+            <p class="pp-contact-item__value">[PRIVACY EMAIL]</p>
+          </div>
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Privacy Contact / DPO</p>
+            <p class="pp-contact-item__value">[DPO/PRIVACY CONTACT]</p>
+          </div>
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Business Address</p>
+            <p class="pp-contact-item__value">[BUSINESS ADDRESS]</p>
+          </div>
+        </div>
+
+        <p style="margin-top:16px;">When contacting us, please include your name, account email, whether you are a job seeker, employer, recruiter, or visitor, the type of request, and enough information for us to understand and verify the request.</p>
+        <div class="pp-notice">
+          Do not send sensitive documents unless we specifically request them through a secure process.
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 14. International Processing ─────────────────────────────────── -->
+    <section id="international" class="pp-section" aria-labelledby="sec-intl">
+      <p class="pp-section-number">Section 14</p>
+      <h2 class="pp-section-title" id="sec-intl">International Processing and Service Providers</h2>
+      <div class="pp-section-body">
+        <p>GetHired may use service providers, cloud infrastructure, authentication services, email services, payment processors, analytics tools, and support tools that process or store data in the Philippines or other countries.</p>
+        <p>By using GetHired, you understand that your data may be processed or transferred in jurisdictions that may have different data protection laws than your location.</p>
+        <p>Where required, GetHired will use appropriate safeguards for cross-border processing.</p>
+      </div>
+    </section>
+
+    <!-- ─── 15. Children and Minors ───────────────────────────────────────── -->
+    <section id="minors" class="pp-section" aria-labelledby="sec-minors">
+      <p class="pp-section-number">Section 15</p>
+      <h2 class="pp-section-title" id="sec-minors">Children and Minors</h2>
+      <div class="pp-section-body">
+        <p>GetHired is intended for users who are legally allowed to use employment and hiring services.</p>
+        <p>Users should not create accounts or submit applications if they are below the legal age required to use the service or participate in the relevant employment process, unless permitted by applicable law and supported by appropriate consent or safeguards.</p>
+        <p>If we learn that data has been collected from a person who is not allowed to use the service, we may delete or restrict the account, subject to legal and operational requirements.</p>
+      </div>
+    </section>
+
+    <!-- ─── 16. Third-Party Links ─────────────────────────────────────────── -->
+    <section id="third-party" class="pp-section" aria-labelledby="sec-thirdparty">
+      <p class="pp-section-number">Section 16</p>
+      <h2 class="pp-section-title" id="sec-thirdparty">Third-Party Links and Services</h2>
+      <div class="pp-section-body">
+        <p>GetHired may link to employer websites, payment processors, social login providers, video tools, maps, analytics providers, or other third-party services.</p>
+        <p>Those third parties may have their own privacy policies and practices. GetHired is not responsible for third-party privacy practices unless required by law.</p>
+        <p>You should review third-party privacy policies before submitting data to them.</p>
+      </div>
+    </section>
+
+    <!-- ─── 17. User Responsibilities ────────────────────────────────────── -->
+    <section id="user-responsibilities" class="pp-section" aria-labelledby="sec-user-resp">
+      <p class="pp-section-number">Section 17</p>
+      <h2 class="pp-section-title" id="sec-user-resp">User Responsibilities</h2>
+      <div class="pp-section-body">
+        <p>Users are responsible for:</p>
+        <ul>
+          <li>providing accurate account, profile, employer, and application information</li>
+          <li>not uploading unnecessary sensitive personal data</li>
+          <li>not submitting false, misleading, infringing, unlawful, or harmful content</li>
+          <li>keeping login credentials secure</li>
+          <li>using applicant and employer data only for lawful and authorized purposes</li>
+          <li>complying with applicable laws and GetHired Terms</li>
+        </ul>
+        <p>GetHired may remove content, restrict access, suspend accounts, or take other action where needed to protect users, employers, the platform, or legal compliance.</p>
+      </div>
+    </section>
+
+    <!-- ─── 18. Changes to This Policy ───────────────────────────────────── -->
+    <section id="changes" class="pp-section" aria-labelledby="sec-changes">
+      <p class="pp-section-number">Section 18</p>
+      <h2 class="pp-section-title" id="sec-changes">Changes to This Policy</h2>
+      <div class="pp-section-body">
+        <p>We may update this Privacy Policy from time to time.</p>
+        <p>When we make material changes, we may notify users through the platform, email, or other reasonable means. The updated Policy will be posted on this page with a new "Last updated" date.</p>
+        <p>Continued use of GetHired after changes means the updated Policy applies, subject to applicable law.</p>
+      </div>
+    </section>
+
+    <!-- ─── 19. Contact Us ────────────────────────────────────────────────── -->
+    <section id="contact" class="pp-section pp-section--important" aria-labelledby="sec-contact">
+      <p class="pp-section-number">Section 19</p>
+      <h2 class="pp-section-title" id="sec-contact">Contact Us</h2>
+      <div class="pp-section-body">
+        <p>For privacy questions or requests, contact:</p>
+        <div class="pp-contact-grid">
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Legal Entity</p>
+            <p class="pp-contact-item__value">[LEGAL ENTITY NAME]</p>
+          </div>
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Business Address</p>
+            <p class="pp-contact-item__value">[BUSINESS ADDRESS]</p>
+          </div>
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Privacy Email</p>
+            <p class="pp-contact-item__value">[PRIVACY EMAIL]</p>
+          </div>
+          <div class="pp-contact-item">
+            <p class="pp-contact-item__label">Privacy Contact / DPO</p>
+            <p class="pp-contact-item__value">[DPO/PRIVACY CONTACT]</p>
+          </div>
+        </div>
+        <p style="margin-top:16px;">For general support, use the support channels available inside GetHired.</p>
+      </div>
+    </section>
+
+    <!-- ─── Privacy Request Form ──────────────────────────────────────────── -->
+    <section id="request-form" class="pp-section pp-section--form" aria-labelledby="sec-form">
+      <h2 class="pp-form-title" id="sec-form">Need Help With Your Data?</h2>
+      <p class="pp-form-subtitle">
+        Send a privacy request and our team will review it. For your protection, we may need to verify
+        your identity before acting on account-specific requests.
+      </p>
+
+      <!-- Success state -->
+      <div *ngIf="submitted" class="pp-form-success" role="status" aria-live="polite">
+        <div class="pp-form-success__icon" aria-hidden="true">✓</div>
+        <p class="pp-form-success__title">Request received</p>
+        <p class="pp-form-success__body">
+          We'll review your request and contact you at the email you provided.
+          Identity may be verified before any account-specific action is taken.
+        </p>
+        <a routerLink="/home" class="pp-btn-back">Back to GetHired</a>
+      </div>
+
+      <!-- Form -->
+      <form *ngIf="!submitted" [formGroup]="requestForm" (ngSubmit)="submitRequest()" novalidate>
+        <div class="pp-form-grid">
+
+          <div class="pp-form-group">
+            <label class="pp-form-label" for="pr-type">
+              Request type <span class="pp-required" aria-hidden="true">*</span>
+            </label>
+            <select id="pr-type"
+                    class="pp-form-select"
+                    formControlName="request_type"
+                    [class.is-invalid]="requestForm.get('request_type')?.invalid && requestForm.get('request_type')?.touched"
+                    aria-required="true">
+              <option value="" disabled>Select request type</option>
+              <option *ngFor="let t of requestTypes" [value]="t.value">{{ t.label }}</option>
+            </select>
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('request_type')?.invalid && requestForm.get('request_type')?.touched"
+                  role="alert">
+              Please select a request type.
+            </span>
+          </div>
+
+          <div class="pp-form-group">
+            <label class="pp-form-label" for="pr-role">
+              Your role <span class="pp-required" aria-hidden="true">*</span>
+            </label>
+            <select id="pr-role"
+                    class="pp-form-select"
+                    formControlName="role"
+                    [class.is-invalid]="requestForm.get('role')?.invalid && requestForm.get('role')?.touched"
+                    aria-required="true">
+              <option value="" disabled>Select your role</option>
+              <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
+            </select>
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('role')?.invalid && requestForm.get('role')?.touched"
+                  role="alert">
+              Please select your role.
+            </span>
+          </div>
+
+          <div class="pp-form-group">
+            <label class="pp-form-label" for="pr-name">
+              Full name <span class="pp-required" aria-hidden="true">*</span>
+            </label>
+            <input id="pr-name"
+                   type="text"
+                   class="pp-form-control"
+                   formControlName="name"
+                   autocomplete="name"
+                   placeholder="Your full name"
+                   [class.is-invalid]="requestForm.get('name')?.invalid && requestForm.get('name')?.touched"
+                   aria-required="true">
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('name')?.invalid && requestForm.get('name')?.touched"
+                  role="alert">
+              Name is required (max 100 characters).
+            </span>
+          </div>
+
+          <div class="pp-form-group">
+            <label class="pp-form-label" for="pr-email">
+              Email address <span class="pp-required" aria-hidden="true">*</span>
+            </label>
+            <input id="pr-email"
+                   type="email"
+                   class="pp-form-control"
+                   formControlName="email"
+                   autocomplete="email"
+                   placeholder="you@example.com"
+                   [class.is-invalid]="requestForm.get('email')?.invalid && requestForm.get('email')?.touched"
+                   aria-required="true">
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('email')?.invalid && requestForm.get('email')?.touched"
+                  role="alert">
+              A valid email address is required.
+            </span>
+          </div>
+
+          <div class="pp-form-group pp-form-group--full">
+            <label class="pp-form-label" for="pr-message">
+              Message <span class="pp-required" aria-hidden="true">*</span>
+            </label>
+            <textarea id="pr-message"
+                      class="pp-form-textarea"
+                      formControlName="message"
+                      placeholder="Describe your request. Include your account email and any relevant details."
+                      [class.is-invalid]="requestForm.get('message')?.invalid && requestForm.get('message')?.touched"
+                      aria-required="true"
+                      rows="5"></textarea>
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('message')?.invalid && requestForm.get('message')?.touched"
+                  role="alert">
+              Message is required (10–2000 characters).
+            </span>
+          </div>
+
+          <div class="pp-form-group pp-form-group--full">
+            <label class="pp-form-label" for="pr-related">
+              Related account email <span style="font-weight:400;color:#98A2B3;">(optional)</span>
+            </label>
+            <input id="pr-related"
+                   type="email"
+                   class="pp-form-control"
+                   formControlName="related_account_email"
+                   autocomplete="off"
+                   placeholder="If different from the email above"
+                   [class.is-invalid]="requestForm.get('related_account_email')?.invalid && requestForm.get('related_account_email')?.touched">
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('related_account_email')?.invalid && requestForm.get('related_account_email')?.touched"
+                  role="alert">
+              Please enter a valid email address or leave blank.
+            </span>
+          </div>
+
+          <div class="pp-form-group pp-form-group--full">
+            <label class="pp-form-consent">
+              <input type="checkbox"
+                     formControlName="consent_to_contact"
+                     aria-required="true">
+              <span>
+                I consent to GetHired contacting me at the email address I provided in order to respond
+                to this privacy request. I understand that identity verification may be required before
+                any account-specific action is taken.
+              </span>
+            </label>
+            <span class="pp-field-error"
+                  *ngIf="requestForm.get('consent_to_contact')?.invalid && requestForm.get('consent_to_contact')?.touched"
+                  role="alert">
+              Consent is required to submit a privacy request.
+            </span>
+          </div>
+
+        </div>
+
+        <div class="pp-form-actions">
+          <button type="submit"
+                  class="pp-btn-primary"
+                  [disabled]="submitting"
+                  [attr.aria-busy]="submitting ? 'true' : null">
+            <span *ngIf="!submitting">Submit privacy request</span>
+            <span *ngIf="submitting">Sending…</span>
+          </button>
+          <a routerLink="/home" class="pp-btn-back">Back to GetHired</a>
+        </div>
+
+        <div *ngIf="submitError" class="pp-form-error-banner" role="alert">
+          {{ submitError }}
+        </div>
+      </form>
+    </section>
+
+  </main>
+</div>

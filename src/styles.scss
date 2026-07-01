@@ -1103,3 +1103,29 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
     width: 100% !important;
   }
 }
+
+// ─── Privacy Policy: inline legal link in signup/signin ────────────────────
+// Used wherever "Privacy Policy" text appears inside a checkbox label or
+// legal notice. Opens in a new tab to avoid disrupting the auth flow.
+.gh-legal-inline-link {
+  color: #FF675D;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+
+  &:hover { color: #F25248; }
+  &:focus-visible {
+    outline: 2px solid #FF675D;
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
+}
+
+// ─── Footer legal links row ────────────────────────────────────────────────
+.footer-legal-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}

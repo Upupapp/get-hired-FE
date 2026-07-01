@@ -1,0 +1,723 @@
+@import "src/assets/styles/colors";
+
+// ─── Design tokens (mirrors global CSS vars defined in styles.scss) ──────────
+$navy:       #0D1024;
+$coral:      #FF675D;
+$coral-soft: #FFF0EE;
+$azure:      #168BFF;
+$bg:         #F6F7FB;
+$border:     #E7EAF3;
+$text:       #101828;
+$text-sec:   #667085;
+$text-muted: #98A2B3;
+$radius-card: 18px;
+$radius-sm:   8px;
+$shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+
+// ─── Motion ──────────────────────────────────────────────────────────────────
+@mixin motion-safe {
+  @media (prefers-reduced-motion: no-preference) { @content; }
+}
+
+@mixin fade-up($delay: 0ms) {
+  @include motion-safe {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: ppFadeUp 0.5s $delay both cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@keyframes ppFadeUp {
+  to { opacity: 1; transform: none; }
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+.pp-hero {
+  position: relative;
+  overflow: hidden;
+  background: $navy;
+  padding: 72px 24px 56px;
+  text-align: center;
+}
+
+.pp-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+
+  &--one {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(255, 103, 93, 0.18) 0%, transparent 70%);
+    top: -140px;
+    right: -80px;
+  }
+
+  &--two {
+    width: 340px;
+    height: 340px;
+    background: radial-gradient(circle, rgba(22, 139, 255, 0.14) 0%, transparent 70%);
+    bottom: -80px;
+    left: -60px;
+  }
+}
+
+.pp-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  @include fade-up(0ms);
+}
+
+.pp-hero-eyebrow {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $coral;
+  margin: 0 0 12px;
+}
+
+.pp-hero-title {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  margin: 0 0 16px;
+
+  @media (max-width: 600px) {
+    font-size: 30px;
+  }
+}
+
+.pp-hero-subtitle {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 20px;
+}
+
+.pp-hero-date {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+
+// ─── Plain-English Summary ────────────────────────────────────────────────────
+.pp-summary-band {
+  background: $bg;
+  padding: 32px 24px;
+}
+
+.pp-summary-card {
+  max-width: 880px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #fff8f7 0%, #f0f7ff 100%);
+  border: 1.5px solid $border;
+  border-left: 4px solid $coral;
+  border-radius: $radius-card;
+  padding: 28px 32px;
+  @include fade-up(60ms);
+
+  @media (max-width: 600px) {
+    padding: 20px 18px;
+  }
+}
+
+.pp-summary-title {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: $coral;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 12px;
+}
+
+.pp-summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  li {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: $text;
+    padding-left: 20px;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $coral;
+    }
+  }
+}
+
+// ─── Main layout ──────────────────────────────────────────────────────────────
+.pp-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    padding: 24px 16px 60px;
+  }
+}
+
+// ─── TOC Sidebar ─────────────────────────────────────────────────────────────
+.pp-toc-wrap {
+  flex: 0 0 210px;
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $border transparent;
+
+  @media (max-width: 900px) {
+    position: static;
+    max-height: none;
+    flex: none;
+    width: 100%;
+  }
+}
+
+.pp-toc {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: $radius-card;
+  padding: 20px 16px;
+}
+
+.pp-toc-header {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $text-muted;
+  margin: 0 0 12px 4px;
+}
+
+.pp-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  @media (max-width: 900px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+.pp-toc-link {
+  display: block;
+  padding: 6px 10px;
+  border-radius: $radius-sm;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: $text-sec;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+
+  &:hover {
+    background: $coral-soft;
+    color: $coral;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $coral;
+    outline-offset: 1px;
+  }
+
+  &--active {
+    background: $coral-soft;
+    color: $coral;
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    padding: 4px 10px;
+    font-size: 12px;
+    background: $bg;
+    border: 1px solid $border;
+  }
+}
+
+// ─── Content area ─────────────────────────────────────────────────────────────
+.pp-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// ─── Section cards ────────────────────────────────────────────────────────────
+.pp-section {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: $radius-card;
+  padding: 28px 32px;
+  scroll-margin-top: 96px;
+  @include fade-up(80ms);
+
+  @media (max-width: 600px) {
+    padding: 20px 18px;
+  }
+
+  &--important {
+    border-left: 4px solid $coral;
+  }
+
+  &--form {
+    border-color: lighten($azure, 25%);
+    background: #fafcff;
+  }
+}
+
+.pp-section-tag {
+  display: inline-block;
+  background: $coral-soft;
+  color: $coral;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin-bottom: 10px;
+}
+
+.pp-section-number {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 4px;
+}
+
+.pp-section-title {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 16px;
+  line-height: 1.3;
+}
+
+.pp-section-body {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.75;
+  color: $text;
+
+  p {
+    margin: 0 0 12px;
+    &:last-child { margin-bottom: 0; }
+  }
+
+  h3, .pp-sub-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: $navy;
+    margin: 20px 0 8px;
+    font-family: 'Manrope', system-ui, sans-serif;
+
+    &:first-child { margin-top: 0; }
+  }
+
+  ul, ol {
+    margin: 0 0 12px 20px;
+    padding: 0;
+
+    &:last-child { margin-bottom: 0; }
+
+    li {
+      margin-bottom: 4px;
+      line-height: 1.65;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+    color: $navy;
+  }
+
+  a {
+    color: $azure;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover { color: darken($azure, 10%); }
+    &:focus-visible {
+      outline: 2px solid $azure;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+}
+
+// ─── Warning / notice box within sections ─────────────────────────────────────
+.pp-notice {
+  background: $coral-soft;
+  border-left: 3px solid $coral;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+  color: darken($coral, 30%);
+  margin: 16px 0;
+
+  strong { font-weight: 700; }
+}
+
+// ─── Contact card ─────────────────────────────────────────────────────────────
+.pp-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pp-contact-item {
+  background: $bg;
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  padding: 16px;
+
+  &__label {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $text-muted;
+    margin-bottom: 4px;
+  }
+
+  &__value {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text;
+  }
+}
+
+// ─── Privacy request form ─────────────────────────────────────────────────────
+.pp-form-title {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 6px;
+}
+
+.pp-form-subtitle {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 14px;
+  color: $text-sec;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.pp-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &--full { grid-column: 1 / -1; }
+}
+
+.pp-form-label {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: $text;
+
+  .pp-required {
+    color: $coral;
+    margin-left: 2px;
+  }
+}
+
+.pp-form-control {
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 14px;
+  color: $text;
+  background: #fff;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: $azure;
+    box-shadow: 0 0 0 3px rgba(22, 139, 255, 0.12);
+  }
+
+  &.is-invalid {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $azure;
+    outline-offset: 1px;
+  }
+}
+
+.pp-form-textarea {
+  @extend .pp-form-control;
+  height: auto;
+  min-height: 110px;
+  padding: 12px 14px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.pp-form-select {
+  @extend .pp-form-control;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2398A2B3' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.pp-field-error {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+.pp-form-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  color: $text-sec;
+  line-height: 1.5;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: $coral;
+    cursor: pointer;
+  }
+}
+
+.pp-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.pp-btn-primary {
+  height: 44px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  color: #fff;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+  min-width: 180px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(255, 61, 110, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $coral;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.pp-btn-back {
+  height: 44px;
+  padding: 0 20px;
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  background: #fff;
+  color: $text;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: border-color 150ms ease;
+
+  &:hover { border-color: $coral; color: $coral; }
+  &:focus-visible { outline: 2px solid $coral; outline-offset: 2px; }
+}
+
+.pp-form-error-banner {
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  color: #b91c1c;
+  margin-top: 12px;
+}
+
+.pp-form-success {
+  text-align: center;
+  padding: 32px 0 8px;
+
+  &__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 24px;
+
+    @include motion-safe {
+      animation: ppSuccessPulse 0.6s both;
+    }
+  }
+
+  &__title {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: $text;
+    margin: 0 0 8px;
+  }
+
+  &__body {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 14px;
+    color: $text-sec;
+    line-height: 1.6;
+    margin: 0 0 20px;
+  }
+}
+
+@keyframes ppSuccessPulse {
+  0% { transform: scale(0.7); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+// ─── Legal review banner ───────────────────────────────────────────────────────
+.pp-legal-banner {
+  max-width: 880px;
+  margin: 0 auto 0;
+  padding: 0 24px 32px;
+  background: $bg;
+
+  &__inner {
+    background: #fffbeb;
+    border: 1.5px solid #fde68a;
+    border-radius: $radius-card;
+    padding: 16px 20px;
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 13px;
+    color: #92400e;
+    line-height: 1.6;
+
+    strong { font-weight: 700; }
+  }
+}
+
+// ─── Reduced-motion overrides ─────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .pp-hero-inner,
+  .pp-summary-card,
+  .pp-section,
+  .pp-form-success__icon {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .pp-btn-primary,
+  .pp-btn-back,
+  .pp-toc-link {
+    transition: none !important;
+  }
+}
