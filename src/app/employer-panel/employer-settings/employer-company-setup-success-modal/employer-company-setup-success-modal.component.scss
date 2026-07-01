@@ -1,0 +1,260 @@
+// ── GetHired brand tokens ──────────────────────────────────────────────────────
+$gh-navy:      #0D1B4B;
+$gh-coral:     #FF5A36;
+$gh-azure:     #2563EB;
+$gh-success:   #10B981;
+$gh-amber:     #F59E0B;
+$gh-surface:   #F8F9FF;
+$gh-border:    #E5E7EB;
+$gh-text:      #111827;
+$gh-text-muted:#6B7280;
+$gh-radius:    18px;
+$gh-radius-sm: 10px;
+
+// ── Modal shell ───────────────────────────────────────────────────────────────
+.gh-setup-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px 28px;
+  background: #fff;
+  border-radius: $gh-radius;
+  max-width: 480px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+
+  @media (max-width: 540px) {
+    padding: 32px 20px 24px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.gh-setup-modal__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.gh-setup-modal__confetti-ring {
+  margin-bottom: 16px;
+  animation: gh-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.gh-setup-modal__check-icon {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.22));
+}
+
+@keyframes gh-pop-in {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.gh-setup-modal__eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gh-success;
+  animation: gh-fade-up 0.35s 0.15s both;
+}
+
+.gh-setup-modal__title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: $gh-navy;
+  animation: gh-fade-up 0.35s 0.2s both;
+
+  @media (max-width: 540px) {
+    font-size: 20px;
+  }
+}
+
+.gh-setup-modal__company-name {
+  color: $gh-azure;
+}
+
+.gh-setup-modal__trial-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: rgba(245, 158, 11, 0.10);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400E;
+  animation: gh-fade-up 0.35s 0.25s both;
+}
+
+@keyframes gh-fade-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+// ── Checklist ─────────────────────────────────────────────────────────────────
+.gh-setup-modal__checklist {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+  animation: gh-fade-up 0.35s 0.3s both;
+}
+
+.gh-setup-modal__checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $gh-border;
+  }
+}
+
+.gh-setup-modal__checklist-item--done .gh-setup-modal__checklist-label {
+  color: $gh-text;
+}
+
+.gh-setup-modal__checklist-item:not(.gh-setup-modal__checklist-item--done) .gh-setup-modal__checklist-label {
+  color: $gh-text-muted;
+}
+
+.gh-setup-modal__check-bubble {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.gh-setup-modal__checklist-item:not(.gh-setup-modal__checklist-item--done) .gh-setup-modal__check-bubble {
+  background: transparent;
+}
+
+.gh-setup-modal__checklist-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+// ── CTAs ──────────────────────────────────────────────────────────────────────
+.gh-setup-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  animation: gh-fade-up 0.35s 0.38s both;
+}
+
+.gh-setup-modal__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  min-height: 44px;
+
+  &:focus-visible {
+    outline: 2px solid $gh-azure;
+    outline-offset: 2px;
+  }
+}
+
+.gh-setup-modal__btn--primary {
+  background: $gh-coral;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255, 90, 54, 0.30);
+
+  &:hover {
+    background: darken($gh-coral, 6%);
+    box-shadow: 0 6px 18px rgba(255, 90, 54, 0.38);
+  }
+
+  &:active {
+    transform: scale(0.978);
+  }
+}
+
+.gh-setup-modal__btn--secondary {
+  background: $gh-navy;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(13, 27, 75, 0.18);
+
+  &:hover {
+    background: lighten($gh-navy, 8%);
+    box-shadow: 0 4px 14px rgba(13, 27, 75, 0.26);
+  }
+
+  &:active {
+    transform: scale(0.978);
+  }
+}
+
+.gh-setup-modal__btn--tertiary {
+  background: $gh-surface;
+  color: $gh-navy;
+  border: 1.5px solid $gh-border;
+  box-shadow: none;
+
+  &:hover {
+    background: #EEF2FF;
+    border-color: rgba($gh-azure, 0.35);
+    color: $gh-azure;
+  }
+
+  &:active {
+    transform: scale(0.978);
+  }
+}
+
+.gh-setup-modal__external-icon {
+  margin-left: 2px;
+  opacity: 0.65;
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────────
+.gh-setup-modal__footer {
+  margin-top: 18px;
+  animation: gh-fade-up 0.35s 0.44s both;
+}
+
+.gh-setup-modal__dashboard-link {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: $gh-text-muted;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.12s;
+
+  &:hover {
+    color: $gh-navy;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $gh-azure;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}

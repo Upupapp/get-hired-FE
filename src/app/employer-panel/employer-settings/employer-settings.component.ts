@@ -9,7 +9,7 @@ import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CompanyBasicComponent } from '@app-company/company-basic/company-basic.component';
-import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { EmployerCompanySetupSuccessModalComponent } from './employer-company-setup-success-modal/employer-company-setup-success-modal.component';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject, Subscription } from 'rxjs';
@@ -150,17 +150,29 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
   }
 
   dialogSuccess(): void {
-    const create = this.dialog.open(UpdatedDialogComponent, {
-      disableClose: false,
-      width: '50vw',
-      data: 'Company successfully set up. Your trial period has started. You can now access all features and edit your company profile to showcase your brand.',
-    });
+    // Re-read latest values so the modal gets fresh data from the just-completed setup
+    try {
+      const raw = localStorage.getItem('user');
+      if (raw) {
+        const u = JSON.parse(raw);
+        this.companyId = u.companyId || this.companyId;
+        this.companyName = u.companyName || this.companyName;
+        this.companyLogoUrl = u.companyLogoUrl || this.companyLogoUrl;
+      }
+    } catch (_) {}
 
-    this.subscriptions$.add(
-      create.afterClosed().subscribe(
-        () => this.router.navigate(['../../dashboard'], { relativeTo: this.route })
-      )
-    );
+    this.dialog.open(EmployerCompanySetupSuccessModalComponent, {
+      disableClose: false,
+      width: '520px',
+      maxWidth: '96vw',
+      panelClass: 'gh-setup-success-dialog',
+      data: {
+        companyName: this.companyName,
+        companySlug: this.companySlug,
+        profileCompleteness: this.profileCompleteness,
+      },
+    });
+    // Navigation is handled inside the modal via its own CTA buttons.
   }
 
   onCompanyUpdated(event: any): void {

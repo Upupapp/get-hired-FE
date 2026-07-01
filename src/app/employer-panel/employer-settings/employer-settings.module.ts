@@ -9,6 +9,7 @@ import { EmployerCompanyUsersComponent } from './employer-company-users/employer
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { EmployerCompanyComponent } from '../employer-company/employer-company.component';
 import { EmployerAccountSettingsComponent } from './employer-account-settings/employer-account-settings.component';
+import { EmployerCompanySetupSuccessModalComponent } from './employer-company-setup-success-modal/employer-company-setup-success-modal.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 
@@ -24,7 +25,11 @@ const routes: Routes = [
     EmployerCompanyDetailsComponent,
     EmployerCompanyUsersComponent,
     EmployerCompanyComponent,
-    EmployerAccountSettingsComponent
+    EmployerAccountSettingsComponent,
+    EmployerCompanySetupSuccessModalComponent
+  ],
+  entryComponents: [
+    EmployerCompanySetupSuccessModalComponent
   ],
   imports: [
     CommonModule,
