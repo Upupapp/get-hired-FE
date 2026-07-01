@@ -181,7 +181,7 @@ export class SigninComponent implements OnInit {
           this.googleLoading = false;
           if (response.status === 'role_required') {
             this.googleAuthService.handleGoogleSessionResponse(response);
-            this.router.navigate(['/auth/choose-role']);
+            this.router.navigate(['/choose-role']);
           } else {
             const outcome = this.googleAuthService.handleGoogleSessionResponse(response);
             if (outcome === 'error') {
