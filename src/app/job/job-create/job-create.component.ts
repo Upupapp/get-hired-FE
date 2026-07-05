@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,9 +15,10 @@ import { TalentProofService } from '@main/public/services/talent-proof.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 // B13: Job Readiness
-import { JobReadinessService, JobReadinessResult, JobReadinessLevel } from '../services/job-readiness.service';
+import { JobReadinessService, JobReadinessResult, JobReadinessLevel, JobReadinessSectionStatus } from '../services/job-readiness.service';
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job-post-assistant.service';
 import { JobService } from '../job.service';
+import { CreateInterviewComponent } from './components/create-interview/create-interview.component';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -34,6 +35,8 @@ const fadeInPage = trigger('fadeInPage', [
   styleUrls: ['./job-create.component.scss'],
 })
 export class JobCreateComponent implements OnInit, OnDestroy {
+  @ViewChild(CreateInterviewComponent) createInterviewRef: CreateInterviewComponent;
+
   public unsubscribe$ = new Subject<void>();
   questions: QuestionModel.InterviewQuestion[];
 
@@ -287,6 +290,18 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (data.skills && data.skills.length) {
       const skillsArray = this.jobForm.get('jobInfo.skills') as FormArray;
       data.skills.forEach((item: string) => skillsArray.push(new FormControl(item)));
+    }
+    if (data.interviewQuestions && data.interviewQuestions.length) {
+      const iqArray = this.jobForm.get('interview.interviewQuestions') as FormArray;
+      data.interviewQuestions.forEach((item: { question: string; answerDuration: number; retakes: number; sequence: number }) => {
+        iqArray.push(this.fb.group({
+          question: new FormControl(item.question),
+          answerDuration: new FormControl(item.answerDuration),
+          retakes: new FormControl(item.retakes),
+          sequence: new FormControl(item.sequence),
+        }));
+      });
+      this.questions = [...iqArray.value];
     }
 
     // Show a welcome snackbar
@@ -594,15 +609,27 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
       this.haptics.warning();
 
-      const fieldActions = missingFields.map(f => ({
+      // Derive blocking fields from readinessResult (always in sync with checklist)
+      const sectionStepMap: { [sid: string]: number } = {
+        'section-job-title': 1, 'section-employment': 1, 'section-job-level': 1,
+        'section-location': 1, 'section-description': 1, 'section-work-setup': 1,
+        'section-banner': 1, 'section-company': 1,
+        'section-duties': 2, 'section-skills': 2, 'section-requirements': 2,
+        'section-interview': 3,
+      };
+      const sourceItems = (this.readinessResult && this.readinessResult.blockingItems.length)
+        ? this.readinessResult.blockingItems
+        : missingFields.map(f => ({ label: f.label, sectionId: f.sectionId }));
+      const fieldActions = sourceItems.map((f: any) => ({
         label: 'Fix: ' + f.label,
-        value: 'fix:' + f.step + ':' + f.sectionId,
+        value: 'fix:' + (sectionStepMap[f.sectionId] || 1) + ':' + f.sectionId,
         primary: false as boolean,
       }));
       fieldActions.push({ label: 'Close', value: 'close', primary: false });
 
       const blockDialog = this.dialog.open(UpdatedDialogComponent, {
         data: {
+          icon: 'exclamation-circle',
           message: "Your job can't be published yet. Tap a field below to fix it:",
           actions: fieldActions,
         },
@@ -781,6 +808,25 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** Step 4 publish checklist: navigate to the correct step and scroll to the section */
+  onChecklistItemClick(item: JobReadinessSectionStatus): void {
+    const sectionStepMap: { [sid: string]: number } = {
+      'section-job-title': 1, 'section-employment': 1, 'section-job-level': 1,
+      'section-location': 1, 'section-description': 1, 'section-work-setup': 1,
+      'section-banner': 1, 'section-company': 1,
+      'section-duties': 2, 'section-skills': 2, 'section-requirements': 2,
+      'section-interview': 3,
+    };
+    const targetStep = sectionStepMap[item.sectionId] || 1;
+    if (targetStep !== this.stepper) {
+      this.changeStep(targetStep);
+    }
+    setTimeout(() => {
+      const el = document.getElementById(item.sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  }
+
   /** Toggle a readiness collapsible group in the right rail */
   toggleReadinessGroup(group: 'blocking' | 'recommended' | 'completed'): void {
     this.readinessGroupOpen[group] = !this.readinessGroupOpen[group];
@@ -924,6 +970,25 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.buildStepErrorSummary('jobInfo');
       this.haptics.warning();
       this.openStepErrorDialog();
+      return;
+    }
+    if (this.stepper === 3 && this.createInterviewRef && this.createInterviewRef.hasPendingQuestion()) {
+      this.haptics.warning();
+      const guardDialog = this.dialog.open(UpdatedDialogComponent, {
+        data: {
+          icon: 'exclamation-circle',
+          message: 'You have an unsaved question. Click "Add" to save it first, or continue without it.',
+          actions: [
+            { label: 'Keep editing', value: 'close', primary: true },
+            { label: 'Continue without adding', value: 'continue', primary: false },
+          ],
+        },
+      });
+      guardDialog.afterClosed().subscribe((action: string) => {
+        if (action === 'continue') {
+          this.changeStep(nextStep);
+        }
+      });
       return;
     }
     this.changeStep(nextStep);

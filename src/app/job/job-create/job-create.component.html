@@ -382,11 +382,16 @@
             </span>
           </div>
           <ul class="gh-jc-checklist-list" role="list">
-            <li *ngFor="let item of readinessResult.sectionStatuses" class="gh-jc-checklist-item"
-              [ngClass]="item.complete ? 'gh-jc-checklist-item--done' : (item.blocking ? 'gh-jc-checklist-item--blocking' : '')">
-              <i class="bi me-2" aria-hidden="true"
-                [ngClass]="item.complete ? 'bi-check-circle-fill text-success' : (item.blocking ? 'bi-x-circle text-danger' : 'bi-circle text-muted')"></i>
-              {{ item.label }}
+            <li *ngFor="let item of readinessResult.sectionStatuses">
+              <button type="button" class="gh-jc-checklist-item gh-jc-checklist-item--btn"
+                [ngClass]="item.complete ? 'gh-jc-checklist-item--done' : (item.blocking ? 'gh-jc-checklist-item--blocking' : '')"
+                (click)="onChecklistItemClick(item)"
+                [attr.aria-label]="(item.complete ? 'Complete: ' : (item.blocking ? 'Incomplete: ' : '')) + item.label + ' — click to navigate'">
+                <i class="bi me-2" aria-hidden="true"
+                  [ngClass]="item.complete ? 'bi-check-circle-fill text-success' : (item.blocking ? 'bi-x-circle text-danger' : 'bi-circle text-muted')"></i>
+                {{ item.label }}
+                <i class="bi bi-chevron-right ms-auto gh-jc-checklist-arrow" aria-hidden="true" *ngIf="!item.complete"></i>
+              </button>
             </li>
           </ul>
         </div>

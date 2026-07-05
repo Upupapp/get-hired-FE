@@ -330,6 +330,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       missingRequiredFields: [],
       warnings: (draft.quality.reviewFlags || []).filter(f => f.severity === 'warning').map(f => f.message),
       jobRoleId: this.generatedJobRoleId,
+      interviewQuestions: (draft.application.interviewQuestionSuggestions || []).map((q, i) => ({
+        question: q,
+        answerDuration: 5,
+        retakes: 5,
+        sequence: i + 1,
+      })),
     };
     this.assistantService.setExtractionResult(mapped);
     this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', fromGenerate: true });

@@ -18,6 +18,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 })
 export class UpdatedDialogComponent implements OnInit {
   message: string;
+  icon: string = 'check-circle';
   actions: Array<{ label: string; value: string; primary?: boolean }> | null = null;
   callbacks: { [key: string]: () => void } | null = null;
   linkUrl: string | null = null;
@@ -29,6 +30,7 @@ export class UpdatedDialogComponent implements OnInit {
   ) {
     if (data && typeof data === 'object' && data.message) {
       this.message = data.message;
+      this.icon = data.icon || 'check-circle';
       this.actions = data.actions || null;
       this.callbacks = data.callbacks || null;
       this.linkUrl = data.linkUrl || null;

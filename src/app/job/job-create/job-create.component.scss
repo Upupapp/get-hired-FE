@@ -880,6 +880,23 @@
   &--blocking { color: #B91C1C; }
 }
 
+.gh-jc-checklist-item--btn {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(0,0,0,0.04); }
+  &:focus-visible { outline: 2px solid var(--gh-color-primary); outline-offset: 2px; }
+}
+
+.gh-jc-checklist-arrow {
+  font-size: 11px;
+  opacity: 0.45;
+}
+
 // ─── Tips card ──────────────────────────────────────────────────────────────
 .gh-jc-tips-card {
   // inherits from .gh-card

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormGroupDirective } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackbarService } from '@app-core/services/snackbar.service';
@@ -9,6 +9,7 @@ import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as InterviewModel from '@main/interview/interview.model';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { CreateQuestionComponent } from '@main/interview/create-question/create-question.component';
 
 @Component({
   selector: 'app-create-interview-questions',
@@ -21,6 +22,13 @@ export class CreateInterviewComponent implements OnInit {
   @Input() jobId: string;
   @Input() questions: InterviewModel.InterviewQuestion[];
   @Output() publishChanges = new EventEmitter();
+  @ViewChild(CreateQuestionComponent) createQuestionRef: CreateQuestionComponent;
+
+  hasPendingQuestion(): boolean {
+    if (!this.createQuestionRef) return false;
+    const ctrl = this.createQuestionRef.questionsForm && this.createQuestionRef.questionsForm.get('question');
+    return !!(ctrl && ctrl.value && ctrl.value.toString().trim());
+  }
 
   questionsContainer = [];
   tempFormArray = new FormArray([]);
