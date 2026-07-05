@@ -270,6 +270,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       salaryCurrency: data.salaryCurrency || 'PHP',
       workSetupId: data.workSetupId || this.resolveWorkSetupId(data.workSetupHint),
       jobTypeId: data.jobTypeId || this.resolveJobTypeId(data.jobTypeHint),
+      jobRoleId: (data.jobRoleId !== undefined && data.jobRoleId !== null) ? data.jobRoleId : null,
     };
 
     this.setFormGroup(prefillData);

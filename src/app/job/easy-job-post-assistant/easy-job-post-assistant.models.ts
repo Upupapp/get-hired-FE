@@ -16,6 +16,7 @@ export interface AssistantExtractionResult {
   confidence: Record<string, string>;
   missingRequiredFields: string[];
   warnings: string[];
+  jobRoleId?: number | null;
 }
 
 export interface AssistantUploadResponse {
@@ -112,4 +113,5 @@ export interface GenerateIntentResponse {
   success: boolean;
   draft: InstantJobDraft;
   companyId: string;
+  suggestedJobRoleId?: number | null;
 }

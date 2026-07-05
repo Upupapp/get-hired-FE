@@ -64,6 +64,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   };
   generateErrors: { jobTitle?: string } = {};
   generatedDraft: InstantJobDraft | null = null;
+  generatedJobRoleId: number | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -280,6 +281,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.haptics.success();
         this.generatedDraft = res.draft;
+        this.generatedJobRoleId = (res.suggestedJobRoleId !== undefined && res.suggestedJobRoleId !== null) ? res.suggestedJobRoleId : null;
         this.assistantService.setGeneratedDraft(res.draft);
         this.step = 'generate_review';
       },
@@ -327,6 +329,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       confidence: {},
       missingRequiredFields: [],
       warnings: (draft.quality.reviewFlags || []).filter(f => f.severity === 'warning').map(f => f.message),
+      jobRoleId: this.generatedJobRoleId,
     };
     this.assistantService.setExtractionResult(mapped);
     this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', fromGenerate: true });
