@@ -20,5 +20,5 @@
     appId: "1:818317489154:web:d849afade1105af929631b",
     measurementId: "G-4C797NXLJF",
   },
-  googleClientId: '818317489154-iikcv1s2gno5ubsuvcoosetbpi9b0a6d.apps.googleusercontent.com'
+  googleClientId: '818317489154-iuqb1f23igvvlf5u8p80ipo85si1b2q5.apps.googleusercontent.com'
 };
