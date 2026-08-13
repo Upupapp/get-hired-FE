@@ -11,13 +11,11 @@ import { MaterialComponentsModule } from './components/material-components/mater
 import { FooterComponent } from './components/footer/footer.component'
 import { DatepickerComponent } from './components/input/date-picker/date-picker.component';
 import { ReusableTableComponent } from './components/reusable-table/reusable-table.component';
-import { ReusableOrgChartComponent } from './components/reusable-org-chart/reusable-org-chart.component';
 import { FileUploadComponent } from './components/input/file-upload/file-upload.component';
 import { FileUploadDocumentComponent } from './components/input/file-upload-document/file-upload-document.component';
 import { DragAndDropComponent } from './components/input/drag-and-drop/drag-and-drop.component';
 import { MainStepperComponent } from './components/main-stepper/main-stepper.component';
 import { LoadingComponent } from './components/loading/loading.component';
-import { TabSelectorsComponent } from './components/tab-selectors/tab-selectors.component';
 import { AddAccessModalComponent } from './components/add-access-modal/add-access-modal.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
@@ -46,13 +44,6 @@ import { ApplicationCompletenessCardComponent } from './components/application-c
 import { ViewedOnceDirective } from './directives/viewed-once.directive';
 import { PortalRevealDirective } from './directives/portal-reveal.directive';
 import { GhImageUploadComponent } from './components/gh-image-upload/gh-image-upload.component';
-import { GhResponsiveImageComponent } from './components/gh-responsive-image/gh-responsive-image.component';
-import { SearchAutocompleteComponent } from './components/gh-search/search-autocomplete/search-autocomplete.component';
-import { SearchJobCardComponent } from './components/gh-search/search-job-card/search-job-card.component';
-import { SearchSkeletonComponent } from './components/gh-search/search-skeleton/search-skeleton.component';
-import { SearchEmptyStateComponent } from './components/gh-search/search-empty-state/search-empty-state.component';
-import { SearchCompanyCardComponent } from './components/gh-search/search-company-card/search-company-card.component';
-import { SearchSpotlightCardComponent } from './components/gh-search/search-spotlight-card/search-spotlight-card.component';
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { GoogleSigninButtonComponent } from '@main/auth/google-signin-button/google-signin-button.component';
 import { LinkedInButtonComponent } from '@main/auth/linkedin-button/linkedin-button.component';
@@ -65,13 +56,10 @@ const classesToInclude: any[] = [
   ReusableTableComponent,
   FileUploadComponent,
   FileUploadDocumentComponent,
-  ReusableOrgChartComponent,
   DragAndDropComponent,
   MainStepperComponent,
   LoadingComponent,
-  TabSelectorsComponent,
   AddAccessModalComponent,
-  TabSelectorsComponent,
   EmptySectionComponent,
   UnderConstructionComponent,
   SuccessDialogComponent,
@@ -93,13 +81,6 @@ const classesToInclude: any[] = [
   ApplicationCompletenessBadgeComponent,
   ApplicationCompletenessCardComponent,
   GhImageUploadComponent,
-  GhResponsiveImageComponent,
-  SearchAutocompleteComponent,
-  SearchJobCardComponent,
-  SearchSkeletonComponent,
-  SearchEmptyStateComponent,
-  SearchCompanyCardComponent,
-  SearchSpotlightCardComponent,
   EasyJobPostAssistantModalComponent,
   GoogleSigninButtonComponent,
   LinkedInButtonComponent,

@@ -7,6 +7,7 @@ import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/hapt
 import { PortalFaqItem } from '../shared/portal-faq/portal-faq.component';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 import { SeoService } from '@app-core/services/seo.service';
+import { environment } from '@environments/environment';
 
 /** GetHired Employer Site Portal — /employers
  *  Workforce Growth OS conversion page V4.
@@ -225,7 +226,8 @@ export class EmployerPortalComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   browseJobs(): void {
-    this.router.navigateByUrl('/jobs');
+    // public-list/ (the job board) lives only in gethired-jobseeker-FE now.
+    window.location.href = `${environment.jobSeekerAppUrl}/jobs`;
   }
 
   scrollToSection(sectionId: string): void {

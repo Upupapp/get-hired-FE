@@ -14,7 +14,7 @@ import { CheckboxComponent}  from './contact-group/dialogs/add-contact-group/che
 import { JobListComponent } from './job-list/job-list.component';
 import { TableControlModalComponent } from './candidate-list/dialogs/table-control-modal/table-control-modal.component'
 import { ApplicantModule } from '@app-applicant/applicant.module';
-import { ApplicationModule } from '@app-application/application.module';
+import { ApplicationPreviewModule } from '@app-application/application-preview.module';
 import { GroupListComponent } from './group-list/group-list.component';
 
 const routes: Routes = [
@@ -52,7 +52,7 @@ const routes: Routes = [
     CommonModule,
     SharedModule,
     ApplicantModule,
-    ApplicationModule,
+    ApplicationPreviewModule,
     RouterModule.forChild(routes)
   ]
 })

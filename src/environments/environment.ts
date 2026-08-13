@@ -10,6 +10,10 @@ export const environment = {
   api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
   //api_url: 'http://localhost:3000/api',
   app_url: 'http://localhost:4200',
+  // Cross-app link target for "I'm looking for a job" / job-seeker-directed
+  // CTAs on this standalone employer app. Placeholder until the job-seeker
+  // app's real domain is decided/deployed -- update before shipping.
+  jobSeekerAppUrl: 'http://localhost:4200',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: true,

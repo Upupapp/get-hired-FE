@@ -9,7 +9,7 @@ import {
   HostListener
 } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { companyLists, Company } from '@main/views/home/utils/company-list-model-interface';
+import { companyLists, Company } from '@main/shared/models/company-list-model-interface';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { JobFacade } from '@app-job/state/job.facade';

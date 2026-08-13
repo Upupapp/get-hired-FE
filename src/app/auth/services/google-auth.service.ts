@@ -299,7 +299,8 @@ export class GoogleAuthService {
           if (storedReturn) {
             this.router.navigateByUrl(storedReturn);
           } else {
-            this.router.navigate(['/user/dashboard']);
+            // applicant-panel/ lives only in gethired-jobseeker-FE now.
+            this.router.navigate(['/']);
           }
         }
         break;

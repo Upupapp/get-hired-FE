@@ -71,8 +71,9 @@ export class HeaderComponent implements OnInit {
       case '2':
         this.router.navigateByUrl('/recruiter/dashboard');
         break;
+      // applicant-panel/ lives only in gethired-jobseeker-FE now.
       case '3':
-        this.router.navigateByUrl('/user/dashboard');
+        this.router.navigateByUrl('/');
         break;
     }
   }

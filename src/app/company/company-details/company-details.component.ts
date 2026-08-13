@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { mainAnimations } from '@main/shared/animations/main-animations';
-import { Job, jobLists } from '@main/views/home/utils/job-list-model-interface';
+import { Job, jobLists } from '@main/shared/models/job-list-model-interface';
 import { CompanyFacade } from '../state/company.facade';
 
 @Component({

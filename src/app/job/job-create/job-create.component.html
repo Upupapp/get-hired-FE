@@ -227,13 +227,20 @@
             <span class="gh-jc-readiness-percent">{{ readinessResult.readinessPercent }}%</span>
           </div>
 
-          <!-- B09: Easy Job Posting assistant banner -->
+          <!-- B09/B16: Easy Job Posting assistant banner — CTA reflects live readiness -->
           <div class="gh-jc-assistant-banner" *ngIf="assistantPrefilled" role="status">
             <i class="bi bi-stars gh-jc-assistant-banner-icon" aria-hidden="true"></i>
             <div class="gh-jc-assistant-banner-copy">
               <span class="gh-jc-assistant-banner-title">Draft created with GetHired Assistant</span>
-              <span class="gh-jc-assistant-banner-body">Review imported details and complete any missing fields before publishing.</span>
+              <span class="gh-jc-assistant-banner-body">
+                {{ readinessResult?.canPublish
+                  ? 'Your job is ready to publish.'
+                  : 'Review imported details and complete any missing fields before publishing.' }}
+              </span>
             </div>
+            <button type="button" class="gh-jc-assistant-banner-cta" (click)="changeStep(4)">
+              {{ readinessResult?.canPublish ? 'Review & publish' : "See what's left" }}
+            </button>
           </div>
 
           <!-- Progress ring (CSS-only, reduced-motion safe) -->

@@ -59,8 +59,9 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
     }
 
     this.hasEmployerDraft = this.jobPreviewService.hasPendingToken();
-    const pendingApply = localStorage.getItem('gh_pending_apply_job_id');
-    this.hasJobApplyIntent = !!pendingApply;
+    // Standalone employer app: the public inline-apply flow that sets this
+    // key lives only in gethired-jobseeker-FE, so it can never be true here.
+    this.hasJobApplyIntent = false;
 
     if (this.hasEmployerDraft) {
       this.recommendedRole = 'employer';

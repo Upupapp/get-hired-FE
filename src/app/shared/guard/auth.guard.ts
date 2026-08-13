@@ -82,7 +82,8 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
         this.router.navigateByUrl('/recruiter/dashboard');
         return true;
       case '3':
-        this.router.navigateByUrl('/user/dashboard');
+        // applicant-panel/ lives only in gethired-jobseeker-FE now.
+        this.router.navigateByUrl('/');
         return true;
       default:
         return false;

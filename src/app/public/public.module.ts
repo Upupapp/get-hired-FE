@@ -3,66 +3,33 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PublicComponent } from './public.component';
 import { RouterModule, Routes } from '@angular/router';
-import { CompaniesModule } from '@main/companies/companies.module';
-import { CompaniesComponent } from '@main/companies/companies.component';
-import { PublicCompanyDetailsComponent } from '@main/companies/public-company-details/public-company-details.component';
 import { SharedModule } from '@app-shared/shared.module';
 import { CoreModule } from '@app-core/core.module';
-import { BannerComponent } from './components/banner/banner.component';
-import { ExploreUsersComponent } from './components/explore-users/explore-users.component';
-import { JobsModule } from '@main/jobs/jobs.module';
-import { PublicListComponent } from './public-list/public-list.component';
-import { PublicDetailsComponent } from './public-details/public-details.component';
-import { JobFacade } from '@app-job/state/job.facade';
-import { PublicSearchComponent } from './public-search/public-search.component';
-import { ApplicationModule } from '@main/application/application.module';
-import { MainPortalComponent } from './main-portal/main-portal.component';
-import { JobSeekerPortalComponent } from './job-seeker-portal/job-seeker-portal.component';
 import { EmployerPortalComponent } from './employer-portal/employer-portal.component';
-import { RoleCardComponent } from './shared/role-card/role-card.component';
-import { PortalCtaBandComponent } from './shared/portal-cta-band/portal-cta-band.component';
 import { PortalFaqComponent } from './shared/portal-faq/portal-faq.component';
-import { JobBoardEmployerCtaComponent } from './components/job-board-employer-cta/job-board-employer-cta.component';
 import { AiJobPreviewPanelComponent } from './employer-portal/ai-job-preview-panel/ai-job-preview-panel.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 
+// Employer-only extraction (2026-08-12): public-list/public-details/
+// public-search (job board + inline apply flow), job-seeker-portal,
+// companies/ (job-seeker's company directory), and jobs/'s job-seeker-only
+// pieces are all removed -- confirmed job-seeker-only by trace, they live
+// only in gethired-jobseeker-FE now. main-portal/ (the dual-audience
+// role-selection landing) is also removed rather than cloned/rewritten:
+// EmployerPortalComponent is already a complete, dedicated employer landing
+// page (hero/USP/pain-points/features/FAQ/trust/how-it-works) and is what
+// "/employers" already pointed to -- reusing it as this app's home avoids
+// fabricating new marketing copy. Its "Browse public jobs" hero CTA
+// (employer-portal.component.ts: browseJobs()) now cross-links to
+// environment.jobSeekerAppUrl instead of an internal /jobs route that no
+// longer exists in this app.
 const routes: Routes = [
   {
     path: '',
     component: PublicComponent,
     children: [
-      // `component: MainPortalComponent` directly on the empty path
-      // never activated, in EITHER array position, with or without a
-      // guard -- confirmed empirically across multiple attempts, while
-      // every non-empty literal path in this exact same array (/jobs,
-      // /employers, /job-seekers) renders correctly every time. Rather
-      // than keep fighting this specific Angular Router matching
-      // behavior, the bare path now redirects to a named, non-empty path
-      // ('home'), which uses the exact same plain-literal-path matching
-      // mechanism already proven reliable for every other route here.
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: MainPortalComponent },
-      { path: 'jobs/details/:id', component: PublicDetailsComponent },
-      { path: 'jobs', component: PublicListComponent },
-      { path: 'jobs/search/:keyword', component: PublicSearchComponent },
-      // Company routes defined inline (not via loadChildren) because
-      // CompaniesModule is eagerly imported for its components. Using
-      // loadChildren + eager import caused RouterModule.forChild in
-      // CompaniesModule to register ':slug' at the public scope, matching
-      // '/home', '/jobs', etc before their correct named routes.
-      {
-        path: 'companies',
-        children: [
-          { path: '', component: CompaniesComponent, pathMatch: 'full' },
-          { path: 'details', component: PublicCompanyDetailsComponent },
-          { path: ':slug', component: PublicCompanyDetailsComponent },
-        ],
-      },
-      // GETHIRED PORTAL v2: the main URL now hosts a dedicated
-      // role-selection portal instead of redirecting straight to /jobs.
-      // /jobs itself is completely unchanged and still works exactly as
-      // before -- this only changes what a visitor sees at the bare root.
-      { path: 'job-seekers', component: JobSeekerPortalComponent },
+      { path: 'home', component: EmployerPortalComponent },
       { path: 'employers', component: EmployerPortalComponent },
       { path: 'privacy', component: PrivacyComponent },
     ]
@@ -72,34 +39,17 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     PublicComponent,
-    BannerComponent,
-    ExploreUsersComponent,
-    PublicListComponent,
-    PublicDetailsComponent,
-    PublicSearchComponent,
-    MainPortalComponent,
-    JobSeekerPortalComponent,
     EmployerPortalComponent,
-    RoleCardComponent,
-    PortalCtaBandComponent,
     PortalFaqComponent,
-    JobBoardEmployerCtaComponent,
     AiJobPreviewPanelComponent,
     PrivacyComponent,
   ],
   imports: [
-    // RouterModule MUST be first so public routes (/home, /jobs, etc.) are
-    // registered before CompaniesModule's forChild routes (which include
-    // { path: ':slug' } at the public level due to eager-import merging).
-    // Angular collects ROUTES multi-providers in import order; first match wins.
     RouterModule.forChild(routes),
     CommonModule,
     FormsModule,
-    CompaniesModule,
-    JobsModule,
     CoreModule,
     SharedModule,
-    ApplicationModule,
-  ], providers: [JobFacade]
+  ]
 })
 export class PublicModule { }

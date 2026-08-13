@@ -11,41 +11,33 @@ import { applicantReducer } from './state/applicant.reducer';
 import { ApplicantEffects } from './state/applicant.effects';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { WorkExperienceComponent } from './profile-forms/skills-experience/work-experience/work-experience.component';
-import { EducationalBackgroundComponent } from './profile-forms/skills-experience/educational-background/educational-background.component';
-import { AwardsComponent } from './profile-forms/skills-experience/awards/awards.component';
-import { RecorderModule } from '@main/recorder/recorder.module';
 import { PreviewComponent } from './profile-details/preview/preview.component';
-import { ProfileBasicInfoComponent } from './profile-forms/profile-basic-info/profile-basic-info.component';
-import { ProfileFormsComponent } from './profile-forms/profile-forms.component';
-import { SkillsExperienceComponent } from './profile-forms/skills-experience/skills-experience.component';
-import { DocsVideocvComponent } from './profile-forms/docs-videocv/docs-videocv.component';
 
-
+// Employer-only extraction (2026-08-12): profile-forms/ (edit-forms family
+// -- ProfileBasicInfoComponent, SkillsExperienceComponent + its
+// work-experience/educational-background/awards children,
+// DocsVideocvComponent) and cv-builder/ are applicant-editing-their-own-
+// profile UI, confirmed used only by applicant-panel/ (job-seeker-only,
+// removed from this worktree). Employer screens (employer-contacts'
+// candidate-list, job's job-applicants) only ever consumed
+// ProfileDetailsComponent/AvatarComponent/DetailsComponent -- read-only
+// display, kept here. RecorderModule dropped: its only consumer in this
+// module was the now-removed DocsVideocvComponent.
 @NgModule({
   declarations: [
     ProfileDetailsComponent,
     DetailsComponent,
     AvatarComponent,
-    WorkExperienceComponent,
-    EducationalBackgroundComponent,
-    AwardsComponent,
     PreviewComponent,
-    ProfileBasicInfoComponent,
-    ProfileFormsComponent,
-    SkillsExperienceComponent,
-    DocsVideocvComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
     ReactiveFormsModule,
-    RecorderModule,
     StoreModule.forFeature('applicant', applicantReducer),
     EffectsModule.forFeature([ApplicantEffects])
   ],
   exports: [
-    ProfileFormsComponent,
     ProfileDetailsComponent,
     AvatarComponent,
     DetailsComponent

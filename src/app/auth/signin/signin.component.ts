@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { routes } from '@main/app.routing.module';
 import { mainAnimations } from '@main/shared/animations/main-animations';
-import { employerRoutes } from '@main/shared/guard/routes';
 import { AuthFacade } from '../state/auth.facade';
 import { TranslateService } from '@ngx-translate/core';
 import { SeoService } from '@app-core/services/seo.service';
@@ -123,7 +121,8 @@ export class SigninComponent implements OnInit {
           if (redirect) {
             this.router.navigateByUrl(redirect);
           } else {
-            this.router.navigate(['/user/dashboard'], { relativeTo: this.activatedRoute });
+            // applicant-panel/ lives only in gethired-jobseeker-FE now.
+            this.router.navigate(['/'], { relativeTo: this.activatedRoute });
           }
           break;
         default:

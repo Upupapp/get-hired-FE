@@ -5,6 +5,8 @@
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
   api_url: 'https://api.gethiredonline.app/api',
   app_url: 'https://gethiredonline.app',
+  // TODO: set to the deployed job-seeker app's real production domain.
+  jobSeekerAppUrl: 'https://gethiredonline.app',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: false,

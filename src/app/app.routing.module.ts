@@ -2,10 +2,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule, ROUTES, Routes } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { AuthGuard } from '@app-shared/guard/auth.guard'
-import { EmployerGuard } from './shared/guard/employer.guard';
-import { ApplicantGuard } from './shared/guard/applicant.guard';
 import { UnauthGuard } from './shared/guard/unauth.guard';
-import { AdminGuard } from './shared/guard/admin.guard';
 
 export const routes: Routes = [
   {
@@ -41,15 +38,10 @@ export const routes: Routes = [
       role: '2'
     }
   },
-  {
-    path: 'user',
-    loadChildren: () =>
-      import('./applicant-panel/applicant-panel.module').then(m => m.ApplicantPanelModule),
-    canActivate: [AuthGuard],
-    data: {
-      role: '3'
-    }
-  },
+  // applicant-panel/ removed from this standalone employer app (2026-08-12)
+  // -- that functionality lives only in gethired-jobseeker-FE now. See
+  // auth.guard.ts / unauth.guard.ts / signin.component.ts for the
+  // corresponding wrong-role fallback change.
   {
     // PublicModule is listed FIRST on purpose, even though AuthModule
     // used to be first. Root cause of the blank-homepage bug (confirmed

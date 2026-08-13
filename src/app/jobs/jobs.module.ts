@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobsComponent } from './jobs.component';
 import { JobCardComponent } from './job-card/job-card.component';
 import { JobsFacade } from './state/jobs.facade';
 import { StoreModule } from '@ngrx/store';
@@ -10,23 +9,19 @@ import { JobsEffects } from './state/jobs.effects';
 import { SharedModule } from '@app-shared/shared.module';
 import { JobPostsListComponent } from './job-posts-list/job-posts-list.component';
 import { JobCardListViewComponent } from './job-card-list-view/job-card-list-view.component';
-import { JobPostsDetailsComponent } from './job-posts-details/job-posts-details.component';
-import { JobModule } from '@app-job/job.module';
-import { JobDetailsSidecardComponent } from './job-details-sidecard/job-details-sidecard.component';
-import { JobMatchPanelComponent } from './job-match-panel/job-match-panel.component';
-import { CompanySnapshotComponent } from './company-snapshot/company-snapshot.component';
-import { VideoInterviewBadgeComponent } from './video-interview-badge/video-interview-badge.component';
 
+// Employer-only extraction (2026-08-12): narrowed to exactly what
+// company/company-details.component.html needs (<app-job-posts-list>, which
+// itself uses <app-job-card>/<app-job-card-list-view>) -- confirmed by trace,
+// this is the ONLY employer consumer of jobs/ (plural). JobsComponent,
+// JobPostsDetailsComponent, JobDetailsSidecardComponent,
+// JobMatchPanelComponent, CompanySnapshotComponent, VideoInterviewBadgeComponent
+// and the JobModule (singular, job-creation UI) import were all
+// job-seeker-only (public-details/job-posts-details apply flow), removed.
 const exportedComponents = [
-  JobsComponent,
   JobCardComponent,
   JobPostsListComponent,
   JobCardListViewComponent,
-  JobPostsDetailsComponent,
-  JobDetailsSidecardComponent,
-  JobMatchPanelComponent,
-  CompanySnapshotComponent,
-  VideoInterviewBadgeComponent
 ];
 
 @NgModule({
@@ -36,7 +31,6 @@ const exportedComponents = [
   imports: [
     CommonModule,
     SharedModule,
-    JobModule,
     StoreModule.forFeature('jobs', jobsReducer),
     EffectsModule.forFeature([JobsEffects]),
   ],

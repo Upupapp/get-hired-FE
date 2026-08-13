@@ -4,7 +4,6 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { EmployerPanelComponent } from './employer-panel.component';
 import { RouterModule, Routes } from '@angular/router';
 import { EmployerDashboardComponent } from './employer-dashboard/employer-dashboard.component';
-import { EmployerGuard } from '@app-shared/guard/employer.guard';
 import { CoreModule } from '@main/core/core.module';
 import { EmployerSidebarComponent } from './employer-sidebar/employer-sidebar.component';
 import { EmployeeModule } from '@main/employee/employee.module';

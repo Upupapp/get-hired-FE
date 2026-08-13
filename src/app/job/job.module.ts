@@ -14,13 +14,13 @@ import { jobReducer } from './state/job.reducer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JobListComponent } from './job-list/job-list.component';
 import { JobExpiredComponent } from './job-expired/job-expired.component';
-import { InterviewModule } from '@main/interview/interview.module';
+import { InterviewAuthoringModule } from '@main/interview/interview-authoring.module';
 import { MaterialComponentsModule } from '@main/shared/components/material-components/material-components.module';
 import { TableControlModalComponent } from './job-list/dialogs/table-control-modal/table-control-modal.component';
 import { JobViewComponent } from './job-view/job-view.component';
 import { JobApplicantsComponent } from './job-applicants/job-applicants.component';
 import { ApplicantActionModalComponent } from './job-applicants/applicant-action-modal/applicant-action-modal.component';
-import { ApplicationModule } from '@main/application/application.module';
+import { ApplicationPreviewModule } from '@main/application/application-preview.module';
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { JobAppliedComponent } from './job-applied/job-applied.component';
@@ -65,8 +65,8 @@ const exportedComponents = [
     ReactiveFormsModule,
     FormsModule,
     MaterialComponentsModule,
-    InterviewModule,
-    ApplicationModule,
+    InterviewAuthoringModule,
+    ApplicationPreviewModule,
     ApplicantModule,
     StoreModule.forFeature('job', jobReducer),
     EffectsModule.forFeature([JobEffects]),

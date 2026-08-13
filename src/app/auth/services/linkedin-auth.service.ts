@@ -156,7 +156,8 @@ export class LinkedInAuthService {
           _id: data.id, email: data.email,
           firstName: data.firstName, lastName: data.lastName
         }));
-        const dest = returnUrl || localStorage.getItem('returnURL') || '/user/dashboard';
+        // applicant-panel/ lives only in gethired-jobseeker-FE now.
+        const dest = returnUrl || localStorage.getItem('returnURL') || '/';
         this.router.navigateByUrl(dest);
         break;
     }

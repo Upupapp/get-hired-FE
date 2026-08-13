@@ -19,6 +19,7 @@ import { JobReadinessService, JobReadinessResult, JobReadinessLevel, JobReadines
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job-post-assistant.service';
 import { JobService } from '../job.service';
 import { CreateInterviewComponent } from './components/create-interview/create-interview.component';
+import { resolveJobLevelId } from '../utils/job-level-resolver';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -73,6 +74,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // Only fires when jobId is already set (edit mode) to avoid creating
   // duplicate draft records on every keystroke during new-job creation.
   private autosaveTimerId: any = null;
+  // Live job level options ({id, name}), fetched eagerly here (not only by the
+  // Step-1 child) so AI hint resolution can run before the employer ever reaches Step 1.
+  latestLevels: Model.Options[] = [];
+  // Set when assistant-prefilled data still needs a job level match after the
+  // live level list resolves, so we can nudge the employer exactly once.
+  private jobLevelHintPending: string | null = null;
+  private jobLevelConfirmationShown: boolean = false;
+  // Set true when the form was just prefilled from the AI assistant and still
+  // needs its first save; consumed inside the companyId-resolving promise below
+  // since companyId isn't available synchronously in ngOnInit.
+  private shouldPersistAssistantDraft: boolean = false;
   asyncLocalStorage = {
     setItem: async function (key, value) {
       await Promise.resolve();
@@ -165,7 +177,23 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       .then(user => {
         this.companyId = JSON.parse(user).companyId;
         this.jobFacade.getCompanySubscription(this.companyId);
+        // companyId is only available here (async), so the first save of an
+        // AI-prefilled draft is deferred until this point — see applyAssistantPrefill().
+        if (this.shouldPersistAssistantDraft) {
+          this.shouldPersistAssistantDraft = false;
+          this.persistAssistantDraft(this.formatJob(1));
+        }
       });
+
+    // B15: eagerly fetch the live job level list here (normally only dispatched by
+    // the Step-1 child component) so AI hint resolution can run before Step 1 mounts.
+    this.jobFacade.getLevel();
+    this.subscriptions.add(
+      this.jobFacade.level$.subscribe((levels) => {
+        this.latestLevels = levels || [];
+        this.tryResolveJobLevelFromPendingHint();
+      })
+    );
 
     // FIX-02: success$ subscribed exactly once here (not inside setFormGroup,
     // which is called every time editJob$ emits, causing multiple subscribers
@@ -234,6 +262,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.assistantService.clearExtractionResult();
         this.assistantPrefilled = true;
         this.applyAssistantPrefill(assistantData);
+        // Only persist a draft once there's a usable title — avoid saving an
+        // empty/unusable record. Actual save deferred until companyId resolves.
+        if (assistantData.jobTitle) {
+          this.shouldPersistAssistantDraft = true;
+        }
       } else {
         this.setFormGroup();
       }
@@ -261,6 +294,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   applyAssistantPrefill(data: any): void {
+    // Job level options are a live backend-owned list (unlike work setup/job type,
+    // which are matched against a fixed FE enum below) — resolve against whatever is
+    // currently loaded. If the list hasn't arrived yet, this returns 'none' and
+    // tryResolveJobLevelFromPendingHint() retries once jobFacade.level$ emits.
+    const levelMatch = resolveJobLevelId(data.jobLevelHint, this.latestLevels);
+    if (levelMatch.confidence !== 'high') {
+      this.jobLevelHintPending = data.jobLevelHint || null;
+    }
+
     // Build a partial job object that setFormGroup understands
     const prefillData: any = {
       jobTitle: data.jobTitle || null,
@@ -273,6 +315,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       salaryCurrency: data.salaryCurrency || 'PHP',
       workSetupId: data.workSetupId || this.resolveWorkSetupId(data.workSetupHint),
       jobTypeId: data.jobTypeId || this.resolveJobTypeId(data.jobTypeHint),
+      jobLevelId: data.jobLevelId || (levelMatch.confidence === 'high' ? levelMatch.id : null),
       jobRoleId: (data.jobRoleId !== undefined && data.jobRoleId !== null) ? data.jobRoleId : null,
     };
 
@@ -304,16 +347,22 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.questions = [...iqArray.value];
     }
 
-    // Show a welcome snackbar
+    // Show a welcome snackbar. Job level is deliberately excluded here — it's either
+    // already applied to the form above, or handled by its own confirmation nudge
+    // (tryResolveJobLevelFromPendingHint) once the live level list resolves.
     const hints: string[] = [];
     if (data.jobTypeHint) hints.push(`Job type: ${data.jobTypeHint}`);
-    if (data.jobLevelHint) hints.push(`Level: ${data.jobLevelHint}`);
     if (data.workSetupHint) hints.push(`Work setup: ${data.workSetupHint}`);
     const hintText = hints.length ? ` Suggested: ${hints.join(' · ')}.` : '';
     this.snackbarService.success(
       `Job form prefilled from your import.${hintText} Please review and complete the required fields.`,
       '', 7000
     );
+
+    // Level list may already be loaded (e.g. re-entering the assistant flow within
+    // the same session) — attempt an immediate retry rather than waiting for the
+    // next level$ emission, which only fires on change.
+    this.tryResolveJobLevelFromPendingHint();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -558,58 +607,27 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.saveSuccessPulse = false;
     const job: Model.Job = this.formatJob(2);
 
-    // null != "" is always true in JS — must check explicitly for null/empty banner
-    const hasBanner = !!(
-      (job.bannerFile && job.bannerFile[0]) ||
-      (job.jobBanner && job.jobBanner.trim())
-    );
-
-    // B04 V5: Interview questions are now optional for publish.
-    this.isReadyToPublish = !!(
-      job.jobTypeId &&
-      job.jobLevelId &&
-      job.jobCity != null && job.jobCity !== '' &&
-      job.jobCountry != null && job.jobCountry !== '' &&
-      job.jobDescription != null && job.jobDescription !== '' &&
-      job.workSetupId &&
-      hasBanner &&
-      job.companyId
-    );
+    // B16: JobReadinessService is now the single source of truth for the publish
+    // gate — re-evaluated here against the exact payload about to be submitted
+    // (not the last 300ms-debounced valueChanges snapshot, which could disagree
+    // with `job` if the employer edited a field in the last 300ms before clicking
+    // Publish). This replaces a previously hand-rolled, drift-prone duplicate of
+    // this same gate.
+    // `job` is typed as Model.Job, where bannerFile is a single File — while
+    // JobReadinessInput (matching the untyped jobForm.value shape used by the
+    // debounced evaluate() call above) expects bannerFile as an array. Cast here
+    // rather than changing either pre-existing type, consistent with how the
+    // debounced call site already passes untyped form values.
+    this.readinessResult = this.jobReadiness.evaluate({ ...job, companyId: this.companyId } as any);
+    this.isReadyToPublish = this.readinessResult.canPublish;
 
     if (this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
     } else {
-      // Build missing-field list with step + section mapping so the dialog can navigate
-      const missingFields: Array<{ label: string; step: number; sectionId: string }> = [];
-
-      if (!job.jobTypeId) {
-        missingFields.push({ label: 'Employment type', step: 1, sectionId: 'section-employment' });
-      }
-      if (!job.jobLevelId) {
-        missingFields.push({ label: 'Job level', step: 1, sectionId: 'section-job-level' });
-      }
-      if (!job.jobCity) {
-        missingFields.push({ label: 'City', step: 1, sectionId: 'section-location' });
-      }
-      if (!job.jobCountry) {
-        missingFields.push({ label: 'Country', step: 1, sectionId: 'section-location' });
-      }
-      if (!job.jobDescription) {
-        missingFields.push({ label: 'Job description', step: 2, sectionId: 'section-description' });
-      }
-      if (!job.workSetupId) {
-        missingFields.push({ label: 'Work setup', step: 1, sectionId: 'section-work-setup' });
-      }
-      if (!hasBanner) {
-        missingFields.push({ label: 'Banner image', step: 1, sectionId: 'section-banner' });
-      }
-      if (!job.companyId) {
-        missingFields.push({ label: 'Company profile', step: 1, sectionId: 'section-company' });
-      }
-
       this.haptics.warning();
 
-      // Derive blocking fields from readinessResult (always in sync with checklist)
+      // Derive blocking fields from the freshly-evaluated readinessResult (always
+      // in sync with the Step 4 checklist, since both read from the same source).
       const sectionStepMap: { [sid: string]: number } = {
         'section-job-title': 1, 'section-employment': 1, 'section-job-level': 1,
         'section-location': 1, 'section-description': 1, 'section-work-setup': 1,
@@ -617,10 +635,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         'section-duties': 2, 'section-skills': 2, 'section-requirements': 2,
         'section-interview': 3,
       };
-      const sourceItems = (this.readinessResult && this.readinessResult.blockingItems.length)
-        ? this.readinessResult.blockingItems
-        : missingFields.map(f => ({ label: f.label, sectionId: f.sectionId }));
-      const fieldActions = sourceItems.map((f: any) => ({
+      const fieldActions = this.readinessResult.blockingItems.map((f) => ({
         label: 'Fix: ' + f.label,
         value: 'fix:' + (sectionStepMap[f.sectionId] || 1) + ':' + f.sectionId,
         primary: false as boolean,
@@ -1089,6 +1104,75 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   private setAutoSaveState(state: 'unsaved' | 'saving' | 'saved' | 'failed'): void {
     this.autoSaveState = state;
     this.cd.markForCheck();
+  }
+
+  /**
+   * Persists an AI-assistant-prefilled job as a real private draft the moment the
+   * employer commits to it, instead of waiting for edit-mode autosave to kick in
+   * (which never would, since scheduleAutosave() requires jobId to already exist).
+   * Calls JobService directly (bypassing the NgRx facade), mirroring performAutosave()
+   * above, so the success response doesn't route through editJob$ and re-run
+   * setFormGroup() on top of the form the assistant just populated.
+   */
+  private persistAssistantDraft(job: Model.Job): void {
+    this.setAutoSaveState('saving');
+    this.jobService.saveJob(job).pipe(take(1)).subscribe({
+      next: (res: any) => {
+        const newId = res && res.data && res.data.jobId;
+        if (newId) {
+          // The one assignment that activates edit-mode autosave for the rest of
+          // this session, and routes future formatJob() saves through PUT
+          // /updatejobs instead of creating a second job record.
+          this.jobId = newId;
+          this.setAutoSaveState('saved');
+        } else {
+          this.setAutoSaveState('unsaved');
+        }
+      },
+      error: () => {
+        // Never block the manual wizard path — the employer can still complete
+        // and save/publish normally even if this background save failed.
+        this.setAutoSaveState('failed');
+        this.snackbarService.error(
+          "Couldn't auto-save your AI draft. Your data is still here — save manually when ready.",
+          '', 5000
+        );
+      },
+    });
+  }
+
+  /**
+   * Retries job-level resolution once the live level list arrives, in case it
+   * loaded after the AI assistant data was applied. Nudges the employer exactly
+   * once if a hint existed but never confidently resolved.
+   */
+  private tryResolveJobLevelFromPendingHint(): void {
+    if (!this.jobLevelHintPending || !this.latestLevels.length) return;
+    const current = this.jobForm?.get('initialData.jobLevelId')?.value;
+    if (current) {
+      // Already set (either resolved earlier or picked manually) — nothing to do.
+      this.jobLevelHintPending = null;
+      return;
+    }
+    const match = resolveJobLevelId(this.jobLevelHintPending, this.latestLevels);
+    if (match.confidence === 'high' && match.id) {
+      this.jobForm.get('initialData.jobLevelId').setValue(match.id);
+      this.jobLevelHintPending = null;
+      return;
+    }
+    this.jobLevelHintPending = null;
+    if (this.jobLevelConfirmationShown) return;
+    this.jobLevelConfirmationShown = true;
+    this.snackbarService.error(
+      "We couldn't confidently match a job level from your import — please choose one below.",
+      '', 6000
+    );
+    if (this.stepper === 1) {
+      setTimeout(() => {
+        const el = document.getElementById('section-job-level');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
   }
 
   changeStep(event) {

@@ -3,8 +3,6 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable, of } from 'rxjs';
 import { CoreService } from '@app-core/services/core.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { adminRoutes, applicantRoutes, authRoutes, employerRoutes } from './routes';
-import e from 'express';
 
 @Injectable({
   providedIn: 'root'
@@ -76,7 +74,8 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
         this.router.navigateByUrl('/recruiter');
         return true;
       case '3':
-        this.router.navigateByUrl('/user');
+        // applicant-panel/ lives only in gethired-jobseeker-FE now.
+        this.router.navigateByUrl('/');
         return true;
       default:
         return false;
