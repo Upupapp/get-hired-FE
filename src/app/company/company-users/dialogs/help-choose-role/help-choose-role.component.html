@@ -1,0 +1,47 @@
+<div class="hcr-overlay" *ngIf="open" (click)="close()"></div>
+<div class="hcr-drawer" #drawerEl *ngIf="open" role="dialog" aria-modal="true" aria-label="Help me choose a role" (keydown)="onKeydown($event)">
+  <div class="hcr-header">
+    <h4>Help me choose a role</h4>
+    <button type="button" class="hcr-close" (click)="close()" aria-label="Close">×</button>
+  </div>
+
+  <ng-container *ngIf="!result">
+    <p class="hcr-intro">Answer a few questions and we'll suggest a role. Nothing is applied until you confirm.</p>
+
+    <div class="hcr-question">
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.reviewApplicants"> Review applicants and their status</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.editJobs"> Create or edit job posts</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.scheduleInterviews"> Schedule interviews</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.messageApplicants"> Message candidates directly</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.needsCvAccess"> View candidate CVs/documents</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.manageBilling"> Manage billing/subscription</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.manageTeamAccess"> Manage Team & Access for others</label>
+      <label class="hcr-check"><input type="checkbox" [(ngModel)]="answers.manageCompanyProfile"> Manage the company profile</label>
+    </div>
+
+    <div class="hcr-question">
+      <label class="hcr-label">Should they see all jobs, or only jobs you assign?</label>
+      <div class="hcr-radio-row">
+        <label class="hcr-check"><input type="radio" name="hcrScope" value="all_jobs" [(ngModel)]="answers.jobScope"> All jobs</label>
+        <label class="hcr-check"><input type="radio" name="hcrScope" value="assigned_jobs" [(ngModel)]="answers.jobScope"> Assigned jobs only</label>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary hvr-grow w-100 mt-3" (click)="getRecommendation()">Get recommendation</button>
+  </ng-container>
+
+  <ng-container *ngIf="result">
+    <div class="hcr-result">
+      <p class="hcr-result-label">Recommended role</p>
+      <h5 class="hcr-result-role">{{ recommendedRoleName }}</h5>
+      <p class="hcr-result-explanation">{{ result.explanation }}</p>
+
+      <div class="hcr-warning" *ngFor="let w of result.sensitiveWarnings">{{ w }}</div>
+
+      <div class="hcr-result-actions">
+        <button type="button" class="btn btn-default hvr-grow" (click)="startOver()">Start over</button>
+        <button type="button" class="btn btn-primary hvr-grow" (click)="apply()">Use this role</button>
+      </div>
+    </div>
+  </ng-container>
+</div>

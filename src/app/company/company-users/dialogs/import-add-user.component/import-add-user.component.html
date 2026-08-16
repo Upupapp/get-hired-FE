@@ -94,6 +94,87 @@
 					</div>
 				</div>
 
+				<!-- Wix-style role selection: search + grouped accordions -->
+				<div class="row px-1 mb-3">
+					<div class="col-12">
+						<div class="role-select-header">
+							<label class="mb-0"><strong>Select role</strong></label>
+							<button type="button" class="role-help-choose-btn" (click)="helpChooseOpen = true">Help me choose a role</button>
+						</div>
+						<p class="title-description mb-2">Select a role for the person you're inviting. Each role has different permissions.</p>
+
+						<input type="text" class="form-control mb-2" placeholder="Search roles"
+							[ngModel]="roleSearchTerm" (ngModelChange)="onRoleSearchChange($event)"
+							[ngModelOptions]="{standalone: true}" aria-label="Search roles">
+
+						<p class="role-escalation-warning">You can't assign roles that include permissions you don't have.</p>
+
+						<div class="role-accordion">
+							<div class="role-group" *ngFor="let group of roleGroups">
+								<button type="button" class="role-group-header" (click)="toggleRoleGroup(group.key)"
+									[attr.aria-expanded]="expandedGroups[group.key]" [attr.aria-controls]="'role-group-' + group.key">
+									<span class="role-group-chevron" [class.role-group-chevron--open]="expandedGroups[group.key]" aria-hidden="true">›</span>
+									<span class="role-group-label">{{ group.label }}</span>
+									<span class="role-group-count">{{ group.roles.length }}</span>
+								</button>
+								<div class="role-group-body" [id]="'role-group-' + group.key" *ngIf="expandedGroups[group.key]">
+									<label class="role-row" *ngFor="let role of group.roles" [class.role-row--selected]="selectedRoleId === role.roleId">
+										<input type="radio" name="inviteRoleSelect" [value]="role.roleId"
+											[checked]="selectedRoleId === role.roleId" (change)="selectRole(role.roleId)">
+										<span class="role-row-text">
+											<span class="role-row-name">{{ role.name }}</span>
+											<span class="role-row-desc">{{ role.description }}</span>
+										</span>
+									</label>
+								</div>
+							</div>
+							<div class="role-group-empty" *ngIf="roleGroups.length === 0">No roles match your search.</div>
+						</div>
+					</div>
+				</div>
+
+				<app-help-choose-role
+					[open]="helpChooseOpen"
+					[roles]="roles"
+					(openChange)="helpChooseOpen = $event"
+					(applyRecommendation)="applyHelpChooseRecommendation($event)">
+				</app-help-choose-role>
+
+				<!-- Job-scoped RBAC V1: access scope selection -->
+				<div class="row px-1 mb-2">
+					<div class="col-12">
+						<label class="mb-2 d-block"><strong>Choose job access</strong></label>
+						<div class="access-scope-options">
+							<label class="access-scope-option">
+								<input type="radio" name="accessScope" value="all_jobs"
+									[checked]="selectedScope === 'all_jobs'" (change)="onScopeChange('all_jobs')">
+								<span><strong>All job posts</strong> — access to all current and future job posts</span>
+							</label>
+							<label class="access-scope-option">
+								<input type="radio" name="accessScope" value="assigned_jobs"
+									[checked]="selectedScope === 'assigned_jobs'" (change)="onScopeChange('assigned_jobs')">
+								<span><strong>Assigned job posts only</strong> — access limited to job posts you assign</span>
+							</label>
+							<label class="access-scope-option">
+								<input type="radio" name="accessScope" value="no_job_access"
+									[checked]="selectedScope === 'no_job_access'" (change)="onScopeChange('no_job_access')">
+								<span><strong>No job access</strong> — for billing/settings-only roles</span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<app-job-picker *ngIf="selectedScope === 'assigned_jobs'"
+					[selectedJobIds]="selectedJobIds"
+					(selectedJobIdsChange)="onJobIdsChange($event)">
+				</app-job-picker>
+
+				<app-access-summary
+					[role]="selectedRole"
+					[accessScope]="selectedScope"
+					[assignedJobCount]="selectedJobIds.length">
+				</app-access-summary>
+
 				<ng-container *ngIf="!importEmployee && !importing">
 					<!-- Error Message -->
 					<div class="mt-1 bg-gray max-height-scroll"
@@ -113,7 +194,8 @@
 						<div class="mt-4">
 							<div style="position: relative;" class="mt-2 w-100 text-end">
 								<button class="btn w-25 me-3 btn-primary invite-other hvr-grow"
-								(click)="submitInvites()">Invite All</button>
+								[disabled]="!canSubmit"
+								(click)="submitInvites()">Send Invite</button>
 							</div>
 						</div>
 					</div>
@@ -204,7 +286,7 @@
 								class="btn me-3 btn-default hvr-grow"
 								(click)="dialogRef.close()">Cancel </button>
 
-								<button type="button" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading"
+								<button type="button" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading || !selectedRoleId || (selectedScope === 'assigned_jobs' && selectedJobIds.length === 0)"
 								class="btn me-1 btn-primary hvr-grow">Import Users </button>
 							</div>
 						</div>

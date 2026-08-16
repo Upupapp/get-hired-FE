@@ -1,4 +1,4 @@
-<nav class="gh-public-nav fixed-top navbar navbar-expand-lg" [class.gh-public-nav--shadow]="isPublic" role="banner">
+<nav class="gh-public-nav fixed-top" [class.gh-public-nav--shadow]="isPublic" role="banner">
   <div class="gh-public-nav-inner">
 
     <!-- Logo -->
@@ -8,81 +8,80 @@
            alt="GetHired Online">
     </a>
 
-    <!-- Mobile hamburger (collapse) -->
-    <button class="navbar-toggler gh-nav-toggler" type="button"
-      data-bs-toggle="collapse" data-bs-target="#ghNavCollapse"
-      aria-controls="ghNavCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <!-- Mobile hamburger / close toggle. Custom component-state toggle, not
+         Bootstrap's data-bs-toggle="collapse" -- see header.component.ts for
+         why that mechanism rendered the panel clipped/off-screen. -->
+    <button class="gh-nav-toggler d-lg-none" type="button"
+      (click)="toggleMobileNav()"
+      [attr.aria-expanded]="mobileNavOpen"
+      aria-controls="ghNavList" aria-label="Toggle navigation">
+      <span class="gh-nav-toggler-bars" [class.is-open]="mobileNavOpen" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
     </button>
 
     <!-- Nav items -->
-    <div class="collapse navbar-collapse" id="ghNavCollapse">
-      <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
+    <ul class="gh-nav-list" id="ghNavList" [class.gh-nav-list--open]="mobileNavOpen">
 
-        <!-- Browse jobs CTA (public) -->
-        <li class="nav-item" *ngIf="isPublic">
-          <a routerLink="/jobs" class="gh-nav-btn-primary gh-pressable">Browse jobs</a>
-        </li>
+      <!-- Start hiring (public) -->
+      <li class="nav-item" *ngIf="isPublic">
+        <a routerLink="/signup" class="gh-nav-btn-primary gh-pressable" (click)="goToSignup()">Start Hiring</a>
+      </li>
 
-        <!-- Jobs link (dashboard) -->
-        <li class="nav-item" *ngIf="!isPublic">
-          <button class="gh-nav-btn-primary" type="button" (click)="navigateToJobs()">
-            Jobs
+      <!-- Jobs link (dashboard) -->
+      <li class="nav-item" *ngIf="!isPublic">
+        <button class="gh-nav-btn-primary" type="button" (click)="navigateToJobs()">
+          Jobs
+        </button>
+      </li>
+
+      <!-- Language selector (hidden on public nav — unstyled Bootstrap select breaks design) -->
+      <li class="nav-item gh-nav-lang" *ngIf="!isPublic">
+        <app-language-selection title="Language"></app-language-selection>
+      </li>
+
+      <!-- Auth / Avatar -->
+      <li class="nav-item">
+        <!-- Logged out: Sign In -->
+        <div *ngIf="!isUserLoggedIn">
+          <button class="gh-nav-btn-signin gh-pressable" type="button"
+            (click)="redirectToRegister()" aria-label="Sign in to your account">
+            Sign In
           </button>
-        </li>
+        </div>
 
-        <!-- Start hiring (mobile collapse only) -->
-        <li class="nav-item d-lg-none" *ngIf="isPublic && !isUserLoggedIn">
-          <a routerLink="/employers" class="gh-nav-hire-link d-block">
-            Start hiring
-          </a>
-        </li>
-
-        <!-- Language selector (hidden on public nav — unstyled Bootstrap select breaks design) -->
-        <li class="nav-item gh-nav-lang" *ngIf="!isPublic">
-          <app-language-selection title="Language"></app-language-selection>
-        </li>
-
-        <!-- Auth / Avatar -->
-        <li class="nav-item">
-          <!-- Logged out: Sign In -->
-          <div *ngIf="!isUserLoggedIn">
-            <button class="gh-nav-btn-signin gh-pressable" type="button"
-              (click)="redirectToRegister()" aria-label="Sign in to your account">
-              Sign In
-            </button>
-          </div>
-
-          <!-- Logged in: Avatar dropdown -->
-          <div class="gh-nav-avatar-wrap dropdown" *ngIf="isUserLoggedIn && user">
-            <button class="gh-nav-avatar gh-pressable" type="button"
-              id="navAvatarBtn"
-              data-bs-toggle="dropdown" aria-expanded="false"
-              [attr.aria-label]="'Account menu for ' + user.firstName">
-              <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-nav-avatar-img" alt="">
-              <span *ngIf="!user.photoUrl" class="gh-nav-avatar-initials" aria-hidden="true">
+        <!-- Logged in: Avatar dropdown -->
+        <div class="gh-nav-avatar-wrap dropdown" *ngIf="isUserLoggedIn && user">
+          <button class="gh-nav-avatar gh-pressable" type="button"
+            id="navAvatarBtn"
+            data-bs-toggle="dropdown" aria-expanded="false"
+            [attr.aria-label]="'Account menu for ' + user.firstName">
+            <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-nav-avatar-img" alt="">
+            <span *ngIf="!user.photoUrl" class="gh-nav-avatar-initials" aria-hidden="true">
+              {{ initials }}
+            </span>
+          </button>
+          <ul class="dropdown-menu gh-nav-dropdown" aria-labelledby="navAvatarBtn">
+            <li class="gh-nav-dropdown-header" (click)="goToDashboard()">
+              <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-dropdown-avatar" alt="">
+              <div *ngIf="!user.photoUrl" class="gh-dropdown-avatar gh-dropdown-initials" aria-hidden="true">
                 {{ initials }}
-              </span>
-            </button>
-            <ul class="dropdown-menu gh-nav-dropdown" aria-labelledby="navAvatarBtn">
-              <li class="gh-nav-dropdown-header" (click)="goToDashboard()">
-                <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-dropdown-avatar" alt="">
-                <div *ngIf="!user.photoUrl" class="gh-dropdown-avatar gh-dropdown-initials" aria-hidden="true">
-                  {{ initials }}
-                </div>
-                <div>
-                  <p class="gh-dropdown-name">{{ user.firstName + ' ' + user.lastName }}</p>
-                  <p class="gh-dropdown-company">{{ user.companyName }}</p>
-                </div>
-              </li>
-              <li>
-                <span class="gh-nav-dropdown-item" (click)="logout()">Log out</span>
-              </li>
-            </ul>
-          </div>
-        </li>
+              </div>
+              <div>
+                <p class="gh-dropdown-name">{{ user.firstName + ' ' + user.lastName }}</p>
+                <p class="gh-dropdown-company">{{ user.companyName }}</p>
+              </div>
+            </li>
+            <li>
+              <span class="gh-nav-dropdown-item" (click)="logout()">Log out</span>
+            </li>
+          </ul>
+        </div>
+      </li>
 
-      </ul>
-    </div>
+    </ul>
   </div>
+
+  <!-- Mobile panel backdrop -->
+  <div class="gh-nav-backdrop" *ngIf="mobileNavOpen" (click)="closeMobileNav()" aria-hidden="true"></div>
 </nav>

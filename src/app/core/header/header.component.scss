@@ -3,13 +3,16 @@
 // ─── Public nav bar — mirrors employer topbar design language ─────────────────
 // Same white surface, Manrope font, coral gradient primary, subtle shadow.
 
+$gh-nav-height: 68px;
+$gh-nav-breakpoint: 992px;
+
 .gh-public-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 999;
-  height: 68px;
+  height: $gh-nav-height;
   background: #ffffff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.07);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -52,22 +55,70 @@
 }
 
 // ─── Mobile toggler ──────────────────────────────────────────────────────────
+// Custom, Angular-state-driven toggle -- no Bootstrap JS dependency. Replaces
+// the old data-bs-toggle="collapse" button, which relied on .navbar-collapse
+// staying an in-flow flex child of a `display:flex` row with no flex-wrap --
+// the expanded panel had nowhere to go but a clipped sliver of the 68px-tall
+// fixed navbar (confirmed via live repro: rendered off-screen, boundingBox
+// x:244 y:-29 on a 375px viewport).
 
 .gh-nav-toggler {
-  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
-  border-radius: 8px !important;
-  padding: 6px 10px !important;
+  display: none;
   margin-left: auto;
+  border: 1.5px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 
-  &:focus { box-shadow: none !important; }
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: #{$gh-nav-breakpoint - 1px}) {
+    display: inline-flex;
+  }
+}
+
+.gh-nav-toggler-bars {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 20px;
+  height: 16px;
+  position: relative;
+
+  span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #1a1a2e;
+    border-radius: 2px;
+    transition: transform 220ms ease, opacity 220ms ease;
+  }
+
+  &.is-open {
+    span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
 }
 
 // ─── Nav list ─────────────────────────────────────────────────────────────────
 
 .gh-nav-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   gap: 6px;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 auto;
   list-style: none;
 }
 
@@ -75,7 +126,7 @@
   margin: 0 4px;
 }
 
-// ─── Primary button (Browse jobs / Jobs) ─────────────────────────────────────
+// ─── Primary button (Start hiring / Browse jobs / Jobs) ──────────────────────
 
 .gh-nav-btn-primary {
   display: inline-flex;
@@ -126,25 +177,6 @@
   &:active { transform: scale(0.97); }
 }
 
-// ─── "Start hiring" link (mobile collapse menu only) ─────────────────────────
-
-.gh-nav-hire-link {
-  display: inline-flex;
-  align-items: center;
-  color: #FF7062;
-  font-family: 'Manrope', sans-serif;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  padding: 10px 12px;
-  min-height: 44px;
-  border-radius: 8px;
-  transition: background 120ms ease;
-
-  &:hover { background: rgba(255, 112, 98, 0.08); color: #FF4D3C; }
-  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
-}
-
 // ─── Avatar (logged-in user) ──────────────────────────────────────────────────
 
 .gh-nav-avatar-wrap {
@@ -189,14 +221,14 @@
   user-select: none;
 }
 
-// ─── Avatar dropdown ──────────────────────────────────────────────────────────
+// ─── Avatar dropdown (unchanged -- separate Bootstrap Dropdown component,
+// not the buggy navbar-collapse mechanism this file replaces) ────────────────
 
 .gh-nav-dropdown {
   border: 1px solid rgba(0, 0, 0, 0.08) !important;
   border-radius: 14px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
   min-width: 220px;
-  // HE-01 MOBILEVIEW: prevent dropdown from overflowing 320px viewports
   max-width: calc(100vw - 24px);
   padding: 0 !important;
   overflow: hidden;
@@ -269,7 +301,7 @@
   &:hover { background: rgba(0, 0, 0, 0.03); color: #1a1a2e; }
 }
 
-// ─── HE-02/03 MOBILEVIEW: avatar hit-target + safe-area nav collapse ─────────
+// ─── HE-02/03 MOBILEVIEW: avatar hit-target ──────────────────────────────────
 @media (max-width: 767px) {
   .gh-nav-avatar {
     width: 44px;
@@ -278,21 +310,34 @@
   }
 }
 
-// ─── Collapsed mobile nav ─────────────────────────────────────────────────────
+// ─── Mobile nav panel ─────────────────────────────────────────────────────────
+// Positioned in its own fixed layer directly below the navbar, completely
+// decoupled from the toggler's flex row -- this is what actually fixes the
+// clipping bug (the old approach positioned the expanded menu as a sibling
+// flex-item instead of a full-width panel below the bar).
 
-@media (max-width: 991px) {
-  .navbar-collapse {
+@media (max-width: #{$gh-nav-breakpoint - 1px}) {
+  .gh-nav-list {
+    display: none;
+    position: fixed;
+    top: $gh-nav-height;
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - #{$gh-nav-height});
+    overflow-y: auto;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin: 0;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
     background: #ffffff;
-    // HE-03 MOBILEVIEW: include safe-area bottom padding for notched iPhones
-    padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid rgba(0, 0, 0, 0.07);
-    margin-top: 0;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+    z-index: 2;
 
-    .gh-nav-list {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      width: 100%;
+    &--open {
+      display: flex;
+      animation: ghNavSlideDown 220ms ease;
     }
 
     .nav-item { width: 100%; }
@@ -311,7 +356,29 @@
       position: static !important;
       float: none !important;
       margin-top: 4px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10) !important;
     }
   }
+}
+
+.gh-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  top: $gh-nav-height;
+  background: rgba(13, 16, 36, 0.35);
+  z-index: 1;
+
+  @media (min-width: #{$gh-nav-breakpoint}) {
+    display: none;
+  }
+}
+
+@keyframes ghNavSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-nav-toggler-bars span { transition: none !important; }
+  .gh-nav-list--open { animation: none !important; }
 }

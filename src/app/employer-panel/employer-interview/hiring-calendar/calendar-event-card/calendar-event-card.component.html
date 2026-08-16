@@ -1,0 +1,18 @@
+<div
+  class="cec"
+  [class.cec--compact]="compact"
+  [ngClass]="statusClass"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="ariaLabel"
+  (click)="activate()"
+  (keydown.enter)="activate()"
+  (keydown.space)="$event.preventDefault(); activate()">
+  <span class="cec-time">{{ timeLabel }}</span>
+  <span class="cec-applicant">{{ applicantName }}</span>
+  <ng-container *ngIf="!compact">
+    <span class="cec-job">{{ interview.jobTitle }}</span>
+    <span class="cec-type">{{ typeLabel }} &middot; {{ formatLabel }}</span>
+  </ng-container>
+  <span class="cec-status-badge">{{ statusLabel }}</span>
+</div>

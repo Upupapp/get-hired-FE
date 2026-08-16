@@ -225,10 +225,10 @@ export class EmployerPortalComponent implements OnInit, AfterViewInit, OnDestroy
     this.router.navigateByUrl('/signin');
   }
 
-  browseJobs(): void {
-    // public-list/ (the job board) lives only in gethired-jobseeker-FE now.
-    window.location.href = `${environment.jobSeekerAppUrl}/jobs`;
-  }
+  /** Exposed to the template's "Back to Main Page" hero link (a plain
+   * [href], not a click handler) -- kept as a readonly for consistency
+   * with how every other cross-app URL on this page is sourced. */
+  readonly gatewayUrl = environment.gatewayUrl;
 
   scrollToSection(sectionId: string): void {
     if (!isPlatformBrowser(this.platformId)) return;

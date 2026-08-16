@@ -7,6 +7,8 @@
   app_url: 'https://gethiredonline.app',
   // TODO: set to the deployed job-seeker app's real production domain.
   jobSeekerAppUrl: 'https://gethiredonline.app',
+  // TODO: set to the deployed GetHired Gateway's real production domain.
+  gatewayUrl: 'https://gethiredonline.app',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: false,

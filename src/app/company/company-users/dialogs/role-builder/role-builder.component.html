@@ -1,0 +1,47 @@
+<div class="rb-wrap" [@animate]="{value:'*', params:{ y:'-10px', delay:'100ms' }}">
+  <h4 class="rb-title">
+    <ng-container [ngSwitch]="mode">
+      <ng-container *ngSwitchCase="'edit'">Edit custom role</ng-container>
+      <ng-container *ngSwitchCase="'clone'">Clone role</ng-container>
+      <ng-container *ngSwitchDefault>Create custom role</ng-container>
+    </ng-container>
+  </h4>
+  <p class="rb-help">Custom roles let you create a role with the combination of permissions your hiring team needs. You can't include a permission you don't have yourself.</p>
+
+  <div class="rb-field">
+    <label for="rb-name">Role name</label>
+    <input id="rb-name" type="text" class="form-control" [(ngModel)]="name" [ngModelOptions]="{standalone: true}" placeholder="e.g. Interview Panelist">
+  </div>
+
+  <div class="rb-field">
+    <label for="rb-desc">Description</label>
+    <textarea id="rb-desc" class="form-control" rows="2" [(ngModel)]="description" [ngModelOptions]="{standalone: true}"
+      placeholder="Plain language: what can this role do, and what can't it do?"></textarea>
+  </div>
+
+  <div class="rb-field">
+    <label>Permissions</label>
+    <app-permission-matrix
+      [allPermissions]="allPermissions"
+      [selectedKeys]="selectedKeys"
+      [grantableKeys]="myPermissionKeys"
+      (selectedKeysChange)="onSelectedKeysChange($event)">
+    </app-permission-matrix>
+  </div>
+
+  <div class="rb-impact" *ngIf="mode === 'edit'">
+    <button type="button" class="rb-impact-toggle" (click)="toggleImpactPreview()">
+      {{ showImpactPreview ? 'Hide' : 'Show' }} impact preview
+    </button>
+    <p class="rb-impact-text" *ngIf="showImpactPreview">
+      Changing this role's permissions immediately changes what every team member currently assigned to it can access. This does not affect their job assignments.
+    </p>
+  </div>
+
+  <div class="rb-actions">
+    <button type="button" class="btn btn-default hvr-grow" (click)="close()">Cancel</button>
+    <button type="button" class="btn btn-primary hvr-grow" [disabled]="!canSave || saving" (click)="save()">
+      {{ saving ? 'Saving…' : (mode === 'edit' ? 'Save changes' : 'Create role') }}
+    </button>
+  </div>
+</div>

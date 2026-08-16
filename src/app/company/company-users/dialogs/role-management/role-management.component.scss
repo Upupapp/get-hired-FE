@@ -1,0 +1,152 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$surface: #F8F9FC;
+$muted: #667085;
+
+.rm-wrap {
+  padding: 24px;
+  max-height: 82vh;
+  overflow-y: auto;
+}
+
+.rm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  h4 { font-family: 'Manrope', sans-serif; font-weight: 700; color: $navy; margin: 0; }
+}
+
+.rm-help {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  color: $muted;
+  margin: 4px 0 18px;
+}
+
+.rm-loading {
+  text-align: center;
+  padding: 24px;
+  color: $muted;
+}
+
+.rm-group {
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.rm-group-header {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: $surface;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+
+  &:focus-visible { outline: 2px solid $azure; outline-offset: -2px; }
+}
+
+.rm-group-chevron {
+  color: $muted;
+  transition: transform 0.15s;
+  &--open { transform: rotate(90deg); }
+}
+
+.rm-group-label {
+  flex: 1;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: $navy;
+}
+
+.rm-group-count {
+  font-size: 0.72rem;
+  color: $muted;
+}
+
+.rm-group-body {
+  padding: 4px 14px 10px;
+}
+
+.rm-role-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid $border;
+
+  &:first-child { border-top: none; }
+}
+
+.rm-role-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rm-role-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: $navy;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rm-role-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba($coral, 0.1);
+  color: $coral;
+
+  &--system { background: rgba($azure, 0.1); color: $azure; }
+}
+
+.rm-role-desc {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  color: $muted;
+}
+
+.rm-role-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rm-action-btn {
+  height: 28px;
+  padding: 0 10px;
+  border: 1.5px solid $border;
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: $navy;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { border-color: $azure; color: $azure; }
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
+  &--danger:hover { border-color: $coral; color: $coral; }
+}

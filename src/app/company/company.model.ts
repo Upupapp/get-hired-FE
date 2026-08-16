@@ -93,4 +93,11 @@ export interface CompanyUser {
   photoUrl?: string;
   roleTitle?: string;
   initials?: string;
+  roleId?: string;
+  roleKey?: string;
+  roleName?: string;
+  isOwnerRole?: boolean;
+  accessScope?: 'all_jobs' | 'assigned_jobs' | 'no_job_access';
+  status?: 'active' | 'suspended';
+  assignedJobs?: { jobId: string; jobTitle: string }[];
 }

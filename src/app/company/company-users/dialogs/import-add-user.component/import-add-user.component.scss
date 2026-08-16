@@ -1,5 +1,143 @@
 @import "src/assets/styles/colors";
 
+.role-select-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.role-help-choose-btn {
+  background: none;
+  border: none;
+  color: #5B7CFF;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+
+  &:focus-visible { outline: 2px solid #5B7CFF; outline-offset: 2px; border-radius: 2px; }
+}
+
+.role-escalation-warning {
+  font-size: 0.74rem;
+  color: #667085;
+  margin: 0 0 8px;
+}
+
+.role-accordion {
+  border: 1.5px solid #E8EBF0;
+  border-radius: 10px;
+  overflow: hidden;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.role-group {
+  border-bottom: 1px solid #E8EBF0;
+  &:last-child { border-bottom: none; }
+}
+
+.role-group-header {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #F8F9FC;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+
+  &:focus-visible { outline: 2px solid #5B7CFF; outline-offset: -2px; }
+}
+
+.role-group-chevron {
+  color: #667085;
+  transition: transform 0.15s;
+  &--open { transform: rotate(90deg); }
+}
+
+.role-group-label {
+  flex: 1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0D1024;
+}
+
+.role-group-count {
+  font-size: 0.7rem;
+  color: #667085;
+}
+
+.role-group-body {
+  padding: 2px 8px 6px;
+}
+
+.role-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover { background: #F8F9FC; }
+  &--selected { background: rgba(#5B7CFF, 0.07); }
+
+  input { margin-top: 3px; accent-color: #5B7CFF; flex-shrink: 0; }
+}
+
+.role-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.role-row-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0D1024;
+}
+
+.role-row-desc {
+  font-size: 0.72rem;
+  color: #667085;
+}
+
+.role-group-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #667085;
+}
+
+.access-scope-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.access-scope-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid #E8EBF0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: left;
+
+  input[type="radio"] {
+    margin-top: 3px;
+    accent-color: #5B7CFF;
+    flex-shrink: 0;
+  }
+}
+
 :host ::ng-deep{
   ::-webkit-scrollbar {
     width: 3px !important;

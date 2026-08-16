@@ -1,0 +1,269 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+.sid {
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+  width: min(560px, 92vw);
+  font-family: 'Manrope', sans-serif;
+
+  // The header/success block and <form> are direct flex children so the
+  // scrollable body (.sid__scroll) can be constrained to the remaining
+  // space while the header and action bar stay put -- see .sid__scroll.
+  > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+// ─── Header ─────────────────────────────────────────────────────────────────
+
+.sid__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #E7EAF3;
+  flex-shrink: 0;
+}
+
+.sid__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 2px;
+}
+
+.sid__sub {
+  font-size: 0.8125rem;
+  color: #667085;
+  margin: 0;
+}
+
+.sid__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #64748B;
+  transition: background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: #F1F5F9; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+// ─── Scrollable body ────────────────────────────────────────────────────────
+
+.sid__scroll {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.sid__field {
+  margin-bottom: 18px;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.sid__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 6px;
+
+  .sid__field { margin-bottom: 0; }
+}
+
+.sid__optional {
+  font-weight: 400;
+  text-transform: none;
+  color: #98A2B3;
+  letter-spacing: normal;
+}
+
+.sid__textarea {
+  height: auto;
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 72px;
+}
+
+.sid__hint {
+  font-size: 0.75rem;
+  color: #98A2B3;
+  margin: 6px 0 0;
+}
+
+.sid__interviewer-note {
+  background: #F6F7FB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #667085;
+}
+
+.sid__field-error {
+  font-size: 0.75rem;
+  color: #DC2626;
+  margin: 6px 0 0;
+  font-weight: 500;
+}
+
+// ─── Format radio pills ─────────────────────────────────────────────────────
+
+.sid__format-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.sid__format-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  min-height: 44px;
+  border: 1.5px solid #E7EAF3;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #344054;
+  transition: border-color $motion-duration-micro $motion-ease-standard,
+              background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  input[type="radio"] {
+    accent-color: $color-global-red-buttons;
+    width: 16px;
+    height: 16px;
+  }
+
+  &--active {
+    border-color: $color-global-red-buttons;
+    background: $color-global-red-soft;
+    color: $color-global-red-buttons;
+    font-weight: 600;
+  }
+
+  &:focus-within {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
+// ─── Conflict / server error banners ────────────────────────────────────────
+
+.sid__conflict {
+  margin: 0 24px 16px;
+  padding: 12px 14px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 10px;
+  color: #991B1B;
+  flex-shrink: 0;
+
+  strong { display: block; font-size: 0.875rem; margin-bottom: 2px; }
+  p { margin: 0; font-size: 0.8125rem; }
+}
+
+.sid__error {
+  margin: 0 24px 16px;
+  padding: 12px 14px;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: 10px;
+  color: #9A3412;
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+
+  p { margin: 0; }
+  ul { margin: 6px 0 0; padding-left: 18px; }
+}
+
+// ─── Actions ────────────────────────────────────────────────────────────────
+
+.sid__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid #E7EAF3;
+  flex-shrink: 0;
+
+  &--center { justify-content: center; border-top: none; padding-top: 0; }
+}
+
+// ─── Success state ──────────────────────────────────────────────────────────
+
+.sid__success {
+  padding: 32px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.sid__success-msg {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #065F46;
+  margin: 8px 0 0;
+}
+
+.sid__success-detail {
+  font-size: 0.875rem;
+  color: #475569;
+  margin: 0 0 8px;
+}
+
+.sid__warning {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 10px;
+  color: $color-warning-amber;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.sid__confirmed {
+  font-size: 0.8125rem;
+  color: #667085;
+}
+
+// ─── Responsive ─────────────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .sid {
+    width: 100vw;
+    max-height: 100vh;
+  }
+
+  .sid__row {
+    grid-template-columns: 1fr;
+  }
+
+  .sid__actions {
+    flex-direction: column-reverse;
+
+    button { width: 100%; }
+  }
+}

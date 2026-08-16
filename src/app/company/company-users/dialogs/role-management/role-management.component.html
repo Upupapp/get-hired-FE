@@ -1,0 +1,38 @@
+<div class="rm-wrap" [@animate]="{value:'*', params:{ y:'-10px', delay:'100ms' }}">
+  <div class="rm-header">
+    <h4>Roles & Permissions</h4>
+    <button type="button" class="btn btn-primary btn-sm hvr-grow" (click)="openBuilder('create')">
+      + Create custom role
+    </button>
+  </div>
+  <p class="rm-help">Custom roles let you create a role with the combination of permissions your hiring team needs.</p>
+
+  <div class="rm-loading" *ngIf="loading">Loading roles…</div>
+
+  <div class="rm-group" *ngFor="let group of groups">
+    <button type="button" class="rm-group-header" (click)="toggleGroup(group.key)"
+      [attr.aria-expanded]="expanded[group.key]" [attr.aria-controls]="'rm-group-' + group.key">
+      <span class="rm-group-chevron" [class.rm-group-chevron--open]="expanded[group.key]" aria-hidden="true">›</span>
+      <span class="rm-group-label">{{ group.label }}</span>
+      <span class="rm-group-count">{{ group.roles.length }}</span>
+    </button>
+
+    <div class="rm-group-body" [id]="'rm-group-' + group.key" *ngIf="expanded[group.key]">
+      <div class="rm-role-row" *ngFor="let role of group.roles">
+        <div class="rm-role-info">
+          <span class="rm-role-name">
+            {{ role.name }}
+            <span class="rm-role-badge" *ngIf="role.roleType === 'custom'">Custom</span>
+            <span class="rm-role-badge rm-role-badge--system" *ngIf="role.roleType === 'system'">System</span>
+          </span>
+          <span class="rm-role-desc">{{ role.description }}</span>
+        </div>
+        <div class="rm-role-actions">
+          <button type="button" class="rm-action-btn" (click)="openBuilder('clone', role)">Clone</button>
+          <button type="button" class="rm-action-btn" *ngIf="role.roleType === 'custom'" (click)="openBuilder('edit', role)">Edit</button>
+          <button type="button" class="rm-action-btn rm-action-btn--danger" *ngIf="role.roleType === 'custom'" (click)="archiveRole(role)">Archive</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

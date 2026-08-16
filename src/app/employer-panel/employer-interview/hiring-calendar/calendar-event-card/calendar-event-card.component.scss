@@ -1,0 +1,77 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+.cec {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border-left: 3px solid #98A2B3;
+  background: #F9FAFB;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: #101828;
+  transition: background $motion-duration-micro $motion-ease-standard, transform 100ms $motion-ease-standard;
+  @include motion-safe;
+  overflow: hidden;
+
+  &:hover { background: #F2F4F7; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:active { transform: scale(0.99); }
+}
+
+.cec-time {
+  font-weight: 700;
+  font-size: 0.6875rem;
+  color: #475467;
+}
+
+.cec-applicant {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cec-job,
+.cec-type {
+  color: #667085;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.6875rem;
+}
+
+.cec-status-badge {
+  align-self: flex-start;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #475467;
+}
+
+// Status conveyed by border color + text label together, never color alone.
+.cec-status--scheduled { border-left-color: #12B76A; }
+.cec-status--past { border-left-color: #98A2B3; opacity: 0.85; }
+.cec-status--cancelled {
+  border-left-color: #F04438;
+  background: #FEF3F2;
+  text-decoration: line-through;
+
+  .cec-status-badge { color: #B42318; text-decoration: none; }
+}
+
+.cec--compact {
+  padding: 3px 6px;
+  gap: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+
+  .cec-time { flex-shrink: 0; }
+  .cec-applicant { flex: 1; min-width: 0; }
+  .cec-status-badge { display: none; }
+}

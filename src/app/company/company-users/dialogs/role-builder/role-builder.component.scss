@@ -1,0 +1,73 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$surface: #F8F9FC;
+$muted: #667085;
+
+.rb-wrap {
+  padding: 24px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.rb-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  color: $navy;
+  margin: 0 0 4px;
+}
+
+.rb-help {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  color: $muted;
+  margin: 0 0 18px;
+}
+
+.rb-field {
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: $navy;
+    margin-bottom: 6px;
+  }
+}
+
+.rb-impact {
+  margin-bottom: 16px;
+}
+
+.rb-impact-toggle {
+  background: none;
+  border: none;
+  color: $azure;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; border-radius: 2px; }
+}
+
+.rb-impact-text {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: $surface;
+  border-left: 3px solid $azure;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: $navy;
+}
+
+.rb-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}

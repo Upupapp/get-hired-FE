@@ -1,0 +1,64 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$muted: #667085;
+
+.etm-wrap {
+  padding: 24px;
+}
+
+.etm-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  color: $navy;
+  margin: 0 0 2px;
+}
+
+.etm-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  color: $muted;
+  margin: 0 0 20px;
+}
+
+.etm-section {
+  margin-bottom: 16px;
+}
+
+.etm-help {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: $muted;
+}
+
+.access-scope-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.access-scope-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: left;
+
+  input[type="radio"] {
+    margin-top: 3px;
+    accent-color: $azure;
+    flex-shrink: 0;
+  }
+}
+
+.etm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

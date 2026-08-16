@@ -1,0 +1,103 @@
+<div class="sil-page">
+
+  <!-- Loading skeleton -->
+  <div *ngIf="loading" class="sil-skeleton" aria-busy="true" aria-label="Loading scheduled interviews">
+    <div class="sil-skeleton-cards" style="min-height: 320px;">
+      <div class="sil-skeleton-card" *ngFor="let n of [1,2,3]">
+        <div class="sil-skeleton-line sil-skeleton-line--name"></div>
+        <div class="sil-skeleton-line sil-skeleton-line--job"></div>
+        <div class="sil-skeleton-line sil-skeleton-line--meta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && error" class="sil-error" role="alert">
+    <p class="sil-error-heading">We couldn't load scheduled interviews.</p>
+    <p class="sil-error-body">This might be a temporary issue. Try again.</p>
+    <button class="gh-btn-primary" (click)="retry()">Try again</button>
+  </div>
+
+  <ng-container *ngIf="!loading && !error">
+
+    <!-- Phase 1.5A -- standalone "New Interview" entry point -->
+    <div class="sil-header">
+      <button type="button" class="gh-btn-primary" (click)="newInterview()">
+        New Interview
+      </button>
+    </div>
+
+    <!-- Filter chips -->
+    <div class="sil-filters" role="group" aria-label="Filter scheduled interviews">
+      <button
+        *ngFor="let f of filters"
+        class="sil-filter-chip"
+        [class.sil-filter-chip--active]="activeFilter === f.key"
+        [attr.aria-pressed]="activeFilter === f.key"
+        (click)="setFilter(f.key)">
+        {{ f.label }}
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="items.length === 0" class="sil-empty">
+      <h2 class="sil-empty-heading">No {{ activeFilter === 'all' ? '' : activeFilter }} interviews</h2>
+      <p class="sil-empty-body">
+        Scheduled interviews will appear here once you schedule one from an applicant's profile.
+      </p>
+    </div>
+
+    <!-- Card list -->
+    <div class="sil-list" role="list" aria-label="Scheduled interviews list" *ngIf="items.length > 0">
+      <div
+        *ngFor="let item of items; trackBy: trackByInterviewId"
+        class="sil-card"
+        role="listitem">
+
+        <div class="sil-card-header">
+          <span class="sil-applicant-name">{{ displayName(item) }}</span>
+          <app-interview-status-chip [status]="item.displayStatus"></app-interview-status-chip>
+        </div>
+
+        <div class="sil-card-job">
+          <span aria-hidden="true">&#128188;</span>
+          {{ item.jobTitle }}
+          <span class="sil-card-type">&middot; {{ typeLabel(item) }}</span>
+        </div>
+
+        <div class="sil-card-time">
+          <div class="sil-time-primary">{{ scheduledTimeLabel(item) }}</div>
+          <div class="sil-time-secondary" *ngIf="browserTimeLabel(item) as bt">{{ bt }}</div>
+        </div>
+
+        <div class="sil-card-meta">
+          <span class="sil-meta-pill">{{ item.durationMinutes }} min</span>
+          <span class="sil-meta-pill">{{ formatLabel(item) }}</span>
+          <span class="sil-meta-pill sil-meta-pill--notify" [class.sil-meta-pill--warn]="item.notificationState === 'failed'">
+            {{ notificationLabel(item) }}
+          </span>
+          <span class="sil-meta-pill" *ngIf="item.rescheduleCount > 0">
+            Rescheduled {{ item.rescheduleCount }} {{ item.rescheduleCount === 1 ? 'time' : 'times' }}
+          </span>
+        </div>
+
+        <div class="sil-card-actions">
+          <button type="button" class="sil-action sil-action--ghost" (click)="viewDetail(item)">
+            View
+          </button>
+          <button type="button" class="sil-action sil-action--secondary" *ngIf="canReschedule(item)"
+            (click)="reschedule(item, $event)">
+            Reschedule
+          </button>
+          <button type="button" class="sil-action sil-action--danger" *ngIf="canCancel(item)"
+            (click)="cancel(item, $event)">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>

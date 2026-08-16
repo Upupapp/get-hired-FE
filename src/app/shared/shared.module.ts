@@ -47,6 +47,20 @@ import { GhImageUploadComponent } from './components/gh-image-upload/gh-image-up
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { GoogleSigninButtonComponent } from '@main/auth/google-signin-button/google-signin-button.component';
 import { LinkedInButtonComponent } from '@main/auth/linkedin-button/linkedin-button.component';
+// Internal Interview Scheduling MVP -- employer-side dialogs + status chip.
+// Declared here (rather than a standalone feature module) so they're
+// reachable via MatDialog.open() from every module that already imports
+// SharedModule (JobModule, EmployerInterviewModule, etc.), matching the
+// existing precedent set by VideoPreviewComponent/ConfirmationDialogComponent.
+import { ScheduleInterviewDialogComponent } from './components/schedule-interview-dialog/schedule-interview-dialog.component';
+import { CancelInterviewDialogComponent } from './components/cancel-interview-dialog/cancel-interview-dialog.component';
+import { InterviewStatusChipComponent } from './components/interview-status-chip/interview-status-chip.component';
+// Phase 1.5A -- "New Interview" job/applicant picker, opened before
+// ScheduleInterviewDialogComponent (mode: 'create'). Same declaration
+// pattern as the two dialogs above.
+import { SelectJobApplicantDialogComponent } from './components/select-job-applicant-dialog/select-job-applicant-dialog.component';
+// Gateway back/main-page nav strip -- landing, signin, signup.
+import { GatewayNavComponent } from './components/gateway-nav/gateway-nav.component';
 
 
 const classesToInclude: any[] = [
@@ -84,6 +98,11 @@ const classesToInclude: any[] = [
   EasyJobPostAssistantModalComponent,
   GoogleSigninButtonComponent,
   LinkedInButtonComponent,
+  ScheduleInterviewDialogComponent,
+  CancelInterviewDialogComponent,
+  InterviewStatusChipComponent,
+  SelectJobApplicantDialogComponent,
+  GatewayNavComponent,
 ];
 
 @NgModule({

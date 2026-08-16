@@ -1,0 +1,91 @@
+<div class="hc-page">
+
+  <!-- Loading skeleton -->
+  <div *ngIf="loading" class="hc-skeleton" aria-busy="true" aria-label="Loading hiring calendar">
+    <div class="hc-skeleton-bar"></div>
+    <div class="hc-skeleton-grid"></div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && error" class="hc-error" role="alert">
+    <p class="hc-error-heading">We couldn't load your interview calendar.</p>
+    <button type="button" class="gh-btn-primary" (click)="retry()">Retry</button>
+  </div>
+
+  <ng-container *ngIf="!loading && !error">
+
+    <div class="hc-toolbar">
+      <div class="hc-toolbar-row hc-toolbar-row--top">
+        <div class="hc-nav" role="group" aria-label="Calendar navigation">
+          <button type="button" class="hc-nav-btn" aria-label="Previous period" (click)="goPrev()">&#8249;</button>
+          <button type="button" class="hc-nav-btn hc-nav-btn--today" (click)="goToday()">Today</button>
+          <button type="button" class="hc-nav-btn" aria-label="Next period" (click)="goNext()">&#8250;</button>
+        </div>
+
+        <h2 class="hc-heading" aria-live="polite">{{ rangeHeading }}</h2>
+
+        <button type="button" class="gh-btn-primary hc-new-interview-btn" (click)="newInterview()">
+          New Interview
+        </button>
+      </div>
+
+      <div class="hc-toolbar-row hc-toolbar-row--bottom">
+        <div class="hc-view-switcher" role="tablist" aria-label="Calendar view">
+          <button type="button" class="hc-view-btn" role="tab" [attr.aria-selected]="viewMode === 'day'" [class.hc-view-btn--active]="viewMode === 'day'" (click)="setView('day')">Day</button>
+          <button type="button" class="hc-view-btn" role="tab" [attr.aria-selected]="viewMode === 'week'" [class.hc-view-btn--active]="viewMode === 'week'" (click)="setView('week')">Week</button>
+          <button type="button" class="hc-view-btn" role="tab" [attr.aria-selected]="viewMode === 'month'" [class.hc-view-btn--active]="viewMode === 'month'" (click)="setView('month')">Month</button>
+        </div>
+
+        <div class="hc-filters">
+          <label class="hc-filter">
+            <span class="hc-filter-label">Job</span>
+            <select class="hc-filter-select" [ngModel]="jobFilter" (ngModelChange)="onJobFilterChange($event)">
+              <option value="all">All jobs</option>
+              <option *ngFor="let job of jobOptions" [value]="job.jobId">{{ job.jobTitle }}</option>
+            </select>
+          </label>
+          <label class="hc-filter">
+            <span class="hc-filter-label">Status</span>
+            <select class="hc-filter-select" [ngModel]="statusFilter" (ngModelChange)="onStatusFilterChange($event)">
+              <option value="all">All</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+          <a class="hc-list-link" routerLink="/recruiter/interview/scheduled">View list &rarr;</a>
+        </div>
+      </div>
+
+      <p class="hc-timezone-note">Times shown in {{ displayTimeZone }}</p>
+    </div>
+
+    <div class="hc-view-body">
+      <app-day-view
+        *ngIf="viewMode === 'day'"
+        [date]="anchorDate"
+        [bucketedByDay]="bucketedByDay"
+        [displayTimeZone]="displayTimeZone"
+        (eventActivated)="viewInterview($event)">
+      </app-day-view>
+
+      <app-week-view
+        *ngIf="viewMode === 'week'"
+        [anchorDate]="anchorDate"
+        [bucketedByDay]="bucketedByDay"
+        [displayTimeZone]="displayTimeZone"
+        (eventActivated)="viewInterview($event)">
+      </app-week-view>
+
+      <app-month-view
+        *ngIf="viewMode === 'month'"
+        [anchorDate]="anchorDate"
+        [bucketedByDay]="bucketedByDay"
+        [displayTimeZone]="displayTimeZone"
+        (dateSelected)="onDateSelected($event)"
+        (eventActivated)="viewInterview($event)">
+      </app-month-view>
+    </div>
+
+  </ng-container>
+
+</div>

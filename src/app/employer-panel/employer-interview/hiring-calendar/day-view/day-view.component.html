@@ -1,0 +1,31 @@
+<div class="dv" role="region" [attr.aria-label]="'Day schedule, ' + laidOutEvents.length + ' interview' + (laidOutEvents.length === 1 ? '' : 's')">
+  <div class="dv-empty" *ngIf="laidOutEvents.length === 0">
+    No interviews scheduled for this day.
+  </div>
+
+  <div class="dv-grid" *ngIf="laidOutEvents.length > 0">
+    <div class="dv-hours">
+      <div class="dv-hour-row" *ngFor="let hour of hours">
+        <span class="dv-hour-label">{{ hourLabel(hour) }}</span>
+      </div>
+    </div>
+
+    <div class="dv-events" [style.height.px]="hours.length * 56">
+      <div class="dv-hour-line" *ngFor="let hour of hours"></div>
+
+      <div
+        class="dv-event-wrap"
+        *ngFor="let laid of laidOutEvents; trackBy: trackByInterviewId"
+        [style.top.%]="topPct(laid.item)"
+        [style.height.%]="heightPct(laid.item)"
+        [style.left.%]="leftPct(laid)"
+        [style.width.%]="widthPct(laid)">
+        <app-calendar-event-card
+          [interview]="laid.item.interview"
+          [displayTimeZone]="displayTimeZone"
+          (activated)="onActivate(laid.item.interview)">
+        </app-calendar-event-card>
+      </div>
+    </div>
+  </div>
+</div>

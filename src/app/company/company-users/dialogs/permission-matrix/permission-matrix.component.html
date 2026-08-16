@@ -1,0 +1,27 @@
+<div class="pm-wrap" role="group" aria-label="Permission matrix">
+  <div class="pm-category" *ngFor="let cat of categories">
+    <button type="button" class="pm-category-header"
+      (click)="toggleCategory(cat.category)"
+      [attr.aria-expanded]="expanded[cat.category]"
+      [attr.aria-controls]="'pm-cat-' + cat.category">
+      <span class="pm-category-chevron" [class.pm-category-chevron--open]="expanded[cat.category]" aria-hidden="true">›</span>
+      <span class="pm-category-label">{{ cat.label }}</span>
+      <span class="pm-category-count">{{ selectedCountFor(cat) }}/{{ cat.permissions.length }}</span>
+    </button>
+
+    <div class="pm-category-body" [id]="'pm-cat-' + cat.category" *ngIf="expanded[cat.category]">
+      <label class="pm-row" *ngFor="let perm of cat.permissions"
+        [class.pm-row--disabled]="readonly || !isGrantable(perm.key)">
+        <input type="checkbox"
+          [checked]="isSelected(perm.key)"
+          [disabled]="readonly || !isGrantable(perm.key)"
+          (change)="toggle(perm.key)">
+        <span class="pm-row-text">
+          <span class="pm-row-desc">{{ perm.description }}</span>
+          <span class="pm-row-sensitive" *ngIf="isSensitive(perm.key)">Sensitive</span>
+          <span class="pm-row-locked" *ngIf="!isGrantable(perm.key)">You don't have this permission</span>
+        </span>
+      </label>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,5 @@
+<app-gateway-nav></app-gateway-nav>
+
 <main class="ep-portal" id="main-content">
 
   <!-- ════════════════════════════════════════════════════════════════════
@@ -47,7 +49,7 @@
         <div class="ep-hero-ctas">
           <button type="button" class="ep-btn ep-btn--grad ep-btn--lg" (click)="startHiring()">Start hiring</button>
           <button type="button" class="ep-btn ep-btn--outline-white ep-btn--lg" (click)="goToSignin()">Sign in</button>
-          <button type="button" class="ep-btn ep-btn--ghost-sm" (click)="browseJobs()">Browse public jobs →</button>
+          <a class="ep-btn ep-btn--ghost-sm" [href]="gatewayUrl">← Back to Main Page</a>
         </div>
 
         <p class="ep-hero-micro-trust" aria-hidden="true">Built for Philippine employers&nbsp;·&nbsp;Applicant tracking&nbsp;·&nbsp;Video answers&nbsp;·&nbsp;CV Health&nbsp;·&nbsp;Match signals</p>

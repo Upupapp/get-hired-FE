@@ -1,0 +1,86 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$muted: #667085;
+
+.al-wrap {
+  padding: 24px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.al-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  color: $navy;
+  margin: 0 0 2px;
+}
+
+.al-help {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  color: $muted;
+  margin: 0 0 18px;
+}
+
+.al-loading, .al-empty {
+  text-align: center;
+  padding: 24px;
+  color: $muted;
+  font-size: 0.85rem;
+  list-style: none;
+}
+
+.al-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 2px solid $border;
+}
+
+.al-entry {
+  position: relative;
+  padding: 0 0 16px 20px;
+}
+
+.al-entry-dot {
+  position: absolute;
+  left: -6px;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: $azure;
+  border: 2px solid #fff;
+}
+
+.al-entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.al-entry-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: $navy;
+}
+
+.al-entry-time {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.72rem;
+  color: $muted;
+  font-variant-numeric: tabular-nums;
+}
+
+.al-entry-detail {
+  margin: 2px 0 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: $muted;
+
+  strong { color: $navy; }
+}

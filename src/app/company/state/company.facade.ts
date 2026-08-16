@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as Model from '../company.model';
+import * as TeamModel from '../team-access.model';
 import { State } from './company.reducer';
 import { select, Store } from "@ngrx/store";
 import * as CompanyAction from './company.actions';
@@ -17,6 +18,13 @@ export class CompanyFacade {
     industry$ = this.store.pipe(select(fromfeature.getIndustryList));
     subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));
     error$ = this.store.pipe(select(fromfeature.getError));
+    teamRoles$ = this.store.pipe(select(fromfeature.getTeamRoles));
+    pendingInvites$ = this.store.pipe(select(fromfeature.getPendingInvites));
+    inviteResult$ = this.store.pipe(select(fromfeature.getInviteResult));
+    teamActionSuccess$ = this.store.pipe(select(fromfeature.getTeamActionSuccess));
+    teamActionError$ = this.store.pipe(select(fromfeature.getTeamActionError));
+    permissionCatalog$ = this.store.pipe(select(fromfeature.getPermissionCatalog));
+    auditLogs$ = this.store.pipe(select(fromfeature.getAuditLogs));
 
     constructor(
       private store: Store<State>,
@@ -64,5 +72,61 @@ export class CompanyFacade {
 
     getSetup() {
       this.store.dispatch(CompanyAction.getSetupList());
+    }
+
+    getTeamRoles() {
+      this.store.dispatch(CompanyAction.getTeamRoles());
+    }
+
+    getPendingInvites() {
+      this.store.dispatch(CompanyAction.getPendingInvites());
+    }
+
+    inviteTeamMembers(invites: TeamModel.InviteMemberRequest[]) {
+      this.store.dispatch(CompanyAction.inviteTeamMembers({ invites }));
+    }
+
+    revokeInvite(invitationId: string) {
+      this.store.dispatch(CompanyAction.revokeInvite({ invitationId }));
+    }
+
+    updateTeamMember(employeeId: string, changes: TeamModel.UpdateMemberRequest) {
+      this.store.dispatch(CompanyAction.updateTeamMember({ employeeId, changes }));
+    }
+
+    removeTeamMember(employeeId: string) {
+      this.store.dispatch(CompanyAction.removeTeamMember({ employeeId }));
+    }
+
+    suspendTeamMember(employeeId: string) {
+      this.store.dispatch(CompanyAction.suspendTeamMember({ employeeId }));
+    }
+
+    reactivateTeamMember(employeeId: string) {
+      this.store.dispatch(CompanyAction.reactivateTeamMember({ employeeId }));
+    }
+
+    getPermissionCatalog() {
+      this.store.dispatch(CompanyAction.getPermissionCatalog());
+    }
+
+    createCustomRole(request: TeamModel.CreateCustomRoleRequest) {
+      this.store.dispatch(CompanyAction.createCustomRole({ request }));
+    }
+
+    updateCustomRole(roleId: string, changes: TeamModel.UpdateCustomRoleRequest) {
+      this.store.dispatch(CompanyAction.updateCustomRole({ roleId, changes }));
+    }
+
+    archiveCustomRole(roleId: string) {
+      this.store.dispatch(CompanyAction.archiveCustomRole({ roleId }));
+    }
+
+    resendInvite(invitationId: string) {
+      this.store.dispatch(CompanyAction.resendInvite({ invitationId }));
+    }
+
+    getAuditLogs() {
+      this.store.dispatch(CompanyAction.getAuditLogs());
     }
 }

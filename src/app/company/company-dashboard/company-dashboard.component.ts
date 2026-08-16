@@ -10,6 +10,9 @@ import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assis
 import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from '../../employer-panel/employer-subscription/services/subscription-upgrade-recommendation.service';
 import { UpgradePromptCooldownService } from '../../employer-panel/employer-subscription/services/upgrade-prompt-cooldown.service';
 import { DashboardAnalytics } from './components/dashboard-charts/dashboard-charts.component';
+import { InterviewSchedulingService } from '@app-shared/interview-scheduling/interview-scheduling.service';
+import { CUSTOM_INTERVIEW_TYPE, ScheduledInterview } from '@app-shared/interview-scheduling/interview-scheduling.models';
+import { formatInTimeZone } from '@app-shared/interview-scheduling/interview-timezone.utils';
 
 interface PipelineStage {
   statusId: number;
@@ -173,6 +176,16 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
   upgradeRec: UpgradeRecommendation | null = null;
   upgradeDismissed = false;
 
+  // ── Phase 1.5A: Upcoming Interviews card ────────────────────────────────
+  // Reuses the existing GET /interview/scheduled?filter=upcoming endpoint
+  // (Internal Interview Scheduling MVP) -- no new backend route. Fetched
+  // independently of the pipeline/analytics calls above, same isolation
+  // pattern, so a failure here never blanks the rest of the dashboard.
+  upcomingInterviews: ScheduledInterview[] = [];
+  upcomingInterviewsLoading = true;
+  upcomingInterviewsError = false;
+  private readonly upcomingInterviewsDisplayLimit = 3;
+
   asyncLocalStorage = {
     getItem: async function (key: string) {
       await Promise.resolve();
@@ -188,6 +201,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private upgradeRecommendationService: SubscriptionUpgradeRecommendationService,
     private upgradeCooldown: UpgradePromptCooldownService,
+    private interviewSchedulingService: InterviewSchedulingService,
   ) { }
 
   ngOnInit(): void {
@@ -197,6 +211,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     this.companyFacade.getCompanyDashboard();
     this.loadPipelineOverview();
     this.loadAnalytics(this.trendRange);
+    this.loadUpcomingInterviews();
     this.asyncLocalStorage.getItem('user').then(details => {
       if (details) {
         const user = JSON.parse(details);
@@ -266,6 +281,64 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
       this.upgradeCooldown.dismiss(this.upgradeRec.trigger);
     }
     this.upgradeDismissed = true;
+  }
+
+  private readonly interviewFormatLabels: Record<string, string> = {
+    video_call: 'Video Call',
+    phone: 'Phone',
+    in_person: 'In Person',
+    custom: 'Custom',
+  };
+
+  private loadUpcomingInterviews(): void {
+    this.upcomingInterviewsLoading = true;
+    this.upcomingInterviewsError = false;
+    this.interviewSchedulingService.list('upcoming')
+      .pipe(takeUntil(this._destroy$))
+      .subscribe({
+        next: (res) => {
+          this.upcomingInterviews = (res.items || []).slice(0, this.upcomingInterviewsDisplayLimit);
+          this.upcomingInterviewsLoading = false;
+        },
+        error: () => {
+          this.upcomingInterviewsError = true;
+          this.upcomingInterviewsLoading = false;
+        },
+      });
+  }
+
+  retryUpcomingInterviews(): void {
+    this.loadUpcomingInterviews();
+  }
+
+  interviewApplicantName(interview: ScheduledInterview): string {
+    return (interview.applicant && (interview.applicant.name || interview.applicant.email)) || 'Applicant';
+  }
+
+  interviewTypeLabel(interview: ScheduledInterview): string {
+    return interview.interviewType === CUSTOM_INTERVIEW_TYPE && interview.customTypeLabel
+      ? interview.customTypeLabel
+      : interview.interviewType;
+  }
+
+  interviewFormatLabel(interview: ScheduledInterview): string {
+    return this.interviewFormatLabels[interview.format] || interview.format;
+  }
+
+  interviewTimeLabel(interview: ScheduledInterview): string {
+    return `${formatInTimeZone(interview.startAt, interview.timezone)} (${interview.timezone})`;
+  }
+
+  viewInterview(interview: ScheduledInterview): void {
+    this.router.navigate(['/recruiter/interview/scheduled', interview.interviewId]);
+  }
+
+  goToInterviews(): void {
+    this.router.navigate(['/recruiter/interview/scheduled']);
+  }
+
+  trackByInterviewId(_: number, item: ScheduledInterview): string {
+    return item.interviewId;
   }
 
   private loadPipelineOverview(): void {

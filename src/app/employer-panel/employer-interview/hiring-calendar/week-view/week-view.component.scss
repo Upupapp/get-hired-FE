@@ -1,0 +1,134 @@
+@import "src/assets/styles/colors";
+
+.wv { width: 100%; }
+
+// ─── Desktop grid ────────────────────────────────────────────────────────
+
+.wv-desktop-grid {
+  display: block;
+  border: 1px solid #EAECF0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.wv-grid-header {
+  display: flex;
+  border-bottom: 1px solid #EAECF0;
+  background: #F9FAFB;
+}
+
+.wv-hours-spacer { flex-shrink: 0; width: 56px; }
+
+.wv-day-header {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475467;
+
+  &--today { color: $color-global-red-buttons; }
+}
+
+.wv-grid-body {
+  display: flex;
+  overflow-x: auto;
+}
+
+.wv-hours {
+  flex-shrink: 0;
+  width: 56px;
+  border-right: 1px solid #EAECF0;
+  background: #F9FAFB;
+}
+
+.wv-hour-row {
+  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 2px 6px 0 0;
+  box-sizing: border-box;
+}
+
+.wv-hour-label { font-size: 0.625rem; color: #98A2B3; }
+
+.wv-day-col {
+  position: relative;
+  flex: 1;
+  min-width: 110px;
+  border-right: 1px solid #F2F4F7;
+
+  &--today { background: #FFFBFA; }
+  &:last-child { border-right: none; }
+}
+
+.wv-hour-line {
+  height: 48px;
+  border-bottom: 1px solid #F2F4F7;
+  box-sizing: border-box;
+}
+
+.wv-event-wrap {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 1px;
+  min-height: 20px;
+}
+
+// ─── Mobile ──────────────────────────────────────────────────────────────
+
+.wv-mobile { display: none; }
+
+.wv-mobile-strip {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #EAECF0;
+}
+
+.wv-mobile-day-btn {
+  flex-shrink: 0;
+  min-width: 56px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #EAECF0;
+  background: #fff;
+  color: #475467;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &--today { border-color: $color-global-red-buttons; }
+  &--selected {
+    background: $color-global-red-buttons;
+    border-color: $color-global-red-buttons;
+    color: #fff;
+
+    // Same red-on-red contrast fix as the view switcher's active tab.
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(0,0,0,0.15); }
+  }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+}
+
+.wv-mobile-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: #667085;
+  font-size: 0.875rem;
+}
+
+.wv-mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .wv-desktop-grid { display: none; }
+  .wv-mobile { display: block; }
+}

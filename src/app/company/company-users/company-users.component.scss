@@ -24,6 +24,13 @@ $self-bg: rgba(#FF675D, 0.035);
   flex-wrap: wrap;
 }
 
+.cu-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .cu-header-count {
   font-family: 'Manrope', sans-serif;
   font-size: 0.82rem;
@@ -288,4 +295,81 @@ $self-bg: rgba(#FF675D, 0.035);
   font-family: 'Courier New', monospace;
 }
 
-.cu-card-actions { display: flex; }
+.cu-card-actions { display: flex; gap: 8px; }
+
+// ── Job-scoped RBAC V1: role/scope chips, action group, pending invites ────────
+
+.cu-scope-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  background: rgba($azure, 0.08);
+  color: $azure;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cu-action-group {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.cu-action-btn--danger {
+  &:hover { border-color: $coral; color: #fff; background: $coral; }
+}
+
+.cu-avatar--pending {
+  background: $surface;
+  border: 1.5px dashed $border;
+
+  .cu-avatar-initials { color: $muted; }
+}
+
+.cu-invited-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  background: rgba($azure, 0.1);
+  color: $azure;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  width: fit-content;
+}
+
+.cu-row--invited {
+  background: $surface;
+}
+
+.cu-card--invited {
+  background: $surface;
+  border-style: dashed;
+}
+
+// ── Suspend/reactivate ──────────────────────────────────────────────────────
+
+.cu-suspended-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  background: rgba($muted, 0.15);
+  color: $muted;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.cu-row--suspended {
+  opacity: 0.65;
+}
+
+.cu-card--suspended {
+  opacity: 0.65;
+}

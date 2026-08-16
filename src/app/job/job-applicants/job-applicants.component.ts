@@ -12,6 +12,8 @@ import * as InterviewModel from '@main/interview/interview.model';
 import * as ApplicantModel from '@main/applicant/applicant.model';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { JobService } from '@app-job/job.service';
+import { ScheduleInterviewDialogComponent, ScheduleInterviewDialogData } from '@app-shared/components/schedule-interview-dialog/schedule-interview-dialog.component';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 export interface TableHeader {
   col_name: string;
@@ -152,17 +154,26 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private dialog: MatDialog,
     private applicantFacade: ApplicantFacade,
-    private jobService: JobService
+    private jobService: JobService,
+    private snackbarService: SnackbarService
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id
     });
   }
 
+  /** Latest job title, tracked for the Schedule Interview dialog header --
+   * the per-row applicant data doesn't carry jobTitle on this page (it's a
+   * single-job applicant list), so it's read off the job$ stream instead. */
+  private currentJobTitle = '';
+
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
     this.jobFacade.getApplicants(this.jobId);
     this.loadMatchSignals();
+    this.job$.pipe(takeUntil(this.destroy$)).subscribe((job: any) => {
+      this.currentJobTitle = (job && job.jobTitle) || '';
+    });
   }
 
   /** Employer Portal v3 -- best-effort fetch, never blocks or breaks the
@@ -291,6 +302,47 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
           ...current,
           [result.applicationId]: { statusId: result.newStatusId, statusName: result.newStatusName }
         });
+      }
+
+      if (result && result.scheduleInterview) {
+        this.openScheduleInterviewDialog(result.data && result.data.data);
+      }
+    });
+  }
+
+  /** Internal Interview Scheduling MVP -- opens the create-interview dialog
+   * for the applicant whose row action menu triggered it. `applicantRow` is
+   * the same row-data shape used throughout this component (applicationId,
+   * firstName/lastName, etc.) -- see applicant-action-modal's `data.data`. */
+  private openScheduleInterviewDialog(applicantRow: any): void {
+    const applicationId = applicantRow && applicantRow.applicationId;
+    if (!applicationId) {
+      this.snackbarService.error("We couldn't find this application. Please close and try again.", 'Dismiss', 4000);
+      return;
+    }
+    const applicantName = applicantRow.fullName
+      || [applicantRow.firstName, applicantRow.lastName].filter(Boolean).join(' ')
+      || undefined;
+
+    const dialogData: ScheduleInterviewDialogData = {
+      mode: 'create',
+      jobId: this.jobId,
+      applicationId,
+      applicantName,
+      jobTitle: this.currentJobTitle,
+    };
+
+    const ref = this.dialog.open(ScheduleInterviewDialogComponent, {
+      width: 'min(560px, 95vw)',
+      maxHeight: '92vh',
+      autoFocus: true,
+      restoreFocus: true,
+      data: dialogData,
+    });
+
+    ref.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((res) => {
+      if (res && res.interview) {
+        this.snackbarService.success('Interview scheduled.', 'OK', 3000);
       }
     });
   }

@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  height: 44px;
-  padding: 0 16px;
+  min-height: 44px;
+  padding: 10px 16px;
   background: #0A66C2;
   color: #fff;
   border: none;
@@ -14,7 +14,12 @@
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s ease, box-shadow 0.15s ease;
-  white-space: nowrap;
+  // STITCH fix: was white-space:nowrap + fixed height:44px -- on narrow
+  // containers (e.g. a 320px signin card) "Sign in with LinkedIn" has no
+  // room to fit on one line and visually clipped past the button's own
+  // edge. min-height + wrapping lets it grow to two lines gracefully
+  // instead, at any container width.
+  white-space: normal;
   box-shadow: 0 1px 3px rgba(0,0,0,0.18);
 
   &:hover {

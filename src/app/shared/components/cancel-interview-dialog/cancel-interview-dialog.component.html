@@ -1,0 +1,57 @@
+<div class="cid">
+
+  <div class="cid__header">
+    <h2 class="cid__title" id="cid-title">Cancel interview</h2>
+    <button type="button" class="cid__close" (click)="close()" aria-label="Close dialog" [disabled]="submitting">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Success state -->
+  <div class="cid__success" *ngIf="successResult" role="status" aria-live="polite">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" fill="#FEE2E2"/>
+      <path d="M8 12h8" stroke="#991B1B" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <p class="cid__success-msg">Interview cancelled</p>
+
+    <div class="cid__warning" *ngIf="successResult.notificationWarning" role="alert">
+      {{ successResult.notificationWarning }}
+    </div>
+    <div class="cid__confirmed" *ngIf="!successResult.notificationWarning">
+      The applicant has been notified.
+    </div>
+
+    <div class="cid__actions cid__actions--center">
+      <button type="button" class="gh-btn-primary" (click)="done()" cdkFocusInitial>Done</button>
+    </div>
+  </div>
+
+  <!-- Confirmation form -->
+  <div *ngIf="!successResult" class="cid__body">
+    <p class="cid__prompt">
+      Cancel the interview with <strong>{{ applicantName }}</strong>? This cannot be undone, and the applicant will be notified.
+    </p>
+
+    <div class="cid__field">
+      <label class="gh-label" for="cid-reason">Reason <span class="cid__optional">(optional, shown to your team only)</span></label>
+      <textarea id="cid-reason" class="gh-input cid__textarea" rows="3" [(ngModel)]="reason"
+        placeholder="e.g. Applicant withdrew, schedule conflict"></textarea>
+    </div>
+
+    <div class="cid__error" *ngIf="serverErrorMessage" role="alert" aria-live="polite">
+      {{ serverErrorMessage }}
+    </div>
+
+    <div class="cid__actions">
+      <button type="button" class="gh-btn-secondary" (click)="close()" [disabled]="submitting">Keep interview</button>
+      <button type="button" class="cid__btn-destructive" (click)="confirmCancel()" [disabled]="submitting" [attr.aria-busy]="submitting">
+        <span *ngIf="!submitting">Cancel interview</span>
+        <span *ngIf="submitting">Cancelling…</span>
+      </button>
+    </div>
+  </div>
+
+</div>

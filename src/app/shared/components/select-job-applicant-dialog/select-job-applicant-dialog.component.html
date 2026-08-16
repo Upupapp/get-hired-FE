@@ -1,0 +1,55 @@
+<div class="sjad-dialog">
+  <div class="sjad-header">
+    <h2 class="sjad-title">New Interview</h2>
+    <button type="button" class="sjad-close" (click)="close()" aria-label="Close">&times;</button>
+  </div>
+
+  <div class="sjad-steps">
+    <span class="sjad-step" [class.sjad-step--active]="step === 'job'">1. Select job</span>
+    <span class="sjad-step-sep">›</span>
+    <span class="sjad-step" [class.sjad-step--active]="step === 'applicant'">2. Select applicant</span>
+  </div>
+
+  <div class="sjad-body" *ngIf="step === 'job'">
+    <div *ngIf="jobsLoading" class="sjad-loading">Loading jobs…</div>
+
+    <div *ngIf="!jobsLoading && jobsError" class="sjad-error">
+      <p>We couldn't load your jobs.</p>
+      <button type="button" class="sjad-btn sjad-btn--secondary" (click)="retryJobs()">Retry</button>
+    </div>
+
+    <div *ngIf="!jobsLoading && !jobsError && jobs.length === 0" class="sjad-empty">
+      No jobs available to schedule an interview for.
+    </div>
+
+    <ul class="sjad-list" *ngIf="!jobsLoading && !jobsError && jobs.length > 0">
+      <li *ngFor="let job of jobs" class="sjad-list-item" (click)="selectJob(job)" tabindex="0"
+          (keydown.enter)="selectJob(job)">
+        {{ job.jobTitle }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="sjad-body" *ngIf="step === 'applicant'">
+    <button type="button" class="sjad-back" (click)="backToJobs()">‹ Back to jobs</button>
+    <p class="sjad-selected-job">{{ selectedJob?.jobTitle }}</p>
+
+    <div *ngIf="applicantsLoading" class="sjad-loading">Loading applicants…</div>
+
+    <div *ngIf="!applicantsLoading && applicantsError" class="sjad-error">
+      <p>We couldn't load applicants for this job.</p>
+      <button type="button" class="sjad-btn sjad-btn--secondary" (click)="retryApplicants()">Retry</button>
+    </div>
+
+    <div *ngIf="!applicantsLoading && !applicantsError && applicants.length === 0" class="sjad-empty">
+      No applicants available for this job.
+    </div>
+
+    <ul class="sjad-list" *ngIf="!applicantsLoading && !applicantsError && applicants.length > 0">
+      <li *ngFor="let applicant of applicants" class="sjad-list-item" (click)="continue(applicant)" tabindex="0"
+          (keydown.enter)="continue(applicant)">
+        {{ applicant.name }}
+      </li>
+    </ul>
+  </div>
+</div>

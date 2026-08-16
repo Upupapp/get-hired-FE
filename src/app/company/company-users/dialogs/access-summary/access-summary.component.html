@@ -1,0 +1,17 @@
+<div class="as-wrap" *ngIf="role">
+  <h6 class="as-title">Effective access preview</h6>
+  <p class="as-scope">{{ scopeSentence }}</p>
+
+  <div class="as-row" *ngIf="includedLabels.length > 0">
+    <span class="as-row-label as-row-label--can">Can access</span>
+    <span class="as-row-value">{{ includedLabels.join(', ') }}</span>
+  </div>
+  <div class="as-row" *ngIf="excludedLabels.length > 0">
+    <span class="as-row-label as-row-label--cannot">Cannot access</span>
+    <span class="as-row-value">{{ excludedLabels.join(', ') }}</span>
+  </div>
+
+  <div class="as-warning" *ngIf="showBroadAccessWarning">
+    This role includes sensitive access (CVs, billing, or team management) combined with all-jobs visibility. Double-check this is intended.
+  </div>
+</div>

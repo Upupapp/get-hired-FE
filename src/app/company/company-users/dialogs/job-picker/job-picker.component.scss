@@ -1,0 +1,127 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$surface: #F8F9FC;
+$text: #1A1D2E;
+$muted: #667085;
+
+.jp-wrap {
+  margin-top: 16px;
+}
+
+.jp-label {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: $navy;
+  margin-bottom: 4px;
+}
+
+.jp-help {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  color: $muted;
+  margin: 0 0 10px;
+}
+
+.jp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.jp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba($azure, 0.1);
+  color: $azure;
+  border-radius: 999px;
+  padding: 4px 8px 4px 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.jp-chip-remove {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 2px;
+
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 1px; border-radius: 50%; }
+}
+
+.jp-search {
+  width: 100%;
+  height: 38px;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  color: $text;
+  margin-bottom: 8px;
+
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 1px; border-color: $azure; }
+}
+
+.jp-list {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.jp-loading, .jp-empty {
+  padding: 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  color: $muted;
+  text-align: center;
+}
+
+.jp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid $border;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  color: $text;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: $surface; }
+  &--selected { background: rgba($azure, 0.06); }
+
+  input[type="checkbox"] { accent-color: $azure; width: 15px; height: 15px; flex-shrink: 0; }
+}
+
+.jp-row-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jp-required {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  color: $coral;
+  margin: 8px 0 0;
+}
+
+.jp-count {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.76rem;
+  color: $muted;
+  margin: 8px 0 0;
+}

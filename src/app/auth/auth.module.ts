@@ -17,6 +17,7 @@ import { AccountSettingComponent } from './account-setting/account-setting.compo
 import { UnauthGuard } from '@app-shared/guard/unauth.guard';
 import { RoleClassificationComponent } from './role-classification/role-classification.component';
 import { LinkedInCompleteComponent } from './linkedin-complete/linkedin-complete.component';
+import { AcceptInviteComponent } from './accept-invite/accept-invite.component';
 import { environment } from '@environments/environment';
 
 // Expose Google OAuth client ID as a window property for the GIS button component.
@@ -43,6 +44,9 @@ const routes: Routes = [
   { path: 'choose-role', component: RoleClassificationComponent },
   // LinkedIn OIDC callback landing — no UnauthGuard, user is mid-auth flow
   { path: 'linkedin/complete', component: LinkedInCompleteComponent },
+  // Team invite accept page — no UnauthGuard, an invitee may not have any
+  // session yet (or may already be signed in as a different account).
+  { path: 'accept-invite', component: AcceptInviteComponent },
 ];
 
 @NgModule({
@@ -55,6 +59,7 @@ const routes: Routes = [
     AccountSettingComponent,
     RoleClassificationComponent,
     LinkedInCompleteComponent,
+    AcceptInviteComponent,
   ],
   imports: [
     CommonModule,

@@ -19,6 +19,9 @@ import { GoogleAuthService } from '../services/google-auth.service';
   animations: [mainAnimations]
 })
 export class SignupComponent implements OnInit {
+  /** Employer-only app -- see the registerForm's role control comment. */
+  readonly ROLE = 2;
+
   unsubscribe$ = new Subject<void>();
   req$: Subscription;
 
@@ -77,17 +80,15 @@ export class SignupComponent implements OnInit {
       lastName: [null, Validators.compose([Validators.required])],
       agreeToTerms: [null, Validators.compose([Validators.required])],
       recaptcha: [null],
-      role: [null, Validators.compose([Validators.required])]
+      // This app is employer-only (gethired-employer-FE) --
+      // role is always 2, never user-selected or client-overridable.
+      // Previously this was a required dropdown ALSO patchable via a
+      // ?role= query param, meaning a stray ?role=3 on this app's own
+      // /signup URL could submit a job-seeker signup from the employer
+      // app. Hardcoded here instead; the backend remains the actual
+      // authority on what an account can do regardless of this value.
+      role: [this.ROLE]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
-
-    // Public-portal CTAs can pre-select role via ?role=2|3 (e.g. "Continue
-    // as Employer" -> /signup?role=2) so visitors don't have to pick it
-    // again. Falls back to the existing required-field behavior if absent
-    // or not one of the two valid values.
-    const requestedRole = this.activatedRoute.snapshot.queryParamMap.get('role');
-    if (requestedRole === '2' || requestedRole === '3') {
-      this.registerForm.patchValue({ role: Number(requestedRole) });
-    }
 
     this.req$ = combineLatest([this.success$, this.loading$]).pipe(
       map(([success, loading]) => {
@@ -212,10 +213,6 @@ export class SignupComponent implements OnInit {
 
   get agreeToTerms_validators() {
     return this.registerForm.get('agreeToTerms');
-  }
-
-  get role_validators() {
-    return this.registerForm.get('role');
   }
 
   get pw_validators() {

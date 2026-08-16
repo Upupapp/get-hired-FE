@@ -3,6 +3,7 @@ import { environment } from "@environments/environment";
 import { BaseService } from "@main/core/services/base.service";
 import { of } from "rxjs";
 import * as Model from "./company.model";
+import * as TeamModel from "./team-access.model";
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,87 @@ export class CompanyService {
   }
 
   getCompanyUsers(companyId: string) {
-    return this.baseService.get<Model.CompanyUser[]>(`${this.companyUrl}/getallcompanyuser?id=${companyId}`);
+    // Server derives company from the JWT -- the companyId param is unused
+    // by the backend (kept in the call signature so existing dispatchers
+    // don't need to change), replaced with the new job-scoped-RBAC-aware
+    // Team & Access endpoint.
+    return this.baseService.get<Model.CompanyUser[]>(`${this.companyUrl}/team/members`);
+  }
+
+  getTeamRoles(includeArchived = false) {
+    return this.baseService.get<TeamModel.TeamRole[]>(`${this.companyUrl}/team/roles${includeArchived ? '?includeArchived=true' : ''}`);
+  }
+
+  getPermissionCatalog() {
+    return this.baseService.get<TeamModel.PermissionDef[]>(`${this.companyUrl}/team/permissions`);
+  }
+
+  createCustomRole(request: TeamModel.CreateCustomRoleRequest) {
+    return this.baseService.post<TeamModel.TeamRole>(`${this.companyUrl}/team/roles`, request);
+  }
+
+  updateCustomRole(roleId: string, changes: TeamModel.UpdateCustomRoleRequest) {
+    return this.baseService.put(`${this.companyUrl}/team/roles/${roleId}`, changes);
+  }
+
+  archiveCustomRole(roleId: string) {
+    return this.baseService.delete(`${this.companyUrl}/team/roles/${roleId}`);
+  }
+
+  resendInvite(invitationId: string) {
+    return this.baseService.post(`${this.companyUrl}/team/invite/${invitationId}/resend`, {});
+  }
+
+  getAuditLogs(limit = 100) {
+    return this.baseService.get<TeamModel.AuditLogEntry[]>(`${this.companyUrl}/team/audit-logs?limit=${limit}`);
+  }
+
+  getPendingInvites() {
+    return this.baseService.get<TeamModel.TeamInvitation[]>(`${this.companyUrl}/team/invites`);
+  }
+
+  inviteTeamMembers(invites: TeamModel.InviteMemberRequest[]) {
+    return this.baseService.post<{ companyId: string; invites: TeamModel.InviteResultItem[] }>(
+      `${this.companyUrl}/team/invite`, { invites }
+    );
+  }
+
+  revokeInvite(invitationId: string) {
+    return this.baseService.delete(`${this.companyUrl}/team/invite/${invitationId}`);
+  }
+
+  updateTeamMember(employeeId: string, changes: TeamModel.UpdateMemberRequest) {
+    return this.baseService.put(`${this.companyUrl}/team/members/${employeeId}`, changes);
+  }
+
+  removeTeamMember(employeeId: string) {
+    return this.baseService.delete(`${this.companyUrl}/team/members/${employeeId}`);
+  }
+
+  suspendTeamMember(employeeId: string) {
+    return this.baseService.post(`${this.companyUrl}/team/members/${employeeId}/suspend`, {});
+  }
+
+  reactivateTeamMember(employeeId: string) {
+    return this.baseService.post(`${this.companyUrl}/team/members/${employeeId}/reactivate`, {});
+  }
+
+  previewInvite(token: string) {
+    return this.baseService.get<{ companyName: string; companyLogoUrl: string; roleName: string }>(
+      `${this.companyUrl}/team/invite/${token}/preview`
+    );
+  }
+
+  acceptInvite(token: string, payload: { firstName?: string; lastName?: string }) {
+    return this.baseService.post<{ companyId: string; companyName: string; resetLink?: string; redirectTo: string }>(
+      `${this.companyUrl}/team/invite/${token}/accept`, payload
+    );
+  }
+
+  // Reuses the existing, already job-scoped-on-the-server job list endpoint
+  // (GET /job/basiclist) -- no new backend route needed for the job-picker.
+  getAssignableJobs() {
+    return this.baseService.get<TeamModel.AssignableJob[]>(`${environment.api_url}/job/basiclist`);
   }
 
   getDashboardDetails() {

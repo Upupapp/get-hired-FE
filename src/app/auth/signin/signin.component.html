@@ -1,20 +1,87 @@
-<!-- BL-012: signin carousel mobile fix.
-     The carousel column is decorative (not part of auth flow).
-     On screens < lg the Bootstrap grid stacks both col-12 columns vertically,
-     causing the bg-left panel (min-height:100vh) to push the form off-screen.
-     Fix: hide the entire carousel column below lg breakpoint.
-     The form column is reordered first via order-first / order-lg-last so it
-     is both first in the visual stacking order AND first in DOM tab order on
-     all screen sizes. -->
+<!-- SIGNIN MOBILE UX REDESIGN: the carousel/visual side is no longer hidden
+     below lg -- it's compacted into an intentional banner that sits above
+     the form on small screens (see .bg-left's mobile-first rules in the
+     .scss for the actual composition). The carousel now comes first in DOM
+     source order on every breakpoint (top on mobile, left on desktop) since
+     it's purely decorative (aria-hidden) with its own interactive controls
+     now tabindex="-1" -- nothing inside it is keyboard-reachable, so DOM
+     order no longer needs to fight visual order the way the old
+     order-first/order-lg-last flip did. -->
 <div class="container-fluid bg-white min-vh-100">
-  <div class="row">
-    <!-- FORM column: first in DOM, first visually on mobile; moves right on lg+ -->
-    <div class="col-12 col-lg-6 order-first order-lg-last bg-form gh-signin-form-col">
+  <div class="row g-0">
+
+    <!-- VISUAL / CAROUSEL side: compact banner on mobile, full panel on lg+. -->
+    <div class="col-12 col-lg-6 bg-left" aria-hidden="true">
+      <div class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="0" class="active"
+            aria-current="true" tabindex="-1"></button>
+
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1" tabindex="-1"></button>
+
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2" tabindex="-1"></button>
+        </div>
+        <div class="carousel-inner" id="admin-welcome-screens">
+          <div class="carousel-item active text-center">
+            <div class="text-center">
+              <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo">
+              <h5 class="title-left-main">
+                Bring all your applicants in</h5>
+              <h4 class="title-left-gradient">ONE PLATFORM</h4>
+              <h5 class="title-left-main">in just 3 clicks.</h5>
+            </div>
+            <div class="gh-carousel-illustration">
+              <img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
+                src="assets/images/placeholder/login-object-new-2.png" class="img-object">
+            </div>
+          </div>
+
+          <div class="carousel-item text-center">
+            <div class="text-center">
+              <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
+                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo">
+                <h5 class="title-left-main">
+                  Interview
+                  <span class="title-left-gradient">ALL </span> your applicants
+                </h5>
+
+                <h4 class="title-left-gradient">AUTOMATICALLY</h4>
+              </div>
+            </div>
+            <div class="gh-carousel-illustration">
+              <img src="assets/images/placeholder/login-object-new-1.png"
+                [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
+            </div>
+          </div>
+
+          <div class="carousel-item text-center">
+            <div class="text-center">
+              <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
+                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo">
+                <h5 class="title-left-main">
+                  Choose the
+                  <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
+                </h5>
+
+                <h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
+              </div>
+            </div>
+            <div class="gh-carousel-illustration">
+              <img src="assets/images/placeholder/login-object-new-3.png"
+                [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM side -->
+    <div class="col-12 col-lg-6 bg-form gh-signin-form-col">
+      <app-gateway-nav></app-gateway-nav>
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
-          <div class="form-group text-start mt-5">
+          <div class="form-group text-start mt-2">
             <h4 class="main-title m-0">{{ 'SIGNIN.WELCOME_MESSAGE' | translate }}</h4>
-            <br>
           </div>
 
           <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
@@ -120,66 +187,5 @@
       </div>
     </div>
 
-    <!-- CAROUSEL column: decorative only. Hidden below lg to prevent form push-down.
-         aria-hidden ensures screen readers skip decorative slides. -->
-    <div class="col-lg-6 px-5 pb-2 bg-left d-none d-lg-block order-lg-first" aria-hidden="true">
-      <div class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="0" class="active"
-            aria-current="true"></button>
-
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1"></button>
-
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2"></button>
-        </div>
-        <div class="carousel-inner pb-5" id="admin-welcome-screens">
-          <div class="carousel-item active text-center">
-            <div class="text-center">
-              <img src="assets/brand/Gethired-horizontal-logo.png?v=3" routerLink="/jobs" class="main-logo">
-              <h5 class="title-left-main">
-                Bring all your applicants in</h5>
-              <h4 class="title-left-gradient">ONE PLATFORM</h4>
-              <h5 class="title-left-main">in just 3 clicks.</h5>
-            </div>
-            <div style="height: 400px;">
-              <img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
-                src="assets/images/placeholder/login-object-new-2.png" class="img-object">
-            </div>
-          </div>
-
-          <div class="carousel-item text-center">
-            <div class="text-center">
-              <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" routerLink="/jobs" class="main-logo">
-                <h5 class="title-left-main">
-                  Interview
-                  <span class="title-left-gradient">ALL </span> your applicants
-                </h5>
-
-                <h4 class="title-left-gradient">AUTOMATICALLY</h4>
-              </div>
-            </div>
-            <img src="assets/images/placeholder/login-object-new-1.png"
-              [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
-          </div>
-
-          <div class="carousel-item text-center">
-            <div class="text-center">
-              <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" routerLink="/jobs" class="main-logo">
-                <h5 class="title-left-main">
-                  Choose the
-                  <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
-                </h5>
-
-                <h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
-              </div>
-            </div>
-            <img src="assets/images/placeholder/login-object-new-3.png"
-              [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>

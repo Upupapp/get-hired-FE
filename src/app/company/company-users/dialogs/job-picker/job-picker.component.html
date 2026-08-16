@@ -1,0 +1,32 @@
+<div class="jp-wrap">
+  <label class="jp-label" for="jp-search">Assigned job posts</label>
+  <p class="jp-help">This member will only see applicants, messages, and interview activity for the jobs you select below.</p>
+
+  <div class="jp-chips" *ngIf="selectedJobIds.length > 0" aria-label="Selected jobs">
+    <span class="jp-chip" *ngFor="let jobId of selectedJobIds">
+      {{ jobTitleFor(jobId) }}
+      <button type="button" class="jp-chip-remove" (click)="remove(jobId)" [attr.aria-label]="'Remove ' + jobTitleFor(jobId)">×</button>
+    </span>
+  </div>
+
+  <input
+    id="jp-search"
+    type="text"
+    class="jp-search"
+    placeholder="Search job posts…"
+    [ngModel]="searchTerm"
+    (ngModelChange)="onSearch($event)"
+    [attr.aria-label]="'Search job posts'">
+
+  <div class="jp-list" role="listbox" aria-multiselectable="true">
+    <div class="jp-loading" *ngIf="loading">Loading job posts…</div>
+    <div class="jp-empty" *ngIf="!loading && filteredJobs.length === 0">No job posts found.</div>
+    <label class="jp-row" *ngFor="let job of filteredJobs" [class.jp-row--selected]="isSelected(job.jobId)">
+      <input type="checkbox" [checked]="isSelected(job.jobId)" (change)="toggle(job.jobId)">
+      <span class="jp-row-title">{{ job.jobTitle }}</span>
+    </label>
+  </div>
+
+  <p class="jp-required" *ngIf="selectedJobIds.length === 0">Select at least one job post for assigned-job access.</p>
+  <p class="jp-count" *ngIf="selectedJobIds.length > 0">{{ selectedJobIds.length }} job post{{ selectedJobIds.length !== 1 ? 's' : '' }} assigned</p>
+</div>

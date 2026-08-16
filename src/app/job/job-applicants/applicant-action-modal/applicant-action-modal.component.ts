@@ -42,6 +42,16 @@ export class ApplicantActionModalComponent implements OnInit {
       icon: '/assets/images/icons/client-menu/service-templates.png',
       background: '#f7f2e4'
     },
+    // Internal Interview Scheduling MVP -- opens the schedule-interview dialog
+    // for this applicant. Scheduling is tracked entirely separately from
+    // application status (no new STATUS_OPTIONS value), so this menu action
+    // never touches jobApplicationStatusId.
+    {
+      id: 'schedule-interview',
+      title: 'Schedule Interview',
+      icon: '/assets/images/icons/calendar-input-icon.png',
+      background: '#EAF4FF'
+    },
   ];
 
   constructor(
@@ -94,6 +104,14 @@ export class ApplicantActionModalComponent implements OnInit {
 
     if (menu && menu.id === 'change-status') {
       this.statusView = true;
+    }
+
+    if (menu && menu.id === 'schedule-interview') {
+      this.dialogRef.close({
+        cancel: false,
+        data: this.data,
+        scheduleInterview: true
+      });
     }
   }
 

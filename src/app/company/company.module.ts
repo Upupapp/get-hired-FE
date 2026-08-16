@@ -22,6 +22,14 @@ import { DashboardStatisticsComponent } from './company-dashboard/components/das
 import { NgChartsModule } from 'ng2-charts';
 import { JobsModule } from '@main/jobs/jobs.module';
 import { ImportAddUserComponent } from './company-users/dialogs/import-add-user.component/import-add-user.component';
+import { EditTeamMemberComponent } from './company-users/dialogs/edit-team-member.component/edit-team-member.component';
+import { JobPickerComponent } from './company-users/dialogs/job-picker/job-picker.component';
+import { AccessSummaryComponent } from './company-users/dialogs/access-summary/access-summary.component';
+import { PermissionMatrixComponent } from './company-users/dialogs/permission-matrix/permission-matrix.component';
+import { RoleBuilderComponent } from './company-users/dialogs/role-builder/role-builder.component';
+import { RoleManagementComponent } from './company-users/dialogs/role-management/role-management.component';
+import { AuditLogComponent } from './company-users/dialogs/audit-log/audit-log.component';
+import { HelpChooseRoleComponent } from './company-users/dialogs/help-choose-role/help-choose-role.component';
 import { CompanyBasicComponent } from './company-basic/company-basic.component';
 import { GhFeedbackModalComponent } from './company-details-form/gh-feedback-modal/gh-feedback-modal.component';
 
@@ -37,6 +45,14 @@ const exportedComponents = [
   DashboardChartsComponent,
   DashboardStatisticsComponent,
   ImportAddUserComponent,
+  EditTeamMemberComponent,
+  JobPickerComponent,
+  AccessSummaryComponent,
+  PermissionMatrixComponent,
+  RoleBuilderComponent,
+  RoleManagementComponent,
+  AuditLogComponent,
+  HelpChooseRoleComponent,
   CompanyBasicComponent,
 ];
 

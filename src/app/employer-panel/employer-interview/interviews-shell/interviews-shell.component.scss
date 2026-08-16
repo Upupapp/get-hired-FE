@@ -1,0 +1,64 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+.ish-page {
+  width: 100%;
+}
+
+.ish-header {
+  padding: 40px 28px 0;
+}
+
+.ish-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $color-black;
+  margin: 0 0 4px;
+}
+
+.ish-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+
+.ish-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 28px;
+  border-bottom: 1px solid #e5e7eb;
+  overflow-x: auto;
+}
+
+.ish-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 4px;
+  margin-right: 24px;
+  min-height: 44px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #667085;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color $motion-duration-micro $motion-ease-standard,
+              border-color $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover, &:focus {
+    color: $color-global-red-buttons;
+    text-decoration: none;
+  }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+
+  &--active {
+    color: $color-global-red-buttons;
+    border-bottom-color: $color-global-red-buttons;
+  }
+}
+
+@media (max-width: 600px) {
+  .ish-header { padding: 24px 16px 0; }
+  .ish-tabs { padding: 0 16px; }
+}

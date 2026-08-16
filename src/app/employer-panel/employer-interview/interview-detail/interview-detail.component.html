@@ -1,0 +1,100 @@
+<div class="idet-page">
+
+  <button type="button" class="idet-back" (click)="goBack()">
+    <span aria-hidden="true">&#8592;</span> Back to scheduled interviews
+  </button>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="idet-loading" aria-busy="true" role="status" aria-label="Loading interview details">
+    <div class="idet-skeleton-line" style="width: 40%; height: 24px;"></div>
+    <div class="idet-skeleton-line" style="width: 60%;"></div>
+    <div class="idet-skeleton-line" style="width: 30%;"></div>
+  </div>
+
+  <!-- Not found / not authorized (identical UI per API contract) -->
+  <div *ngIf="!loading && notFound" class="idet-notfound" role="alert">
+    <h2>We couldn't find this interview.</h2>
+    <p>It may have been removed, or you may not have access to it.</p>
+    <button class="gh-btn-primary" (click)="goBack()">Back to scheduled interviews</button>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !notFound && interview as iv" class="idet-content">
+
+    <div class="idet-header">
+      <div>
+        <h1 class="idet-title">{{ typeLabel }}</h1>
+        <p class="idet-sub">{{ applicantName }} &middot; {{ iv.jobTitle }}</p>
+      </div>
+      <app-interview-status-chip [status]="iv.displayStatus"></app-interview-status-chip>
+    </div>
+
+    <div class="idet-card">
+      <div class="idet-row">
+        <span class="idet-label">Date &amp; time</span>
+        <span class="idet-value">
+          {{ scheduledTimeLabel }}
+          <span class="idet-value-secondary" *ngIf="browserTimeLabel">{{ browserTimeLabel }}</span>
+        </span>
+      </div>
+      <div class="idet-row">
+        <span class="idet-label">Duration</span>
+        <span class="idet-value">{{ iv.durationMinutes }} minutes</span>
+      </div>
+      <div class="idet-row">
+        <span class="idet-label">Format</span>
+        <span class="idet-value">{{ formatLabel }}</span>
+      </div>
+      <div class="idet-row" *ngIf="iv.format === 'video_call' && iv.meetingLink">
+        <span class="idet-label">Meeting link</span>
+        <span class="idet-value"><a [href]="iv.meetingLink" target="_blank" rel="noopener noreferrer">{{ iv.meetingLink }}</a></span>
+      </div>
+      <div class="idet-row" *ngIf="iv.format === 'in_person' && iv.location">
+        <span class="idet-label">Location</span>
+        <span class="idet-value">{{ iv.location }}</span>
+      </div>
+      <div class="idet-row" *ngIf="(iv.format === 'phone' || iv.format === 'custom') && iv.instructions">
+        <span class="idet-label">Instructions</span>
+        <span class="idet-value">{{ iv.instructions }}</span>
+      </div>
+      <div class="idet-row" *ngIf="iv.preparationNotes">
+        <span class="idet-label">Preparation notes</span>
+        <span class="idet-value">{{ iv.preparationNotes }}</span>
+      </div>
+      <div class="idet-row">
+        <span class="idet-label">Interviewer</span>
+        <span class="idet-value">{{ iv.interviewer?.name || 'You' }}</span>
+      </div>
+      <div class="idet-row">
+        <span class="idet-label">Applicant</span>
+        <span class="idet-value">
+          {{ iv.applicant?.name || 'Unknown' }}
+          <span class="idet-value-secondary" *ngIf="iv.applicant?.email">{{ iv.applicant?.email }}</span>
+        </span>
+      </div>
+      <div class="idet-row">
+        <span class="idet-label">Notification</span>
+        <span class="idet-value">{{ notificationLabel }}</span>
+      </div>
+      <div class="idet-row" *ngIf="iv.rescheduleCount > 0">
+        <span class="idet-label">History</span>
+        <span class="idet-value">Rescheduled {{ iv.rescheduleCount }} {{ iv.rescheduleCount === 1 ? 'time' : 'times' }}</span>
+      </div>
+      <div class="idet-row" *ngIf="iv.lifecycleState === 'cancelled'">
+        <span class="idet-label">Cancelled</span>
+        <span class="idet-value">
+          {{ iv.cancelledAt | date:'medium' }}
+          <span class="idet-value-secondary" *ngIf="iv.cancellationReason">Reason: {{ iv.cancellationReason }}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="idet-actions">
+      <button type="button" class="gh-btn-secondary" (click)="messageApplicant()">Message Applicant</button>
+      <button type="button" class="gh-btn-secondary" *ngIf="canReschedule" (click)="reschedule()">Reschedule</button>
+      <button type="button" class="idet-btn-danger" *ngIf="canCancel" (click)="cancel()">Cancel interview</button>
+    </div>
+
+  </div>
+
+</div>

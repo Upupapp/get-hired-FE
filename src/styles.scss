@@ -1031,6 +1031,8 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   display: flex;
   justify-content: center;
   margin-bottom: 8px;
+  align-items: center;
+  position: relative;
 
   app-google-signin-button {
     width: 100%;
@@ -1042,13 +1044,17 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   // container and can appear narrower than the Google button on 320px screens.
   app-linkedin-button {
     width: 100%;
-    display: block;
+    display: contents;
   }
 
   // Ensure GIS iframe button fills the row width
   .gh-google-btn-wrapper {
     width: 100%;
   }
+}
+.form-group {
+    position: relative;
+    margin-top: 20px !important;
 }
 
 // ── Company setup success modal — strip MatDialog chrome ──────────────────────

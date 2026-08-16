@@ -1,0 +1,34 @@
+<div class="ish-page">
+  <div class="ish-header">
+    <h1 class="ish-title">Interviews</h1>
+    <p class="ish-subtitle">Track applicant activity and manage scheduled interviews.</p>
+  </div>
+
+  <nav class="ish-tabs" role="tablist" aria-label="Interviews sections">
+    <a
+      class="ish-tab"
+      routerLink="/recruiter/interview"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="ish-tab--active"
+      [attr.aria-current]="null"
+      role="tab">
+      Activity
+    </a>
+    <a
+      class="ish-tab"
+      routerLink="/recruiter/interview/calendar"
+      routerLinkActive="ish-tab--active"
+      role="tab">
+      Calendar
+    </a>
+    <a
+      class="ish-tab"
+      routerLink="/recruiter/interview/scheduled"
+      routerLinkActive="ish-tab--active"
+      role="tab">
+      Scheduled Interviews
+    </a>
+  </nav>
+
+  <router-outlet></router-outlet>
+</div>

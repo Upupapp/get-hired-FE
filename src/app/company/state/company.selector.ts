@@ -52,3 +52,38 @@ export const getCompanySubscription = createSelector(
   getCompanyInitState,
   state => state.subs
 );
+
+export const getTeamRoles = createSelector(
+  getCompanyInitState,
+  state => state.teamRoles
+);
+
+export const getPendingInvites = createSelector(
+  getCompanyInitState,
+  state => state.pendingInvites
+);
+
+export const getInviteResult = createSelector(
+  getCompanyInitState,
+  state => state.inviteResult
+);
+
+export const getTeamActionSuccess = createSelector(
+  getCompanyInitState,
+  state => state.teamActionSuccess
+);
+
+export const getTeamActionError = createSelector(
+  getCompanyInitState,
+  state => state.teamActionError
+);
+
+export const getPermissionCatalog = createSelector(
+  getCompanyInitState,
+  state => state.permissionCatalog
+);
+
+export const getAuditLogs = createSelector(
+  getCompanyInitState,
+  state => state.auditLogs
+);

@@ -1,0 +1,24 @@
+<div class="al-wrap" [@animate]="{value:'*', params:{ y:'-10px', delay:'100ms' }}">
+  <h4 class="al-title">Access audit log</h4>
+  <p class="al-help">Role, access, and invite changes for this company. Newest first.</p>
+
+  <div class="al-loading" *ngIf="loading">Loading…</div>
+
+  <ol class="al-timeline" *ngIf="!loading" role="list">
+    <li class="al-entry" *ngFor="let entry of (logs$ | async)" role="listitem">
+      <div class="al-entry-dot" aria-hidden="true"></div>
+      <div class="al-entry-body">
+        <div class="al-entry-head">
+          <span class="al-entry-label">{{ labelFor(entry) }}</span>
+          <span class="al-entry-time">{{ entry.createdAt | date:'medium' }}</span>
+        </div>
+        <p class="al-entry-detail">
+          <strong>{{ actorLabel(entry) }}</strong>
+          <ng-container *ngIf="targetLabel(entry)"> → {{ targetLabel(entry) }}</ng-container>
+        </p>
+      </div>
+    </li>
+
+    <li class="al-empty" *ngIf="(logs$ | async)?.length === 0">No activity recorded yet.</li>
+  </ol>
+</div>

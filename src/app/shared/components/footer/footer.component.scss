@@ -4,6 +4,49 @@ a{
 	color: #E1E1E1;
 }
 
+// ─── Expanded footer navigation (portal links) ─────────────────────────────
+
+.gh-footer-logo {
+	height: 28px;
+	margin-bottom: 12px;
+}
+
+.gh-footer-tagline {
+	max-width: 260px;
+	margin-bottom: 0;
+}
+
+// Chained selector (not a bare .gh-footer-tagline rule) so this reliably
+// beats .title-description's own color declaration regardless of each
+// rule's position in the compiled stylesheet -- .title-description's
+// default #939393 fails contrast against this footer's red background
+// (~1.8:1, well under WCAG AA's 4.5:1). Overrides for this specific use
+// only, not the shared .title-description class itself.
+.gh-footer-tagline.title-description {
+	color: rgba(255, 255, 255, 0.82);
+}
+
+.gh-footer-list {
+	list-style: none;
+	padding: 0;
+	margin: 12px 0 0;
+
+	li { margin-bottom: 10px; }
+}
+
+.gh-footer-bottom {
+	border-top: 1px solid rgba(255, 255, 255, 0.15);
+	padding-top: 20px;
+	margin-top: 8px;
+}
+
+// Focus visibility for keyboard users on the dark footer background.
+.gh-footer-row a:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
 .btn-primary{
 	border: none;
 	padding: 12px 30px !important;

@@ -1,0 +1,156 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+.cid {
+  width: min(440px, 92vw);
+  font-family: 'Manrope', sans-serif;
+}
+
+.cid__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 24px 12px;
+}
+
+.cid__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #101828;
+  margin: 0;
+}
+
+.cid__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #64748B;
+  transition: background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: #F1F5F9; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.cid__body {
+  padding: 0 24px 24px;
+}
+
+.cid__prompt {
+  font-size: 0.875rem;
+  color: #344054;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+.cid__field {
+  margin-bottom: 16px;
+}
+
+.cid__optional {
+  font-weight: 400;
+  text-transform: none;
+  color: #98A2B3;
+  letter-spacing: normal;
+}
+
+.cid__textarea {
+  height: auto;
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 72px;
+}
+
+.cid__error {
+  padding: 10px 14px;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: 10px;
+  color: #9A3412;
+  font-size: 0.8125rem;
+  margin-bottom: 16px;
+}
+
+.cid__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  &--center { justify-content: center; padding: 0 24px 28px; }
+}
+
+.cid__btn-destructive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  background: $color-global-red-buttons;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background $motion-duration-micro $motion-ease-standard, transform 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: $color-global-red-buttons-hover; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 3px; }
+  &:active { transform: scale(0.98); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+
+// ─── Success state ──────────────────────────────────────────────────────────
+
+.cid__success {
+  padding: 8px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.cid__success-msg {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #101828;
+  margin: 8px 0 0;
+}
+
+.cid__warning {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 10px;
+  color: $color-warning-amber;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.cid__confirmed {
+  font-size: 0.8125rem;
+  color: #667085;
+}
+
+@media (max-width: 480px) {
+  .cid { width: 100vw; }
+
+  .cid__actions {
+    flex-direction: column-reverse;
+    button { width: 100%; }
+  }
+}

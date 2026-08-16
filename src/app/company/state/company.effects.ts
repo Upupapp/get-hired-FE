@@ -210,4 +210,214 @@ export class CompanyEffects {
       )
     );
   });
+
+  getTeamRoles$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getTeamRoles),
+      mergeMap(() => this.companyService.getTeamRoles()
+        .pipe(
+          map((res: any) => CompanyActions.getTeamRolesSuccess({ roles: res.data })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getTeamRolesFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  getPendingInvites$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getPendingInvites),
+      mergeMap(() => this.companyService.getPendingInvites()
+        .pipe(
+          map((res: any) => CompanyActions.getPendingInvitesSuccess({ invites: res.data })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getPendingInvitesFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  inviteTeamMembers$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.inviteTeamMembers),
+      mergeMap((action) => this.companyService.inviteTeamMembers(action.invites)
+        .pipe(
+          map((res: any) => CompanyActions.inviteTeamMembersSuccess({ companyId: res.data.companyId, invites: res.data.invites })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.inviteTeamMembersFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  revokeInvite$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.revokeInvite),
+      mergeMap((action) => this.companyService.revokeInvite(action.invitationId)
+        .pipe(
+          map(() => CompanyActions.revokeInviteSuccess({ invitationId: action.invitationId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.revokeInviteFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  updateTeamMember$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.updateTeamMember),
+      mergeMap((action) => this.companyService.updateTeamMember(action.employeeId, action.changes)
+        .pipe(
+          map(() => CompanyActions.updateTeamMemberSuccess({ employeeId: action.employeeId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.updateTeamMemberFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  removeTeamMember$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.removeTeamMember),
+      mergeMap((action) => this.companyService.removeTeamMember(action.employeeId)
+        .pipe(
+          map(() => CompanyActions.removeTeamMemberSuccess({ employeeId: action.employeeId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.removeTeamMemberFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  suspendTeamMember$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.suspendTeamMember),
+      mergeMap((action) => this.companyService.suspendTeamMember(action.employeeId)
+        .pipe(
+          map(() => CompanyActions.suspendTeamMemberSuccess({ employeeId: action.employeeId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.suspendTeamMemberFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  reactivateTeamMember$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.reactivateTeamMember),
+      mergeMap((action) => this.companyService.reactivateTeamMember(action.employeeId)
+        .pipe(
+          map(() => CompanyActions.reactivateTeamMemberSuccess({ employeeId: action.employeeId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.reactivateTeamMemberFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  getPermissionCatalog$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getPermissionCatalog),
+      mergeMap(() => this.companyService.getPermissionCatalog()
+        .pipe(
+          map((res: any) => CompanyActions.getPermissionCatalogSuccess({ permissions: res.data })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getPermissionCatalogFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  createCustomRole$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.createCustomRole),
+      mergeMap((action) => this.companyService.createCustomRole(action.request)
+        .pipe(
+          map((res: any) => CompanyActions.createCustomRoleSuccess({ role: res.data })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.createCustomRoleFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  updateCustomRole$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.updateCustomRole),
+      mergeMap((action) => this.companyService.updateCustomRole(action.roleId, action.changes)
+        .pipe(
+          map(() => CompanyActions.updateCustomRoleSuccess({ roleId: action.roleId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.updateCustomRoleFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  archiveCustomRole$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.archiveCustomRole),
+      mergeMap((action) => this.companyService.archiveCustomRole(action.roleId)
+        .pipe(
+          map(() => CompanyActions.archiveCustomRoleSuccess({ roleId: action.roleId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.archiveCustomRoleFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  resendInvite$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.resendInvite),
+      mergeMap((action) => this.companyService.resendInvite(action.invitationId)
+        .pipe(
+          map(() => CompanyActions.resendInviteSuccess({ invitationId: action.invitationId })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.resendInviteFail({ payload }))
+          })
+        )
+      )
+    );
+  });
+
+  getAuditLogs$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(CompanyActions.getAuditLogs),
+      mergeMap(() => this.companyService.getAuditLogs()
+        .pipe(
+          map((res: any) => CompanyActions.getAuditLogsSuccess({ logs: res.data })),
+          catchError((err) => {
+            const payload = (err && err.error && err.error.error) || (err && err.message) || 'An error occurred';
+            return of(CompanyActions.getAuditLogsFail({ payload }))
+          })
+        )
+      )
+    );
+  });
 }

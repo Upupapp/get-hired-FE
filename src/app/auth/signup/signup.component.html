@@ -1,25 +1,33 @@
+<!-- REGISTER MOBILE UX REDESIGN: same composition as signin.component.html --
+     the carousel/visual side is compacted into a banner above the form on
+     small screens instead of being hidden. See .bg-left's mobile-first
+     rules in the .scss. Carousel is first in DOM (top on mobile, left on
+     desktop); its interactive indicators are tabindex="-1" since the whole
+     thing is aria-hidden decorative content. -->
 <div class="container-fluid bg-white ">
-  <div class="row">
-    <div class="col-12 col-lg-6 px-5 pb-2 bg-left d-none d-lg-block order-lg-first" aria-hidden="true">
+  <div class="row g-0">
+
+    <!-- VISUAL / CAROUSEL side: compact banner on mobile, full panel on lg+. -->
+    <div class="col-12 col-lg-6 bg-left" aria-hidden="true">
       <div class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
           <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="0" class="active"
-            aria-current="true"></button>
+            aria-current="true" tabindex="-1"></button>
 
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1"></button>
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1" tabindex="-1"></button>
 
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2"></button>
+          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2" tabindex="-1"></button>
         </div>
-        <div class="carousel-inner pb-5" id="admin-welcome-screens">
+        <div class="carousel-inner" id="admin-welcome-screens">
           <div class="carousel-item active text-center">
             <div class="text-center">
-              <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo" routerLink="/jobs">
+              <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo">
               <h5 class="title-left-main">
                 Bring all your applicants in</h5>
               <h4 class="title-left-gradient">ONE PLATFORM</h4>
               <h5 class="title-left-main">in just 3 clicks.</h5>
             </div>
-            <div style="height: 400px;">
+            <div class="gh-carousel-illustration">
               <img [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}"
                 src="assets/images/placeholder/login-object-new-2.png" class="img-object">
             </div>
@@ -28,7 +36,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo" routerLink="/jobs">
+                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo">
                 <h5 class="title-left-main">
                   Interview
                   <span class="title-left-gradient">ALL </span> your applicants
@@ -37,14 +45,16 @@
                 <h4 class="title-left-gradient">AUTOMATICALLY</h4>
               </div>
             </div>
-            <img src="assets/images/placeholder/login-object-new-1.png"
-              [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
+            <div class="gh-carousel-illustration">
+              <img src="assets/images/placeholder/login-object-new-1.png"
+                [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object">
+            </div>
           </div>
 
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo" routerLink="/jobs">
+                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo">
                 <h5 class="title-left-main">
                   Choose the
                   <span class="title-left-gradient">BEST </span> Applicants <br>from their interview answers
@@ -53,28 +63,26 @@
                 <h4 class="title-left-gradient">Lights, Camera, GetHired.</h4>
               </div>
             </div>
-            <img src="assets/images/placeholder/login-object-new-3.png"
-              [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
+            <div class="gh-carousel-illustration">
+              <img src="assets/images/placeholder/login-object-new-3.png"
+                [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}" class="img-object mt-3">
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-12 col-lg-6 bg-form order-first order-lg-last">
+    <!-- FORM side -->
+    <div class="col-12 col-lg-6 bg-form">
+      <app-gateway-nav></app-gateway-nav>
       <div class="card py-5 pt-2" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <!-- Error Message -->
         <form class="" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
           <div class="form-group text-start">
-            <!-- V5: Employer-specific title when role=2 is pre-selected via ?role=2 query param.
-                 Falls back to generic title for applicant signup (role=3) or when no role is set. -->
-            <h4 class="main-title m-0"
-              *ngIf="role_validators?.value === 2; else genericTitle">
-              Create your employer account
-            </h4>
-            <ng-template #genericTitle>
-              <h4 class="main-title m-0"> {{ 'CREATE_ACCOUNT.CREATE_ACCOUNT_TEXT' | translate }}</h4>
-            </ng-template>
-            <p class="gh-signup-subtitle" *ngIf="role_validators?.value === 2">
+            <!-- This app is employer-only -- the signup page is always the
+                 employer variant, no role branching needed. -->
+            <h4 class="main-title m-0">Create your employer account</h4>
+            <p class="gh-signup-subtitle">
               Start hiring in minutes. Post your first job and reach qualified candidates.
             </p>
           </div>
@@ -183,29 +191,10 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <select class="form-select mt-4" formControlName="role" name="role" aria-label="Default select example">
-              <option [value]="null" disabled>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</option>
-              <option [value]="3">{{ 'CREATE_ACCOUNT.REGISTRATION_TYPE_SELECTOR' | translate }}</option>
-              <option [value]="2">{{ 'CREATE_ACCOUNT.REGISTRATION_TYPE_SELECTOR2' | translate }}</option>
-            </select>
-
-            <label class="d-flex">
-              <div>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</div>
-            </label>
-
-            <div class="mt-1 ms-4" *ngIf="
-            (role_validators?.invalid && role_validators?.touched) || role_validators?.dirty">
-              <small *ngIf="role_validators?.errors?.required" class="text-danger">Role is required</small>
-            </div>
-
-            <!-- GETHIRED 500K TALENT PROOF SYSTEM -- shown only once the
-                 employer role (2) is selected, never for applicant
-                 signup (role 3), so job seekers never see employer-
-                 facing reach messaging during their own signup. -->
-            <div class="mt-2" *ngIf="role_validators?.value === 2">
-              <app-talent-proof-badge variant="pill" placement="employer_signup"></app-talent-proof-badge>
-            </div>
+          <!-- GETHIRED 500K TALENT PROOF SYSTEM -- always shown, this
+               signup page is exclusively for employers. -->
+          <div class="form-group mt-4">
+            <app-talent-proof-badge variant="pill" placement="employer_signup"></app-talent-proof-badge>
           </div>
 
           <re-captcha formControlName="recaptcha"></re-captcha>
@@ -222,20 +211,13 @@
             </a>
           </div>
 
-          <!-- V5: Employer-specific CTA text when role=2 is selected.
-               gh-pressable provides micro-scale press feedback. -->
+          <!-- gh-pressable provides micro-scale press feedback. -->
           <button type="submit"
             class="btn btn-submit d-block w-100 float-end mt-4 mb-3 gh-pressable"
             [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)"
             [attr.aria-busy]="submitting ? 'true' : null">
-            <ng-container *ngIf="role_validators?.value === 2; else genericSubmit">
-              <ng-container *ngIf="!submitting">Create employer account</ng-container>
-              <ng-container *ngIf="submitting">Creating account...</ng-container>
-            </ng-container>
-            <ng-template #genericSubmit>
-              <ng-container *ngIf="!submitting">{{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}</ng-container>
-              <ng-container *ngIf="submitting">Creating account...</ng-container>
-            </ng-template>
+            <ng-container *ngIf="!submitting">Create employer account</ng-container>
+            <ng-container *ngIf="submitting">Creating account...</ng-container>
             <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
               *ngIf="submitting" aria-hidden="true">
           </button>
@@ -278,13 +260,7 @@
 
           <div class="text-center mt-5 join-us">
             <br><br>
-            <ng-container *ngIf="role_validators?.value === 2">
-              Already have an employer account? <a [routerLink]="'/signin'" class="register">Sign in</a>
-            </ng-container>
-            <ng-container *ngIf="role_validators?.value !== 2">
-              {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" class="register">{{
-                'CREATE_ACCOUNT.LOGIN_BUTTON' | translate }}</a>
-            </ng-container>
+            Already have an employer account? <a [routerLink]="'/signin'" class="register">Sign in</a>
           </div>
         </form>
 

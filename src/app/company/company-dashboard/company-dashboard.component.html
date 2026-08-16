@@ -159,6 +159,56 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
+     UPCOMING INTERVIEWS (Phase 1.5A — reuses GET /interview/scheduled?filter=upcoming,
+     no new backend route. Compact card, not a calendar grid.)
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="gh-section gh-upcoming-interviews-section" aria-label="Upcoming interviews">
+  <div class="gh-card gh-upcoming-interviews-card">
+    <div class="gh-card-head">
+      <h2 class="gh-card-title">Upcoming interviews</h2>
+      <button type="button" class="gh-btn-link gh-pressable" (click)="goToInterviews()">
+        View interviews →
+      </button>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div class="gh-ui-skeleton" *ngIf="upcomingInterviewsLoading" aria-hidden="true">
+      <div class="gh-skeleton gh-skeleton--ui-row" *ngFor="let n of [1,2,3]"></div>
+    </div>
+
+    <!-- Error (never a fake empty state) -->
+    <div class="gh-error-sm" *ngIf="!upcomingInterviewsLoading && upcomingInterviewsError" role="alert">
+      <p>Couldn't load upcoming interviews.</p>
+      <button type="button" class="gh-btn-link" (click)="retryUpcomingInterviews()">Retry</button>
+    </div>
+
+    <!-- Empty -->
+    <div class="gh-ui-empty" *ngIf="!upcomingInterviewsLoading && !upcomingInterviewsError && upcomingInterviews.length === 0">
+      <p class="gh-ui-empty-title">No upcoming interviews.</p>
+      <button type="button" class="gh-btn-link gh-pressable" (click)="goToJobsList()">View applicants →</button>
+    </div>
+
+    <!-- List (compact — up to 3 nearest) -->
+    <div class="gh-ui-list" role="list" *ngIf="!upcomingInterviewsLoading && !upcomingInterviewsError && upcomingInterviews.length > 0">
+      <button type="button" class="gh-ui-row gh-pressable" role="listitem"
+        *ngFor="let interview of upcomingInterviews; trackBy: trackByInterviewId"
+        (click)="viewInterview(interview)"
+        [attr.aria-label]="interviewTypeLabel(interview) + ' with ' + interviewApplicantName(interview) + ' for ' + interview.jobTitle + ', ' + interviewTimeLabel(interview)">
+        <div class="gh-ui-row-main">
+          <span class="gh-ui-applicant">{{ interviewApplicantName(interview) }}</span>
+          <span class="gh-ui-job">{{ interview.jobTitle }} &middot; {{ interviewTypeLabel(interview) }}</span>
+        </div>
+        <div class="gh-ui-row-meta">
+          <span class="gh-ui-time">{{ interviewTimeLabel(interview) }}</span>
+          <span class="gh-ui-pill">{{ interview.durationMinutes }} min</span>
+          <span class="gh-ui-pill">{{ interviewFormatLabel(interview) }}</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
      UPGRADE NUDGE (priority ≤ 3 only; respects session cooldown)
 ════════════════════════════════════════════════════════════════════════════ -->
 <div class="gh-upgrade-nudge"

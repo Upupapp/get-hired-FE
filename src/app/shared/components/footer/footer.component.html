@@ -1,15 +1,45 @@
+<footer class="container-fluid bg-footer pt-5 pb-4">
+	<div class="container">
+		<div class="row gh-footer-row">
+			<div class="col-12 col-md-4 mb-4 mb-md-0">
+				<img src="assets/brand/Gethired-horizontal-logo.png?v=3" alt="GetHired Online" class="gh-footer-logo">
+				<p class="title-description gh-footer-tagline">
+					A modern hiring platform connecting job seekers and employers in the Philippines.
+				</p>
+			</div>
 
-<div class="container-fluid bg-footer pt-4 pb-4">
-	<div class="container mt-1">
+			<div class="col-6 col-md-2 mb-4 mb-md-0">
+				<h6 class="title-about">For Employers</h6>
+				<ul class="gh-footer-list">
+					<li><a routerLink="/home" class="title-list">Employer features</a></li>
+					<li><a routerLink="/signin" class="title-list">Sign in</a></li>
+				</ul>
+			</div>
+
+			<div class="col-6 col-md-2 mb-4 mb-md-0">
+				<h6 class="title-about">For Job Seekers</h6>
+				<ul class="gh-footer-list">
+					<li><a [href]="jobSeekerAppUrl + '/jobs'" class="title-list">Browse jobs</a></li>
+					<li><a [href]="jobSeekerAppUrl" class="title-list">Job seeker features</a></li>
+					<li><a [href]="jobSeekerAppUrl + '/signin'" class="title-list">Job seeker sign in</a></li>
+				</ul>
+			</div>
+
+			<div class="col-6 col-md-2 mb-4 mb-md-0">
+				<h6 class="title-about">Company</h6>
+				<ul class="gh-footer-list">
+					<li><a routerLink="/home" class="title-list">Home</a></li>
+					<li><a routerLink="/privacy" class="title-list">Privacy Policy</a></li>
+				</ul>
+			</div>
+		</div>
+
 		<div class="row">
-			<div class="col-12 text-center">
-				<div class="footer-legal-links mb-2">
-					<a routerLink="/privacy" class="title-list me-3">Privacy Policy</a>
-				</div>
-				<h5 class="title-copyright">
+			<div class="col-12 text-center gh-footer-bottom">
+				<h5 class="title-copyright mb-0">
 					Copyright &copy; {{ currentYear }} GetHired. All rights reserved.
 				</h5>
 			</div>
 		</div>
 	</div>
-</div>
+</footer>

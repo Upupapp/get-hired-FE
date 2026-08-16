@@ -3,11 +3,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, Subject } from 'rxjs';
-import { select, Store } from '@ngrx/store';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { CompanyActionTypes } from '@main/shared/store/actions/company.action';
-import { StoreState } from '@main/shared/store/index';
-import { CompanyState } from '@main/shared/store/reducers/company.reducer';
+import { CompanyFacade } from '@app-company/state/company.facade';
+import * as TeamModel from '@app-company/team-access.model';
+import { ROLE_GROUPS, CUSTOM_ROLE_GROUP, groupKeyForRole, groupLabelFor } from '@app-company/role-groups';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { HapticService } from '@app-core/services/haptic.service';
 import { CSVDataRecord } from './import-user-model';
@@ -34,9 +34,7 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
   public importing: boolean = false;
   // Phase 5: SSR guard — field is null until ngOnInit reads localStorage safely
   public localData: any = null;
-  private invitedCompanyUsers$: any;
   public loading: boolean = false;
-  private req: Subscription;
   private unsubscribe$ = new Subject<void>();
   public invitedUsersList: InviteResult[] = [];
   public document: any = null;
@@ -47,6 +45,16 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
   public successCount: number = 0;
   public failedEmails: InviteResult[] = [];
   public allFailed: boolean = false;
+
+  // Job-scoped RBAC V1/V3: role + access-scope selection
+  public roles: TeamModel.TeamRole[] = [];
+  public selectedRoleId: string = '';
+  public selectedScope: TeamModel.AccessScope = 'all_jobs';
+  public selectedJobIds: string[] = [];
+  public roleSearchTerm = '';
+  public roleGroups: { key: string; label: string; roles: TeamModel.TeamRole[] }[] = [];
+  public expandedGroups: { [key: string]: boolean } = {};
+  public helpChooseOpen = false;
 
   @ViewChild('csvReader') csvReader: any;
   jsondatadisplay: any;
@@ -60,7 +68,7 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private snackbarService: SnackbarService,
     private hapticService: HapticService,
-    private companyState: Store<StoreState>,
+    private companyFacade: CompanyFacade,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
@@ -79,45 +87,114 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
       email: [this.data ? (this.data.invitation ? this.data.invitation.email : '') : '', [Validators.email]],
     });
 
-    this.invitedCompanyUsers$ = this.companyState.pipe(select(state => state.company));
-    this.req = this.invitedCompanyUsers$.subscribe((invite: CompanyState) => {
-      this.loading = invite.pending;
+    this.companyFacade.getTeamRoles();
+    this.companyFacade.teamRoles$.pipe(takeUntil(this.unsubscribe$)).subscribe(roles => {
+      this.roles = roles || [];
+      if (!this.selectedRoleId && this.roles.length > 0) {
+        this.selectedRoleId = this.roles[0].roleId;
+      }
+      this.buildRoleGroups();
+    });
 
-      if (invite.companyUserRes) {
-        const emails: InviteResult[] = invite.companyUserRes.emails || [];
-        if (emails.length > 0) {
-          const succeeded = emails.filter((e: InviteResult) => e.status !== 'failed');
-          const failed = emails.filter((e: InviteResult) => e.status === 'failed');
+    this.companyFacade.loading$.pipe(takeUntil(this.unsubscribe$)).subscribe(loading => this.loading = loading);
 
-          this.successCount = succeeded.length;
-          this.failedEmails = failed;
-          this.invitedUsersList = emails;
-          this.isLoading = false;
-          this.submitting = true;
+    this.companyFacade.inviteResult$.pipe(
+      filter(result => !!result),
+      takeUntil(this.unsubscribe$)
+    ).subscribe(result => {
+      const emails: InviteResult[] = result.invites || [];
+      if (emails.length === 0) { return; }
 
-          if (succeeded.length > 0 && failed.length === 0) {
-            // All success
-            const msg = succeeded.length === 1 ? 'Invite sent.' : `${succeeded.length} invites sent.`;
-            this.hapticService.success();
-            this.snackbarService.success(msg);
-            this.showResultPanel = false;
-          } else if (succeeded.length > 0 && failed.length > 0) {
-            // Partial success — show result panel, warning haptic + toast
-            this.showResultPanel = true;
-            this.allFailed = false;
-            this.hapticService.warning();
-            this.snackbarService.warning(`${succeeded.length} sent. ${failed.length} couldn't be added.`);
-          } else {
-            // All failed — show result panel, error haptic + toast, keep dialog open
-            this.showResultPanel = true;
-            this.allFailed = true;
-            this.submitting = false;
-            this.hapticService.error();
-            this.snackbarService.error('No invites were sent. See details below.');
-          }
-        }
+      const succeeded = emails.filter((e: InviteResult) => e.status !== 'failed');
+      const failed = emails.filter((e: InviteResult) => e.status === 'failed');
+
+      this.successCount = succeeded.length;
+      this.failedEmails = failed;
+      this.invitedUsersList = emails;
+      this.isLoading = false;
+      this.submitting = true;
+
+      if (succeeded.length > 0 && failed.length === 0) {
+        // All success
+        const msg = succeeded.length === 1 ? 'Invite sent.' : `${succeeded.length} invites sent.`;
+        this.hapticService.success();
+        this.snackbarService.success(msg);
+        this.showResultPanel = false;
+      } else if (succeeded.length > 0 && failed.length > 0) {
+        // Partial success — show result panel, warning haptic + toast
+        this.showResultPanel = true;
+        this.allFailed = false;
+        this.hapticService.warning();
+        this.snackbarService.warning(`${succeeded.length} sent. ${failed.length} couldn't be added.`);
+      } else {
+        // All failed — show result panel, error haptic + toast, keep dialog open
+        this.showResultPanel = true;
+        this.allFailed = true;
+        this.submitting = false;
+        this.hapticService.error();
+        this.snackbarService.error('No invites were sent. See details below.');
       }
     });
+  }
+
+  get selectedRole(): TeamModel.TeamRole | null {
+    return this.roles.find(r => r.roleId === this.selectedRoleId) || null;
+  }
+
+  private buildRoleGroups(): void {
+    const term = this.roleSearchTerm.trim().toLowerCase();
+    const filtered = term
+      ? this.roles.filter(r => r.name.toLowerCase().includes(term) || (r.description || '').toLowerCase().includes(term))
+      : this.roles;
+
+    const byGroup: { [key: string]: TeamModel.TeamRole[] } = {};
+    for (const role of filtered) {
+      const key = groupKeyForRole(role);
+      if (!byGroup[key]) { byGroup[key] = []; }
+      byGroup[key].push(role);
+    }
+    this.roleGroups = Object.keys(byGroup).map(key => ({ key, label: groupLabelFor(key), roles: byGroup[key] }));
+    for (const g of this.roleGroups) {
+      if (this.expandedGroups[g.key] === undefined) { this.expandedGroups[g.key] = true; }
+    }
+  }
+
+  onRoleSearchChange(term: string): void {
+    this.roleSearchTerm = term;
+    this.buildRoleGroups();
+  }
+
+  toggleRoleGroup(key: string): void {
+    this.expandedGroups[key] = !this.expandedGroups[key];
+  }
+
+  selectRole(roleId: string): void {
+    this.selectedRoleId = roleId;
+  }
+
+  applyHelpChooseRecommendation(rec: { roleKey: string; scope: TeamModel.AccessScope }): void {
+    const match = this.roles.find(r => r.roleKey === rec.roleKey);
+    if (match) {
+      this.selectedRoleId = match.roleId;
+    }
+    this.onScopeChange(rec.scope);
+  }
+
+  get canSubmit(): boolean {
+    if (!this.selectedRoleId) { return false; }
+    if (this.selectedScope === 'assigned_jobs' && this.selectedJobIds.length === 0) { return false; }
+    return this.emailArray.length > 0 || (this.inviteForm && !!this.inviteForm.controls['email'].value);
+  }
+
+  onScopeChange(scope: TeamModel.AccessScope): void {
+    this.selectedScope = scope;
+    if (scope !== 'assigned_jobs') {
+      this.selectedJobIds = [];
+    }
+  }
+
+  onJobIdsChange(jobIds: string[]): void {
+    this.selectedJobIds = jobIds;
   }
 
   close() {
@@ -198,16 +275,15 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
     this.inviteForm.reset();
   }
 
-  saveCompanyUser(value) {
-    const companyId = this.localData ? this.localData.companyId : undefined;
-    const payload = {
-      companyId,
-      emails: [...value],
-    };
-    this.companyState.dispatch({
-      type: CompanyActionTypes.SAVE_COMPANY_USER,
-      payload,
-    });
+  saveCompanyUser(value: { email: string }[]) {
+    if (!this.selectedRoleId) { return; }
+    const invites: TeamModel.InviteMemberRequest[] = value.map(v => ({
+      email: v.email,
+      roleId: this.selectedRoleId,
+      accessScope: this.selectedScope,
+      jobIds: this.selectedScope === 'assigned_jobs' ? this.selectedJobIds : undefined,
+    }));
+    this.companyFacade.inviteTeamMembers(invites);
   }
 
   // Restrict file upload to csv
@@ -284,7 +360,6 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.req) { this.req.unsubscribe(); }
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }

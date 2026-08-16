@@ -102,28 +102,25 @@
 }
 
 .bg-form{
-	padding: 80px 120px 80px 120px;
-	//background-color: #DCF3FC !important; //linear-gradient(227.75deg, rgba(255, 255, 255, 0.9) -14.05%, rgba(200, 239, 255, 0.9) -14.04%, rgba(229, 244, 250, 0.9) 83.26%) !important;
+	padding: 48px 120px 80px 120px;
 
-
-	//background-color: linear-gradient(0deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)) !important;
 	@media(min-width: 899px) and (max-width: 1360px){
-		padding: 80px 40px 80px 40px;
+		padding: 48px 40px 80px 40px;
 	}
 
-	@media (max-width: 899px){
+	@media (max-width: 991px){
 		background-size: auto 100%;
 		background-position: right;
 	}
 
 	@media (max-width: 759px){
-		padding: 80px 20px 80px 20px;
+		padding: 32px 20px 40px 20px;
 	}
 
 	// SI-01 MOBILEVIEW: 80px vertical padding is too heavy on 320px phones;
 	// reduce to comfortable 24px so the form fits without excessive scroll.
 	@media (max-width: 575px){
-		padding: 24px 16px;
+		padding: 24px 16px 32px;
 	}
 }
 
@@ -131,35 +128,137 @@
 
 }
 
+// ─── SIGNIN/REGISTER MOBILE UX REDESIGN ──────────────────────────────────────
+// Previous behavior hid this entire panel below `lg` (BL-012). That traded
+// the product's visual identity for form space. Redesigned so the carousel
+// survives at every breakpoint as an intentional, compact banner rather than
+// a shrunk desktop panel: no logo (already in the header above), no product
+// screenshots (illegible at banner height), just the rotating brand
+// headline over a properly-cropped (not stretched) background photo with a
+// legibility scrim. It regains its full desktop presentation at >=992px.
 .bg-left{
+	position: relative;
+	overflow: hidden;
 	background: url(~/src/assets/images/placeholder/login-bg-main.png);
 	background-repeat: no-repeat;
-	//background-attachment: fixed;
-	background-position: top;
-	background-size: 100% 100%;
-	min-height: 100vh;
+	background-position: center;
+	background-size: cover; // was 100% 100% -- stretched/distorted the image at short heights
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: clamp(150px, 34vw, 200px);
+	padding: 22px 24px;
+
+	// Legibility scrim -- the compact banner can land on any part of the
+	// photo depending on viewport width; without this, white text risks
+	// low contrast against lighter regions of the image.
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(135deg, rgba(13, 16, 36, 0.74), rgba(90, 20, 40, 0.68));
+		z-index: 0;
+	}
+
+	.carousel { position: relative; z-index: 1; width: 100%; }
+
+	// Logo already appears in the shared header above -- no need to repeat it
+	// in a banner this short.
+	.main-logo { display: none; }
+
+	// Product screenshots read as noise at compact banner height; the brand
+	// headline + photo carry the visual identity instead.
+	.gh-carousel-illustration { display: none; }
+
+	.carousel-inner { padding-bottom: 0; }
 
 	.title-left-main{
 		font-style: normal;
-		font-weight: 500;
-		font-size: 33.7519px;
-		line-height: 47px;
-
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 1.35;
+		margin: 0;
 		color: #FFFFFF;
 	}
 
 	.title-left-gradient{
 		font-style: italic;
 		font-weight: bold !important;
-		font-size: 45.0689px;
-		line-height: 66px;
+		font-size: 18px;
+		line-height: 1.3;
 		letter-spacing: 0.01em;
+		display: inline-block;
 
-		background: linear-gradient(268.54deg, $color-global-red-buttons 10.03%, #FFCD60 91.14%);
+		background: linear-gradient(268.54deg, #FF9C7A 10.03%, #FFDD8A 91.14%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
 		text-fill-color: transparent;
+	}
+
+	.carousel-indicators {
+		position: static;
+		margin: 12px 0 0;
+		gap: 6px;
+
+		button {
+			width: 6px;
+			height: 6px;
+			margin-right: 0 !important;
+			background-color: rgba(255, 255, 255, 0.45) !important;
+			opacity: 1 !important;
+			transition: background-color 200ms ease, transform 200ms ease;
+
+			&.active {
+				background-color: #FFFFFF !important;
+				transform: scale(1.2);
+			}
+		}
+	}
+
+	// Full desktop presentation, unchanged from the original design.
+	@media (min-width: 992px) {
+		min-height: 100vh;
+		padding: 80px 120px 80px 40px;
+		align-items: center;
+		justify-content: center;
+		background-size: 100% 100%;
+		background-position: top;
+
+		&::before { background: none; }
+
+		.main-logo { display: block; }
+		.gh-carousel-illustration { display: block; height: 400px; }
+		.carousel-inner { padding-bottom: 3rem; }
+
+		.title-left-main{
+			font-size: 33.7519px;
+			line-height: 47px;
+			font-weight: 500;
+		}
+
+		.title-left-gradient{
+			font-size: 45.0689px;
+			line-height: 66px;
+		}
+
+		.carousel-indicators {
+			position: absolute;
+			bottom: -60px;
+			margin: 0;
+
+			button {
+				width: 10px;
+				height: 10px;
+				background-color: $color-blue-primary !important;
+
+				&.active { transform: none; }
+			}
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.carousel-indicators button { transition: none !important; }
 	}
 }
 
@@ -171,8 +270,6 @@
 	background: $color-blue-dark;
 }
 
-
-
 .card{
 	background: #FFFFFF;
 	backdrop-filter: blur(24px);
@@ -180,6 +277,7 @@
 	border: none;
 	border-radius: 25px;
 	padding: 20px 40px;
+	width: 100%;
 
 }
 
@@ -400,21 +498,23 @@ input.ng-invalid.ng-dirty.ng-touched {
   width: 100%;
 }
 
-// ─── BL-012: Signin carousel mobile fix ──────────────────────────────────────
-// The carousel lives in .bg-left which has min-height:100vh.  Below lg the
-// Bootstrap grid stacks columns, so the carousel panel fills the viewport
-// before the form is ever seen.  The carousel column is hidden via
-// d-none d-lg-block in the template; the rules below handle remaining risks.
-
-// Form column: full height on mobile, centered content, safe-area padding.
+// ─── Form column ──────────────────────────────────────────────────────────
+// Superseded BL-012's "hide the carousel, force the form to min-height:100vh"
+// approach -- the carousel banner now sits above this column on mobile, so
+// forcing the form to fill the full viewport would just leave a large empty
+// gap under a short form. It now sizes to its own content instead.
 .gh-signin-form-col {
-  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
 
   // Prevent form from extending beyond viewport width on narrow screens.
   max-width: 100%;
   overflow-x: hidden;
+
+  @media (min-width: 992px) {
+    min-height: 100vh;
+  }
 
   @media (max-width: 575px) {
     padding-left: 16px;
@@ -460,4 +560,49 @@ input.ng-invalid.ng-dirty.ng-touched {
 // gh-pressable (from _motion.scss) already provides scale(0.985) on :active
 // with motion-safe fallback.  The btn-submit hover style is preserved below.
 // No additional overrides needed — gh-pressable is applied in the template.
+@media screen and (max-width: 500px) {
+  /* styles go here */
+	.card[_ngcontent-serverApp-c336]{
+		width: 135%;
+	}
 
+	.main-title[_ngcontent-serverApp-c336] {
+    font-family: "Manrope";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    transform: translate(5px, -30px);
+    margin-bottom: 0;
+    font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
+    color: #03011A;
+		text-transform: uppercase;
+	}
+	.mt-5 {
+    margin-top: 0rem !important;
+	}
+}
+
+@media screen and (max-width: 360px) {
+  /* styles go here */
+	.card[_ngcontent-serverApp-c336]{
+		width: 120vw;
+	}
+
+	.main-title[_ngcontent-serverApp-c336] {
+    font-family: "Manrope";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    transform: translate(5px, -30px);
+    margin-bottom: 0;
+    font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
+    color: #03011A;
+		text-transform: uppercase;
+	}
+	
+	.mt-5 {
+    margin-top: 0rem !important;
+	}
+}

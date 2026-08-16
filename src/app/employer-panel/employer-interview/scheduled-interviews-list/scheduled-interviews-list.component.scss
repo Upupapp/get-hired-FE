@@ -1,0 +1,256 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+.sil-page {
+  padding: 24px 28px 40px;
+  width: 100%;
+}
+
+// ─── Header (Phase 1.5A -- New Interview CTA) ──────────────────────────────
+
+.sil-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+// ─── Skeleton ───────────────────────────────────────────────────────────────
+
+.sil-skeleton-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sil-skeleton-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+}
+
+.sil-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #d1d5db 50%, #e5e7eb 75%);
+  background-size: 400px 100%;
+  animation: sil-shimmer 1.4s ease-in-out infinite;
+  @include ambient-motion-safe;
+
+  &--name { width: 45%; }
+  &--job  { width: 65%; }
+  &--meta { width: 30%; }
+}
+
+@keyframes sil-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+// ─── Error / empty states ───────────────────────────────────────────────────
+
+.sil-error, .sil-empty {
+  padding: 40px 0;
+  max-width: 420px;
+}
+
+.sil-error-heading, .sil-empty-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: $color-black;
+  margin: 0 0 8px;
+  text-transform: capitalize;
+}
+
+.sil-error-body, .sil-empty-body {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+
+// ─── Filters ────────────────────────────────────────────────────────────────
+
+.sil-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.sil-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  min-height: 36px;
+  border-radius: 20px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              color $motion-duration-micro $motion-ease-standard,
+              border-color $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &--active {
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+    border-color: $color-global-red-buttons;
+    color: #fff;
+  }
+
+  &:not(&--active):hover {
+    background: $color-global-red-soft;
+    border-color: $color-global-red-buttons;
+  }
+}
+
+// ─── Card list ──────────────────────────────────────────────────────────────
+
+.sil-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sil-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px 20px;
+  transition: box-shadow $motion-duration-card $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+  }
+}
+
+.sil-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sil-applicant-name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: $color-black;
+}
+
+.sil-card-job {
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.sil-card-type {
+  color: #6b7280;
+}
+
+.sil-card-time {
+  margin-bottom: 10px;
+}
+
+.sil-time-primary {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $color-black;
+}
+
+.sil-time-secondary {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+.sil-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.sil-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  background: #F6F7FB;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 12px;
+
+  &--notify {
+    background: var(--gh-azure-soft, #EAF4FF);
+    color: var(--gh-azure, #168BFF);
+  }
+
+  &--warn {
+    background: #FEF2F2;
+    color: #991B1B;
+  }
+}
+
+// ─── Card actions ───────────────────────────────────────────────────────────
+
+.sil-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sil-action {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  min-height: 44px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background $motion-duration-micro $motion-ease-standard,
+              transform $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:active { transform: scale(0.96); }
+
+  &--ghost {
+    background: transparent;
+    border: 1px solid #E7EAF3;
+    color: #667085;
+    &:hover { background: #F6F7FB; }
+  }
+
+  &--secondary {
+    background: $color-global-red-soft;
+    color: $color-global-red-buttons;
+    &:hover { background: darken(#FFF0EE, 4%); }
+  }
+
+  &--danger {
+    background: transparent;
+    border: 1px solid #FECACA;
+    color: #991B1B;
+    &:hover { background: #FEF2F2; }
+  }
+}
+
+// ─── Responsive ─────────────────────────────────────────────────────────────
+
+@media (max-width: 600px) {
+  .sil-page { padding: 16px; }
+
+  .sil-card-header { flex-direction: column; align-items: flex-start; }
+  .sil-card-actions { flex-direction: column; }
+  .sil-action { width: 100%; justify-content: center; }
+}

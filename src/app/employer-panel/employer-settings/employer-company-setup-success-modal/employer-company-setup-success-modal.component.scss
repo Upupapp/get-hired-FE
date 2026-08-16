@@ -102,6 +102,17 @@ $gh-radius-sm: 10px;
   font-weight: 600;
   color: #92400E;
   animation: gh-fade-up 0.35s 0.25s both;
+
+  // Real trial/subscription state isn't confirmed yet (still fetching, or
+  // the backend's fire-and-forget trial activation couldn't be confirmed) --
+  // a neutral gray reads as "pending," not a false amber "confirmed" cue.
+  &--pending {
+    background: $gh-surface;
+    border-color: $gh-border;
+    color: $gh-text-muted;
+
+    svg path { fill: $gh-text-muted; stroke: $gh-text-muted; }
+  }
 }
 
 @keyframes gh-fade-up {

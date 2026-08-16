@@ -1,0 +1,51 @@
+<div class="etm-wrap" [@animate]="{value:'*', params:{ y:'-10px', delay:'100ms' }}">
+  <h4 class="etm-title">Edit access — {{ member?.fullName }}</h4>
+  <p class="etm-subtitle">{{ member?.email }}</p>
+
+  <div class="etm-section">
+    <label class="mb-2 d-block"><strong>Role</strong></label>
+    <select class="form-control" [(ngModel)]="selectedRoleId" [ngModelOptions]="{standalone: true}">
+      <option *ngFor="let role of roles" [value]="role.roleId">{{ role.name }}</option>
+    </select>
+    <p class="etm-help mt-1" *ngIf="selectedRole">{{ selectedRole.description }}</p>
+  </div>
+
+  <div class="etm-section">
+    <label class="mb-2 d-block"><strong>Choose job access</strong></label>
+    <div class="access-scope-options">
+      <label class="access-scope-option">
+        <input type="radio" name="editAccessScope" value="all_jobs"
+          [checked]="selectedScope === 'all_jobs'" (change)="onScopeChange('all_jobs')">
+        <span><strong>All job posts</strong> — access to all current and future job posts</span>
+      </label>
+      <label class="access-scope-option">
+        <input type="radio" name="editAccessScope" value="assigned_jobs"
+          [checked]="selectedScope === 'assigned_jobs'" (change)="onScopeChange('assigned_jobs')">
+        <span><strong>Assigned job posts only</strong> — access limited to job posts you assign</span>
+      </label>
+      <label class="access-scope-option">
+        <input type="radio" name="editAccessScope" value="no_job_access"
+          [checked]="selectedScope === 'no_job_access'" (change)="onScopeChange('no_job_access')">
+        <span><strong>No job access</strong> — for billing/settings-only roles</span>
+      </label>
+    </div>
+  </div>
+
+  <app-job-picker *ngIf="selectedScope === 'assigned_jobs'"
+    [selectedJobIds]="selectedJobIds"
+    (selectedJobIdsChange)="onJobIdsChange($event)">
+  </app-job-picker>
+
+  <app-access-summary
+    [role]="selectedRole"
+    [accessScope]="selectedScope"
+    [assignedJobCount]="selectedJobIds.length">
+  </app-access-summary>
+
+  <div class="etm-actions">
+    <button type="button" class="btn btn-default hvr-grow" (click)="close()">Cancel</button>
+    <button type="button" class="btn btn-primary hvr-grow" [disabled]="!canSave || saving" (click)="save()">
+      {{ saving ? 'Saving…' : 'Save changes' }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div class="mv" role="region" aria-label="Month schedule">
+  <div class="mv-weekday-row">
+    <span class="mv-weekday" *ngFor="let label of weekdayLabels">{{ label }}</span>
+  </div>
+
+  <div class="mv-week" *ngFor="let week of weeks; trackBy: trackByWeek">
+    <div
+      class="mv-cell"
+      *ngFor="let cell of week; trackBy: trackByDayKey"
+      [class.mv-cell--outside]="!cell.inCurrentMonth"
+      [class.mv-cell--today]="cell.isToday">
+
+      <button
+        type="button"
+        class="mv-date-btn"
+        [class.mv-date-btn--today]="cell.isToday"
+        [attr.aria-label]="cellAriaLabel(cell)"
+        (click)="selectDate(cell.date)">
+        {{ dayNumberLabel(cell.date) }}
+      </button>
+
+      <div class="mv-events">
+        <app-calendar-event-card
+          *ngFor="let item of cell.visibleEvents; trackBy: trackByInterviewId"
+          [interview]="item.interview"
+          [displayTimeZone]="displayTimeZone"
+          [compact]="true"
+          (activated)="onActivate(item.interview)">
+        </app-calendar-event-card>
+
+        <button
+          type="button"
+          class="mv-overflow-btn"
+          *ngIf="cell.overflowCount > 0"
+          [attr.aria-label]="'Show ' + cell.overflowCount + ' more interviews on ' + dayNumberLabel(cell.date)"
+          (click)="selectDate(cell.date)">
+          +{{ cell.overflowCount }} more
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

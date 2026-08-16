@@ -1930,3 +1930,93 @@ $gh-teal:       $color-teal-accent;
 
   &:hover { background: rgba(255, 112, 98, 0.18); }
 }
+
+// ── Phase 1.5A: Upcoming Interviews card ──────────────────────────────────
+.gh-upcoming-interviews-section { margin-top: 24px; }
+
+.gh-skeleton--ui-row { @extend %sk; height: 56px; margin-bottom: 8px; border-radius: 8px; }
+
+.gh-ui-empty {
+  padding: 20px 8px;
+  text-align: center;
+}
+.gh-ui-empty-title {
+  color: #6b688d;
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.gh-ui-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gh-ui-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+  flex-wrap: wrap;
+
+  &:hover, &:focus-visible { background: rgba(107, 104, 141, 0.05); }
+  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
+}
+
+.gh-ui-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gh-ui-applicant {
+  font-weight: 600;
+  color: #1f1c3d;
+  font-size: 14px;
+}
+
+.gh-ui-job {
+  font-size: 12.5px;
+  color: #6b688d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.gh-ui-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gh-ui-time {
+  font-size: 13px;
+  color: #1f1c3d;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.gh-ui-pill {
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(107, 104, 141, 0.08);
+  color: #6b688d;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .gh-ui-row { flex-direction: column; align-items: flex-start; }
+  .gh-ui-job { max-width: 100%; }
+}

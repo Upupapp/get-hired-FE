@@ -171,6 +171,7 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
       // is defined in styles.scss inside the @media (max-width: 560px) block.
       panelClass: ['gh-setup-success-dialog', 'gh-bottom-sheet-pane'],
       data: {
+        companyId: this.companyId,
         companyName: this.companyName,
         companySlug: this.companySlug,
         profileCompleteness: this.profileCompleteness,

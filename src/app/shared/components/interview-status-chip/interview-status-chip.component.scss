@@ -1,0 +1,40 @@
+@import "src/assets/styles/colors";
+
+.isc {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-bottom-width: 2px;
+  white-space: nowrap;
+}
+
+.isc__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.isc--scheduled {
+  background: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+  border-bottom-color: $color-green-secondary;
+}
+
+.isc--past {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #e2e8f0;
+  border-bottom-color: #94a3b8;
+}
+
+.isc--cancelled {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+  border-bottom-color: $color-global-red;
+}

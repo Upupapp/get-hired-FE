@@ -1,0 +1,230 @@
+<div class="sid">
+
+  <div class="sid__header">
+    <div>
+      <h2 class="sid__title" id="sid-title">{{ isReschedule ? 'Reschedule Interview' : 'Schedule Interview' }}</h2>
+      <p class="sid__sub">
+        {{ applicantName }}<span *ngIf="jobTitle"> &middot; {{ jobTitle }}</span>
+      </p>
+    </div>
+    <button type="button" class="sid__close" (click)="close()" aria-label="Close dialog" [disabled]="submitting">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M18 6L6 18M6 6l12 12" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Success state -->
+  <div class="sid__success" *ngIf="successResult" role="status" aria-live="polite">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" fill="#D1FAE5"/>
+      <path d="M8 12l3 3 5-5" stroke="#065F46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="sid__success-msg">
+      {{ isReschedule ? 'Interview rescheduled' : 'Interview scheduled' }}
+    </p>
+    <p class="sid__success-detail">
+      {{ successResult.interview.interviewType === customTypeValue ? successResult.interview.customTypeLabel : successResult.interview.interviewType }}
+      with {{ applicantName }}
+    </p>
+
+    <div class="sid__warning" *ngIf="successResult.notificationWarning" role="alert">
+      {{ successResult.notificationWarning }}
+    </div>
+    <div class="sid__confirmed" *ngIf="!successResult.notificationWarning">
+      A confirmation email was sent to the applicant.
+    </div>
+
+    <div class="sid__actions sid__actions--center">
+      <button type="button" class="gh-btn-primary" (click)="done()" cdkFocusInitial>Done</button>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form *ngIf="!successResult" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="sid__scroll">
+
+      <!-- Interview type -->
+      <div class="sid__field">
+        <label class="gh-label" for="sid-interviewType">Interview type</label>
+        <select id="sid-interviewType" class="gh-input" formControlName="interviewType"
+          [attr.aria-invalid]="form.get('interviewType')?.invalid && form.get('interviewType')?.touched"
+          aria-describedby="sid-interviewType-err">
+          <option value="" disabled>Select an interview type</option>
+          <option *ngFor="let t of interviewTypes" [value]="t">{{ t }}</option>
+        </select>
+        <p class="sid__field-error" id="sid-interviewType-err" role="alert"
+          *ngIf="form.get('interviewType')?.invalid && form.get('interviewType')?.touched">
+          Interview type is required.
+        </p>
+      </div>
+
+      <!-- Custom type label -->
+      <div class="sid__field" *ngIf="isCustomType">
+        <label class="gh-label" for="sid-customTypeLabel">Custom interview name</label>
+        <input id="sid-customTypeLabel" type="text" class="gh-input" formControlName="customTypeLabel"
+          maxlength="120" placeholder="e.g. Panel Interview"
+          aria-describedby="sid-customTypeLabel-err">
+        <p class="sid__field-error" id="sid-customTypeLabel-err" role="alert"
+          *ngIf="form.get('customTypeLabel')?.invalid && form.get('customTypeLabel')?.touched">
+          <span *ngIf="form.get('customTypeLabel')?.hasError('required')">Please name this custom interview type.</span>
+          <span *ngIf="form.get('customTypeLabel')?.hasError('maxlength')">Must be 120 characters or fewer.</span>
+        </p>
+      </div>
+
+      <!-- Date / time / timezone -->
+      <div class="sid__row">
+        <div class="sid__field">
+          <label class="gh-label" for="sid-date">Date</label>
+          <input id="sid-date" type="date" class="gh-input" formControlName="date"
+            aria-describedby="sid-date-err">
+        </div>
+        <div class="sid__field">
+          <label class="gh-label" for="sid-time">Time</label>
+          <input id="sid-time" type="time" class="gh-input" formControlName="time"
+            aria-describedby="sid-date-err">
+        </div>
+      </div>
+      <p class="sid__field-error" id="sid-date-err" role="alert"
+        *ngIf="(form.get('date')?.invalid || form.get('time')?.invalid) && (form.get('date')?.touched || form.get('time')?.touched)">
+        Date and time are required.
+      </p>
+      <p class="sid__field-error" role="alert" *ngIf="formHasPastStartError">
+        Please choose a date and time in the future.
+      </p>
+
+      <div class="sid__field">
+        <label class="gh-label" for="sid-timezone">Timezone</label>
+        <input id="sid-timezone" type="text" list="sid-tz-options" class="gh-input" formControlName="timezone"
+          placeholder="e.g. Asia/Manila" aria-describedby="sid-timezone-help sid-timezone-err">
+        <datalist id="sid-tz-options">
+          <option value="Asia/Manila"></option>
+          <option value="Asia/Singapore"></option>
+          <option value="Asia/Hong_Kong"></option>
+          <option value="Asia/Tokyo"></option>
+          <option value="Asia/Kolkata"></option>
+          <option value="Australia/Sydney"></option>
+          <option value="Europe/London"></option>
+          <option value="Europe/Berlin"></option>
+          <option value="America/New_York"></option>
+          <option value="America/Chicago"></option>
+          <option value="America/Denver"></option>
+          <option value="America/Los_Angeles"></option>
+          <option value="UTC"></option>
+        </datalist>
+        <p class="sid__hint" id="sid-timezone-help">
+          Detected from your browser. Change this if you're scheduling for a different timezone.
+        </p>
+        <p class="sid__field-error" id="sid-timezone-err" role="alert"
+          *ngIf="form.get('timezone')?.invalid && form.get('timezone')?.touched">
+          <span *ngIf="form.get('timezone')?.hasError('required')">Timezone is required.</span>
+          <span *ngIf="form.get('timezone')?.hasError('invalidTimezone')">Enter a valid timezone, e.g. "Asia/Manila".</span>
+        </p>
+      </div>
+
+      <!-- Duration -->
+      <div class="sid__row">
+        <div class="sid__field">
+          <label class="gh-label" for="sid-durationPreset">Duration</label>
+          <select id="sid-durationPreset" class="gh-input" formControlName="durationPreset">
+            <option *ngFor="let d of durationPresets" [value]="d">{{ d }} minutes</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div class="sid__field" *ngIf="isCustomDuration">
+          <label class="gh-label" for="sid-durationCustom">Minutes (15-240)</label>
+          <input id="sid-durationCustom" type="number" min="15" max="240" class="gh-input"
+            formControlName="durationCustom" aria-describedby="sid-duration-err">
+        </div>
+      </div>
+      <p class="sid__field-error" id="sid-duration-err" role="alert"
+        *ngIf="form.get('durationCustom')?.invalid && form.get('durationCustom')?.touched">
+        Enter a duration between 15 and 240 minutes.
+      </p>
+
+      <!-- Format -->
+      <fieldset class="sid__field">
+        <legend class="gh-label">Format</legend>
+        <div class="sid__format-options" role="radiogroup" aria-label="Interview format">
+          <label class="sid__format-option" *ngFor="let f of formats"
+            [class.sid__format-option--active]="selectedFormat === f.value">
+            <input type="radio" formControlName="format" [value]="f.value">
+            <span>{{ f.label }}</span>
+          </label>
+        </div>
+        <p class="sid__field-error" role="alert"
+          *ngIf="form.get('format')?.invalid && form.get('format')?.touched">
+          Please choose an interview format.
+        </p>
+      </fieldset>
+
+      <!-- Format-specific field -->
+      <div class="sid__field" *ngIf="selectedFormat === 'video_call'">
+        <label class="gh-label" for="sid-meetingLink">Meeting link</label>
+        <input id="sid-meetingLink" type="url" class="gh-input" formControlName="meetingLink"
+          placeholder="https://..." aria-describedby="sid-meetingLink-err">
+        <p class="sid__field-error" id="sid-meetingLink-err" role="alert"
+          *ngIf="form.get('meetingLink')?.invalid && form.get('meetingLink')?.touched">
+          <span *ngIf="form.get('meetingLink')?.hasError('required')">A meeting link is required for video calls.</span>
+          <span *ngIf="form.get('meetingLink')?.hasError('pattern')">Enter a valid https:// link.</span>
+        </p>
+      </div>
+
+      <div class="sid__field" *ngIf="selectedFormat === 'in_person'">
+        <label class="gh-label" for="sid-location">Location</label>
+        <input id="sid-location" type="text" class="gh-input" formControlName="location"
+          placeholder="Office address or room" aria-describedby="sid-location-err">
+        <p class="sid__field-error" id="sid-location-err" role="alert"
+          *ngIf="form.get('location')?.invalid && form.get('location')?.touched">
+          Location is required for in-person interviews.
+        </p>
+      </div>
+
+      <div class="sid__field" *ngIf="selectedFormat === 'phone' || selectedFormat === 'custom'">
+        <label class="gh-label" for="sid-instructions">
+          {{ selectedFormat === 'phone' ? 'Call instructions' : 'Instructions' }}
+        </label>
+        <textarea id="sid-instructions" class="gh-input sid__textarea" rows="3" formControlName="instructions"
+          [placeholder]="selectedFormat === 'phone' ? 'e.g. We will call you at the number on file.' : 'How should the applicant join?'"
+          aria-describedby="sid-instructions-err"></textarea>
+        <p class="sid__field-error" id="sid-instructions-err" role="alert"
+          *ngIf="form.get('instructions')?.invalid && form.get('instructions')?.touched">
+          Instructions are required for this format.
+        </p>
+      </div>
+
+      <!-- Preparation notes -->
+      <div class="sid__field">
+        <label class="gh-label" for="sid-preparationNotes">Preparation notes <span class="sid__optional">(optional)</span></label>
+        <textarea id="sid-preparationNotes" class="gh-input sid__textarea" rows="3"
+          formControlName="preparationNotes" placeholder="Anything the applicant should prepare or know ahead of time"></textarea>
+        <p class="sid__hint">Visible to the applicant.</p>
+      </div>
+
+      <p class="sid__hint sid__interviewer-note">
+        You'll be listed as the interviewer for this session.
+      </p>
+    </div>
+
+    <div class="sid__conflict" *ngIf="conflictError" role="alert" aria-live="assertive">
+      <strong>{{ conflictMessage }}</strong>
+      <p>{{ conflictSubmessage }}</p>
+    </div>
+
+    <div class="sid__error" *ngIf="serverErrorMessage" role="alert" aria-live="polite">
+      <p>{{ serverErrorMessage }}</p>
+      <ul *ngIf="fieldErrors.length">
+        <li *ngFor="let e of fieldErrors">{{ e }}</li>
+      </ul>
+    </div>
+
+    <div class="sid__actions">
+      <button type="button" class="gh-btn-secondary" (click)="close()" [disabled]="submitting">Cancel</button>
+      <button type="submit" class="gh-btn-primary" [disabled]="submitting" [attr.aria-busy]="submitting">
+        <span *ngIf="!submitting">{{ isReschedule ? 'Save changes' : 'Schedule interview' }}</span>
+        <span *ngIf="submitting">{{ isReschedule ? 'Saving…' : 'Scheduling…' }}</span>
+      </button>
+    </div>
+  </form>
+
+</div>

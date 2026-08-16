@@ -1,0 +1,62 @@
+.dv {
+  width: 100%;
+}
+
+.dv-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: #667085;
+  font-size: 0.875rem;
+}
+
+.dv-grid {
+  display: flex;
+  border: 1px solid #EAECF0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.dv-hours {
+  flex-shrink: 0;
+  width: 64px;
+  border-right: 1px solid #EAECF0;
+  background: #F9FAFB;
+}
+
+.dv-hour-row {
+  height: 56px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4px 8px 0 0;
+  box-sizing: border-box;
+}
+
+.dv-hour-label {
+  font-size: 0.6875rem;
+  color: #98A2B3;
+}
+
+.dv-events {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.dv-hour-line {
+  height: 56px;
+  border-bottom: 1px solid #F2F4F7;
+  box-sizing: border-box;
+}
+
+.dv-event-wrap {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 1px 2px;
+  min-height: 24px;
+}
+
+@media (max-width: 600px) {
+  .dv-hours { width: 48px; }
+  .dv-hour-label { font-size: 0.625rem; }
+}

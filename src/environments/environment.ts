@@ -7,13 +7,21 @@ export const environment = {
   projectName: 'gethired',
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
-  api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
-  //api_url: 'http://localhost:3000/api',
-  app_url: 'http://localhost:4200',
+  //api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
+  api_url: 'http://localhost:3000/api',
+  // STITCH fix: was 'http://localhost:4200' -- that's the job-seeker app's
+  // port, not this app's own. This app's dev port is now explicitly set
+  // to 4201 in angular.json's serve.options (previously undocumented/ad hoc).
+  app_url: 'http://localhost:4201',
   // Cross-app link target for "I'm looking for a job" / job-seeker-directed
   // CTAs on this standalone employer app. Placeholder until the job-seeker
   // app's real domain is decided/deployed -- update before shipping.
   jobSeekerAppUrl: 'http://localhost:4200',
+  // GetHired Gateway -- the standalone "choose your path" chooser page
+  // (gateway-landing/, at this repo's root) that sits in front of both
+  // apps. Used by the Back/Main-Page nav on every public page (landing,
+  // signin, signup).
+  gatewayUrl: 'http://localhost:4000',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: true,

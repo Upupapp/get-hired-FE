@@ -1,0 +1,60 @@
+<div class="ai-wrap">
+  <div class="ai-card">
+
+    <ng-container [ngSwitch]="state">
+
+      <div *ngSwitchCase="'loading'" class="ai-state">
+        <p>Loading your invite…</p>
+      </div>
+
+      <div *ngSwitchCase="'invalid'" class="ai-state">
+        <h3>This invite link is invalid or has expired</h3>
+        <p>Ask whoever invited you to send a new invite.</p>
+        <a routerLink="/signin" class="btn btn-primary hvr-grow">Back to sign in</a>
+      </div>
+
+      <div *ngSwitchCase="'sign-in-required'" class="ai-state">
+        <h3>Sign in to accept this invite</h3>
+        <p>An account for this email already exists. Sign in with that email to join {{ companyName }}.</p>
+        <button type="button" class="btn btn-primary hvr-grow" (click)="goToSignIn()">Sign in</button>
+      </div>
+
+      <div *ngSwitchCase="'accepted'" class="ai-state">
+        <h3>You've joined {{ companyName }}</h3>
+        <p>Redirecting you to sign in…</p>
+      </div>
+
+      <ng-container *ngSwitchCase="'form'">
+        <ng-container *ngTemplateOutlet="formTpl"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="'submitting'">
+        <ng-container *ngTemplateOutlet="formTpl"></ng-container>
+      </ng-container>
+
+    </ng-container>
+
+  </div>
+</div>
+
+<ng-template #formTpl>
+  <div class="ai-invite-header">
+    <img *ngIf="companyLogoUrl" [src]="companyLogoUrl" [alt]="companyName" class="ai-logo">
+    <h3>You've been invited to join {{ companyName }}</h3>
+    <p class="ai-role" *ngIf="roleName">as <strong>{{ roleName }}</strong></p>
+  </div>
+
+  <form [formGroup]="nameForm" (ngSubmit)="accept()">
+    <div class="form-group mt-3">
+      <label>First name</label>
+      <input type="text" class="form-control" formControlName="firstName" placeholder="First name">
+    </div>
+    <div class="form-group mt-2">
+      <label>Last name</label>
+      <input type="text" class="form-control" formControlName="lastName" placeholder="Last name">
+    </div>
+    <button type="submit" class="btn btn-primary hvr-grow w-100 mt-4"
+      [disabled]="nameForm.invalid || state === 'submitting'">
+      {{ state === 'submitting' ? 'Joining…' : 'Accept invite' }}
+    </button>
+  </form>
+</ng-template>

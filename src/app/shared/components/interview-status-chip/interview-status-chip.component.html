@@ -1,0 +1,13 @@
+<span class="isc" [ngClass]="'isc--' + status" [attr.aria-label]="'Status: ' + label">
+  <span class="isc__icon" aria-hidden="true">
+    <ng-container [ngSwitch]="status">
+      <!-- Scheduled: filled circle -->
+      <svg *ngSwitchCase="'scheduled'" width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="currentColor"/></svg>
+      <!-- Past: filled square -->
+      <svg *ngSwitchCase="'past'" width="8" height="8" viewBox="0 0 8 8"><rect width="8" height="8" fill="currentColor"/></svg>
+      <!-- Cancelled: X -->
+      <svg *ngSwitchCase="'cancelled'" width="8" height="8" viewBox="0 0 8 8"><path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </ng-container>
+  </span>
+  {{ label }}
+</span>

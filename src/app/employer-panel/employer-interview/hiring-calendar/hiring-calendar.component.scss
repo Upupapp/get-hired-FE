@@ -1,0 +1,177 @@
+@import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
+
+.hc-page {
+  padding: 24px 28px 40px;
+  width: 100%;
+}
+
+// ─── Loading / error ────────────────────────────────────────────────────
+
+.hc-skeleton-bar {
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #d1d5db 50%, #e5e7eb 75%);
+  background-size: 400px 100%;
+  animation: hc-shimmer 1.4s ease-in-out infinite;
+  @include ambient-motion-safe;
+  margin-bottom: 16px;
+}
+
+.hc-skeleton-grid {
+  height: 400px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #d1d5db 50%, #e5e7eb 75%);
+  background-size: 400px 100%;
+  animation: hc-shimmer 1.4s ease-in-out infinite;
+  @include ambient-motion-safe;
+}
+
+@keyframes hc-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.hc-error {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.hc-error-heading {
+  font-size: 0.9375rem;
+  color: #344054;
+  margin: 0 0 14px;
+}
+
+// ─── Toolbar ────────────────────────────────────────────────────────────
+
+.hc-toolbar { margin-bottom: 16px; }
+
+.hc-toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.hc-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hc-nav-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #D0D5DD;
+  background: #fff;
+  color: #344054;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: #F9FAFB; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &--today { font-size: 0.8125rem; }
+}
+
+.hc-heading {
+  flex: 1;
+  min-width: 160px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: $color-black;
+  margin: 0;
+}
+
+.hc-new-interview-btn { white-space: nowrap; }
+
+.hc-view-switcher {
+  display: flex;
+  gap: 4px;
+  border: 1px solid #EAECF0;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.hc-view-btn {
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #475467;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background $motion-duration-micro $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: #F9FAFB; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &--active {
+    background: $color-global-red-buttons;
+    color: #fff;
+    // Red-on-red outline would erase legibility against this button's own
+    // background -- use a white ring (with a dark offset ring behind it for
+    // contrast against light page backgrounds too) instead of the default.
+    &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 4px rgba(0,0,0,0.15); }
+  }
+}
+
+.hc-filters {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.hc-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #667085;
+}
+
+.hc-filter-select {
+  min-height: 38px;
+  padding: 0 8px;
+  border-radius: 8px;
+  border: 1px solid #D0D5DD;
+  font-size: 0.8125rem;
+  color: #344054;
+  background: #fff;
+
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+}
+
+.hc-list-link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: $color-global-red-buttons;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+}
+
+.hc-timezone-note {
+  font-size: 0.75rem;
+  color: #98A2B3;
+  margin: 0;
+}
+
+.hc-view-body { width: 100%; }
+
+@media (max-width: 640px) {
+  .hc-page { padding: 16px; }
+  .hc-heading { order: -1; width: 100%; }
+  .hc-filters { margin-left: 0; width: 100%; }
+}

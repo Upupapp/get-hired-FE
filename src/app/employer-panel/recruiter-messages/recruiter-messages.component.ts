@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessageService, RecruiterThreadSummary } from '@app-shared/services/message.service';
@@ -46,10 +46,57 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
   constructor(
     private messageService: MessageService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.loadThreads();
+    // Phase 1.5A -- Capability C deep-link from Interview Detail's "Message
+    // Applicant" CTA: ?jobId=&applicantUid=. Falls back to the plain inbox
+    // load when absent, or if resolving the deep link fails for any reason.
+    const jobId = this.route.snapshot.queryParamMap.get('jobId');
+    const applicantUid = this.route.snapshot.queryParamMap.get('applicantUid') || undefined;
+    if (jobId) {
+      this.openDeepLinkedThread(jobId, applicantUid);
+    } else {
+      this.loadThreads();
+    }
+  }
+
+  /** Opens (or reuses) the thread for a (jobId, applicantUid) pair via the
+   * existing idempotent MessageService.openThread(), then loads the inbox
+   * and auto-selects the matching thread -- never creates a duplicate. */
+  private openDeepLinkedThread(jobId: string, applicantUid?: string): void {
+    this.loading = true;
+    this.error = false;
+    this.messageService
+      .openThread(jobId, applicantUid)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (thread) => {
+          this.messageService
+            .getRecruiterThreads()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (threads) => {
+                this.threads = threads ?? [];
+                this.applyFilter();
+                this.loading = false;
+                const match = this.threads.find((t) => t.threadId === thread?.id);
+                if (match) { this.selectThread(match); }
+              },
+              error: () => {
+                this.loading = false;
+                this.error = true;
+              },
+            });
+        },
+        error: () => {
+          // Couldn't resolve/open the specific thread (e.g. cross-company
+          // access denied) -- degrade to the normal inbox rather than a
+          // hard failure.
+          this.loadThreads();
+        },
+      });
   }
 
   ngOnDestroy(): void {

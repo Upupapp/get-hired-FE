@@ -7,14 +7,22 @@
         {{ members.length }} team member{{ members.length !== 1 ? 's' : '' }}
       </p>
     </div>
-    <button class="cu-add-btn" type="button" (click)="addAccess()" [disabled]="!companyId"
-      aria-label="Add new team member">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
-        width="13" height="13" stroke-linecap="round" aria-hidden="true">
-        <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
-      </svg>
-      {{ 'EDIT_COMPANY_USERS.ADD_NEW_ACCESS_BUTTON' | translate }}
-    </button>
+    <div class="cu-header-actions">
+      <button class="cu-action-btn" type="button" *ngIf="canManageTeam" (click)="openRoleManagement()">
+        Roles & Permissions
+      </button>
+      <button class="cu-action-btn" type="button" *ngIf="canManageTeam" (click)="openAuditLog()">
+        Audit log
+      </button>
+      <button class="cu-add-btn" type="button" (click)="addAccess()" [disabled]="!companyId"
+        aria-label="Add new team member">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"
+          width="13" height="13" stroke-linecap="round" aria-hidden="true">
+          <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+        </svg>
+        {{ 'EDIT_COMPANY_USERS.ADD_NEW_ACCESS_BUTTON' | translate }}
+      </button>
+    </div>
   </div>
 
   <ng-container *ngIf="users$ | async as members">
@@ -25,7 +33,8 @@
         <thead>
           <tr>
             <th scope="col" class="cu-th">Team member</th>
-            <th scope="col" class="cu-th">Employee ID</th>
+            <th scope="col" class="cu-th">Role</th>
+            <th scope="col" class="cu-th">Access</th>
             <th scope="col" class="cu-th">Email</th>
             <th scope="col" class="cu-th">Date added</th>
             <th scope="col" class="cu-th cu-th--action"></th>
@@ -33,7 +42,8 @@
         </thead>
         <tbody>
           <tr *ngFor="let member of members" class="cu-row"
-            [class.cu-row--self]="member.uid === currentUserUid">
+            [class.cu-row--self]="member.uid === currentUserUid"
+            [class.cu-row--suspended]="member.status === 'suspended'">
 
             <!-- Member identity cell -->
             <td class="cu-td">
@@ -54,13 +64,22 @@
                     <span *ngIf="member.uid === currentUserUid" class="cu-you-chip" aria-label="this is you">
                       You
                     </span>
+                    <span *ngIf="member.status === 'suspended'" class="cu-suspended-chip">Suspended</span>
                   </span>
                   <span *ngIf="member.roleTitle" class="cu-role-title">{{ member.roleTitle }}</span>
                 </div>
               </div>
             </td>
 
-            <td class="cu-td cu-td--mono">{{ member.employeeId }}</td>
+            <td class="cu-td">{{ member.roleName || '—' }}</td>
+            <td class="cu-td">
+              <span class="cu-scope-chip" [ngSwitch]="member.accessScope">
+                <ng-container *ngSwitchCase="'all_jobs'">All jobs</ng-container>
+                <ng-container *ngSwitchCase="'assigned_jobs'">{{ member.assignedJobs?.length || 0 }} assigned job{{ (member.assignedJobs?.length || 0) !== 1 ? 's' : '' }}</ng-container>
+                <ng-container *ngSwitchCase="'no_job_access'">No job access</ng-container>
+                <ng-container *ngSwitchDefault>—</ng-container>
+              </span>
+            </td>
             <td class="cu-td">{{ member.email }}</td>
             <td class="cu-td">{{ member.assignedAt | date:'mediumDate' }}</td>
 
@@ -71,12 +90,61 @@
                 [attr.aria-label]="'Edit your profile'">
                 Edit my profile
               </button>
+              <div class="cu-action-group" *ngIf="member.uid !== currentUserUid && canManageTeam">
+                <button class="cu-action-btn" type="button" (click)="editMember(member)"
+                  [attr.aria-label]="'Edit role and access for ' + member.fullName">
+                  Edit access
+                </button>
+                <button *ngIf="member.status !== 'suspended'" class="cu-action-btn" type="button" (click)="suspendMember(member)"
+                  [attr.aria-label]="'Suspend ' + member.fullName">
+                  Suspend
+                </button>
+                <button *ngIf="member.status === 'suspended'" class="cu-action-btn" type="button" (click)="reactivateMember(member)"
+                  [attr.aria-label]="'Reactivate ' + member.fullName">
+                  Reactivate
+                </button>
+                <button class="cu-action-btn cu-action-btn--danger" type="button" (click)="removeMember(member)"
+                  [attr.aria-label]="'Remove ' + member.fullName">
+                  Remove
+                </button>
+              </div>
             </td>
 
           </tr>
 
-          <tr *ngIf="members.length === 0">
-            <td colspan="5" class="cu-empty">No team members yet.</td>
+          <!-- Pending invites -->
+          <tr *ngFor="let invite of (pendingInvites$ | async)" class="cu-row cu-row--invited">
+            <td class="cu-td">
+              <div class="cu-identity">
+                <div class="cu-avatar cu-avatar--pending" aria-hidden="true">
+                  <span class="cu-avatar-initials">?</span>
+                </div>
+                <div class="cu-identity-info">
+                  <span class="cu-name">{{ invite.email }}</span>
+                  <span class="cu-invited-chip">Invited — pending</span>
+                </div>
+              </div>
+            </td>
+            <td class="cu-td">{{ invite.roleName || '—' }}</td>
+            <td class="cu-td">
+              <span class="cu-scope-chip">{{ invite.accessScope === 'all_jobs' ? 'All jobs' : (invite.accessScope === 'assigned_jobs' ? 'Assigned jobs' : 'No job access') }}</span>
+            </td>
+            <td class="cu-td">{{ invite.email }}</td>
+            <td class="cu-td">{{ invite.invitedAt | date:'mediumDate' }}</td>
+            <td class="cu-td cu-td--action">
+              <div class="cu-action-group" *ngIf="canManageTeam">
+                <button class="cu-action-btn" type="button" (click)="resendInvite(invite)" [attr.aria-label]="'Resend invite to ' + invite.email">
+                  Resend
+                </button>
+                <button class="cu-action-btn cu-action-btn--danger" type="button" (click)="revokeInvite(invite)">
+                  Revoke
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="members.length === 0 && (pendingInvites$ | async)?.length === 0">
+            <td colspan="6" class="cu-empty">No team members yet.</td>
           </tr>
         </tbody>
       </table>
@@ -86,6 +154,7 @@
     <div class="cu-cards d-block d-md-none" role="list">
       <div *ngFor="let member of members" class="cu-card"
         [class.cu-card--self]="member.uid === currentUserUid"
+        [class.cu-card--suspended]="member.status === 'suspended'"
         role="listitem">
         <div class="cu-card-identity">
           <div class="cu-avatar" [class.cu-avatar--photo]="member.photoUrl">
@@ -99,14 +168,22 @@
             <span class="cu-name">
               {{ member.fullName }}
               <span *ngIf="member.uid === currentUserUid" class="cu-you-chip">You</span>
+              <span *ngIf="member.status === 'suspended'" class="cu-suspended-chip">Suspended</span>
             </span>
             <span *ngIf="member.roleTitle" class="cu-role-title">{{ member.roleTitle }}</span>
             <span class="cu-card-email">{{ member.email }}</span>
           </div>
         </div>
         <div class="cu-card-meta">
-          <span class="cu-card-meta-label">Employee ID</span>
-          <span class="cu-card-meta-value">{{ member.employeeId }}</span>
+          <span class="cu-card-meta-label">Role</span>
+          <span class="cu-card-meta-value">{{ member.roleName || '—' }}</span>
+          <span class="cu-card-meta-label">Access</span>
+          <span class="cu-card-meta-value" [ngSwitch]="member.accessScope">
+            <ng-container *ngSwitchCase="'all_jobs'">All jobs</ng-container>
+            <ng-container *ngSwitchCase="'assigned_jobs'">{{ member.assignedJobs?.length || 0 }} assigned</ng-container>
+            <ng-container *ngSwitchCase="'no_job_access'">No job access</ng-container>
+            <ng-container *ngSwitchDefault>—</ng-container>
+          </span>
           <span class="cu-card-meta-label">Date added</span>
           <span class="cu-card-meta-value">{{ member.assignedAt | date:'mediumDate' }}</span>
         </div>
@@ -115,6 +192,34 @@
             type="button" (click)="openProfile(member)">
             Edit my profile
           </button>
+        </div>
+        <div class="cu-card-actions" *ngIf="member.uid !== currentUserUid && canManageTeam">
+          <button class="cu-action-btn cu-action-btn--block" type="button" (click)="editMember(member)">Edit access</button>
+          <button *ngIf="member.status !== 'suspended'" class="cu-action-btn cu-action-btn--block" type="button" (click)="suspendMember(member)">Suspend</button>
+          <button *ngIf="member.status === 'suspended'" class="cu-action-btn cu-action-btn--block" type="button" (click)="reactivateMember(member)">Reactivate</button>
+          <button class="cu-action-btn cu-action-btn--danger cu-action-btn--block" type="button" (click)="removeMember(member)">Remove</button>
+        </div>
+      </div>
+
+      <div *ngFor="let invite of (pendingInvites$ | async)" class="cu-card cu-card--invited" role="listitem">
+        <div class="cu-card-identity">
+          <div class="cu-avatar cu-avatar--pending" aria-hidden="true">
+            <span class="cu-avatar-initials">?</span>
+          </div>
+          <div class="cu-card-info">
+            <span class="cu-name">{{ invite.email }}</span>
+            <span class="cu-invited-chip">Invited — pending</span>
+          </div>
+        </div>
+        <div class="cu-card-meta">
+          <span class="cu-card-meta-label">Role</span>
+          <span class="cu-card-meta-value">{{ invite.roleName || '—' }}</span>
+          <span class="cu-card-meta-label">Invited</span>
+          <span class="cu-card-meta-value">{{ invite.invitedAt | date:'mediumDate' }}</span>
+        </div>
+        <div class="cu-card-actions" *ngIf="canManageTeam">
+          <button class="cu-action-btn cu-action-btn--block" type="button" (click)="resendInvite(invite)">Resend</button>
+          <button class="cu-action-btn cu-action-btn--danger cu-action-btn--block" type="button" (click)="revokeInvite(invite)">Revoke invite</button>
         </div>
       </div>
 
