@@ -10,6 +10,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
+import { GuestJobDraftService } from '@app-job/services/guest-job-draft.service';
 
 @Component({
   selector: 'app-employer-panel',
@@ -43,12 +44,14 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private jobPreviewService: PublicJobPreviewService,
+    private guestJobDraft: GuestJobDraftService,
   ) { }
 
   ngOnInit(): void {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
     this.checkAndClaimAiPreview();
+    this.checkAndRestoreGuestJobDraft();
 
     // companyName for topbar avatar menu — reads from companyFacade.companyDetails$
     // (the authoritative store slice) so it updates immediately when the recruiter
@@ -144,6 +147,18 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
           this.jobPreviewService.clearPendingToken();
         },
       });
+  }
+
+  // ─── Guest Job Draft Restore — runs once on employer panel init ─────────
+  // If a first-time guest saved a job draft before registering (see
+  // ai-job-preview-panel.component.ts), don't leave them on a generic
+  // dashboard -- route straight to Create a Job / From Scratch, where
+  // JobCreateComponent.ngOnInit() restores the draft into the form. The
+  // draft itself is only cleared on confirmed successful job persistence.
+  private checkAndRestoreGuestJobDraft(): void {
+    if (this.guestJobDraft.hasPending()) {
+      this.router.navigate(['/recruiter/jobs/create']);
+    }
   }
 
   /** Called from the "sign in again" button on the profile-load-error fallback.

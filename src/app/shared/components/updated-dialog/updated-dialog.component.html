@@ -19,6 +19,10 @@
       [class.ud-action-btn--ghost]="!a.primary"
       (click)="doAction(a.value)"
     >{{ a.label }}</button>
+    <!-- No explicit cdkFocusInitial here: it's a static-selector directive
+         (see the simpleClose template below), can't be conditionally bound
+         per-action via *ngFor. MatDialog's own default focus-first-focusable
+         behavior already covers keyboard-focus-on-open for this template. -->
   </div>
 
   <!-- Simple close mode (backward-compat) -->

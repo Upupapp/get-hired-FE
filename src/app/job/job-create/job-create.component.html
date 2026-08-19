@@ -227,12 +227,31 @@
             <span class="gh-jc-readiness-percent">{{ readinessResult.readinessPercent }}%</span>
           </div>
 
-          <!-- B09: Easy Job Posting assistant banner -->
+          <!-- B09/B16: Easy Job Posting assistant banner — CTA reflects live readiness -->
           <div class="gh-jc-assistant-banner" *ngIf="assistantPrefilled" role="status">
             <i class="bi bi-stars gh-jc-assistant-banner-icon" aria-hidden="true"></i>
             <div class="gh-jc-assistant-banner-copy">
               <span class="gh-jc-assistant-banner-title">Draft created with GetHired Assistant</span>
-              <span class="gh-jc-assistant-banner-body">Review imported details and complete any missing fields before publishing.</span>
+              <span class="gh-jc-assistant-banner-body">
+                {{ readinessResult?.canPublish
+                  ? 'Your job is ready to publish.'
+                  : 'Review imported details and complete any missing fields before publishing.' }}
+              </span>
+            </div>
+            <button type="button" class="gh-jc-assistant-banner-cta" (click)="changeStep(4)">
+              {{ readinessResult?.canPublish ? 'Review & publish' : "See what's left" }}
+            </button>
+          </div>
+
+          <!-- Guest job draft restore banner (2026-08-20): shown when a
+               first-time guest's pre-registration job draft was restored
+               into this form -- see checkAndRestoreGuestJobDraft() in
+               guest-job-draft.service.ts / job-create.component.ts. -->
+          <div class="gh-jc-assistant-banner" *ngIf="guestDraftRestored" role="status">
+            <i class="bi bi-arrow-counterclockwise gh-jc-assistant-banner-icon" aria-hidden="true"></i>
+            <div class="gh-jc-assistant-banner-copy">
+              <span class="gh-jc-assistant-banner-title">Your unfinished job post has been restored</span>
+              <span class="gh-jc-assistant-banner-body">Continue where you left off, or make changes before publishing.</span>
             </div>
           </div>
 

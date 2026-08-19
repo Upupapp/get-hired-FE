@@ -19,6 +19,9 @@ import {
 } from '../../services/public-job-preview.service';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { GoogleAuthService } from '@main/auth/services/google-auth.service';
+import { CoreService } from '@app-core/services/core.service';
+import { GuestJobDraftService } from '@app-job/services/guest-job-draft.service';
+import { resolveWorkSetupId, resolveJobTypeId } from '@app-job/utils/job-field-resolvers';
 
 type PanelStep = 'input' | 'loading' | 'preview' | 'error';
 
@@ -65,6 +68,8 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     private router: Router,
     private haptics: HapticFeedbackService,
     private googleAuthService: GoogleAuthService,
+    private coreService: CoreService,
+    private guestJobDraft: GuestJobDraftService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -130,6 +135,41 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     }
 
     this.haptics.selection();
+
+    // AUTH-STATE CLASSIFICATION (2026-08-20) -- resolved client-side, before
+    // any authenticated-dependent operation is attempted. A true first-time
+    // guest must never discover their auth state via a failing API request:
+    // that previously produced a misleading "Could not generate preview"
+    // error for someone who was never signed in. See
+    // GETHIRED_UNIFIED_FE_UIUX_CONTINUATION_AND_EMPLOYER_JOB_POST_FLOW_REFINEMENT_COMMAND_V1.
+    const isLoggedIn = this.coreService.isLoggedIn();
+    const role = isLoggedIn ? localStorage.getItem('role') : null;
+
+    if (!isLoggedIn) {
+      // GENUINE GUEST -- no session to expire, nothing to authenticate.
+      // Skip the preview API entirely; go straight to draft + registration.
+      this.saveDraftAndRedirectToRegister(title);
+      return;
+    }
+
+    if (role !== '2') {
+      // AUTHENTICATED NON-EMPLOYER -- never create a job under the wrong
+      // account/role. Preserve the intent (the draft still restores
+      // correctly once the account actually has Employer access) but don't
+      // call the preview API, and don't fabricate a role-upgrade route that
+      // may not exist -- surface an accurate, actionable message instead.
+      this.saveDraftPayload(title);
+      this.haptics.error();
+      this.errorMsg = 'This account isn’t set up as an Employer account yet. Sign in with an Employer account, or create a new one, to continue with this job post.';
+      this.step = 'error';
+      return;
+    }
+
+    // AUTHENTICATED EMPLOYER (or a previously-authenticated session that has
+    // since actually expired -- indistinguishable from here without making
+    // the request; a real 401/403 on this call falls through to the global
+    // interceptor's existing re-auth flow, which now preserves any pending
+    // guest draft across that logout -- see CoreService.logout()).
     this.step = 'loading';
     this.errorMsg = '';
 
@@ -151,6 +191,27 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
         this.step = 'error';
       },
     });
+  }
+
+  /** Maps this panel's fields into the canonical job-form payload shape
+   *  (same fields JobCreateComponent.applyAssistantPrefill() consumes) and
+   *  persists it as a pending guest job draft. */
+  private saveDraftPayload(title: string): void {
+    const payload = {
+      jobTitle: title,
+      jobCity: this.location.trim() || null,
+      jobCountry: 'Philippines',
+      workSetupId: resolveWorkSetupId(this.workSetup),
+      jobTypeId: resolveJobTypeId(this.employmentType),
+    };
+    this.guestJobDraft.save(payload, 'public-employer-ai-preview-panel');
+  }
+
+  private saveDraftAndRedirectToRegister(title: string): void {
+    this.saveDraftPayload(title);
+    this.haptics.selection();
+    this.closed.emit();
+    this.router.navigate(['/signup'], { queryParams: { role: 2, intent: 'resume-job-draft' } });
   }
 
   goSignup(): void {
