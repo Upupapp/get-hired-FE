@@ -79,6 +79,39 @@
             </p>
           </div>
 
+          <!-- Google / LinkedIn sign-up — moved to the top of the form panel -->
+          <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">
+            {{ googleError }}
+          </div>
+
+          <div *ngIf="googleLoading" class="text-center py-2" aria-live="polite" style="font-size:13px;color:#6b7280;">
+            Connecting to Google…
+          </div>
+
+          <div class="gh-google-btn-row" *ngIf="!googleLoading">
+            <app-google-signin-button
+              label="signup_with"
+              [fullWidth]="true"
+              (credential)="onGoogleCredential($event)"
+              (errorEvent)="onGoogleError($event)">
+            </app-google-signin-button>
+          </div>
+
+          <!-- LinkedIn sign-up button -->
+          <div class="gh-google-btn-row mt-2">
+            <app-linkedin-button
+              label="Sign up with LinkedIn"
+              intent="auto"
+              [fullWidth]="true">
+            </app-linkedin-button>
+          </div>
+
+          <div class="gh-auth-divider mt-3" aria-hidden="true">
+            <span class="gh-auth-divider-line"></span>
+            <span class="gh-auth-divider-text">or</span>
+            <span class="gh-auth-divider-line"></span>
+          </div>
+
           <div class="alert alert-danger alert-dismissible fade show error-message"
             [@animate]="{value:'*', params:{ y:'50px', delay:'600ms' }}" *ngIf="error" role="alert">
             <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
@@ -241,40 +274,6 @@
           </button>
 
           <div class="clearfix"></div>
-
-          <!-- Google sign-up divider -->
-          <div class="gh-auth-divider" aria-hidden="true">
-            <span class="gh-auth-divider-line"></span>
-            <span class="gh-auth-divider-text">or</span>
-            <span class="gh-auth-divider-line"></span>
-          </div>
-
-          <!-- Google error -->
-          <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">
-            {{ googleError }}
-          </div>
-
-          <div *ngIf="googleLoading" class="text-center py-2" aria-live="polite" style="font-size:13px;color:#6b7280;">
-            Connecting to Google…
-          </div>
-
-          <div class="gh-google-btn-row" *ngIf="!googleLoading">
-            <app-google-signin-button
-              label="signup_with"
-              [fullWidth]="true"
-              (credential)="onGoogleCredential($event)"
-              (errorEvent)="onGoogleError($event)">
-            </app-google-signin-button>
-          </div>
-
-          <!-- LinkedIn sign-up button -->
-          <div class="gh-google-btn-row mt-2">
-            <app-linkedin-button
-              label="Sign up with LinkedIn"
-              intent="auto"
-              [fullWidth]="true">
-            </app-linkedin-button>
-          </div>
 
           <div class="text-center mt-5 join-us">
             <br><br>
