@@ -76,4 +76,64 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
       this.closeMobileNav();
     }
   }
+
+  // DESIGN OVERHAUL PORT (2026-08-19): ported from gethired-jobseeker-FE's
+  // Job Seeker portal redesign (Increment 1 there) into this combined
+  // get-hired-FE codebase's applicant-panel -- per this repo's own
+  // ownership reversal, get-hired-FE is now the active target and the two
+  // separated frontends are frozen. Desktop topbar (title/subtitle/actions/
+  // avatar menu), matching employer-panel.component.ts's own
+  // pageTitle/parentLabel/pageSubtitle URL-matching pattern.
+  avatarMenuOpen = false;
+
+  get pageTitle(): string {
+    const url = this.router.url;
+    if (url.includes('/dashboard'))                return 'Dashboard';
+    if (url.includes('/applications'))              return 'My Applications';
+    if (url.includes('/profile/cv-builder'))        return 'CV Builder & Match Coach';
+    if (url.includes('/profile'))                   return 'Profile';
+    if (url.includes('/settings'))                  return 'Settings';
+    if (url.startsWith('/jobs'))                    return 'Browse Jobs';
+    return 'Dashboard';
+  }
+
+  get parentLabel(): string {
+    const url = this.router.url;
+    if (url.startsWith('/jobs'))                    return 'Jobs';
+    if (url.includes('/profile'))                   return 'Career';
+    return '';
+  }
+
+  get pageSubtitle(): string {
+    const url = this.router.url;
+    if (url.includes('/dashboard'))                return 'Your career activity at a glance.';
+    if (url.includes('/applications'))              return 'Track your applications and next steps.';
+    if (url.includes('/profile/cv-builder'))        return 'Improve your CV and understand how it matches real jobs.';
+    if (url.includes('/profile'))                   return 'Keep your candidate information current.';
+    if (url.includes('/settings'))                  return 'Manage your account and preferences.';
+    if (url.startsWith('/jobs'))                    return 'Find opportunities that fit your profile.';
+    return '';
+  }
+
+  toggleAvatarMenu(): void {
+    this.avatarMenuOpen = !this.avatarMenuOpen;
+  }
+
+  closeAvatarMenu(): void {
+    this.avatarMenuOpen = false;
+  }
+
+  goToBrowseJobs(): void {
+    this.router.navigate(['/jobs']);
+  }
+
+  logout(): void {
+    this.closeAvatarMenu();
+    this.coreService.logout();
+    this.router.navigate(['/signin']);
+  }
+
+  signInAgain(): void {
+    this.router.navigate(['/signin']);
+  }
 }

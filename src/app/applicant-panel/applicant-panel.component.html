@@ -149,11 +149,58 @@
     </div>
 
     <div id="main-applicant-component">
-      <!-- Header -->
-      <div style="margin-bottom: 80px; ">
-        <app-header [isPublic]="false"
-        [isUserLoggedIn]="isUserLoggedIn" [user]="user"></app-header>
-      </div>
+      <!-- DESIGN OVERHAUL PORT (2026-08-19): dedicated desktop topbar,
+           ported from gethired-jobseeker-FE's Job Seeker portal redesign --
+           replaces the old shared <app-header> here (previously rendered
+           on both mobile AND desktop with no d-none/d-md guard, unlike the
+           mobile top bar + drawer above which already correctly hide at
+           md+). Matches employer-panel's own .gh-employer-topbar structure. -->
+      <header class="gh-ap-topbar d-none d-md-flex" role="banner" aria-label="Job seeker panel">
+        <div class="gh-ap-topbar-left">
+          <div class="gh-ap-topbar-context">
+            <span class="gh-ap-topbar-eyebrow" *ngIf="parentLabel" aria-hidden="true">{{ parentLabel }}</span>
+            <h1 class="gh-ap-topbar-title">{{ pageTitle }}</h1>
+            <p class="gh-ap-topbar-subtitle" *ngIf="pageSubtitle">{{ pageSubtitle }}</p>
+          </div>
+        </div>
+        <div class="gh-ap-topbar-right">
+          <button type="button" class="gh-btn-coral gh-ap-btn-topbar gh-pressable"
+            (click)="goToBrowseJobs()"
+            aria-label="Browse jobs">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+              width="14" height="14" aria-hidden="true" focusable="false">
+              <circle cx="7" cy="7" r="5"/><line x1="11" y1="11" x2="14" y2="14"/>
+            </svg>
+            Browse jobs
+          </button>
+          <div class="gh-ap-topbar-avatar-wrap">
+            <button type="button" class="gh-ap-topbar-avatar gh-pressable"
+              (click)="toggleAvatarMenu()"
+              [attr.aria-expanded]="avatarMenuOpen"
+              aria-haspopup="true"
+              [attr.aria-label]="'Account menu for ' + (user.firstName || 'account')">
+              <ng-container *ngIf="user?.photoUrl; else apTopbarInitials">
+                <img [src]="user.photoUrl" alt="" class="gh-ap-topbar-avatar-img">
+              </ng-container>
+              <ng-template #apTopbarInitials>
+                <span class="gh-ap-topbar-avatar-initials" aria-hidden="true">
+                  {{ user.firstName?.charAt(0)?.toUpperCase() }}{{ user.lastName?.charAt(0)?.toUpperCase() }}
+                </span>
+              </ng-template>
+            </button>
+            <div class="gh-ap-topbar-avatar-menu" *ngIf="avatarMenuOpen" role="menu">
+              <div class="gh-ap-avatar-menu-header">
+                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+                <span>Job Seeker</span>
+              </div>
+              <a routerLink="/user/settings" class="gh-ap-avatar-menu-item" role="menuitem"
+                (click)="closeAvatarMenu()">Settings</a>
+              <button type="button" class="gh-ap-avatar-menu-item gh-ap-avatar-menu-item--danger" role="menuitem"
+                (click)="logout()">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
 
       <div id="sub-applicant-component">
         <router-outlet></router-outlet>

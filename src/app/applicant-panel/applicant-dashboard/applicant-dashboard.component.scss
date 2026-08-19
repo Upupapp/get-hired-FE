@@ -37,3 +37,22 @@
   opacity: 0.95;
   transform: translateY(1.25rem);
 }
+
+// DESIGN OVERHAUL PORT (2026-08-19): ported from gethired-jobseeker-FE --
+// empty-state CTA converted to --gh-* tokens (gradient coral CTA, matching
+// the topbar/readiness-panel buttons) instead of the old Bootstrap
+// btn-primary/hvr-grow classes.
+.gh-dash-empty-cta {
+  background: var(--gh-grad-cta);
+  color: var(--gh-white);
+  border: none;
+  border-radius: var(--gh-btn-radius);
+  padding: 0 var(--gh-space-6);
+  height: var(--gh-btn-height-compact);
+  font-family: var(--gh-font-base);
+  font-weight: var(--gh-weight-semibold);
+  font-size: var(--gh-btn-font-size);
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; }
+}

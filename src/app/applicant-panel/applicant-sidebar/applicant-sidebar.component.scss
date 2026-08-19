@@ -1,213 +1,265 @@
-@import "src/assets/styles/colors";
+@import "src/assets/styles/motion";
 
-.sidebar-details{
-	position: sticky !important;
-	top: 0px !important;
-	left: 30px;
-	width: 250px;
+// DESIGN OVERHAUL PORT (2026-08-19): ported from gethired-jobseeker-FE's
+// sidebar rebuild (Deep Navy background, coral active-state, sub-nav
+// groups, bottom user card) into this now-active get-hired-FE codebase --
+// see employer-panel's own sidebar for the reference pattern this was
+// originally aligned to. Values below come from this repo's own --gh-*
+// tokens (_tokens.scss), confirmed to be exact hex matches.
+
+.gh-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 252px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--gh-navy) 0%, #111428 100%);
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
-.card{
-	border: none !important;
-	//min-width: 250px;
-	//background: #FFFFFF;
-	border-radius: 0px;
-	box-shadow: none;
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+
+.gh-sidebar-logo {
+  display: flex;
+  align-items: center;
+  padding: 20px 20px 16px;
+  min-height: 72px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 103, 93, 0.85);
+    outline-offset: -2px;
+  }
 }
 
-.bg-menu{
-	background: $color-global-gray-cancel;
+.gh-sidebar-logo-img {
+  height: 38px;
+  max-width: 180px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  background: transparent;
 }
 
-.bg-user{
-	background: $color-global-sidebar-employer-user-menu;
-	box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.12);
-	border-radius: 12px;
-	position: absolute;
-	bottom: 35px;
-	min-width: 230px;
-	max-width: 230px;
+// ─── Nav list ─────────────────────────────────────────────────────────────────
+
+.gh-sidebar-nav {
+  list-style: none;
+  padding: 12px 0;
+  margin: 0;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
 }
 
-.copy-right{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 12px;
-	line-height: 15px;
-	/* identical to box height */
+// ─── Nav item ─────────────────────────────────────────────────────────────────
 
-	/*letter-spacing: 0.2px;*/
+.gh-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  outline: none;
+  transition: background 120ms $motion-ease-standard;
+  @include motion-safe;
 
-	color: #FFFFFF;
-	position: absolute;
-	bottom: 0px;
-	left: 70px;
+  &:focus-visible {
+    outline: 2px solid rgba(255, 103, 93, 0.85);
+    outline-offset: 2px;
+  }
 
+  &:hover:not(.gh-sidebar-item--active) {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  &--active {
+    background: rgba(255, 103, 93, 0.18);
+    border-left: 3px solid var(--gh-coral);
+    margin-left: 7px;
+    padding-left: 9px;
+    .gh-sidebar-label { font-weight: 700; color: #fff; }
+    .gh-sidebar-icon svg { stroke: var(--gh-coral); }
+  }
 }
 
+.gh-sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.65);
 
-.img-logo{
-	width: 100px;
+  svg { stroke: currentColor; }
 }
 
-.bg-logo{
-	background: white;
-	border-bottom-right-radius: 30px;
+.gh-sidebar-item--active .gh-sidebar-icon {
+  color: var(--gh-coral);
 }
 
-.img-avatar{
-	border-radius: 50%;
-	width: 40px;
-	height: 40px;
-	object-fit: cover;
-	object-position: center;
-	margin-bottom: 10px;
-	margin-right: 10px;
-
-	&-full-name{
-		font-family: 'Manrope';
-		font-style: normal;
-		font-weight: 700;
-		font-size: 18px;
-		line-height: 17px;
-		/* identical to box height */
-
-		letter-spacing: 0.2px;
-
-		color: #FFFFFF;
-	}
-
-	&-full-email{
-		font-family: 'Manrope';
-		font-style: normal;
-		font-weight: 400;
-		font-size: 12px;
-		line-height: 15px;
-		/* identical to box height */
-
-		letter-spacing: 0.2px;
-
-		color: #FFFFFF;
-	}
-
-	&-button{
-		font-family: 'Manrope';
-		font-style: normal;
-		font-weight: 500;
-		font-size: 16px;
-		line-height: 20px;
-		/* identical to box height */
-
-
-		color: #FFFFFF;
-		background: $color-global-sidebar-applicant-route-active;
-		border-radius: 9px;
-	}
+.gh-sidebar-label {
+  font-family: var(--gh-font-base);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.bg-gray{
-	background-color: $color-global-sidebar-applicant-gray !important;
+.gh-sidebar-caret {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.4);
+  transition: transform 200ms $motion-ease-standard;
+  @include motion-safe;
+
+  &--open { transform: rotate(180deg); }
 }
 
+// ─── Sub-nav ──────────────────────────────────────────────────────────────────
 
-.sidebar{
-	&-icon{
-		margin-right: 10px;
-	}
-
-	&-title{
-		color: #FFFFFF;
-		cursor: pointer;
-
-		font-family: 'Manrope';
-		font-style: normal;
-		font-weight: 500;
-		font-size: 14px;
-		line-height: 20px;
-		/* identical to box height */
-
-		letter-spacing: 0.2px;
-
-
-		&:hover{
-			color: #FFFFFF;
-			font-weight: 500;
-			transition: all 0.4s ease !important;
-		}
-
-	}
-
-	&-title-active{
-		color: $color-global-sidebar-employer-user-menu !important;
-		cursor: pointer;
-		background: $color-global-sidebar-applicant-route-active;
-		border-radius: 9px;
-		padding: 10px 15px 5px 5px;
-		font-family: 'Manrope';
-		font-style: normal;
-		font-weight: 600;
-		font-size: 14px;
-		line-height: 20px;
-		letter-spacing: 0.2px;
-
-		&:hover{
-			color: $color-global-sidebar-employer-user-menu;
-			font-weight: 500;
-			transition: all 0.4s ease !important;
-		}
-
-	}
+.gh-sidebar-subnav {
+  list-style: none;
+  padding: 2px 0 4px 0;
+  margin: 0;
 }
 
-.dashboard{
-	width: 15px;
-	height: 15px;
+.gh-sidebar-subitem {
+  display: block;
+  padding: 7px 12px 7px 44px;
+  margin: 1px 10px;
+  border-radius: 8px;
+  font-family: var(--gh-font-base);
+  font-size: 12.5px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  outline: none;
+  transition: background 100ms $motion-ease-standard, color 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: rgba(255, 255, 255, 0.06); color: rgba(255, 255, 255, 0.85); }
+  &:focus-visible { outline: 2px solid rgba(255, 103, 93, 0.85); outline-offset: 2px; }
+
+  &--active {
+    background: rgba(255, 103, 93, 0.15);
+    color: #fff;
+    font-weight: 600;
+    border-left: 2px solid rgba(255, 103, 93, 0.7);
+  }
 }
 
-.jobs{
-	width: 14px !important;
-	height: 17px !important;
-	margin-top: -2px;
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+.gh-sidebar-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 10px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.inbox{
-	width: 15px !important;
-	height: 17px !important;
-	margin-top: -3px;
+.gh-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
-.profile{
-	width: 14px !important;
-	height: 13px !important;
-	margin-top: -3px;
-}
-
-.interviews{
-	width: 16px !important;
-	height: 16px !important;
-	//margin-top: -1px;
-}
-
-.expired{
-	width: 15px !important;
-	height: 15px !important;
-	margin-top: -5px;
-}
-
-
-
-.initial-thumbnail-inner {
-  font-size: 14px;
-  height: 40px;
-  width: 40px;
-  margin-top: 4px;
-  margin-right: 10px !important;
+.gh-sidebar-user-avatar {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  // line-height: 2;
-  color: $color-global-red-buttons;
-  padding: 5px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 103, 93, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--gh-font-base);
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.gh-sidebar-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.gh-sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.gh-sidebar-user-name {
+  font-family: var(--gh-font-base);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-sidebar-user-role {
+  font-family: var(--gh-font-base);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-sidebar-settings {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  outline: none;
+  transition: background 100ms $motion-ease-standard, color 100ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+  &:focus-visible { outline: 2px solid rgba(255, 103, 93, 0.85); outline-offset: 2px; }
+}
+
+.gh-sidebar-copyright {
   text-align: center;
-  border: 2px solid $color-global-red-buttons;
-  line-height: 25px;
+  font-family: var(--gh-font-base);
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.25);
+  padding: 4px 0 12px;
+  margin: 0;
 }

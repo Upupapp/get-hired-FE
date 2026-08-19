@@ -1,35 +1,43 @@
 @import "src/assets/styles/colors";
 @import "src/assets/styles/motion";
 
-#body-main-container{
+// DESIGN OVERHAUL PORT (2026-08-19): ported from gethired-jobseeker-FE's
+// Job Seeker portal redesign into this now-active get-hired-FE codebase.
+// Rebuilt against employer-panel.component.scss's own layout structure
+// (fixed Deep Navy sidebar + offset main content + light page background)
+// instead of the legacy grey applicant theme. Dead CSS below this point
+// removed: .list-group/.sidebar-submenu/.submenu-icon/.sidebar-separator/
+// .logo-separator styled markup that doesn't exist anywhere in this
+// portal's templates (confirmed via repo-wide search before removal).
+
+#body-main-container {
   z-index: 1 !important;
-  background-color: #2222 !important;
+  background-color: var(--gh-bg) !important;
   margin-bottom: 0 !important;
 }
 
-#main-applicant-component{
+#main-applicant-component {
   width: 100% !important;
   overflow: auto;
-  background-color: $color-global-sidebar-applicant-gray !important;
+  background-color: var(--gh-bg) !important;
   padding-left: 0px !important;
   padding-right: 0px !important;
   margin-bottom: 0 !important;
 }
 
-#sub-applicant-component{
+#sub-applicant-component {
   margin: 0 !important;
   padding: 0 !important;
   position: relative !important;
-  background-color: $color-global-sidebar-applicant-gray !important;
+  background-color: var(--gh-bg) !important;
   overflow-x: hidden !important;
   overflow-y: initial !important;
   margin-bottom: 30px !important;
 }
 
-
 #body-row {
-  margin-left:0;
-  margin-right:0;
+  margin-left: 0;
+  margin-right: 0;
   flex-wrap: nowrap !important;
   background-color: inherit !important;
   min-height: 70vh;
@@ -37,59 +45,25 @@
   overflow-y: initial !important;
 }
 
+// Desktop sidebar is fixed so it stays pinned during page scroll, matching
+// the Employer portal's pattern -- main content is offset by its width at
+// the same breakpoint the sidebar itself becomes visible (d-md-block).
 #sidebar-container {
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 252px;
+  z-index: 100;
   padding: 0;
-  background: $color-global-gray-cancel;
-  max-width: 250px;
-  min-height: 100vh;
+  background: var(--gh-navy);
   margin-bottom: 0 !important;
 }
 
-/* Menu item*/
-#sidebar-container .list-group a {
-  color: white;
-}
-
-/* Submenu item*/
-#sidebar-container .list-group .sidebar-submenu a {
-  height: 45px;
-  padding-left: 30px;
-}
-.sidebar-submenu {
-  font-size: 13px;
-}
-
-/* Separators */
-.sidebar-separator-title {
-  background-color: #333;
-  height: 35px;
-}
-.sidebar-separator {
-  background-color: #333;
-  height: 25px;
-}
-.logo-separator {
-  background-color: #333;
-  height: 60px;
-}
-
-/* Closed submenu icon */
-#sidebar-container .list-group .list-group-item[aria-expanded="false"] .submenu-icon::after {
-  content: " \f0d7";
-  font-family: FontAwesome;
-  display: inline;
-  text-align: right;
-  padding-left: 10px;
-}
-/* Opened submenu icon */
-#sidebar-container .list-group .list-group-item[aria-expanded="true"] .submenu-icon::after {
-  content: " \f0da";
-  font-family: FontAwesome;
-  display: inline;
-  text-align: right;
-  padding-left: 10px;
+@media (min-width: 768px) {
+  #main-applicant-component {
+    margin-left: 252px;
+  }
 }
 
 // ─── MOBILEVIEW: Applicant mobile top bar ────────────────────────────────────
@@ -456,5 +430,184 @@
   #sidebar-container {
     display: none !important;
   }
+}
+
+// ─── DESIGN OVERHAUL PORT (2026-08-19): desktop topbar ────────────────────────
+// Matches employer-panel.component.scss's .gh-employer-topbar pattern --
+// sticky title/subtitle/actions/avatar bar replacing the old shared
+// <app-header>. Values use this repo's own --gh-* tokens.
+
+.gh-ap-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 68px;
+  background: var(--gh-color-bg-card);
+  border-bottom: 1px solid var(--gh-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 28px;
+  box-shadow: var(--gh-shadow-card);
+}
+
+.gh-ap-topbar-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.gh-ap-topbar-context {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.gh-ap-topbar-eyebrow {
+  font-family: var(--gh-font-base);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gh-text-muted);
+  letter-spacing: var(--gh-tracking-eyebrow);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.gh-ap-topbar-title {
+  font-family: var(--gh-font-base);
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gh-text);
+  margin: 0;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+
+.gh-ap-topbar-subtitle {
+  font-family: var(--gh-font-base);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--gh-text-secondary);
+  margin: 0;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 480px;
+}
+
+.gh-ap-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.gh-btn-coral {
+  background: var(--gh-grad-cta);
+  color: var(--gh-white);
+  border: none;
+}
+
+.gh-ap-btn-topbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: var(--gh-btn-radius);
+  font-family: var(--gh-font-base);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; }
+}
+
+.gh-ap-topbar-avatar-wrap {
+  position: relative;
+}
+
+.gh-ap-topbar-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--gh-coral-soft);
+  border: 1.5px solid var(--gh-coral);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; }
+}
+
+.gh-ap-topbar-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.gh-ap-topbar-avatar-initials {
+  font-family: var(--gh-font-base);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gh-coral);
+}
+
+.gh-ap-topbar-avatar-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: var(--gh-color-bg-card);
+  border: 1px solid var(--gh-border);
+  border-radius: var(--gh-radius-sm);
+  box-shadow: var(--gh-shadow-dropdown);
+  padding: 8px;
+  z-index: 200;
+}
+
+.gh-ap-avatar-menu-header {
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--gh-border);
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--gh-font-base);
+
+  strong { font-size: 13px; color: var(--gh-text); }
+  span { font-size: 11.5px; color: var(--gh-text-secondary); }
+}
+
+.gh-ap-avatar-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  font-family: var(--gh-font-base);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gh-text);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover { background: var(--gh-bg); }
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: -2px; }
+
+  &--danger { color: var(--gh-error); }
+}
+
+@media (max-width: 767px) {
+  .gh-ap-topbar { display: none !important; }
 }
 

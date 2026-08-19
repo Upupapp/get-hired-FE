@@ -17,10 +17,10 @@
 </div>
 
 <ng-template #noProfile>
-  <section class="text-center p-5 w-100">
+  <section class="gh-dash-empty-state text-center p-5 w-100">
     <img src="assets/images/showcase.png" class="w-25" alt="" />
     <h5 class="my-2">{{ 'APPLICANT_DASHBOARD.UPDATE_PROFILE' | translate }}</h5>
-    <button class="btn btn-primary me-3 hvr-grow" (click)="redirectToEdit()">
+    <button type="button" class="gh-dash-empty-cta" (click)="redirectToEdit()">
       Update Profile</button>
   </section>
 </ng-template>
