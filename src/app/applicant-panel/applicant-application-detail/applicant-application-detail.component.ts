@@ -78,6 +78,19 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/user/applications');
   }
 
+  // DESIGN OVERHAUL PORT (2026-08-19): same status-chip mapping as
+  // applicant-applications.component.ts, kept as a separate copy (not a
+  // shared service) since it's a small, presentation-only lookup.
+  get statusChipClass(): string {
+    const s = (this.statusName || '').toLowerCase();
+    if (s.includes('hire')) return 'gh-ap-status-chip--hired';
+    if (s.includes('shortlist')) return 'gh-ap-status-chip--shortlisted';
+    if (s.includes('reject')) return 'gh-ap-status-chip--rejected';
+    if (s.includes('under review')) return 'gh-ap-status-chip--review';
+    if (s.includes('pending')) return 'gh-ap-status-chip--pending';
+    return 'gh-ap-status-chip--applied';
+  }
+
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
   }

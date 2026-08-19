@@ -102,6 +102,22 @@ export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
     return app?.jobApplicationId ?? String(_index);
   }
 
+  // DESIGN OVERHAUL PORT (2026-08-19): maps the real backend status names
+  // (gethired.job_applicant_status seed: Pending Review/Applied/Under
+  // Review/Shortlisted/Rejected/Hired) to the Employer portal's semantic
+  // status-chip color language (see job-create.component.scss's
+  // .gh-jc-status-chip -- same neutral/negative/positive palette, applied
+  // here as a distinct class so this file never depends on that one).
+  statusChipClass(statusName: string): string {
+    const s = (statusName || '').toLowerCase();
+    if (s.includes('hire')) return 'gh-ap-status-chip--hired';
+    if (s.includes('shortlist')) return 'gh-ap-status-chip--shortlisted';
+    if (s.includes('reject')) return 'gh-ap-status-chip--rejected';
+    if (s.includes('under review')) return 'gh-ap-status-chip--review';
+    if (s.includes('pending')) return 'gh-ap-status-chip--pending';
+    return 'gh-ap-status-chip--applied';
+  }
+
   trackByTipReason(_index: number, tip: any): string {
     return tip?.reason ?? String(_index);
   }

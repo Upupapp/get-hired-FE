@@ -9,7 +9,7 @@
   <div class="aad-header" *ngIf="jobTitle || companyName">
     <h1 class="aad-job-title">{{ jobTitle || 'Application' }}</h1>
     <p class="aad-company" *ngIf="companyName">{{ companyName }}</p>
-    <span class="aad-status" *ngIf="statusName">{{ statusName }}</span>
+    <span class="gh-ap-status-chip" [ngClass]="statusChipClass" *ngIf="statusName">{{ statusName }}</span>
   </div>
   <h1 class="aad-job-title" *ngIf="!jobTitle && !companyName">Application Details</h1>
 

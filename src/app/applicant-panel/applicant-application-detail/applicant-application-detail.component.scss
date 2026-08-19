@@ -1,15 +1,21 @@
 @import "src/assets/styles/colors";
 @import "src/assets/styles/motion";
 
+// DESIGN OVERHAUL PORT (2026-08-19): converted to --gh-* tokens, status
+// pill aligned with the Employer status-chip palette (see
+// applicant-applications.component.scss's .gh-ap-status-chip -- duplicated
+// here, not shared, since Angular's per-component style encapsulation means
+// a class defined in that file's stylesheet doesn't reach this template).
+
 .aad-page {
-  padding: 24px;
+  padding: var(--gh-space-6, 24px);
   max-width: 640px;
 }
 
 .aad-back {
   background: none;
   border: none;
-  color: $color-global-red-buttons;
+  color: var(--gh-coral);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -20,7 +26,7 @@
   gap: 4px;
 
   &:hover { text-decoration: underline; }
-  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; border-radius: 2px; }
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; border-radius: 2px; }
 }
 
 .aad-header {
@@ -28,32 +34,43 @@
 }
 
 .aad-job-title {
+  font-family: var(--gh-font-base);
   font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: var(--gh-text);
   margin: 0 0 4px;
 }
 
 .aad-company {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--gh-text-secondary);
   margin: 0 0 6px;
 }
 
-.aad-status {
-  display: inline-block;
-  background: #f3f4f6;
+.gh-ap-status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
   border-radius: 999px;
-  padding: 2px 10px;
+  font-family: var(--gh-font-base);
   font-size: 12px;
   font-weight: 600;
-  color: #374151;
+  background: #f0edf8;
+  color: #6b6887;
+
+  &--pending     { background: #f5f5f5; color: #6b6887; }
+  &--applied     { background: #EFF6FF; color: #1D4ED8; }
+  &--review      { background: #FFF7ED; color: #C2410C; }
+  &--shortlisted { background: #F0FDF4; color: #15803D; }
+  &--hired       { background: #F0FDF4; color: #15803D; font-weight: 700; }
+  &--rejected    { background: #FEF2F2; color: #B91C1C; }
 }
 
 .aad-section-title {
+  font-family: var(--gh-font-base);
   font-size: 15px;
   font-weight: 700;
-  color: #111827;
+  color: var(--gh-text);
   margin: 0 0 12px;
 }
 
