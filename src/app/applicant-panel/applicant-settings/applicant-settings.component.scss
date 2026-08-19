@@ -1,368 +1,72 @@
-@import "src/assets/styles/colors";
+// DESIGN OVERHAUL PORT (2026-08-20): converted to --gh-* tokens and the
+// Employer portal's card language. Removed a large amount of dead CSS
+// (.badge-selection/.rate-card/.industry-*/.btn-work-setup/.avatar-image/
+// etc.) that had no matching markup anywhere in this component's template
+// -- confirmed via the template above before removal (only
+// .submit-container/.btn-save/.card/.title-label/.title-container/
+// .form-group/.form-control are actually used).
 
-.submit-container{
-	z-index: 99 !important;;
-	position: fixed !important;
-	right: 20px;
-	top: 105px;
+.submit-container {
+  z-index: 99 !important;
+  position: fixed !important;
+  right: 20px;
+  top: 105px;
 }
 
-
-.btn-add-service{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 6px;
-	padding: 7px 10px 7px 20px;
-	color: white;
-	margin-top: -10px;
-	//position: absolute;
-	//right: 0px;
-
-	&:hover{
-		background: rgba($color-global-red-buttons, 0.7);
-	}
+.title-label {
+  font-family: var(--gh-font-base);
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: var(--gh-text);
 }
 
-.main-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	/* or 215% */
-
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-
-	color: #03011A;
+.title-container label {
+  font-family: var(--gh-font-base);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gh-text-secondary);
 }
 
-.title-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight:500;
-	font-size: 18px;
-	line-height: 27px;
-	/* identical to box height */
-	margin-bottom: 5px;
-
-	color: #464646;
+.card {
+  background: var(--gh-color-bg-card);
+  box-shadow: var(--gh-shadow-card);
+  border-radius: var(--gh-card-radius, 14px);
+  border: 1px solid var(--gh-border);
+  padding: 24px !important;
 }
 
-.title-label-sub{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* or 131% */
-	color: #868686;
-	margin-bottom: 5px;
+.form-control {
+  background: var(--gh-color-bg-card);
+  min-height: 44px;
+  border: 1px solid var(--gh-border) !important;
+  border-radius: 8px;
+  font-family: var(--gh-font-base);
+
+  &:focus {
+    border-color: var(--gh-coral) !important;
+    box-shadow: 0 0 0 2px rgba(255, 103, 93, 0.15);
+  }
 }
 
-.card{
-	background: #FFFFFF;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	border: none;
-	padding: 30px 30px !important;
+.btn-save {
+  background: var(--gh-grad-cta);
+  border-radius: var(--gh-btn-radius, 7px);
+  font-family: var(--gh-font-base);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--gh-white);
+  padding: 8px 22px !important;
+  border: none;
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; }
 }
 
-.form-control{
-	background: #FFFFFF;
-	min-height: 50px;
-	border: 1px solid #AFBCC6 !important;
-}
-
-.form-select-multiple{
-	margin-bottom: 20px;
-	min-height: 170px !important;
-
-	option{
-		border-radius: 4px;
-		padding: 6px 10px;
-		margin-bottom: 5px;
-
-	}
-
-
-	option select {
-	    margin: 40px;
-	    background: red !important;
-	    color: #fff;
-	    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
-	}
-}
-
-.form-select{
-	height: 50px;
-	//background: #FFFFFF !important;
-	border: 1px solid #AFBCC6 !important;
-	border-radius: 6px !important;
-}
-
-.badge-selection{
-	background: #FFFFFF;
-	border: 2px dashed rgba(#AFBCC6, 0.7);
-	border-radius: 10px;
-	min-height: 170px;
-	margin-top: 30px;
-	padding: 20px;
-
-	.badge-item{
-		background: #FFFFFF;
-		box-shadow: 0px 4px 8px rgba(95, 95, 95, 0.1);
-		border-radius: 10px;
-		padding: 10px 10px 10px 17px;
-
-		img{
-			height: 30px;
-			margin-right: 10px;
-			width: auto;
-			margin-top: 3px;
-		}
-
-		.badge-title{
-			font-family: 'Manrope';
-			font-style: normal;
-			font-weight: 400;
-			font-size: 16px;
-			line-height: 27px;
-			/* identical to box height */
-			margin-top: 3px;
-
-			color: #0C264C;
-		}
-
-		.remove-badge{
-			position: absolute;
-			right: 0px;
-			top: 3px;
-			cursor: pointer;
-			.mat-icon{
-				font-size: 16px !important;
-			}
-		}
-	}
-}
-
-.requirement-badge{
-	background: #868686;
-	border-radius: 6px;
-	color: white;
-	padding: 7px 15px;
-	cursor: pointer;
-	font-size: 12px;
-	font-weight: 500;
-	position: relative;
-}
-
-.img-banner{
-	margin-bottom: 35px;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-	border-radius: 10.624px;
-	height: 150px;
-	object-position: center;
-	object-fit: cover;
-}
-
-.search-group{
-	border: 1px solid #AFBCC6;
-	padding: 5px;
-	border-radius: 6px;
-	height: 50px;
-}
-
-.btn-search{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 4px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;	/* identical to box height */
-	color: #FFFFFF;
-	min-width: 100px;
-	padding: 10px;
-}
-
-.industry-skills{
-	border: none !important;
-	background: #FFFFFF;
-	box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
-	border-radius: 10.624px;
-	cursor: pointer;
-}
-
-.industry-title{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 15.936px;
-	line-height: 15px;
-	letter-spacing: -0.03em;
-	color: #000000;
-}
-
-.industry-subtitle{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 15.936px;
-	line-height: 140%;
-	color: #4F4F4F;
-}
-
-label{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	/* identical to box height */
-
-
-	color: #464646;
-}
-
-.rate-card{
-	border: solid 2px #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-
-.title-rate{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #0C264C;
-}
-
-.check{
-	position: absolute;
-	height: 19px;
-	top: 8px;
-	right: 8px;
-}
-
-
-.rate-card-active{
-	background: #0C264C;
-	border-radius: 6px;
-	padding: 20px 10px 10px 15px;
-	cursor: pointer;
-	position: relative;
-}
-
-.title-rate-active{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 20px;
-	color: #FFFFFF;
-}
-
-.rate-selection{
-	background: $color-global-sidebar-employer-user-menu;
-	box-shadow: 0px 4px 22px rgba(0, 0, 0, 0.08);
-	border-radius: 10px;
-	min-height: 300px;
-	padding: 20px;
-}
-
-.title-rate-range{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-	color: #FFFFFF;
-}
-
-
-.title-rate-selection{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 27px;
-	line-height: 58px;
-	color: #FFFFFF;
-}
-
-.industry-badge{
-	background: #0C264C;
-	border-radius: 6px;
-	color: white;
-	padding: 5px 15px;
-	cursor: pointer;
-}
-
-.btn-work-setup{
-	background: #FFFFFF;
-	border: 1px solid #AFBCC6;
-	border-radius: 6px !important;
-	padding: 15px 20px !important;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 16px;
-	line-height: 24px;
-}
-
-
-.active{
-	background: #0C264D;
-	color: white !important;
-}
-
-.btn-save{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 7px;
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #FFFFFF;
-	padding: 7px 20px !important;
-}
-
-.btn-save-draft{
-	font-style: normal;
-	font-weight: 500;
-	font-size: 14px;
-	line-height: 27px;
-
-	color: #a9a9a9;
-	background: #FFFFFF;
-	border: 1px solid #a9a9a9;
-	border-radius: 7px;
-	padding: 7px 20px !important;
-}
-
-
-
-.bg-gray{
-	background-size: cover !important;
-	background-position: center !important;
-	background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)) !important;
-	border-radius: 7px;
-	padding: 20px;
-	background-repeat: no-repeat;
-	//background-color: rgba(0, 0, 0, 0.1)!important;
-
-}
-
-.avatar-image{
-	background-color: white;
-	object-fit: cover;
-	object-position: center;
-	height: 200px;
-	width: 200px;
-	border-radius: 50%;
-	border: solid 2px #c9c9c9;
+@media (max-width: 480px) {
+  .submit-container {
+    position: static !important;
+    text-align: right;
+    margin-bottom: 12px;
+  }
 }
