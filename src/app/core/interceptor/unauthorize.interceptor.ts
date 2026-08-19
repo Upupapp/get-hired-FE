@@ -28,9 +28,23 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
             // redirect to sign-in. Previously only 403 was caught -- a 401 from
             // a truly expired session would silently show API errors with no
             // guidance to re-authenticate.
-            this.coreService.logout();
-            this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');
-            this.router.navigateByUrl('/signin');
+            //
+            // GUEST FIX (2026-08-19): a 401/403 only means "your session expired"
+            // for someone who HAD a local session to begin with. A true first-time
+            // guest (isLoggedIn() false -- no local session state at all) calling
+            // a request the app itself never expected to require auth (e.g. the
+            // anonymous AI job-preview generate call) would otherwise be told
+            // their session "expired" and get force-redirected to /signin, even
+            // though they were never signed in -- a misleading error and a lost
+            // in-progress action. For a true guest, skip the logout/redirect/toast
+            // entirely and let the error propagate to the calling component's own
+            // handler, which is better positioned to show an accurate, contextual
+            // message. Authenticated-then-expired behavior is unchanged.
+            if (this.coreService.isLoggedIn()) {
+              this.coreService.logout();
+              this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');
+              this.router.navigateByUrl('/signin');
+            }
           } else if (err.status === 429) {
             // NOTIFY QA11 (SEC-01): Rate-limit hit. Do NOT log the user out.
             // Show a non-destructive warning so the user knows to wait, not retry

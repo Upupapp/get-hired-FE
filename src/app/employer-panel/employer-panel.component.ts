@@ -109,17 +109,28 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Guards against a duplicate claim within the same page life (e.g. a
+  // component re-init quirk re-running ngOnInit before the first claim
+  // request resolves). A full page reload always aborts any in-flight
+  // request, so this only needs to cover same-tab, same-load duplication --
+  // true cross-request exactly-once still requires a backend-side atomic
+  // claim (see GETHIRED_EMPLOYER_START_HIRING_MASTER_COMMAND note in
+  // get-hired-BE/notes.md).
+  private aiPreviewClaimInFlight = false;
+
   // ─── AI Preview Claim — runs once on employer panel init ────────────────
   // If the user arrived here via the public AI preview flow (signed up / signed
   // in after generating a preview), claim the draft and navigate to job list.
   private checkAndClaimAiPreview(): void {
     const token = this.jobPreviewService.getPendingToken();
-    if (!token) return;
+    if (!token || this.aiPreviewClaimInFlight) return;
+    this.aiPreviewClaimInFlight = true;
 
     this.jobPreviewService.claimPreview(token)
       .pipe(take(1))
       .subscribe({
         next: (res) => {
+          this.aiPreviewClaimInFlight = false;
           this.jobPreviewService.clearPendingToken();
           if (res && res.jobId) {
             this.router.navigate(['/recruiter/jobs/list'], {
@@ -129,6 +140,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
         },
         error: () => {
           // Non-fatal — token may have expired; clear it silently and continue
+          this.aiPreviewClaimInFlight = false;
           this.jobPreviewService.clearPendingToken();
         },
       });
