@@ -1193,8 +1193,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.jobLevelHintPending = null;
     if (this.jobLevelConfirmationShown) return;
     this.jobLevelConfirmationShown = true;
-    this.snackbarService.error(
-      "We couldn't confidently match a job level from your import — please choose one below.",
+    // Not an error: AI Create deliberately leaves ambiguous fields for the
+    // Employer to finish, rather than guessing. Styled as success (green),
+    // not a failure state -- this is the expected next step, not a problem.
+    this.snackbarService.success(
+      "Almost there — add the Experience Level below. You're finishing this job post, so add anything else it needs before you publish.",
       '', 6000
     );
     if (this.stepper === 1) {
