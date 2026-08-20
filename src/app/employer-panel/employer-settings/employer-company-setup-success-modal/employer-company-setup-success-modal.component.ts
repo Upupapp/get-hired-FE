@@ -41,9 +41,18 @@ export class EmployerCompanySetupSuccessModalComponent implements OnInit {
     } catch (_) {}
   }
 
+  /** BUG FIX: this used to navigate straight to /recruiter/jobs/create with
+   *  no assistant data -- JobCreateComponent reached that way is always the
+   *  clean, manual "Start From Scratch" form (by design, see its own
+   *  ngOnInit()), so AI Create never actually opened here despite this
+   *  being the "Post your first job" CTA. Routes through the Dashboard with
+   *  the same ?openAiCreate=1 signal EmployerPanelComponent already handles
+   *  for a new Employer's first setup -- the underlying page is genuinely
+   *  the Dashboard (not Jobs), with AI Create opening as an overlay on top
+   *  of it, exactly like an existing Employer's "Create a Job" button. */
   postFirstJob(): void {
     this.dialogRef.close('post_job');
-    this.router.navigate(['/recruiter/jobs/create']);
+    this.router.navigate(['/recruiter/dashboard'], { queryParams: { openAiCreate: '1' } });
   }
 
   completeProfile(): void {
