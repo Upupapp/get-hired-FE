@@ -716,21 +716,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       // touch that draft, since From Scratch is now fully independent of
       // it (see ngOnInit()).
       //
-      // TAB 15 FIX: Save Draft success ('asDraft') is a SERVER SYNC event,
-      // not a posting event -- it must not delete local recovery (the
-      // Employer may still return to refine it before actually publishing).
-      // Only a real Post ('published') completes the local-recovery
-      // lifecycle and clears it -- never earlier (not on redirect/register/
-      // verify/signin/Business Setup/restore/generation/Save Draft) -- see
-      // ai-create-draft.service.ts.
+      // PRODUCT CHANGE (2026-08-20): once the job has a real, explicit
+      // server persistence -- Save Draft ('asDraft') OR Post ('published')
+      // -- the local AI Create recovery is no longer needed and is removed
+      // immediately. The job is now reachable/editable through the normal
+      // Jobs list like any other Draft/Published job.
       if (this.assistantPrefilled) {
         const user = JSON.parse(localStorage.getItem('user') || 'null');
         if (user && user._id) {
-          if (event === 'published') {
-            this.aiCreateDraft.clear(user._id);
-          } else if (event === 'asDraft' && this.jobId) {
-            this.aiCreateDraft.markServerSynced(user._id, this.jobId);
-          }
+          this.aiCreateDraft.clear(user._id);
         }
       }
       // Brief success pulse — clears automatically after 2s
@@ -1176,14 +1170,14 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           // /updatejobs instead of creating a second job record.
           this.jobId = newId;
           this.setAutoSaveState('saved');
-          // TAB 15: this first background save is itself a server sync --
-          // associate the AI Create local recovery with the real job id
-          // rather than leaving it unlinked (the draft is NOT cleared here;
-          // only a confirmed Post does that -- see afterSubmit()).
+          // This background save already creates a real Draft-status job
+          // server-side -- the local AI Create recovery is redundant the
+          // moment that exists (the job is now reachable/editable through
+          // the normal Jobs list, same as a job explicitly Saved as Draft).
           if (this.assistantPrefilled) {
             const user = JSON.parse(localStorage.getItem('user') || 'null');
             if (user && user._id) {
-              this.aiCreateDraft.markServerSynced(user._id, newId);
+              this.aiCreateDraft.clear(user._id);
             }
           }
         } else {
