@@ -34,7 +34,19 @@
 
       <div class="banner-container">
         <div class="bg-opacity" style="height:360px; overflow: hidden; background: #c9c9c9; border-radius: 7px; position: relative;">
-          <img *ngIf="!(preview && hasBannerSrc)"
+          <!-- BUG FIX: this used to require `preview` (the NgRx-derived
+               summary) truthy on top of hasBannerSrc, but hasBannerSrc
+               already falls back to `preview` itself if the live form value
+               doesn't have a banner -- the extra `preview &&` was never a
+               meaningful additional condition, it just meant that during
+               any brief window where `preview` hadn't emitted yet, BOTH
+               this placeholder and the real banner below could render at
+               once (block-flow images stack vertically here, so the second
+               one gets clipped out of the fixed-height, overflow:hidden
+               container -- visually indistinguishable from "the banner
+               doesn't show"). Now the exact negation of the real banner's
+               *ngIf below, so exactly one of the two ever renders. -->
+          <img *ngIf="!hasBannerSrc"
             src="assets/images/placeholder/job-post-banner.png" class="banner-image">
 
           <img *ngIf="hasBannerSrc"

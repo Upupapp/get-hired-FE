@@ -156,10 +156,17 @@
 	position: relative;
 	.banner-image{
 		cursor: move;
-		//height: 300px;
+		// BUG FIX: these were commented out, so an uploaded banner rendered
+		// at its natural intrinsic aspect ratio inside the container's fixed
+		// height:360px/overflow:hidden (set inline on .bg-opacity) -- a
+		// short/wide image could end up a barely-visible sliver, and a
+		// tall/narrow one mostly cropped away. object-fit:cover fills the
+		// full 360px consistently, matching the placeholder image's own
+		// effective sizing.
+		height: 360px;
 		width: 100%;
-		//object-position: center;
-		//object-fit: fill;
+		object-position: center;
+		object-fit: cover;
 		border-radius: 10px;
 	}
 }
