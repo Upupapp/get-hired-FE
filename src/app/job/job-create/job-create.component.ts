@@ -20,7 +20,7 @@ import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job
 import { JobService } from '../job.service';
 import { CreateInterviewComponent } from './components/create-interview/create-interview.component';
 import { resolveJobLevelId } from '../utils/job-level-resolver';
-import { resolveWorkSetupId, resolveJobTypeId } from '../utils/job-field-resolvers';
+import { resolveWorkSetupId, resolveJobTypeId, FREELANCE_JOB_TYPE_SENTINEL } from '../utils/job-field-resolvers';
 import { AiCreateDraftService } from '../services/ai-create-draft.service';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 
@@ -694,6 +694,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     return {
       ...initialData.value,
       ...jobInfo.value,
+      // FREELANCE_JOB_TYPE_SENTINEL is a frontend-only selection marker
+      // (no gethired.job_type row exists for it) -- never send it to the
+      // backend as a fabricated jobTypeId. See job-field-resolvers.ts.
+      jobTypeId: initialData.value.jobTypeId === FREELANCE_JOB_TYPE_SENTINEL
+        ? null
+        : initialData.value.jobTypeId,
       badges: initialData.value
         ? this.formatBadgesGetId(initialData.value.badges)
         : [],

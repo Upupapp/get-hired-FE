@@ -7,6 +7,7 @@ import { PublicJobNormalizerService } from '@main/public/services/public-job-nor
 import { JobMatchabilityService, JobMatchabilityResult } from '@main/public/services/job-matchability.service';
 // B13: Job Readiness
 import { JobReadinessService, JobReadinessResult } from '../../../services/job-readiness.service';
+import { FREELANCE_JOB_TYPE_SENTINEL } from '@app-job/utils/job-field-resolvers';
 
 @Component({
   selector: 'app-preview-job-post-step',
@@ -191,7 +192,14 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     return !!this.previewBannerSrc;
   }
 
-  getFilteredArray(arrayName, id: number) {
+  getFilteredArray(arrayName, id: number | string) {
+    // FREELANCE_JOB_TYPE_SENTINEL never appears in the live `types` list
+    // (no backend job_type row for it) -- it wouldn't be found by the
+    // filter below and would throw. Resolve it directly instead.
+    if (arrayName === 'types' && id === FREELANCE_JOB_TYPE_SENTINEL) {
+      return 'Freelance';
+    }
+
     let chosenArray = [];
 
     switch(arrayName) {

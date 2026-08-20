@@ -41,6 +41,13 @@
               [class.gh-input--error]="initialDetailsForm.get('jobTypeId').invalid && initialDetailsForm.get('jobTypeId').touched">
               <option [ngValue]="null" disabled selected>Select type</option>
               <option *ngFor="let item of jobType" [ngValue]="item.id">{{ item.name }}</option>
+              <!-- No gethired.job_type row exists for "Freelance" yet (backend
+                   gap, see get-hired-BE/notes.md) -- kept selectable via a
+                   frontend-only sentinel value so it can be chosen and carried
+                   over from an unfinished AI Create job post; converted to
+                   null before submission (JobCreateComponent.formatJob()),
+                   never sent to the backend as a fabricated id. -->
+              <option [ngValue]="freelanceSentinel">Freelance</option>
             </select>
           </div>
         </div>

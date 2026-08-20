@@ -17,19 +17,24 @@ export function resolveWorkSetupId(hint: string | null | undefined): number | nu
 }
 
 // STORAGE-SAFETY / DRAFT-SAVE FIX: gethired.job_type only seeds ids 1-3
-// (Full time / Part time / Contractor -- see db/job_ddl.sql). 'intern' and
-// 'freelance' previously resolved to ids 4/5, which don't exist in that
-// table -- job_type_id is a real FK there, so persisting either one (e.g.
-// the AI Create Generate step's "Freelance" option) failed the INSERT with
-// an FK violation, surfacing as "Couldn't auto-save your AI draft." Per the
-// project's own rule for Industry (job-industry-suggester.ts): never invent
-// an id that isn't in the live options -- return null (unset) instead of a
-// value the database will reject.
-export function resolveJobTypeId(hint: string | null | undefined): number | null {
+// (Full time / Part time / Contractor -- see db/job_ddl.sql). job_type_id
+// is a real FK there, so no id can be invented for "Freelance" -- there is
+// no backend row for it (see get-hired-BE/notes.md for the requested fix).
+// FREELANCE_JOB_TYPE_SENTINEL is a frontend-only placeholder value so
+// "Freelance" can still be selected and carried across every Employment
+// Type dropdown in the app (AI Create's, and the canonical Role Basics
+// step's) without ever being sent to the backend as a fabricated id --
+// every submission path converts it to `null` first (see
+// JobCreateComponent.formatJob()). Never persisted, never a real
+// job_type_id, purely a UI selection marker.
+export const FREELANCE_JOB_TYPE_SENTINEL = 'freelance';
+
+export function resolveJobTypeId(hint: string | null | undefined): number | string | null {
   if (!hint) return null;
   const h = hint.toLowerCase().trim();
   if (h.includes('full') && h.includes('time')) return 1;
   if (h.includes('part') && h.includes('time')) return 2;
   if (h.includes('contract')) return 3;
+  if (h.includes('freelance')) return FREELANCE_JOB_TYPE_SENTINEL;
   return null;
 }
