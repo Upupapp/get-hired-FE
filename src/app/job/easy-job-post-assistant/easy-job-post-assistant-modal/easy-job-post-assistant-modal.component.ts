@@ -513,6 +513,14 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       missingRequiredFields: [],
       warnings: (draft.quality.reviewFlags || []).filter(f => f.severity === 'warning').map(f => f.message),
       jobRoleId: this.generatedJobRoleId,
+      // BUG FIX: Industry was chosen (suggested or manually picked) in the
+      // Generate step's own dropdown (generateInputs.industry, a name
+      // string matched against the live industryOptions), but was never
+      // carried into the mapped extraction result -- Step 2's Industry
+      // dropdown showed unselected even though the Employer had already
+      // provided it. Resolve the real live option id here, once, rather
+      // than re-matching a name string every time Step 2 renders.
+      industryId: (matchSuggestedIndustry(this.generateInputs.industry, this.industryOptions) || {}).id ?? null,
       interviewQuestions: (draft.application.interviewQuestionSuggestions || []).map((q, i) => ({
         question: q,
         answerDuration: 5,

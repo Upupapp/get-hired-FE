@@ -337,6 +337,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       jobTypeId: data.jobTypeId || resolveJobTypeId(data.jobTypeHint),
       jobLevelId: data.jobLevelId || (levelMatch.confidence === 'high' ? levelMatch.id : null),
       jobRoleId: (data.jobRoleId !== undefined && data.jobRoleId !== null) ? data.jobRoleId : null,
+      // BUG FIX: Industry was already provided (suggested or manually
+      // picked) by the Employer in AI Create's Generate step -- must
+      // already be selected in Step 2's Industry dropdown, not left blank
+      // for them to re-pick. See easy-job-post-assistant-modal.component.ts
+      // fillFromGenerated(), which now resolves this against the same live
+      // options list this dropdown itself uses.
+      industryId: (data.industryId !== undefined && data.industryId !== null) ? data.industryId : null,
     };
 
     this.setFormGroup(prefillData);
