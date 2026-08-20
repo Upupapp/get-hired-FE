@@ -260,8 +260,15 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
         disableClose: false,
         data: 'Company successfully setup. You can now access other features',
       });
+      // PRODUCT CHANGE: a new Employer's FIRST-EVER company setup (this
+      // 'created' branch only -- never 'updated', a later edit) now flows
+      // straight into AI Create afterward, exactly like an already-onboarded
+      // Employer clicking "Create a Job" -- see EmployerPanelComponent's
+      // openAiCreate query param handling, which calls the very same
+      // goToCreateJob() the dashboard button uses. Only the extra Business
+      // Setup step in front of it differs from the existing-Employer flow.
       create.afterClosed().subscribe(
-        () => this.router.navigate(['../details'], { relativeTo: this.route })
+        () => this.router.navigate(['/recruiter/dashboard'], { queryParams: { openAiCreate: '1' } })
       );
     } else if (event === 'updated') {
       this.saving = false;

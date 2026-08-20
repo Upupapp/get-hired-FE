@@ -36,6 +36,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   @ViewChild('firstDrawerLink') firstDrawerLinkRef: ElementRef<HTMLAnchorElement>;
 
   private routerSub: Subscription;
+  private queryParamsSub: Subscription;
   private logoutInProgress = false;
 
   constructor(
@@ -54,6 +55,23 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.employeeFacade.getEmployeeProfile(this.user._id);
     this.checkAndClaimAiPreview();
     this.checkAndRouteToAiCreateDraft();
+
+    // PRODUCT CHANGE: a new Employer arrives here right after finishing
+    // Business Setup with ?openAiCreate=1 (see CompanyDetailsFormComponent's
+    // 'created' branch). Company Settings is a CHILD route of this same
+    // EmployerPanelComponent shell, so navigating here does not recreate
+    // this component -- ngOnInit alone would miss it. Subscribed (not just
+    // read once) so it also fires for that in-app navigation. Reuses
+    // goToCreateJob(), the exact same method the dashboard's "Create a Job"
+    // button calls, so this is genuinely the same flow an existing Employer
+    // gets, not a parallel one. The param is cleared immediately after
+    // acting so it can't re-fire on browser refresh/back.
+    this.queryParamsSub = this.route.queryParams.subscribe(params => {
+      if (params && params['openAiCreate']) {
+        this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true })
+          .then(() => this.goToCreateJob());
+      }
+    });
 
     // companyName for topbar avatar menu — reads from companyFacade.companyDetails$
     // (the authoritative store slice) so it updates immediately when the recruiter
@@ -193,6 +211,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.routerSub) this.routerSub.unsubscribe();
+    if (this.queryParamsSub) this.queryParamsSub.unsubscribe();
   }
 
   get pageTitle(): string {
