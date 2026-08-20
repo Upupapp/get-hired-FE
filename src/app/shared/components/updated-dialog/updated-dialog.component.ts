@@ -4,7 +4,8 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 
 // data can be:
 //   string  → backward-compat simple message + Close button
-//   { message, actions, callbacks?, linkUrl?, linkText? }
+//   { title?, message, actions, callbacks?, linkUrl?, linkText? }
+//     title     — optional heading shown above the message (e.g. "Sign out")
 //     actions   — buttons; each calls doAction(value) which normally closes the dialog
 //     callbacks — { [value]: () => void }; if a matching callback exists, doAction calls
 //                 it WITHOUT closing the dialog (used for in-place actions like copy-link)
@@ -17,6 +18,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
   styleUrls: ['./updated-dialog.component.scss'],
 })
 export class UpdatedDialogComponent implements OnInit {
+  title: string | null = null;
   message: string;
   icon: string = 'check-circle';
   actions: Array<{ label: string; value: string; primary?: boolean; disabled?: boolean }> | null = null;
@@ -29,6 +31,7 @@ export class UpdatedDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data
   ) {
     if (data && typeof data === 'object' && data.message) {
+      this.title = data.title || null;
       this.message = data.message;
       this.icon = data.icon || 'check-circle';
       this.actions = data.actions || null;

@@ -1,5 +1,6 @@
 <div class="p-2 text-center">
   <i [class]="'bi fa-lg bi-' + icon"></i>
+  <h4 *ngIf="title" class="fs-4 mt-2 mb-1">{{ title }}</h4>
   <h5 class="fs-5">{{ message }}</h5>
 
   <!-- External link (e.g. popup-blocked fallback: "Open live job →") -->

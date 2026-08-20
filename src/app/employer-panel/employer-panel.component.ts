@@ -282,8 +282,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
    *  with zero auth/session side effects. */
   logout(): void {
     const dialogRef = this.dialog.open(UpdatedDialogComponent, {
+      ariaLabel: 'Sign out confirmation',
+      autoFocus: 'first-tabbable',
       data: {
-        message: 'Sign out of your Employer account?',
+        title: 'Sign out',
+        message: 'Are you sure you want to sign out?',
         icon: 'box-arrow-right',
         actions: [
           { label: 'Cancel', value: 'cancel' },

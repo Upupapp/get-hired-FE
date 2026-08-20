@@ -211,7 +211,22 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
       workSetup: this.workSetup === 'On-site' ? 'Onsite' : this.workSetup,
       employmentType: this.employmentType,
     };
-    this.aiCreateDraft.save(input, GUEST_OWNER_SCOPE, 'public-employer-ai-preview-panel', 'pending-registration');
+    this.aiCreateDraft.save(input, this.resolveOwnerScopeForDraftSave(), 'public-employer-ai-preview-panel', 'pending-registration');
+  }
+
+  /** STORAGE-SAFETY FIX: this panel is reachable while already authenticated
+   *  (see the role !== '2' branch above) -- it must never persist under the
+   *  shared GUEST_OWNER_SCOPE slot in that case, since the single-slot AI
+   *  Create draft store (ai-create-draft.service.ts) overwrites whatever it
+   *  currently holds. A signed-in non-Employer account writing 'guest' would
+   *  silently destroy a different, genuinely in-progress Employer draft on
+   *  the same browser. Only a real, unauthenticated visitor uses the shared
+   *  guest scope; any authenticated visitor uses their own stable uid, which
+   *  can only ever collide with a draft they themselves created. */
+  private resolveOwnerScopeForDraftSave(): string {
+    if (!this.coreService.isLoggedIn()) return GUEST_OWNER_SCOPE;
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    return (user && user._id) ? user._id : GUEST_OWNER_SCOPE;
   }
 
   private saveDraftAndRedirectToRegister(title: string): void {
