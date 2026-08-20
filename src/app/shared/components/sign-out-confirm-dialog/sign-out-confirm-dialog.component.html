@@ -1,0 +1,35 @@
+<div class="soc-dialog">
+  <button
+    type="button"
+    class="soc-close"
+    (click)="cancel()"
+    [disabled]="confirmDisabled"
+    aria-label="Close">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="soc-body">
+    <h4 class="soc-title">Sign out</h4>
+    <p class="soc-message">Are you sure you want to sign out?</p>
+  </div>
+
+  <div class="soc-actions">
+    <button
+      type="button"
+      class="soc-btn soc-btn--ghost"
+      (click)="cancel()"
+      [disabled]="confirmDisabled">
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="soc-btn soc-btn--primary"
+      (click)="confirm()"
+      [disabled]="confirmDisabled"
+      [attr.aria-busy]="confirmDisabled ? true : null">
+      {{ confirmLabel }}
+    </button>
+  </div>
+</div>

@@ -16,13 +16,20 @@ export function resolveWorkSetupId(hint: string | null | undefined): number | nu
   return null;
 }
 
+// STORAGE-SAFETY / DRAFT-SAVE FIX: gethired.job_type only seeds ids 1-3
+// (Full time / Part time / Contractor -- see db/job_ddl.sql). 'intern' and
+// 'freelance' previously resolved to ids 4/5, which don't exist in that
+// table -- job_type_id is a real FK there, so persisting either one (e.g.
+// the AI Create Generate step's "Freelance" option) failed the INSERT with
+// an FK violation, surfacing as "Couldn't auto-save your AI draft." Per the
+// project's own rule for Industry (job-industry-suggester.ts): never invent
+// an id that isn't in the live options -- return null (unset) instead of a
+// value the database will reject.
 export function resolveJobTypeId(hint: string | null | undefined): number | null {
   if (!hint) return null;
   const h = hint.toLowerCase().trim();
   if (h.includes('full') && h.includes('time')) return 1;
   if (h.includes('part') && h.includes('time')) return 2;
   if (h.includes('contract')) return 3;
-  if (h.includes('intern')) return 4;
-  if (h.includes('freelance')) return 5;
   return null;
 }

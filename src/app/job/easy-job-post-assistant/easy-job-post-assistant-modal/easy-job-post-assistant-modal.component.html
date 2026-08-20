@@ -257,10 +257,13 @@
           <label class="eja-label" for="gen-emp-type">Employment type</label>
           <select id="gen-emp-type" class="eja-select" [(ngModel)]="generateInputs.employmentType" (ngModelChange)="scheduleAutosave()" [disabled]="loading">
             <option value="">Not specified</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
+            <option *ngFor="let opt of employmentTypeOptions" [value]="opt.name">{{ opt.name }}</option>
+            <!-- "Freelance" has no gethired.job_type row yet (backend gap, see
+                 get-hired-BE/notes.md) -- kept selectable here per product
+                 requirement, but resolveJobTypeId() deliberately never maps it
+                 to a fabricated id, so choosing it can't fail the draft save
+                 the way it used to (FK violation on a nonexistent id). -->
             <option value="Freelance">Freelance</option>
-            <option value="Contract">Contract</option>
           </select>
         </div>
       </div>

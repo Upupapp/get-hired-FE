@@ -202,14 +202,25 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
    *  form, so no value must be invented (AI Create's own restore path
    *  handles suggesting/leaving it empty -- see job-industry-suggester.ts).
    *  workSetup is normalized to AI Create's own option values ('Onsite',
-   *  not this panel's 'On-site') so the restored value actually matches one
-   *  of that dropdown's <option>s instead of silently showing unselected. */
+   *  not this panel's 'On-site'), and employmentType to the real
+   *  gethired.job_type names ('Full time'/'Part time'/'Contractor', not this
+   *  panel's own hyphenated 'Full-time'/'Part-time'/'Contract') now that AI
+   *  Create's Employment type select is populated from the live job-type
+   *  list (see DRAFT-SAVE FIX in easy-job-post-assistant-modal.component.ts)
+   *  -- otherwise the restored value wouldn't match any of that dropdown's
+   *  <option>s and would silently show unselected. */
+  private static readonly EMPLOYMENT_TYPE_TO_AI_CREATE: { [key: string]: string } = {
+    'Full-time': 'Full time',
+    'Part-time': 'Part time',
+    'Contract': 'Contractor',
+  };
+
   private saveDraftPayload(title: string): void {
     const input: GenerateIntentInputs = {
       jobTitle: title,
       location: this.location.trim(),
       workSetup: this.workSetup === 'On-site' ? 'Onsite' : this.workSetup,
-      employmentType: this.employmentType,
+      employmentType: AiJobPreviewPanelComponent.EMPLOYMENT_TYPE_TO_AI_CREATE[this.employmentType] || this.employmentType,
     };
     this.aiCreateDraft.save(input, this.resolveOwnerScopeForDraftSave(), 'public-employer-ai-preview-panel', 'pending-registration');
   }

@@ -75,6 +75,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   // unfinished-job workspace. Start From Scratch (chooseManual(), below)
   // deliberately never touches any of this.
   industryOptions: Options[] = [];
+  // DRAFT-SAVE FIX: was a hardcoded list including "Freelance", which has no
+  // matching gethired.job_type row (only Full time/Part time/Contractor are
+  // seeded) -- selecting it made the background persistAssistantDraft() save
+  // fail an FK constraint. Now sourced from the same live endpoint the
+  // canonical "Create a Job / From Scratch" form uses, same as industryOptions.
+  employmentTypeOptions: Options[] = [];
   industrySuggested: boolean = false;
   draftRestored: boolean = false;
   private ownerScope: string | null = null;
@@ -100,6 +106,11 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     this.jobService.getIndustryList().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => { this.industryOptions = (res && res.data) || res || []; },
       error: () => { /* non-fatal -- Industry select just stays empty */ },
+    });
+
+    this.jobService.getTypeList().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => { this.employmentTypeOptions = (res && res.data) || res || []; },
+      error: () => { /* non-fatal -- Employment type select just stays empty */ },
     });
 
     // A saved AI Create draft represents real unfinished work and takes

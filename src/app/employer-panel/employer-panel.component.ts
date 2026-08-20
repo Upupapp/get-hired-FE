@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
-import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { SignOutConfirmDialogComponent } from '@app-shared/components/sign-out-confirm-dialog/sign-out-confirm-dialog.component';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
@@ -273,41 +273,31 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.router.navigate(['/recruiter/contacts/candidates']);
   }
 
-  /** GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: confirm before signing out, reusing
-   *  the existing UpdatedDialogComponent (not a bespoke dialog) with a
-   *  `confirm` callback so clicking Sign Out doesn't auto-close -- that lets
-   *  the button show a disabled/loading state while the canonical
-   *  coreService.logout() call runs. Cancel (and Escape/backdrop-click,
-   *  MatDialog's own default) has no callback, so it just closes the dialog
-   *  with zero auth/session side effects. */
+  /** GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: confirm before signing out via a
+   *  purpose-built SignOutConfirmDialogComponent (title, message, an X close
+   *  button in the corner, plus Cancel/Sign Out). `onConfirm` doesn't close
+   *  the dialog itself -- that lets the Sign Out button show a disabled/
+   *  loading state while the canonical coreService.logout() call runs.
+   *  Cancel, the X button, and Escape/backdrop-click (MatDialog's own
+   *  default -- disableClose is deliberately left false) are all equivalent:
+   *  they just close the dialog with zero auth/session side effects. */
   logout(): void {
-    const dialogRef = this.dialog.open(UpdatedDialogComponent, {
+    const dialogRef = this.dialog.open(SignOutConfirmDialogComponent, {
       ariaLabel: 'Sign out confirmation',
       autoFocus: 'first-tabbable',
       data: {
-        title: 'Sign out',
-        message: 'Are you sure you want to sign out?',
-        icon: 'box-arrow-right',
-        actions: [
-          { label: 'Cancel', value: 'cancel' },
-          { label: 'Sign Out', value: 'confirm', primary: true },
-        ],
-        callbacks: {
-          confirm: () => this.confirmSignOut(dialogRef),
-        },
+        onConfirm: () => this.confirmSignOut(dialogRef),
       },
     });
   }
 
-  private confirmSignOut(dialogRef: MatDialogRef<UpdatedDialogComponent>): void {
+  private confirmSignOut(dialogRef: MatDialogRef<SignOutConfirmDialogComponent>): void {
     if (this.logoutInProgress) return; // duplicate-click guard
     this.logoutInProgress = true;
 
     const instance = dialogRef.componentInstance;
-    const confirmAction = instance.actions.find(a => a.value === 'confirm');
-    const cancelAction = instance.actions.find(a => a.value === 'cancel');
-    if (confirmAction) { confirmAction.disabled = true; confirmAction.label = 'Signing out...'; }
-    if (cancelAction) { cancelAction.disabled = true; }
+    instance.confirmDisabled = true;
+    instance.confirmLabel = 'Signing out...';
 
     this.coreService.logout().subscribe({
       next: () => {
@@ -324,9 +314,8 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
         // exists so a future failure mode is handled truthfully rather than
         // silently, per the "never fabricate success" requirement.
         this.logoutInProgress = false;
-        if (confirmAction) { confirmAction.disabled = false; confirmAction.label = 'Sign Out'; }
-        if (cancelAction) { cancelAction.disabled = false; }
-        instance.message = 'Sign out failed. Please try again.';
+        instance.confirmDisabled = false;
+        instance.confirmLabel = 'Sign Out';
       },
     });
   }
