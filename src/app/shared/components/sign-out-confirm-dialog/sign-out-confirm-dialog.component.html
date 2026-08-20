@@ -15,7 +15,7 @@
     <p class="soc-message">Are you sure you want to sign out?</p>
   </div>
 
-  <label class="soc-checkbox-row">
+  <label class="soc-checkbox-row" *ngIf="showRemoveLocalRecoveryOption">
     <input
       type="checkbox"
       [checked]="removeLocalRecovery"

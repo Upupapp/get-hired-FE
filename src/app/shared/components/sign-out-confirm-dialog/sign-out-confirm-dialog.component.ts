@@ -7,6 +7,13 @@ export interface SignOutConfirmDialogData {
    *  (via dialogRef) only once it has actually completed, so the disabled/
    *  loading state stays visible for the duration of the real request. */
   onConfirm: () => void;
+  /** Whether the current Employer actually has an unfinished AI Create
+   *  draft on this device -- the caller resolves this (it already knows
+   *  how to read the current owner scope), since the dialog itself has no
+   *  way to know. The "Remove unfinished AI job from this device" checkbox
+   *  is only rendered when this is true; there's nothing to offer removing
+   *  otherwise. Defaults to false (hidden) if omitted. */
+  showRemoveLocalRecoveryOption?: boolean;
 }
 
 /** Purpose-built Employer sign-out confirmation modal -- title, message, an
@@ -32,11 +39,16 @@ export class SignOutConfirmDialogComponent {
    *  template) so it can't be mistaken for part of the Cancel/Sign Out
    *  decision itself. */
   removeLocalRecovery = false;
+  /** Drives the checkbox's *ngIf -- true only when the caller confirmed an
+   *  unfinished AI Create draft actually exists for the current Employer. */
+  showRemoveLocalRecoveryOption = false;
 
   constructor(
     public dialogRef: MatDialogRef<SignOutConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: SignOutConfirmDialogData,
-  ) {}
+  ) {
+    this.showRemoveLocalRecoveryOption = !!(data && data.showRemoveLocalRecoveryOption);
+  }
 
   cancel(): void {
     if (this.confirmDisabled) return;

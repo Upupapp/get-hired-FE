@@ -282,10 +282,19 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
    *  default -- disableClose is deliberately left false) are all equivalent:
    *  they just close the dialog with zero auth/session side effects. */
   logout(): void {
+    // The "Remove unfinished AI job from this device" checkbox only makes
+    // sense -- and must only be offered -- when there actually is one for
+    // this Employer; otherwise it's a control for something that doesn't
+    // exist. Checked here (not left to the dialog to guess) since this
+    // component already knows how to resolve the current owner scope.
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    const hasUnfinishedDraft = !!(currentUser && currentUser._id && this.aiCreateDraft.hasPending(currentUser._id));
+
     const dialogRef = this.dialog.open(SignOutConfirmDialogComponent, {
       ariaLabel: 'Sign out confirmation',
       autoFocus: 'first-tabbable',
       data: {
+        showRemoveLocalRecoveryOption: hasUnfinishedDraft,
         onConfirm: () => this.confirmSignOut(dialogRef),
       },
     });
