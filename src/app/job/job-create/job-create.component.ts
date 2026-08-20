@@ -22,6 +22,7 @@ import { CreateInterviewComponent } from './components/create-interview/create-i
 import { resolveJobLevelId } from '../utils/job-level-resolver';
 import { resolveWorkSetupId, resolveJobTypeId } from '../utils/job-field-resolvers';
 import { GuestJobDraftService } from '../services/guest-job-draft.service';
+import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -181,6 +182,23 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.asyncLocalStorage.getItem('user')
       .then(user => {
         this.companyId = JSON.parse(user).companyId;
+
+        // SEQUENCING FIX (2026-08-20): Create a Job must not proceed for an
+        // Employer with no company yet -- job creation requires companyId
+        // (see formatJob() below), and this page previously just loaded
+        // with a null companyId instead of redirecting. Reuses the existing
+        // CompanyNotSetupComponent dialog (already built for exactly this,
+        // previously never actually wired up anywhere) rather than a new
+        // implementation. Any pending guest job draft is untouched here --
+        // EmployerPanelComponent's own company check already routes a
+        // draft-bearing Employer to Setup before ever reaching this page,
+        // so this is a defense-in-depth guard for direct/typed navigation.
+        if (!this.companyId) {
+          this.dialog.open(CompanyNotSetupComponent, { disableClose: true });
+          this.router.navigate(['/recruiter/dashboard']);
+          return;
+        }
+
         this.jobFacade.getCompanySubscription(this.companyId);
         // companyId is only available here (async), so the first save of an
         // AI-prefilled draft is deferred until this point — see applyAssistantPrefill().

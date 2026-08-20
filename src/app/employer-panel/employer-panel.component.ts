@@ -152,13 +152,31 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   // ─── Guest Job Draft Restore — runs once on employer panel init ─────────
   // If a first-time guest saved a job draft before registering (see
   // ai-job-preview-panel.component.ts), don't leave them on a generic
-  // dashboard -- route straight to Create a Job / From Scratch, where
-  // JobCreateComponent.ngOnInit() restores the draft into the form. The
-  // draft itself is only cleared on confirmed successful job persistence.
+  // dashboard. SEQUENCING FIX (2026-08-20): a newly registered Employer may
+  // not have a company yet -- job creation requires one (companyId is a
+  // required field on every job-create call, see JobCreateComponent), so
+  // route to the existing canonical Business/Company Setup page first
+  // (/recruiter/company/settings, same destination CompanyNotSetupComponent
+  // already points to elsewhere in this app) rather than straight to
+  // Create a Job. The draft itself is untouched either way -- it's only
+  // cleared on confirmed successful job persistence (JobCreateComponent.
+  // afterSubmit()). company-basic.component.ts's updateLocalStorage()
+  // already writes the new companyId into localStorage('user') the moment
+  // setup succeeds, so the next time this component mounts (e.g. navigating
+  // back into the employer panel after setup), hasCompany below reflects
+  // the refreshed context and the draft resumes into Create a Job normally
+  // -- no separate "refresh" step needed, and no possibility of bouncing
+  // between routes since this runs exactly once per panel mount.
   private checkAndRestoreGuestJobDraft(): void {
-    if (this.guestJobDraft.hasPending()) {
-      this.router.navigate(['/recruiter/jobs/create']);
+    if (!this.guestJobDraft.hasPending()) return;
+
+    const hasCompany = !!(this.user && this.user.companyId);
+    if (!hasCompany) {
+      this.router.navigate(['/recruiter/company/settings']);
+      return;
     }
+
+    this.router.navigate(['/recruiter/jobs/create']);
   }
 
   /** Called from the "sign in again" button on the profile-load-error fallback.
