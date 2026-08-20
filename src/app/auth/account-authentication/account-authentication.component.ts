@@ -153,18 +153,23 @@ export class AccountAuthenticationComponent implements OnInit {
             || 'We couldn’t send the verification link. Please try again in a moment.';
           this.snackbarService.error(message, '');
           if (this.isNonProductionBuild) {
-            // Local-dev-only guidance, never shown in production. The most
-            // common local cause is a Firebase Auth Emulator that no longer
-            // has this account (its data is in-memory and is lost on every
-            // emulator/backend restart, even though the Postgres row
-            // persists) -- retrying alone will not fix that; the account
-            // needs to be re-registered against the currently-running
-            // emulator. See get-hired-BE/notes.md for the backend-side gap
-            // (this failure mode and unrelated ones all collapse into the
-            // same generic 500 today).
+            // Local-dev-only guidance, never shown in production. Left
+            // deliberately general rather than naming one specific cause:
+            // the backend collapses every failure in this path into the
+            // same generic 500 (see get-hired-BE/notes.md), so the frontend
+            // has no reliable way to tell which of the known local causes
+            // actually happened -- (a) the Firebase Auth Emulator no longer
+            // has this account (its data is in-memory and does not survive
+            // a restart unless it was started with --import/--export-on-exit
+            // -- see scripts/verify-local-user.js's header for the
+            // canonical local startup command), or (b) a confirmed backend
+            // case-sensitivity bug where the account was actually created
+            // successfully but this specific step crashed regardless of
+            // emulator state (also in notes.md). Retry rarely helps either
+            // way; the verify-local-user helper is the reliable path.
             this.snackbarService.warning(
-              'Local dev: if this account was registered before the Firebase Auth Emulator was last restarted, it no longer exists there. Register again against the currently running emulator.',
-              '', 8000
+              'Local dev: run "npm run verify-local-user -- <email>" from get-hired-FE — it completes verification directly against the local Firebase emulator and reports the exact reason if it can’t (account missing from the emulator, already verified, etc).',
+              '', 10000
             );
           }
           return of(err);

@@ -11,7 +11,8 @@
     "build-dev": "ng build --configuration=staging",
     "build-prod": "ng build --configuration=production",
     "deploy": "cd dist && gcloud app deploy --project get-hired-363107",
-    "deploy-staging": "cd dist && gcloud app deploy app-staging.yaml --project get-hired-363107"
+    "deploy-staging": "cd dist && gcloud app deploy app-staging.yaml --project get-hired-363107",
+    "verify-local-user": "node scripts/verify-local-user.js"
   },
   "private": true,
   "dependencies": {
