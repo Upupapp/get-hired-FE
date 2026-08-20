@@ -20,8 +20,8 @@ import {
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { GoogleAuthService } from '@main/auth/services/google-auth.service';
 import { CoreService } from '@app-core/services/core.service';
-import { GuestJobDraftService } from '@app-job/services/guest-job-draft.service';
-import { resolveWorkSetupId, resolveJobTypeId } from '@app-job/utils/job-field-resolvers';
+import { AiCreateDraftService, GUEST_OWNER_SCOPE } from '@app-job/services/ai-create-draft.service';
+import { GenerateIntentInputs } from '@app-job/easy-job-post-assistant/easy-job-post-assistant.models';
 
 type PanelStep = 'input' | 'loading' | 'preview' | 'error';
 
@@ -69,7 +69,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     private haptics: HapticFeedbackService,
     private googleAuthService: GoogleAuthService,
     private coreService: CoreService,
-    private guestJobDraft: GuestJobDraftService,
+    private aiCreateDraft: AiCreateDraftService,
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -193,18 +193,25 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     });
   }
 
-  /** Maps this panel's fields into the canonical job-form payload shape
-   *  (same fields JobCreateComponent.applyAssistantPrefill() consumes) and
-   *  persists it as a pending guest job draft. */
+  /** Maps this panel's fields directly into the AI Create panel's own
+   *  GenerateIntentInputs shape (EasyJobPostAssistantModalComponent) and
+   *  persists it as a pending guest AI Create draft -- these are exactly
+   *  the same four fields the guest was actually shown, verbatim, so
+   *  restoration into AI Create is exact rather than approximated. Industry
+   *  is deliberately never set here: it was never collected on this public
+   *  form, so no value must be invented (AI Create's own restore path
+   *  handles suggesting/leaving it empty -- see job-industry-suggester.ts).
+   *  workSetup is normalized to AI Create's own option values ('Onsite',
+   *  not this panel's 'On-site') so the restored value actually matches one
+   *  of that dropdown's <option>s instead of silently showing unselected. */
   private saveDraftPayload(title: string): void {
-    const payload = {
+    const input: GenerateIntentInputs = {
       jobTitle: title,
-      jobCity: this.location.trim() || null,
-      jobCountry: 'Philippines',
-      workSetupId: resolveWorkSetupId(this.workSetup),
-      jobTypeId: resolveJobTypeId(this.employmentType),
+      location: this.location.trim(),
+      workSetup: this.workSetup === 'On-site' ? 'Onsite' : this.workSetup,
+      employmentType: this.employmentType,
     };
-    this.guestJobDraft.save(payload, 'public-employer-ai-preview-panel');
+    this.aiCreateDraft.save(input, GUEST_OWNER_SCOPE, 'public-employer-ai-preview-panel', 'pending-registration');
   }
 
   private saveDraftAndRedirectToRegister(title: string): void {

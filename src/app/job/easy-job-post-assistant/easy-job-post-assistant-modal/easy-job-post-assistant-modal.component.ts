@@ -28,6 +28,10 @@ import { takeUntil } from 'rxjs/operators';
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant.service';
 import { AssistantExtractionResult, AssistantStep, GenerateIntentInputs, InstantJobDraft, ReviewFlag } from '../easy-job-post-assistant.models';
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
+import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
+import { JobService } from '@app-job/job.service';
+import { Options } from '@app-job/job.model';
+import { suggestIndustryName, matchSuggestedIndustry } from '@app-job/utils/job-industry-suggester';
 
 @Component({
   selector: 'app-easy-job-post-assistant-modal',
@@ -66,6 +70,16 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   generatedDraft: InstantJobDraft | null = null;
   generatedJobRoleId: number | null = null;
 
+  // GETHIRED_EMPLOYER_AI_CREATE_PERSISTENT_UNFINISHED_JOB_DRAFT_FLOW_SINGLE_COMMAND_V2:
+  // this modal's Generate step IS "AI Create" -- the sole persistent
+  // unfinished-job workspace. Start From Scratch (chooseManual(), below)
+  // deliberately never touches any of this.
+  industryOptions: Options[] = [];
+  industrySuggested: boolean = false;
+  draftRestored: boolean = false;
+  private ownerScope: string | null = null;
+  private autosaveTimerId: any = null;
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -75,9 +89,32 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     private assistantService: EasyJobPostAssistantService,
     private router: Router,
     private haptics: HapticFeedbackService,
+    private aiCreateDraft: AiCreateDraftService,
+    private jobService: JobService,
   ) {}
 
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    this.ownerScope = user && user._id;
+
+    this.jobService.getIndustryList().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => { this.industryOptions = (res && res.data) || res || []; },
+      error: () => { /* non-fatal -- Industry select just stays empty */ },
+    });
+
+    // A saved AI Create draft represents real unfinished work and takes
+    // priority over the generic company-context defaults below (Phase 15/19).
+    const draft = this.ownerScope ? this.aiCreateDraft.load(this.ownerScope) : null;
+    if (draft) {
+      this.generateInputs = { ...this.generateInputs, ...draft.input };
+      this.draftRestored = true;
+      this.step = 'generate';
+      if (!this.generateInputs.industry) {
+        this.trySuggestIndustry();
+      }
+      return;
+    }
+
     if (this.data) {
       if (this.data.companyCity) {
         this.generateInputs.location = this.data.companyCity;
@@ -86,15 +123,72 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         this.generateInputs.industry = this.data.companyIndustryName;
       }
       if (this.data.workSetupId) {
-        const wsNames: { [key: number]: string } = { 1: 'On-site', 2: 'Remote', 3: 'Hybrid' };
+        const wsNames: { [key: number]: string } = { 1: 'Onsite', 2: 'Remote', 3: 'Hybrid' };
         this.generateInputs.workSetup = wsNames[this.data.workSetupId] || '';
       }
     }
   }
 
   ngOnDestroy(): void {
+    if (this.autosaveTimerId) clearTimeout(this.autosaveTimerId);
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // --- AI Create draft persistence (autosave) -----------------------------
+
+  /** Debounced autosave -- called from (ngModelChange) on every Generate-step
+   *  field. Short debounce, not a write on every keystroke synchronously. */
+  scheduleAutosave(): void {
+    if (!this.ownerScope) return;
+    if (this.autosaveTimerId) clearTimeout(this.autosaveTimerId);
+    this.autosaveTimerId = setTimeout(() => {
+      // Don't persist a draft with no title at all -- nothing meaningful to resume.
+      if (!this.generateInputs.jobTitle || !this.generateInputs.jobTitle.trim()) return;
+      this.aiCreateDraft.save(this.generateInputs, this.ownerScope, 'easy-job-post-assistant-modal', 'editing');
+    }, 800);
+  }
+
+  /** Job-title-specific handler: autosave, plus (only when the Employer
+   *  hasn't already picked an Industry themselves) a conservative,
+   *  editable suggestion -- never invented, never auto-applied to
+   *  generation. See job-industry-suggester.ts. */
+  onJobTitleChanged(): void {
+    if (!this.generateInputs.industry) {
+      this.trySuggestIndustry();
+    }
+    this.scheduleAutosave();
+  }
+
+  /** Explicit user change to Industry (the suggestion is no longer "just a
+   *  suggestion" once they've touched it, even if they happen to pick the
+   *  same value back). */
+  onIndustryChanged(): void {
+    this.industrySuggested = false;
+    this.scheduleAutosave();
+  }
+
+  private trySuggestIndustry(): void {
+    const suggestedName = suggestIndustryName(this.generateInputs.jobTitle);
+    if (!suggestedName) return;
+    const match = matchSuggestedIndustry(suggestedName, this.industryOptions);
+    if (match) {
+      this.generateInputs.industry = match.name;
+      this.industrySuggested = true;
+    }
+    // No match against the live options (or no reliable inference at all) --
+    // leave Industry empty/selectable. Never fabricate a value.
+  }
+
+  /** Explicit discard -- the only other way (besides confirmed job
+   *  persistence) the AI Create draft is allowed to be cleared. */
+  discardDraft(): void {
+    if (!this.ownerScope) return;
+    this.haptics.selection();
+    this.aiCreateDraft.clear(this.ownerScope);
+    this.draftRestored = false;
+    this.industrySuggested = false;
+    this.generateInputs = { jobTitle: '', location: '', workSetup: '', employmentType: '', industry: '' };
   }
 
   // --- Screen navigation ---
@@ -284,8 +378,17 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         this.generatedJobRoleId = (res.suggestedJobRoleId !== undefined && res.suggestedJobRoleId !== null) ? res.suggestedJobRoleId : null;
         this.assistantService.setGeneratedDraft(res.draft);
         this.step = 'generate_review';
+        // Persist the generated-but-unposted result too (Phase 14) -- it's
+        // a small serializable JSON object (structured job fields, not
+        // media), safe to keep alongside the inputs so a refresh/return
+        // doesn't force regeneration. Still requires an explicit Post.
+        if (this.ownerScope) {
+          this.aiCreateDraft.save(this.generateInputs, this.ownerScope, 'easy-job-post-assistant-modal', 'generated', this.generatedDraft);
+        }
       },
       error: (err) => {
+        // AI generation failure: the draft (inputs already autosaved) is
+        // left completely untouched -- no clear, no mutation.
         this.loading = false;
         this.haptics.error();
         if (err && err.status === 401) {

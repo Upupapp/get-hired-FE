@@ -194,6 +194,22 @@
     <p class="eja-body__lead">Tell us about the role</p>
     <p class="eja-body__sub">We'll generate a structured job draft aligned with GetHired fields.</p>
 
+    <!-- AI Create draft restored banner (2026-08-20): shown when this
+         session opened with a previously-unfinished AI Create job already
+         saved -- see AiCreateDraftService / EasyJobPostAssistantModalComponent
+         ngOnInit(). Never hidden silently; explicit Discard action per
+         Phase 19-20 instead of a separate confirmation modal. -->
+    <div class="eja-notice eja-notice--info" role="status" *ngIf="draftRestored">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M3 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>
+        Your unfinished AI job post has been restored.
+        <button type="button" class="eja-discard-link" (click)="discardDraft()">Discard and start over</button>
+      </span>
+    </div>
+
     <div class="eja-generate-form">
       <div class="eja-field-group">
         <label class="eja-label" for="gen-title">Job title <span class="eja-required" aria-hidden="true">*</span></label>
@@ -204,6 +220,7 @@
           type="text"
           placeholder="e.g. Senior Events Manager, Finance Analyst"
           [(ngModel)]="generateInputs.jobTitle"
+          (ngModelChange)="onJobTitleChanged()"
           [disabled]="loading"
           autocomplete="off"
           maxlength="120"
@@ -219,6 +236,7 @@
           type="text"
           placeholder="e.g. Makati, Metro Manila or Remote"
           [(ngModel)]="generateInputs.location"
+          (ngModelChange)="scheduleAutosave()"
           [disabled]="loading"
           autocomplete="off"
           maxlength="120"
@@ -228,7 +246,7 @@
       <div class="eja-field-row">
         <div class="eja-field-group eja-field-group--half">
           <label class="eja-label" for="gen-work-setup">Work setup</label>
-          <select id="gen-work-setup" class="eja-select" [(ngModel)]="generateInputs.workSetup" [disabled]="loading">
+          <select id="gen-work-setup" class="eja-select" [(ngModel)]="generateInputs.workSetup" (ngModelChange)="scheduleAutosave()" [disabled]="loading">
             <option value="">Not specified</option>
             <option value="Onsite">Onsite</option>
             <option value="Remote">Remote</option>
@@ -237,7 +255,7 @@
         </div>
         <div class="eja-field-group eja-field-group--half">
           <label class="eja-label" for="gen-emp-type">Employment type</label>
-          <select id="gen-emp-type" class="eja-select" [(ngModel)]="generateInputs.employmentType" [disabled]="loading">
+          <select id="gen-emp-type" class="eja-select" [(ngModel)]="generateInputs.employmentType" (ngModelChange)="scheduleAutosave()" [disabled]="loading">
             <option value="">Not specified</option>
             <option value="Full-time">Full-time</option>
             <option value="Part-time">Part-time</option>
@@ -248,17 +266,12 @@
       </div>
 
       <div class="eja-field-group">
-        <label class="eja-label" for="gen-industry">Industry (optional)</label>
-        <input
-          id="gen-industry"
-          class="eja-input"
-          type="text"
-          placeholder="e.g. Civic Technology, BPO, Finance, Retail"
-          [(ngModel)]="generateInputs.industry"
-          [disabled]="loading"
-          autocomplete="off"
-          maxlength="80"
-        />
+        <label class="eja-label" for="gen-industry">Industry</label>
+        <select id="gen-industry" class="eja-select" [(ngModel)]="generateInputs.industry" (ngModelChange)="onIndustryChanged()" [disabled]="loading">
+          <option value="">Select industry</option>
+          <option *ngFor="let opt of industryOptions" [value]="opt.name">{{ opt.name }}</option>
+        </select>
+        <p class="eja-field-hint" *ngIf="industrySuggested">Suggested based on your job title — you can change it.</p>
       </div>
     </div>
 

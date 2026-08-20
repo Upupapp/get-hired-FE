@@ -488,6 +488,27 @@
   margin-top: -4px;
 }
 
+// ── AI Create draft restore / industry-suggestion hint ──────────────
+.eja-discard-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
+}
+
+.eja-field-hint {
+  font-size: 12px;
+  color: #6B7280;
+  margin: -6px 0 0;
+}
+
 // ── Review screen ──────────────────────────────────────────────────
 .eja-review-summary {
   display: flex;
