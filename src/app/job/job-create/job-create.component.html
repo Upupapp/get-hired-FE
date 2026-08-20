@@ -243,18 +243,6 @@
             </button>
           </div>
 
-          <!-- Guest job draft restore banner (2026-08-20): shown when a
-               first-time guest's pre-registration job draft was restored
-               into this form -- see checkAndRestoreGuestJobDraft() in
-               guest-job-draft.service.ts / job-create.component.ts. -->
-          <div class="gh-jc-assistant-banner" *ngIf="guestDraftRestored" role="status">
-            <i class="bi bi-arrow-counterclockwise gh-jc-assistant-banner-icon" aria-hidden="true"></i>
-            <div class="gh-jc-assistant-banner-copy">
-              <span class="gh-jc-assistant-banner-title">Your unfinished job post has been restored</span>
-              <span class="gh-jc-assistant-banner-body">Continue where you left off, or make changes before publishing.</span>
-            </div>
-          </div>
-
           <!-- Progress ring (CSS-only, reduced-motion safe) -->
           <div class="gh-jc-readiness-ring-wrap" aria-hidden="true">
             <svg class="gh-jc-readiness-ring" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">

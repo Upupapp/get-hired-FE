@@ -10,7 +10,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
-import { GuestJobDraftService } from '@app-job/services/guest-job-draft.service';
+import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 
 @Component({
   selector: 'app-employer-panel',
@@ -44,14 +44,14 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private jobPreviewService: PublicJobPreviewService,
-    private guestJobDraft: GuestJobDraftService,
+    private aiCreateDraft: AiCreateDraftService,
   ) { }
 
   ngOnInit(): void {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
     this.checkAndClaimAiPreview();
-    this.checkAndRestoreGuestJobDraft();
+    this.checkAndRouteToAiCreateDraft();
 
     // companyName for topbar avatar menu — reads from companyFacade.companyDetails$
     // (the authoritative store slice) so it updates immediately when the recruiter
@@ -149,34 +149,37 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
       });
   }
 
-  // ─── Guest Job Draft Restore — runs once on employer panel init ─────────
-  // If a first-time guest saved a job draft before registering (see
-  // ai-job-preview-panel.component.ts), don't leave them on a generic
-  // dashboard. SEQUENCING FIX (2026-08-20): a newly registered Employer may
-  // not have a company yet -- job creation requires one (companyId is a
-  // required field on every job-create call, see JobCreateComponent), so
-  // route to the existing canonical Business/Company Setup page first
-  // (/recruiter/company/settings, same destination CompanyNotSetupComponent
-  // already points to elsewhere in this app) rather than straight to
-  // Create a Job. The draft itself is untouched either way -- it's only
-  // cleared on confirmed successful job persistence (JobCreateComponent.
-  // afterSubmit()). company-basic.component.ts's updateLocalStorage()
-  // already writes the new companyId into localStorage('user') the moment
-  // setup succeeds, so the next time this component mounts (e.g. navigating
-  // back into the employer panel after setup), hasCompany below reflects
-  // the refreshed context and the draft resumes into Create a Job normally
-  // -- no separate "refresh" step needed, and no possibility of bouncing
-  // between routes since this runs exactly once per panel mount.
-  private checkAndRestoreGuestJobDraft(): void {
-    if (!this.guestJobDraft.hasPending()) return;
+  // ─── AI Create Draft Routing — runs once on employer panel init ─────────
+  // GETHIRED_EMPLOYER_AI_CREATE_PERSISTENT_UNFINISHED_JOB_DRAFT_FLOW_V2:
+  // the unfinished-job workspace now belongs exclusively to AI Create
+  // (EasyJobPostAssistantModalComponent's Generate step) -- Start From
+  // Scratch (JobCreateComponent reached directly, no assistant prefill) no
+  // longer auto-restores anything. If a first-time guest saved an AI Create
+  // draft before registering (see ai-job-preview-panel.component.ts), adopt
+  // it into this now-authenticated user's own draft scope, then: no company
+  // yet -> Business Setup first (same sequencing as before, draft
+  // untouched); has company -> open AI Create directly instead of
+  // navigating anywhere, so the panel's own restore/resume UX takes over.
+  private checkAndRouteToAiCreateDraft(): void {
+    const ownerScope = this.user && this.user._id;
+    if (!ownerScope) return;
 
-    const hasCompany = !!(this.user && this.user.companyId);
+    // One-time safe migration from the superseded jobDraft.v1 key (the old
+    // Start-From-Scratch restore mechanism), then adopt any pre-auth guest
+    // AI Create draft into this authenticated user's scope. Both are no-ops
+    // when there's nothing to migrate/adopt.
+    this.aiCreateDraft.migrateLegacyDraftIfPresent(ownerScope);
+    this.aiCreateDraft.adoptGuestDraftForUser(ownerScope);
+
+    if (!this.aiCreateDraft.hasPending(ownerScope)) return;
+
+    const hasCompany = !!this.user.companyId;
     if (!hasCompany) {
       this.router.navigate(['/recruiter/company/settings']);
       return;
     }
 
-    this.router.navigate(['/recruiter/jobs/create']);
+    this.goToCreateJob();
   }
 
   /** Called from the "sign in again" button on the profile-load-error fallback.

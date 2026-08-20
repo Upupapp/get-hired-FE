@@ -21,7 +21,7 @@ import { JobService } from '../job.service';
 import { CreateInterviewComponent } from './components/create-interview/create-interview.component';
 import { resolveJobLevelId } from '../utils/job-level-resolver';
 import { resolveWorkSetupId, resolveJobTypeId } from '../utils/job-field-resolvers';
-import { GuestJobDraftService } from '../services/guest-job-draft.service';
+import { AiCreateDraftService } from '../services/ai-create-draft.service';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
@@ -110,8 +110,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   readinessResult: JobReadinessResult | null = null;
   // Easy Job Post Assistant prefill banner
   assistantPrefilled: boolean = false;
-  // Guest job draft restore banner (2026-08-20)
-  guestDraftRestored: boolean = false;
   initial$: any;
   info$: any;
   status: any = 1;
@@ -171,7 +169,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private jobReadiness: JobReadinessService,
     private assistantService: EasyJobPostAssistantService,
     private jobService: JobService,
-    private guestJobDraft: GuestJobDraftService,
+    private aiCreateDraft: AiCreateDraftService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -291,25 +289,20 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           this.shouldPersistAssistantDraft = true;
         }
       } else {
-        // No assistant prefill -- check for a pending first-time-guest job
-        // draft before falling back to a blank form. Restored, NOT cleared,
-        // here: the draft is only removed on confirmed successful
-        // persistence (see afterSubmit()) or an explicit user discard.
-        const guestDraft = this.guestJobDraft.load();
-        if (guestDraft) {
-          this.guestDraftRestored = true;
-          this.applyAssistantPrefill(guestDraft.payload, 'Your unfinished job post has been restored.');
-          if (guestDraft.payload.jobTitle) {
-            this.shouldPersistAssistantDraft = true;
-          }
-        } else {
-          this.setFormGroup();
-        }
+        // PRODUCT CHANGE (2026-08-20): Start From Scratch is now always a
+        // clean manual form -- it must never restore an AI Create draft
+        // (or the superseded guest job draft this used to check). The
+        // unfinished-job workspace belongs exclusively to AI Create
+        // (EasyJobPostAssistantModalComponent's Generate step) now. See
+        // GETHIRED_EMPLOYER_AI_CREATE_PERSISTENT_UNFINISHED_JOB_DRAFT_FLOW_SINGLE_COMMAND_V2.
+        // Any pending AI Create draft is left completely untouched by this
+        // page -- not read, not modified, not cleared.
+        this.setFormGroup();
       }
     }
   }
 
-  applyAssistantPrefill(data: any, snackbarMessageOverride?: string): void {
+  applyAssistantPrefill(data: any): void {
     // Job level options are a live backend-owned list (unlike work setup/job type,
     // which are matched against a fixed FE enum below) — resolve against whatever is
     // currently loaded. If the list hasn't arrived yet, this returns 'none' and
@@ -371,9 +364,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (data.workSetupHint) hints.push(`Work setup: ${data.workSetupHint}`);
     const hintText = hints.length ? ` Suggested: ${hints.join(' · ')}.` : '';
     this.snackbarService.success(
-      snackbarMessageOverride
-        ? `${snackbarMessageOverride}${hintText}`
-        : `Job form prefilled from your import.${hintText} Please review and complete the required fields.`,
+      `Job form prefilled from your import.${hintText} Please review and complete the required fields.`,
       '', 7000
     );
 
@@ -708,12 +699,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.savingDraft = false;
     this.saveErrorMsg = null;
     if (event) {
-      // Confirmed backend persistence succeeded (draft save or publish) --
-      // the real job record now exists under the authenticated account, so
-      // any pending guest job draft has served its purpose. Cleared only
-      // here, never earlier (not on redirect/register/verify/signin/
-      // restore) -- see guest-job-draft.service.ts.
-      this.guestJobDraft.clear();
+      // Confirmed backend persistence succeeded. Only clear the AI Create
+      // draft when THIS session actually originated from AI Create
+      // (assistantPrefilled) -- a plain Start From Scratch post must never
+      // touch that draft, since From Scratch is now fully independent of
+      // it (see ngOnInit()). Cleared only here, never earlier (not on
+      // redirect/register/verify/signin/Business Setup/restore/generation)
+      // -- see ai-create-draft.service.ts.
+      if (this.assistantPrefilled) {
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        if (user && user._id) {
+          this.aiCreateDraft.clear(user._id);
+        }
+      }
       // Brief success pulse — clears automatically after 2s
       this.saveSuccessPulse = true;
       this.setAutoSaveState('saved');
