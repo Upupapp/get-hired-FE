@@ -26,10 +26,21 @@
             *ngIf=" (email_validators?.invalid && email_validators?.touched) || email_validators?.dirty">
             <small *ngIf="email_validators?.errors?.required" class="text-danger">Email is required</small>
           </div>
-          <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3" (click)="resendVerification()">
-            Resend Verification link
+          <!-- BUG FIX: this button previously also had (click)="resendVerification()",
+               which double-fired alongside the form's own (ngSubmit) since a bare
+               <button> inside a <form> defaults to type="submit". type="submit" here
+               is now explicit and the only trigger; [disabled] prevents overlapping
+               requests while one is already in flight. -->
+          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-2 mb-3" [disabled]="resending"
+            [attr.aria-busy]="resending ? 'true' : null">
+            {{ resending ? 'Sending…' : 'Resend Verification link' }}
           </button>
         </form>
+
+        <p class="text-muted mt-3 px-2" style="font-size: 12px;" *ngIf="isNonProductionBuild">
+          Local dev: verification uses the Firebase Auth Emulator. If sending fails, check that the
+          emulator is running and this account was registered against the current session.
+        </p>
 
       </div>
     </ng-template>
