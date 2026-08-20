@@ -15,15 +15,6 @@
     <p class="soc-message">Are you sure you want to sign out?</p>
   </div>
 
-  <label class="soc-checkbox-row" *ngIf="showRemoveLocalRecoveryOption">
-    <input
-      type="checkbox"
-      [checked]="removeLocalRecovery"
-      (change)="removeLocalRecovery = $any($event.target).checked"
-      [disabled]="confirmDisabled" />
-    <span>Remove unfinished AI job from this device</span>
-  </label>
-
   <div class="soc-actions">
     <button
       type="button"

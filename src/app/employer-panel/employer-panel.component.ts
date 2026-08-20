@@ -282,19 +282,10 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
    *  default -- disableClose is deliberately left false) are all equivalent:
    *  they just close the dialog with zero auth/session side effects. */
   logout(): void {
-    // The "Remove unfinished AI job from this device" checkbox only makes
-    // sense -- and must only be offered -- when there actually is one for
-    // this Employer; otherwise it's a control for something that doesn't
-    // exist. Checked here (not left to the dialog to guess) since this
-    // component already knows how to resolve the current owner scope.
-    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-    const hasUnfinishedDraft = !!(currentUser && currentUser._id && this.aiCreateDraft.hasPending(currentUser._id));
-
     const dialogRef = this.dialog.open(SignOutConfirmDialogComponent, {
       ariaLabel: 'Sign out confirmation',
       autoFocus: 'first-tabbable',
       data: {
-        showRemoveLocalRecoveryOption: hasUnfinishedDraft,
         onConfirm: () => this.confirmSignOut(dialogRef),
       },
     });
@@ -305,10 +296,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.logoutInProgress = true;
 
     const instance = dialogRef.componentInstance;
-    // TAB 05 (optional privacy control): read before logout wipes `user`
-    // from localStorage, since removing local recovery afterward still
-    // needs to know exactly whose key to clear.
-    const removeLocalRecovery = instance.removeLocalRecovery;
+    // PRODUCT CHANGE (2026-08-20): Employer sign-out always removes this
+    // device's unfinished AI Create recovery for the signing-out account --
+    // no longer optional/checkbox-gated. Captured before logout wipes
+    // `user` from localStorage. Never touches a canonical server Draft job
+    // (aiCreateDraft.clear() only ever removes the local recovery key).
     const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
     instance.confirmDisabled = true;
     instance.confirmLabel = 'Signing out...';
@@ -316,9 +308,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.coreService.logout().subscribe({
       next: () => {
         this.logoutInProgress = false;
-        if (removeLocalRecovery && currentUser && currentUser._id) {
-          // Current Employer's LOCAL recovery only -- never a canonical
-          // server Draft job, which this never touches.
+        if (currentUser && currentUser._id) {
           this.aiCreateDraft.clear(currentUser._id);
         }
         // Redirect ONLY after logout has actually completed, and only Home --
