@@ -17,6 +17,8 @@
       class="ud-action-btn"
       [class.ud-action-btn--primary]="a.primary"
       [class.ud-action-btn--ghost]="!a.primary"
+      [disabled]="a.disabled"
+      [attr.aria-busy]="a.disabled ? true : null"
       (click)="doAction(a.value)"
     >{{ a.label }}</button>
     <!-- No explicit cdkFocusInitial here: it's a static-selector directive

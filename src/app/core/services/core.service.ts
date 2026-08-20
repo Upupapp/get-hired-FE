@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
 import { Router } from '@angular/router';
@@ -36,8 +37,31 @@ export class CoreService {
     return this.baseService.get(`${this.authUrl}/checkemailifexist?email=${email}`);
   }
 
+  /**
+   * GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: the canonical logout method --
+   * every caller (interceptor, all panel components) already goes through
+   * this. Previously left as a literal "TODO api for firebase logout" --
+   * the backend's real session-revoke endpoint (POST /auth/logout ->
+   * revokeTokenInFirebase(uid), see get-hired-BE/routes/userRoute.js) was
+   * never actually called, so a "signed out" browser could still hold a
+   * server-side-valid refresh token. That call fires here, BEFORE the
+   * local token is cleared below (verifyAuth needs the current
+   * Authorization header) -- fire-and-forget: never awaited, never blocks
+   * the local sign-out. This app's actual "am I logged in" state is
+   * entirely local (the `state`/`user` keys read by isLoggedIn()/route
+   * guards), so a network hiccup on the revoke call must not leave the
+   * user stuck unable to sign out of their own browser, and every existing
+   * caller of this method keeps its current synchronous contract --
+   * nothing needs to subscribe to anything for the actual sign-out to
+   * complete. The returned Observable exists only so a caller that wants
+   * completion timing (e.g. a confirmation-modal loading state) can use it.
+   */
   logout() {
-    // TODO api for firebase logout
+    this.baseService.post(`${this.authUrl}/logout`, {}).subscribe({
+      next: () => {},
+      error: () => {}, // best-effort -- never blocks local sign-out
+    });
+
     this.isLogin = false;
     this.roleAs = '';
     // A real session-expiry logout (the global 401/403 interceptor calls
@@ -51,7 +75,7 @@ export class CoreService {
     if (preservedAiCreateDraft) {
       localStorage.setItem(AI_CREATE_DRAFT_STORAGE_KEY, preservedAiCreateDraft);
     }
-    return of({ success: !this.isLogin, role: '' });
+    return of({ success: true, role: '' });
   }
 
   isLoggedIn() {

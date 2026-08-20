@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
+import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
@@ -35,6 +36,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   @ViewChild('firstDrawerLink') firstDrawerLinkRef: ElementRef<HTMLAnchorElement>;
 
   private routerSub: Subscription;
+  private logoutInProgress = false;
 
   constructor(
     private coreService: CoreService,
@@ -271,8 +273,58 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.router.navigate(['/recruiter/contacts/candidates']);
   }
 
+  /** GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: confirm before signing out, reusing
+   *  the existing UpdatedDialogComponent (not a bespoke dialog) with a
+   *  `confirm` callback so clicking Sign Out doesn't auto-close -- that lets
+   *  the button show a disabled/loading state while the canonical
+   *  coreService.logout() call runs. Cancel (and Escape/backdrop-click,
+   *  MatDialog's own default) has no callback, so it just closes the dialog
+   *  with zero auth/session side effects. */
   logout(): void {
-    this.coreService.logout();
-    this.router.navigate(['/signin']);
+    const dialogRef = this.dialog.open(UpdatedDialogComponent, {
+      data: {
+        message: 'Sign out of your Employer account?',
+        icon: 'box-arrow-right',
+        actions: [
+          { label: 'Cancel', value: 'cancel' },
+          { label: 'Sign Out', value: 'confirm', primary: true },
+        ],
+        callbacks: {
+          confirm: () => this.confirmSignOut(dialogRef),
+        },
+      },
+    });
+  }
+
+  private confirmSignOut(dialogRef: MatDialogRef<UpdatedDialogComponent>): void {
+    if (this.logoutInProgress) return; // duplicate-click guard
+    this.logoutInProgress = true;
+
+    const instance = dialogRef.componentInstance;
+    const confirmAction = instance.actions.find(a => a.value === 'confirm');
+    const cancelAction = instance.actions.find(a => a.value === 'cancel');
+    if (confirmAction) { confirmAction.disabled = true; confirmAction.label = 'Signing out...'; }
+    if (cancelAction) { cancelAction.disabled = true; }
+
+    this.coreService.logout().subscribe({
+      next: () => {
+        this.logoutInProgress = false;
+        // Redirect ONLY after logout has actually completed, and only Home --
+        // never dashboard/signin/register/the previous protected page.
+        dialogRef.close();
+        this.router.navigateByUrl('/');
+      },
+      error: () => {
+        // coreService.logout()'s local state-clear has no real failure mode
+        // (synchronous localStorage writes; the backend revoke call is
+        // already caught internally and never surfaces here) -- this branch
+        // exists so a future failure mode is handled truthfully rather than
+        // silently, per the "never fabricate success" requirement.
+        this.logoutInProgress = false;
+        if (confirmAction) { confirmAction.disabled = false; confirmAction.label = 'Sign Out'; }
+        if (cancelAction) { cancelAction.disabled = false; }
+        instance.message = 'Sign out failed. Please try again.';
+      },
+    });
   }
 }

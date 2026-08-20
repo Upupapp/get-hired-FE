@@ -19,7 +19,7 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 export class UpdatedDialogComponent implements OnInit {
   message: string;
   icon: string = 'check-circle';
-  actions: Array<{ label: string; value: string; primary?: boolean }> | null = null;
+  actions: Array<{ label: string; value: string; primary?: boolean; disabled?: boolean }> | null = null;
   callbacks: { [key: string]: () => void } | null = null;
   linkUrl: string | null = null;
   linkText: string | null = null;
