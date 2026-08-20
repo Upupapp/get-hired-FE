@@ -41,10 +41,34 @@
   color: #5b5f73;
 }
 
+// Deliberately separated from .soc-actions (own row, muted, left-aligned)
+// so it can't be mistaken for a third primary action.
+.soc-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 4px 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f7f7fa;
+  font-size: 0.85rem;
+  color: #5b5f73;
+  text-align: left;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    accent-color: #FF6B4A;
+    cursor: pointer;
+  }
+}
+
 .soc-actions {
   display: flex;
   gap: 12px;
-  padding: 24px 4px 4px;
+  padding: 20px 4px 4px;
 }
 
 .soc-btn {

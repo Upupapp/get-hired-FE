@@ -48,6 +48,19 @@ export interface AiCreateDraftEnvelope {
   status: AiCreateDraftStatus;
   input: GenerateIntentInputs;
   generated?: InstantJobDraft | null;
+  // TAB 15/17 -- server Draft synchronization. Set once the first explicit
+  // Save Draft succeeds (JobCreateComponent.afterSubmit()). NOT set merely
+  // because a background autosave ran -- this specifically marks a
+  // confirmed server-side write, distinct from local recovery success.
+  serverJobId?: string | null;
+  // Local timestamp of the last confirmed server sync for this draft. The
+  // current backend job-update endpoint does not maintain a real
+  // updated_at/revision on save (see get-hired-BE/notes.md) -- there is no
+  // server-provided freshness signal to compare against. This is therefore
+  // a purely local, honest signal: "has THIS browser's own copy of the
+  // draft changed since it last confirmed a server write," not "has the
+  // server draft changed by some other actor." See hasUnsyncedLocalEdits().
+  serverSyncedAt?: string | null;
 }
 
 const KEY_PREFIX = 'gethired.employer.aiCreateDraft.v2.';
@@ -167,9 +180,54 @@ export class AiCreateDraftService {
   /** The exact localStorage key an owner scope's draft lives at -- exported
    *  so CoreService.logout() can preserve precisely the signed-out user's
    *  own draft across its localStorage.clear() call, without needing (or
-   *  risking) a single shared key name. */
+   *  risking) a single shared key name. Also used by callers (the AI Create
+   *  panel) to identify `storage` events for cross-tab conflict detection
+   *  (TAB 18). */
   getStorageKeyFor(ownerScope: string): string {
     return this.keyFor(ownerScope);
+  }
+
+  /** TAB 15/16: call once a Save Draft (job_status_id = 1) succeeds, to
+   *  associate the local recovery with the authoritative server job id
+   *  instead of deleting the recovery -- Save Draft is a synchronization
+   *  event, not a posting event (only a real Post should clear local
+   *  recovery, see JobCreateComponent.afterSubmit()). This is also what
+   *  makes repeated Save Draft calls update the same server record instead
+   *  of creating duplicates possible in the first place: the caller is
+   *  expected to retain `serverJobId` itself (JobCreateComponent already
+   *  does, in `this.jobId`) and pass it back into `formatJob()` on
+   *  subsequent saves. Purely a metadata stamp -- does not touch
+   *  input/generated/status. No-op (false) if there's no draft to stamp. */
+  markServerSynced(ownerScope: string, serverJobId: string): boolean {
+    const key = this.keyFor(ownerScope);
+    const existing = this.readRawAt(key);
+    if (!existing || !serverJobId) return false;
+    const envelope: AiCreateDraftEnvelope = {
+      ...existing,
+      serverJobId,
+      serverSyncedAt: new Date().toISOString(),
+    };
+    try {
+      localStorage.setItem(key, JSON.stringify(envelope));
+      return localStorage.getItem(key) === JSON.stringify(envelope);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /** TAB 17: true if the local draft has been edited (autosaved) since the
+   *  last confirmed server sync -- i.e. genuine unsaved local work that a
+   *  reload/resume must not silently discard. This is the only staleness
+   *  signal honestly computable today: the backend does not maintain a
+   *  real updated_at/revision on job updates (see get-hired-BE/notes.md),
+   *  so this can detect "I have edits the server doesn't have yet" but
+   *  cannot detect "someone/something else changed the server draft since
+   *  I last saved." False (nothing unsaved) if there's no draft, or it was
+   *  never synced. */
+  hasUnsyncedLocalEdits(ownerScope: string): boolean {
+    const envelope = this.load(ownerScope);
+    if (!envelope || !envelope.serverSyncedAt) return false;
+    return Date.parse(envelope.updatedAt) > Date.parse(envelope.serverSyncedAt);
   }
 
   /** Once a guest completes registration/verification and reaches an

@@ -296,12 +296,22 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.logoutInProgress = true;
 
     const instance = dialogRef.componentInstance;
+    // TAB 05 (optional privacy control): read before logout wipes `user`
+    // from localStorage, since removing local recovery afterward still
+    // needs to know exactly whose key to clear.
+    const removeLocalRecovery = instance.removeLocalRecovery;
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
     instance.confirmDisabled = true;
     instance.confirmLabel = 'Signing out...';
 
     this.coreService.logout().subscribe({
       next: () => {
         this.logoutInProgress = false;
+        if (removeLocalRecovery && currentUser && currentUser._id) {
+          // Current Employer's LOCAL recovery only -- never a canonical
+          // server Draft job, which this never touches.
+          this.aiCreateDraft.clear(currentUser._id);
+        }
         // Redirect ONLY after logout has actually completed, and only Home --
         // never dashboard/signin/register/the previous protected page.
         dialogRef.close();

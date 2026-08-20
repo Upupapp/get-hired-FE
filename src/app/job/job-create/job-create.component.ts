@@ -270,6 +270,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         if (data) {
           this.setFormGroup(data);
           this.status = data.jobStatusId;
+          // TAB 16 FIX: this also fires on a successful explicit Save Draft
+          // (jobFacade.saveJob() -> saveJobSuccess sets state.selected), not
+          // just on loading an existing job by route id. Previously this.jobId
+          // was never assigned from that path, so a brand-new manual job's
+          // FIRST Save Draft click created a record but a SECOND click still
+          // had an empty jobId -> JobService.saveJob() took the create branch
+          // again, producing a duplicate server job. The backend response's
+          // own id is always the authoritative identity going forward.
+          if (data.jobId) {
+            this.jobId = data.jobId;
+          }
         }
       })
     );
@@ -699,17 +710,27 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.savingDraft = false;
     this.saveErrorMsg = null;
     if (event) {
-      // Confirmed backend persistence succeeded. Only clear the AI Create
+      // Confirmed backend persistence succeeded. Only touch the AI Create
       // draft when THIS session actually originated from AI Create
       // (assistantPrefilled) -- a plain Start From Scratch post must never
       // touch that draft, since From Scratch is now fully independent of
-      // it (see ngOnInit()). Cleared only here, never earlier (not on
-      // redirect/register/verify/signin/Business Setup/restore/generation)
-      // -- see ai-create-draft.service.ts.
+      // it (see ngOnInit()).
+      //
+      // TAB 15 FIX: Save Draft success ('asDraft') is a SERVER SYNC event,
+      // not a posting event -- it must not delete local recovery (the
+      // Employer may still return to refine it before actually publishing).
+      // Only a real Post ('published') completes the local-recovery
+      // lifecycle and clears it -- never earlier (not on redirect/register/
+      // verify/signin/Business Setup/restore/generation/Save Draft) -- see
+      // ai-create-draft.service.ts.
       if (this.assistantPrefilled) {
         const user = JSON.parse(localStorage.getItem('user') || 'null');
         if (user && user._id) {
-          this.aiCreateDraft.clear(user._id);
+          if (event === 'published') {
+            this.aiCreateDraft.clear(user._id);
+          } else if (event === 'asDraft' && this.jobId) {
+            this.aiCreateDraft.markServerSynced(user._id, this.jobId);
+          }
         }
       }
       // Brief success pulse — clears automatically after 2s
@@ -1155,6 +1176,16 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           // /updatejobs instead of creating a second job record.
           this.jobId = newId;
           this.setAutoSaveState('saved');
+          // TAB 15: this first background save is itself a server sync --
+          // associate the AI Create local recovery with the real job id
+          // rather than leaving it unlinked (the draft is NOT cleared here;
+          // only a confirmed Post does that -- see afterSubmit()).
+          if (this.assistantPrefilled) {
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            if (user && user._id) {
+              this.aiCreateDraft.markServerSynced(user._id, newId);
+            }
+          }
         } else {
           this.setAutoSaveState('unsaved');
         }

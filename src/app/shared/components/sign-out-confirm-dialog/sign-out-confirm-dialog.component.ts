@@ -25,6 +25,13 @@ export class SignOutConfirmDialogComponent {
    *  the real logout request is in flight. */
   confirmDisabled = false;
   confirmLabel = 'Sign Out';
+  /** TAB 05 (optional privacy control): unchecked by default. When checked
+   *  at confirm time, the caller removes only the current Employer's LOCAL
+   *  AI recovery after a successful sign-out -- never a canonical server
+   *  Draft job. Kept visually separate from the two primary actions (see
+   *  template) so it can't be mistaken for part of the Cancel/Sign Out
+   *  decision itself. */
+  removeLocalRecovery = false;
 
   constructor(
     public dialogRef: MatDialogRef<SignOutConfirmDialogComponent>,

@@ -83,9 +83,15 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   employmentTypeOptions: Options[] = [];
   industrySuggested: boolean = false;
   draftRestored: boolean = false;
+  // TAB 18: set when a `storage` event reports another tab/window wrote a
+  // newer copy of THIS owner's draft. Autosave stops silently overwriting
+  // it while true -- the Employer must explicitly Reload (take the other
+  // tab's version) or Keep Editing Here (resume autosaving their own).
+  externalUpdateDetected: boolean = false;
   private ownerScope: string | null = null;
   private autosaveTimerId: any = null;
   private generationRequestSeq = 0;
+  private storageListenerBound = false;
 
   private destroy$ = new Subject<void>();
 
@@ -103,6 +109,15 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     this.ownerScope = user && user._id;
+
+    // TAB 18: cross-tab conflict detection. `storage` events only fire in
+    // OTHER tabs/windows of the same origin, never the tab that made the
+    // write -- so any event for this exact key is, by construction, an
+    // external change, no extra bookkeeping needed to tell them apart.
+    if (this.ownerScope && isPlatformBrowser(this.platformId)) {
+      window.addEventListener('storage', this.onStorageEvent);
+      this.storageListenerBound = true;
+    }
 
     this.jobService.getIndustryList().pipe(takeUntil(this.destroy$)).subscribe({
       next: (res: any) => { this.industryOptions = (res && res.data) || res || []; },
@@ -143,11 +158,47 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.autosaveTimerId) clearTimeout(this.autosaveTimerId);
+    if (this.storageListenerBound) {
+      window.removeEventListener('storage', this.onStorageEvent);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   // --- AI Create draft persistence (autosave) -----------------------------
+
+  /** TAB 18: another tab/window wrote a newer copy of this owner's draft.
+   *  Bound as a class property (not a method) so the same reference can be
+   *  removed in ngOnDestroy(). Does not touch the current in-memory form --
+   *  only surfaces the warning banner; see reloadFromOtherTab()/
+   *  keepEditingHere() for the two explicit resolutions (no auto-merge). */
+  private onStorageEvent = (e: StorageEvent): void => {
+    if (!this.ownerScope) return;
+    if (e.key !== this.aiCreateDraft.getStorageKeyFor(this.ownerScope)) return;
+    this.externalUpdateDetected = true;
+  };
+
+  /** Take the other tab's version -- discards this tab's in-memory edits. */
+  reloadFromOtherTab(): void {
+    if (!this.ownerScope) return;
+    const draft = this.aiCreateDraft.load(this.ownerScope);
+    if (draft) {
+      this.generateInputs = { ...this.generateInputs, ...draft.input };
+      if (!this.generateInputs.industry) {
+        this.trySuggestIndustry();
+      }
+    }
+    this.externalUpdateDetected = false;
+    this.haptics.selection();
+  }
+
+  /** Keep working in THIS tab -- dismisses the warning; the next autosave
+   *  resumes writing normally (this tab's version will then overwrite the
+   *  other tab's, an explicit Employer choice, not a silent one). */
+  keepEditingHere(): void {
+    this.externalUpdateDetected = false;
+    this.haptics.selection();
+  }
 
   /** Debounced autosave -- called from (ngModelChange) on every Generate-step
    *  field. Short debounce, not a write on every keystroke synchronously. */
@@ -157,6 +208,10 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     this.autosaveTimerId = setTimeout(() => {
       // Don't persist a draft with no title at all -- nothing meaningful to resume.
       if (!this.generateInputs.jobTitle || !this.generateInputs.jobTitle.trim()) return;
+      // TAB 18: don't silently overwrite a newer external write while the
+      // conflict banner is showing -- the Employer must explicitly resolve
+      // it first (reject stale autosave writes where practical).
+      if (this.externalUpdateDetected) return;
       this.aiCreateDraft.save(this.generateInputs, this.ownerScope, 'easy-job-post-assistant-modal', 'editing');
     }, 800);
   }
