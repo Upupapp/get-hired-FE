@@ -4,7 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
 import { Router } from '@angular/router';
-import { AI_CREATE_DRAFT_STORAGE_KEY } from '@app-job/services/ai-create-draft.service';
+import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,8 @@ export class CoreService {
 
   constructor(
     private baseService: BaseService,
-    private router: Router
+    private router: Router,
+    private aiCreateDraft: AiCreateDraftService,
   ) { }
 
   checkEmailIfExist(email: string) {
@@ -64,16 +65,28 @@ export class CoreService {
 
     this.isLogin = false;
     this.roleAs = '';
-    // A real session-expiry logout (the global 401/403 interceptor calls
-    // this) must not destroy a pending AI Create draft -- see
-    // ai-create-draft.service.ts / easy-job-post-assistant-modal.component.ts.
-    // This key is preserved across the clear; every other key is wiped as before.
-    const preservedAiCreateDraft = localStorage.getItem(AI_CREATE_DRAFT_STORAGE_KEY);
+    // A real session-expiry/normal logout (the global 401/403 interceptor
+    // and the Employer sign-out confirmation both call this) must not
+    // destroy the signed-out user's pending AI Create draft -- see
+    // ai-create-draft.service.ts. Owner-isolated storage (TAB 06) means
+    // there's no single fixed key to preserve; resolve exactly THIS user's
+    // own key from the still-present `user` record before it's wiped, so
+    // only their draft survives -- never a stray key from someone else.
+    let preservedKey: string | null = null;
+    let preservedValue: string | null = null;
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      if (user && user._id) {
+        preservedKey = this.aiCreateDraft.getStorageKeyFor(user._id);
+        preservedValue = localStorage.getItem(preservedKey);
+      }
+    } catch (_) { /* no valid user record -- nothing to preserve */ }
+
     localStorage.setItem('state', 'false');
     localStorage.setItem('role', '');
     localStorage.clear();
-    if (preservedAiCreateDraft) {
-      localStorage.setItem(AI_CREATE_DRAFT_STORAGE_KEY, preservedAiCreateDraft);
+    if (preservedKey && preservedValue) {
+      localStorage.setItem(preservedKey, preservedValue);
     }
     return of({ success: true, role: '' });
   }

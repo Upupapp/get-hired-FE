@@ -20,7 +20,7 @@ import {
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 import { GoogleAuthService } from '@main/auth/services/google-auth.service';
 import { CoreService } from '@app-core/services/core.service';
-import { AiCreateDraftService, GUEST_OWNER_SCOPE } from '@app-job/services/ai-create-draft.service';
+import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 import { GenerateIntentInputs } from '@app-job/easy-job-post-assistant/easy-job-post-assistant.models';
 
 type PanelStep = 'input' | 'loading' | 'preview' | 'error';
@@ -215,33 +215,39 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     'Contract': 'Contractor',
   };
 
-  private saveDraftPayload(title: string): void {
+  private saveDraftPayload(title: string): string {
     const input: GenerateIntentInputs = {
       jobTitle: title,
       location: this.location.trim(),
       workSetup: this.workSetup === 'On-site' ? 'Onsite' : this.workSetup,
       employmentType: AiJobPreviewPanelComponent.EMPLOYMENT_TYPE_TO_AI_CREATE[this.employmentType] || this.employmentType,
     };
-    this.aiCreateDraft.save(input, this.resolveOwnerScopeForDraftSave(), 'public-employer-ai-preview-panel', 'pending-registration');
+    const ownerScope = this.resolveOwnerScopeForDraftSave();
+    this.aiCreateDraft.save(input, ownerScope, 'public-employer-ai-preview-panel', 'pending-registration');
+    return ownerScope;
   }
 
   /** STORAGE-SAFETY FIX: this panel is reachable while already authenticated
-   *  (see the role !== '2' branch above) -- it must never persist under the
-   *  shared GUEST_OWNER_SCOPE slot in that case, since the single-slot AI
-   *  Create draft store (ai-create-draft.service.ts) overwrites whatever it
-   *  currently holds. A signed-in non-Employer account writing 'guest' would
-   *  silently destroy a different, genuinely in-progress Employer draft on
-   *  the same browser. Only a real, unauthenticated visitor uses the shared
-   *  guest scope; any authenticated visitor uses their own stable uid, which
-   *  can only ever collide with a draft they themselves created. */
+   *  (see the role !== '2' branch above) -- it must never persist under a
+   *  guest scope in that case, since each owner scope now has its own
+   *  isolated key (ai-create-draft.service.ts, TAB 06) but a signed-in
+   *  non-Employer account writing under a guest journey it doesn't own
+   *  would still be meaningless (nothing will ever adopt it into that
+   *  account) and could collide with a real guest using this same browser.
+   *  Only a real, unauthenticated visitor gets a guest journey scope; any
+   *  authenticated visitor uses their own stable uid. */
   private resolveOwnerScopeForDraftSave(): string {
-    if (!this.coreService.isLoggedIn()) return GUEST_OWNER_SCOPE;
+    if (!this.coreService.isLoggedIn()) return this.aiCreateDraft.getOrCreateGuestOwnerScope();
     const user = JSON.parse(localStorage.getItem('user') || 'null');
-    return (user && user._id) ? user._id : GUEST_OWNER_SCOPE;
+    return (user && user._id) ? user._id : this.aiCreateDraft.getOrCreateGuestOwnerScope();
   }
 
   private saveDraftAndRedirectToRegister(title: string): void {
-    this.saveDraftPayload(title);
+    const ownerScope = this.saveDraftPayload(title);
+    // Bind this exact guest journey as the one eligible for adoption once
+    // registration completes (TAB 09) -- no-ops if ownerScope isn't a guest
+    // scope (e.g. an authenticated non-Employer landed here, see above).
+    this.aiCreateDraft.markResumeIntent(ownerScope);
     this.haptics.selection();
     this.closed.emit();
     this.router.navigate(['/signup'], { queryParams: { role: 2, intent: 'resume-job-draft' } });

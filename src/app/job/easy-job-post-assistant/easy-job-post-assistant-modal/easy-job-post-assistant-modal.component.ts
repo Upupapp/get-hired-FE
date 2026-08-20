@@ -85,6 +85,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   draftRestored: boolean = false;
   private ownerScope: string | null = null;
   private autosaveTimerId: any = null;
+  private generationRequestSeq = 0;
 
   private destroy$ = new Subject<void>();
 
@@ -196,9 +197,14 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   discardDraft(): void {
     if (!this.ownerScope) return;
     this.haptics.selection();
+    // Invalidate any Generate request still in flight -- see runGenerate() --
+    // so a late response can't repopulate the draft the user just discarded.
+    this.generationRequestSeq++;
+    this.loading = false;
     this.aiCreateDraft.clear(this.ownerScope);
     this.draftRestored = false;
     this.industrySuggested = false;
+    this.generatedDraft = null;
     this.generateInputs = { jobTitle: '', location: '', workSetup: '', employmentType: '', industry: '' };
   }
 
@@ -377,6 +383,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.errorMsg = null;
+    // DRAFT-SAFETY FIX: identifies this specific generation attempt so a late
+    // response can't mutate the editor/draft after the user has since
+    // discarded it (see discardDraft(), which bumps this to invalidate any
+    // request still in flight) -- takeUntil(destroy$) alone only covers the
+    // whole-component-destroyed case, not "discarded while still open."
+    const requestSeq = ++this.generationRequestSeq;
 
     this.assistantService.generateFromInputs({
       ...this.generateInputs,
@@ -384,6 +396,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.loading = false;
+        if (requestSeq !== this.generationRequestSeq) return; // stale -- draft discarded/replaced since this request started
         this.haptics.success();
         this.generatedDraft = res.draft;
         this.generatedJobRoleId = (res.suggestedJobRoleId !== undefined && res.suggestedJobRoleId !== null) ? res.suggestedJobRoleId : null;
@@ -401,6 +414,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         // AI generation failure: the draft (inputs already autosaved) is
         // left completely untouched -- no clear, no mutation.
         this.loading = false;
+        if (requestSeq !== this.generationRequestSeq) return; // stale -- draft discarded/replaced since this request started
         this.haptics.error();
         if (err && err.status === 401) {
           // Session expired — the auth interceptor already shows a sign-in toast.
