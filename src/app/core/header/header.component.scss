@@ -72,109 +72,131 @@
   cursor: pointer;
   padding: 0;
   outline: none;
-  transition: background 120ms ease, transform 100ms ease;
+  opacity: 1;
+  transform: scale(1);
+  transition: background 120ms ease, opacity 160ms ease, transform 160ms ease;
 
   &:hover { background: rgba(0, 0, 0, 0.05); }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.93); }
 
+  // "Vanishes" the instant the floating menu opens -- the panel itself
+  // morphs in from this same corner (matching transform-origin: top right)
+  // so the button reads as expanding into the panel, not as two separate
+  // elements toggling independently.
+  &--hidden {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+  }
+
   @media (max-width: 991px) {
     display: flex;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background 120ms ease;
+  }
 }
 
+// Plain static hamburger -- the button itself vanishes on open (see
+// .gh-nav-toggler--hidden) rather than morphing its own lines into an X;
+// the floating panel supplies its own explicit close button instead.
 .gh-menu-icon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-
-  .gh-menu-line {
-    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), opacity 120ms ease;
-    transform-origin: center;
-  }
-
-  &--open {
-    .gh-menu-line--top { transform: rotate(45deg) translate(4px, 6px); }
-    .gh-menu-line--mid { opacity: 0; transform: scaleX(0); }
-    .gh-menu-line--bot { transform: rotate(-45deg) translate(4px, -6px); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .gh-menu-line { transition: none; }
-  }
 }
 
-// ─── Mobile scrim ─────────────────────────────────────────────────────────────
+// ─── Floating menu: outside-tap catcher ──────────────────────────────────────
+// Transparent on purpose -- this is a small anchored panel, not a modal
+// drawer, so dimming the whole page would be the wrong weight. Still
+// dismisses on an outside tap like any dropdown/popover would.
 
-.gh-mobile-scrim {
+.gh-float-menu-catcher {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.48);
+  background: transparent;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 220ms ease;
 
   &--visible {
     opacity: 1;
     pointer-events: auto;
   }
-
-  @media (prefers-reduced-motion: reduce) { transition: none; }
 }
 
-// ─── Mobile drawer ────────────────────────────────────────────────────────────
-// Slides in from the left, same 280px width and motion as the portal
-// drawers. White surface (matches this nav's own light theme).
+// ─── Floating menu panel ──────────────────────────────────────────────────────
+// Anchored top-right with real breathing room from both edges (never flush
+// against the viewport corner). transform-origin: top right + a combined
+// scale/opacity/translate entrance makes it read as the hamburger button
+// itself morphing into the panel, since both share the exact same corner.
 
-.gh-mobile-drawer {
+.gh-float-menu {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 280px;
-  max-width: 85vw; // never overflow very small (320px) viewports
+  top: calc(68px + 12px); // nav bar height (68px) + margin from its edge
+  right: 16px;
   z-index: 1001;
+  width: 260px;
+  max-width: calc(100vw - 32px); // 16px margin on both sides, even at 320px
+  max-height: calc(100vh - 68px - 24px);
   background: #ffffff;
-  transform: translateX(-100%);
-  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.16);
 
-  &--open { transform: translateX(0); }
+  transform-origin: top right;
+  transform: scale(0.4) translate(8px, -8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 180ms ease;
+
+  &--open {
+    transform: scale(1) translate(0, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   @media (min-width: 992px) { display: none !important; }
-  @media (prefers-reduced-motion: reduce) { transition: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: opacity 160ms ease;
+    transform: none;
+  }
 }
 
-.gh-drawer-header {
+.gh-float-menu-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  min-height: 64px;
+  padding: 10px 8px 10px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   flex-shrink: 0;
 }
 
-.gh-drawer-logo {
-  height: 30px;
-  width: auto;
-  object-fit: contain;
+.gh-float-menu-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.gh-drawer-close-btn {
+.gh-float-menu-close {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -188,21 +210,20 @@
   &:active { transform: scale(0.9); }
 }
 
-.gh-drawer-nav {
+.gh-float-menu-list {
   list-style: none;
-  padding: 12px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 8px;
   margin: 0;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
-.gh-drawer-nav-item {
+.gh-float-menu-item {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 48px;
+  min-height: 46px;
   padding: 0 12px;
   border-radius: 10px;
   background: transparent;
@@ -216,45 +237,45 @@
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: -2px; }
 }
 
-.gh-drawer-nav-label {
+.gh-float-menu-label {
   font-family: 'Manrope', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #1a1a2e;
 }
 
-.gh-drawer-nav-item--primary {
+.gh-float-menu-item--primary {
   background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-  margin-top: 8px;
+  margin-top: 4px;
 
-  .gh-drawer-nav-label { color: #ffffff; }
+  .gh-float-menu-label { color: #ffffff; }
   &:hover { opacity: 0.9; background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%); }
 }
 
-.gh-drawer-nav-item--danger {
-  .gh-drawer-nav-label { color: #dc2626; }
+.gh-float-menu-item--danger {
+  .gh-float-menu-label { color: #dc2626; }
   &:hover { background: rgba(220, 38, 38, 0.06); }
 }
 
-.gh-drawer-nav-lang {
-  padding: 4px 12px;
+.gh-float-menu-lang {
+  padding: 4px 8px;
 }
 
-// ─── Drawer account block (flattened avatar menu — no nested dropdown) ───────
+// ─── Floating menu account block (flattened avatar menu) ────────────────────
 
-.gh-drawer-account {
-  padding: 4px 0 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  margin-bottom: 8px;
+.gh-float-menu-account {
+  padding: 2px 0 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 6px;
 }
 
-.gh-drawer-account-btn {
+.gh-float-menu-account-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  min-height: 56px;
-  padding: 8px 12px;
+  min-height: 52px;
+  padding: 6px 10px;
   background: transparent;
   border: none;
   border-radius: 10px;
@@ -266,10 +287,10 @@
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: -2px; }
 }
 
-.gh-drawer-account-avatar {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
+.gh-float-menu-account-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
   border-radius: 50%;
   object-fit: cover;
   display: flex;
@@ -278,19 +299,19 @@
   background: $color-global-navy;
   color: #fff;
   font-family: 'Manrope', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
 }
 
-.gh-drawer-account-info {
+.gh-float-menu-account-info {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.gh-drawer-account-name {
+.gh-float-menu-account-name {
   font-family: 'Manrope', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: #1a1a2e;
   white-space: nowrap;
@@ -298,9 +319,9 @@
   text-overflow: ellipsis;
 }
 
-.gh-drawer-account-company {
+.gh-float-menu-account-company {
   font-family: 'Manrope', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   color: #888;
   white-space: nowrap;
   overflow: hidden;
@@ -505,5 +526,4 @@
 }
 
 // Old .navbar-collapse mobile-collapse block removed -- superseded by the
-// gh-mobile-drawer/gh-mobile-scrim pattern above; that markup no longer
-// exists in the template.
+// gh-float-menu pattern above; that markup no longer exists in the template.

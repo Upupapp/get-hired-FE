@@ -8,24 +8,26 @@
            alt="GetHired Online">
     </a>
 
-    <!-- Mobile hamburger / X — opens the slide-in drawer below. Same
-         animated-icon pattern used by the Employer/Applicant/Admin portal
-         drawers, so the mobile nav experience is consistent site-wide. -->
+    <!-- Mobile hamburger — vanishes the moment it's clicked; the floating
+         menu panel below morphs in from this exact corner (shared
+         transform-origin: top right), so it reads as the button itself
+         expanding into the panel rather than two unrelated elements. -->
     <button
       #mobileMenuBtn
       class="gh-nav-toggler"
+      [class.gh-nav-toggler--hidden]="mobileNavOpen"
       type="button"
       (click)="openMobileNav()"
       [attr.aria-expanded]="mobileNavOpen"
-      [attr.aria-label]="mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'"
-      aria-controls="ghMobileNavDrawer">
-      <svg class="gh-menu-icon" [class.gh-menu-icon--open]="mobileNavOpen"
-           viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      aria-label="Open navigation menu"
+      [attr.tabindex]="mobileNavOpen ? -1 : 0"
+      aria-controls="ghMobileFloatMenu">
+      <svg class="gh-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
            aria-hidden="true" focusable="false">
-        <line class="gh-menu-line gh-menu-line--top" x1="3" y1="6" x2="21" y2="6"/>
-        <line class="gh-menu-line gh-menu-line--mid" x1="3" y1="12" x2="21" y2="12"/>
-        <line class="gh-menu-line gh-menu-line--bot" x1="3" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
 
@@ -88,93 +90,93 @@
   </div>
 </nav>
 
-<!-- Mobile scrim — dismisses drawer on tap -->
-<div class="gh-mobile-scrim"
-     [class.gh-mobile-scrim--visible]="mobileNavOpen"
+<!-- Invisible click-outside catcher — transparent (this is a floating
+     panel, not a modal drawer, so no dark scrim), just enough to dismiss
+     on an outside tap. -->
+<div class="gh-float-menu-catcher"
+     [class.gh-float-menu-catcher--visible]="mobileNavOpen"
      (click)="closeMobileNav()"
      aria-hidden="true">
 </div>
 
-<!-- Mobile drawer — same slide-in-from-left pattern as the Employer/
-     Applicant/Admin portal drawers, for a consistent mobile nav across
-     the whole site (public pages included). -->
-<nav id="ghMobileNavDrawer"
-     class="gh-mobile-drawer"
-     [class.gh-mobile-drawer--open]="mobileNavOpen"
+<!-- Floating menu panel — anchored top-right with breathing room from both
+     edges, morphs in from the hamburger button's own corner (shared
+     transform-origin). Has its own explicit close (X); Escape and an
+     outside tap also dismiss it. -->
+<nav id="ghMobileFloatMenu"
+     class="gh-float-menu"
+     [class.gh-float-menu--open]="mobileNavOpen"
      role="navigation"
      aria-label="Main navigation"
      cdkTrapFocus
      [cdkTrapFocusAutoCapture]="mobileNavOpen">
 
-  <div class="gh-drawer-header">
-    <img src="assets/brand/Gethired-horizontal-logo.png?v=3"
-         class="gh-drawer-logo"
-         alt="GetHired"
-         aria-hidden="true">
-    <button class="gh-drawer-close-btn"
+  <div class="gh-float-menu-header">
+    <span class="gh-float-menu-title">Menu</span>
+    <button #firstDrawerLink class="gh-float-menu-close"
             type="button"
             aria-label="Close navigation menu"
             (click)="closeMobileNav()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-           width="20" height="20" aria-hidden="true" focusable="false">
+           width="18" height="18" aria-hidden="true" focusable="false">
         <line x1="18" y1="6" x2="6" y2="18"/>
         <line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
     </button>
   </div>
 
-  <ul class="gh-drawer-nav" role="list">
+  <ul class="gh-float-menu-list" role="list">
 
     <li role="listitem" *ngIf="isPublic">
-      <a #firstDrawerLink routerLink="/jobs" class="gh-drawer-nav-item" (click)="closeMobileNav()">
-        <span class="gh-drawer-nav-label">Browse jobs</span>
+      <a routerLink="/jobs" class="gh-float-menu-item" (click)="closeMobileNav()">
+        <span class="gh-float-menu-label">Browse jobs</span>
       </a>
     </li>
 
     <li role="listitem" *ngIf="!isPublic">
-      <button #firstDrawerLink type="button" class="gh-drawer-nav-item gh-drawer-nav-item--btn"
+      <button type="button" class="gh-float-menu-item gh-float-menu-item--btn"
         (click)="navigateToJobs(); closeMobileNav()">
-        <span class="gh-drawer-nav-label">Jobs</span>
+        <span class="gh-float-menu-label">Jobs</span>
       </button>
     </li>
 
     <li role="listitem" *ngIf="isPublic && !isUserLoggedIn">
-      <a routerLink="/employers" class="gh-drawer-nav-item" (click)="closeMobileNav()">
-        <span class="gh-drawer-nav-label">Start hiring</span>
+      <a routerLink="/employers" class="gh-float-menu-item" (click)="closeMobileNav()">
+        <span class="gh-float-menu-label">Start hiring</span>
       </a>
     </li>
 
-    <li role="listitem" class="gh-drawer-nav-lang" *ngIf="!isPublic">
+    <li role="listitem" class="gh-float-menu-lang" *ngIf="!isPublic">
       <app-language-selection title="Language"></app-language-selection>
     </li>
 
     <!-- Logged out: Sign In -->
     <li role="listitem" *ngIf="!isUserLoggedIn">
-      <button type="button" class="gh-drawer-nav-item gh-drawer-nav-item--btn gh-drawer-nav-item--primary"
+      <button type="button" class="gh-float-menu-item gh-float-menu-item--btn gh-float-menu-item--primary"
         (click)="redirectToRegister(); closeMobileNav()" aria-label="Sign in to your account">
-        <span class="gh-drawer-nav-label">Sign In</span>
+        <span class="gh-float-menu-label">Sign In</span>
       </button>
     </li>
 
-    <!-- Logged in: account section, flattened (no nested dropdown on mobile) -->
+    <!-- Logged in: account section, flattened (no nested dropdown) -->
     <ng-container *ngIf="isUserLoggedIn && user">
-      <li role="listitem" class="gh-drawer-account">
-        <button type="button" class="gh-drawer-account-btn" (click)="goToDashboard(); closeMobileNav()">
-          <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-drawer-account-avatar" alt="">
-          <span *ngIf="!user.photoUrl" class="gh-drawer-account-avatar gh-drawer-account-initials" aria-hidden="true">
+      <li role="listitem" class="gh-float-menu-account">
+        <button type="button" class="gh-float-menu-account-btn" (click)="goToDashboard(); closeMobileNav()">
+          <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-float-menu-account-avatar" alt="">
+          <span *ngIf="!user.photoUrl" class="gh-float-menu-account-avatar gh-float-menu-account-initials" aria-hidden="true">
             {{ initials }}
           </span>
-          <span class="gh-drawer-account-info">
-            <span class="gh-drawer-account-name">{{ user.firstName + ' ' + user.lastName }}</span>
-            <span class="gh-drawer-account-company" *ngIf="user.companyName">{{ user.companyName }}</span>
+          <span class="gh-float-menu-account-info">
+            <span class="gh-float-menu-account-name">{{ user.firstName + ' ' + user.lastName }}</span>
+            <span class="gh-float-menu-account-company" *ngIf="user.companyName">{{ user.companyName }}</span>
           </span>
         </button>
       </li>
       <li role="listitem">
-        <button type="button" class="gh-drawer-nav-item gh-drawer-nav-item--btn gh-drawer-nav-item--danger"
+        <button type="button" class="gh-float-menu-item gh-float-menu-item--btn gh-float-menu-item--danger"
           (click)="logout(); closeMobileNav()">
-          <span class="gh-drawer-nav-label">Log out</span>
+          <span class="gh-float-menu-label">Log out</span>
         </button>
       </li>
     </ng-container>
