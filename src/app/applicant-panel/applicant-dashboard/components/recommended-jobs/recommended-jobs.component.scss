@@ -43,18 +43,16 @@
 .recommended-jobs-list {
   // Grid instead of a single stacked column -- reads as a formal, organized
   // arrangement rather than a plain list. auto-fill/minmax means it lays
-  // out however many columns actually fit (2 within the 500px container
-  // below; more if a future layout widens this component), and folds back
-  // to a single column on its own once a column would drop under 220px --
-  // no separate mobile override needed.
+  // out however many columns actually fit for whatever width this
+  // component ends up at, and folds back to a single column on its own
+  // once a column would drop under 220px -- no separate mobile override
+  // needed. Fixed 500px width removed per feedback -- now fills the full
+  // width of its parent (.recommended-jobs), which already has its own
+  // margins keeping it clear of the page edges.
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--gh-space-4, 16px);
   align-items: start;
-  // Fixed 500px width, centered -- min() so it still shrinks to fit rather
-  // than overflowing/forcing horizontal scroll on narrower viewports.
-  width: min(500px, 100%);
-  margin: 0 auto;
 }
 
 .recommended-job-item {
