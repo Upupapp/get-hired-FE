@@ -266,15 +266,11 @@
     }
   }
 
-	// JOB-DETAIL-DEEP-REFINEMENT: was a generic stock placeholder photo
-	// (job-post-banner.png) behind every job with no employer-uploaded
-	// banner -- reads as a generic job board, not an enterprise product,
-	// and has nothing to do with the specific job/company being viewed.
-	// Replaced with the same brand navy gradient token used for the
-	// Employer Portal's own dark surfaces (--gh-grad-navy) -- a
-	// content-neutral, on-brand identity treatment instead of a random photo.
 	.bg-banner{
-		background: var(--gh-grad-navy, linear-gradient(135deg, #0D1024 0%, #211A3D 55%, #311A35 100%));
+		background: url(~/src/assets/images/placeholder/job-post-banner.png);
+		background-repeat: no-repeat;
+		background-position: 5% 10%;
+		background-size: cover;
 		border-radius: 0px;
 		position: relative;
 		height: 260px;
@@ -328,10 +324,14 @@
 
 
 .card{
-	background: var(--gh-white, #FFFFFF);
-	border: 1px solid var(--gh-border, #E7EAF3);
-	box-shadow: var(--gh-shadow-card, 0 2px 12px rgba(16, 24, 40, 0.06));
-	border-radius: var(--gh-radius-card, 18px);
+	background: #FFFFFF;
+	border: 1px solid rgba(231, 231, 231, 0.65);
+	/* shawos */
+
+	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
+	border-radius: 10px;
+	// Padding kept at the cleaner, more even value (was 30px 10px 20px 30px)
+	// -- an explicit text-placement/spacing improvement, kept per request.
 	padding: 24px 24px 20px;
   margin-left: 20px;
 }
@@ -403,41 +403,46 @@
 }
 
 .btn-apply-now{
-	background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
-	border-radius: var(--gh-btn-radius, 10px);
+	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+	border-radius: 5px;
 	color: white;
 	padding: 9px;
 }
 
-// JOB-DETAIL-DEEP-REFINEMENT: replaces the old badge-card/badge-0..5 system
-// (6 unrelated pastel colors cycling by array index, no semantic meaning) --
-// these are employer-selected highlight badges (e.g. "Urgent hiring"), not
-// status or skill data, so one restrained, on-brand chip style for all of
-// them reads as intentional rather than decorative/random.
-.gh-highlight-row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--gh-space-2, 8px);
-	margin-bottom: var(--gh-space-4, 16px);
+.badge-card{
+	width: 100%;;
+	border-radius: 5px;
+	padding: 10px 20px 7px 15px;
 }
 
-.gh-highlight-chip {
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	background: var(--gh-azure-soft, #EAF4FF);
-	border: 1px solid var(--gh-border, #E7EAF3);
-	border-radius: var(--gh-badge-radius, 999px);
-	padding: 6px 12px;
-	font-size: 12px;
-	font-weight: 600;
-	color: var(--gh-azure, #168BFF);
+.badge-0{
+	@extend .badge-card;
+	background: #E1E7FF;
 }
 
-.gh-highlight-icon {
-	height: 15px;
-	width: 15px;
-	object-fit: contain;
+.badge-1{
+	@extend .badge-card;
+	background: #CCFBF1;
+}
+
+.badge-2{
+	@extend .badge-card;
+	background: #FFF1CC;
+}
+
+.badge-3{
+	@extend .badge-card;
+	background: #FFCCE4;
+}
+
+.badge-4{
+	@extend .badge-card;
+	background: #E6F7D9;
+}
+
+.badge-5{
+	@extend .badge-card;
+	background: #EBE6FE;
 }
 
 .tags{
@@ -464,75 +469,207 @@
 	}
 }
 
-// JOB-DETAIL-DEEP-REFINEMENT: replaces the legacy #interview-list block
-// (oversized 100px pastel logo-swap-on-hover thumbnails, coral outline
-// buttons unrelated to any control actually in this template) with a plain
-// numbered list matching this page's own section pattern (.gh-section-title,
-// gh-timeline, etc.) -- consistent surface/radius/spacing, no decoration.
-.gh-interview-section {
-	.gh-section-title { margin-bottom: 2px; }
+.title-job-interview{
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 600;
+	font-size: 20px;
+	line-height: 34px;
+	/* identical to box height, or 170% */
+
+	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+
+	color: #222222;
 }
 
-.gh-interview-subtitle {
-	font-size: 13px;
-	color: var(--gh-text-secondary, #667085);
-	margin: 0 0 var(--gh-space-4, 16px);
-}
+#interview-list{
 
-.gh-interview-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-direction: column;
-	gap: var(--gh-space-3, 12px);
-}
 
-.gh-interview-item {
-	display: flex;
-	align-items: flex-start;
-	gap: var(--gh-space-3, 12px);
-	padding: var(--gh-space-3, 12px) var(--gh-space-4, 16px);
-	border: 1px solid var(--gh-border, #E7EAF3);
-	border-radius: var(--gh-radius-sm, 8px);
-	transition: border-color 0.15s;
+	.bg-interview{
+		background: #DADADA;
+		border-radius: 11px;
+		padding-top: 40px;
+		padding-left: 35px;
+		padding-right: 35px;
+		height: 110px;
 
-	&:hover { border-color: var(--gh-azure, #168BFF); }
-}
+		img{
+			width: 40px;
+		}
+	}
 
-.gh-interview-number {
-	flex-shrink: 0;
-	width: 26px;
-	height: 26px;
-	border-radius: 50%;
-	background: var(--gh-azure-soft, #EAF4FF);
-	color: var(--gh-azure, #168BFF);
-	font-size: 12px;
-	font-weight: 700;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
 
-.gh-interview-content {
-	flex: 1;
-	min-width: 0;
-}
 
-.gh-interview-question {
-	font-size: 14px;
-	font-weight: 500;
-	color: var(--gh-text, #101828);
-	margin: 0 0 4px;
-	line-height: 1.5;
-}
+	.title-question-number{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 15px;
+		/* or 94% */
+		margin-bottom: 10px;
 
-.gh-interview-duration {
-	display: inline-flex;
-	align-items: center;
-	gap: 4px;
-	font-size: 12px;
-	color: var(--gh-text-muted, #98A2B3);
+		color: #808080;
+	}
+
+	.title-question-title{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 18px;
+		line-height: 18px;
+		/* or 100% */
+
+
+		color: #4D4D4D;
+	}
+
+	.btn-take-interview{
+		background: #FFFFFF;
+		border: 1px solid $color-global-red;
+		border-radius: 100px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 21px;
+		/* identical to box height */
+
+		display: flex;
+		align-items: center;
+		text-align: center;
+
+		color: $color-global-red;
+
+		&:hover{
+			background: $color-global-red;
+			color: white;
+		}
+	}
+
+	border: 1px solid #ffffff;
+
+	&:hover{
+		background: #FFFFFF;
+		border: 1px solid $color-global-red-buttons;
+		border-radius: 12px;
+		transition: all 0.3s ease !important;
+		cursor: pointer;
+
+		.logo-thumbnail{
+			display: none !important;
+		}
+
+		.logo-thumbnail-2{
+			transition: all 0.3s ease !important;
+			display: flex !important;
+			background: #FFF6F5;
+			border-radius: 14px;
+			height: 100px;
+			width: 100px;
+			min-width: 100px;
+
+			img{
+				width: auto;
+				height: 34px;
+				transition: all 0.8s !important;
+			}
+		}
+	}
+
+	.btn-create-interview{
+		background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+		border-radius: 10px;
+		color: white;
+		border-radius: 6px;
+		padding: 10px 20px;
+		margin-left: 10px;
+		min-width: 150px;
+		font-size: 16px;
+	}
+
+	.logo-thumbnail-2{
+		display: none !important;
+	}
+
+	.logo-thumbnail{
+		background: #F3F3F3;
+		border-radius: 14px;
+		height: 100px;
+		width: 100px;
+		min-width: 100px;
+
+		img{
+			width: auto;
+			height: 34px;
+			transition: all 0.8s !important;
+		}
+	}
+
+	.btn-record{
+		background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+		box-shadow: 0px 62.9787px 50.383px rgba(255, 112, 98, 0.1), 0px 40.8195px 29.5067px rgba(255, 112, 98, 0.0759259), 0px 24.2585px 16.0479px rgba(255, 112, 98, 0.0607407), 0px 12.5957px 8.18723px rgba(255, 112, 98, 0.05), 0px 5.1316px 4.10528px rgba(255, 112, 98, 0.0392593), 0px 1.16627px 1.98266px rgba(255, 112, 98, 0.0240741);
+		border-radius: 566.808px;
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 10px;
+
+		color: #FFFFFF;
+		padding: 15px 20px
+	}
+
+	.btn-upload{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 12px;
+		line-height: 17px;
+		/* identical to box height */
+		border-radius: 566.808px;
+
+		color: #959595;
+		padding: 10px 25px
+	}
+
+	.title-label{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 17px;
+		line-height: 20px;
+		color: #4D4D4D;
+		margin-bottom: 7px;
+	}
+
+	.title-label-sub{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 16px;
+		line-height: 16px;
+		color: #9C9C9C;
+		margin-bottom: 4px;
+	}
+
+	.title-label-sub-duration{
+		font-family: 'Manrope';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 13px;
+		/* identical to box height */
+
+		//letter-spacing: 0.2px;
+
+		color: #9C9C9C;
+
+		span{
+			font-weight: 600 !important;
+			color: #9C9C9C;
+		}
+	}
 }
 
 .btn-view-more{
@@ -629,7 +766,7 @@
 
 .gh-snapshot-icon {
   font-size: 18px;
-  color: var(--gh-azure, #168BFF);
+  color: #6366f1;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -715,14 +852,14 @@
   padding: 6px 0 0;
   font-size: 13px;
   font-weight: 600;
-  color: var(--gh-azure, #168BFF);
+  color: #6366f1;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
 
   &:hover { text-decoration: underline; }
-  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); border-radius: 2px; }
+  &:focus-visible { outline: 2px solid #6366f1; border-radius: 2px; }
 }
 
 .gh-bullet-list {
@@ -836,6 +973,9 @@
 
 .gh-apply-req-icon {
   font-size: 20px;
+  // Kept on the brand azure accent (not reverted to indigo like the rest of
+  // this page) -- explicit employer preference for the "How to apply"
+  // section's current look.
   color: var(--gh-azure, #168BFF);
   flex-shrink: 0;
   margin-top: 1px;
@@ -888,7 +1028,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--gh-azure, #168BFF);
+  background: #6366f1;
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -958,7 +1098,7 @@
   transition: border-color 0.15s, color 0.15s;
 
   &:hover { border-color: var(--gh-text-muted, #98A2B3); color: var(--gh-text-secondary, #667085); }
-  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); border-radius: 6px; }
+  &:focus-visible { outline: 2px solid #6366f1; border-radius: 6px; }
 }
 
 // ─── V6: Sticky apply panel (desktop rail) ───────────────────────────────────
@@ -976,11 +1116,11 @@
 }
 
 .gh-apply-card {
-  background: var(--gh-white, #FFFFFF);
-  border: 1px solid var(--gh-border, #E7EAF3);
-  box-shadow: var(--gh-shadow-card, 0 2px 12px rgba(16, 24, 40, 0.06));
-  border-radius: var(--gh-radius-card, 18px);
-  padding: var(--gh-card-padding, 20px);
+  background: #fff;
+  border: 1px solid rgba(231,231,231,0.65);
+  box-shadow: 0 10px 19px rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 20px;
 }
 
 .gh-apply-card__company {
@@ -1004,9 +1144,9 @@
     justify-content: center;
     font-weight: 700;
     font-size: 18px;
-    color: var(--gh-azure, #168BFF);
-    background: var(--gh-azure-soft, #EAF4FF);
-    border: 1px solid var(--gh-azure-soft, #EAF4FF);
+    color: #6366f1;
+    background: #eef2ff;
+    border: 1px solid #eef2ff;
   }
 }
 
@@ -1040,7 +1180,7 @@
   margin: 6px 0 0;
 
   a {
-    color: var(--gh-azure, #168BFF);
+    color: #6366f1;
     text-decoration: none;
     &:hover { text-decoration: underline; }
   }
@@ -1075,14 +1215,14 @@
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 
   &:hover {
-    border-color: var(--gh-azure, #168BFF);
-    color: var(--gh-azure, #168BFF);
+    border-color: #6366f1;
+    color: #6366f1;
   }
 
   &--active {
-    border-color: var(--gh-azure, #168BFF);
-    background: var(--gh-azure-soft, #EAF4FF);
-    color: var(--gh-azure, #168BFF);
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #6366f1;
   }
 
   &:disabled {
@@ -1090,7 +1230,7 @@
     cursor: not-allowed;
   }
 
-  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); border-radius: 8px; }
+  &:focus-visible { outline: 2px solid #6366f1; border-radius: 8px; }
 }
 
 // ─── V6: Mobile sticky bottom bar ────────────────────────────────────────────
@@ -1169,12 +1309,12 @@
   transition: border-color 0.15s, color 0.15s;
 
   &--active {
-    border-color: var(--gh-azure, #168BFF);
-    color: var(--gh-azure, #168BFF);
+    border-color: #6366f1;
+    color: #6366f1;
   }
 
   &:disabled { opacity: 0.6; cursor: not-allowed; }
-  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); }
+  &:focus-visible { outline: 2px solid #6366f1; }
 }
 
 .gh-applied-mobile-chip {
