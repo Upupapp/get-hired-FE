@@ -38,6 +38,20 @@
   transform: translateY(1.25rem);
 }
 
+.gh-alert-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #ff7062;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid #ff7062; outline-offset: 2px; }
+}
+
 // DESIGN OVERHAUL PORT (2026-08-19): ported from gethired-jobseeker-FE --
 // empty-state CTA converted to --gh-* tokens (gradient coral CTA, matching
 // the topbar/readiness-panel buttons) instead of the old Bootstrap

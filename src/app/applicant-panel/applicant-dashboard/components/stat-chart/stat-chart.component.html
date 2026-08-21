@@ -2,20 +2,19 @@
 	<div class="card card-body">
 		<div class="row">
 			<div class=" col-12 col-lg-8 px-4">
-				<h5 class="title-main mt-4 mb-3">
-					{{ 'APPLICANT_DASHBOARD.TITLE_GRAPH' | translate }}
-
-					<div class="float-end mt-3">
-						<div class="d-flex">
-							<h5 class="chart-label d-flex me-3">
-								<div class="chart-symbol-green"></div>  {{ 'APPLICANT_DASHBOARD.GRAPH_CONTENT' | translate }}
-							</h5>
-							<h5 class="chart-label d-flex">
-								<div class="chart-symbol-red"></div> {{ 'APPLICANT_DASHBOARD.GRAPH_CONTENT2' | translate }}
-							</h5>
-						</div>
+				<div class="gh-chart-header mt-4 mb-3">
+					<h3 class="title-main">{{ 'APPLICANT_DASHBOARD.TITLE_GRAPH' | translate }}</h3>
+					<div class="gh-chart-legend">
+						<span class="chart-label">
+							<span class="chart-symbol-green" aria-hidden="true"></span>
+							{{ 'APPLICANT_DASHBOARD.GRAPH_CONTENT' | translate }}
+						</span>
+						<span class="chart-label">
+							<span class="chart-symbol-red" aria-hidden="true"></span>
+							{{ 'APPLICANT_DASHBOARD.GRAPH_CONTENT2' | translate }}
+						</span>
 					</div>
-				</h5>
+				</div>
 
 				<div class="chart-container">
 					<canvas

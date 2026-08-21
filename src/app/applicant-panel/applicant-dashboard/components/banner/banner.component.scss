@@ -1,204 +1,192 @@
 @import "src/assets/styles/colors";
 
-.card-application-hired{
-	border-radius: 15px;
-	padding: 18px 22px 5px 25px !important;
-	cursor: pointer;
-	//height: 110px;
-	//box-shadow: 0px 7px 17px rgba(0, 0, 0, 0.06);
-	border-radius: 15px;
+// JOBSEEKER-DASHBOARD-REFINEMENT: replaces the old stock-photo hero (a
+// coral-flooded background image unrelated to this specific applicant) and
+// the 3 candy-colored (orange/yellow/photo-blue) stat cards with a clean,
+// consistent enterprise treatment -- brand navy hero, neutral stat cards
+// with a single colored icon accent each, LABEL/value hierarchy instead of
+// icon+text run-on sentences.
 
-	background: url(~/src/assets/images/placeholder/total-hired.png);
-	background-repeat: no-repeat;
-	//background-attachment: fixed;
-	background-position: right;
-	background-size: 80%;
-	background-color: #0C5ED8;//linear-gradient(121.09deg, #0C5ED8 31.19%, #0C5ED8 95.32%);
+.gh-ap-hero {
+  background: linear-gradient(135deg, #0D1024 0%, #211A3D 55%, #311A35 100%);
+  border-radius: 18px;
+  padding: 28px 28px 32px;
+  margin: 0 0 -40px; // intentional overlap with the stat row below, done
+                      // via a normal negative margin on THIS element only
+                      // (not a hardcoded pixel offset on a sibling), so the
+                      // two stay visually connected without a magic number
+                      // that breaks if either section's height changes.
 }
 
-.banner-image {
-  border-radius: 0 !important;
-  object-position: right;
-  height: 270px;
-  width: auto;
-  object-fit: cover;
-}
-
-.bg-banner {
-  background: url(~/src/assets/images/placeholder/company-panel-dashboard.png);
-  background-repeat: no-repeat;
-  //background-attachment: fixed;
-  background-position: right;
-  background-size: cover;
-  background-color: linear-gradient(
-    96.52deg,
-    #f85b4b -3.5%,
-    #f85b4b 44.54%,
-    #f85b4b 128.45%
-  ) !important;
-  border-radius: 0px;
-  position: right;
-  height: 260px;
-
-  @media (max-width: 1099px) {
-    height: 400px !important;
-  }
-}
-
-.title-banner {
-  font-family: "Manrope";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 26px;
-  line-height: 26px;
-  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
-
-  color: #ffffff;
-}
-
-.title-banner-description {
-  font-family: "Manrope";
-  font-style: normal;
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 21px;
-  /* identical to box height, or 150% */
-
-  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
-
-  color: #ffeeec;
-  margin-bottom: 0;
-}
-
-.company-logo {
-  &-image {
-    width: 100px;
-    height: 100px;
-    object-position: center;
-    object-fit: cover;
-    border-radius: 50%;
-    cursor: pointer;
-    border: solid 3px #f8f8f8;
-
-
-    &:hover {
-      border: solid 3px #f8f8f8;
-      transition: all 0.2s !important;
-      transform: scale(1.1);
-    }
-  }
-}
-
-.green {
-  background: #09c986;
-
-  transition: all 0.4s ease !important;
-
-  &:hover {
-    background: white;
-    border: solid 2px #09c986;
-    padding: 18px 12px 8px 15px;
-    transition: all 0.2s ease !important;
-
-    .title-card {
-      color: #09c986;
-    }
-
-    .title-stat {
-      color: #09c986;
-    }
-  }
-}
-
-.orange {
-  background: #fe742b;
-
-  &:hover {
-    background: white;
-    border: solid 2px #fe742b;
-    padding: 18px 12px 8px 15px;
-    transition: all 0.2s ease !important;
-
-    .title-card {
-      color: #fe742b;
-    }
-
-    .title-stat {
-      color: #fe742b;
-    }
-  }
-}
-
-.yellow {
-  background: #efa20d;
-
-  &:hover {
-    background: white;
-    border: solid 2px #efa20d;
-    padding: 18px 12px 8px 15px;
-    transition: all 0.2s ease !important;
-
-    .title-card {
-      color: #efa20d;
-    }
-
-    .title-stat {
-      color: #efa20d;
-    }
-  }
-}
-
-.card-application {
-  border-radius: 15px;
-  padding: 18px 12px 5px 15px;
-  cursor: pointer;
-  height: 110px;
-}
-
-.card-application-interview {
-  border-radius: 15px;
-  padding: 20px 12px 10px 15px;
-  cursor: pointer;
-  height: 110px;
-  @media (min-width: 990px) {
-    height: 125px !important;
-    padding-top: 12px !important;
-
-    .card-img {
-      margin-top: 3px !important;
-    }
-  }
-}
-
-.title-card {
-  font-family: "Manrope";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15.5px;
-  line-height: 21px;
-  /* identical to box height, or 131% */
-  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
-
-  color: #ffffff;
-  position: relative;
-
-  .card-img {
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-}
-
-.title-stat {
-  font-family: "Manrope";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 35px;
-  line-height: 36px;
-  /* or 166% */
-  margin-top: 20px;
+.gh-ap-hero-inner {
   display: flex;
-  font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
 
+.gh-ap-hero-avatar {
+  flex-shrink: 0;
+}
+
+.gh-ap-hero-avatar-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.gh-ap-hero-identity {
+  min-width: 0;
+}
+
+.gh-ap-hero-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
   color: #ffffff;
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gh-ap-hero-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(255, 255, 255, 0.22); }
+  &:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+}
+
+.gh-ap-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+.gh-ap-hero-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+
+  i { font-size: 13px; }
+}
+
+// ─── Stat row ─────────────────────────────────────────────────────────────────
+
+.gh-ap-stats-row {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 0 8px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gh-ap-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+  padding: 18px 20px;
+  min-height: 88px;
+}
+
+.gh-ap-stat-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+
+  &--azure { background: #EAF4FF; color: #168BFF; }
+  &--warning { background: #FEF3C7; color: #B45309; }
+  &--success { background: #DCFCE7; color: #15803D; }
+}
+
+.gh-ap-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gh-ap-stat-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #667085;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-ap-stat-value {
+  font-family: 'Manrope', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #101828;
+  line-height: 1.2;
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+  .gh-ap-hero {
+    padding: 22px 18px 60px; // extra bottom room so the stacked stat cards
+                             // (now full-width) never crowd the hero text
+    margin-bottom: -44px;
+  }
+
+  .gh-ap-hero-inner {
+    gap: 14px;
+  }
+
+  .gh-ap-hero-avatar-img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .gh-ap-hero-name {
+    font-size: 19px;
+  }
+
+  .gh-ap-stats-row {
+    padding: 0 4px;
+  }
+
+  .gh-ap-stat-card {
+    padding: 14px 16px;
+  }
+
+  .gh-ap-stat-value {
+    font-size: 22px;
+  }
 }

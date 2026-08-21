@@ -11,46 +11,63 @@
 	border-radius: 15px;
 }
 
+// JOBSEEKER-DASHBOARD-REFINEMENT: the legend used to live INSIDE the <h5>
+// title itself (a float-end div nested in a heading) -- invalid semantics
+// and fragile on narrower widths. Now a proper flex header row that wraps
+// cleanly instead of the title text colliding with a floated legend.
+.gh-chart-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px 16px;
+}
+
+.gh-chart-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+}
+
 .title-main{
 	font-family: 'Manrope';
 	font-style: normal;
-	font-weight: 500;
-	font-size: 20px;
-	line-height: 30px;
-	/* identical to box height */
-
-
+	font-weight: 700;
+	font-size: 18px;
+	line-height: 26px;
+	margin: 0;
 	color: #121212;
 }
 
 .chart-label{
 	font-family: 'Manrope';
 	font-style: normal;
-	font-weight: 400;
-	font-size: 16px;
-	line-height: 12px;
-	/* identical to box height, or 75% */
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 16px;
 
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 
-	color: #9D9D9D;
+	color: #667085;
 }
 
 .chart-symbol-green{
+	display: inline-block;
 	border-radius: 50%;
-	height: 15px;
-	width: 15px;
-	border: solid 2px #35C768;
-	margin-right: 5px;
+	height: 10px;
+	width: 10px;
+	background: #35C768;
+	margin-right: 6px;
 }
 
 .chart-symbol-red{
+	display: inline-block;
 	border-radius: 50%;
-	height: 15px;
-	width: 15px;
-	border: solid 2px $color-global-red;
-	margin-right: 5px;
+	height: 10px;
+	width: 10px;
+	background: $color-global-red;
+	margin-right: 6px;
 }
 
 .chart-container-2{
