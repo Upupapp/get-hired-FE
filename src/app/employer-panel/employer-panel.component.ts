@@ -288,6 +288,19 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** AI CREATE SINGLE-RECOVERY: this app renders exactly one AI Create
+   *  entry point (this topbar button) -- when the Employer already has a
+   *  pending local recovery, its label reflects that instead of implying a
+   *  fresh/empty flow, so it's clear reopening it resumes existing work
+   *  rather than starting something new. */
+  get postJobButtonLabel(): string {
+    return this.hasPendingAiCreateRecovery() ? 'Continue unfinished job' : 'Post a job';
+  }
+
+  hasPendingAiCreateRecovery(): boolean {
+    return !!(this.user && this.user._id && this.aiCreateDraft.hasPending(this.user._id));
+  }
+
   goToJobsList(): void {
     this.router.navigate(['/recruiter/contacts/candidates']);
   }
@@ -301,10 +314,21 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
    *  default -- disableClose is deliberately left false) are all equivalent:
    *  they just close the dialog with zero auth/session side effects. */
   logout(): void {
+    // FINAL SIGN-OUT POLICY: normal sign-out preserves local AI recovery --
+    // the checkbox (an explicit opt-in to delete it) is only offered when
+    // this Employer actually has removable local recovery on this device.
+    // This answers "does LOCAL recovery exist", never "does a server Draft
+    // exist" -- a synced server Draft is never affected either way.
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+    const hasLocalRecovery = !!(currentUser && currentUser._id && this.aiCreateDraft.hasPending(currentUser._id));
+    const hasUnsyncedLocalEdits = hasLocalRecovery && this.aiCreateDraft.hasUnsyncedLocalEdits(currentUser._id);
+
     const dialogRef = this.dialog.open(SignOutConfirmDialogComponent, {
       ariaLabel: 'Sign out confirmation',
       autoFocus: 'first-tabbable',
       data: {
+        showRemoveLocalRecoveryOption: hasLocalRecovery,
+        hasUnsyncedLocalEdits,
         onConfirm: () => this.confirmSignOut(dialogRef),
       },
     });
@@ -315,11 +339,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.logoutInProgress = true;
 
     const instance = dialogRef.componentInstance;
-    // PRODUCT CHANGE (2026-08-20): Employer sign-out always removes this
-    // device's unfinished AI Create recovery for the signing-out account --
-    // no longer optional/checkbox-gated. Captured before logout wipes
-    // `user` from localStorage. Never touches a canonical server Draft job
-    // (aiCreateDraft.clear() only ever removes the local recovery key).
+    // Read the checkbox and capture the current user's id before logout
+    // wipes `user` from localStorage -- removal only happens if explicitly
+    // requested, and even then only the LOCAL recovery key
+    // (aiCreateDraft.clear() never touches a canonical server Draft job).
+    const removeLocalRecovery = instance.removeLocalRecovery;
     const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
     instance.confirmDisabled = true;
     instance.confirmLabel = 'Signing out...';
@@ -327,7 +351,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.coreService.logout().subscribe({
       next: () => {
         this.logoutInProgress = false;
-        if (currentUser && currentUser._id) {
+        if (removeLocalRecovery && currentUser && currentUser._id) {
           this.aiCreateDraft.clear(currentUser._id);
         }
         // Redirect ONLY after logout has actually completed, and only Home --

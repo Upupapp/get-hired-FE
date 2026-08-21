@@ -23,7 +23,7 @@ import { CoreService } from '@app-core/services/core.service';
 import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 import { GenerateIntentInputs } from '@app-job/easy-job-post-assistant/easy-job-post-assistant.models';
 
-type PanelStep = 'input' | 'loading' | 'preview' | 'error';
+type PanelStep = 'input' | 'loading' | 'preview' | 'error' | 'guest_choice';
 
 @Component({
   selector: 'app-ai-job-preview-panel',
@@ -44,6 +44,14 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
   previewData: AnonPreviewResponse | null = null;
   googleLoading = false;
   googleError: string | null = null;
+  /** AI CREATE SINGLE-RECOVERY: a returning guest with an already-saved
+   *  pending recovery gets an explicit choice instead of this panel
+   *  silently resetting to blank fields (which would autosave over their
+   *  prior intent the moment they start typing, with no visible warning
+   *  that anything was lost). Only ONE guest recovery slot ever exists
+   *  either way -- this just makes replacing it an explicit action instead
+   *  of an implicit side effect of typing. */
+  pendingGuestJobTitle: string = '';
 
   readonly workSetupOptions = [
     { value: '', label: 'Any' },
@@ -77,6 +85,17 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     if (!openChange) return;
     if (openChange.currentValue) {
       this.resetToInput();
+      // Only a genuine, not-yet-authenticated guest can have a guest-scoped
+      // recovery -- an already-signed-in visitor never reaches this branch
+      // (resolveOwnerScopeForDraftSave() only returns a guest scope pre-auth).
+      if (!this.coreService.isLoggedIn()) {
+        const guestScope = this.aiCreateDraft.getOrCreateGuestOwnerScope();
+        const existing = this.aiCreateDraft.load(guestScope);
+        if (existing && existing.input && existing.input.jobTitle) {
+          this.pendingGuestJobTitle = existing.input.jobTitle;
+          this.step = 'guest_choice';
+        }
+      }
       if (isPlatformBrowser(this.platformId)) {
         document.body.style.overflow = 'hidden';
       }
@@ -109,6 +128,30 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
   close(): void {
     this.haptics.press();
     this.closed.emit();
+  }
+
+  /** Restore the existing guest recovery into the form and continue with it. */
+  continueExistingGuestDraft(): void {
+    const guestScope = this.aiCreateDraft.getOrCreateGuestOwnerScope();
+    const existing = this.aiCreateDraft.load(guestScope);
+    if (existing && existing.input) {
+      this.jobTitle = existing.input.jobTitle || '';
+      this.location = existing.input.location || '';
+      this.workSetup = existing.input.workSetup === 'Onsite' ? 'On-site' : (existing.input.workSetup || '');
+      this.employmentType = existing.input.employmentType || '';
+    }
+    this.step = 'input';
+    this.haptics.selection();
+  }
+
+  /** Explicitly replace the existing guest recovery -- never a silent
+   *  overwrite; the Employer chose this. */
+  startNewGuestJob(): void {
+    const guestScope = this.aiCreateDraft.getOrCreateGuestOwnerScope();
+    this.aiCreateDraft.clear(guestScope);
+    this.pendingGuestJobTitle = '';
+    this.step = 'input';
+    this.haptics.selection();
   }
 
   onBackdropClick(event: MouseEvent): void {

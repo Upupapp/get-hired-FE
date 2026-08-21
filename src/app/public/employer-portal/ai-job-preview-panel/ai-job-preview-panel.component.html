@@ -27,6 +27,22 @@
         </button>
       </div>
 
+      <!-- ─── STEP: GUEST CHOICE (AI CREATE SINGLE-RECOVERY) ────────────────── -->
+      <div *ngIf="step === 'guest_choice'" class="aijp-body" role="main">
+        <h2 class="aijp-title">Continue your unfinished job post?</h2>
+        <p class="aijp-sub">
+          You have an unfinished job post for "{{ pendingGuestJobTitle }}" saved on this device.
+        </p>
+        <div class="aijp-form">
+          <button type="button" class="aijp-btn-primary" (click)="continueExistingGuestDraft()">
+            Continue existing
+          </button>
+          <button type="button" class="aijp-btn-ghost" (click)="startNewGuestJob()">
+            Start a new job post
+          </button>
+        </div>
+      </div>
+
       <!-- ─── STEP: INPUT ─────────────────────────────────────────────────── -->
       <div *ngIf="step === 'input'" class="aijp-body" role="main">
         <h2 class="aijp-title">See your job post in seconds</h2>

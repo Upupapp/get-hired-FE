@@ -15,6 +15,25 @@
     <p class="soc-message">Are you sure you want to sign out?</p>
   </div>
 
+  <div class="soc-recovery-option" *ngIf="showRemoveLocalRecoveryOption">
+    <label class="soc-checkbox-row">
+      <input
+        type="checkbox"
+        [checked]="removeLocalRecovery"
+        (change)="removeLocalRecovery = $any($event.target).checked"
+        [disabled]="confirmDisabled" />
+      <span>Remove unfinished AI job from this device</span>
+    </label>
+    <p class="soc-recovery-note">
+      <ng-container *ngIf="hasUnsyncedLocalEdits; else syncedNote">
+        Changes saved only on this device will be removed.
+      </ng-container>
+      <ng-template #syncedNote>
+        Your saved Draft in GetHired will not be deleted.
+      </ng-template>
+    </p>
+  </div>
+
   <div class="soc-actions">
     <button
       type="button"

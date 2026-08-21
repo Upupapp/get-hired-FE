@@ -240,12 +240,12 @@
         <div class="gh-topbar-right">
           <button type="button" class="gh-btn-coral gh-btn-topbar gh-pressable"
             (click)="goToCreateJob()"
-            aria-label="Post a new job">
+            [attr.aria-label]="postJobButtonLabel">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
               width="14" height="14" aria-hidden="true" focusable="false">
               <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
             </svg>
-            Post a job
+            {{ postJobButtonLabel }}
           </button>
           <button type="button" class="gh-btn-topbar-outline gh-pressable"
             (click)="goToJobsList()"
