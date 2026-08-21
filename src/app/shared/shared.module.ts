@@ -32,6 +32,7 @@ import { VideoPreviewComponent } from './components/video-preview/video-preview.
 import { RecordLoadingComponent } from './components/record-loading/record-loading.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { UpdatedDialogComponent } from './components/updated-dialog/updated-dialog.component';
 import { LanguageSelectionComponent } from './components/language-selection/language-selection.component';
 import { DropdownSearchComponent } from './components/input/dropdown-search/dropdown-search.component';
 import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
@@ -79,6 +80,7 @@ const classesToInclude: any[] = [
   VideoPreviewComponent,
   RecordLoadingComponent,
   ConfirmationDialogComponent,
+  UpdatedDialogComponent,
   LanguageSelectionComponent,
   DropdownSearchComponent,
   EmptySectionComponent,
