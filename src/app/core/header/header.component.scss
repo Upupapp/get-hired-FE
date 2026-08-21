@@ -74,20 +74,32 @@
   outline: none;
   opacity: 1;
   transform: scale(1);
-  transition: background 120ms ease, opacity 160ms ease, transform 160ms ease;
+  transition: background 120ms ease, width 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              height 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              min-width 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-radius 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
   &:hover { background: rgba(0, 0, 0, 0.05); }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.93); }
 
-  // "Vanishes" the instant the floating menu opens -- the panel itself
-  // morphs in from this same corner (matching transform-origin: top right)
-  // so the button reads as expanding into the panel, not as two separate
-  // elements toggling independently.
+  // Morphs into a small solid dot instead of vanishing -- stays visible as
+  // the anchor the floating panel visibly grew from (shared top-right
+  // corner), rather than disappearing and leaving the panel looking
+  // unconnected to anything. The hamburger icon itself fades out during
+  // the shrink so only the dot remains once fully collapsed.
   &--hidden {
-    opacity: 0;
-    transform: scale(0.5);
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
     pointer-events: none;
+
+    .gh-menu-icon {
+      opacity: 0;
+      transition: opacity 120ms ease;
+    }
   }
 
   @media (max-width: 991px) {
@@ -106,6 +118,8 @@
   width: 24px;
   height: 24px;
   flex-shrink: 0;
+  opacity: 1;
+  transition: opacity 120ms ease;
 }
 
 // ─── Floating menu: outside-tap catcher ──────────────────────────────────────
