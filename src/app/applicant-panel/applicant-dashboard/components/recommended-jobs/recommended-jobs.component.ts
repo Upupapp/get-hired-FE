@@ -62,17 +62,15 @@ export class RecommendedJobsComponent implements OnInit, OnChanges {
       this.ranked = [];
       return;
     }
+    // Shows every published job (no top-3 cap, no score>0 filter) per
+    // request -- still sorted by match score descending so the best
+    // matches lead, but nothing is held back from the list anymore.
     this.ranked = this.latestRawJobs
       .map((raw) => {
         const normalized = this.normalizer.normalize(raw);
         const result = this.compatibilityService.evaluate(this.applicant, normalized);
         return { raw, score: result.score, label: result.label };
       })
-      // A job with zero applicable factors (score 0 from a true "nothing to
-      // compare" case) is not a recommendation -- it's a data gap. Only
-      // recommend jobs that produced a real, evaluated score.
-      .filter((r) => r.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3);
+      .sort((a, b) => b.score - a.score);
   }
 }
