@@ -1,92 +1,101 @@
 @import "src/assets/styles/colors";
 
+// Brand-token alignment (Phase 2, canonical Job Card system) -- this
+// variant previously used raw Bootstrap card styling with no connection
+// to the shared design system at all. Data/inputs/behavior unchanged;
+// visual surface now matches app-job-card and app-search-job-card.
+
 .img-banner{
-	width: 300px;
-	height: 180px;
+	width: 200px;
+	height: 140px;
 	object-position: center;
 	object-fit: cover;
-	border-radius: 5px;
+	border-radius: var(--gh-radius-sm, 8px);
+	flex-shrink: 0;
 }
 
 .card{
-	padding: 10px;
-	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
-	border-radius: 10px;
-	border: none;
+	padding: var(--gh-card-padding, 20px);
+	box-shadow: var(--gh-shadow-card, 0 2px 12px rgba(16, 24, 40, 0.06));
+	border-radius: var(--gh-radius-card, 18px);
+	border: 1px solid var(--gh-border, #E7EAF3);
+	transition: box-shadow 0.18s, border-color 0.18s;
+
+	&:hover, &:focus-within {
+		border-color: var(--gh-azure, #168BFF);
+		box-shadow: var(--gh-shadow-dropdown, 0 8px 30px rgba(16, 24, 40, 0.12));
+	}
 }
 
 .title-job-title{
-	font-family: 'Manrope';
+	font-family: var(--gh-font-base, 'Manrope', sans-serif);
 	font-style: normal;
-	font-weight: 500;
-	font-size: 18px;
+	font-weight: 700;
+	font-size: 16px;
 	line-height: 24px;
-	/* or 189% */
 
 	display: flex;
 	align-items: center;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
-	margin-bottom: 5px;
-	color: #222222;
+	margin-bottom: 4px;
+	color: var(--gh-text, #101828);
 }
 
 .title-company{
-	font-family: 'Manrope';
+	font-family: var(--gh-font-base, 'Manrope', sans-serif);
 	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 14px;
-	/* identical to box height, or 114% */
+	font-weight: 600;
+	font-size: 13px;
+	line-height: 18px;
 
 	display: flex;
 	align-items: center;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 
-	color: #1D72F1;
+	color: var(--gh-azure, #168BFF);
 }
 
 .title-details{
-	font-family: 'Manrope';
+	font-family: var(--gh-font-base, 'Manrope', sans-serif);
 	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 21px;
-	/* identical to box height, or 150% */
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 20px;
 
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+	color: var(--gh-text-secondary, #667085);
 
-	color: #666666;
+	i { color: var(--gh-text-muted, #98A2B3); font-size: 13px; }
 }
 
 .btn-primary{
-	background: rgba(255,112,98, 1) !important;
-	border-radius: 5px;
+	background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%)) !important;
+	border: none;
+	border-radius: var(--gh-btn-radius, 10px);
+	min-height: var(--gh-btn-height, 44px);
 
 	&:hover{
-		background: rgba(255,112,98, 0.8) !important
+		opacity: 0.9;
 	}
 }
 
 .tags{
 	display: flex;
-  flex-wrap: wrap;
+	flex-wrap: wrap;
 }
 
 .title-tags{
-	background: #F3F2F1;
-	border-radius: 5px;
-	font-family: 'Manrope';
+	background: var(--gh-bg, #F6F7FB);
+	border: 1px solid var(--gh-border, #E7EAF3);
+	border-radius: var(--gh-badge-radius, 999px);
+	font-family: var(--gh-font-base, 'Manrope', sans-serif);
 	font-style: normal;
-	font-weight: 300;
+	font-weight: 500;
 	font-size: 12px;
 	line-height: 18px;
-	/* identical to box height */
-	padding: 5px 10px;
-	//max-width: 130px;
-	color: #6A6A6A;
+	padding: 4px 10px;
+	color: var(--gh-text-secondary, #667085);
 	cursor: pointer;
 
 	&:hover{
-		text-decoration: underline;
+		border-color: var(--gh-azure, #168BFF);
+		color: var(--gh-azure, #168BFF);
 	}
 }

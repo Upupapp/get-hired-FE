@@ -4,7 +4,7 @@
   gap: 14px;
   padding: 18px 20px;
   background: #fff;
-  border: 1.5px solid #EDE9F8;
+  border: 1.5px solid var(--gh-border, #E7EAF3);
   border-radius: 16px;
   cursor: pointer;
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.14s;
@@ -12,14 +12,14 @@
   width: 100%;
 
   &:hover, &:focus-visible {
-    border-color: #6C6BAD;
-    box-shadow: 0 4px 20px rgba(108, 107, 173, 0.12);
+    border-color: var(--gh-azure, #168BFF);
+    box-shadow: 0 4px 20px rgba(22, 139, 255, 0.12);
     transform: translateY(-1px);
     outline: none;
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 3px rgba(108, 107, 173, 0.2);
+    box-shadow: 0 0 0 3px rgba(22, 139, 255, 0.2);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -64,7 +64,7 @@
   font-weight: 700;
   color: #fff;
   // branded gradient fallback — more polished than a plain letter on a flat background
-  background: linear-gradient(135deg, #6C6BAD 0%, #FF7062 100%);
+  background: linear-gradient(135deg, var(--gh-azure, #168BFF) 0%, #FF7062 100%);
   width: 100%;
   height: 100%;
   display: flex;
@@ -92,7 +92,7 @@
 .gh-sjc-title {
   font-size: 15px;
   font-weight: 700;
-  color: #1a1830;
+  color: var(--gh-text, #101828);
   margin: 0;
   line-height: 1.3;
   overflow: hidden;
@@ -105,7 +105,7 @@
 
 .gh-sjc-time {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--gh-text-muted, #98A2B3);
   white-space: nowrap;
   flex-shrink: 0;
   margin-top: 2px;
@@ -117,19 +117,19 @@
   padding: 0;
   font-size: 13px;
   font-weight: 600;
-  color: #6C6BAD;
+  color: var(--gh-azure, #168BFF);
   cursor: pointer;
   display: inline;
   margin-bottom: 8px;
   text-decoration: none;
 
   &:hover { text-decoration: underline; color: #FF7062; }
-  &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; border-radius: 3px; }
+  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); outline-offset: 2px; border-radius: 3px; }
 }
 
 .gh-sjc-company-text {
   font-size: 13px;
-  color: #6b6887;
+  color: var(--gh-text-secondary, #667085);
   font-weight: 600;
   display: block;
   margin-bottom: 8px;
@@ -148,22 +148,22 @@
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: #6b6887;
-  background: #F8F7FF;
-  border: 1px solid #EDE9F8;
+  color: var(--gh-text-secondary, #667085);
+  background: var(--gh-bg, #F6F7FB);
+  border: 1px solid var(--gh-border, #E7EAF3);
   padding: 3px 9px;
   border-radius: 20px;
   white-space: nowrap;
 
   &--setup {
-    background: #EEF2FF;
-    color: #4338CA;
-    border-color: #C7D2FE;
+    background: var(--gh-azure-soft, #EAF4FF);
+    color: var(--gh-azure, #168BFF);
+    border-color: var(--gh-azure-soft, #EAF4FF);
   }
 
   &--salary {
     background: #ECFDF5;
-    color: #059669;
+    color: var(--gh-success, #10B981);
     border-color: #A7F3D0;
     font-weight: 600;
   }
@@ -179,7 +179,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #22c55e;
+  background: var(--gh-success, #10B981);
   color: #fff;
   font-size: 8px;
   font-weight: 700;
@@ -206,7 +206,7 @@
 
   &-label {
     font-size: 11.5px;
-    color: #6b6887;
+    color: var(--gh-text-secondary, #667085);
     font-weight: 600;
     flex: 1;
     white-space: nowrap;
@@ -237,7 +237,7 @@
   &-login {
     background: none;
     border: none;
-    color: #6C6BAD;
+    color: var(--gh-azure, #168BFF);
     font-family: 'Manrope', sans-serif;
     font-size: 11px;
     font-weight: 600;
@@ -248,8 +248,8 @@
     text-decoration: underline;
     min-height: 28px;
 
-    &:hover { color: #1a1830; }
-    &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
+    &:hover { color: var(--gh-text, #101828); }
+    &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); outline-offset: 2px; }
   }
 
   @media (max-width: 480px) {
