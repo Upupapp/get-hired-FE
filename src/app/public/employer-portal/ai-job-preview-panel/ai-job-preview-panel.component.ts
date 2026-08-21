@@ -52,6 +52,13 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
    *  either way -- this just makes replacing it an explicit action instead
    *  of an implicit side effect of typing. */
   pendingGuestJobTitle: string = '';
+  /** RAPID-CLICK GUARD (Section 10): method-level, not just the button's
+   *  [disabled] binding -- a disabled attribute can lag a frame behind a
+   *  fast double-click/tap, and generate() has several synchronous-return
+   *  branches (validation, guest redirect) where the button's disabled
+   *  state never even gets a chance to visually update before a second
+   *  invocation could already be in progress. */
+  private generateInFlight = false;
 
   readonly workSetupOptions = [
     { value: '', label: 'Any' },
@@ -123,6 +130,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     this.titleError = '';
     this.errorMsg = '';
     this.previewData = null;
+    this.generateInFlight = false;
   }
 
   close(): void {
@@ -166,6 +174,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
   }
 
   generate(): void {
+    if (this.generateInFlight) return; // rapid-click guard -- ignore duplicate invocation
     this.titleError = '';
     const title = this.jobTitle.trim();
     if (!title) {
@@ -177,6 +186,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
       return;
     }
 
+    this.generateInFlight = true;
     this.haptics.selection();
 
     // AUTH-STATE CLASSIFICATION (2026-08-20) -- resolved client-side, before
@@ -192,6 +202,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
       // GENUINE GUEST -- no session to expire, nothing to authenticate.
       // Skip the preview API entirely; go straight to draft + registration.
       this.saveDraftAndRedirectToRegister(title);
+      this.generateInFlight = false;
       return;
     }
 
@@ -205,6 +216,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
       this.haptics.error();
       this.errorMsg = 'This account isn’t set up as an Employer account yet. Sign in with an Employer account, or create a new one, to continue with this job post.';
       this.step = 'error';
+      this.generateInFlight = false;
       return;
     }
 
@@ -226,12 +238,14 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
         this.previewData = res;
         this.step = 'preview';
         this.haptics.success();
+        this.generateInFlight = false;
       },
       error: (err) => {
         this.haptics.error();
         const errBody = err && err.error;
         this.errorMsg = (errBody && errBody.message) || 'Could not generate preview. Please try again.';
         this.step = 'error';
+        this.generateInFlight = false;
       },
     });
   }
