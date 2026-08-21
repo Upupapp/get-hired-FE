@@ -16,7 +16,7 @@
         "CONFIRM_PASSWORD_TEXTBOX": "Confirm Password",
         "REGISTER_AS":"I want to register as",
         "ACCEPTANCE_CHECKBOX": "By creating your account, you agree to GetHired's Privacy Policy and Terms of Use.",
-        "LOGIN_PROMPT": "Already have an account? Login",
+        "LOGIN_PROMPT": "Already have an account?",
         "LOGIN_BUTTON": "Login",
         "REGISTRATION_TYPE_SELECTOR": "Applicant",
         "REGISTRATION_TYPE_SELECTOR2": "Company",
