@@ -39,6 +39,21 @@ export class CoreService {
   }
 
   /**
+   * STALE UNAUTHGUARD STATE HARDENING: the only backend-authoritative check
+   * of whether the current Authorization header is actually still valid --
+   * GET /auth/getprofile (verifyAuth middleware, role-agnostic, already
+   * used server-side; nothing new added to the backend). Reused here rather
+   * than trusting localStorage.state alone, which just records what the
+   * last successful signin claimed and never gets revalidated on its own.
+   * Resolves (200) only for a genuinely current session; rejects (401/403)
+   * otherwise -- callers should treat any error as "not actually logged
+   * in," never assume success.
+   */
+  verifySession() {
+    return this.baseService.get(`${this.authUrl}/getprofile`);
+  }
+
+  /**
    * GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: the canonical logout method --
    * every caller (interceptor, all panel components) already goes through
    * this. Previously left as a literal "TODO api for firebase logout" --
