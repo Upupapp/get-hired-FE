@@ -38,6 +38,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
   private routerSub: Subscription;
   private queryParamsSub: Subscription;
+  private aiCreateDraftGateSub: Subscription;
   private logoutInProgress = false;
 
   constructor(
@@ -55,7 +56,22 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.isUserLoggedIn = this.coreService.isLoggedIn();
     this.employeeFacade.getEmployeeProfile(this.user._id);
     this.checkAndClaimAiPreview();
-    this.checkAndRouteToAiCreateDraft();
+
+    // AUTH-ROUTE RECOVERY LEAK FIX: this used to run immediately on mount,
+    // trusting only the local `state`/`user` flags read at component
+    // construction. Those flags can be stale (e.g. left over from an
+    // earlier session that was never explicitly signed out of) -- if a
+    // stale/invalid session lands here, opening the AI Create modal before
+    // the profile fetch above has even resolved means a browser that isn't
+    // really authenticated can still see (and appear to "leak") whatever
+    // recovery happens to be associated with that stale local user id.
+    // Now gated on the FIRST successful, server-confirmed employee profile
+    // emission -- if the session is actually invalid, this fetch 401s, the
+    // existing profile-load-error fallback (signInAgain()) handles it, and
+    // this callback simply never fires; no AI modal, no premature adoption.
+    this.aiCreateDraftGateSub = this.employee$.pipe(filter(e => !!e), take(1)).subscribe(() => {
+      this.checkAndRouteToAiCreateDraft();
+    });
 
     // PRODUCT CHANGE: a new Employer arrives here right after finishing
     // Business Setup with ?openAiCreate=1 (see CompanyDetailsFormComponent's
@@ -248,6 +264,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.routerSub) this.routerSub.unsubscribe();
     if (this.queryParamsSub) this.queryParamsSub.unsubscribe();
+    if (this.aiCreateDraftGateSub) this.aiCreateDraftGateSub.unsubscribe();
   }
 
   get pageTitle(): string {
