@@ -672,7 +672,20 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // debounced evaluate() call above) expects bannerFile as an array. Cast here
     // rather than changing either pre-existing type, consistent with how the
     // debounced call site already passes untyped form values.
-    this.readinessResult = this.jobReadiness.evaluate({ ...job, companyId: this.companyId } as any);
+    //
+    // FREELANCE-READINESS FIX: `job.jobTypeId` at this point has already been
+    // converted by formatJob() from FREELANCE_JOB_TYPE_SENTINEL ('freelance')
+    // to `null` -- deliberately, since no backend job_type row exists for it
+    // (see job-field-resolvers.ts). But JobReadinessService.evaluate()'s
+    // hasJobType check is a plain `!!input.jobTypeId`, so that same `null`
+    // makes Employment Type look unfilled here even though Freelance was
+    // genuinely selected -- the Step 4 checklist (which reads the raw,
+    // not-yet-nulled form value) shows it satisfied, so Publish rejecting it
+    // looks like a flat contradiction. Evaluate readiness against the RAW,
+    // pre-conversion jobTypeId so this one field's submission-time
+    // sentinel-to-null mapping never leaks into the readiness gate.
+    const rawJobTypeId = this.jobForm.controls.initialData.value.jobTypeId;
+    this.readinessResult = this.jobReadiness.evaluate({ ...job, jobTypeId: rawJobTypeId, companyId: this.companyId } as any);
     this.isReadyToPublish = this.readinessResult.canPublish;
 
     if (this.isReadyToPublish) {
