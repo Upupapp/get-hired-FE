@@ -67,12 +67,19 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     { value: 'Hybrid', label: 'Hybrid' },
   ];
 
+  // FREELANCE-REMOVAL: no gethired.job_type row exists for "Freelance" (only
+  // Full time/Part time/Contractor are seeded) -- a guest picking it here had
+  // that hint resolved to FREELANCE_JOB_TYPE_SENTINEL, then silently
+  // converted to null at submission time (see job-field-resolvers.ts /
+  // JobCreateComponent.formatJob()), making Employment Type look empty at
+  // Publish despite something visibly selected. Removed here to match the
+  // Employer Side "Create a Job" form, which already dropped it for the same
+  // reason.
   readonly employmentTypeOptions = [
     { value: '', label: 'Any' },
     { value: 'Full-time', label: 'Full-time' },
     { value: 'Part-time', label: 'Part-time' },
     { value: 'Contract', label: 'Contract' },
-    { value: 'Freelance', label: 'Freelance' },
   ];
 
   private destroy$ = new Subject<void>();

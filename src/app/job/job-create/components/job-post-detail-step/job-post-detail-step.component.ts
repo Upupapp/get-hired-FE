@@ -4,7 +4,6 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from '@app-job/job.model';
 import { SnackbarService } from '@app-core/services/snackbar.service';
-import { FREELANCE_JOB_TYPE_SENTINEL } from '@app-job/utils/job-field-resolvers';
 
 @Component({
   selector: 'app-job-post-detail-step',
@@ -27,7 +26,6 @@ export class JobPostDetailStepComponent implements OnInit {
   bannerUrl: string;
 
   certificationTypes = ['certification', 'license', 'permit', 'eligibility', 'other'];
-  readonly freelanceSentinel = FREELANCE_JOB_TYPE_SENTINEL;
 
   workSetup$ = this.jobFacade.setup$;
   private workSetupItems: any[] = [];

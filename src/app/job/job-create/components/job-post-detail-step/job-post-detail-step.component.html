@@ -41,13 +41,18 @@
               [class.gh-input--error]="initialDetailsForm.get('jobTypeId').invalid && initialDetailsForm.get('jobTypeId').touched">
               <option [ngValue]="null" disabled selected>Select type</option>
               <option *ngFor="let item of jobType" [ngValue]="item.id">{{ item.name }}</option>
-              <!-- No gethired.job_type row exists for "Freelance" yet (backend
-                   gap, see get-hired-BE/notes.md) -- kept selectable via a
-                   frontend-only sentinel value so it can be chosen and carried
-                   over from an unfinished AI Create job post; converted to
-                   null before submission (JobCreateComponent.formatJob()),
-                   never sent to the backend as a fabricated id. -->
-              <option [ngValue]="freelanceSentinel">Freelance</option>
+              <!-- FREELANCE-REMOVAL: no gethired.job_type row exists for
+                   "Freelance" and none is planned -- selecting it always
+                   resolved to null at submission time (see formatJob() /
+                   job-field-resolvers.ts), which made Publish's readiness
+                   check treat Employment Type as empty even though something
+                   was visibly selected. Removed from both selectable pickers
+                   (this one and the "Start Hiring" AI panel's
+                   employmentTypeOptions) rather than working around the
+                   confusion again. The FREELANCE_JOB_TYPE_SENTINEL constant
+                   and formatJob()'s null-conversion stay in place purely as a
+                   safety net for any already-in-progress local guest/AI Create
+                   draft that still holds the old hint value. -->
             </select>
           </div>
         </div>
