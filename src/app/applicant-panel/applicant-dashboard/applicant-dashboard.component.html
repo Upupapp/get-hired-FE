@@ -9,11 +9,11 @@
   <!-- <app-applicant-stat-total [totals]="charts?.totalJobApplication"></app-applicant-stat-total> -->
 </section>
 
-<div class="alert" [class.visible]="isVisible" *ngIf="isVisible" role="status">
+<div class="alert" [class.visible]="isVisible" *ngIf="isVisible">
   <h5>{{ 'APPLICANT_DASHBOARD.POP_UP_MESSAGE' | translate }}</h5>
-  <button type="button" class="gh-alert-link" (click)="redirectToEdit()">{{ 'APPLICANT_DASHBOARD.UPDATE_PROFILE' | translate }}</button>
+  <u (click)="redirectToEdit()" class="cursor-pointer">{{ 'APPLICANT_DASHBOARD.UPDATE_PROFILE' | translate }}</u>
 
-  <button type="button" class="btn" (click)="closeSnackbar()" aria-label="Dismiss"><i class="bi bi-x"></i></button>
+  <button class="btn" (click)="closeSnackbar()"><i class="bi bi-x"></i></button>
 </div>
 
 <ng-template #noProfile>

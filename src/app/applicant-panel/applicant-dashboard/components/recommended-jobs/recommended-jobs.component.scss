@@ -1,38 +1,61 @@
 @import "src/assets/styles/colors";
 
+// RECOMMENDED-JOBS-REFINEMENT: professional/tech-oriented type + real
+// breathing room around the list and between each item, using the shared
+// --gh-* token system (same fonts/spacing scale as the rest of the portal)
+// rather than the previous bare-minimum 12px gap and no outer padding.
+
 .recommended-jobs {
-  margin-top: 20px;
+  margin: var(--gh-space-6, 24px) 0;
+  padding: var(--gh-space-5, 20px) var(--gh-space-5, 20px) var(--gh-space-2, 8px);
+  background: var(--gh-white, #ffffff);
+  border: 1px solid var(--gh-border, #E7EAF3);
+  border-radius: var(--gh-radius-card, 18px);
 }
 
 .recommended-jobs-title {
-  font-size: 15px;
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+  font-size: 16px;
   font-weight: 700;
-  margin: 0 0 12px 0;
+  color: var(--gh-text, #101828);
+  letter-spacing: 0.01em;
+  margin: 0 0 var(--gh-space-5, 20px) 0;
 }
 
 .recommended-jobs-loading,
 .recommended-jobs-empty {
-  color: #6b7280;
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+  color: var(--gh-text-secondary, #667085);
   font-size: 13px;
+  line-height: 1.6;
+  padding: var(--gh-space-2, 8px) 0 var(--gh-space-4, 16px);
 }
 
 .recommended-jobs-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--gh-space-5, 20px);
 }
 
 .recommended-job-item {
   position: relative;
+  padding: var(--gh-space-4, 16px);
+  margin: 0 0 var(--gh-space-2, 8px);
+  border: 1px solid var(--gh-border, #E7EAF3);
+  border-radius: var(--gh-radius-sm, 8px);
+
+  &:last-child { margin-bottom: 0; }
 }
 
 .recommended-job-badge {
   display: inline-block;
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0.02em;
   color: $color-global-red-buttons;
   background: rgba(247, 60, 60, 0.08);
-  border-radius: 6px;
-  padding: 2px 8px;
-  margin-bottom: 4px;
+  border-radius: var(--gh-badge-radius, 999px);
+  padding: 3px 10px;
+  margin-bottom: var(--gh-space-2, 8px);
 }

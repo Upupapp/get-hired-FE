@@ -1,57 +1,70 @@
-<div class="gh-ap-hero">
-  <div class="gh-ap-hero-inner">
-    <div class="gh-ap-hero-avatar">
-      <img [src]="details.photoUrl" class="gh-ap-hero-avatar-img" alt="{{ details.firstName }} {{ details.lastName }}" />
+<div class="bg-banner">
+  <div class="p-5 d-flex">
+    <div class="company-logo me-4">
+      <img [src]="details.photoUrl" class="img-fluid company-logo-image" />
     </div>
-    <div class="gh-ap-hero-identity">
-      <h1 class="gh-ap-hero-name">
+    <div class="mt-1">
+      <h5 class="title-banner mb-3">
         {{ details.firstName }} {{ details.lastName }}
-        <a routerLink="/user/details/edit" class="gh-ap-hero-edit" aria-label="Edit profile">
-          <i class="bi bi-pencil-fill" aria-hidden="true"></i>
-        </a>
-      </h1>
-      <div class="gh-ap-hero-meta">
-        <span class="gh-ap-hero-meta-item" *ngIf="details.city || details.country">
-          <i class="bi bi-geo-alt" aria-hidden="true"></i>
-          {{ details.city }}{{ details.city && details.country ? ', ' : '' }}{{ details.country }}
-        </span>
-        <span class="gh-ap-hero-meta-item" *ngIf="details?.email">
-          <i class="bi bi-envelope" aria-hidden="true"></i>
-          {{ details.email }}
-        </span>
-      </div>
+        <img src="/assets/images/placeholder/icons/company-edit.png" class="me-1 hvr-grow" style="
+            height: 25px;
+            cursor: pointer !important;
+            z-index: 999 !important;
+          " routerLink="/user/details/edit" />
+      </h5>
+
+      <p class="title-banner-description">
+        <img src="/assets/images/placeholder/icons/location-white.png" class="me-1" style="height: 18px" />
+        {{ details.city }}, {{ details.country }}
+      </p>
+      <p class="title-banner-description mt-2">
+        <img src="/assets/images/placeholder/icons/email-white.png" class="me-1" style="height: 12px" />
+        {{ details?.email }}
+      </p>
     </div>
   </div>
 </div>
 
-<div class="gh-ap-stats-row">
-  <div class="gh-ap-stat-card" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
-    <div class="gh-ap-stat-icon gh-ap-stat-icon--azure" aria-hidden="true">
-      <i class="bi bi-send-check"></i>
+<div class="px-3 px-lg-5" style="margin-top: -60px">
+  <div class="row">
+    <div class="col-12 col-md-4 col-lg-4 mb-3">
+      <div class="orange mb-2 card-application" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
+        <h5 class="title-card">
+          {{ 'APPLICANT_DASHBOARD.WIDGET_ACTIVE_APPLICATION' | translate }}
+          <img
+            src="/assets/images/placeholder/icons/card-interview-icon.png"
+            class="card-img"
+            style="width: 30px; margin-top: -5px"
+          />
+        </h5>
+        <h3 class="title-stat">{{ cardDetails?.activeApplications || 0}}</h3>
+        <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 16px; margin-top: -25px"
+          class="float-end me-2" />
+      </div>
     </div>
-    <div class="gh-ap-stat-body">
-      <span class="gh-ap-stat-label">{{ 'APPLICANT_DASHBOARD.WIDGET_ACTIVE_APPLICATION' | translate }}</span>
-      <span class="gh-ap-stat-value">{{ cardDetails?.activeApplications || 0 }}</span>
-    </div>
-  </div>
 
-  <div class="gh-ap-stat-card" [@animate]="{ value: '*', params: { y: '10px', delay: '600ms' } }">
-    <div class="gh-ap-stat-icon gh-ap-stat-icon--warning" aria-hidden="true">
-      <i class="bi bi-camera-video"></i>
+    <div class="col-12 col-md-4 col-lg-4 mb-3">
+      <div class="card-application yellow mb-2" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
+        <h5 class="title-card">
+          {{ 'APPLICANT_DASHBOARD.WIDGET_VIDEO_INTERVIEW' | translate }}
+          <img
+            src="/assets/images/placeholder/icons/card-video-icon.png"
+            class="card-img"
+            style="width: 30px; margin-top: -5px"
+          />
+        </h5>
+        <h3 class="title-stat">{{ cardDetails?.videoInterviews || 0 }}</h3>
+        <img src="/assets/images/placeholder/icons/arrow-right-white.png" style="height: 16px; margin-top: -25px"
+          class="float-end me-2" />
+      </div>
     </div>
-    <div class="gh-ap-stat-body">
-      <span class="gh-ap-stat-label">{{ 'APPLICANT_DASHBOARD.WIDGET_VIDEO_INTERVIEW' | translate }}</span>
-      <span class="gh-ap-stat-value">{{ cardDetails?.videoInterviews || 0 }}</span>
-    </div>
-  </div>
-
-  <div class="gh-ap-stat-card" [@animate]="{ value: '*', params: { y: '10px', delay: '650ms' } }">
-    <div class="gh-ap-stat-icon gh-ap-stat-icon--success" aria-hidden="true">
-      <i class="bi bi-clipboard-check"></i>
-    </div>
-    <div class="gh-ap-stat-body">
-      <span class="gh-ap-stat-label">Total Job Applications</span>
-      <span class="gh-ap-stat-value">{{ cardDetails?.totals || 0 }}</span>
+    <div class="col-12 col-md-4 col-lg-4 mb-3">
+      <div class="mb-2 card-application-hired" style="position: relative;"
+        [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
+        <h5 class="title-card">Total Job Application</h5>
+        <h3 class="title-stat">{{cardDetails?.totals}}</h3>
+        <!-- <h5 class="title-stat-sub-hired">80% Total Increase</h5> -->
+      </div>
     </div>
   </div>
 </div>
