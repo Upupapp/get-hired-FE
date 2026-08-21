@@ -12,6 +12,7 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
 import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
+import { AiRecoveryReconciliationDialogComponent, AiRecoveryReconciliationResult } from '@app-shared/components/ai-recovery-reconciliation-dialog/ai-recovery-reconciliation-dialog.component';
 
 @Component({
   selector: 'app-employer-panel',
@@ -185,12 +186,47 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (!ownerScope) return;
 
     // One-time safe migration from the superseded jobDraft.v1 key (the old
-    // Start-From-Scratch restore mechanism), then adopt any pre-auth guest
-    // AI Create draft into this authenticated user's scope. Both are no-ops
-    // when there's nothing to migrate/adopt.
+    // Start-From-Scratch restore mechanism). No-op when there's nothing to
+    // migrate.
     this.aiCreateDraft.migrateLegacyDraftIfPresent(ownerScope);
-    this.aiCreateDraft.adoptGuestDraftForUser(ownerScope);
 
+    // RECONCILIATION: this Employer already has their own AI Create
+    // recovery AND a still-valid guest recovery from their own Start-Hiring
+    // resume journey both exist -- never silently pick one. Exactly one
+    // explicit user decision, never a second AI Create panel.
+    const collision = this.aiCreateDraft.detectReconciliation(ownerScope);
+    if (collision) {
+      const dialogRef = this.dialog.open(AiRecoveryReconciliationDialogComponent, {
+        ariaLabel: 'Unfinished AI job post reconciliation',
+        autoFocus: 'first-tabbable',
+        data: {
+          existingTitle: collision.employerDraft.input.jobTitle || '',
+          newTitle: collision.guestDraft.input.jobTitle || '',
+        },
+      });
+      dialogRef.afterClosed().subscribe((result: AiRecoveryReconciliationResult | undefined) => {
+        if (result === 'continue') {
+          this.aiCreateDraft.resolveReconciliationContinueExisting(ownerScope);
+        } else if (result === 'new') {
+          this.aiCreateDraft.resolveReconciliationUseNewJob(ownerScope);
+        } else {
+          // Cancel / X / Escape / backdrop: neither recovery is touched --
+          // remain on the current route, no auto-navigation into either flow.
+          return;
+        }
+        this.proceedAfterAiCreateDraftCheck(ownerScope);
+      });
+      return;
+    }
+
+    // No collision -- existing safe behavior unchanged: adopt a pending
+    // guest draft only if this owner has no recovery of their own yet
+    // (adoptGuestDraftForUser never clobbers an existing one).
+    this.aiCreateDraft.adoptGuestDraftForUser(ownerScope);
+    this.proceedAfterAiCreateDraftCheck(ownerScope);
+  }
+
+  private proceedAfterAiCreateDraftCheck(ownerScope: string): void {
     if (!this.aiCreateDraft.hasPending(ownerScope)) return;
 
     const hasCompany = !!this.user.companyId;

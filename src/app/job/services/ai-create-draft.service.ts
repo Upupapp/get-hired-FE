@@ -241,30 +241,86 @@ export class AiCreateDraftService {
    *  one). Write-new -> verify -> remove-old, never the reverse. */
   adoptGuestDraftForUser(authenticatedOwnerScope: string): void {
     if (!authenticatedOwnerScope || this.isGuestScope(authenticatedOwnerScope)) return;
-    if (this.hasPending(authenticatedOwnerScope)) return; // never clobber
+    if (this.hasPending(authenticatedOwnerScope)) return; // never clobber -- see detectReconciliation() for that case
 
+    const peek = this.peekValidResumeIntent();
+    this.consumeResumeIntent(); // one-shot regardless of outcome below
+    if (!peek) return;
+
+    this.writeAdoptedDraft(authenticatedOwnerScope, peek);
+  }
+
+  /** RECONCILIATION -- non-destructive peek: is there BOTH an existing
+   *  authenticated recovery for this owner AND a currently-valid, still-
+   *  resumable guest journey? Pure read, safe to call repeatedly (e.g. on
+   *  every panel mount) with no side effects -- actual resolution only
+   *  happens via one of the resolveReconciliation*() methods below, driven
+   *  by an explicit user choice, never automatically. */
+  detectReconciliation(authenticatedOwnerScope: string): { employerDraft: AiCreateDraftEnvelope; guestDraft: AiCreateDraftEnvelope; guestOwnerScope: string } | null {
+    if (!authenticatedOwnerScope || this.isGuestScope(authenticatedOwnerScope)) return null;
+    const employerDraft = this.load(authenticatedOwnerScope);
+    if (!employerDraft) return null;
+    const peek = this.peekValidResumeIntent();
+    if (!peek) return null;
+    return { employerDraft, guestDraft: peek.guestDraft, guestOwnerScope: peek.guestOwnerScope };
+  }
+
+  /** "Continue Existing": the authenticated recovery is kept exactly as-is
+   *  -- untouched, never rewritten. The dangling guest recovery and its
+   *  resume intent are resolved (discarded) so this collision isn't
+   *  detected again on the next page load. */
+  resolveReconciliationContinueExisting(authenticatedOwnerScope: string): void {
+    const peek = this.peekValidResumeIntent();
+    this.consumeResumeIntent();
+    if (!peek) return;
+    try { localStorage.removeItem(this.keyFor(peek.guestOwnerScope)); } catch (_) {}
+    try { localStorage.removeItem(GUEST_JOURNEY_POINTER_KEY); } catch (_) {}
+  }
+
+  /** "Use New Job": the guest job explicitly replaces the authenticated
+   *  recovery. Write-new -> verify -> remove-old, same discipline as
+   *  adoptGuestDraftForUser() -- this just skips its "never clobber" guard
+   *  since overwriting IS the confirmed decision here. Never deletes
+   *  either copy before the new write is verified to have landed. */
+  resolveReconciliationUseNewJob(authenticatedOwnerScope: string): void {
+    const peek = this.peekValidResumeIntent();
+    this.consumeResumeIntent();
+    if (!peek) return;
+    this.writeAdoptedDraft(authenticatedOwnerScope, peek);
+  }
+
+  /** "Cancel": literally does nothing -- neither recovery is touched, the
+   *  resume intent is left in place, so the same collision is detected
+   *  again next time (no silent choice, no data loss). Exists only for
+   *  documentation/symmetry; callers may simply not call anything. */
+  resolveReconciliationCancel(): void { /* deliberately a no-op */ }
+
+  private peekValidResumeIntent(): { guestOwnerScope: string; guestDraft: AiCreateDraftEnvelope } | null {
     let intentRaw: string | null;
-    try { intentRaw = localStorage.getItem(RESUME_INTENT_KEY); } catch (_) { intentRaw = null; }
-    if (!intentRaw) return;
-    // One-shot: consume the pointer regardless of outcome below, so a later
-    // unrelated sign-in on this browser can never reuse a stale pointer.
-    try { localStorage.removeItem(RESUME_INTENT_KEY); } catch (_) {}
-
+    try { intentRaw = localStorage.getItem(RESUME_INTENT_KEY); } catch (_) { return null; }
+    if (!intentRaw) return null;
     let intent: any;
-    try { intent = JSON.parse(intentRaw); } catch (_) { return; }
+    try { intent = JSON.parse(intentRaw); } catch (_) { return null; }
     const guestOwnerScope: string = intent && intent.ownerScope;
-    if (!this.isGuestScope(guestOwnerScope)) return;
-
+    if (!this.isGuestScope(guestOwnerScope)) return null;
     const guestDraft = this.load(guestOwnerScope);
-    if (!guestDraft) return;
+    if (!guestDraft) return null;
+    return { guestOwnerScope, guestDraft };
+  }
 
-    const adopted: AiCreateDraftEnvelope = { ...guestDraft, ownerScope: authenticatedOwnerScope, updatedAt: new Date().toISOString() };
+  private consumeResumeIntent(): void {
+    // One-shot: a later, unrelated sign-in on this browser can never reuse a stale pointer.
+    try { localStorage.removeItem(RESUME_INTENT_KEY); } catch (_) {}
+  }
+
+  private writeAdoptedDraft(authenticatedOwnerScope: string, peek: { guestOwnerScope: string; guestDraft: AiCreateDraftEnvelope }): void {
+    const adopted: AiCreateDraftEnvelope = { ...peek.guestDraft, ownerScope: authenticatedOwnerScope, updatedAt: new Date().toISOString() };
     const key = this.keyFor(authenticatedOwnerScope);
     try {
       localStorage.setItem(key, JSON.stringify(adopted));
       if (localStorage.getItem(key) === JSON.stringify(adopted)) {
         // Verified write landed -- now safe to remove the guest-scoped source.
-        try { localStorage.removeItem(this.keyFor(guestOwnerScope)); } catch (_) {}
+        try { localStorage.removeItem(this.keyFor(peek.guestOwnerScope)); } catch (_) {}
         try { localStorage.removeItem(GUEST_JOURNEY_POINTER_KEY); } catch (_) {}
       }
     } catch (_) {}

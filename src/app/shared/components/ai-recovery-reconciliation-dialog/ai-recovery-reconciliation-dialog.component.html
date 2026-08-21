@@ -1,0 +1,38 @@
+<div class="arr-dialog">
+  <button
+    type="button"
+    class="arr-close"
+    (click)="cancel()"
+    aria-label="Close">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="arr-body">
+    <h4 class="arr-title">You have an unfinished AI job post</h4>
+
+    <div class="arr-job-row">
+      <span class="arr-job-label">Existing unfinished job:</span>
+      <span class="arr-job-value">{{ existingTitle }}</span>
+    </div>
+    <div class="arr-job-row">
+      <span class="arr-job-label">New job started before signing in:</span>
+      <span class="arr-job-value">{{ newTitle }}</span>
+    </div>
+
+    <p class="arr-message">Choose which one to keep working on. The other stays exactly as it is unless you pick it.</p>
+  </div>
+
+  <div class="arr-actions">
+    <button type="button" class="arr-btn arr-btn--primary" (click)="continueExisting()">
+      Continue Existing
+    </button>
+    <button type="button" class="arr-btn arr-btn--secondary" (click)="useNewJob()">
+      Use New Job
+    </button>
+    <button type="button" class="arr-btn arr-btn--ghost" (click)="cancel()">
+      Cancel
+    </button>
+  </div>
+</div>
