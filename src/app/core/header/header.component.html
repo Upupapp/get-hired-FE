@@ -8,26 +8,30 @@
            alt="GetHired Online">
     </a>
 
-    <!-- Mobile hamburger — vanishes the moment it's clicked; the floating
-         menu panel below morphs in from this exact corner (shared
-         transform-origin: top right), so it reads as the button itself
-         expanding into the panel rather than two unrelated elements. -->
+    <!-- Mobile hamburger — stays the same size/shape and swaps its icon to
+         a downward-facing arrow while the floating menu panel is open
+         (pointing at the panel below it), and doubles as the toggle to
+         close it again. -->
     <button
       #mobileMenuBtn
       class="gh-nav-toggler"
-      [class.gh-nav-toggler--hidden]="mobileNavOpen"
       type="button"
-      (click)="openMobileNav()"
+      (click)="mobileNavOpen ? closeMobileNav() : openMobileNav()"
       [attr.aria-expanded]="mobileNavOpen"
-      aria-label="Open navigation menu"
-      [attr.tabindex]="mobileNavOpen ? -1 : 0"
+      [attr.aria-label]="mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'"
       aria-controls="ghMobileFloatMenu">
-      <svg class="gh-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      <svg class="gh-menu-icon" *ngIf="!mobileNavOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
            aria-hidden="true" focusable="false">
         <line x1="3" y1="6" x2="21" y2="6"/>
         <line x1="3" y1="12" x2="21" y2="12"/>
         <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <svg class="gh-menu-icon gh-menu-icon--arrow" *ngIf="mobileNavOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true" focusable="false">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <polyline points="6 13 12 19 18 13"/>
       </svg>
     </button>
 

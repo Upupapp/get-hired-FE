@@ -72,54 +72,24 @@
   cursor: pointer;
   padding: 0;
   outline: none;
-  opacity: 1;
-  transform: scale(1);
-  transition: background 120ms ease, width 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              height 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              min-width 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-              border-radius 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: background 120ms ease, transform 100ms ease;
 
   &:hover { background: rgba(0, 0, 0, 0.05); }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.93); }
 
-  // Morphs into a small solid dot instead of vanishing -- stays visible as
-  // the anchor the floating panel visibly grew from (shared top-right
-  // corner), rather than disappearing and leaving the panel looking
-  // unconnected to anything. The hamburger icon itself fades out during
-  // the shrink so only the dot remains once fully collapsed.
-  &--hidden {
-    width: 12px;
-    height: 12px;
-    min-width: 12px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-    pointer-events: none;
-
-    .gh-menu-icon {
-      opacity: 0;
-      transition: opacity 120ms ease;
-    }
-  }
-
   @media (max-width: 991px) {
     display: flex;
   }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: background 120ms ease;
-  }
 }
 
-// Plain static hamburger -- the button itself vanishes on open (see
-// .gh-nav-toggler--hidden) rather than morphing its own lines into an X;
-// the floating panel supplies its own explicit close button instead.
+// Same button, same 44px size, at every state -- only the icon inside
+// swaps (hamburger closed / downward arrow open, toggled via *ngIf in the
+// template), so the trigger never changes shape or shrinks.
 .gh-menu-icon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  opacity: 1;
-  transition: opacity 120ms ease;
 }
 
 // ─── Floating menu: outside-tap catcher ──────────────────────────────────────
