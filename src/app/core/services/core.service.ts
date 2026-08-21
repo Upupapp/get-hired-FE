@@ -4,7 +4,24 @@ import { catchError, map } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
 import { Router } from '@angular/router';
-import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
+
+// TARGETED LOCAL-STORAGE CLEANUP: the complete set of keys this app itself
+// ever writes as part of establishing an authenticated session (signin.
+// component.ts, google-auth.service.ts, linkedin-auth.service.ts, and the
+// legacy admin/applicant/company auth guards' token-refresh paths). This is
+// logout()'s exact inverse -- every key here, and only these, are removed
+// on sign-out. Deliberately NOT a localStorage.clear(): this storage is
+// also where AiCreateDraftService keeps owner-isolated AI Create recovery
+// (one key per owner scope, plus a guest journey/resume-intent pointer) --
+// a blanket clear() would just as happily delete a DIFFERENT Employer's
+// recovery, an unrelated in-progress guest's recovery, or any other
+// unrelated persistent browser data that happens to live in the same
+// storage, none of which has anything to do with THIS user's session.
+const AUTH_SESSION_STORAGE_KEYS: string[] = [
+  'state', 'role', 'user', 'token', 'token_authorization', 'refreshToken',
+  'loginMessage', 'loginError', 'signupError', 'notFound',
+  'withActiveSubscription', 'adminLogin', 'refreshTokenMessage', 'returnURL',
+];
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +48,6 @@ export class CoreService {
   constructor(
     private baseService: BaseService,
     private router: Router,
-    private aiCreateDraft: AiCreateDraftService,
   ) { }
 
   checkEmailIfExist(email: string) {
@@ -71,6 +87,17 @@ export class CoreService {
    * nothing needs to subscribe to anything for the actual sign-out to
    * complete. The returned Observable exists only so a caller that wants
    * completion timing (e.g. a confirmation-modal loading state) can use it.
+   *
+   * TARGETED LOCAL-STORAGE CLEANUP: removes only AUTH_SESSION_STORAGE_KEYS
+   * (this app's own complete auth/session key set) -- never
+   * localStorage.clear(). A blanket clear() has no concept of ownership: it
+   * would delete a different Employer's AI Create recovery, an unrelated
+   * in-progress guest's recovery, or any other unrelated persistent data in
+   * the same storage, none of which belongs to the session being ended
+   * here. Per-owner recovery removal (the sign-out confirmation's optional
+   * checkbox) is a separate, explicit, single-key action the caller takes
+   * via AiCreateDraftService.clear(ownerScope) -- this method never needs
+   * to know that key exists, let alone preserve/restore it.
    */
   logout() {
     this.baseService.post(`${this.authUrl}/logout`, {}).subscribe({
@@ -80,29 +107,17 @@ export class CoreService {
 
     this.isLogin = false;
     this.roleAs = '';
-    // A real session-expiry/normal logout (the global 401/403 interceptor
-    // and the Employer sign-out confirmation both call this) must not
-    // destroy the signed-out user's pending AI Create draft -- see
-    // ai-create-draft.service.ts. Owner-isolated storage (TAB 06) means
-    // there's no single fixed key to preserve; resolve exactly THIS user's
-    // own key from the still-present `user` record before it's wiped, so
-    // only their draft survives -- never a stray key from someone else.
-    let preservedKey: string | null = null;
-    let preservedValue: string | null = null;
-    try {
-      const user = JSON.parse(localStorage.getItem('user') || 'null');
-      if (user && user._id) {
-        preservedKey = this.aiCreateDraft.getStorageKeyFor(user._id);
-        preservedValue = localStorage.getItem(preservedKey);
-      }
-    } catch (_) { /* no valid user record -- nothing to preserve */ }
-
-    localStorage.setItem('state', 'false');
-    localStorage.setItem('role', '');
-    localStorage.clear();
-    if (preservedKey && preservedValue) {
-      localStorage.setItem(preservedKey, preservedValue);
+    for (const key of AUTH_SESSION_STORAGE_KEYS) {
+      try { localStorage.removeItem(key); } catch (_) {}
     }
+    // Explicit signed-out values (not just removal) for the two keys
+    // isLoggedIn()/route guards actually read, matching this method's
+    // previous observable behavior.
+    try {
+      localStorage.setItem('state', 'false');
+      localStorage.setItem('role', '');
+    } catch (_) {}
+
     return of({ success: true, role: '' });
   }
 
