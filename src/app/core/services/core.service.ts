@@ -4,6 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
 import { Router } from '@angular/router';
+import { AuthFacade } from '@main/auth/state/auth.facade';
 
 // TARGETED LOCAL-STORAGE CLEANUP: the complete set of keys this app itself
 // ever writes as part of establishing an authenticated session (signin.
@@ -48,6 +49,7 @@ export class CoreService {
   constructor(
     private baseService: BaseService,
     private router: Router,
+    private authFacade: AuthFacade,
   ) { }
 
   checkEmailIfExist(email: string) {
@@ -104,6 +106,22 @@ export class CoreService {
       next: () => {},
       error: () => {}, // best-effort -- never blocks local sign-out
     });
+
+    // SIGNIN STALE-CREDENTIALS-REPLAY FIX: SigninComponent subscribes to
+    // AuthFacade.credentials$ (an NgRx select(), which replays the current
+    // store value to every new subscriber) as a class-field initializer --
+    // i.e. on construction, unconditionally. AuthFacade.logout() existed
+    // but was never called by the app's one real sign-out path, so the
+    // store's `credentials` slice kept the last successful login response
+    // forever (in-memory, survives client-side navigation). Any later
+    // mount of SigninComponent -- even long after a genuine, complete
+    // sign-out -- would immediately replay that stale response into
+    // loggedIn(), silently re-establishing the old session and
+    // self-navigating away from the sign-in page. Clearing the slice here
+    // (resetCredentials() -> credentials: {...initAuth}, no `id` field, so
+    // loggedIn()'s `user && user.id` guard is a no-op on replay) closes
+    // that leak at its source instead of patching every subscriber.
+    this.authFacade.logout();
 
     this.isLogin = false;
     this.roleAs = '';
