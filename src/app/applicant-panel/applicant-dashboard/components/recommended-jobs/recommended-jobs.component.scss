@@ -41,9 +41,16 @@
 }
 
 .recommended-jobs-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gh-space-5, 20px);
+  // Grid instead of a single stacked column -- reads as a formal, organized
+  // arrangement rather than a plain list. auto-fill/minmax means it lays
+  // out however many columns actually fit (2 within the 500px container
+  // below; more if a future layout widens this component), and folds back
+  // to a single column on its own once a column would drop under 220px --
+  // no separate mobile override needed.
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--gh-space-4, 16px);
+  align-items: start;
   // Fixed 500px width, centered -- min() so it still shrinks to fit rather
   // than overflowing/forcing horizontal scroll on narrower viewports.
   width: min(500px, 100%);
@@ -51,13 +58,13 @@
 }
 
 .recommended-job-item {
+  // Spacing between items now comes entirely from the grid's own gap
+  // (both directions) -- a per-item bottom margin doesn't make sense once
+  // items can sit side-by-side.
   position: relative;
   padding: var(--gh-space-4, 16px);
-  margin: 0 0 var(--gh-space-2, 8px);
   border: 1px solid var(--gh-border, #E7EAF3);
   border-radius: var(--gh-radius-sm, 8px);
-
-  &:last-child { margin-bottom: 0; }
 }
 
 .recommended-job-badge {
