@@ -159,7 +159,11 @@ export class LinkedInAuthService {
           firstName: data.firstName, lastName: data.lastName,
           photoUrl: data.photoUrl
         }));
-        const dest = returnUrl || localStorage.getItem('returnURL') || '/user/dashboard';
+        // PROFILE-SETUP PHASE 1 FIX: consumed once, matching
+        // signin.component.ts -- was previously read but never cleared.
+        const storedReturnUrl = localStorage.getItem('returnURL');
+        if (storedReturnUrl) localStorage.removeItem('returnURL');
+        const dest = returnUrl || storedReturnUrl || '/user/dashboard';
         this.router.navigateByUrl(dest);
         break;
     }

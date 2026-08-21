@@ -10,6 +10,16 @@ interface RecordedVideoOutput {
   title: string;
 }
 
+// PROFILE-SETUP PHASE 1 (VIDEO HARDENING): mirrors the backend's actual
+// accepted containers (magic-byte validated: WebM, MP4/M4V, MOV -- see
+// get-hired-BE helpers/videoValidator.js) and its 100MB limit
+// (VIDEO_CV_MAX_BYTES). Frontend-only, UX-fail-fast -- the backend remains
+// the authoritative check; this only avoids a full upload round-trip for
+// a file that can never be accepted.
+const ALLOWED_VIDEO_TYPES = ['video/webm', 'video/mp4', 'video/x-m4v', 'video/quicktime'];
+const ALLOWED_VIDEO_EXTENSIONS = ['.webm', '.mp4', '.m4v', '.mov'];
+const MAX_VIDEO_BYTES = 100 * 1024 * 1024; // 100 MB, matches backend exactly
+
 @Component({
   selector: 'app-recorder',
   templateUrl: './recorder.component.html',
@@ -39,6 +49,22 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   public time: number = 0;
   public interval;
   public display: any = '00:00';
+
+  // PROFILE-SETUP PHASE 1: the raw (unwrapped) object URL for the
+  // file-upload preview path, tracked separately from videoBlob (which is
+  // wrapped via DomSanitizer.bypassSecurityTrustUrl into an opaque SafeUrl
+  // that can't be handed to URL.revokeObjectURL directly). Only one should
+  // ever be alive at a time.
+  private uploadedObjectUrl: string | null = null;
+  // True once uploadedObjectUrl has been handed to the dialog caller (see
+  // upload()) -- the caller (docs-videocv.component.ts) keeps using that
+  // exact URL for its own preview after this dialog closes, so ownership
+  // of revoking it transfers too. Must NOT revoke on destroy in that case.
+  private objectUrlOwnershipTransferred = false;
+  // PROFILE-SETUP PHASE 1: method-level in-flight guard for file upload --
+  // async blobToBase64() means a rapid double-click on "Upload Video
+  // Instead" could otherwise start two conversions/dialog-closes.
+  private uploadInFlight = false;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
@@ -136,6 +162,14 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   clearVideoRecordedData() {
+    // PROFILE-SETUP PHASE 1: the upload-preview object URL becomes obsolete
+    // the moment the recorded/preview state it belonged to is cleared --
+    // unless ownership already transferred to the dialog caller (see
+    // upload()/objectUrlOwnershipTransferred), which still needs it.
+    if (this.uploadedObjectUrl && !this.objectUrlOwnershipTransferred) {
+      URL.revokeObjectURL(this.uploadedObjectUrl);
+      this.uploadedObjectUrl = null;
+    }
     this.videoBlobUrl = null;
     this.video.srcObject = null;
     this.video.controls = false;
@@ -143,12 +177,66 @@ export class RecorderComponent implements OnInit, AfterViewInit {
   }
 
   upload(item) {
+    // PROFILE-SETUP PHASE 1: duplicate-submit guard -- blobToBase64() is
+    // async, so a rapid second file-select event before the first resolves
+    // must not start a second conversion.
+    if (this.uploadInFlight) return;
+
     const file = item.target.files[0];
+    if (!file) return;
+
+    const validationError = this.validateVideoFile(file);
+    if (validationError) {
+      this.videoRecordingError = validationError;
+      this.ref.detectChanges();
+      // Clear the input so re-selecting the same (still-invalid) file
+      // re-fires the change event.
+      item.target.value = '';
+      return;
+    }
+    this.videoRecordingError = null;
+
+    this.uploadInFlight = true;
     this.recordService.blobToBase64(file)
       .then(vid => {
-        this.videoBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
-        this.dialogRef.close({ blobUrl: this.videoBlob, file: vid });
-      }).catch(err => console.log(err));
+        // Revoke the previous upload preview's object URL (if any) before
+        // creating a new one -- only one should ever be alive at a time.
+        if (this.uploadedObjectUrl) {
+          URL.revokeObjectURL(this.uploadedObjectUrl);
+        }
+        this.uploadedObjectUrl = URL.createObjectURL(file);
+        this.videoBlob = this.sanitizer.bypassSecurityTrustUrl(this.uploadedObjectUrl);
+        this.uploadInFlight = false;
+        this.objectUrlOwnershipTransferred = true;
+        // rawObjectUrl lets the caller (docs-videocv.component.ts) revoke
+        // this exact URL later, once ITS preview is replaced/cleared/
+        // destroyed -- blobUrl alone is a SafeUrl and can't be passed to
+        // URL.revokeObjectURL.
+        this.dialogRef.close({ blobUrl: this.videoBlob, file: vid, rawObjectUrl: this.uploadedObjectUrl });
+      }).catch(err => {
+        this.uploadInFlight = false;
+        this.videoRecordingError = 'Could not read this video file. Please try again.';
+        this.ref.detectChanges();
+      });
+  }
+
+  /** Returns a user-facing error string if the file is clearly unsupported, else null. */
+  private validateVideoFile(file: File): string | null {
+    const nameLower = (file.name || '').toLowerCase();
+    const hasAllowedExtension = ALLOWED_VIDEO_EXTENSIONS.some(ext => nameLower.endsWith(ext));
+    // file.type is browser-reported and not always populated (e.g. some
+    // OS/browser combos leave it blank for less-common containers) -- accept
+    // if EITHER the declared MIME type or the extension matches, since this
+    // is a fail-fast UX check only; the backend's magic-byte validation is
+    // what actually gates acceptance.
+    const hasAllowedType = !!file.type && ALLOWED_VIDEO_TYPES.includes(file.type);
+    if (!hasAllowedType && !hasAllowedExtension) {
+      return 'Unsupported video format. Please upload an MP4, WebM, or MOV file.';
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      return 'This video is too large (max 100 MB). Please choose a smaller file.';
+    }
+    return null;
   }
 
   downloadVideoRecordedData() {
@@ -204,5 +292,14 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.stopRecorderTimer();
+    // PROFILE-SETUP PHASE 1: revoke the upload-preview object URL when this
+    // dialog is destroyed WITHOUT having handed it off to the caller (e.g.
+    // cancel()) -- never revoke it once ownership transferred (see
+    // upload()), since the caller's own preview depends on that exact URL
+    // staying valid after this component is gone.
+    if (this.uploadedObjectUrl && !this.objectUrlOwnershipTransferred) {
+      URL.revokeObjectURL(this.uploadedObjectUrl);
+      this.uploadedObjectUrl = null;
+    }
   }
 }

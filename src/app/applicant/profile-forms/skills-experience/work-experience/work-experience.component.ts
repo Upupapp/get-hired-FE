@@ -45,7 +45,56 @@ export class WorkExperienceComponent implements OnInit {
       endMonth: new FormControl(this.data?.endMonth),
       endYear: new FormControl(this.data?.endYear),
       details: new FormControl(this.data?.details, Validators.required)
+    }, { validators: WorkExperienceComponent.dateRangeValidator });
+
+    // PROFILE-SETUP PHASE 1 (Experience validation): end date is required
+    // for a past role -- current-role semantics (hidden/optional end date
+    // when isCurrentJob is checked) are unchanged, this only closes the gap
+    // where a PAST role could previously be saved with no end date at all.
+    this.updateEndDateValidators(!!this.data?.isCurrentJob);
+    this.workForm.get('isCurrentJob').valueChanges.subscribe((isCurrent: boolean) => {
+      this.updateEndDateValidators(isCurrent);
     });
+  }
+
+  private updateEndDateValidators(isCurrentJob: boolean): void {
+    const endMonth = this.workForm.get('endMonth');
+    const endYear = this.workForm.get('endYear');
+    if (isCurrentJob) {
+      endMonth.clearValidators();
+      endYear.clearValidators();
+    } else {
+      endMonth.setValidators(Validators.required);
+      endYear.setValidators(Validators.required);
+    }
+    endMonth.updateValueAndValidity();
+    endYear.updateValueAndValidity();
+  }
+
+  /**
+   * PROFILE-SETUP PHASE 1 (Experience validation): rejects an end date
+   * that precedes the start date. No-ops (returns null) whenever any of
+   * the 4 date fields aren't filled yet, or the role is marked current
+   * (end date fields are cleared of requirement in that case) -- this
+   * validator only ever fires the specific "end before start" case, it
+   * never duplicates the individual required-field validators above.
+   */
+  private static dateRangeValidator(group: AbstractControl) {
+    const isCurrentJob = group.get('isCurrentJob')?.value;
+    const startMonth = group.get('startMonth')?.value;
+    const startYear = group.get('startYear')?.value;
+    const endMonth = group.get('endMonth')?.value;
+    const endYear = group.get('endYear')?.value;
+    if (isCurrentJob || !startMonth || !startYear || !endMonth || !endYear) {
+      return null;
+    }
+    const monthIndex = (m: string) => month.indexOf(m);
+    const startValue = Number(startYear) * 12 + monthIndex(startMonth);
+    const endValue = Number(endYear) * 12 + monthIndex(endMonth);
+    if (endValue < startValue) {
+      return { dateRangeInvalid: true };
+    }
+    return null;
   }
 
   addWorkExp() {

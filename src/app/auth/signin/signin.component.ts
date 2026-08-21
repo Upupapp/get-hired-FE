@@ -124,6 +124,10 @@ export class SigninComponent implements OnInit {
 
           const redirect = localStorage.getItem('returnURL');
           if (redirect) {
+            // PROFILE-SETUP PHASE 1 FIX: consumed once -- was previously
+            // read but never cleared, leaving it to silently redirect a
+            // later, unrelated sign-in to a stale job/page.
+            localStorage.removeItem('returnURL');
             this.router.navigateByUrl(redirect);
           } else {
             this.router.navigate(['/user/dashboard'], { relativeTo: this.activatedRoute });

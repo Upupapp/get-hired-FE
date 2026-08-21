@@ -55,8 +55,31 @@ export class SkillsExperienceComponent implements OnInit {
     });
   }
 
+  /**
+   * PROFILE-SETUP PHASE 1 (Skills hardening): previously pushed the raw
+   * control value unconditionally -- a blank/whitespace-only entry (the
+   * required validator on skillsTxt was never actually checked here) or an
+   * exact duplicate of an existing skill could both be added. Trims,
+   * rejects blank, and rejects an exact duplicate (case-insensitive,
+   * trimmed comparison) before pushing. Data shape/API unchanged --
+   * professionalSkills stays a plain string[].
+   */
   addSkills() {
-    this.professionalSkills.push(this.skillsFG.controls['skillsTxt'].value);
+    const raw = this.skillsFG.controls['skillsTxt'].value;
+    const trimmed = typeof raw === 'string' ? raw.trim() : '';
+    if (!trimmed) {
+      this.skillsFG.controls['skillsTxt'].reset();
+      return;
+    }
+    const isDuplicate = (this.professionalSkills || []).some(
+      (s) => typeof s === 'string' && s.trim().toLowerCase() === trimmed.toLowerCase()
+    );
+    if (isDuplicate) {
+      this.snackbarService.error('This skill is already in your list.', '', 3000);
+      this.skillsFG.controls['skillsTxt'].reset();
+      return;
+    }
+    this.professionalSkills.push(trimmed);
     this.skillsFG.controls['skillsTxt'].reset();
     this.skillChanged = true;
   }

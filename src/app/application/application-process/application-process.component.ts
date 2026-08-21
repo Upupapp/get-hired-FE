@@ -253,7 +253,21 @@ export class ApplicationProcessComponent implements OnInit {
     }
   }
 
+  /**
+   * PROFILE-SETUP PHASE 1 FIX (confirmed P1): previously a bare
+   * navigateByUrl with no job context at all -- after completing/updating
+   * their profile, the applicant was never returned to the job they were
+   * trying to apply for. Reuses the existing `returnURL` localStorage
+   * mechanism (already established for the job-detail "log in to apply"
+   * flow -- see job-posts-details.component.ts toLogin() /
+   * signin.component.ts) rather than inventing a parallel one. Consumed
+   * once on the profile-edit side (read + immediately removed) so it can
+   * never leak into a later, unrelated session.
+   */
   redirectToUpdate() {
+    if (this.job && this.job.jobId) {
+      localStorage.setItem('returnURL', `/jobs/details/${this.job.jobId}`);
+    }
     this.router.navigateByUrl('user/profile/edit')
   }
 

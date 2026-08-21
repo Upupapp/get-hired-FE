@@ -300,6 +300,9 @@ export class GoogleAuthService {
         } else {
           const storedReturn = localStorage.getItem('returnURL');
           if (storedReturn) {
+            // PROFILE-SETUP PHASE 1 FIX: consumed once, matching
+            // signin.component.ts -- was previously read but never cleared.
+            localStorage.removeItem('returnURL');
             this.router.navigateByUrl(storedReturn);
           } else {
             this.router.navigate(['/user/dashboard']);
