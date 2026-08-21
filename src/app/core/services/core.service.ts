@@ -107,6 +107,19 @@ export class CoreService {
       error: () => {}, // best-effort -- never blocks local sign-out
     });
 
+    this.isLogin = false;
+    this.roleAs = '';
+    for (const key of AUTH_SESSION_STORAGE_KEYS) {
+      try { localStorage.removeItem(key); } catch (_) {}
+    }
+    // Explicit signed-out values (not just removal) for the two keys
+    // isLoggedIn()/route guards actually read, matching this method's
+    // previous observable behavior.
+    try {
+      localStorage.setItem('state', 'false');
+      localStorage.setItem('role', '');
+    } catch (_) {}
+
     // SIGNIN STALE-CREDENTIALS-REPLAY FIX: SigninComponent subscribes to
     // AuthFacade.credentials$ (an NgRx select(), which replays the current
     // store value to every new subscriber) as a class-field initializer --
@@ -121,20 +134,11 @@ export class CoreService {
     // (resetCredentials() -> credentials: {...initAuth}, no `id` field, so
     // loggedIn()'s `user && user.id` guard is a no-op on replay) closes
     // that leak at its source instead of patching every subscriber.
-    this.authFacade.logout();
-
-    this.isLogin = false;
-    this.roleAs = '';
-    for (const key of AUTH_SESSION_STORAGE_KEYS) {
-      try { localStorage.removeItem(key); } catch (_) {}
-    }
-    // Explicit signed-out values (not just removal) for the two keys
-    // isLoggedIn()/route guards actually read, matching this method's
-    // previous observable behavior.
-    try {
-      localStorage.setItem('state', 'false');
-      localStorage.setItem('role', '');
-    } catch (_) {}
+    //
+    // Deliberately LAST and try/caught: the local sign-out above (the part
+    // that actually matters -- state/role/token removed) must complete
+    // unconditionally, even if this store dispatch were ever to throw.
+    try { this.authFacade.logout(); } catch (_) {}
 
     return of({ success: true, role: '' });
   }

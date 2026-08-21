@@ -401,12 +401,19 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     instance.confirmDisabled = true;
     instance.confirmLabel = 'Signing out...';
 
+    // Remove the local AI Create recovery BEFORE signing out, not after --
+    // it depends on `currentUser` (read from the `user` key that
+    // coreService.logout() is about to delete) and on nothing logout()
+    // does, so there's no reason to run it downstream of the session
+    // teardown. Doing it first also means a slow/failed backend revoke
+    // call can never leave the opted-in-to-delete recovery sitting around.
+    if (removeLocalRecovery && currentUser && currentUser._id) {
+      this.aiCreateDraft.clear(currentUser._id);
+    }
+
     this.coreService.logout().subscribe({
       next: () => {
         this.logoutInProgress = false;
-        if (removeLocalRecovery && currentUser && currentUser._id) {
-          this.aiCreateDraft.clear(currentUser._id);
-        }
         // Redirect ONLY after logout has actually completed, and only Home --
         // never dashboard/signin/register/the previous protected page.
         dialogRef.close();
