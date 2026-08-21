@@ -83,7 +83,8 @@ export class SigninComponent implements OnInit {
             _id: data.id,
             email: data.email,
             firstName: data.firstName,
-            lastName: data.lastName
+            lastName: data.lastName,
+            photoUrl: data.photoUrl
           }));
           this.router.navigate(['../admin'], { relativeTo: this.activatedRoute });
           break;
@@ -95,6 +96,7 @@ export class SigninComponent implements OnInit {
             companyName: data.companyName,
             firstName: data.firstName,
             lastName: data.lastName,
+            photoUrl: data.photoUrl
 
           }));
 
@@ -116,7 +118,8 @@ export class SigninComponent implements OnInit {
             _id: data.id,
             email: data.email,
             firstName: data.firstName,
-            lastName: data.lastName
+            lastName: data.lastName,
+            photoUrl: data.photoUrl
           }));
 
           const redirect = localStorage.getItem('returnURL');

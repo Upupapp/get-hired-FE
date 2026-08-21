@@ -129,7 +129,8 @@ export class LinkedInAuthService {
       case 1:
         localStorage.setItem('user', JSON.stringify({
           _id: data.id, email: data.email,
-          firstName: data.firstName, lastName: data.lastName
+          firstName: data.firstName, lastName: data.lastName,
+          photoUrl: data.photoUrl
         }));
         this.router.navigate(['/admin']);
         break;
@@ -137,7 +138,8 @@ export class LinkedInAuthService {
         localStorage.setItem('user', JSON.stringify({
           _id: data.id, email: data.email,
           companyId: data.companyId, companyName: data.companyName,
-          firstName: data.firstName, lastName: data.lastName
+          firstName: data.firstName, lastName: data.lastName,
+          photoUrl: data.photoUrl
         }));
         if (data.withCompany) {
           if (data.withActiveSubscription) {
@@ -154,7 +156,8 @@ export class LinkedInAuthService {
       default:
         localStorage.setItem('user', JSON.stringify({
           _id: data.id, email: data.email,
-          firstName: data.firstName, lastName: data.lastName
+          firstName: data.firstName, lastName: data.lastName,
+          photoUrl: data.photoUrl
         }));
         const dest = returnUrl || localStorage.getItem('returnURL') || '/user/dashboard';
         this.router.navigateByUrl(dest);

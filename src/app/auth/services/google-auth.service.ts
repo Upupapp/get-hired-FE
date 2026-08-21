@@ -265,7 +265,8 @@ export class GoogleAuthService {
       case 1:
         localStorage.setItem('user', JSON.stringify({
           _id: data.id, email: data.email,
-          firstName: data.firstName, lastName: data.lastName
+          firstName: data.firstName, lastName: data.lastName,
+          photoUrl: data.photoUrl
         }));
         this.router.navigate(['/admin']);
         break;
@@ -273,7 +274,8 @@ export class GoogleAuthService {
         localStorage.setItem('user', JSON.stringify({
           _id: data.id, email: data.email,
           companyId: data.companyId, companyName: data.companyName,
-          firstName: data.firstName, lastName: data.lastName
+          firstName: data.firstName, lastName: data.lastName,
+          photoUrl: data.photoUrl
         }));
         if (data.withCompany) {
           if (data.withActiveSubscription) {
@@ -290,7 +292,8 @@ export class GoogleAuthService {
       default:
         localStorage.setItem('user', JSON.stringify({
           _id: data.id, email: data.email,
-          firstName: data.firstName, lastName: data.lastName
+          firstName: data.firstName, lastName: data.lastName,
+          photoUrl: data.photoUrl
         }));
         if (returnUrl) {
           this.router.navigateByUrl(returnUrl);
