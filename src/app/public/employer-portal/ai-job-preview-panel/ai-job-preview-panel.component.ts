@@ -215,7 +215,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     'Contract': 'Contractor',
   };
 
-  private saveDraftPayload(title: string): string {
+  private saveDraftPayload(title: string): { ownerScope: string; saved: boolean } {
     const input: GenerateIntentInputs = {
       jobTitle: title,
       location: this.location.trim(),
@@ -223,8 +223,8 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
       employmentType: AiJobPreviewPanelComponent.EMPLOYMENT_TYPE_TO_AI_CREATE[this.employmentType] || this.employmentType,
     };
     const ownerScope = this.resolveOwnerScopeForDraftSave();
-    this.aiCreateDraft.save(input, ownerScope, 'public-employer-ai-preview-panel', 'pending-registration');
-    return ownerScope;
+    const saved = this.aiCreateDraft.save(input, ownerScope, 'public-employer-ai-preview-panel', 'pending-registration');
+    return { ownerScope, saved };
   }
 
   /** STORAGE-SAFETY FIX: this panel is reachable while already authenticated
@@ -243,7 +243,19 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
   }
 
   private saveDraftAndRedirectToRegister(title: string): void {
-    const ownerScope = this.saveDraftPayload(title);
+    const { ownerScope, saved } = this.saveDraftPayload(title);
+    // GUEST-SAFETY: never knowingly redirect a guest away and lose what
+    // they just typed. If the local write genuinely failed (storage
+    // disabled, quota exceeded, private-browsing restrictions), stay on
+    // this panel with the fields still filled and say so truthfully,
+    // instead of silently sending them into Register with nothing to
+    // resume once they get there.
+    if (!saved) {
+      this.haptics.error();
+      this.errorMsg = 'Your job details couldn’t be saved on this device. Check your browser storage settings (or try a different browser) and click Continue again.';
+      this.step = 'error';
+      return;
+    }
     // Bind this exact guest journey as the one eligible for adoption once
     // registration completes (TAB 09) -- no-ops if ownerScope isn't a guest
     // scope (e.g. an authenticated non-Employer landed here, see above).
