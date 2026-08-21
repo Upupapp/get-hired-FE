@@ -619,6 +619,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   async saveAsDraft() {
+    // AI-CREATE-RACE FIX: persistAssistantDraft()'s background POST /job/create
+    // (see its own header comment) is what assigns this.jobId for an
+    // AI-prefilled job. Submitting before that resolves means formatJob()
+    // sends jobId: null, and JobService.saveJob() takes the CREATE branch --
+    // producing a second, duplicate job record instead of updating the one
+    // already being autosaved. Block submission for the same window the
+    // Publish button already gets, per the identical reasoning below.
+    if (this.autoSaveState === 'saving' && this.assistantPrefilled && !this.jobId) {
+      this.snackbarService.warning('Still setting up your job — try again in a moment.', '', 3000);
+      return;
+    }
     // F-08 UX: set draft-saving spinner, clear prior error before attempt
     this.savingDraft = true;
     this.saveErrorMsg = null;
@@ -629,6 +640,22 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   publishJobPost() {
+    // AI-CREATE-RACE FIX: an AI-prefilled job's this.jobId is assigned
+    // asynchronously by persistAssistantDraft()'s background save (see that
+    // method's header comment -- its whole purpose is preventing a second
+    // job record). Publishing before that resolves means formatJob() sends
+    // jobId: null, so JobService.saveJob() takes the CREATE branch instead
+    // of updating the job already being autosaved: a second, genuinely
+    // Published job gets created (hence a real "is now live" success
+    // dialog), while the original draft the employer had been editing is
+    // left untouched at Draft status -- looking exactly like a broken
+    // publish even though the publish itself succeeded, just against the
+    // wrong record. Block submission until the background save resolves
+    // (autoSaveState leaves 'saving') or this.jobId is otherwise known.
+    if (this.autoSaveState === 'saving' && this.assistantPrefilled && !this.jobId) {
+      this.snackbarService.warning('Still setting up your job — try again in a moment.', '', 3000);
+      return;
+    }
     // F-08 UX: clear prior error before each publish attempt
     this.saveErrorMsg = null;
     this.saveSuccessPulse = false;
@@ -1143,7 +1170,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
    *  avoid triggering the editJob$ → setFormGroup() form-reset side effect. */
   private performAutosave(): void {
     if (!this.jobId || this.autoSaveState === 'saving') return;
-    const job = this.formatJob(1);
+    // AUTOSAVE-STATUS-REGRESSION FIX: this used to hardcode formatJob(1)
+    // (Draft) unconditionally. A debounced autosave scheduled just before a
+    // genuine Publish click can have its request land AFTER the publish
+    // request completes -- silently overwriting job_status_id back to 1 on
+    // the same row, with no visible error (this call deliberately bypasses
+    // the NgRx facade/success$ flow, see this method's own doc comment, so
+    // nothing surfaces to the user). The employer would see a real "is now
+    // live" success dialog immediately followed by an invisible reversion
+    // back to Draft. Preserve whatever the job's actual current status is
+    // (already tracked in this.status, kept in sync by editJob$ after every
+    // facade-routed save including Publish) instead of forcing Draft --
+    // autosave should never change a job's publish state, only its content.
+    const job = this.formatJob(this.status || 1);
     this.setAutoSaveState('saving');
     this.jobService.saveJob(job).pipe(take(1)).subscribe({
       next: () => {

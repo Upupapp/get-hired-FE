@@ -161,7 +161,7 @@
               class="gh-btn gh-btn--outline"
               type="button"
               (click)="saveAsDraft()"
-              [disabled]="savingDraft || loading"
+              [disabled]="savingDraft || loading || (autoSaveState === 'saving' && assistantPrefilled && !jobId)"
               [attr.aria-label]="savingDraft ? 'Saving draft...' : 'Save draft'"
             >
               <span *ngIf="!savingDraft">
@@ -190,7 +190,7 @@
               class="gh-btn gh-btn--publish"
               type="button"
               (click)="publishJobPost()"
-              [disabled]="!isAllowedToPublish || loading"
+              [disabled]="!isAllowedToPublish || loading || (autoSaveState === 'saving' && assistantPrefilled && !jobId)"
               [attr.aria-label]="loading ? 'Publishing...' : 'Publish job post'"
             >
               <span *ngIf="!loading">
