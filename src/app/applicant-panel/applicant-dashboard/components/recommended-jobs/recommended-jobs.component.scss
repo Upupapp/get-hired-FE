@@ -6,11 +6,20 @@
 // rather than the previous bare-minimum 12px gap and no outer padding.
 
 .recommended-jobs {
-  margin: var(--gh-space-6, 24px) 0;
+  // Sits flush against the content-area edges otherwise
+  // (#sub-applicant-component has zero padding of its own) -- horizontal
+  // margin keeps it clear of the viewport sides, matching the readiness
+  // panel above it; top margin gives real separation from that panel
+  // instead of the two sitting flush against each other.
+  margin: var(--gh-space-5, 20px) var(--gh-space-6, 24px) var(--gh-space-6, 24px);
   padding: var(--gh-space-5, 20px) var(--gh-space-5, 20px) var(--gh-space-2, 8px);
   background: var(--gh-white, #ffffff);
   border: 1px solid var(--gh-border, #E7EAF3);
   border-radius: var(--gh-radius-card, 18px);
+
+  @media (max-width: 480px) {
+    margin: var(--gh-space-4, 16px) var(--gh-space-3, 12px) var(--gh-space-4, 16px);
+  }
 }
 
 .recommended-jobs-title {
@@ -35,6 +44,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--gh-space-5, 20px);
+  // Fixed 500px width, centered -- min() so it still shrinks to fit rather
+  // than overflowing/forcing horizontal scroll on narrower viewports.
+  width: min(500px, 100%);
+  margin: 0 auto;
 }
 
 .recommended-job-item {

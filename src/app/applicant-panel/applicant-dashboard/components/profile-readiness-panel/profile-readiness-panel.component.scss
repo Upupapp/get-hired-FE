@@ -8,9 +8,18 @@
   background: var(--gh-color-bg-card);
   border-radius: var(--gh-card-radius);
   padding: var(--gh-card-padding);
-  margin-bottom: var(--gh-space-4);
+  // Sits directly under the topbar and flush against the content-area
+  // edges (#sub-applicant-component has zero padding of its own) --
+  // margin on all sides keeps it clear of the topbar above and the
+  // viewport edges left/right, plus real separation from the
+  // recommended-jobs panel below it.
+  margin: var(--gh-space-6, 24px) var(--gh-space-6, 24px) var(--gh-space-5, 20px);
   border: var(--gh-card-border);
   box-shadow: var(--gh-card-shadow);
+
+  @media (max-width: 480px) {
+    margin: var(--gh-space-4, 16px) var(--gh-space-3, 12px) var(--gh-space-4, 16px);
+  }
 }
 
 .readiness-panel-title {
