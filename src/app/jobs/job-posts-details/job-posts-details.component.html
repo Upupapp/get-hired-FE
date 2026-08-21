@@ -138,12 +138,12 @@
         </div>
 
         <!-- Video interview badge -->
-        <div class="mb-3">
+        <div class="mb-3 gh-aligned-block">
           <app-video-interview-badge [job]="nJob"></app-video-interview-badge>
         </div>
 
         <!-- Match panel with required disclaimer -->
-        <div class="gh-match-section mb-3">
+        <div class="gh-match-section mb-3 gh-aligned-block">
           <app-job-match-panel [job]="nJob" (applyClicked)="toApply()"></app-job-match-panel>
           <p class="gh-match-disclaimer" *ngIf="userRole === '3'">
             Your match score helps you understand how your profile aligns with this job. Employers make their own hiring decisions, and this score is not an automated rejection or approval.

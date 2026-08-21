@@ -6,6 +6,16 @@
   padding: 20px;
   margin-bottom: 16px;
   border: 1px solid rgba(0, 0, 0, 0.06);
+  margin-left: 20px;
+}
+
+// JPD-06 MOBILEVIEW: matches the same guard on Job Detail's .card/
+// .gh-aligned-block -- a flat 20px left margin eats real width on very
+// small screens (≤360px, incl. the 320px baseline).
+@media (max-width: 480px) {
+  .company-snapshot {
+    margin-left: 0;
+  }
 }
 
 .company-snapshot-header {

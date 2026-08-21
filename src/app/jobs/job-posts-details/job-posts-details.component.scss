@@ -336,6 +336,26 @@
   margin-left: 20px;
 }
 
+// Aligns the video-interview badge and match-grade panel's outer spacing
+// with .card/.company-snapshot's 20px left margin (JPD-06: keep every
+// direct child of gh-detail-main flush to the same left edge). Both wrapped
+// components manage their own internal padding/border -- this only shifts
+// their position within the column.
+.gh-aligned-block {
+  margin-left: 20px;
+}
+
+// JPD-06 MOBILEVIEW: a flat 20px left margin eats real width on very small
+// screens (≤360px, incl. the 320px baseline) where every pixel of column
+// width matters -- drop it below the point where .gh-detail-main itself
+// goes full-width single-column, so nothing gets cramped or overflows.
+@media (max-width: 480px) {
+  .card,
+  .gh-aligned-block {
+    margin-left: 0;
+  }
+}
+
 .title-badge{
 	font-family: 'Manrope';
 	font-style: normal;
