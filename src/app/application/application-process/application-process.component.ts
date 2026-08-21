@@ -200,7 +200,15 @@ export class ApplicationProcessComponent implements OnInit {
     if (result.error) {
       this.submitStatus = 'error';
       this.isSubmitting = false;
-      this.submitError = 'We couldn\'t submit your application. Please check your connection and try again.';
+      // Surface the backend's actual error text when it's a real, user-safe
+      // message (application.effects.ts already extracts errBody.error/
+      // message from the failed response) -- this used to always show a
+      // generic "check your connection" string regardless of the real
+      // cause (validation failure, permission issue, server error, etc.),
+      // which made every submission failure look identical and undiagnosable.
+      this.submitError = (typeof result.error === 'string' && result.error.trim())
+        ? result.error
+        : 'We couldn\'t submit your application. Please check your connection and try again.';
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }
   }
