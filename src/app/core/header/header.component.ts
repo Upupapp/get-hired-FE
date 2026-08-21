@@ -5,6 +5,8 @@ import {
   Input,
   EventEmitter,
   ViewChild,
+  ElementRef,
+  HostListener,
   AfterViewInit,
   OnDestroy
 } from '@angular/core';
@@ -28,6 +30,14 @@ export class HeaderComponent implements OnInit {
   userRole = localStorage.getItem('role');
   initials: string;
 
+  // Mobile nav drawer — same pattern as the Employer/Applicant/Admin portal
+  // drawers (gh-mobile-drawer + gh-mobile-scrim), so the public site nav
+  // (Home/Jobs/Employers/etc.) gets the same modern mobile treatment
+  // instead of Bootstrap's plain collapse-dropdown.
+  mobileNavOpen = false;
+  @ViewChild('mobileMenuBtn') mobileMenuBtnRef: ElementRef<HTMLButtonElement>;
+  @ViewChild('firstDrawerLink') firstDrawerLinkRef: ElementRef<HTMLElement>;
+
   public req: Subscription;
   public location: any;
 
@@ -46,7 +56,38 @@ export class HeaderComponent implements OnInit {
         left: 0,
         behavior: 'smooth'
       });
+
+      // Close the mobile drawer on navigation -- otherwise it stays open
+      // (with its scrim blocking the page) across a route change triggered
+      // from outside the drawer, e.g. browser back/forward.
+      this.closeMobileNav();
     });
+  }
+
+  openMobileNav(): void {
+    this.mobileNavOpen = true;
+    setTimeout(() => {
+      if (this.firstDrawerLinkRef?.nativeElement) {
+        this.firstDrawerLinkRef.nativeElement.focus();
+      }
+    }, 200);
+  }
+
+  closeMobileNav(): void {
+    if (!this.mobileNavOpen) return;
+    this.mobileNavOpen = false;
+    setTimeout(() => {
+      if (this.mobileMenuBtnRef?.nativeElement) {
+        this.mobileMenuBtnRef.nativeElement.focus();
+      }
+    }, 50);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.mobileNavOpen) {
+      this.closeMobileNav();
+    }
   }
 
   ngOnInit(): void {
@@ -78,7 +119,14 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    localStorage.clear();
+    // Was localStorage.clear() -- the same unsafe blanket-clear bug fixed
+    // in CoreService.logout() earlier (bc2d35e0), reintroduced here via a
+    // separate, unguarded logout path. A blanket clear() deletes ANY other
+    // owner's AI Create recovery/guest data sharing this storage, not just
+    // this session's own keys. Routed through the canonical logout() (real
+    // backend revoke + targeted key removal + NgRx credentials reset) so
+    // every logout path in the app behaves identically.
+    this.coreService.logout();
     this.appFacade.resetCredentials();
     this.router.navigateByUrl('/signin');
   }

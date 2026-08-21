@@ -8,44 +8,46 @@
            alt="GetHired Online">
     </a>
 
-    <!-- Mobile hamburger (collapse) -->
-    <button class="navbar-toggler gh-nav-toggler" type="button"
-      data-bs-toggle="collapse" data-bs-target="#ghNavCollapse"
-      aria-controls="ghNavCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <!-- Mobile hamburger / X — opens the slide-in drawer below. Same
+         animated-icon pattern used by the Employer/Applicant/Admin portal
+         drawers, so the mobile nav experience is consistent site-wide. -->
+    <button
+      #mobileMenuBtn
+      class="gh-nav-toggler"
+      type="button"
+      (click)="openMobileNav()"
+      [attr.aria-expanded]="mobileNavOpen"
+      [attr.aria-label]="mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'"
+      aria-controls="ghMobileNavDrawer">
+      <svg class="gh-menu-icon" [class.gh-menu-icon--open]="mobileNavOpen"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true" focusable="false">
+        <line class="gh-menu-line gh-menu-line--top" x1="3" y1="6" x2="21" y2="6"/>
+        <line class="gh-menu-line gh-menu-line--mid" x1="3" y1="12" x2="21" y2="12"/>
+        <line class="gh-menu-line gh-menu-line--bot" x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
     </button>
 
-    <!-- Nav items -->
-    <div class="collapse navbar-collapse" id="ghNavCollapse">
+    <!-- Desktop nav items — unchanged, visible only ≥992px -->
+    <div class="gh-nav-desktop-list d-none d-lg-flex">
       <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
 
-        <!-- Browse jobs CTA (public) -->
         <li class="nav-item" *ngIf="isPublic">
           <a routerLink="/jobs" class="gh-nav-btn-primary gh-pressable">Browse jobs</a>
         </li>
 
-        <!-- Jobs link (dashboard) -->
         <li class="nav-item" *ngIf="!isPublic">
           <button class="gh-nav-btn-primary" type="button" (click)="navigateToJobs()">
             Jobs
           </button>
         </li>
 
-        <!-- Start hiring (mobile collapse only) -->
-        <li class="nav-item d-lg-none" *ngIf="isPublic && !isUserLoggedIn">
-          <a routerLink="/employers" class="gh-nav-hire-link d-block">
-            Start hiring
-          </a>
-        </li>
-
-        <!-- Language selector (hidden on public nav — unstyled Bootstrap select breaks design) -->
         <li class="nav-item gh-nav-lang" *ngIf="!isPublic">
           <app-language-selection title="Language"></app-language-selection>
         </li>
 
-        <!-- Auth / Avatar -->
         <li class="nav-item">
-          <!-- Logged out: Sign In -->
           <div *ngIf="!isUserLoggedIn">
             <button class="gh-nav-btn-signin gh-pressable" type="button"
               (click)="redirectToRegister()" aria-label="Sign in to your account">
@@ -53,7 +55,6 @@
             </button>
           </div>
 
-          <!-- Logged in: Avatar dropdown -->
           <div class="gh-nav-avatar-wrap dropdown" *ngIf="isUserLoggedIn && user">
             <button class="gh-nav-avatar gh-pressable" type="button"
               id="navAvatarBtn"
@@ -85,4 +86,98 @@
       </ul>
     </div>
   </div>
+</nav>
+
+<!-- Mobile scrim — dismisses drawer on tap -->
+<div class="gh-mobile-scrim"
+     [class.gh-mobile-scrim--visible]="mobileNavOpen"
+     (click)="closeMobileNav()"
+     aria-hidden="true">
+</div>
+
+<!-- Mobile drawer — same slide-in-from-left pattern as the Employer/
+     Applicant/Admin portal drawers, for a consistent mobile nav across
+     the whole site (public pages included). -->
+<nav id="ghMobileNavDrawer"
+     class="gh-mobile-drawer"
+     [class.gh-mobile-drawer--open]="mobileNavOpen"
+     role="navigation"
+     aria-label="Main navigation"
+     cdkTrapFocus
+     [cdkTrapFocusAutoCapture]="mobileNavOpen">
+
+  <div class="gh-drawer-header">
+    <img src="assets/brand/Gethired-horizontal-logo.png?v=3"
+         class="gh-drawer-logo"
+         alt="GetHired"
+         aria-hidden="true">
+    <button class="gh-drawer-close-btn"
+            type="button"
+            aria-label="Close navigation menu"
+            (click)="closeMobileNav()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           width="20" height="20" aria-hidden="true" focusable="false">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <ul class="gh-drawer-nav" role="list">
+
+    <li role="listitem" *ngIf="isPublic">
+      <a #firstDrawerLink routerLink="/jobs" class="gh-drawer-nav-item" (click)="closeMobileNav()">
+        <span class="gh-drawer-nav-label">Browse jobs</span>
+      </a>
+    </li>
+
+    <li role="listitem" *ngIf="!isPublic">
+      <button #firstDrawerLink type="button" class="gh-drawer-nav-item gh-drawer-nav-item--btn"
+        (click)="navigateToJobs(); closeMobileNav()">
+        <span class="gh-drawer-nav-label">Jobs</span>
+      </button>
+    </li>
+
+    <li role="listitem" *ngIf="isPublic && !isUserLoggedIn">
+      <a routerLink="/employers" class="gh-drawer-nav-item" (click)="closeMobileNav()">
+        <span class="gh-drawer-nav-label">Start hiring</span>
+      </a>
+    </li>
+
+    <li role="listitem" class="gh-drawer-nav-lang" *ngIf="!isPublic">
+      <app-language-selection title="Language"></app-language-selection>
+    </li>
+
+    <!-- Logged out: Sign In -->
+    <li role="listitem" *ngIf="!isUserLoggedIn">
+      <button type="button" class="gh-drawer-nav-item gh-drawer-nav-item--btn gh-drawer-nav-item--primary"
+        (click)="redirectToRegister(); closeMobileNav()" aria-label="Sign in to your account">
+        <span class="gh-drawer-nav-label">Sign In</span>
+      </button>
+    </li>
+
+    <!-- Logged in: account section, flattened (no nested dropdown on mobile) -->
+    <ng-container *ngIf="isUserLoggedIn && user">
+      <li role="listitem" class="gh-drawer-account">
+        <button type="button" class="gh-drawer-account-btn" (click)="goToDashboard(); closeMobileNav()">
+          <img [src]="user.photoUrl" *ngIf="user.photoUrl" class="gh-drawer-account-avatar" alt="">
+          <span *ngIf="!user.photoUrl" class="gh-drawer-account-avatar gh-drawer-account-initials" aria-hidden="true">
+            {{ initials }}
+          </span>
+          <span class="gh-drawer-account-info">
+            <span class="gh-drawer-account-name">{{ user.firstName + ' ' + user.lastName }}</span>
+            <span class="gh-drawer-account-company" *ngIf="user.companyName">{{ user.companyName }}</span>
+          </span>
+        </button>
+      </li>
+      <li role="listitem">
+        <button type="button" class="gh-drawer-nav-item gh-drawer-nav-item--btn gh-drawer-nav-item--danger"
+          (click)="logout(); closeMobileNav()">
+          <span class="gh-drawer-nav-label">Log out</span>
+        </button>
+      </li>
+    </ng-container>
+
+  </ul>
 </nav>

@@ -51,15 +51,260 @@
   // Full-color logo on white background — no filter needed.
 }
 
-// ─── Mobile toggler ──────────────────────────────────────────────────────────
+// ─── Mobile hamburger / X toggler ─────────────────────────────────────────────
+// Replaces the old bordered-square Bootstrap toggler with the same animated
+// hamburger→X icon used by the Employer/Applicant/Admin portal drawers, for
+// a consistent mobile nav treatment across the whole site. Dark icon here
+// (this nav's surface is white, unlike the portals' navy topbar).
 
 .gh-nav-toggler {
-  border: 1.5px solid rgba(0, 0, 0, 0.15) !important;
-  border-radius: 8px !important;
-  padding: 6px 10px !important;
+  display: none; // shown ≤991px, see media query below
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   margin-left: auto;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #1a1a2e;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: background 120ms ease, transform 100ms ease;
 
-  &:focus { box-shadow: none !important; }
+  &:hover { background: rgba(0, 0, 0, 0.05); }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:active { transform: scale(0.93); }
+
+  @media (max-width: 991px) {
+    display: flex;
+  }
+}
+
+.gh-menu-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+
+  .gh-menu-line {
+    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), opacity 120ms ease;
+    transform-origin: center;
+  }
+
+  &--open {
+    .gh-menu-line--top { transform: rotate(45deg) translate(4px, 6px); }
+    .gh-menu-line--mid { opacity: 0; transform: scaleX(0); }
+    .gh-menu-line--bot { transform: rotate(-45deg) translate(4px, -6px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gh-menu-line { transition: none; }
+  }
+}
+
+// ─── Mobile scrim ─────────────────────────────────────────────────────────────
+
+.gh-mobile-scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.48);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+
+  &--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+
+// ─── Mobile drawer ────────────────────────────────────────────────────────────
+// Slides in from the left, same 280px width and motion as the portal
+// drawers. White surface (matches this nav's own light theme).
+
+.gh-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  max-width: 85vw; // never overflow very small (320px) viewports
+  z-index: 1001;
+  background: #ffffff;
+  transform: translateX(-100%);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.16);
+
+  &--open { transform: translateX(0); }
+
+  @media (min-width: 992px) { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+
+.gh-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  min-height: 64px;
+  flex-shrink: 0;
+}
+
+.gh-drawer-logo {
+  height: 30px;
+  width: auto;
+  object-fit: contain;
+}
+
+.gh-drawer-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+  outline: none;
+  transition: background 120ms ease, transform 100ms ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.06); color: #1a1a2e; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:active { transform: scale(0.9); }
+}
+
+.gh-drawer-nav {
+  list-style: none;
+  padding: 12px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gh-drawer-nav-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.04); text-decoration: none; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: -2px; }
+}
+
+.gh-drawer-nav-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.gh-drawer-nav-item--primary {
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  margin-top: 8px;
+
+  .gh-drawer-nav-label { color: #ffffff; }
+  &:hover { opacity: 0.9; background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%); }
+}
+
+.gh-drawer-nav-item--danger {
+  .gh-drawer-nav-label { color: #dc2626; }
+  &:hover { background: rgba(220, 38, 38, 0.06); }
+}
+
+.gh-drawer-nav-lang {
+  padding: 4px 12px;
+}
+
+// ─── Drawer account block (flattened avatar menu — no nested dropdown) ───────
+
+.gh-drawer-account {
+  padding: 4px 0 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  margin-bottom: 8px;
+}
+
+.gh-drawer-account-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 120ms ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.04); }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: -2px; }
+}
+
+.gh-drawer-account-avatar {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $color-global-navy;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gh-drawer-account-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gh-drawer-account-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gh-drawer-account-company {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // ─── Nav list ─────────────────────────────────────────────────────────────────
@@ -124,25 +369,6 @@
   &:hover { opacity: 0.88; }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.97); }
-}
-
-// ─── "Start hiring" link (mobile collapse menu only) ─────────────────────────
-
-.gh-nav-hire-link {
-  display: inline-flex;
-  align-items: center;
-  color: #FF7062;
-  font-family: 'Manrope', sans-serif;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  padding: 10px 12px;
-  min-height: 44px;
-  border-radius: 8px;
-  transition: background 120ms ease;
-
-  &:hover { background: rgba(255, 112, 98, 0.08); color: #FF4D3C; }
-  &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
 }
 
 // ─── Avatar (logged-in user) ──────────────────────────────────────────────────
@@ -278,40 +504,6 @@
   }
 }
 
-// ─── Collapsed mobile nav ─────────────────────────────────────────────────────
-
-@media (max-width: 991px) {
-  .navbar-collapse {
-    background: #ffffff;
-    // HE-03 MOBILEVIEW: include safe-area bottom padding for notched iPhones
-    padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
-    border-top: 1px solid rgba(0, 0, 0, 0.07);
-    margin-top: 0;
-
-    .gh-nav-list {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .nav-item { width: 100%; }
-
-    .gh-nav-btn-primary,
-    .gh-nav-btn-signin {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .gh-nav-lang { margin: 4px 0; }
-
-    .gh-nav-avatar-wrap { align-self: flex-start; }
-
-    .gh-nav-dropdown {
-      position: static !important;
-      float: none !important;
-      margin-top: 4px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
-    }
-  }
-}
+// Old .navbar-collapse mobile-collapse block removed -- superseded by the
+// gh-mobile-drawer/gh-mobile-scrim pattern above; that markup no longer
+// exists in the template.
