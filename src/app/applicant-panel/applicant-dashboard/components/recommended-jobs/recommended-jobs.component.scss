@@ -11,6 +11,8 @@
   // margin keeps it clear of the viewport sides, matching the readiness
   // panel above it; top margin gives real separation from that panel
   // instead of the two sitting flush against each other.
+  width: auto;
+  box-sizing: border-box;
   margin: var(--gh-space-5, 20px) var(--gh-space-6, 24px) var(--gh-space-6, 24px);
   padding: var(--gh-space-5, 20px) var(--gh-space-5, 20px) var(--gh-space-2, 8px);
   background: var(--gh-white, #ffffff);
@@ -42,17 +44,18 @@
 
 .recommended-jobs-list {
   // Grid instead of a single stacked column -- reads as a formal, organized
-  // arrangement rather than a plain list. auto-fill/minmax means it lays
-  // out however many columns actually fit for whatever width this
-  // component ends up at, and folds back to a single column on its own
-  // once a column would drop under 220px -- no separate mobile override
-  // needed. Fixed 500px width removed per feedback -- now fills the full
-  // width of its parent (.recommended-jobs), which already has its own
-  // margins keeping it clear of the page edges.
+  // arrangement rather than a plain list. auto-fit (not auto-fill) means
+  // empty tracks collapse and the actual items stretch via 1fr to fill the
+  // full row width -- auto-fill would reserve empty column tracks when
+  // there are only 1-2 items, leaving them pinned at minmax's minimum
+  // width instead of spanning 100%. Still folds back to a single column on
+  // its own once a column would drop under 220px -- no separate mobile
+  // override needed.
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--gh-space-4, 16px);
   align-items: start;
+  width: 100%;
 }
 
 .recommended-job-item {
