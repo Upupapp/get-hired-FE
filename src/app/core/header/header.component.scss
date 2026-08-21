@@ -27,6 +27,16 @@
   width: 100%;
 }
 
+// Fills the remaining row width so the inner <ul class="ms-auto"> has
+// space to push itself against -- without this the list just sits flush
+// after the logo instead of aligning to the right edge of the nav bar.
+// (The old Bootstrap .navbar-collapse this replaced did this by default;
+// this plain div doesn't unless told to.)
+.gh-nav-desktop-list {
+  flex: 1;
+  min-width: 0;
+}
+
 // ─── Logo ─────────────────────────────────────────────────────────────────────
 
 .gh-nav-logo {
