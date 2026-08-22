@@ -630,6 +630,34 @@
   line-height: 1.4;
 }
 
+.gh-jc-assistant-banner-cta {
+  flex-shrink: 0;
+  align-self: center;
+  background: #fff;
+  border: 1px solid rgba(255, 112, 98, 0.35);
+  color: $color-global-red-buttons;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease;
+  @include motion-safe;
+
+  &:hover {
+    background: rgba(255, 112, 98, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
 // Chips row: readiness + strength side by side
 .gh-jc-b09-chips-row {
   display: flex;
@@ -962,5 +990,273 @@
 
   .gh-jc-readiness-ring-fill {
     transition: none !important;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SignalFrame Phase B — Command Canvas shell (additive, presentational only)
+// Uses Phase A shared tokens from src/assets/styles/_tokens.scss. Breakpoints
+// match the app-wide convention (767px / 899px / 575px), not this file's
+// pre-existing 640/768/1024 breakpoints, which are left untouched above.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Mission Bar: sticky top, structural-layer gradient accent ───────────────
+.gh-sf-mission-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-top: 3px solid transparent;
+  border-image: var(--gh-sf-structural-layer) 1;
+  background: #fff;
+}
+
+.gh-sf-preview-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gh-sf-content-plane);
+  border: 1px solid var(--gh-sf-content-plane-border);
+  color: #1a1830;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 150ms ease, transform 150ms ease, border-color 150ms ease;
+  @include motion-safe;
+
+  &[aria-pressed="true"] {
+    border-color: var(--gh-sf-active-edge);
+    color: var(--gh-sf-active-edge);
+    background: var(--gh-sf-active-edge-soft);
+  }
+
+  &:hover { transform: translateY(-1px); }
+  &:active { transform: scale(0.97); }
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge); outline-offset: 2px; }
+}
+
+// ── Canvas grid: Signal Spine / Composition Canvas / Intelligence Stack ─────
+// NOTE: .gh-jc-content > form has `display: contents` (see the pre-existing
+// rule above) which is more specific (class + descendant element selector)
+// than a bare `.gh-sf-canvas-form` class selector — override it explicitly
+// with the same combinator so this actually takes effect.
+.gh-jc-content form.gh-sf-canvas-form,
+.gh-sf-canvas-form {
+  display: grid;
+  // 3 explicit columns: Signal Spine / Composition Canvas / Intelligence Stack.
+  // The existing .gh-jc-rail is a sibling grid item (via `form { display: contents; }`
+  // above) and auto-places into the 3rd column without needing a named area.
+  grid-template-columns: minmax(0, 160px) 1fr 300px;
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 1024px) and (min-width: 900px) {
+    grid-template-columns: minmax(0, 140px) 1fr;
+  }
+
+  @media (max-width: 899px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Signal Spine: left rail nav, desktop only ────────────────────────────────
+.gh-sf-signal-spine {
+  grid-area: spine;
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--gh-sf-inset-rail);
+  border: 1px solid var(--gh-sf-inset-rail-border);
+  border-radius: 14px;
+  padding: 10px;
+
+  @media (max-width: 899px) {
+    display: none; // replaced by the existing mobile progress strip
+  }
+}
+
+.gh-sf-spine-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b6887;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+  @include motion-safe;
+
+  &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.5); }
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge); outline-offset: 2px; }
+  &:disabled { cursor: not-allowed; opacity: 0.5; }
+
+  &--active {
+    color: #1a1830;
+    background: #fff;
+    box-shadow: inset 3px 0 0 var(--gh-sf-active-edge);
+  }
+  &--done { color: #15803D; }
+}
+
+.gh-sf-spine-dot {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  background: #fff;
+  border: 1px solid var(--gh-sf-inset-rail-border);
+}
+
+.gh-sf-spine-item--active .gh-sf-spine-dot {
+  border-color: var(--gh-sf-active-edge);
+  color: var(--gh-sf-active-edge);
+}
+.gh-sf-spine-item--done .gh-sf-spine-dot {
+  background: #15803D;
+  border-color: #15803D;
+  color: #fff;
+}
+
+// ── Composition Canvas: just the existing form column, tagged for clarity ───
+.gh-sf-composition-canvas {
+  grid-area: canvas;
+  min-width: 0;
+}
+
+// ── Intelligence Stack: tablet drawer collapse ───────────────────────────────
+.gh-sf-intelligence-toggle {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin: 12px 0 0;
+  background: var(--gh-sf-content-plane);
+  border: 1px solid var(--gh-sf-content-plane-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1830;
+  cursor: pointer;
+
+  @media (min-width: 576px) and (max-width: 899px) {
+    display: inline-flex;
+  }
+}
+
+.gh-sf-intelligence-toggle-badge {
+  margin-left: auto;
+  background: var(--gh-sf-state-error-surface);
+  color: var(--gh-sf-state-error-border);
+  border-radius: 999px;
+  font-size: 11px;
+  padding: 1px 8px;
+}
+
+@media (min-width: 576px) and (max-width: 899px) {
+  .gh-sf-intelligence-stack {
+    display: none;
+  }
+  .gh-sf-intelligence-stack--open {
+    display: flex;
+    position: static;
+  }
+}
+
+@media (max-width: 575px) {
+  // Mobile: Intelligence Stack folds fully into the existing Step 4 flow;
+  // no separate drawer toggle (mirrors pre-existing .gh-jc-rail mobile
+  // behavior of `position: static` stacking below the form).
+  .gh-sf-intelligence-toggle {
+    display: none;
+  }
+}
+
+// ── Commit Dock: sticky elevated action bar ─────────────────────────────────
+.gh-sf-commit-dock {
+  position: sticky;
+  bottom: 16px;
+  background: var(--gh-sf-elevated-action-surface);
+  box-shadow: var(--gh-sf-elevated-action-surface-shadow);
+  border-radius: var(--gh-sf-elevated-action-surface-radius);
+  border-top: 2px solid var(--gh-sf-active-edge);
+
+  @media (max-width: 575px) {
+    position: static; // mobile uses the pre-existing fixed .gh-jc-mobile-bar instead
+  }
+}
+
+// ── Preview drawer (Mission Bar / mobile Preview toggle) ─────────────────────
+.gh-sf-preview-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(480px, 100vw);
+  background: #fff;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.18);
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  animation: gh-sf-drawer-in 200ms cubic-bezier(0.2, 0, 0, 1) both;
+  @include motion-safe;
+
+  @media (max-width: 575px) {
+    width: 100vw;
+  }
+}
+
+@keyframes gh-sf-drawer-in {
+  from { transform: translateX(24px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+.gh-sf-preview-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--gh-sf-content-plane-border);
+  font-weight: 700;
+  color: #1a1830;
+}
+
+.gh-sf-preview-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b6887;
+  font-size: 16px;
+  padding: 4px;
+
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge); outline-offset: 2px; }
+}
+
+.gh-sf-preview-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-sf-preview-drawer,
+  .gh-sf-preview-toggle,
+  .gh-sf-spine-item {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transform: none !important;
   }
 }

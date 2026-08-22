@@ -6,11 +6,13 @@
 <!-- Main shell — shown once loaded and subscription resolved -->
 <div class="gh-jc-shell" *ngIf="!loading && restrictions$ | async" @fadeInPage>
 
-  <!-- ── HERO CARD ─────────────────────────────────────────────────────────── -->
-  <header class="gh-jc-hero">
+  <!-- ── MISSION BAR (sticky) ────────────────────────────────────────────── -->
+  <header class="gh-jc-hero gh-sf-mission-bar">
     <div class="gh-jc-hero-left">
       <span class="gh-jc-eyebrow">Job posting studio</span>
-      <h1 class="gh-jc-title">{{ jobId ? 'Update' : 'Create' }} a job</h1>
+      <h1 class="gh-jc-title">
+        {{ jobForm?.value?.initialData?.jobTitle || (jobId ? 'Update a job' : 'Create a job') }}
+      </h1>
       <p class="gh-jc-subtitle">Fill in the details below to attract the right candidates.</p>
     </div>
 
@@ -36,6 +38,15 @@
           <i class="bi bi-circle me-1" aria-hidden="true"></i>Unsaved changes
         </ng-container>
       </span>
+
+      <!-- Preview toggle -->
+      <button type="button" class="gh-sf-preview-toggle"
+        (click)="togglePreviewMode()"
+        [attr.aria-pressed]="previewMode"
+        aria-label="Toggle live preview">
+        <i class="bi" [ngClass]="previewMode ? 'bi-eye-fill' : 'bi-eye'" aria-hidden="true"></i>
+        Preview
+      </button>
     </div>
   </header>
 
@@ -72,23 +83,56 @@
       </ng-container>
     </div>
 
-    <!-- Mobile progress bar -->
+    <!-- Mobile progress bar (compact horizontal strip replacing Signal Spine) -->
     <div class="gh-jc-mobile-progress" aria-hidden="true">
       <div class="gh-jc-mobile-progress-bar" [style.width.%]="((stepper - 1) / (stepperItems.length - 1)) * 100"></div>
     </div>
   </div>
+
+  <!-- Tablet: Intelligence Stack drawer toggle (rail collapses into a drawer) -->
+  <button type="button" class="gh-sf-intelligence-toggle" (click)="toggleIntelligenceDrawer()"
+    [attr.aria-expanded]="intelligenceDrawerOpen" aria-controls="gh-sf-intelligence-stack">
+    <i class="bi bi-graph-up-arrow me-1" aria-hidden="true"></i>
+    Job insights
+    <span class="gh-sf-intelligence-toggle-badge" *ngIf="readinessResult?.blockingItems?.length">
+      {{ readinessResult.blockingItems.length }}
+    </span>
+  </button>
 
   <!-- ── TALENT PROOF STRIP (full-width, step 1 only) ──────────────────── -->
   <div class="gh-jc-proof-strip" *ngIf="stepper === 1">
     <app-talent-proof-badge variant="strip" placement="job_builder_sidebar"></app-talent-proof-badge>
   </div>
 
-  <!-- ── MAIN CONTENT: 2-COLUMN LAYOUT ─────────────────────────────────── -->
-  <div class="gh-jc-content">
-    <form [formGroup]="jobForm" novalidate>
+  <!-- ── MAIN CONTENT: SIGNAL SPINE + COMPOSITION CANVAS + INTELLIGENCE STACK ── -->
+  <div class="gh-jc-content gh-sf-canvas">
+    <form [formGroup]="jobForm" novalidate class="gh-sf-canvas-form">
+
+      <!-- SIGNAL SPINE: left rail section nav (desktop only) -->
+      <nav class="gh-sf-signal-spine" aria-label="Job builder sections">
+        <button
+          *ngFor="let item of stepperItems"
+          type="button"
+          class="gh-sf-spine-item"
+          (click)="!item.disabled && changeStep(item.id)"
+          [disabled]="item.disabled"
+          [attr.aria-current]="stepper === item.id ? 'step' : null"
+          [ngClass]="{
+            'gh-sf-spine-item--active': stepper === item.id,
+            'gh-sf-spine-item--done': stepper > item.id,
+            'gh-sf-spine-item--locked': item.disabled
+          }"
+        >
+          <span class="gh-sf-spine-dot" aria-hidden="true">
+            <i class="bi bi-check-lg" *ngIf="stepper > item.id"></i>
+            <span *ngIf="stepper <= item.id">{{ item.id }}</span>
+          </span>
+          <span class="gh-sf-spine-label">{{ item.title }}</span>
+        </button>
+      </nav>
 
       <!-- LEFT: Form column (65-70%) -->
-      <main class="gh-jc-form-col" role="main">
+      <main class="gh-jc-form-col gh-sf-composition-canvas" role="main">
 
         <!-- Error summary (shown after failed step-advance attempt) -->
         <div class="gh-jc-error-summary" *ngIf="stepErrorSummary.length > 0 && showStepErrors"
@@ -129,8 +173,8 @@
             (navigateToStep)="changeStep($event)"></app-preview-job-post-step>
         </ng-container>
 
-        <!-- ── STEP NAVIGATION (bottom of form col) ───────────────────── -->
-        <div class="gh-jc-step-nav" [class.gh-jc-step-nav--step4]="stepper === 4">
+        <!-- ── COMMIT DOCK (sticky bottom action bar) ──────────────────── -->
+        <div class="gh-jc-step-nav gh-sf-commit-dock" [class.gh-jc-step-nav--step4]="stepper === 4">
           <!-- Back -->
           <button
             *ngIf="stepper > 1"
@@ -214,8 +258,9 @@
 
       </main>
 
-      <!-- RIGHT: Assistant rail (30-35%) -->
-      <aside class="gh-jc-rail" aria-label="Job readiness assistant">
+      <!-- RIGHT: Intelligence Stack (30-35%, desktop/tablet drawer) -->
+      <aside class="gh-jc-rail gh-sf-intelligence-stack" aria-label="Job readiness assistant"
+        [class.gh-sf-intelligence-stack--open]="intelligenceDrawerOpen">
 
         <!-- Readiness card (steps 1-3) -->
         <div class="gh-jc-readiness-card gh-card" *ngIf="stepper !== 4 && readinessResult">
@@ -463,6 +508,21 @@
     >
       <i class="bi bi-send-fill me-1" aria-hidden="true"></i>Publish
     </button>
+  </div>
+
+  <!-- ── PREVIEW DRAWER (Mission Bar / mobile Preview toggle) ─────────────── -->
+  <div class="gh-sf-preview-drawer" *ngIf="previewMode" role="dialog" aria-modal="true" aria-label="Job post preview">
+    <div class="gh-sf-preview-drawer-header">
+      <span>Live preview</span>
+      <button type="button" class="gh-sf-preview-drawer-close" (click)="togglePreviewMode()" aria-label="Close preview">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="gh-sf-preview-drawer-body" *ngIf="jobForm">
+      <app-preview-job-post-step
+        [jobPostData]="jobForm.value.initialData"
+        (navigateToStep)="changeStep($event)"></app-preview-job-post-step>
+    </div>
   </div>
 
 </div>

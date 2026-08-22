@@ -789,6 +789,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       }, 2000);
     }
     if (event == 'asDraft') {
+      // SignalFrame Phase B: soft haptic pulse on Save Draft success (visual
+      // success-pulse/autosave-state above is the required non-vibrate
+      // equivalent and already fires unconditionally).
+      this.haptics.success();
       const draft = this.dialog.open(UpdatedDialogComponent, {
         disableClose: true,
         data: 'Job successfully saved as Draft.',
@@ -973,6 +977,23 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   // ── B09: Two-axis strength/readiness explainability ────────────────────────
+
+  // ── SignalFrame Phase B: Command Canvas shell (presentational only) ────────
+  /** Mission Bar Preview toggle — shows the existing preview-job-post-step in a drawer. */
+  previewMode: boolean = false;
+  /** Tablet-width Intelligence Stack drawer open/close (rail collapses into a toggle). */
+  intelligenceDrawerOpen: boolean = false;
+
+  togglePreviewMode(): void {
+    this.previewMode = !this.previewMode;
+    if (this.previewMode) {
+      this.haptics.selection();
+    }
+  }
+
+  toggleIntelligenceDrawer(): void {
+    this.intelligenceDrawerOpen = !this.intelligenceDrawerOpen;
+  }
 
   /** Disclosure open/close state for the "What this means" panel */
   whatMeansOpen = false;
