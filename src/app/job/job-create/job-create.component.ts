@@ -1014,6 +1014,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.intelligencePanelOpen = false;
   }
 
+  /** FAB stays visible at all times; clicking it toggles the floating panel open/closed. */
+  toggleIntelligencePanel(): void {
+    if (this.intelligencePanelOpen) {
+      this.closeIntelligencePanel();
+    } else {
+      this.openIntelligencePanel();
+    }
+  }
+
   /** Called whenever a fresh readiness result is computed; pulses the FAB only on an actual change. */
   private triggerFabPulse(percent: number): void {
     if (this.lastFabPercent !== null && percent !== this.lastFabPercent) {

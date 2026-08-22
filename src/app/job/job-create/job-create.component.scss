@@ -1076,6 +1076,8 @@
   border: 1px solid var(--gh-sf-inset-rail-border);
   border-radius: 14px;
   padding: 10px;
+  margin-bottom: 20px;
+  filter: drop-shadow(2px 4px 6px black);
 
   @media (max-width: 899px) {
     display: none; // replaced by the existing mobile progress strip
@@ -1244,6 +1246,12 @@
 
   &--missing {
     background: linear-gradient(135deg, #e5484d 0%, #b91c1c 100%);
+  }
+
+  // Visually acknowledge that the floating panel is currently open (the FAB
+  // itself stays put and now doubles as the close/reopen toggle).
+  &--open {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 8px 24px rgba(15, 12, 41, 0.32);
   }
 
   // Persistent soft glow so the FAB reads as a notification, not a plain button.

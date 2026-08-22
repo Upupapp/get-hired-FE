@@ -481,17 +481,18 @@
     </form>
   </div>
 
-  <!-- ── INTELLIGENCE STACK FAB: reopens the floating panel above; glows/pulses
-       as job readiness changes so it reads as a notification the user should
-       check, not just a plain toggle. Hidden while the panel itself is open. -->
+  <!-- ── INTELLIGENCE STACK FAB: always visible; glows/pulses as job readiness
+       changes so it reads as a notification the user should check. Clicking
+       it toggles the floating panel open/closed (stays put either way). -->
   <button type="button" class="gh-jc-intelligence-fab"
-    *ngIf="!intelligencePanelOpen && readinessResult"
+    *ngIf="readinessResult"
     [class.gh-jc-intelligence-fab--pulse]="fabPulse"
+    [class.gh-jc-intelligence-fab--open]="intelligencePanelOpen"
     [ngClass]="readinessResult.canPublish ? 'gh-jc-intelligence-fab--ready' : 'gh-jc-intelligence-fab--missing'"
-    (click)="openIntelligencePanel()"
+    (click)="toggleIntelligencePanel()"
     aria-controls="gh-jc-intelligence-panel"
     [attr.aria-expanded]="intelligencePanelOpen"
-    [attr.aria-label]="'Open job insights — ' + readinessResult.readinessPercent + '% ready'">
+    [attr.aria-label]="(intelligencePanelOpen ? 'Close job insights — ' : 'Open job insights — ') + readinessResult.readinessPercent + '% ready'">
     <svg class="gh-jc-intelligence-fab-ring" viewBox="0 0 44 44" fill="none" aria-hidden="true">
       <circle cx="22" cy="22" r="18" stroke="rgba(255,255,255,0.35)" stroke-width="4"/>
       <circle cx="22" cy="22" r="18" stroke="#fff" stroke-width="4" stroke-linecap="round"
