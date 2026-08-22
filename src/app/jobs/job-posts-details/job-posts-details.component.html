@@ -434,7 +434,8 @@
     <!-- Mobile Decision Dock: single sticky bottom bar (Apply primary + Save
          secondary). Existing logic unchanged; this is the only sticky Apply
          surface rendered on mobile (the desktop Decision Console is hidden
-         below 992px via .gh-detail-rail's own media query). -->
+         below 900px via .gh-detail-rail's own media query -- SIGNALFRAME
+         PHASE D: normalized from 992px). -->
     <div class="gh-mobile-sticky-bar gh-decision-dock" [class.gh-mobile-sticky-bar--visible]="showMobileBar" role="region" aria-label="Quick apply">
       <div class="gh-mobile-sticky-bar__inner">
         <div class="gh-mobile-sticky-bar__title" aria-hidden="true">{{ nJob.title }}</div>

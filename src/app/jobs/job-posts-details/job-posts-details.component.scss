@@ -267,10 +267,14 @@
   }
 
 	.bg-banner{
-		background: url(~/src/assets/images/placeholder/job-post-banner.png);
-		background-repeat: no-repeat;
-		background-position: 5% 10%;
-		background-size: cover;
+		// SIGNALFRAME PHASE D: this is the CSS-only hero fallback shown when an
+		// employer has NOT uploaded a jobBanner image (see #cssHeroBanner in the
+		// template) -- the raster placeholder/job-post-banner.png was a generic
+		// stock texture, not employer branding, so it's replaced with the Phase A
+		// Identity Horizon navy structural-layer gradient token to match the rest
+		// of the SignalFrame surface. The real employer-uploaded hero path
+		// (.gh-job-hero-media/.gh-job-hero-img) is untouched.
+		background: var(--gh-sf-structural-layer, linear-gradient(135deg, #0D1024 0%, #211A3D 55%, #311A35 100%));
 		border-radius: 0px;
 		position: relative;
 		height: 260px;
@@ -714,7 +718,13 @@
   align-items: start;
   padding: 0;
 
-  @media (min-width: 992px) {
+  // SIGNALFRAME PHASE D: normalized from 992px to 900px to align with the
+  // 899px/767px/575px breakpoint convention used app-wide and by the Job
+  // Create Command Canvas (Phase B). Paired with the .gh-detail-rail /
+  // .gh-decision-console__toggle tablet band below (576px-899px), which
+  // now absorbs the former 899px-991px desktop-2-col range via the same
+  // inline-collapsible-console mechanism already used for 768px-991px.
+  @media (min-width: 900px) {
     grid-template-columns: 1fr 320px;
     gap: 0 24px;
     padding: 16px 0 0;
@@ -774,7 +784,8 @@
   gap: 12px;
 
   @media (min-width: 576px) { grid-template-columns: repeat(3, 1fr); }
-  @media (min-width: 992px) { grid-template-columns: repeat(2, 1fr); }
+  // SIGNALFRAME PHASE D: 992px -> 900px, mirrors .gh-detail-layout above.
+  @media (min-width: 900px) { grid-template-columns: repeat(2, 1fr); }
   @media (min-width: 1200px) { grid-template-columns: repeat(3, 1fr); }
 }
 
@@ -1124,23 +1135,30 @@
 }
 
 // ─── V6: Sticky apply panel (desktop rail) ───────────────────────────────────
-// SIGNALFRAME PHASE C: adds a tablet band (768px–991px, matching the
-// app-wide 767px breakpoint) where the Decision Console renders inline
-// (non-sticky) and collapsible, instead of jumping straight from the
+// SIGNALFRAME PHASE C: adds a tablet band where the Decision Console renders
+// inline (non-sticky) and collapsible, instead of jumping straight from the
 // desktop sticky rail to the mobile Decision Dock. The mobile dock's own
-// `@media (min-width: 992px) { display: none; }` rule already hides it at
-// desktop; here we additionally hide it in the new tablet band so the
-// inline collapsible console is the only Apply/Save surface shown there
-// (no duplicate sticky Apply anywhere).
+// `@media (min-width: 900px) { display: none; }` rule already hides it at
+// desktop; here we additionally hide it in the tablet band so the inline
+// collapsible console is the only Apply/Save surface shown there (no
+// duplicate sticky Apply anywhere).
+//
+// SIGNALFRAME PHASE D: tablet band widened from 768px-991px to 576px-899px,
+// and the desktop threshold normalized from 992px to 900px, to align with
+// the 899px/767px/575px convention used app-wide and by the Job Create
+// Command Canvas (Phase B). The newly-included 899px-991px range gets no
+// new behavior -- it now uses the same inline-collapsible-console mechanism
+// already proven at 768px-991px, just extended down to meet the 576px
+// tablet floor used elsewhere.
 
 .gh-detail-rail {
   display: none;
 
-  @media (min-width: 768px) and (max-width: 991px) {
+  @media (min-width: 576px) and (max-width: 899px) {
     display: block;
   }
 
-  @media (min-width: 992px) {
+  @media (min-width: 900px) {
     display: block;
     position: sticky;
     top: 84px; // 68px public nav height + 16px clearance gap
@@ -1164,14 +1182,14 @@
   cursor: pointer;
   min-height: 44px;
 
-  @media (min-width: 768px) and (max-width: 991px) {
+  @media (min-width: 576px) and (max-width: 899px) {
     display: flex;
   }
 
   &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); }
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
+@media (min-width: 576px) and (max-width: 899px) {
   .gh-decision-console__body--collapsed {
     display: none;
   }
@@ -1314,7 +1332,8 @@
   transition: transform 0.25s ease;
   display: block;
 
-  @media (min-width: 992px) { display: none; }
+  // SIGNALFRAME PHASE D: 992px -> 900px, mirrors .gh-detail-layout/.gh-detail-rail above.
+  @media (min-width: 900px) { display: none; }
 
   &--visible { transform: translateY(0); }
 
