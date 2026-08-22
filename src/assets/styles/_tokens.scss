@@ -218,4 +218,47 @@
   --gh-color-purple:          #7c83fd;
   --gh-color-teal:            #2dd4bf;
   --gh-color-analytics:       #7c83fd;
+
+  // ─── SignalFrame surface vocabulary ─────────────────────────────────────────
+  // SIGNALFRAME PHASE A · 2026-08-22
+  // Additive layer only — every token below is a derivative/alias of an
+  // existing brand token above (navy/azure/spacing/radius/shadow/status).
+  // No new competing palette. Introduced ahead of the Job Create "Command
+  // Canvas" and Job Detail "Opportunity Brief" restructuring (Phase B/C);
+  // not consumed by any component yet in Phase A.
+
+  // Structural Layer — the outermost app chrome surface, derived from navy.
+  --gh-sf-structural-layer:        var(--gh-grad-navy);
+  --gh-sf-structural-layer-solid:  var(--gh-navy);
+
+  // Content Plane — the neutral reading/editing surface, derived from the
+  // existing card background + border tokens.
+  --gh-sf-content-plane:           var(--gh-color-bg-card);
+  --gh-sf-content-plane-border:    var(--gh-border);
+
+  // Active Edge — focus/active accent, derived from azure.
+  --gh-sf-active-edge:             var(--gh-azure);
+  --gh-sf-active-edge-soft:        var(--gh-azure-soft);
+  --gh-sf-active-edge-gradient:    var(--gh-grad-azure);
+
+  // Inset Rail — recessed navigation/side-rail surface, derived from navy
+  // at a lighter mid-stop (matches existing --gh-color-navy-mid) so it
+  // reads as "inset" against the deep navy Structural Layer.
+  --gh-sf-inset-rail:              var(--gh-color-navy-mid);
+  --gh-sf-inset-rail-border:       var(--gh-border);
+
+  // Elevated Action Surface — sticky/floating action docks, derived from
+  // existing card shadow + radius tokens, white content surface.
+  --gh-sf-elevated-action-surface:        var(--gh-color-bg-card);
+  --gh-sf-elevated-action-surface-shadow: var(--gh-shadow-modal);
+  --gh-sf-elevated-action-surface-radius: var(--gh-radius-card);
+
+  // Semantic State Surface — soft background variants for status meaning,
+  // derived from the existing semantic status colors (never a new hue).
+  --gh-sf-state-success-surface:   #ECFDF5;
+  --gh-sf-state-warning-surface:   #FFFBEB;
+  --gh-sf-state-error-surface:     #FEF2F2;
+  --gh-sf-state-success-border:    var(--gh-success);
+  --gh-sf-state-warning-border:    var(--gh-warning);
+  --gh-sf-state-error-border:      var(--gh-error);
 }
