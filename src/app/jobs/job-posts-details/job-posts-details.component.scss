@@ -337,27 +337,17 @@
 	// Padding kept at the cleaner, more even value (was 30px 10px 20px 30px)
 	// -- an explicit text-placement/spacing improvement, kept per request.
 	padding: 24px 24px 20px;
-  margin-left: 20px;
 }
 
-// Aligns the video-interview badge and match-grade panel's outer spacing
-// with .card/.company-snapshot's 20px left margin (JPD-06: keep every
-// direct child of gh-detail-main flush to the same left edge). Both wrapped
-// components manage their own internal padding/border -- this only shifts
-// their position within the column.
+// SIGNALFRAME REMEDIATION: previously .card and .gh-aligned-block carried an
+// asymmetric margin-left: 20px while .gh-company-lens (app-company-snapshot)
+// had none -- every card-based section in the Role Narrative sat 20px right
+// of the company info block above it, breaking shared left alignment. Both
+// now share the same left edge as .gh-detail-main with no per-block offset;
+// the ≤480px override that used to strip the same margin back out is no
+// longer needed.
 .gh-aligned-block {
-  margin-left: 20px;
-}
-
-// JPD-06 MOBILEVIEW: a flat 20px left margin eats real width on very small
-// screens (≤360px, incl. the 320px baseline) where every pixel of column
-// width matters -- drop it below the point where .gh-detail-main itself
-// goes full-width single-column, so nothing gets cramped or overflows.
-@media (max-width: 480px) {
-  .card,
-  .gh-aligned-block {
-    margin-left: 0;
-  }
+  // Intentionally no horizontal margin -- flush with sibling .card sections.
 }
 
 .title-badge{
