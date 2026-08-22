@@ -142,6 +142,45 @@ video{
   50%       { opacity: 0.4; }
 }
 
+// PROFILE-SETUP PHASE 1.1: .gh-recorder-preview previously had no base
+// (non-mobile-media-query) rule at all -- position:relative needed here so
+// the live badge below anchors to the preview box at every screen size,
+// not just the mobile breakpoint.
+.gh-recorder-preview {
+  position: relative;
+}
+
+// PROFILE-SETUP PHASE 1.1: live-recording indicator overlaid on the
+// preview, functional/minimal per phase scope (no Career Profile visual
+// redesign) -- reuses the existing gh-rec-pulse animation above.
+.gh-recorder-live-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 5;
+}
+
+.gh-recorder-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e53935;
+  animation: gh-rec-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-recorder-live-dot { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gh-recorder-recording-pulse { animation: none; }
   .gh-recorder-btn-primary:active { transform: none; }

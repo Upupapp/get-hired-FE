@@ -72,9 +72,25 @@ export class DocsVideocvComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((err) => {
         if (err) {
-          const backendMsg = (err.error && err.error.message) ? err.error.message : null;
-          const msg = backendMsg || err.message || 'An error occurred. Please try again.';
-          this.snackbarService.error(msg, '', 6000);
+          // PROFILE-SETUP PHASE 1.1: previously `(err.error && err.error.message)`
+          // -- written assuming `err` was the raw HttpErrorResponse, but by
+          // the time it reaches here it's already state.error (the effect's
+          // unwrapped payload), so err.error was never the right shape and
+          // this ALWAYS fell through to the one generic message regardless
+          // of what actually failed (413, 500, network, invalid format all
+          // looked identical to the user). applicant.effects.ts's
+          // saveVideoCV$ now emits a structured { status, message } payload
+          // specifically for video failures -- mapVideoUploadError() below
+          // turns that into an accurate, actionable message per HTTP status.
+          // Other sections' (skills/workexp/docs) unfixed effects still
+          // emit their old bare-string-or-undefined shape here too (this
+          // component's error$ is shared across the whole wizard) -- those
+          // safely fall through mapVideoUploadError's default branch
+          // instead of matching a video-specific case.
+          const msg = this.mapVideoUploadError(err);
+          if (msg) {
+            this.snackbarService.error(msg, '', 6000);
+          }
           // PROFILE-SETUP PHASE 1: reset the duplicate-submit guard on this
           // handled failure, and release the rejected preview's object URL
           // -- the existing videoUrl (server-persisted video, if any)
@@ -207,6 +223,49 @@ export class DocsVideocvComponent implements OnInit {
           this.ref.detectChanges();
         }
       });
+  }
+
+  /**
+   * PROFILE-SETUP PHASE 1.1 (video error UX): maps a video save failure to
+   * one specific, actionable, user-safe message per HTTP status. Returns
+   * null for 401/403 -- UnAuthorizedInterceptor (core/interceptor/
+   * unauthorize.interceptor.ts) already shows its own session-expired
+   * snackbar and redirects for both those statuses on EVERY request app-
+   * wide; showing a second, video-specific message here would just be a
+   * duplicate notification for the same event.
+   */
+  private mapVideoUploadError(err: any): string | null {
+    // Only handles the new structured { status, message } shape emitted by
+    // saveVideoCV$'s catchError. Anything else (other sections' unfixed
+    // effects, or a shape we don't recognize) falls through to the
+    // existing generic message rather than guessing.
+    const hasStructuredShape = err && typeof err === 'object' && typeof err.status === 'number';
+    if (!hasStructuredShape) {
+      return 'An error occurred. Please try again.';
+    }
+
+    const { status, message } = err;
+
+    if (status === 413) {
+      return 'Your video is too large to upload. Please try a shorter or smaller video file and try again.';
+    }
+    if (status === 401 || status === 403) {
+      return null;
+    }
+    if (status === 400 || status === 415) {
+      // Preserve the backend's own safe rejection reason when present
+      // (VIDEO_TOO_LARGE, VIDEO_DISALLOWED, VIDEO_SIGNATURE_MISMATCH, etc.)
+      // -- it's already written to be user-facing (see
+      // applicantsController.js saveVideoCV / videoValidator.js).
+      return message || 'Please upload a supported video format (MP4, WebM, or MOV).';
+    }
+    if (status >= 500) {
+      return "We couldn't upload your video because of a server error. Your current profile video has not been changed. Please try again.";
+    }
+    if (status === 0) {
+      return "We couldn't reach the server. Please check your internet connection and try again.";
+    }
+    return message || 'An error occurred. Please try again.';
   }
 
   /** Revokes the local preview's object URL, if one is currently held. Safe to call when none exists. */

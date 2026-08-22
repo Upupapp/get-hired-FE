@@ -73,10 +73,17 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     private recordService: RecordService,
     private sanitizer: DomSanitizer,
   ) {
+    // PROFILE-SETUP PHASE 1.1: this fires alongside the SAME failure that
+    // startVideoRecording()'s own .catch() below already handles with a
+    // specific, mapped message (mapCameraError) -- this subject discards
+    // the real error (`_recordingFailed.next(null)` in recorder.service.ts)
+    // so it can only ever produce a generic message. Setting a second,
+    // worse message here would just race the specific one for the same
+    // failure. Keep the state resets (safety net for any other caller of
+    // this observable), drop the message.
     this.recordService.recordingFailed().subscribe(() => {
       this.isVideoRecording = false;
       this.isVideoInitialising = false;
-      this.videoRecordingError = 'Could not start recording. Please check camera permissions and try again.';
       this.ref.detectChanges();
     });
 
@@ -117,6 +124,15 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
     this.videoConf['video'].deviceId = this.videoSrc;
     if (!this.isVideoRecording && !this.isVideoInitialising) {
+      // PROFILE-SETUP PHASE 1.1 (Record Again): this same button doubles as
+      // "Record Again" whenever a previous recorded preview already exists
+      // (isVideoRecording is false in both the pre-recording and
+      // recorded-preview states). Clear the prior recording's state before
+      // starting the new one, so the stale recorded preview never lingers
+      // alongside -- or gets uploaded instead of -- the new recording.
+      this.videoBlobUrl = null;
+      this.videoBlob = null;
+      this.videoName = null;
       this.video.controls = false;
       this.video.muted = true;
       this.video.volume = 0;
@@ -133,16 +149,44 @@ export class RecorderComponent implements OnInit, AfterViewInit {
         })
         .catch((err) => {
           this.isVideoInitialising = false;
-          this.videoRecordingError = 'Could not access camera. Please check permissions.';
+          // PROFILE-SETUP PHASE 1.1: distinguish the actual getUserMedia()
+          // DOMException rather than one generic message for every camera
+          // failure -- these are the real, standard error names browsers
+          // raise (never the raw DOMException text as primary UX).
+          this.videoRecordingError = this.mapCameraError(err);
           this.ref.detectChanges();
         });
     }
+  }
+
+  /**
+   * PROFILE-SETUP PHASE 1.1: maps a getUserMedia() rejection to one of the
+   * 3 standard, actionable cases -- never shows the raw DOMException text
+   * as primary UX.
+   */
+  private mapCameraError(err: any): string {
+    const name = err && err.name;
+    if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
+      return 'Camera/microphone access was denied. Please allow access in your browser settings and try again.';
+    }
+    if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+      return 'No camera or microphone was found on this device.';
+    }
+    if (name === 'NotReadableError' || name === 'TrackStartError') {
+      return 'Your camera or microphone is unavailable or already in use by another application.';
+    }
+    return 'Could not access camera. Please check permissions and try again.';
   }
 
   abortVideoRecording() {
     if (this.isVideoRecording) {
       this.isVideoRecording = false;
       this.recordService.abortRecording();
+      // PROFILE-SETUP PHASE 1.1: release the element's own reference to the
+      // now-stopped stream -- abortRecording() already stops the tracks at
+      // the service level (recorder.service.ts stopMedia()); this clears
+      // the video element's live attachment too.
+      this.video.srcObject = null;
       this.video.controls = false;
     }
   }
@@ -151,7 +195,18 @@ export class RecorderComponent implements OnInit, AfterViewInit {
     if (this.isVideoRecording) {
       this.pauseTimer();
       this.recordService.stopRecording();
-      this.video.srcObject = this.videoBlobUrl;
+      // PROFILE-SETUP PHASE 1.1: was assigning the recorded blob's URL
+      // (a SafeUrl/string) directly to srcObject -- srcObject only ever
+      // accepts a MediaStream/MediaSource/Blob, never a URL string, so this
+      // silently failed to show the recorded playback. Clear srcObject
+      // (releasing the now-finished live stream, which
+      // recordService.stopRecording() -> processVideo() -> stopMedia()
+      // already stops at the track level) and let the template's own
+      // [src]="videoBlobUrl" binding (via the <source> tag, active once
+      // isVideoRecording flips false) show the recorded blob instead --
+      // keeps LIVE (srcObject) and RECORDED (src/ObjectURL) cleanly
+      // separate, per the Live vs Recorded requirement.
+      this.video.srcObject = null;
       this.isVideoRecording = false;
       this.video.controls = true;
     }
@@ -292,6 +347,15 @@ export class RecorderComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.stopRecorderTimer();
+    // PROFILE-SETUP PHASE 1.1: this dialog is opened without disableClose
+    // (docs-videocv.component.ts showVideoRecorder()), so it can be
+    // dismissed via backdrop click or Escape -- bypassing cancel() (the
+    // only place that previously stopped the camera) entirely. Without
+    // this, an active recording's camera/microphone would keep running
+    // after the dialog closes that way, leaving the browser's camera
+    // indicator on. abortVideoRecording() is a no-op if nothing is
+    // currently recording, so this is always safe to call.
+    this.abortVideoRecording();
     // PROFILE-SETUP PHASE 1: revoke the upload-preview object URL when this
     // dialog is destroyed WITHOUT having handed it off to the caller (e.g.
     // cancel()) -- never revoke it once ownership transferred (see

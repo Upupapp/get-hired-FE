@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { Actions, ofType, createEffect } from '@ngrx/effects';
+import { HttpErrorResponse } from '@angular/common/http';
 import * as ApplicantActions from './applicant.actions';
 import * as Model from '../applicant.model';
 import { ApplicantService } from '../applicant.service';
@@ -12,6 +13,33 @@ export class ApplicantEffects {
     private applicantService: ApplicantService,
     private actions$: Actions
   ) { }
+
+  /**
+   * PROFILE-SETUP PHASE 1.1 (video error UX): the other effects' catchError
+   * blocks do `const { error } = err.error` with no guard -- for a 413
+   * (Express's own PayloadTooLargeError, raised before the request body is
+   * even parsed) err.error is typically a plain string or null, not a JSON
+   * object, so this either silently discards the real information or
+   * throws outright when err.error is null/undefined (destructuring null
+   * throws a TypeError, which escapes catchError's own callback since it's
+   * catchError ITSELF encountering an error, not the source observable --
+   * a raw network failure, status 0, has err.error === null and would hit
+   * exactly this). Scoped to the video path only per phase scope -- the
+   * other sections' effects are unchanged, out of scope for this phase.
+   */
+  private static extractVideoErrorPayload(err: any): { status: number; message: string | null } {
+    const status = (err instanceof HttpErrorResponse || typeof err?.status === 'number') ? err.status : 0;
+    let message: string | null = null;
+    const body = err?.error;
+    if (body && typeof body === 'object') {
+      message = body.message || body.error || null;
+    } else if (typeof body === 'string' && body.trim() && !body.trim().startsWith('<')) {
+      // A plain-text backend error (not JSON, not an HTML error page) --
+      // safe to surface as-is.
+      message = body.trim();
+    }
+    return { status, message };
+  }
 
   saveBasicProfile$ = createEffect(() => {
     return this.actions$.pipe(
@@ -40,8 +68,8 @@ export class ApplicantEffects {
             return ApplicantActions.saveVideoCVSuccess({ video })
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(ApplicantActions.saveVideoCVFail({ payload: error }))
+            const payload = ApplicantEffects.extractVideoErrorPayload(err);
+            return of(ApplicantActions.saveVideoCVFail({ payload }))
           })
         ))
     )

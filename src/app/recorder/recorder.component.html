@@ -20,21 +20,33 @@
       </div>
 
       <!-- VIDEO CONTAINER -->
+      <!-- PROFILE-SETUP PHASE 1.1: previously [hidden]="!isVideoRecording ||
+           !videoBlobUrl" -- required BOTH isVideoRecording AND videoBlobUrl
+           to be true to show the video at all, but videoBlobUrl only ever
+           gets populated AFTER recording stops (see recorder.service.ts
+           getRecordedBlob()), so this stayed hidden for the entire live
+           recording -- the exact reported "can't see live camera feed" bug.
+           Visible whenever EITHER a live stream (isVideoRecording, shown
+           via srcObject in the .ts) or a finished recording (videoBlobUrl,
+           shown via the <source> below) exists; the placeholder below is
+           the exact inverse, shown only when neither does. The <source>
+           itself was also inverted (*ngIf="isVideoRecording" -- showing the
+           recorded blob URL WHILE live, backwards) -- corrected to only
+           bind the recorded blob once recording has stopped, keeping LIVE
+           (srcObject) and RECORDED (src) cleanly separate at all times. -->
       <section>
-        <div class="gh-recorder-preview" [hidden]="!isVideoRecording || !videoBlobUrl">
-          <video #videoElement class="w-100" controls autoplay="autoplay">
-            <source *ngIf="isVideoRecording" [src]="videoBlobUrl">
-
-            <!-- <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl"> -->
+        <div class="gh-recorder-preview" [hidden]="!isVideoRecording && !videoBlobUrl">
+          <video #videoElement class="w-100" controls autoplay="autoplay" muted playsinline>
+            <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl">
           </video>
+          <div class="gh-recorder-live-badge" *ngIf="isVideoRecording" aria-live="polite">
+            <span class="gh-recorder-live-dot" aria-hidden="true"></span>
+            Recording
+          </div>
         </div>
 
-        <div class="video-placeholder" *ngIf="!isVideoRecording || !videoBlobUrl">
+        <div class="video-placeholder" *ngIf="!isVideoRecording && !videoBlobUrl">
         </div>
-
-        <!-- <video #preview id="preview"
-        [src]="videoBlobUrl" controls class="w-100 h-100"
-        *ngIf="videoBlobUrl"></video> -->
       </section>
 
       <div style="position: absolute; left: 2%; bottom: 4%;">
