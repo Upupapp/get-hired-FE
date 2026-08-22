@@ -12,8 +12,9 @@
 </div>
 
 <section *ngIf="details$ | async as selectedJobPost" class="gh-job-content-reveal">
-  <!-- HERO: employer image or CSS gradient fallback -->
-  <div class="p-0" id="banner" *ngIf="withBanner">
+  <!-- Identity Horizon: job title + company identity, compact. HERO: employer
+       image or CSS gradient (navy structural-layer) fallback. -->
+  <div class="p-0 gh-identity-horizon" id="banner" *ngIf="withBanner">
     <ng-container *ngIf="selectedJobPost?.jobBanner; else cssHeroBanner">
       <div class="gh-job-hero-media" role="img" [attr.aria-label]="(selectedJobPost?.jobTitle || '') + ' hero image'">
         <img
@@ -67,15 +68,19 @@
     </ng-template>
   </div>
 
-  <!-- Two-column layout -->
+  <!-- Two-column layout: SIGNALFRAME PHASE C Opportunity Brief architecture.
+       LEFT = Role Narrative (editorial content flow), RIGHT = Decision
+       Console (sticky apply/save rail). Structure/classes below are additive
+       (gh-sf-* labeling + tokens) -- no Apply/Save/routing logic changed. -->
   <ng-container *ngIf="normalizedJob$ | async as nJob">
     <div class="gh-detail-layout">
 
-      <!-- LEFT: main content -->
-      <main class="gh-detail-main" id="gh-detail-main">
+      <!-- LEFT: Role Narrative -->
+      <main class="gh-detail-main" id="gh-detail-main" aria-label="Role details">
 
-        <!-- Quick facts snapshot grid -->
-        <div class="gh-snapshot-grid card card-body mb-3">
+        <!-- Signal Ribbon: compact label/value facts. Missing/falsy fields
+             disappear cleanly via existing *ngIf guards -- no empty chips. -->
+        <div class="gh-snapshot-grid gh-signal-ribbon card card-body mb-3" aria-label="Job facts summary">
           <div class="gh-snapshot-item" *ngIf="nJob.jobType">
             <i class="bi bi-briefcase gh-snapshot-icon" aria-hidden="true"></i>
             <div class="gh-snapshot-content">
@@ -150,16 +155,19 @@
           </p>
         </div>
 
-        <!-- Company trust card -->
-        <div class="mb-3">
+        <!-- Company Lens: company info block (logo/industry/location/description)
+             rendered by the existing app-company-snapshot component, unchanged. -->
+        <div class="mb-3 gh-company-lens">
           <app-company-snapshot [job]="nJob"></app-company-snapshot>
         </div>
 
-        <!-- Content sections -->
-        <div class="card card-body gh-detail-sections pe-lg-5 ps-lg-4">
+        <!-- Role Narrative: editorial content flow (headings + dividers,
+             not one card per section). Section order/content is unchanged
+             from the existing data model -- presentation only. -->
+        <div class="card card-body gh-detail-sections gh-role-narrative pe-lg-5 ps-lg-4">
 
           <!-- About this role -->
-          <section class="gh-section" *ngIf="selectedJobPost?.jobDescription">
+          <section class="gh-section" id="role-about" *ngIf="selectedJobPost?.jobDescription">
             <h2 class="gh-section-title">About this role</h2>
 
             <!-- Content quality guard: if description looks like imported privacy/legal
@@ -184,13 +192,13 @@
           </section>
 
           <!-- What you'll do -->
-          <section class="gh-section" *ngIf="selectedJobPost?.jobDuties">
+          <section class="gh-section" id="role-duties" *ngIf="selectedJobPost?.jobDuties">
             <h2 class="gh-section-title">What you'll do</h2>
             <p class="gh-prose">{{ selectedJobPost?.jobDuties }}</p>
           </section>
 
           <!-- What you need -->
-          <section class="gh-section" *ngIf="nJob.requirements?.length > 0 || nJob.skills?.length > 0">
+          <section class="gh-section" id="role-requirements" *ngIf="nJob.requirements?.length > 0 || nJob.skills?.length > 0">
             <h2 class="gh-section-title">What you need</h2>
             <ul class="gh-bullet-list" *ngIf="nJob.requirements?.length > 0">
               <li *ngFor="let item of nJob.requirements">{{ item }}</li>
@@ -361,9 +369,19 @@
 
       </main>
 
-      <!-- RIGHT: sticky apply panel (desktop) -->
-      <aside class="gh-detail-rail" aria-label="Application actions">
-        <div class="gh-apply-card">
+      <!-- RIGHT: Decision Console -- sticky apply/save rail (desktop),
+           collapsible body (tablet). Apply/Save controls below are always
+           rendered and functional regardless of the collapse toggle; only
+           the surrounding card body visibility is affected. -->
+      <aside class="gh-detail-rail gh-decision-console" aria-label="Application actions">
+        <button type="button" class="gh-decision-console__toggle"
+          (click)="toggleDecisionConsole()"
+          [attr.aria-expanded]="decisionConsoleExpanded"
+          aria-controls="gh-decision-console-body">
+          Application details
+          <i class="bi" [class.bi-chevron-up]="decisionConsoleExpanded" [class.bi-chevron-down]="!decisionConsoleExpanded" aria-hidden="true"></i>
+        </button>
+        <div class="gh-apply-card" id="gh-decision-console-body" [class.gh-decision-console__body--collapsed]="!decisionConsoleExpanded">
           <div class="gh-apply-card__company">
             <img *ngIf="nJob.companyLogo" [src]="nJob.companyLogo" [alt]="nJob.companyName + ' logo'" class="gh-apply-card__logo" />
             <div *ngIf="!nJob.companyLogo" class="gh-apply-card__logo gh-apply-card__logo--fallback" aria-hidden="true">{{ nJob.companyName?.charAt(0) }}</div>
@@ -413,8 +431,11 @@
       </aside>
     </div>
 
-    <!-- Mobile sticky bottom bar -->
-    <div class="gh-mobile-sticky-bar" [class.gh-mobile-sticky-bar--visible]="showMobileBar" role="region" aria-label="Quick apply">
+    <!-- Mobile Decision Dock: single sticky bottom bar (Apply primary + Save
+         secondary). Existing logic unchanged; this is the only sticky Apply
+         surface rendered on mobile (the desktop Decision Console is hidden
+         below 992px via .gh-detail-rail's own media query). -->
+    <div class="gh-mobile-sticky-bar gh-decision-dock" [class.gh-mobile-sticky-bar--visible]="showMobileBar" role="region" aria-label="Quick apply">
       <div class="gh-mobile-sticky-bar__inner">
         <div class="gh-mobile-sticky-bar__title" aria-hidden="true">{{ nJob.title }}</div>
         <div class="gh-mobile-sticky-bar__actions">

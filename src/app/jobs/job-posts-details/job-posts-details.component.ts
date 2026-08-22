@@ -15,6 +15,7 @@ import { CoreService } from '@app-core/services/core.service';
 import { SeoService } from '@app-core/services/seo.service';
 import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
 import { JobSignalsService } from '@main/public/services/job-signals.service';
+import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
 
 @Component({
   selector: 'app-job-posts-details',
@@ -30,6 +31,11 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   saveLoading = false;
   showMobileBar = false;
   descriptionExpanded = false;
+  // SIGNALFRAME PHASE C: presentational-only toggle for the tablet
+  // "Decision Console" collapsible rail (Opportunity Brief architecture).
+  // Does not affect Apply/Save logic or any state computed elsewhere --
+  // purely controls whether the rail's body is expanded on tablet widths.
+  decisionConsoleExpanded = false;
 
   details$ = this.jobFacade.getJobById$;
   // Normalized, defensively-typed view of the same data for the new
@@ -64,6 +70,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     private coreService: CoreService,
     private normalizer: PublicJobNormalizerService,
     private jobSignals: JobSignalsService,
+    private haptics: HapticFeedbackService,
     private titleService: Title,
     private meta: Meta,
     private seoService: SeoService,
@@ -166,6 +173,14 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         this.savedStatus = (res && res.data && res.data.isSaved) ? 'saved' : 'not_saved';
         this.saveLoading = false;
+        // SIGNALFRAME PHASE C: soft haptic pulse on a genuine save success,
+        // paired with the existing visual saved-state (filled bookmark icon
+        // + "Saved" label) so there is zero functional loss without
+        // vibration support. HapticFeedbackService no-ops safely on
+        // SSR/unsupported browsers/reduced-motion.
+        if (this.savedStatus === 'saved') {
+          this.haptics.success();
+        }
       },
       error: () => {
         this.savedStatus = prev;
@@ -177,6 +192,14 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
 
   toggleDescription(): void {
     this.descriptionExpanded = !this.descriptionExpanded;
+  }
+
+  // SIGNALFRAME PHASE C: presentational-only. Expands/collapses the tablet
+  // "Decision Console" body. Does not gate Apply/Save availability -- those
+  // controls remain rendered and functional regardless of this flag; it only
+  // controls whether the surrounding rail body is visible at tablet widths.
+  toggleDecisionConsole(): void {
+    this.decisionConsoleExpanded = !this.decisionConsoleExpanded;
   }
 
   /**

@@ -786,7 +786,9 @@
 
 .gh-snapshot-icon {
   font-size: 18px;
-  color: #6366f1;
+  // SIGNALFRAME PHASE C: consumes the Phase A Active Edge token instead of
+  // the prior hardcoded indigo -- restrained accent for the Signal Ribbon.
+  color: var(--gh-sf-active-edge, #168BFF);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -872,14 +874,14 @@
   padding: 6px 0 0;
   font-size: 13px;
   font-weight: 600;
-  color: #6366f1;
+  color: var(--gh-sf-active-edge, #168BFF);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
 
   &:hover { text-decoration: underline; }
-  &:focus-visible { outline: 2px solid #6366f1; border-radius: 2px; }
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); border-radius: 2px; }
 }
 
 .gh-bullet-list {
@@ -1048,7 +1050,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--gh-sf-active-edge, #168BFF);
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -1118,13 +1120,25 @@
   transition: border-color 0.15s, color 0.15s;
 
   &:hover { border-color: var(--gh-text-muted, #98A2B3); color: var(--gh-text-secondary, #667085); }
-  &:focus-visible { outline: 2px solid #6366f1; border-radius: 6px; }
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); border-radius: 6px; }
 }
 
 // ─── V6: Sticky apply panel (desktop rail) ───────────────────────────────────
+// SIGNALFRAME PHASE C: adds a tablet band (768px–991px, matching the
+// app-wide 767px breakpoint) where the Decision Console renders inline
+// (non-sticky) and collapsible, instead of jumping straight from the
+// desktop sticky rail to the mobile Decision Dock. The mobile dock's own
+// `@media (min-width: 992px) { display: none; }` rule already hides it at
+// desktop; here we additionally hide it in the new tablet band so the
+// inline collapsible console is the only Apply/Save surface shown there
+// (no duplicate sticky Apply anywhere).
 
 .gh-detail-rail {
   display: none;
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    display: block;
+  }
 
   @media (min-width: 992px) {
     display: block;
@@ -1132,6 +1146,38 @@
     top: 84px; // 68px public nav height + 16px clearance gap
     max-height: calc(100vh - 100px);
     overflow-y: auto;
+  }
+}
+
+.gh-decision-console__toggle {
+  display: none;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gh-sf-content-plane, #fff);
+  border: 1px solid var(--gh-sf-content-plane-border, #E7EAF3);
+  border-radius: var(--gh-radius-sm, 8px);
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gh-text, #101828);
+  cursor: pointer;
+  min-height: 44px;
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    display: flex;
+  }
+
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .gh-decision-console__body--collapsed {
+    display: none;
+  }
+
+  .gh-decision-dock {
+    display: none !important;
   }
 }
 
@@ -1164,7 +1210,7 @@
     justify-content: center;
     font-weight: 700;
     font-size: 18px;
-    color: #6366f1;
+    color: var(--gh-sf-active-edge, #168BFF);
     background: #eef2ff;
     border: 1px solid #eef2ff;
   }
@@ -1200,7 +1246,7 @@
   margin: 6px 0 0;
 
   a {
-    color: #6366f1;
+    color: var(--gh-sf-active-edge, #168BFF);
     text-decoration: none;
     &:hover { text-decoration: underline; }
   }
@@ -1235,14 +1281,14 @@
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 
   &:hover {
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: var(--gh-sf-active-edge, #168BFF);
+    color: var(--gh-sf-active-edge, #168BFF);
   }
 
   &--active {
-    border-color: #6366f1;
+    border-color: var(--gh-sf-active-edge, #168BFF);
     background: #eef2ff;
-    color: #6366f1;
+    color: var(--gh-sf-active-edge, #168BFF);
   }
 
   &:disabled {
@@ -1250,7 +1296,7 @@
     cursor: not-allowed;
   }
 
-  &:focus-visible { outline: 2px solid #6366f1; border-radius: 8px; }
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); border-radius: 8px; }
 }
 
 // ─── V6: Mobile sticky bottom bar ────────────────────────────────────────────
@@ -1329,12 +1375,12 @@
   transition: border-color 0.15s, color 0.15s;
 
   &--active {
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: var(--gh-sf-active-edge, #168BFF);
+    color: var(--gh-sf-active-edge, #168BFF);
   }
 
   &:disabled { opacity: 0.6; cursor: not-allowed; }
-  &:focus-visible { outline: 2px solid #6366f1; }
+  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); }
 }
 
 .gh-applied-mobile-chip {
