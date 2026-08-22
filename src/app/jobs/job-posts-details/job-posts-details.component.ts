@@ -37,6 +37,25 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   // purely controls whether the rail's body is expanded on tablet widths.
   decisionConsoleExpanded = false;
 
+  // READING COMPANION (Opportunity Brief Phase E): presentational-only state
+  // for a floating "job snapshot" companion -- a scroll-aware reading aid
+  // distinct from the Job Create "Intelligence Stack" FAB (that one surfaces
+  // form completion progress; this one surfaces the same Apply/Save/salary
+  // facts already in the Decision Console plus a section-jump nav, for
+  // readers deep in a long description on desktop). None of this state
+  // gates or duplicates Apply/Save business logic -- it only calls the
+  // existing toApply()/toLogin()/toggleSave() handlers.
+  snapshotCompanionOpen = false;
+  showSnapshotCompanion = false;
+  activeSnapshotSectionId = '';
+  readonly snapshotSections: { id: string; label: string }[] = [
+    { id: 'role-about', label: 'Overview' },
+    { id: 'role-duties', label: 'Responsibilities' },
+    { id: 'role-requirements', label: 'Requirements' },
+    { id: 'role-benefits', label: 'Benefits' },
+    { id: 'role-apply-info', label: 'How to apply' },
+  ];
+
   details$ = this.jobFacade.getJobById$;
   // Normalized, defensively-typed view of the same data for the new
   // match panel / signal badges -- read-only, does not change the
@@ -130,7 +149,50 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   onScroll(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.showMobileBar = window.scrollY > 300;
+      this.updateSnapshotCompanionVisibility();
+      this.updateActiveSnapshotSection();
     }
+  }
+
+  // READING COMPANION: shown only on wide viewports once the reader has
+  // scrolled past the hero -- purely a visibility flag, does not affect the
+  // always-present desktop Decision Console rail or mobile Decision Dock.
+  private updateSnapshotCompanionVisibility(): void {
+    this.showSnapshotCompanion = window.innerWidth >= 900 && window.scrollY > 480;
+  }
+
+  // READING COMPANION: lightweight scroll-spy over the Role Narrative section
+  // ids already rendered in the template (read-only DOM lookups, no
+  // mutation). Falls back to '' if none are past the reference line yet.
+  private updateActiveSnapshotSection(): void {
+    const referenceLine = 160;
+    let current = '';
+    for (const section of this.snapshotSections) {
+      const el = document.getElementById(section.id);
+      if (el && el.getBoundingClientRect().top <= referenceLine) {
+        current = section.id;
+      }
+    }
+    this.activeSnapshotSectionId = current;
+  }
+
+  toggleSnapshotCompanion(): void {
+    this.snapshotCompanionOpen = !this.snapshotCompanionOpen;
+    this.haptics.selection();
+  }
+
+  scrollToSnapshotSection(id: string): void {
+    if (!isPlatformBrowser(this.platformId)) { return; }
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: this.prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    }
+    this.snapshotCompanionOpen = false;
+  }
+
+  private prefersReducedMotion(): boolean {
+    if (!isPlatformBrowser(this.platformId) || typeof window.matchMedia !== 'function') { return false; }
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   goBack() {

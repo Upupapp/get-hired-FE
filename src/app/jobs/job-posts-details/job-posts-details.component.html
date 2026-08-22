@@ -238,7 +238,7 @@
           </section>
 
           <!-- Benefits & compensation -->
-          <section class="gh-section" *ngIf="nJob.benefits?.length > 0">
+          <section class="gh-section" id="role-benefits" *ngIf="nJob.benefits?.length > 0">
             <h2 class="gh-section-title">Benefits &amp; compensation</h2>
             <ul class="gh-benefit-list">
               <li *ngFor="let item of nJob.benefits" class="gh-benefit-item">
@@ -268,7 +268,7 @@
         </div>
 
         <!-- How to apply -->
-        <div class="card card-body mt-3 gh-apply-req-section">
+        <div class="card card-body mt-3 gh-apply-req-section" id="role-apply-info">
           <h2 class="gh-section-title">How to apply</h2>
           <ul class="gh-apply-req-list">
             <li class="gh-apply-req-item">
@@ -452,6 +452,59 @@
             (click)="toggleSave(selectedJobPost.jobId)"
             [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save job'">
             <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reading Companion: floating job-snapshot companion for readers deep
+         in a long description on wide viewports. Deliberately NOT a clone of
+         the Job Create "Intelligence Stack" FAB -- that panel surfaces form
+         completion progress (progress ring + %); this one surfaces the same
+         facts already in the Decision Console (company/salary/Apply/Save)
+         plus a section-jump nav, appropriate to a decision/reading page
+         rather than a form. Reuses toApply()/toLogin()/toggleSave() and
+         getShareableLink() unchanged -- no new business logic. -->
+    <div class="gh-reading-companion" *ngIf="showSnapshotCompanion" [class.gh-reading-companion--open]="snapshotCompanionOpen">
+      <button type="button" class="gh-reading-companion__fab"
+        (click)="toggleSnapshotCompanion()"
+        [attr.aria-expanded]="snapshotCompanionOpen"
+        aria-controls="gh-reading-companion-panel"
+        aria-label="Toggle job snapshot companion">
+        <img *ngIf="nJob.companyLogo" [src]="nJob.companyLogo" alt="" class="gh-reading-companion__avatar" />
+        <div *ngIf="!nJob.companyLogo" class="gh-reading-companion__avatar gh-reading-companion__avatar--fallback" aria-hidden="true">{{ nJob.companyName?.charAt(0) }}</div>
+        <i class="bi gh-reading-companion__icon" [class.bi-x-lg]="snapshotCompanionOpen" [class.bi-compass]="!snapshotCompanionOpen" aria-hidden="true"></i>
+      </button>
+
+      <div class="gh-reading-companion__panel" id="gh-reading-companion-panel" role="dialog" aria-label="Job snapshot" *ngIf="snapshotCompanionOpen">
+        <div class="gh-reading-companion__header">
+          <div class="gh-reading-companion__company-name">{{ nJob.companyName }}</div>
+          <div class="gh-reading-companion__salary" [class.gh-reading-companion__salary--muted]="!nJob.hasSalary">{{ nJob.salaryDisplay }}</div>
+        </div>
+
+        <nav class="gh-reading-companion__nav" aria-label="Jump to section">
+          <button type="button" *ngFor="let section of snapshotSections"
+            class="gh-reading-companion__nav-item"
+            [class.gh-reading-companion__nav-item--active]="activeSnapshotSectionId === section.id"
+            (click)="scrollToSnapshotSection(section.id)">
+            <span class="gh-reading-companion__nav-dot" aria-hidden="true"></span>
+            {{ section.label }}
+          </button>
+        </nav>
+
+        <div class="gh-reading-companion__actions">
+          <button class="btn btn-apply-now gh-reading-companion__cta" (click)="toApply()"
+            *ngIf="userRole == '3' && !selectedJobPost.isApplied">Apply Now</button>
+          <button class="btn btn-apply-now gh-reading-companion__cta" (click)="toLogin()"
+            *ngIf="!userRole">Sign In to Apply</button>
+          <span class="gh-applied-mobile-chip" *ngIf="userRole == '3' && selectedJobPost.isApplied">Applied</span>
+          <button type="button" class="gh-action-btn gh-reading-companion__save"
+            [class.gh-action-btn--active]="savedStatus === 'saved'"
+            [disabled]="saveLoading"
+            (click)="toggleSave(selectedJobPost.jobId)"
+            [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save this job'">
+            <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
+            {{ savedStatus === 'saved' ? 'Saved' : 'Save' }}
           </button>
         </div>
       </div>
