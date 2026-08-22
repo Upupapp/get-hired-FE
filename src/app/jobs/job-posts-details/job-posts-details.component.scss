@@ -27,7 +27,15 @@
 
 
 .gh-job-content-reveal {
-  animation: gh-job-detail-reveal $motion-duration-card $motion-ease-decelerate both;
+  // NOTE: fill-mode is intentionally "backwards" (not "both"). "both" would
+  // permanently retain the keyframe's final `transform: translateY(0)` on
+  // this element after the animation completes, and any non-`none`
+  // transform on this ancestor establishes a new containing block for
+  // `position: fixed` descendants (namely .gh-mobile-sticky-bar / the
+  // mobile Decision Dock), causing it to render at this section's
+  // scroll offset instead of pinned to the viewport bottom. "backwards"
+  // still animates in on load but drops the transform once finished.
+  animation: gh-job-detail-reveal $motion-duration-card $motion-ease-decelerate backwards;
 }
 
 // (bg-applied animation merged into the existing .bg-applied block below)
@@ -146,6 +154,14 @@
 }
 
 #banner{
+	// SIGNALFRAME: the CSS fallback hero (#cssHeroBanner in the template, shown
+	// when there's no employer-uploaded jobBanner image) nests two Bootstrap
+	// `.row` elements with no enclosing `.container`/column padding to absorb
+	// their negative gutter margins, which bled past the viewport edge and
+	// forced a horizontal scrollbar on every job posting without a banner
+	// image. Contained here rather than restructuring the grid markup.
+	overflow-x: hidden;
+
 	@mixin center-v () {
 	  position: absolute;
 	  //top: 0;
