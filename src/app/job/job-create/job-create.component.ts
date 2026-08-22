@@ -491,6 +491,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
             interviewQuestions: v.interview && v.interview.interviewQuestions,
             companyId: this.companyId,
           });
+          this.triggerFabPulse(this.readinessResult.readinessPercent);
           // Mark form as having unsaved changes (only when not currently saving)
           if (this.autoSaveState !== 'saving') {
             this.setAutoSaveState('unsaved');
@@ -981,8 +982,21 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // ── SignalFrame Phase B: Command Canvas shell (presentational only) ────────
   /** Mission Bar Preview toggle — shows the existing preview-job-post-step in a drawer. */
   previewMode: boolean = false;
-  /** Tablet-width Intelligence Stack drawer open/close (rail collapses into a toggle). */
-  intelligenceDrawerOpen: boolean = false;
+  /**
+   * Intelligence Stack floating panel: hidden by default on every breakpoint,
+   * opened via the glowing FAB (`gh-jc-intelligence-fab`) and rendered as a
+   * draggable floating dialog rather than a permanently-docked rail /
+   * tablet-only drawer. Replaces the old `intelligenceDrawerOpen` mechanism.
+   */
+  intelligencePanelOpen: boolean = false;
+  /** Manual drag offset (px) applied on top of the panel's default anchored position. */
+  intelligencePanelOffset = { x: 0, y: 0 };
+  private dragOrigin = { x: 0, y: 0, offsetX: 0, offsetY: 0 };
+  private isDraggingIntelligencePanel = false;
+  /** Brief "notification" pulse on the FAB whenever readinessPercent actually changes. */
+  fabPulse: boolean = false;
+  private lastFabPercent: number | null = null;
+  private fabPulseTimer: any;
 
   togglePreviewMode(): void {
     this.previewMode = !this.previewMode;
@@ -991,8 +1005,53 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleIntelligenceDrawer(): void {
-    this.intelligenceDrawerOpen = !this.intelligenceDrawerOpen;
+  openIntelligencePanel(): void {
+    this.intelligencePanelOpen = true;
+    this.haptics.selection();
+  }
+
+  closeIntelligencePanel(): void {
+    this.intelligencePanelOpen = false;
+  }
+
+  /** Called whenever a fresh readiness result is computed; pulses the FAB only on an actual change. */
+  private triggerFabPulse(percent: number): void {
+    if (this.lastFabPercent !== null && percent !== this.lastFabPercent) {
+      this.fabPulse = true;
+      clearTimeout(this.fabPulseTimer);
+      this.fabPulseTimer = setTimeout(() => {
+        this.fabPulse = false;
+        this.cd.markForCheck();
+      }, 900);
+    }
+    this.lastFabPercent = percent;
+  }
+
+  onIntelligencePanelDragStart(event: PointerEvent): void {
+    if (event.button !== 0) return;
+    this.isDraggingIntelligencePanel = true;
+    this.dragOrigin = {
+      x: event.clientX,
+      y: event.clientY,
+      offsetX: this.intelligencePanelOffset.x,
+      offsetY: this.intelligencePanelOffset.y,
+    };
+    event.preventDefault();
+  }
+
+  @HostListener('window:pointermove', ['$event'])
+  onIntelligencePanelDragMove(event: PointerEvent): void {
+    if (!this.isDraggingIntelligencePanel) return;
+    this.intelligencePanelOffset = {
+      x: this.dragOrigin.offsetX + (event.clientX - this.dragOrigin.x),
+      y: this.dragOrigin.offsetY + (event.clientY - this.dragOrigin.y),
+    };
+  }
+
+  @HostListener('window:pointerup')
+  @HostListener('window:pointercancel')
+  onIntelligencePanelDragEnd(): void {
+    this.isDraggingIntelligencePanel = false;
   }
 
   /** Disclosure open/close state for the "What this means" panel */
@@ -1372,5 +1431,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
     this.formSubs.unsubscribe(); // QA8 FIX-10: clean up form-status subscriptions
     if (this.autosaveTimerId) clearTimeout(this.autosaveTimerId);
+    if (this.fabPulseTimer) clearTimeout(this.fabPulseTimer);
   }
 }
