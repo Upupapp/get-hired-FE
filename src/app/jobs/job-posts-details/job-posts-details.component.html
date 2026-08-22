@@ -1,4 +1,21 @@
-<app-inline-loading *ngIf="(loading$ | async) && !(details$ | async)"></app-inline-loading>
+<!-- SIGNALFRAME PHASE F: page-local floating loading treatment. The shared
+     app-inline-loading component (camera-gif + "LOADING" text) is reused
+     across 6+ pages -- it is NOT redesigned here to avoid a global visual
+     regression elsewhere. Instead this page wraps it in a floating gradient
+     card matching the rest of this pass's tech-oriented redesign, and hides
+     the shared component's own default visuals via a page-scoped ::ng-deep
+     override (see .gh-loading-companion in the SCSS) that only applies
+     inside this wrapper -- other pages using app-inline-loading are
+     unaffected. Loading condition/logic (`loading$` / `details$`) unchanged. -->
+<div class="gh-loading-companion" *ngIf="(loading$ | async) && !(details$ | async)" role="status" aria-live="polite" aria-label="Loading job details">
+  <div class="gh-loading-companion__card">
+    <div class="gh-loading-companion__ring" aria-hidden="true">
+      <span class="gh-loading-companion__ring-arc"></span>
+    </div>
+    <p class="gh-loading-companion__text">Loading job details<span class="gh-loading-companion__dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></p>
+  </div>
+  <app-inline-loading class="gh-loading-companion__legacy"></app-inline-loading>
+</div>
 
 <div class="job-detail-error-state" *ngIf="(jobError$ | async) && !(loading$ | async) && !(details$ | async)" role="alert" aria-live="assertive">
   <ng-container *ngIf="(jobError$ | async) as errMsg">
@@ -68,14 +85,19 @@
     </ng-template>
   </div>
 
-  <!-- Two-column layout: SIGNALFRAME PHASE C Opportunity Brief architecture.
-       LEFT = Role Narrative (editorial content flow), RIGHT = Decision
-       Console (sticky apply/save rail). Structure/classes below are additive
-       (gh-sf-* labeling + tokens) -- no Apply/Save/routing logic changed. -->
+  <!-- SIGNALFRAME PHASE F: single-column Role Narrative layout. The former
+       two-column Opportunity Brief architecture (Phase C) docked a sticky
+       Decision Console rail in a fixed 320px right column; that rail's
+       content (Apply/Save/status/job-snapshot facts) now lives in the
+       Reading Companion panel below instead (see gh-reading-companion),
+       so .gh-detail-main reclaims the full content width -- capped at a
+       professional max-width with prose still constrained to a readable
+       line length (see .gh-prose/.gh-bullet-list etc. in the SCSS), not a
+       bare full-bleed stretch. No Apply/Save/routing logic changed here. -->
   <ng-container *ngIf="normalizedJob$ | async as nJob">
     <div class="gh-detail-layout">
 
-      <!-- LEFT: Role Narrative -->
+      <!-- Role Narrative -->
       <main class="gh-detail-main" id="gh-detail-main" aria-label="Role details">
 
         <!-- Signal Ribbon: compact label/value facts. Missing/falsy fields
@@ -369,74 +391,14 @@
         </div>
 
       </main>
-
-      <!-- RIGHT: Decision Console -- sticky apply/save rail (desktop),
-           collapsible body (tablet). Apply/Save controls below are always
-           rendered and functional regardless of the collapse toggle; only
-           the surrounding card body visibility is affected. -->
-      <aside class="gh-detail-rail gh-decision-console" aria-label="Application actions">
-        <button type="button" class="gh-decision-console__toggle"
-          (click)="toggleDecisionConsole()"
-          [attr.aria-expanded]="decisionConsoleExpanded"
-          aria-controls="gh-decision-console-body">
-          Application details
-          <i class="bi" [class.bi-chevron-up]="decisionConsoleExpanded" [class.bi-chevron-down]="!decisionConsoleExpanded" aria-hidden="true"></i>
-        </button>
-        <div class="gh-apply-card" id="gh-decision-console-body" [class.gh-decision-console__body--collapsed]="!decisionConsoleExpanded">
-          <div class="gh-apply-card__company">
-            <img *ngIf="nJob.companyLogo" [src]="nJob.companyLogo" [alt]="nJob.companyName + ' logo'" class="gh-apply-card__logo" />
-            <div *ngIf="!nJob.companyLogo" class="gh-apply-card__logo gh-apply-card__logo--fallback" aria-hidden="true">{{ nJob.companyName?.charAt(0) }}</div>
-            <div class="gh-apply-card__company-name">{{ nJob.companyName }}</div>
-          </div>
-
-          <div class="gh-apply-card__salary" [class.gh-apply-card__salary--muted]="!nJob.hasSalary">
-            {{ nJob.salaryDisplay }}
-          </div>
-
-          <div class="bg-applied d-flex align-items-center mb-3" *ngIf="userRole == '3' && selectedJobPost.isApplied">
-            <img src="/assets/images/placeholder/icons/applied.png" class="img-fluid me-2" style="height: 24px;" alt="">
-            <span>{{ 'APPLY_PAGE.DUPLICATE_APPLICATION_MESSAGE' | translate }}</span>
-          </div>
-
-          <button class="btn btn-apply-now w-100 gh-apply-card__cta" (click)="toApply()"
-            *ngIf="userRole == '3' && !selectedJobPost.isApplied">
-            {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
-          </button>
-
-          <button class="btn btn-apply-now w-100 gh-apply-card__cta" (click)="toLogin()"
-            *ngIf="!userRole" aria-label="Sign in to apply for this job">
-            Sign In to Apply
-          </button>
-
-          <p class="gh-apply-card__register-hint" *ngIf="!userRole">
-            New to GetHired? <a routerLink="/signup">Create a free account</a>
-          </p>
-
-          <div class="gh-apply-card__divider"></div>
-
-          <div class="gh-apply-card__actions">
-            <button type="button" class="gh-action-btn"
-              [class.gh-action-btn--active]="savedStatus === 'saved'"
-              [disabled]="saveLoading"
-              (click)="toggleSave(selectedJobPost.jobId)"
-              [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save this job'">
-              <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
-              {{ savedStatus === 'saved' ? 'Saved' : 'Save job' }}
-            </button>
-            <button type="button" class="gh-action-btn" (click)="getShareableLink(selectedJobPost.jobId)" aria-label="Share this job">
-              <i class="bi bi-share" aria-hidden="true"></i>
-              Share
-            </button>
-          </div>
-        </div>
-      </aside>
     </div>
 
     <!-- Mobile Decision Dock: single sticky bottom bar (Apply primary + Save
-         secondary). Existing logic unchanged; this is the only sticky Apply
-         surface rendered on mobile (the desktop Decision Console is hidden
-         below 900px via .gh-detail-rail's own media query -- SIGNALFRAME
-         PHASE D: normalized from 992px). -->
+         secondary). Existing logic unchanged; this remains the primary
+         always-reachable Apply surface below 576px (SIGNALFRAME PHASE F:
+         the Reading Companion below now owns Apply/Save at 576px+, so the
+         dock's own `display:none` breakpoint is narrowed to match -- see
+         .gh-decision-dock in the SCSS). -->
     <div class="gh-mobile-sticky-bar gh-decision-dock" [class.gh-mobile-sticky-bar--visible]="showMobileBar" role="region" aria-label="Quick apply">
       <div class="gh-mobile-sticky-bar__inner">
         <div class="gh-mobile-sticky-bar__title" aria-hidden="true">{{ nJob.title }}</div>
@@ -457,30 +419,59 @@
       </div>
     </div>
 
-    <!-- Reading Companion: floating job-snapshot companion for readers deep
-         in a long description on wide viewports. Deliberately NOT a clone of
-         the Job Create "Intelligence Stack" FAB -- that panel surfaces form
-         completion progress (progress ring + %); this one surfaces the same
-         facts already in the Decision Console (company/salary/Apply/Save)
-         plus a section-jump nav, appropriate to a decision/reading page
-         rather than a form. Reuses toApply()/toLogin()/toggleSave() and
-         getShareableLink() unchanged -- no new business logic. -->
-    <div class="gh-reading-companion" *ngIf="showSnapshotCompanion" [class.gh-reading-companion--open]="snapshotCompanionOpen">
+    <!-- Reading Companion (SIGNALFRAME PHASE F -- merged Decision Console):
+         floating job-snapshot companion, now the single real home of
+         Apply/Save/status/job-snapshot content that used to live in the
+         separate sticky `.gh-detail-rail` aside (moved below, not
+         rewritten -- same *ngIf conditions, same toApply()/toLogin()/
+         toggleSave()/getShareableLink() bindings), plus its own existing
+         section-jump nav. Rendered 576px+; below that the Mobile Decision
+         Dock above remains the reachable Apply surface. Starts OPEN
+         (snapshotCompanionOpen defaults true) so Apply stays visible/
+         prominent without requiring a tap, same as the rail it replaces. -->
+    <div class="gh-reading-companion" [class.gh-reading-companion--open]="snapshotCompanionOpen">
       <button type="button" class="gh-reading-companion__fab"
         (click)="toggleSnapshotCompanion()"
         [attr.aria-expanded]="snapshotCompanionOpen"
         aria-controls="gh-reading-companion-panel"
-        aria-label="Toggle job snapshot companion">
+        aria-label="Toggle job application panel">
         <img *ngIf="nJob.companyLogo" [src]="nJob.companyLogo" alt="" class="gh-reading-companion__avatar" />
         <div *ngIf="!nJob.companyLogo" class="gh-reading-companion__avatar gh-reading-companion__avatar--fallback" aria-hidden="true">{{ nJob.companyName?.charAt(0) }}</div>
         <i class="bi gh-reading-companion__icon" [class.bi-x-lg]="snapshotCompanionOpen" [class.bi-compass]="!snapshotCompanionOpen" aria-hidden="true"></i>
       </button>
 
-      <div class="gh-reading-companion__panel" id="gh-reading-companion-panel" role="dialog" aria-label="Job snapshot" *ngIf="snapshotCompanionOpen">
+      <div class="gh-reading-companion__panel" id="gh-reading-companion-panel" role="dialog" aria-label="Job application and snapshot" *ngIf="snapshotCompanionOpen">
         <div class="gh-reading-companion__header">
-          <div class="gh-reading-companion__company-name">{{ nJob.companyName }}</div>
-          <div class="gh-reading-companion__salary" [class.gh-reading-companion__salary--muted]="!nJob.hasSalary">{{ nJob.salaryDisplay }}</div>
+          <img *ngIf="nJob.companyLogo" [src]="nJob.companyLogo" [alt]="nJob.companyName + ' logo'" class="gh-reading-companion__logo" />
+          <div *ngIf="!nJob.companyLogo" class="gh-reading-companion__logo gh-reading-companion__logo--fallback" aria-hidden="true">{{ nJob.companyName?.charAt(0) }}</div>
+          <div class="gh-reading-companion__header-text">
+            <div class="gh-reading-companion__company-name">{{ nJob.companyName }}</div>
+            <div class="gh-reading-companion__salary" [class.gh-reading-companion__salary--muted]="!nJob.hasSalary">{{ nJob.salaryDisplay }}</div>
+          </div>
         </div>
+
+        <!-- Moved verbatim from the former .gh-detail-rail / Decision Console --
+             same *ngIf conditions, same click handlers, no logic changes. -->
+        <div class="bg-applied d-flex align-items-center mb-3" *ngIf="userRole == '3' && selectedJobPost.isApplied">
+          <img src="/assets/images/placeholder/icons/applied.png" class="img-fluid me-2" style="height: 24px;" alt="">
+          <span>{{ 'APPLY_PAGE.DUPLICATE_APPLICATION_MESSAGE' | translate }}</span>
+        </div>
+
+        <button class="btn btn-apply-now w-100 gh-reading-companion__primary-cta" (click)="toApply()"
+          *ngIf="userRole == '3' && !selectedJobPost.isApplied">
+          {{ 'APPLY_PAGE.APPLY_NOW_BUTTON' | translate }}
+        </button>
+
+        <button class="btn btn-apply-now w-100 gh-reading-companion__primary-cta" (click)="toLogin()"
+          *ngIf="!userRole" aria-label="Sign in to apply for this job">
+          Sign In to Apply
+        </button>
+
+        <p class="gh-reading-companion__register-hint" *ngIf="!userRole">
+          New to GetHired? <a routerLink="/signup">Create a free account</a>
+        </p>
+
+        <div class="gh-reading-companion__divider"></div>
 
         <nav class="gh-reading-companion__nav" aria-label="Jump to section">
           <button type="button" *ngFor="let section of snapshotSections"
@@ -492,19 +483,20 @@
           </button>
         </nav>
 
+        <div class="gh-reading-companion__divider"></div>
+
         <div class="gh-reading-companion__actions">
-          <button class="btn btn-apply-now gh-reading-companion__cta" (click)="toApply()"
-            *ngIf="userRole == '3' && !selectedJobPost.isApplied">Apply Now</button>
-          <button class="btn btn-apply-now gh-reading-companion__cta" (click)="toLogin()"
-            *ngIf="!userRole">Sign In to Apply</button>
-          <span class="gh-applied-mobile-chip" *ngIf="userRole == '3' && selectedJobPost.isApplied">Applied</span>
           <button type="button" class="gh-action-btn gh-reading-companion__save"
             [class.gh-action-btn--active]="savedStatus === 'saved'"
             [disabled]="saveLoading"
             (click)="toggleSave(selectedJobPost.jobId)"
             [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save this job'">
             <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
-            {{ savedStatus === 'saved' ? 'Saved' : 'Save' }}
+            {{ savedStatus === 'saved' ? 'Saved' : 'Save job' }}
+          </button>
+          <button type="button" class="gh-action-btn" (click)="getShareableLink(selectedJobPost.jobId)" aria-label="Share this job">
+            <i class="bi bi-share" aria-hidden="true"></i>
+            Share
           </button>
         </div>
       </div>

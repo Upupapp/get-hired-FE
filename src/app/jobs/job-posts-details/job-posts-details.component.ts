@@ -31,22 +31,20 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   saveLoading = false;
   showMobileBar = false;
   descriptionExpanded = false;
-  // SIGNALFRAME PHASE C: presentational-only toggle for the tablet
-  // "Decision Console" collapsible rail (Opportunity Brief architecture).
-  // Does not affect Apply/Save logic or any state computed elsewhere --
-  // purely controls whether the rail's body is expanded on tablet widths.
-  decisionConsoleExpanded = false;
 
-  // READING COMPANION (Opportunity Brief Phase E): presentational-only state
-  // for a floating "job snapshot" companion -- a scroll-aware reading aid
-  // distinct from the Job Create "Intelligence Stack" FAB (that one surfaces
-  // form completion progress; this one surfaces the same Apply/Save/salary
-  // facts already in the Decision Console plus a section-jump nav, for
-  // readers deep in a long description on desktop). None of this state
-  // gates or duplicates Apply/Save business logic -- it only calls the
-  // existing toApply()/toLogin()/toggleSave() handlers.
-  snapshotCompanionOpen = false;
-  showSnapshotCompanion = false;
+  // READING COMPANION (Opportunity Brief Phase F -- merged Decision Console):
+  // presentational-only state for the floating "job snapshot" companion.
+  // Phase F folds the former sticky `.gh-detail-rail`/Decision Console
+  // (Apply/Save/status/job-snapshot facts) into this panel -- it is now the
+  // single real home of that content on tablet/desktop widths, not a mirror
+  // of a separate rail. Starts OPEN by default (not a click-to-reveal
+  // shortcut anymore) so Apply stays visible/prominent without an extra tap,
+  // matching the always-visible rail it replaces; still user-collapsible via
+  // the FAB toggle. None of this state gates or duplicates Apply/Save
+  // business logic -- it only calls the existing
+  // toApply()/toLogin()/toggleSave()/getShareableLink() handlers moved in
+  // unchanged from the old rail markup.
+  snapshotCompanionOpen = true;
   activeSnapshotSectionId = '';
   readonly snapshotSections: { id: string; label: string }[] = [
     { id: 'role-about', label: 'Overview' },
@@ -149,16 +147,8 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   onScroll(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.showMobileBar = window.scrollY > 300;
-      this.updateSnapshotCompanionVisibility();
       this.updateActiveSnapshotSection();
     }
-  }
-
-  // READING COMPANION: shown only on wide viewports once the reader has
-  // scrolled past the hero -- purely a visibility flag, does not affect the
-  // always-present desktop Decision Console rail or mobile Decision Dock.
-  private updateSnapshotCompanionVisibility(): void {
-    this.showSnapshotCompanion = window.innerWidth >= 900 && window.scrollY > 480;
   }
 
   // READING COMPANION: lightweight scroll-spy over the Role Narrative section
@@ -254,14 +244,6 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
 
   toggleDescription(): void {
     this.descriptionExpanded = !this.descriptionExpanded;
-  }
-
-  // SIGNALFRAME PHASE C: presentational-only. Expands/collapses the tablet
-  // "Decision Console" body. Does not gate Apply/Save availability -- those
-  // controls remain rendered and functional regardless of this flag; it only
-  // controls whether the surrounding rail body is visible at tablet widths.
-  toggleDecisionConsole(): void {
-    this.decisionConsoleExpanded = !this.decisionConsoleExpanded;
   }
 
   /**
