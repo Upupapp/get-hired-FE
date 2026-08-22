@@ -50,9 +50,13 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
     { id: 'role-about', label: 'Overview' },
     { id: 'role-duties', label: 'Responsibilities' },
     { id: 'role-requirements', label: 'Requirements' },
-    { id: 'role-benefits', label: 'Benefits' },
     { id: 'role-apply-info', label: 'How to apply' },
   ];
+  // Fixed global nav (.gh-public-nav, core/header) is 68px tall and sits on
+  // top of the page -- both the scroll-spy reference line and the actual
+  // scroll-to offset below must clear it, or a section lands partially
+  // hidden underneath it instead of at "the correct spot".
+  private readonly SNAPSHOT_SCROLL_HEADER_OFFSET = 84;
 
   details$ = this.jobFacade.getJobById$;
   // Normalized, defensively-typed view of the same data for the new
@@ -155,7 +159,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   // ids already rendered in the template (read-only DOM lookups, no
   // mutation). Falls back to '' if none are past the reference line yet.
   private updateActiveSnapshotSection(): void {
-    const referenceLine = 160;
+    const referenceLine = this.SNAPSHOT_SCROLL_HEADER_OFFSET;
     let current = '';
     for (const section of this.snapshotSections) {
       const el = document.getElementById(section.id);
@@ -173,9 +177,23 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
 
   scrollToSnapshotSection(id: string): void {
     if (!isPlatformBrowser(this.platformId)) { return; }
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: this.prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+    const behavior: ScrollBehavior = this.prefersReducedMotion() ? 'auto' : 'smooth';
+
+    if (id === 'role-about') {
+      // "Overview" means the very start of the brief -- scroll all the way
+      // to the top of the page (hero included), not just to wherever the
+      // role-about section itself happens to sit.
+      window.scrollTo({ top: 0, behavior });
+    } else {
+      // Plain scrollIntoView({block:'start'}) lands the section directly
+      // under the fixed .gh-public-nav header (68px), hiding its title --
+      // compute the real document offset and subtract the header clearance
+      // so each section lands fully visible, at "the correct spot".
+      const el = document.getElementById(id);
+      if (el) {
+        const targetTop = el.getBoundingClientRect().top + window.scrollY - this.SNAPSHOT_SCROLL_HEADER_OFFSET;
+        window.scrollTo({ top: Math.max(targetTop, 0), behavior });
+      }
     }
     this.snapshotCompanionOpen = false;
   }
