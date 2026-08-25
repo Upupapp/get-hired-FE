@@ -254,8 +254,10 @@
     </div>
   </section>
 
-  <!-- INTERVIEW QUESTIONS -->
-  <section class="card card-body mb-3" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+  <!-- INTERVIEW QUESTIONS (Comprehensive mode only -- Step 3, Screening &
+       Interview, doesn't exist in Simplified mode at all, so there is no
+       goToStep(3) to offer and nothing to preview/edit here). -->
+  <section class="card card-body mb-3" *ngIf="!simplified" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
     <div class="p-4">
       <div class="pv-section-wrap">
         <div class="pv-section-edit-bar">
@@ -311,6 +313,16 @@
           </span>
         </button>
       </ng-template>
+    </div>
+  </section>
+
+  <!-- Simplified mode: informational note only, no path back to the hidden Step 3 -->
+  <section class="card card-body mb-3" *ngIf="simplified" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+    <div class="p-4 d-flex align-items-center gap-2">
+      <i class="bi bi-info-circle pv-iq-icon" aria-hidden="true"></i>
+      <p class="preview-no-questions-sub mb-0">
+        Screening &amp; interview questions aren't part of the Simplified job post. You can publish now and add them later by switching to a comprehensive job post.
+      </p>
     </div>
   </section>
 </section>

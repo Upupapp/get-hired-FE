@@ -1557,6 +1557,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   changeStep(event) {
+    // Simplified mode: Step 3 (Screening & Interview) doesn't exist -- no
+    // stepper tab, no Composition Canvas content, no Preview section can
+    // legitimately request it. This is the single choke point every
+    // navigation trigger in this component eventually calls through, so
+    // guard here rather than trying to catch every individual caller
+    // (stepper clicks, error-summary jumps, child-component outputs, etc).
+    // Redirect to whichever adjacent visible step makes sense for the
+    // direction of travel rather than silently no-op'ing.
+    if (event === 3 && this.isSimplified) {
+      event = this.stepper <= 2 ? 4 : 2;
+    }
     this.stepper = event;
     const formCtrl = this.stepperItems[event - 2]?.formName;
 

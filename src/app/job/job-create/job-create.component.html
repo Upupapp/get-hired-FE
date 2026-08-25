@@ -140,6 +140,7 @@
         <ng-container *ngIf="stepper === 4">
           <app-preview-job-post-step
             [jobPostData]="jobForm.value.initialData"
+            [simplified]="isSimplified"
             (navigateToStep)="changeStep($event)"></app-preview-job-post-step>
         </ng-container>
 
@@ -489,7 +490,7 @@
   <!-- ── MOBILE STICKY BOTTOM BAR ───────────────────────────────────────── -->
   <div class="gh-jc-mobile-bar" role="toolbar" aria-label="Step navigation">
     <button *ngIf="stepper > 1" class="gh-btn gh-btn--secondary gh-btn--sm" type="button"
-      (click)="changeStep(stepper - 1)">
+      (click)="onBackStep()">
       <i class="bi bi-chevron-left" aria-hidden="true"></i>
     </button>
     <button *ngIf="stepper === 1" class="gh-btn gh-btn--ghost gh-btn--sm" type="button"

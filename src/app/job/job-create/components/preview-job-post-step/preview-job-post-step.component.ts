@@ -17,6 +17,11 @@ import { FREELANCE_JOB_TYPE_SENTINEL } from '@app-job/utils/job-field-resolvers'
 })
 export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
   @Input() jobPostData: any = {};
+  /** Simplified job-post mode: Step 3 (Screening & Interview) is hidden
+   *  entirely from the stepper/canvas in this mode, so the Interview
+   *  Questions preview section here must not offer any goToStep(3) link --
+   *  it's replaced with a plain informational note instead. */
+  @Input() simplified: boolean = false;
   @Output() navigateToStep = new EventEmitter<number>();
   subscriptions = new Subscription();
 
@@ -116,6 +121,11 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     });
 
   goToStep(step: number): void {
+    // Defense in depth: Step 3 doesn't exist in Simplified mode (no stepper
+    // tab, no visible section for it) -- even though the template below no
+    // longer renders any control that calls goToStep(3) in that mode, never
+    // let this method itself emit a navigation into the hidden step.
+    if (step === 3 && this.simplified) { return; }
     this.navigateToStep.emit(step);
   }
 
