@@ -120,12 +120,81 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     'skills', 'interview', 'education',
   ]);
 
-  /** Same as readinessResult.recommendationItems, filtered for display so
-   *  Simplified mode doesn't suggest filling in a section it isn't showing. */
+  /** Job Insights (Intelligence Stack), fully aligned with what Simplified
+   *  mode actually shows: in Comprehensive mode this just returns the raw
+   *  readinessResult unchanged. In Simplified mode, recommendation items/
+   *  completed items tied to fields that aren't shown there at all (skills,
+   *  interview questions, education) are excluded, and recommendedTotal/
+   *  recommendedComplete/readinessPercent/readinessLevel/sectionStatuses/
+   *  nextBestAction are all recomputed from that same filtered set -- so the
+   *  score, ring, and "Job post strength" badge can actually reach 100%/
+   *  "Excellent" in Simplified mode instead of being permanently capped by
+   *  criteria the Employer can't even see or fill in from this form.
+   *  JobReadinessService.evaluate() itself (and canPublish/blockingItems,
+   *  which only cover fields shown in BOTH modes) is never touched -- this
+   *  is a pure display-layer derivation over its output. */
+  get effectiveReadiness(): JobReadinessResult | null {
+    const r = this.readinessResult;
+    if (!r || !this.isSimplified) return r;
+
+    const hidden = JobCreateComponent.SIMPLIFIED_HIDDEN_RECOMMENDATION_KEYS;
+    const recommendationItems = r.recommendationItems.filter(i => !hidden.has(i.key));
+    const completedItems = r.completedItems.filter(i => !hidden.has(i.key));
+    const sectionStatuses = r.sectionStatuses.filter(
+      s => s.sectionId !== 'section-skills' && s.sectionId !== 'section-interview'
+    );
+
+    // completedItems mixes required + recommended completions with no
+    // separate flag -- required keys never collide with recommendation keys
+    // (see the pushRequired()/pushRec() key lists in job-readiness.service.ts),
+    // so anything in the filtered completedItems that isn't a required key
+    // must be a (visible) completed recommendation.
+    const requiredKeys = new Set([
+      'jobTitle', 'jobType', 'jobLevel', 'jobCity', 'jobCountry', 'description', 'workSetup', 'banner', 'company',
+    ]);
+    const recommendedComplete = completedItems.filter(i => !requiredKeys.has(i.key)).length;
+    const recommendedTotal = recommendationItems.length + recommendedComplete;
+
+    const totalWeight = r.requiredTotal + recommendedTotal;
+    const totalDone = r.requiredComplete + recommendedComplete;
+    const readinessPercent = totalWeight === 0 ? 0 : Math.min(100, Math.round((totalDone / totalWeight) * 100));
+
+    let readinessLevel: JobReadinessResult['readinessLevel'];
+    if (!r.canPublish) {
+      readinessLevel = 'draft';
+    } else if (recommendedComplete < 3) {
+      readinessLevel = 'basic';
+    } else if (recommendedComplete < recommendedTotal) {
+      readinessLevel = 'strong';
+    } else {
+      readinessLevel = 'excellent';
+    }
+
+    let nextBestAction = r.nextBestAction;
+    if (r.blockingItems.length === 0) {
+      nextBestAction = recommendationItems.length > 0
+        ? { label: `Add ${recommendationItems[0].label.toLowerCase()} to strengthen your job post`, sectionId: recommendationItems[0].sectionId }
+        : null;
+    }
+
+    return {
+      ...r,
+      recommendationItems,
+      completedItems,
+      sectionStatuses,
+      recommendedTotal,
+      recommendedComplete,
+      readinessPercent,
+      readinessLevel,
+      nextBestAction,
+    };
+  }
+
+  /** @deprecated use effectiveReadiness.recommendationItems directly -- kept
+   *  only so nothing outside this file that might reference the old getter
+   *  name breaks; not used in this component's own template anymore. */
   get visibleRecommendationItems(): any[] {
-    const items = this.readinessResult?.recommendationItems || [];
-    if (!this.isSimplified) return items;
-    return items.filter(i => !JobCreateComponent.SIMPLIFIED_HIDDEN_RECOMMENDATION_KEYS.has(i.key));
+    return this.effectiveReadiness?.recommendationItems || [];
   }
 
   // ── New v2 state ──────────────────────────────────────────────────────────
@@ -1144,10 +1213,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.whatMeansOpen = !this.whatMeansOpen;
   }
 
-  /** Strength chip label for the quality axis */
+  /** Strength chip label for the quality axis. Uses effectiveReadiness (not
+   *  the raw readinessResult) so Simplified mode's "Job post strength"
+   *  reflects only fields it actually shows -- see effectiveReadiness. */
   getStrengthLabel(): string {
-    if (!this.readinessResult) return '';
-    switch (this.readinessResult.readinessLevel) {
+    if (!this.effectiveReadiness) return '';
+    switch (this.effectiveReadiness.readinessLevel) {
       case 'basic':     return 'Needs improvement';
       case 'strong':    return 'Strong';
       case 'excellent': return 'Excellent';
@@ -1156,8 +1227,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   getStrengthChipClass(): string {
-    if (!this.readinessResult) return '';
-    switch (this.readinessResult.readinessLevel) {
+    if (!this.effectiveReadiness) return '';
+    switch (this.effectiveReadiness.readinessLevel) {
       case 'basic':     return 'gh-jc-strength-chip--needs-improvement';
       case 'strong':    return 'gh-jc-strength-chip--strong';
       case 'excellent': return 'gh-jc-strength-chip--excellent';
@@ -1166,8 +1237,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   getStrengthIcon(): string {
-    if (!this.readinessResult) return 'bi-circle';
-    switch (this.readinessResult.readinessLevel) {
+    if (!this.effectiveReadiness) return 'bi-circle';
+    switch (this.effectiveReadiness.readinessLevel) {
       case 'basic':     return 'bi-arrow-up-circle';
       case 'strong':    return 'bi-star';
       case 'excellent': return 'bi-star-fill';
@@ -1177,8 +1248,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   /** Inline next-step guidance below the chips */
   getStrengthGuidance(): string {
-    if (!this.readinessResult) return '';
-    const r = this.readinessResult;
+    if (!this.effectiveReadiness) return '';
+    const r = this.effectiveReadiness;
     if (!r.canPublish) {
       return 'Complete the required fields to publish. Then add recommended details to improve post strength.';
     }
@@ -1201,8 +1272,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   /** Visually labelled improvement count for the recommended-items toggle */
   getImprovementCountLabel(): string {
-    if (!this.readinessResult) return '';
-    const r = this.readinessResult;
+    if (!this.effectiveReadiness) return '';
+    const r = this.effectiveReadiness;
     const count = r.recommendationItems.length;
     if (count === 0) return 'All recommended details added';
     switch (r.readinessLevel) {

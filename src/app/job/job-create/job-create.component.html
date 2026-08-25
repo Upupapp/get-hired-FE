@@ -252,13 +252,13 @@
         </div>
 
         <!-- Readiness card (steps 1-3) -->
-        <div class="gh-jc-readiness-card gh-card" *ngIf="stepper !== 4 && readinessResult">
+        <div class="gh-jc-readiness-card gh-card" *ngIf="stepper !== 4 && effectiveReadiness">
           <div class="gh-jc-readiness-header">
             <span class="gh-jc-readiness-title">
               <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
               Job post strength
             </span>
-            <span class="gh-jc-readiness-percent">{{ readinessResult.readinessPercent }}%</span>
+            <span class="gh-jc-readiness-percent">{{ effectiveReadiness.readinessPercent }}%</span>
           </div>
 
           <!-- B09/B16: Easy Job Posting assistant banner — CTA reflects live readiness -->
@@ -267,13 +267,13 @@
             <div class="gh-jc-assistant-banner-copy">
               <span class="gh-jc-assistant-banner-title">Draft created with GetHired Assistant</span>
               <span class="gh-jc-assistant-banner-body">
-                {{ readinessResult?.canPublish
+                {{ effectiveReadiness?.canPublish
                   ? 'Your job is ready to publish.'
                   : 'Review imported details and complete any missing fields before publishing.' }}
               </span>
             </div>
             <button type="button" class="gh-jc-assistant-banner-cta" (click)="changeStep(4)">
-              {{ readinessResult?.canPublish ? 'Review & publish' : "See what's left" }}
+              {{ effectiveReadiness?.canPublish ? 'Review & publish' : "See what's left" }}
             </button>
           </div>
 
@@ -284,23 +284,23 @@
               <circle cx="22" cy="22" r="18" stroke="var(--gh-color-primary)"
                 stroke-width="4" stroke-linecap="round"
                 [style.stroke-dasharray]="113"
-                [style.stroke-dashoffset]="113 - (113 * readinessResult.readinessPercent / 100)"
+                [style.stroke-dashoffset]="113 - (113 * effectiveReadiness.readinessPercent / 100)"
                 class="gh-jc-readiness-ring-fill"
                 transform="rotate(-90 22 22)"/>
             </svg>
-            <span class="gh-jc-readiness-ring-label">{{ readinessResult.readinessPercent }}%</span>
+            <span class="gh-jc-readiness-ring-label">{{ effectiveReadiness.readinessPercent }}%</span>
           </div>
 
           <!-- B09: Two-axis chips — readiness (publish gate) + strength (quality) -->
           <div class="gh-jc-b09-chips-row">
             <span
               class="gh-jc-readiness-chip"
-              [ngClass]="readinessResult.canPublish ? 'gh-jc-readiness-chip--ready' : 'gh-jc-readiness-chip--missing'"
-              [attr.aria-label]="readinessResult.canPublish ? 'Publish readiness: Required fields complete' : 'Publish readiness: Required fields missing'">
-              <i class="bi me-1" [ngClass]="readinessResult.canPublish ? 'bi-check-circle' : 'bi-x-circle'" aria-hidden="true"></i>
-              {{ readinessResult.canPublish ? 'Required fields complete' : 'Required fields missing' }}
+              [ngClass]="effectiveReadiness.canPublish ? 'gh-jc-readiness-chip--ready' : 'gh-jc-readiness-chip--missing'"
+              [attr.aria-label]="effectiveReadiness.canPublish ? 'Publish readiness: Required fields complete' : 'Publish readiness: Required fields missing'">
+              <i class="bi me-1" [ngClass]="effectiveReadiness.canPublish ? 'bi-check-circle' : 'bi-x-circle'" aria-hidden="true"></i>
+              {{ effectiveReadiness.canPublish ? 'Required fields complete' : 'Required fields missing' }}
             </span>
-            <span *ngIf="readinessResult.canPublish"
+            <span *ngIf="effectiveReadiness.canPublish"
               class="gh-jc-strength-chip"
               [ngClass]="getStrengthChipClass()"
               [attr.aria-label]="'Post strength: ' + getStrengthLabel()">
@@ -341,17 +341,17 @@
           </div>
 
           <!-- Blocking items -->
-          <div class="gh-jc-readiness-section" *ngIf="readinessResult.blockingItems.length > 0">
+          <div class="gh-jc-readiness-section" *ngIf="effectiveReadiness.blockingItems.length > 0">
             <button class="gh-jc-readiness-group-toggle" type="button"
               (click)="toggleReadinessGroup('blocking')"
               [attr.aria-expanded]="readinessGroupOpen.blocking">
               <i class="bi bi-x-circle-fill text-danger me-1" aria-hidden="true"></i>
-              <span>Required ({{ readinessResult.blockingItems.length }} missing)</span>
+              <span>Required ({{ effectiveReadiness.blockingItems.length }} missing)</span>
               <i class="bi ms-auto" [ngClass]="readinessGroupOpen.blocking ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
             </button>
             <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.blocking">
               <button
-                *ngFor="let item of readinessResult.blockingItems"
+                *ngFor="let item of effectiveReadiness.blockingItems"
                 class="gh-jc-chip gh-jc-chip--blocking"
                 type="button"
                 (click)="onReadinessJumpToSection(item.sectionId)"
@@ -387,17 +387,17 @@
           </div>
 
           <!-- Completed items -->
-          <div class="gh-jc-readiness-section" *ngIf="readinessResult.completedItems.length > 0">
+          <div class="gh-jc-readiness-section" *ngIf="effectiveReadiness.completedItems.length > 0">
             <button class="gh-jc-readiness-group-toggle" type="button"
               (click)="toggleReadinessGroup('completed')"
               [attr.aria-expanded]="readinessGroupOpen.completed">
               <i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>
-              <span>Complete ({{ readinessResult.completedItems.length }})</span>
+              <span>Complete ({{ effectiveReadiness.completedItems.length }})</span>
               <i class="bi ms-auto" [ngClass]="readinessGroupOpen.completed ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
             </button>
             <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.completed">
               <span
-                *ngFor="let item of readinessResult.completedItems"
+                *ngFor="let item of effectiveReadiness.completedItems"
                 class="gh-jc-chip gh-jc-chip--done"
                 [attr.aria-label]="item.label + ' complete'"
               >
@@ -408,14 +408,14 @@
           </div>
 
           <!-- Next best action -->
-          <div class="gh-jc-next-action" *ngIf="readinessResult.nextBestAction">
+          <div class="gh-jc-next-action" *ngIf="effectiveReadiness.nextBestAction">
             <i class="bi bi-lightning-fill me-1" aria-hidden="true"></i>
-            <span>{{ readinessResult.nextBestAction.label }}</span>
+            <span>{{ effectiveReadiness.nextBestAction.label }}</span>
           </div>
         </div>
 
         <!-- Step 4: publish checklist summary in rail -->
-        <div class="gh-jc-publish-checklist gh-card" *ngIf="stepper === 4 && readinessResult">
+        <div class="gh-jc-publish-checklist gh-card" *ngIf="stepper === 4 && effectiveReadiness">
           <div class="gh-jc-readiness-header">
             <span class="gh-jc-readiness-title">
               <i class="bi bi-send-check me-1" aria-hidden="true"></i>
@@ -423,7 +423,7 @@
             </span>
           </div>
           <ul class="gh-jc-checklist-list" role="list">
-            <li *ngFor="let item of readinessResult.sectionStatuses">
+            <li *ngFor="let item of effectiveReadiness.sectionStatuses">
               <button type="button" class="gh-jc-checklist-item gh-jc-checklist-item--btn"
                 [ngClass]="item.complete ? 'gh-jc-checklist-item--done' : (item.blocking ? 'gh-jc-checklist-item--blocking' : '')"
                 (click)="onChecklistItemClick(item)"
@@ -465,24 +465,24 @@
        changes so it reads as a notification the user should check. Clicking
        it toggles the floating panel open/closed (stays put either way). -->
   <button type="button" class="gh-jc-intelligence-fab"
-    *ngIf="readinessResult"
+    *ngIf="effectiveReadiness"
     [class.gh-jc-intelligence-fab--pulse]="fabPulse"
     [class.gh-jc-intelligence-fab--open]="intelligencePanelOpen"
-    [ngClass]="readinessResult.canPublish ? 'gh-jc-intelligence-fab--ready' : 'gh-jc-intelligence-fab--missing'"
+    [ngClass]="effectiveReadiness.canPublish ? 'gh-jc-intelligence-fab--ready' : 'gh-jc-intelligence-fab--missing'"
     (click)="toggleIntelligencePanel()"
     aria-controls="gh-jc-intelligence-panel"
     [attr.aria-expanded]="intelligencePanelOpen"
-    [attr.aria-label]="(intelligencePanelOpen ? 'Close job insights — ' : 'Open job insights — ') + readinessResult.readinessPercent + '% ready'">
+    [attr.aria-label]="(intelligencePanelOpen ? 'Close job insights — ' : 'Open job insights — ') + effectiveReadiness.readinessPercent + '% ready'">
     <svg class="gh-jc-intelligence-fab-ring" viewBox="0 0 44 44" fill="none" aria-hidden="true">
       <circle cx="22" cy="22" r="18" stroke="rgba(255,255,255,0.35)" stroke-width="4"/>
       <circle cx="22" cy="22" r="18" stroke="#fff" stroke-width="4" stroke-linecap="round"
         [style.stroke-dasharray]="113"
-        [style.stroke-dashoffset]="113 - (113 * readinessResult.readinessPercent / 100)"
+        [style.stroke-dashoffset]="113 - (113 * effectiveReadiness.readinessPercent / 100)"
         transform="rotate(-90 22 22)"/>
     </svg>
-    <span class="gh-jc-intelligence-fab-percent">{{ readinessResult.readinessPercent }}%</span>
-    <span class="gh-jc-intelligence-fab-badge" *ngIf="readinessResult.blockingItems?.length">
-      {{ readinessResult.blockingItems.length }}
+    <span class="gh-jc-intelligence-fab-percent">{{ effectiveReadiness.readinessPercent }}%</span>
+    <span class="gh-jc-intelligence-fab-badge" *ngIf="effectiveReadiness.blockingItems?.length">
+      {{ effectiveReadiness.blockingItems.length }}
     </span>
   </button>
 
