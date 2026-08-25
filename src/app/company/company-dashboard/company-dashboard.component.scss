@@ -1930,3 +1930,112 @@ $gh-teal:       $color-teal-accent;
 
   &:hover { background: rgba(255, 112, 98, 0.18); }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MOBILE TYPOGRAPHY & SPACING PASS (<=767px)
+// Presentational-only tier: brings body copy/labels into the 9-12px band and
+// buttons to >=10px on small screens without touching desktop/tablet rules
+// above. Numeric "hero stat" displays (gh-kpi-num, rdb-cmd-avatar-initial,
+// ring percentages) are reduced for fit but kept legible as headline figures
+// rather than forced into the body-copy band.
+// ═══════════════════════════════════════════════════════════════════════════
+@media (max-width: 767px) {
+  // ── Hero / command card ──────────────────────────────────────────────────
+  .rdb-hero { padding: 16px 12px 0; }
+  .rdb-hero-card { padding: 20px 16px 18px; border-radius: 16px; }
+  .rdb-cmd-card { padding: 20px 16px 18px; }
+  .rdb-cmd-eyebrow { font-size: 9px; }
+  .rdb-cmd-name { font-size: 17px; }
+  .rdb-cmd-avatar { width: 42px; height: 42px; }
+  .rdb-cmd-avatar-initial { font-size: 17px; }
+  .rdb-cmd-stats { font-size: 11px; }
+  .rdb-chip { font-size: 10px; padding: 3px 9px; }
+  .rdb-profile-card { padding: 16px 14px; }
+  .rdb-profile-ring-label { font-size: 11px; }
+  .rdb-profile-ring-sub { font-size: 10px; }
+
+  .rdb-btn-coral,
+  .rdb-btn-outline {
+    font-size: 12px;
+    height: 42px;
+    padding: 0 16px;
+  }
+  .rdb-btn-ghost { font-size: 11px; }
+  .rdb-btn-hero-link { font-size: 11px; }
+
+  // ── Section headers ──────────────────────────────────────────────────────
+  .gh-section-title { font-size: 13px; }
+  .gh-section-sub { font-size: 11px; }
+  .gh-card { padding: 16px 14px 14px; border-radius: 14px; }
+  .gh-card-title { font-size: 12px; }
+  .gh-card-sub { font-size: 10.5px; }
+  .gh-chip { font-size: 10px; padding: 3px 9px; }
+  .gh-empty-text { font-size: 11px; }
+
+  // ── Buttons ───────────────────────────────────────────────────────────────
+  .gh-btn-coral {
+    font-size: 12px;
+    height: 42px;
+    padding: 0 16px;
+  }
+  .gh-btn-link,
+  .gh-btn-hero-link { font-size: 11px; }
+  .gh-btn-sm { font-size: 10.5px; padding: 5px 10px; }
+
+  // ── Action inbox ──────────────────────────────────────────────────────────
+  .gh-inbox-eyebrow { font-size: 10px; }
+  .gh-inbox-main-title { font-size: 14px; }
+  .gh-inbox-main-reason { font-size: 11px; }
+  .gh-inbox-card-label { font-size: 11px; }
+  .gh-inbox-card-desc { font-size: 10.5px; }
+  .gh-inbox-card-cta { font-size: 10.5px; }
+
+  // ── KPI strip ─────────────────────────────────────────────────────────────
+  .gh-kpi-num { font-size: 20px; }
+  .gh-kpi-lbl { font-size: 10px; }
+  .gh-kpi-ctx { font-size: 9.5px; }
+
+  // ── Job performance table ───────────────────────────────────────────────
+  .gh-jobperf-job-title { font-size: 12px; }
+  .gh-jobperf-col { font-size: 9px; }
+  .gh-jobperf-metric-val { font-size: 12px; }
+  .gh-jobperf-metric-lbl { font-size: 9px; }
+  .gh-jobperf-empty-title { font-size: 12px; }
+  .gh-jobperf-empty-sub { font-size: 11px; }
+  .gh-jobperf-allclear-text { font-size: 11px; }
+
+  // ── Employer health cards ───────────────────────────────────────────────
+  .gh-health-label { font-size: 11px; }
+  .gh-health-sub { font-size: 10.5px; }
+  .gh-branding-score { font-size: 30px; }
+  .gh-profile-comp-pct { font-size: 15px; }
+  .rdb-profile-ring-pct { font-size: 15px; }
+  .gh-profile-checklist-head { font-size: 10.5px; }
+  .gh-profile-check { font-size: 10.5px; }
+  .gh-sub-meter-head span { font-size: 10.5px; }
+  .gh-sub-renew { font-size: 10.5px; }
+  .gh-sub-included-note { font-size: 10px; }
+  .gh-miss-chip { font-size: 9.5px; }
+
+  // ── Candidate insights ───────────────────────────────────────────────────
+  .gh-insight-city { font-size: 10.5px; }
+  .gh-insight-count { font-size: 10.5px; }
+  .gh-overview-num { font-size: 18px; }
+  .gh-overview-lbl { font-size: 10px; }
+
+  // ── Errors / chart empty states ─────────────────────────────────────────
+  .gh-error-banner,
+  .gh-error-sm { font-size: 11px; }
+  .gh-chart-empty-title { font-size: 13px; }
+  .gh-chart-empty-msg { font-size: 11px; }
+  .gh-dash-error-title { font-size: 15px; }
+  .gh-dash-error-msg { font-size: 11.5px; }
+
+  // ── Upgrade nudge ────────────────────────────────────────────────────────
+  .gh-upgrade-nudge {
+    padding: 12px 14px;
+    &__title { font-size: 12px; }
+    &__sub { font-size: 10.5px; }
+    &__cta { font-size: 11px; }
+  }
+}

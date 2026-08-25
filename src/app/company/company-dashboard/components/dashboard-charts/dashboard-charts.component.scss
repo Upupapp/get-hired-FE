@@ -315,6 +315,26 @@
   padding: 8px 0;
 }
 
+// ── Mobile (<=767px): tighten KPI row so 3 stats fit at 320px ───────────
+@media (max-width: 767px) {
+  .dc-kpi { padding: 4px 14px 4px 0; gap: 8px; }
+  .dc-kpi-dot-wrap { width: 22px; height: 22px; }
+  .dc-kpi-divider { margin-right: 14px; height: 30px; }
+  .dc-kpi-val { font-size: 17px; letter-spacing: -0.4px; }
+  .dc-kpi-lbl { font-size: 9px; }
+  .dc-kpi-delta { font-size: 9.5px; padding: 2px 5px; }
+  .dc-legend-label { font-size: 10px; }
+  .dc-insight-title { font-size: 11px; }
+  .dc-insight-msg { font-size: 10.5px; }
+  .dc-chart-zero-msg { font-size: 10.5px; white-space: normal; text-align: center; }
+}
+
+@media (max-width: 340px) {
+  .dc-kpi { padding-right: 8px; }
+  .dc-kpi-divider { margin-right: 8px; }
+  .dc-kpi-val { font-size: 15px; }
+}
+
 // ── Screen reader only ───────────────────────────────────────────────────
 .dc-sr-summary {
   position: absolute;

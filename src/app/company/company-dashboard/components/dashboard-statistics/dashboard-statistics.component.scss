@@ -119,3 +119,60 @@
 	/* identical to box height */
 	color: #FFFFFF;
 }
+
+.gh-stats-chart-wrap {
+	width: 400px;
+	max-width: 100%;
+}
+
+// ─── Mobile (<=767px): shrink oversized stat type + reclaim edge space ──────
+@media (max-width: 767px) {
+	.gh-stats-wrap {
+		padding-left: 12px !important;
+		padding-right: 12px !important;
+	}
+
+	.card-application,
+	.card-application-hired {
+		height: auto;
+		min-height: 140px;
+		padding: 14px 14px 12px 14px !important;
+	}
+
+	.gh-stats-chart-wrap {
+		width: 100%;
+		height: 110px !important;
+	}
+
+	.title-card,
+	.title-card-hired {
+		font-size: 12px;
+		line-height: 16px;
+
+		.card-img {
+			width: 20px !important;
+			margin-top: 0 !important;
+		}
+	}
+
+	.title-stat,
+	.title-stat-hired {
+		font-size: 32px;
+		line-height: 32px;
+		margin-top: 12px;
+	}
+
+	.title-stat-sub,
+	.title-stat-sub-hired {
+		font-size: 10px;
+		line-height: 14px;
+	}
+}
+
+@media (max-width: 340px) {
+	.title-stat,
+	.title-stat-hired {
+		font-size: 26px;
+		line-height: 28px;
+	}
+}

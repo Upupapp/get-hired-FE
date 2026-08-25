@@ -1,10 +1,10 @@
-<div class="mt-4 px-5">
+<div class="mt-4 px-5 gh-stats-wrap">
   <div class="row">
     <div class="col-12 col-md-6 col-lg-7 mb-3">
       <div class="mb-2 card-application-hired" style="position: relative;"
         [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
         <h5 class="title-card-hired">{{ 'ADMIN_DASHOBOARD.WIDGET_CITIES_APPLIED' | translate }}</h5>
-        <div style="height:130px; width:400px">
+        <div class="gh-stats-chart-wrap" style="height:130px;">
           <canvas baseChart [data]="barChartData" [options]="barChartOptions"
           [type]="barChartType">
         </canvas>
