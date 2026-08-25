@@ -75,6 +75,16 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     return this.isSimplified ? this.stepperItems.filter(i => i.id !== 3) : this.stepperItems;
   }
 
+  /** Title of whichever step onNextStep() actually lands on -- in Simplified
+   *  mode, Step 3 (Screening & Interview) is skipped entirely, so from Step 2
+   *  the real next step is Step 4, not stepperItems[stepper] (which naively
+   *  assumes the next id is always stepper + 1). Used for the "Next: ..."
+   *  Commit Dock button label. */
+  get nextStepTitle(): string {
+    const nextId = (this.stepper === 2 && this.isSimplified) ? 4 : this.stepper + 1;
+    return this.stepperItems.find(i => i.id === nextId)?.title || '';
+  }
+
   /** Readiness "recommended" keys for sections intentionally hidden in
    *  Simplified mode (see job-readiness.service.ts's pushRec() calls for the
    *  full key list) -- display filtering only, does NOT touch evaluate()'s
