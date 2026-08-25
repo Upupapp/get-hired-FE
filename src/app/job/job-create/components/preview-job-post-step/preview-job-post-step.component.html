@@ -57,7 +57,7 @@
       </div>
 
       <div class="banner-container">
-        <div class="bg-opacity" style="height:360px; overflow: hidden; background: #c9c9c9; border-radius: 7px; position: relative;">
+        <div #bannerBoundary class="bg-opacity" style="height:360px; overflow: hidden; background: #c9c9c9; border-radius: 7px; position: relative;">
           <!-- BUG FIX: this used to require `preview` (the NgRx-derived
                summary) truthy on top of hasBannerSrc, but hasBannerSrc
                already falls back to `preview` itself if the live form value
@@ -75,7 +75,8 @@
 
           <img *ngIf="hasBannerSrc"
             [src]="previewBannerSrc" id="banner-source-file"
-            cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
+            cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag
+            [cdkDragBoundary]="bannerBoundary" [cdkDragFreeDragPosition]="dragPosition"
             class="banner-image">
 
           <!-- OPTIONAL fine-tune affordance, not an instruction: the banner is
