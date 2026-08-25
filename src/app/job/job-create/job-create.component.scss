@@ -1055,107 +1055,25 @@
   &:focus-visible { outline: 2px solid var(--gh-sf-active-edge); outline-offset: 2px; }
 }
 
-// ── Canvas grid: Signal Spine / Composition Canvas / Intelligence Stack ─────
+// ── Canvas grid: Composition Canvas (full width) ────────────────────────────
 // NOTE: .gh-jc-content > form has `display: contents` (see the pre-existing
 // rule above) which is more specific (class + descendant element selector)
 // than a bare `.gh-sf-canvas-form` class selector — override it explicitly
 // with the same combinator so this actually takes effect.
+// Signal Spine (left rail nav) and Intelligence Stack were both removed as
+// docked grid columns (Intelligence Stack -> floating panel; Signal Spine
+// removed entirely, its job -- section orientation -- already covered by
+// the .gh-jc-stepper above) -- Composition Canvas now gets the full width.
 .gh-jc-content form.gh-sf-canvas-form,
 .gh-sf-canvas-form {
   display: block;
-  // 3 explicit columns: Signal Spine / Composition Canvas / Intelligence Stack.
-  // The existing .gh-jc-rail is a sibling grid item (via `form { display: contents; }`
-  // above) and auto-places into the 3rd column without needing a named area.
-  // Intelligence Stack is now a floating panel (see .gh-jc-intelligence-floating
-  // below), not a docked grid column, so Composition Canvas gets the reclaimed
-  // width at every breakpoint instead of a fixed 300px third column.
-  grid-template-columns: minmax(0, 160px) 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   align-items: start;
-
-  @media (max-width: 1024px) and (min-width: 900px) {
-    grid-template-columns: minmax(0, 140px) 1fr;
-  }
-
-  @media (max-width: 899px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-// ── Signal Spine: left rail nav, desktop only ────────────────────────────────
-.gh-sf-signal-spine {
-  grid-area: spine;
-  position: sticky;
-  top: 100px;
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  background: var(--gh-sf-inset-rail);
-  border: 1px solid var(--gh-sf-inset-rail-border);
-  border-radius: 14px;
-  padding: 10px;
-  margin-bottom: 20px;
-  filter: drop-shadow(2px 4px 6px black);
-
-  @media (max-width: 899px) {
-    display: none; // replaced by the existing mobile progress strip
-  }
-}
-
-.gh-sf-spine-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 10px;
-  text-align: left;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #6b6887;
-  cursor: pointer;
-  transition: background 150ms ease, color 150ms ease;
-  @include motion-safe;
-
-  &:hover:not(:disabled) { background: rgba(255, 255, 255, 0.5); }
-  &:focus-visible { outline: 2px solid var(--gh-sf-active-edge); outline-offset: 2px; }
-  &:disabled { cursor: not-allowed; opacity: 0.5; }
-
-  &--active {
-    color: #1a1830;
-    background: #fff;
-    box-shadow: inset 3px 0 0 var(--gh-sf-active-edge);
-  }
-  &--done { color: #15803D; }
-}
-
-.gh-sf-spine-dot {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  background: #fff;
-  border: 1px solid var(--gh-sf-inset-rail-border);
-}
-
-.gh-sf-spine-item--active .gh-sf-spine-dot {
-  border-color: var(--gh-sf-active-edge);
-  color: var(--gh-sf-active-edge);
-}
-.gh-sf-spine-item--done .gh-sf-spine-dot {
-  background: #15803D;
-  border-color: #15803D;
-  color: #fff;
 }
 
 // ── Composition Canvas: just the existing form column, tagged for clarity ───
 .gh-sf-composition-canvas {
-  grid-area: canvas;
   min-width: 0;
 }
 
@@ -1415,8 +1333,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .gh-sf-preview-drawer,
-  .gh-sf-preview-toggle,
-  .gh-sf-spine-item {
+  .gh-sf-preview-toggle {
     animation: none !important;
     transition-duration: 0.01ms !important;
     transform: none !important;

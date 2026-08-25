@@ -73,11 +73,11 @@
         >
           <span class="gh-step-num" aria-hidden="true">
             <i class="bi bi-check-lg" *ngIf="stepper > item.id"></i>
-            <span *ngIf="stepper <= item.id">{{ item.id }}</span>
+            <span *ngIf="stepper <= item.id">{{ i + 1 }}</span>
           </span>
           <span class="gh-step-label">
             {{ item.title }}
-            <span class="gh-step-sub">Step {{ item.id }}</span>
+            <span class="gh-step-sub">Step {{ i + 1 }} of {{ visibleStepperItems.length }}</span>
           </span>
         </button>
         <div class="gh-step-connector" *ngIf="!last" aria-hidden="true">
@@ -100,29 +100,6 @@
   <!-- ── MAIN CONTENT: SIGNAL SPINE + COMPOSITION CANVAS + INTELLIGENCE STACK ── -->
   <div class="gh-jc-content gh-sf-canvas">
     <form [formGroup]="jobForm" novalidate class="gh-sf-canvas-form">
-
-      <!-- SIGNAL SPINE: left rail section nav (desktop only) -->
-      <nav class="gh-sf-signal-spine" aria-label="Job builder sections">
-        <button
-          *ngFor="let item of visibleStepperItems"
-          type="button"
-          class="gh-sf-spine-item"
-          (click)="!item.disabled && changeStep(item.id)"
-          [disabled]="item.disabled"
-          [attr.aria-current]="stepper === item.id ? 'step' : null"
-          [ngClass]="{
-            'gh-sf-spine-item--active': stepper === item.id,
-            'gh-sf-spine-item--done': stepper > item.id,
-            'gh-sf-spine-item--locked': item.disabled
-          }"
-        >
-          <span class="gh-sf-spine-dot" aria-hidden="true">
-            <i class="bi bi-check-lg" *ngIf="stepper > item.id"></i>
-            <span *ngIf="stepper <= item.id">{{ item.id }}</span>
-          </span>
-          <span class="gh-sf-spine-label">{{ item.title }}</span>
-        </button>
-      </nav>
 
       <!-- LEFT: Form column (65-70%) -->
       <main class="gh-jc-form-col gh-sf-composition-canvas" role="main">
