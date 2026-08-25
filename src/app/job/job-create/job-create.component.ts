@@ -70,9 +70,25 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   /** Display-only: hides the Step 3 (Screening & Interview) tab/rail entry in
    *  Simplified mode. `stepperItems` itself is untouched -- index-based
    *  lookups in changeStep()/the template (stepperItems[n - 2], etc.) still
-   *  rely on its original 4-item shape and must keep working unchanged. */
+   *  rely on its original 4-item shape and must keep working unchanged. Each
+   *  displayed item is a shallow copy with getStepTitle()'s override applied
+   *  so Step 2 reads "Benefits" in Simplified mode without mutating the
+   *  underlying stepperItems array (Comprehensive mode reads that same array
+   *  directly elsewhere and must keep seeing its original title). */
   get visibleStepperItems(): any[] {
-    return this.isSimplified ? this.stepperItems.filter(i => i.id !== 3) : this.stepperItems;
+    const items = this.isSimplified ? this.stepperItems.filter(i => i.id !== 3) : this.stepperItems;
+    return items.map(i => ({ ...i, title: this.getStepTitle(i.id) }));
+  }
+
+  /** Resolves a step's display title, with the Simplified-mode override for
+   *  Step 2: in Simplified mode that step only shows the Compensation &
+   *  schedule card (Industry/Skills are hidden), which reads to an applicant
+   *  as "what's in it for me" -- labelled "Benefits" rather than the
+   *  Comprehensive label "Requirements & Benefits" (which no longer fits
+   *  once Requirements moved to Step 1's Qualifications card). */
+  getStepTitle(id: number): string {
+    if (id === 2 && this.isSimplified) return 'Benefits';
+    return this.stepperItems.find(i => i.id === id)?.title || '';
   }
 
   /** Title of whichever step onNextStep() actually lands on -- in Simplified
@@ -82,7 +98,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
    *  Commit Dock button label. */
   get nextStepTitle(): string {
     const nextId = (this.stepper === 2 && this.isSimplified) ? 4 : this.stepper + 1;
-    return this.stepperItems.find(i => i.id === nextId)?.title || '';
+    return this.getStepTitle(nextId);
+  }
+
+  /** Mirror of nextStepTitle, for the Back button's aria-label -- in
+   *  Simplified mode onBackStep() jumps straight from Step 4 to Step 2, not
+   *  to the hidden Step 3. */
+  get backStepTitle(): string {
+    const prevId = (this.stepper === 4 && this.isSimplified) ? 2 : this.stepper - 1;
+    return this.getStepTitle(prevId);
   }
 
   /** Readiness "recommended" keys for sections intentionally hidden in
