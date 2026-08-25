@@ -31,8 +31,16 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     }
   };
 
+  // POLISH FIX: previous default { x: 0.25, y: -160 } predated the
+  // object-fit:cover fix on .banner-image (see banner-container comment in
+  // the .scss). Cover-fit already centers/crops the image correctly inside
+  // its fixed-height frame on its own -- a nonzero default translate on top
+  // of that just shoved a well-fitted image out of frame for every job that
+  // never touched "drag to reposition". { x: 0, y: 0 } is the correct
+  // "untouched" default; any saved manual reposition (job-post-banner-position
+  // in sessionStorage) still takes priority exactly as before.
   public dragPosition = JSON.parse(sessionStorage.getItem('job-post-banner-position')) || {
-    x: 0.25, y: -160
+    x: 0, y: 0
   }
 
 

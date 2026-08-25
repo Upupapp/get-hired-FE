@@ -54,8 +54,12 @@
             cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag [cdkDragFreeDragPosition]="dragPosition"
             class="banner-image">
 
-          <div class="drag-position-container">
-            <h5>Drag to reposition</h5>
+          <!-- OPTIONAL fine-tune affordance, not an instruction: the banner is
+               already positioned correctly by default (object-fit: cover +
+               a neutral 0,0 drag offset), so this reads as a small optional
+               hint rather than something the user must do. -->
+          <div class="drag-position-container" *ngIf="hasBannerSrc" title="Optional: drag the banner image up or down to fine-tune its crop">
+            <i class="bi bi-arrows-move me-1" aria-hidden="true"></i>Drag to fine-tune (optional)
           </div>
 
           <!-- Upload/change overlay -->
@@ -92,38 +96,35 @@
       </div>
 
       <h5 class="job-title text-capitalize">{{ preview.jobTitle }}</h5>
-      <h5 class="title-label" *ngIf="preview.industryId">
+      <h5 class="title-label pv-category-line" *ngIf="preview.industryId">
         {{ getFilteredArray('industries', preview.industryId) }}
-        <span class="mx-2" *ngIf="preview.jobRoleId">| {{ getFilteredArray('roles', preview.jobRoleId) }}</span>
+        <span class="pv-category-sep mx-2" *ngIf="preview.jobRoleId">&middot;</span>
+        <span *ngIf="preview.jobRoleId">{{ getFilteredArray('roles', preview.jobRoleId) }}</span>
       </h5>
 
-      <div class="mt-3">
-        <div class="d-flex">
-          <h5 class="d-flex title-details me-3 ms-1" *ngIf="preview.jobTypeId">
-            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+      <div class="pv-meta-block mt-3">
+        <div class="d-flex flex-wrap pv-meta-pills">
+          <span class="pv-meta-pill" *ngIf="preview.jobTypeId">
+            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="pv-meta-pill-icon" alt="">
             {{ getFilteredArray('types', preview.jobTypeId) }}
-          </h5>
-          <h5 class="d-flex title-details me-3" *ngIf="preview.workSetupId">
-            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
+          </span>
+          <span class="pv-meta-pill" *ngIf="preview.workSetupId">
+            <img src="/assets/images/placeholder/icons/job-icon-type.png" class="pv-meta-pill-icon" alt="">
             {{ getFilteredArray('setups', preview.workSetupId) }}
-          </h5>
-          <h5 class="d-flex title-details me-2" *ngIf="preview.jobLevelId">
-            <img src="/assets/images/placeholder/icons/certification.png" class="me-1" style="width: 15px; height: 15px; margin-top: 2px;">
+          </span>
+          <span class="pv-meta-pill" *ngIf="preview.jobLevelId">
+            <img src="/assets/images/placeholder/icons/certification.png" class="pv-meta-pill-icon" alt="">
             {{ getFilteredArray('levels', preview.jobLevelId) }}
-          </h5>
+          </span>
         </div>
-        <div class="d-flex mt-1" *ngIf="preview.jobAddress && preview.jobAddress != ''">
-          <h5 class="d-flex title-details me-3 ms-1">
-            <img src="/assets/images/placeholder/icons/job-icon-address.png" class="me-1" style="width: 17px; height: 17px; margin-top: 3px;">
-            {{ preview.jobAddress }} {{ preview.jobCity }}, {{ preview.jobCountry }}
-          </h5>
+        <div class="pv-meta-line" *ngIf="preview.jobAddress && preview.jobAddress != ''">
+          <img src="/assets/images/placeholder/icons/job-icon-address.png" class="pv-meta-line-icon" alt="">
+          {{ preview.jobAddress }} {{ preview.jobCity }}, {{ preview.jobCountry }}
         </div>
-        <div class="d-flex mt-1" *ngIf="preview.salaryMinimum">
-          <h5 class="d-flex title-details me-3 ms-1">
-            <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="me-2" style="width: 15px; height: 15px; margin-top: 4px;">
-            PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} - PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
-            <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
-          </h5>
+        <div class="pv-meta-line pv-meta-line--salary" *ngIf="preview.salaryMinimum">
+          <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="pv-meta-line-icon" alt="">
+          PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} - PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
+          <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
         </div>
       </div>
 
@@ -137,10 +138,7 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description">
-            <strong>Job Description</strong><br>
-            {{ preview.jobDescription == '' ? "None" : preview.jobDescription }}
-          </h5>
+          <p class="pv-body-text">{{ preview.jobDescription == '' ? "None" : preview.jobDescription }}</p>
         </div>
 
         <!-- Duties -->
@@ -151,10 +149,7 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description">
-            <strong>Duties and Responsibilities</strong><br>
-            {{ preview.jobDuties == '' ? "None" : preview.jobDuties }}
-          </h5>
+          <p class="pv-body-text">{{ preview.jobDuties == '' ? "None" : preview.jobDuties }}</p>
         </div>
 
         <!-- Requirements -->
@@ -165,11 +160,8 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description"><strong>Requirements</strong></h5>
-          <ul *ngIf="preview.requirements && preview.requirements.length > 0; else emptyList">
-            <li *ngFor="let item of preview.requirements">
-              <h5 class="title-requirements">{{item}}</h5>
-            </li>
+          <ul class="pv-list" *ngIf="preview.requirements && preview.requirements.length > 0; else emptyList">
+            <li *ngFor="let item of preview.requirements">{{item}}</li>
           </ul>
         </div>
 
@@ -181,12 +173,9 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description"><strong>Skills & Experience</strong></h5>
-          <ul *ngIf="preview.skills && preview.skills.length > 0; else emptyList">
-            <li *ngFor="let item of preview.skills">
-              <h5 class="title-requirements">{{item}}</h5>
-            </li>
-          </ul>
+          <div class="pv-tag-row" *ngIf="preview.skills && preview.skills.length > 0; else emptyList">
+            <span class="pv-tag" *ngFor="let item of preview.skills">{{item}}</span>
+          </div>
         </div>
 
         <hr>
@@ -199,11 +188,8 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description"><strong>Educational Background</strong></h5>
-          <ul *ngIf="preview.educationalBackground && preview.educationalBackground.length > 0; else emptyList">
-            <li *ngFor="let item of preview.educationalBackground">
-              <h5 class="title-requirements">{{item}}</h5>
-            </li>
+          <ul class="pv-list" *ngIf="preview.educationalBackground && preview.educationalBackground.length > 0; else emptyList">
+            <li *ngFor="let item of preview.educationalBackground">{{item}}</li>
           </ul>
         </div>
 
@@ -215,16 +201,13 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description"><strong>Certifications & Licenses</strong></h5>
-          <ul>
+          <ul class="pv-list">
             <li *ngFor="let item of preview.certificationRequirements">
-              <h5 class="title-requirements">
-                {{item.name}}
-                <span class="badge" [ngClass]="item.importance === 'required' ? 'bg-danger' : 'bg-secondary'">
-                  {{item.importance === 'required' ? 'Required' : 'Preferred'}}
-                </span>
-                <span class="text-muted ms-1" *ngIf="item.type">({{item.type | titlecase}})</span>
-              </h5>
+              {{item.name}}
+              <span class="badge" [ngClass]="item.importance === 'required' ? 'bg-danger' : 'bg-secondary'">
+                {{item.importance === 'required' ? 'Required' : 'Preferred'}}
+              </span>
+              <span class="text-muted ms-1" *ngIf="item.type">({{item.type | titlecase}})</span>
             </li>
           </ul>
         </div>
@@ -237,12 +220,9 @@
               <i class="bi bi-pencil me-1" aria-hidden="true"></i>Edit
             </button>
           </div>
-          <h5 class="title-job-description"><strong>Good-to-have skills</strong></h5>
-          <ul *ngIf="preview.goodToHave && preview.goodToHave.length > 0; else emptyList">
-            <li *ngFor="let item of preview.goodToHave">
-              <h5 class="title-requirements">{{item}}</h5>
-            </li>
-          </ul>
+          <div class="pv-tag-row" *ngIf="preview.goodToHave && preview.goodToHave.length > 0; else emptyList">
+            <span class="pv-tag pv-tag--soft" *ngFor="let item of preview.goodToHave">{{item}}</span>
+          </div>
         </div>
 
       </div>
@@ -313,5 +293,5 @@
 <app-loading *ngIf="loading"></app-loading>
 
 <ng-template #emptyList>
-  None
+  <span class="pv-empty-hint">None added</span>
 </ng-template>
