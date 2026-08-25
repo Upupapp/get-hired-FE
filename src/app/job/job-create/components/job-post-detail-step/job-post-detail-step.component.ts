@@ -13,6 +13,11 @@ import { SnackbarService } from '@app-core/services/snackbar.service';
 })
 export class JobPostDetailStepComponent implements OnInit {
   @Input() formGroupName: string;
+  /** Simplified Job-Post mode (see job-post-mode-dialog): hides secondary/detail
+   *  sections in the template below. Purely a display flag -- the underlying
+   *  form model and its controls are untouched, so nothing here changes what
+   *  gets submitted; hidden fields just stay empty/default. */
+  @Input() simplified: boolean = false;
 
   initialDetailsForm: FormGroup;
   workSetupSelected: number;

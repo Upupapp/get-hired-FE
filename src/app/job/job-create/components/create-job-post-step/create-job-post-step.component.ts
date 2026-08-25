@@ -14,6 +14,9 @@ import { currencies } from '@app-shared/mock.data';
 })
 export class CreateJobPostStepComponent implements OnInit {
   @Input() formGroupName: any;
+  /** Simplified Job-Post mode -- see job-post-detail-step.component.ts for
+   *  the same flag's rationale. Display-only; form model is unchanged. */
+  @Input() simplified: boolean = false;
 
   industry$ = this.jobFacade.industry$;
   jobRoles$ = this.jobFacade.jobRole$;

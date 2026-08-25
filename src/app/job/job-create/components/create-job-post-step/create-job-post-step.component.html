@@ -1,8 +1,8 @@
 <section class="gh-form-step" [@animate]="{value:'*', params:{ y:'12px', delay:'80ms' }}">
 <form [formGroup]="jobInfoForm" novalidate>
 
-  <!-- ── CARD 1: Industry & Role ──────────────────────────────────────────── -->
-  <div class="gh-form-card mb-4" id="section-industry">
+  <!-- ── CARD 1: Industry & Role (hidden in Simplified mode) ─────────────── -->
+  <div class="gh-form-card mb-4" id="section-industry" *ngIf="!simplified">
     <div class="gh-form-card-header">
       <h2 class="gh-form-card-title">
         <i class="bi bi-building-gear me-2" aria-hidden="true"></i>Industry & role
@@ -35,8 +35,8 @@
     </div>
   </div>
 
-  <!-- ── CARD 2: Skills & Tags ─────────────────────────────────────────────── -->
-  <div class="gh-form-card mb-4" id="section-skills">
+  <!-- ── CARD 2: Skills & Tags (hidden in Simplified mode) ──────────────────── -->
+  <div class="gh-form-card mb-4" id="section-skills" *ngIf="!simplified">
     <div class="gh-form-card-header">
       <h2 class="gh-form-card-title">
         <i class="bi bi-tools me-2" aria-hidden="true"></i>Skills & tags

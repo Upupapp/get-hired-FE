@@ -12,6 +12,9 @@
       <span class="gh-jc-eyebrow">Job posting studio</span>
       <h1 class="gh-jc-title">
         {{ jobForm?.value?.initialData?.jobTitle || (jobId ? 'Update a job' : 'Create a job') }}
+        <span class="gh-jc-simplified-badge" *ngIf="isSimplified" title="Only essential fields are shown. Switch to Comprehensive by starting over from the job list.">
+          <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i> Simplified
+        </span>
       </h1>
       <p class="gh-jc-subtitle">Fill in the details below to attract the right candidates.</p>
     </div>
@@ -53,7 +56,7 @@
   <!-- ── SINGLE STEPPER ──────────────────────────────────────────────────── -->
   <div class="gh-jc-stepper-wrap" role="navigation" aria-label="Job creation steps">
     <div class="gh-jc-stepper">
-      <ng-container *ngFor="let item of stepperItems; let i = index; let last = last">
+      <ng-container *ngFor="let item of visibleStepperItems; let i = index; let last = last">
         <button
           class="gh-step-btn"
           type="button"
@@ -85,7 +88,7 @@
 
     <!-- Mobile progress bar (compact horizontal strip replacing Signal Spine) -->
     <div class="gh-jc-mobile-progress" aria-hidden="true">
-      <div class="gh-jc-mobile-progress-bar" [style.width.%]="((stepper - 1) / (stepperItems.length - 1)) * 100"></div>
+      <div class="gh-jc-mobile-progress-bar" [style.width.%]="((stepper - 1) / (visibleStepperItems.length - 1)) * 100"></div>
     </div>
   </div>
 
@@ -101,7 +104,7 @@
       <!-- SIGNAL SPINE: left rail section nav (desktop only) -->
       <nav class="gh-sf-signal-spine" aria-label="Job builder sections">
         <button
-          *ngFor="let item of stepperItems"
+          *ngFor="let item of visibleStepperItems"
           type="button"
           class="gh-sf-spine-item"
           (click)="!item.disabled && changeStep(item.id)"
@@ -138,12 +141,12 @@
 
         <!-- ── STEP 1: Job Basics ──────────────────────────────────────── -->
         <ng-container *ngIf="stepper === 1">
-          <app-job-post-detail-step formGroupName="initialData"></app-job-post-detail-step>
+          <app-job-post-detail-step formGroupName="initialData" [simplified]="isSimplified"></app-job-post-detail-step>
         </ng-container>
 
         <!-- ── STEP 2: Compensation, Requirements & Benefits ──────────── -->
         <ng-container *ngIf="stepper === 2">
-          <app-create-job-post-step formGroupName="jobInfo"></app-create-job-post-step>
+          <app-create-job-post-step formGroupName="jobInfo" [simplified]="isSimplified"></app-create-job-post-step>
         </ng-container>
 
         <!-- ── STEP 3: Screening & Interview ──────────────────────────── -->
@@ -170,7 +173,7 @@
             *ngIf="stepper > 1"
             class="gh-btn gh-btn--secondary"
             type="button"
-            (click)="changeStep(stepper - 1)"
+            (click)="onBackStep()"
             [attr.aria-label]="'Back to ' + stepperItems[stepper - 2]?.title"
           >
             <i class="bi bi-chevron-left me-1" aria-hidden="true"></i>
@@ -384,17 +387,17 @@
           </div>
 
           <!-- Recommended items -->
-          <div class="gh-jc-readiness-section" *ngIf="readinessResult.recommendationItems.length > 0">
+          <div class="gh-jc-readiness-section" *ngIf="visibleRecommendationItems.length > 0">
             <button class="gh-jc-readiness-group-toggle" type="button"
               (click)="toggleReadinessGroup('recommended')"
               [attr.aria-expanded]="readinessGroupOpen.recommended">
               <i class="bi bi-star-fill text-warning me-1" aria-hidden="true"></i>
-              <span>Suggested improvements — <strong>{{ getImprovementCountLabel() }}</strong></span>
+              <span>Suggested improvements — <strong>{{ visibleRecommendationItems.length }} left</strong></span>
               <i class="bi ms-auto" [ngClass]="readinessGroupOpen.recommended ? 'bi-chevron-up' : 'bi-chevron-down'" aria-hidden="true"></i>
             </button>
             <div class="gh-jc-readiness-chips" *ngIf="readinessGroupOpen.recommended">
               <button
-                *ngFor="let item of readinessResult.recommendationItems"
+                *ngFor="let item of visibleRecommendationItems"
                 class="gh-jc-chip gh-jc-chip--recommended"
                 type="button"
                 (click)="onReadinessJumpToSection(item.sectionId)"

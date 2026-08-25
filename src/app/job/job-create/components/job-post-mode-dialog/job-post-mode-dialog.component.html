@@ -1,0 +1,23 @@
+<div class="gh-pmd" role="dialog" aria-modal="true" aria-labelledby="gh-pmd-title" aria-describedby="gh-pmd-desc">
+  <button type="button" class="gh-pmd-close" (click)="close()" aria-label="Close dialog" cdkFocusInitial>
+    <i class="bi bi-x-lg" aria-hidden="true"></i>
+  </button>
+
+  <h2 id="gh-pmd-title" class="gh-pmd-title">How would you like to build this job post?</h2>
+  <p id="gh-pmd-desc" class="gh-pmd-subtitle">You can always add more detail later -- this only decides what you see first.</p>
+
+  <div class="gh-pmd-options" role="group" aria-labelledby="gh-pmd-title">
+    <button type="button" class="gh-pmd-card" (click)="choose('comprehensive')">
+      <span class="gh-pmd-card-icon" aria-hidden="true"><i class="bi bi-ui-checks-grid"></i></span>
+      <span class="gh-pmd-card-title">Comprehensive Job-Post</span>
+      <span class="gh-pmd-card-desc">The full form -- requirements, skills, certifications, and screening questions. More setup time, most detail.</span>
+    </button>
+
+    <button type="button" class="gh-pmd-card gh-pmd-card--accent" (click)="choose('simplified')">
+      <span class="gh-pmd-card-badge">Faster</span>
+      <span class="gh-pmd-card-icon" aria-hidden="true"><i class="bi bi-lightning-charge-fill"></i></span>
+      <span class="gh-pmd-card-title">Simplified Job-Post</span>
+      <span class="gh-pmd-card-desc">Just the essentials -- title, type, level, location, description, banner, and salary. Publish in minutes.</span>
+    </button>
+  </div>
+</div>

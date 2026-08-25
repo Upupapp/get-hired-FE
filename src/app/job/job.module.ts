@@ -27,6 +27,8 @@ import { JobAppliedComponent } from './job-applied/job-applied.component';
 // B13: Job Readiness Bar + Chips
 import { JobReadinessBarComponent } from './components/job-readiness-bar/job-readiness-bar.component';
 import { JobReadinessChipsComponent } from './components/job-readiness-chips/job-readiness-chips.component';
+// Comprehensive/Simplified job-post mode picker (Start From Scratch)
+import { JobPostModeDialogComponent } from './job-create/components/job-post-mode-dialog/job-post-mode-dialog.component';
 
 // const routes: Routes = [
   // { path: 'expired', component: JobExpiredComponent },
@@ -51,6 +53,7 @@ const exportedComponents = [
   // B13: Job Readiness
   JobReadinessBarComponent,
   JobReadinessChipsComponent,
+  JobPostModeDialogComponent,
 ]
 
 @NgModule({

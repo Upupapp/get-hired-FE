@@ -80,6 +80,24 @@
   margin: 0;
 }
 
+// Comprehensive/Simplified job-post mode: small badge next to the title so
+// the Employer always knows which mode is active.
+.gh-jc-simplified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--gh-sf-active-edge-gradient, linear-gradient(135deg, #2563eb, #1d4ed8));
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
 .gh-jc-subtitle {
   font-size: 14px;
   color: #6b6887;
@@ -1069,7 +1087,7 @@
   grid-area: spine;
   position: sticky;
   top: 100px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 4px;
   background: var(--gh-sf-inset-rail);
@@ -1149,7 +1167,7 @@
   position: fixed;
   right: max(20px, env(safe-area-inset-right));
   bottom: max(96px, calc(env(safe-area-inset-bottom) + 96px));
-  width: min(340px, calc(100vw - 24px));
+  width: min(650px, calc(100vw - 24px));
   max-height: min(75vh, 640px);
   overflow-y: auto;
   z-index: 1250;

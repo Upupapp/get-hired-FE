@@ -58,6 +58,39 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // F-08 UX: error message from backend (403/404/500) — cleared on next attempt
   saveErrorMsg: string | null = null;
 
+  // Comprehensive/Simplified job-post mode -- read from the `postMode` query
+  // param in the constructor above. Purely a display flag: hides secondary/
+  // detail sections in the template, never touches jobForm's model or the
+  // save/publish/readiness gating logic below.
+  postMode: 'comprehensive' | 'simplified' = 'comprehensive';
+  get isSimplified(): boolean {
+    return this.postMode === 'simplified';
+  }
+
+  /** Display-only: hides the Step 3 (Screening & Interview) tab/rail entry in
+   *  Simplified mode. `stepperItems` itself is untouched -- index-based
+   *  lookups in changeStep()/the template (stepperItems[n - 2], etc.) still
+   *  rely on its original 4-item shape and must keep working unchanged. */
+  get visibleStepperItems(): any[] {
+    return this.isSimplified ? this.stepperItems.filter(i => i.id !== 3) : this.stepperItems;
+  }
+
+  /** Readiness "recommended" keys for sections intentionally hidden in
+   *  Simplified mode (see job-readiness.service.ts's pushRec() calls for the
+   *  full key list) -- display filtering only, does NOT touch evaluate()'s
+   *  gating logic or scoring. */
+  private static readonly SIMPLIFIED_HIDDEN_RECOMMENDATION_KEYS = new Set([
+    'duties', 'skills', 'requirements', 'interview', 'education',
+  ]);
+
+  /** Same as readinessResult.recommendationItems, filtered for display so
+   *  Simplified mode doesn't suggest filling in a section it isn't showing. */
+  get visibleRecommendationItems(): any[] {
+    const items = this.readinessResult?.recommendationItems || [];
+    if (!this.isSimplified) return items;
+    return items.filter(i => !JobCreateComponent.SIMPLIFIED_HIDDEN_RECOMMENDATION_KEYS.has(i.key));
+  }
+
   // ── New v2 state ──────────────────────────────────────────────────────────
   /** Autosave indicator state: 'unsaved' | 'saving' | 'saved' | 'failed' */
   autoSaveState: 'unsaved' | 'saving' | 'saved' | 'failed' = 'unsaved';
@@ -173,6 +206,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
+      // Comprehensive/Simplified job-post mode: any direct/existing link to
+      // /recruiter/jobs/create with no `postMode` param (or an unrecognized
+      // value) keeps behaving exactly as before -- full Comprehensive form.
+      this.postMode = params.postMode === 'simplified' ? 'simplified' : 'comprehensive';
     });
   }
 
@@ -1193,7 +1230,31 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       });
       return;
     }
+    // Simplified mode: Step 3 (Screening & Interview) is hidden entirely --
+    // skip straight from Step 2 to Step 4 rather than landing on a step the
+    // Employer can't see. Interview fields stay empty/default, same as any
+    // other optional field never touched in Simplified mode. Done by hand
+    // (not changeStep(4)) so the Step-2 (jobInfo) data actually being left
+    // still gets saved -- changeStep()'s index lookup assumes the step being
+    // left is always (target - 1), which isn't true for this skip.
+    if (this.stepper === 2 && this.isSimplified) {
+      const bodyInfo = this.jobForm.controls['jobInfo'].value;
+      this.jobFacade.saveJobInfo(bodyInfo);
+      this.stepper = 4;
+      this.jobFacade.getIndustry();
+      this.jobFacade.getJobRole();
+      return;
+    }
     this.changeStep(nextStep);
+  }
+
+  /** Mirror of onNextStep()'s Step-3 skip, for the Back button in Simplified mode. */
+  onBackStep(): void {
+    if (this.stepper === 4 && this.isSimplified) {
+      this.stepper = 2;
+      return;
+    }
+    this.changeStep(this.stepper - 1);
   }
 
   /** Show a dialog listing missing required fields; clicking a field scrolls to it in the current step. */

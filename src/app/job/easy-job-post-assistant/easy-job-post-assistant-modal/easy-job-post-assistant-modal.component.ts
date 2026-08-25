@@ -21,7 +21,7 @@ const fadeSlide = trigger('fadeSlide', [
   ]),
 ]);
 import { isPlatformBrowser } from '@angular/common';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -32,6 +32,7 @@ import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service'
 import { JobService } from '@app-job/job.service';
 import { Options } from '@app-job/job.model';
 import { suggestIndustryName, matchSuggestedIndustry } from '@app-job/utils/job-industry-suggester';
+import { JobPostModeDialogComponent, JobPostMode } from '@app-job/job-create/components/job-post-mode-dialog/job-post-mode-dialog.component';
 
 @Component({
   selector: 'app-easy-job-post-assistant-modal',
@@ -99,6 +100,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<EasyJobPostAssistantModalComponent>,
+    private dialog: MatDialog,
     private assistantService: EasyJobPostAssistantService,
     private router: Router,
     private haptics: HapticFeedbackService,
@@ -279,9 +281,23 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
 
   chooseManual(): void {
     this.haptics.selection();
-    this.assistantService.clearExtractionResult();
-    this.dialogRef.close({ navigateTo: '/recruiter/jobs/create' });
-    this.router.navigate(['/recruiter/jobs/create']);
+    // Comprehensive/Simplified job-post mode picker: opened on top of this
+    // modal rather than navigating immediately. If the Employer dismisses it
+    // (backdrop click / Escape) `mode` comes back undefined and we stay put
+    // -- no navigation, no clearing of the assistant's extraction result.
+    const modeDialogRef = this.dialog.open(JobPostModeDialogComponent, {
+      panelClass: 'gh-pmd-panel',
+      autoFocus: false,
+      restoreFocus: true,
+    });
+    modeDialogRef.afterClosed().subscribe((mode: JobPostMode | undefined) => {
+      if (!mode) return;
+      this.haptics.selection();
+      this.assistantService.clearExtractionResult();
+      const queryParams = mode === 'simplified' ? { postMode: 'simplified' } : undefined;
+      this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', postMode: mode });
+      this.router.navigate(['/recruiter/jobs/create'], queryParams ? { queryParams } : undefined);
+    });
   }
 
   chooseGenerate(): void {

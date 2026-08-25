@@ -197,8 +197,8 @@
         ></app-gh-image-upload>
       </div>
 
-      <!-- Badges -->
-      <div class="gh-field" *ngIf="badge$ | async as badge">
+      <!-- Badges (hidden in Simplified mode: secondary detail, not required to publish) -->
+      <div class="gh-field" *ngIf="!simplified && (badge$ | async) as badge">
         <div class="gh-badge-header">
           <div>
             <label class="gh-label">Add badges <span class="gh-label-optional">(optional)</span></label>
@@ -299,8 +299,8 @@
         </p>
       </div>
 
-      <!-- Duties & Responsibilities -->
-      <div class="gh-field" id="section-duties">
+      <!-- Duties & Responsibilities (hidden in Simplified mode) -->
+      <div class="gh-field" id="section-duties" *ngIf="!simplified">
         <div class="gh-label-row">
           <label class="gh-label" for="job-duties">Duties & responsibilities</label>
           <span class="gh-label-optional">Optional</span>
@@ -316,8 +316,8 @@
       </div>
     </div>
 
-    <!-- ── CARD 5: Requirements ──────────────────────────────────────────── -->
-    <div class="gh-form-card mb-4" id="section-requirements">
+    <!-- ── CARD 5: Requirements (hidden entirely in Simplified mode) ──────── -->
+    <div class="gh-form-card mb-4" id="section-requirements" *ngIf="!simplified">
       <div class="gh-form-card-header">
         <h2 class="gh-form-card-title">
           <i class="bi bi-check2-square me-2" aria-hidden="true"></i>Requirements
