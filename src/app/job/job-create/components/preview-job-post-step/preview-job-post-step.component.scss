@@ -1,4 +1,5 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/_motion";
 
 // B13: Job Readiness in preview step
 .jrc-preview-readiness-card {
@@ -18,43 +19,151 @@
   align-items: center;
 }
 
+// ── Matchability card: severity-tinted score ring + structured copy ─────────
+// Redesigned from a flat label/score/paragraph/bullet-list stack into a
+// deliberate two-column layout (ring + body) with severity communicated by
+// both color AND the ring fill (never color alone), reusing the existing
+// SignalFrame gradient tokens for the "high" tier so it stays consistent
+// with the rest of the flow rather than introducing a new palette.
 .match-v3-matchability-card {
-  border-left: 3px solid $color-global-red-buttons;
+  border-left: 3px solid var(--gh-mv3-accent, #{$color-global-red-buttons});
+  background: var(--gh-mv3-surface, #fff);
 
-  // This card already carries its own left-edge accent color (semantic to
-  // the matchability score) -- suppress the shared .card top gradient strip
+  // This card carries its own left-edge accent color (semantic to the
+  // matchability severity) -- suppress the shared .card top gradient strip
   // so the two accents don't compete.
   &::before { display: none; }
+
+  &--low {
+    --gh-mv3-accent: #DC2626;
+    --gh-mv3-ring: #DC2626;
+    --gh-mv3-surface: linear-gradient(135deg, #FEF2F2 0%, #fff 55%);
+  }
+  &--medium {
+    --gh-mv3-accent: #D97706;
+    --gh-mv3-ring: #D97706;
+    --gh-mv3-surface: linear-gradient(135deg, #FFFBEB 0%, #fff 55%);
+  }
+  &--high {
+    --gh-mv3-accent: var(--gh-sf-active-edge, #{$color-global-red-buttons});
+    --gh-mv3-ring: var(--gh-sf-active-edge, #15803D);
+    --gh-mv3-surface: linear-gradient(135deg, var(--gh-sf-active-edge-soft, #EFF6FF) 0%, #fff 55%);
+  }
+}
+
+.match-v3-matchability-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.match-v3-ring-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+}
+
+.match-v3-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.match-v3-ring-track {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.08);
+  stroke-width: 5;
+}
+
+.match-v3-ring-fill {
+  fill: none;
+  stroke: var(--gh-mv3-ring, #DC2626);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 400ms cubic-bezier(0.2, 0, 0, 1);
+  @include motion-safe;
+}
+
+.match-v3-ring-score {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gh-mv3-accent, #1a1830);
+}
+
+.match-v3-matchability-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .match-v3-matchability-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 6px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .match-v3-matchability-label {
   font-weight: 700;
-  font-size: 14px;
+  font-size: 14.5px;
+  color: #1a1830;
+  display: inline-flex;
+  align-items: center;
+
+  i { color: var(--gh-mv3-accent); }
 }
 
 .match-v3-matchability-score {
-  font-weight: 700;
-  color: $color-global-red-buttons;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--gh-mv3-accent, $color-global-red-buttons);
+  white-space: nowrap;
+}
+
+.match-v3-matchability-score-max {
+  font-weight: 600;
+  font-size: 12px;
+  color: #9CA3AF;
 }
 
 .match-v3-matchability-copy {
-  font-size: 12px;
+  font-size: 12.5px;
   color: #6b7280;
   margin: 0 0 8px 0;
+  line-height: 1.5;
 }
 
 .match-v3-matchability-actions {
-  font-size: 12px;
-  color: #6b7280;
+  font-size: 12.5px;
+  color: #4b5563;
   margin: 0;
-  padding-left: 18px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  i {
+    color: var(--gh-mv3-accent);
+    flex-shrink: 0;
+    font-size: 16px;
+    line-height: 1.4;
+  }
 }
 
 .optional {

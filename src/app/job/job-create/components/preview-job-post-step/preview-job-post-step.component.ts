@@ -57,6 +57,19 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
    * publishing, purely informational. */
   matchability: JobMatchabilityResult | null = null;
 
+  /** Severity tier derived from matchability.label, purely for styling the
+   *  redesigned score meter (ring color / accent) -- mirrors the thresholds
+   *  already used by JobMatchabilityService.labelFor(), no new scoring logic. */
+  get matchabilitySeverity(): 'low' | 'medium' | 'high' {
+    if (!this.matchability) return 'low';
+    if (this.matchability.label === 'Highly Matchable' || this.matchability.label === 'Matchable') return 'high';
+    if (this.matchability.label === 'Limited Matching Clarity') return 'medium';
+    return 'low';
+  }
+
+  /** SVG ring geometry for the score meter (circumference of r=26 circle). */
+  readonly matchabilityRingCircumference = 163.36;
+
   /** B13: Job Readiness summary — shown in the preview step only */
   previewReadiness: JobReadinessResult | null = null;
 

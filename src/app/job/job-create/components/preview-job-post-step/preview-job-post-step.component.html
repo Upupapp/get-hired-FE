@@ -9,15 +9,39 @@
   </div>
 
   <!-- Matching clarity score (informational only, not a duplicate of right-rail checklist) -->
-  <section class="card card-body mb-3 match-v3-matchability-card" *ngIf="matchability" [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
-    <div class="match-v3-matchability-header">
-      <span class="match-v3-matchability-label">{{ matchability.label }}</span>
-      <span class="match-v3-matchability-score">{{ matchability.score }}/100</span>
+  <section class="card card-body mb-3 match-v3-matchability-card" *ngIf="matchability"
+    [ngClass]="'match-v3-matchability-card--' + matchabilitySeverity"
+    [@animate]="{value:'*', params:{ y:'10px', delay:'200ms' }}">
+    <div class="match-v3-matchability-layout">
+      <!-- Score ring -->
+      <div class="match-v3-ring-wrap" aria-hidden="true">
+        <svg class="match-v3-ring" viewBox="0 0 60 60">
+          <circle class="match-v3-ring-track" cx="30" cy="30" r="26"/>
+          <circle class="match-v3-ring-fill" cx="30" cy="30" r="26"
+            [style.stroke-dasharray]="matchabilityRingCircumference"
+            [style.stroke-dashoffset]="matchabilityRingCircumference - (matchabilityRingCircumference * matchability.score / 100)"
+            transform="rotate(-90 30 30)"/>
+        </svg>
+        <span class="match-v3-ring-score">{{ matchability.score }}</span>
+      </div>
+
+      <div class="match-v3-matchability-body">
+        <div class="match-v3-matchability-header">
+          <span class="match-v3-matchability-label">
+            <i class="bi bi-radar me-1" aria-hidden="true"></i>
+            {{ matchability.label }}
+          </span>
+          <span class="match-v3-matchability-score" [attr.aria-label]="'Score ' + matchability.score + ' out of 100'">{{ matchability.score }}<span class="match-v3-matchability-score-max">/100</span></span>
+        </div>
+        <p class="match-v3-matchability-copy">This score reflects how clear your job post is for matching, not how good your job is.</p>
+        <ul class="match-v3-matchability-actions" *ngIf="matchability.topActions?.length">
+          <li *ngFor="let action of matchability.topActions">
+            <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+            <span>{{ action }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
-    <p class="match-v3-matchability-copy">This score reflects how clear your job post is for matching, not how good your job is. Add clearer requirements to improve match signals.</p>
-    <ul class="match-v3-matchability-actions" *ngIf="matchability.topActions?.length">
-      <li *ngFor="let action of matchability.topActions">{{ action }}</li>
-    </ul>
   </section>
 
   <!-- ── MAIN JOB POST CARD ─────────────────────────────────────────────────── -->

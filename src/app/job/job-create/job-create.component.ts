@@ -90,7 +90,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
    *  full key list) -- display filtering only, does NOT touch evaluate()'s
    *  gating logic or scoring. */
   private static readonly SIMPLIFIED_HIDDEN_RECOMMENDATION_KEYS = new Set([
-    'duties', 'skills', 'requirements', 'interview', 'education',
+    // 'duties' and 'requirements' were removed from this set -- both fields
+    // (Duties & Responsibilities, Required qualifications) are now shown in
+    // Simplified mode's Step 1, so their readiness nag is legitimate again.
+    'skills', 'interview', 'education',
   ]);
 
   /** Same as readinessResult.recommendationItems, filtered for display so
