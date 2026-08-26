@@ -511,7 +511,20 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+
+  // Desktop showcase: one plan card at a time, same architecture as
+  // mobile (100%-of-viewport card via .gh-plan-card below), but the
+  // "viewport" here is a deliberately centered, fixed-width showcase
+  // column rather than the full section width -- elegant single-card
+  // presentation instead of a full-bleed stretch. Mobile is completely
+  // untouched (its own rules further down override this back to 100%
+  // of the actual section width, unconstrained).
+  @media (min-width: 769px) {
+    max-width: clamp(460px, 46vw, 640px);
+    margin: 0 auto;
+  }
 }
 
 .gh-plan-carousel__arrow {
@@ -658,10 +671,13 @@
   transition: box-shadow 200ms ease;
   @include motion-safe;
 
-  // Carousel sizing: a confident, "exaggerated" card width that shows a
-  // deliberate peek of the next card rather than an exact 1/2/3-up grid --
-  // reads as a real carousel, not a grid that happens to scroll.
-  flex: 0 0 clamp(240px, 27vw, 300px);
+  // One plan showcased at a time -- same single-card architecture as
+  // mobile, just noticeably wider (fills the centered .gh-plan-carousel
+  // showcase column set above, clamp(460px, 46vw, 640px) instead of
+  // ~300px) so the wide-screen experience reads as an elegant, deliberate
+  // single-card presentation rather than a cropped grid.
+  flex: 0 0 100%;
+  width: 100%;
   scroll-snap-align: start;
 
   &:hover {
@@ -1068,8 +1084,16 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 
-  .gh-plan-card {
-    flex-basis: clamp(230px, 40vw, 280px);
+}
+
+// Tablet: still one card at a time (base .gh-plan-card rule, flex:0 0 100%)
+// inside a slightly narrower centered showcase column than large desktop.
+// Explicitly bounded to NOT overlap the mobile range below -- mobile's own
+// rules further down must be the only thing controlling .gh-plan-carousel
+// there, unconstrained/full-width, per "keep mobile completely untouched".
+@media (min-width: 769px) and (max-width: 1024px) {
+  .gh-plan-carousel {
+    max-width: clamp(400px, 62vw, 520px);
   }
 }
 
