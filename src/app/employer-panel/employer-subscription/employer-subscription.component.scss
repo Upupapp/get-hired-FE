@@ -501,12 +501,116 @@
   &--excluded { background: #F5F5F5; color: #9CA3AF; }
 }
 
-// ─── PLAN GRID ───────────────────────────────────────────────────────────────
+// ─── PLAN CAROUSEL ───────────────────────────────────────────────────────────
+// "Available plans" -- horizontally scrollable, auto-advancing every 2s
+// (component.ts), with snap points so it always settles on a full card,
+// prev/next arrows, and pagination dots. Exaggerated-but-formal: an active
+// card gets a confident lift/scale, the recommended plan keeps its existing
+// dark "featured" treatment, and edge fades hint there's more to scroll.
+.gh-plan-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  // Soft edge fade so the track visually implies "more content this way"
+  // instead of cards just cutting off abruptly.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 8px;
+    width: 40px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--gh-bg, #fff) 0%, transparent 100%);
+  }
+  &::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--gh-bg, #fff) 0%, transparent 100%);
+  }
+}
+
+.gh-plan-carousel__arrow {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gh-border, #E7EAF3);
+  background: #fff;
+  color: #101828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+  @include motion-safe;
+
+  &:hover {
+    background: #FF7062;
+    color: #fff;
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(255, 112, 98, 0.35);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FF7062;
+    outline-offset: 2px;
+  }
+}
+
+.gh-plan-carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.gh-plan-carousel__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: var(--gh-border, #E7EAF3);
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, width 200ms ease;
+  @include motion-safe;
+
+  &:hover { background: #FFB3AB; }
+
+  &--active {
+    width: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #FF7062;
+    outline-offset: 2px;
+  }
+}
+
 .gh-plan-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  flex: 1 1 auto;
+  display: flex;
   gap: 20px;
   margin-bottom: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 6px 4px 14px; // room for the hover-lift + focus rings without clipping
+  // Hide the native scrollbar -- dots + arrows are the real navigation UI --
+  // while keeping the element genuinely scrollable/swipeable.
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 .gh-plan-card {
@@ -517,11 +621,18 @@
   padding: 28px 24px;
   border: 1.5px solid var(--gh-border, #E7EAF3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 200ms ease;
+  transition: box-shadow 200ms ease, transform 220ms ease;
   @include motion-safe;
 
+  // Carousel sizing: a confident, "exaggerated" card width that shows a
+  // deliberate peek of the next card rather than an exact 1/2/3-up grid --
+  // reads as a real carousel, not a grid that happens to scroll.
+  flex: 0 0 clamp(240px, 27vw, 300px);
+  scroll-snap-align: start;
+
   &:hover {
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
   }
 
   &--recommended {
@@ -529,6 +640,13 @@
     border-color: rgba(255, 103, 93, 0.5);
     box-shadow: 0 0 0 3px rgba(255, 103, 93, 0.15), 0 8px 32px rgba(0, 0, 0, 0.2);
     color: #fff;
+    // A little visual lift over its siblings so "Recommended" reads as the
+    // hero of the carousel, formally, without needing a bigger badge.
+    transform: scale(1.035);
+
+    &:hover {
+      transform: scale(1.035) translateY(-4px);
+    }
 
     .gh-plan-card__name    { color: #fff; }
     .gh-plan-card__audience { color: rgba(255, 255, 255, 0.65); }
@@ -918,19 +1036,24 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 
-  .gh-plan-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  .gh-plan-card {
+    flex-basis: clamp(230px, 40vw, 280px);
   }
 }
 
 @media (max-width: 768px) {
   .gh-sub-page { padding: 0 0 40px 0; }
 
-  .gh-sub-section { margin-bottom: 28px; }
+  .gh-sub-section{
+    margin-bottom: 0px;
+    margin-left: 10px;
+    margin-right: 20px;
+  }
 
   .gh-sub-hero {
     padding: 22px 18px;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
+    margin: 18px;
 
     &__inner { flex-direction: column; }
     &__right { align-items: flex-start; width: 100%; }
@@ -955,13 +1078,27 @@
     gap: 12px;
   }
 
-  .gh-plan-grid {
-    grid-template-columns: 1fr;
+  // Mobile: one card fully in view with a deliberate peek of the next one
+  // (rather than 100% width, which would hide that this is a carousel at
+  // all) -- arrows step aside for the swipe gesture, which is more natural
+  // on touch.
+  .gh-plan-card {
+    flex-basis: 84vw;
+  }
+
+  .gh-plan-carousel__arrow {
+    display: none;
+  }
+
+  .gh-plan-carousel::before,
+  .gh-plan-carousel::after {
+    width: 24px;
   }
 
   .gh-sub-recommendation {
     flex-direction: column;
     padding: 18px 20px;
+    margin: 16px;
 
     &__right { width: 100%; .gh-btn-primary { width: 100%; } }
   }
@@ -969,6 +1106,7 @@
   .gh-sub-banner {
     flex-wrap: wrap;
     padding: 12px 14px;
+    margin: 16px;
 
     &__action { width: 100%; }
     &__btn { width: 100%; text-align: center; }
@@ -981,6 +1119,10 @@
 
   .gh-invoice-table {
     min-width: 560px;
+  }
+
+  .gh-inv-vault-error{
+    margin: 15px;
   }
 
   .gh-faq-item__q { padding: 14px 16px; font-size: 13.5px; }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -27,7 +27,7 @@ interface PlanConfig {
   styleUrls: ['./employer-subscription.component.scss'],
   animations: [mainAnimations],
 })
-export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
+export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
 
   loading = true;
@@ -174,6 +174,87 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
       });
 
     this.loadSummary();
+  }
+
+  // ── Available Plans carousel ────────────────────────────────────────────────
+  // Presentational-only: auto-advances the plan cards every 2s, pauses on
+  // hover/touch/manual interaction, and never touches plan data, CTA
+  // handlers, or current-plan/recommended detection below.
+  @ViewChild('planCarouselTrack') planCarouselTrack?: ElementRef<HTMLElement>;
+
+  planCarouselIndex = 0;
+  private planCarouselTimer: any;
+  private planCarouselResumeTimer: any;
+  private planCarouselPaused = false;
+
+  ngAfterViewInit(): void {
+    this.startPlanCarouselAutoScroll();
+  }
+
+  private startPlanCarouselAutoScroll(): void {
+    if (typeof window === 'undefined') { return; }
+    // Never auto-move content for users who've asked for reduced motion --
+    // manual dot/arrow navigation still works either way.
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+
+    this.planCarouselTimer = setInterval(() => {
+      if (this.planCarouselPaused) { return; }
+      this.advancePlanCarousel();
+    }, 2000);
+  }
+
+  private getPlanCarouselCards(): HTMLElement[] {
+    const track = this.planCarouselTrack?.nativeElement;
+    return track ? (Array.from(track.children) as HTMLElement[]) : [];
+  }
+
+  advancePlanCarousel(): void {
+    const cards = this.getPlanCarouselCards();
+    if (cards.length === 0) { return; }
+    this.planCarouselIndex = (this.planCarouselIndex + 1) % cards.length;
+    this.scrollPlanCarouselToIndex(this.planCarouselIndex);
+  }
+
+  scrollPlanCarouselToIndex(index: number): void {
+    const track = this.planCarouselTrack?.nativeElement;
+    const cards = this.getPlanCarouselCards();
+    const target = cards[index];
+    if (track && target) {
+      track.scrollTo({ left: target.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    }
+  }
+
+  /** Manual dot click: jump to that plan and pause auto-advance briefly so the
+   *  carousel doesn't yank focus away right after someone picks a slide. */
+  goToPlanSlide(index: number): void {
+    this.planCarouselIndex = index;
+    this.scrollPlanCarouselToIndex(index);
+    this.planCarouselPaused = true;
+    clearTimeout(this.planCarouselResumeTimer);
+    this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 5000);
+  }
+
+  onPlanCarouselInteractionStart(): void {
+    this.planCarouselPaused = true;
+  }
+
+  onPlanCarouselInteractionEnd(): void {
+    clearTimeout(this.planCarouselResumeTimer);
+    this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 3000);
+  }
+
+  /** Keeps the active dot in sync when the Employer manually swipes/drags the track. */
+  onPlanCarouselScroll(): void {
+    const track = this.planCarouselTrack?.nativeElement;
+    const cards = this.getPlanCarouselCards();
+    if (!track || cards.length === 0) { return; }
+    let closest = 0;
+    let closestDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs((card.offsetLeft - track.offsetLeft) - track.scrollLeft);
+      if (dist < closestDist) { closestDist = dist; closest = i; }
+    });
+    this.planCarouselIndex = closest;
   }
 
   loadSummary(): void {
@@ -438,6 +519,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    clearInterval(this.planCarouselTimer);
+    clearTimeout(this.planCarouselResumeTimer);
   }
 
   // ── Subtab navigation ───────────────────────────────────────────────────────

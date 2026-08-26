@@ -353,7 +353,20 @@
     <div class="gh-sub-section" role="region" aria-label="Available plans">
       <h2 class="gh-sub-section__title">Available plans</h2>
       <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow.</p>
-      <div class="gh-plan-grid">
+
+      <div class="gh-plan-carousel">
+        <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
+        <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
+          (click)="goToPlanSlide((planCarouselIndex - 1 + getEffectivePlanConfigs().length) % getEffectivePlanConfigs().length)"
+          aria-label="Previous plan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="gh-plan-grid" #planCarouselTrack
+          role="region" aria-label="Plan carousel, auto-advancing every 2 seconds"
+          (mouseenter)="onPlanCarouselInteractionStart()" (mouseleave)="onPlanCarouselInteractionEnd()"
+          (touchstart)="onPlanCarouselInteractionStart()" (touchend)="onPlanCarouselInteractionEnd()"
+          (scroll)="onPlanCarouselScroll()">
         <div class="gh-plan-card"
           *ngFor="let plan of getEffectivePlanConfigs()"
           [ngClass]="{
@@ -411,6 +424,25 @@
           </div>
 
         </div>
+        </div>
+
+        <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--next"
+          (click)="goToPlanSlide((planCarouselIndex + 1) % getEffectivePlanConfigs().length)"
+          aria-label="Next plan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <!-- Pagination dots -->
+      <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan slide">
+        <button type="button" class="gh-plan-carousel__dot"
+          *ngFor="let plan of getEffectivePlanConfigs(); let i = index"
+          [class.gh-plan-carousel__dot--active]="planCarouselIndex === i"
+          role="tab"
+          [attr.aria-selected]="planCarouselIndex === i"
+          [attr.aria-label]="'Go to ' + plan.name + ' plan'"
+          (click)="goToPlanSlide(i)">
+        </button>
       </div>
     </div>
 
