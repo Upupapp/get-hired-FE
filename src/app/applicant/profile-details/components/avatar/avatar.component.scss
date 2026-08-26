@@ -243,11 +243,19 @@ $np-av-accent: var(--gh-coral, #FF675D);
 		margin: 0 !important;
 	}
 
+	// Big square photo spanning the full width of the identity column,
+	// sitting above name/job-title/rating -- not a small circular avatar.
 	.avatar-main {
-		width: 116px !important;
-		min-width: 116px !important;
-		height: 116px !important;
+		width: 100% !important;
+		min-width: 0 !important;
+		height: auto !important;
+		aspect-ratio: 1 / 1;
+		border-radius: 4px !important;
 		margin: 0 0 16px !important;
+
+		img {
+			border-radius: 4px !important;
+		}
 	}
 
 	.flex-wrap {
