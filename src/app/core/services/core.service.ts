@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, filter, map } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 
 // TARGETED LOCAL-STORAGE CLEANUP: the complete set of keys this app itself
@@ -46,11 +46,43 @@ export class CoreService {
   isLogin = false;
   roleAs: string;
 
+  /**
+   * AUTH LIFECYCLE SYNC: a single reactive source of truth for "is this
+   * browser tab currently authenticated", so components that render
+   * auth-dependent UI (e.g. the public site header's Sign In vs Account
+   * menu) can subscribe instead of reading isLoggedIn() once at
+   * construction and going stale the moment logout() runs elsewhere in
+   * the same tab -- previously the only way to see the updated UI was a
+   * hard refresh (a fresh component instance re-reading localStorage).
+   * Seeded from isLoggedIn() so a component that only ever reads the
+   * current value (via a sync pipe/async pipe) still gets the right
+   * state on first render, same as before this existed.
+   */
+  private authStateSubject = new BehaviorSubject<boolean>(this.isLoggedInSnapshot());
+  authState$ = this.authStateSubject.asObservable();
+
   constructor(
     private baseService: BaseService,
     private router: Router,
     private authFacade: AuthFacade,
-  ) { }
+  ) {
+    // Re-sync on every completed navigation. This is what actually keeps
+    // authState$ correct after a successful sign-in (email/password,
+    // Google, or LinkedIn -- three separate code paths that each write
+    // localStorage['state'] directly and each navigate away on success)
+    // without needing to touch every one of those write sites individually.
+    // logout() below still pushes immediately too, since a logout action
+    // doesn't always trigger a navigation on its own (e.g. a stale-session
+    // guard that clears state without redirecting the current tab).
+    this.router.events
+      .pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => this.authStateSubject.next(this.isLoggedInSnapshot()));
+  }
+
+  private isLoggedInSnapshot(): boolean {
+    if (typeof localStorage === 'undefined') return false;
+    return localStorage.getItem('state') === 'true';
+  }
 
   checkEmailIfExist(email: string) {
     return this.baseService.get(`${this.authUrl}/checkemailifexist?email=${email}`);
@@ -140,15 +172,19 @@ export class CoreService {
     // unconditionally, even if this store dispatch were ever to throw.
     try { this.authFacade.logout(); } catch (_) {}
 
+    // AUTH LIFECYCLE SYNC: push immediately rather than waiting for the
+    // next NavigationEnd -- a caller may not navigate at all right after
+    // calling logout() (e.g. a guard clearing a stale session while
+    // staying on the currently-rendering page), and any subscriber
+    // (public header, etc.) must reflect "signed out" the instant this
+    // method returns, not on some later, possibly-nonexistent navigation.
+    this.authStateSubject.next(false);
+
     return of({ success: true, role: '' });
   }
 
   isLoggedIn() {
-    const loggedIn = localStorage.getItem('state') || null;
-    if (loggedIn == 'true')
-      return true;
-    else
-      return false;
+    return this.isLoggedInSnapshot();
   }
 
   async getState() {

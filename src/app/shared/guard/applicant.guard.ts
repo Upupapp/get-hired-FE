@@ -65,15 +65,16 @@ export class ApplicantGuard implements CanActivate, CanActivateChild, CanDeactiv
       this.router.resetConfig([
         ...authRoutes
       ]);
-      // BUGFIX: resetConfig alone does not re-navigate -- the in-flight
-      // navigation to the blocked applicant-only URL (e.g. /user/applications)
-      // is simply cancelled by returning false below, leaving the user on a
-      // blank/stuck page instead of landing on sign-in. EmployerGuard's
-      // equivalent branch already calls navigateByUrl(url) here to force
-      // Angular to re-resolve the now-blocked URL against the freshly reset
-      // authRoutes table (whose wildcard route loads the auth module) --
-      // this branch was missing that call.
-      this.router.navigateByUrl(url);
+      // BUGFIX 2: navigateByUrl(url) re-navigated to the ORIGINAL blocked
+      // applicant URL (e.g. /user/applications) against the freshly reset
+      // authRoutes table. authRoutes only contains AuthModule's own paths
+      // (signin, signup, ...) plus a wildcard that redirects unmatched
+      // paths to '' -- and AuthModule has no route for the empty path, so
+      // that redirect chain dead-ends with nothing rendered: the exact
+      // "blank page instead of sign-in" bug this was meant to fix.
+      // Navigate straight to the one path guaranteed to exist in the table
+      // that was just swapped in.
+      this.router.navigateByUrl('/signin');
       return false;
     } else {
       if(role != '3') {
