@@ -163,11 +163,24 @@ export class ProfileBasicInfoComponent implements OnInit {
     }
   }
 
+  /**
+   * BUGFIX: the 'created' branch (fires on the applicant's very first save
+   * -- i.e. exactly when someone is entering Short Bio etc. for the first
+   * time on a brand-new profile) navigated to /recruiter/jobs/list -- a
+   * copy-paste leftover from the EMPLOYER onboarding flow, wrong role
+   * entirely for this applicant-only component. AuthGuard immediately
+   * bounced the applicant back out since they don't have the '2' (employer)
+   * role, which looked to the user like their save had failed or their data
+   * had vanished, even though the save itself succeeded and persisted
+   * correctly. Both branches now behave the same way as the already-correct
+   * 'updated' branch: show a success toast and let the parent wizard
+   * (profile-forms.component.ts, already listening for this same event)
+   * advance to the next step on its own -- no navigation from here.
+   */
   afterSubmit(event) {
-    console.log('who called');
     if (event == 'created') {
-      this.snackbarService.success(`Your public profile has been created`, '');
-      this.router.navigate(['/recruiter/jobs/list'], { relativeTo: this.route });
+      this.snackbarService.success(`Your profile has been created`, '');
+      this.submitBasicInfo.emit('VALID');
     } else if (event == 'updated') {
       this.snackbarService.success(`Profile successfully updated`, '');
       this.submitBasicInfo.emit('VALID');
