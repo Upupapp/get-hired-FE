@@ -251,10 +251,19 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
         break;
     }
 
+    // BUGFIX: this used to assume `id` is always present in `chosenArray` and
+    // read filteredArray[0].name unguarded. The option lists (industries/
+    // roles/setups/types/levels) load asynchronously via their own
+    // jobFacade.*$ subscriptions in ngOnInit, while `preview` (built from the
+    // NgRx store snapshot) can already have industryId/jobRoleId/etc. set the
+    // moment Step 4 first renders -- so on the first change-detection pass,
+    // before those lists resolve, chosenArray is still [] and filteredArray[0]
+    // is undefined, throwing "Cannot read properties of undefined (reading
+    // 'name')" and breaking the whole Preview & Publish step render. Return
+    // an empty string until the matching option actually loads instead of
+    // crashing; the template already updates once the *$ subscription fires.
     const filteredArray = chosenArray.filter(option => option.id == id);
-    const name = filteredArray[0].name;
-    return name;
-
+    return filteredArray[0] ? filteredArray[0].name : '';
   }
 
   // Update Drag position

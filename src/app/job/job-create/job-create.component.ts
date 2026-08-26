@@ -1568,8 +1568,21 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (event === 3 && this.isSimplified) {
       event = this.stepper <= 2 ? 4 : 2;
     }
+    // BUGFIX: formCtrl must reflect the step being LEFT (this.stepper), not
+    // the destination (event). `stepperItems[event - 2]` only happened to be
+    // correct for a plain forward one-step advance (event === this.stepper + 1),
+    // where "the step before the target" and "the step being left" are the
+    // same thing. For Back navigation and arbitrary jumps (stepper-rail tab
+    // clicks call changeStep(item.id) directly; the Preview step's
+    // navigateToStep can target any step), event - 2 pointed at the wrong
+    // form group entirely -- e.g. going back from Step 3 to Step 2 saved
+    // Step 1's data again instead of Step 3's, so Step 3 edits were silently
+    // dropped from the NgRx store. That store (jobFacade.info$/initial$/
+    // interview$), not jobForm, is what preview-job-post-step.component.ts
+    // actually renders, so this was a real, user-visible data-loss bug: the
+    // Preview step could show stale data after backward/non-linear navigation.
+    const formCtrl = this.stepperItems[this.stepper - 1]?.formName;
     this.stepper = event;
-    const formCtrl = this.stepperItems[event - 2]?.formName;
 
     if (event == 4) {
       this.jobFacade.getIndustry();
