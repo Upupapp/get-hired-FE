@@ -226,6 +226,17 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       loading: false,
       basicProfile: action.basicProfile,
+      // BUGFIX: the topbar avatar (applicant-panel.component.html's
+      // gh-ap-topbar-avatar) reads user$/state.user, which was only ever
+      // populated once by getUserProfileSuccess (typically on initial
+      // panel load) and never touched by this action -- a successful
+      // avatar/basic-info save updated basicProfile but left state.user's
+      // photoUrl stale, so the topbar kept showing the old photo until a
+      // full page reload re-fetched the user. Merge the new photoUrl into
+      // state.user too so the topbar updates immediately.
+      user: state.user
+        ? { ...state.user, photoUrl: action.basicProfile.photoUrl }
+        : state.user,
       succesMsg: action.basicProfile.applicantProfileId ? 'updated' : 'created'
     };
   }),
