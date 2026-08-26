@@ -64,6 +64,8 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 		.np-video-frame {
 			@include np-inset(14px);
 			padding: 6px;
+			position: relative;
+			z-index: 1;
 
 			video {
 				border-radius: 10px !important;
@@ -92,6 +94,163 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 			cursor: pointer;
 			filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 		}
+	}
+}
+
+// ─── Video Introduction: elevated "tech" treatment ────────────────────────
+// Header row: heading + a small status tag, so the card reads like a media
+// player widget rather than a plain form-field group.
+.np-video-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.np-heading--flush {
+	margin-bottom: 0;
+}
+
+.np-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	flex: 0 0 auto;
+	font-family: 'Manrope';
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	padding: 5px 11px;
+	border-radius: 9999px;
+	@include np-inset(9999px);
+
+	&--live {
+		color: $np-accent;
+	}
+
+	&--muted {
+		color: $np-text-muted;
+	}
+}
+
+.np-tag-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: $np-accent;
+	box-shadow: 0 0 0 0 rgba(255, 103, 93, 0.5);
+	animation: np-tag-pulse 2.2s ease-out infinite;
+}
+
+@keyframes np-tag-pulse {
+	0%   { box-shadow: 0 0 0 0 rgba(255, 103, 93, 0.45); }
+	70%  { box-shadow: 0 0 0 6px rgba(255, 103, 93, 0); }
+	100% { box-shadow: 0 0 0 0 rgba(255, 103, 93, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.np-tag-dot { animation: none; }
+}
+
+// A soft rotating conic-gradient glow sitting just behind the inset video
+// frame -- the one deliberately "techy" flourish on the page, subtle and
+// blurred rather than a loud neon ring, and fully static for anyone who
+// prefers reduced motion.
+.np-video-glow {
+	position: relative;
+	border-radius: 16px;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset: -3px;
+		border-radius: 18px;
+		background: conic-gradient(from 0deg, $np-accent, var(--gh-azure, #168BFF), $np-accent);
+		opacity: 0.35;
+		filter: blur(10px);
+		z-index: 0;
+		animation: np-glow-spin 8s linear infinite;
+	}
+}
+
+@keyframes np-glow-spin {
+	to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.np-video-glow::before { animation: none; }
+}
+
+// Empty state: a clickable inset "lens" orb instead of a static placeholder
+// image, plus a real raised CTA button (was a plain text link).
+.np-video-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 14px;
+	padding: 32px 20px;
+	cursor: pointer;
+	@include np-inset(16px);
+	transition: box-shadow 180ms ease;
+
+	&:hover .np-video-empty-orb {
+		transform: scale(1.04);
+	}
+}
+
+.np-video-empty-orb {
+	position: relative;
+	width: 76px;
+	height: 76px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	@include np-raised(50%);
+	transition: transform 200ms ease;
+}
+
+.np-video-empty-icon {
+	font-size: 28px;
+	position: relative;
+	z-index: 1;
+}
+
+.np-video-empty-ring {
+	position: absolute;
+	inset: -6px;
+	border-radius: 50%;
+	border: 1.5px dashed rgba(255, 103, 93, 0.35);
+}
+
+.np-empty-hint--center {
+	max-width: 360px;
+	margin: 0;
+}
+
+.np-cta-btn {
+	font-family: 'Manrope';
+	font-size: 13px;
+	font-weight: 700;
+	color: $np-accent;
+	background: $np-base;
+	border: none;
+	border-radius: 9999px;
+	padding: 10px 22px;
+	cursor: pointer;
+	@include np-raised(9999px);
+	transition: box-shadow 150ms ease, transform 150ms ease;
+
+	&:hover {
+		transform: translateY(-1px);
+	}
+
+	&:active {
+		@include np-inset(9999px);
+		transform: translateY(0);
 	}
 }
 
@@ -375,5 +534,50 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 
 	.np-entry:not(.np-entry-last)::before {
 		left: 7px;
+	}
+
+	// Video Introduction: same soft-UI language, sized for a phone viewport
+	// instead of a desktop widget -- smaller tag/orb/CTA, a lighter glow so
+	// it doesn't overpower a narrow card, and the head row allowed to wrap
+	// if the "Recorded"/"Not recorded" tag doesn't fit beside a long heading.
+	.np-video-head {
+		flex-wrap: wrap;
+		row-gap: 8px;
+		margin-bottom: 12px;
+	}
+
+	.np-tag {
+		font-size: 10px;
+		padding: 4px 9px;
+	}
+
+	.np-video-glow::before {
+		opacity: 0.25;
+		filter: blur(7px);
+	}
+
+	.np-video-empty {
+		padding: 22px 16px;
+		gap: 10px;
+	}
+
+	.np-video-empty-orb {
+		width: 60px;
+		height: 60px;
+	}
+
+	.np-video-empty-icon {
+		font-size: 22px;
+	}
+
+	.np-empty-hint--center {
+		font-size: 13px;
+		line-height: 19px;
+	}
+
+	.np-cta-btn {
+		font-size: 12.5px;
+		padding: 9px 18px;
+		width: 100%;
 	}
 }

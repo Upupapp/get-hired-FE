@@ -29,29 +29,45 @@
 
       <!-- VIDEO CV PREVIEW -->
       <section class="np-card np-card-raised np-card-video" *ngIf="user.videoCVUrl && user.videoCVUrl != ''">
-        <h5 class="np-heading">
-          <span class="np-heading-icon" aria-hidden="true">&#127909;</span>
-          Video Introduction
-        </h5>
-        <div class="np-video-frame">
-          <video class="w-100" controls #preview height="330">
-            <source [src]="user.videoCVUrl" type="video/webm">
-          </video>
+        <div class="np-video-head">
+          <h5 class="np-heading np-heading--flush">
+            <span class="np-heading-icon" aria-hidden="true">&#127909;</span>
+            Video Introduction
+          </h5>
+          <span class="np-tag np-tag--live">
+            <span class="np-tag-dot" aria-hidden="true"></span>
+            Recorded
+          </span>
+        </div>
+        <div class="np-video-glow">
+          <div class="np-video-frame">
+            <video class="w-100" controls #preview height="330">
+              <source [src]="user.videoCVUrl" type="video/webm">
+            </video>
+          </div>
         </div>
       </section>
 
       <!-- VIDEO CV PLACEHOLDER -->
       <section class="np-card np-card-raised np-card-video" *ngIf="!user?.videoCVUrl && userRole != '2'">
-        <h5 class="np-heading">
-          <span class="np-heading-icon" aria-hidden="true">&#127909;</span>
-          Video Introduction
-        </h5>
-        <p class="np-empty-hint">You can add your video introduction
-          <span class="np-link" (click)="navigateToEdit()">here</span>
-        </p>
-        <div class="np-video-placeholder">
-          <img src="/assets/images/placeholder/icons/play-button.png" class="np-play-button" alt="">
-          <img src="/assets/images/placeholder/video-placeholder-2.png" width="100%" alt="">
+        <div class="np-video-head">
+          <h5 class="np-heading np-heading--flush">
+            <span class="np-heading-icon" aria-hidden="true">&#127909;</span>
+            Video Introduction
+          </h5>
+          <span class="np-tag np-tag--muted">Not recorded</span>
+        </div>
+        <div class="np-video-empty" (click)="navigateToEdit()">
+          <div class="np-video-empty-orb" aria-hidden="true">
+            <span class="np-video-empty-icon">&#127909;</span>
+            <span class="np-video-empty-ring"></span>
+          </div>
+          <p class="np-empty-hint np-empty-hint--center">
+            Put a face to your resume — a short intro helps you stand out.
+          </p>
+          <button type="button" class="np-cta-btn" (click)="navigateToEdit()">
+            Record your intro
+          </button>
         </div>
       </section>
 
