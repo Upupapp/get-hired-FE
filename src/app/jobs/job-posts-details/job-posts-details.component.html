@@ -51,7 +51,8 @@
             <span class="gh-hero-company-name">{{ selectedJobPost?.companyName }}</span>
           </div>
           <h1 class="title-banner">{{ selectedJobPost?.jobTitle }}</h1>
-          <p class="title-banner-description mb-2">
+          <p class="title-banner-description mb-2"
+            [class.gh-hero-meta--empty]="!selectedJobPost?.industryId && !selectedJobPost?.jobTypeName && !selectedJobPost?.workSetupName">
             <ng-container *ngIf="selectedJobPost?.industryId">{{ selectedJobPost?.industryName }} &middot; </ng-container>
             {{ selectedJobPost?.jobTypeName }} &middot; {{ selectedJobPost?.workSetupName }}
           </p>
@@ -72,7 +73,8 @@
               <span class="gh-hero-company-name">{{ selectedJobPost?.companyName }}</span>
             </div>
             <h1 class="title-banner">{{ selectedJobPost?.jobTitle }}</h1>
-            <p class="title-banner-description mb-2">
+            <p class="title-banner-description mb-2"
+              [class.gh-hero-meta--empty]="!selectedJobPost?.industryId && !selectedJobPost?.jobTypeName && !selectedJobPost?.workSetupName">
               <ng-container *ngIf="selectedJobPost?.industryId">{{ selectedJobPost?.industryName }} &middot; </ng-container>
               {{ selectedJobPost?.jobTypeName }} &middot; {{ selectedJobPost?.workSetupName }}
             </p>

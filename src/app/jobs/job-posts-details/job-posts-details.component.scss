@@ -328,6 +328,42 @@
 		color: #FFFFFF;
 	}
 
+	// MOBILE POLISH: 37px/41px is disproportionately large on narrow
+	// viewports -- longer job titles (e.g. "Job A - Backend Engineer
+	// (recruiter-edited)") wrap to 3-4 lines and read as oversized/informal
+	// rather than a confident headline. Scale down at the established
+	// 767px/575px breakpoints; desktop/tablet (>767px) is untouched.
+	@media (max-width: 767px) {
+		.title-banner {
+			font-size: 26px;
+			line-height: 32px;
+		}
+		.title-banner-description {
+			font-size: 14px;
+			line-height: 20px;
+		}
+	}
+
+	@media (max-width: 575px) {
+		.title-banner {
+			font-size: 22px;
+			line-height: 28px;
+		}
+	}
+
+	// MOBILE POLISH: when neither industry, job type, nor work setup is
+	// present (sparse-data jobs), the meta line under the hero title used to
+	// render as a lone orphaned "&middot;" with nothing around it -- a stray
+	// dot floating under the headline. [class.gh-hero-meta--empty] is bound
+	// in the template from the same fields already guarding this markup (no
+	// business logic touched); hiding it is scoped to mobile only so the
+	// existing desktop/tablet rendering of that same edge case is untouched.
+	.gh-hero-meta--empty {
+		@media (max-width: 767px) {
+			display: none;
+		}
+	}
+
 	.title-details{
 		font-family: 'Manrope';
 		font-style: normal;
@@ -443,6 +479,31 @@
 	width: 100%;;
 	border-radius: 5px;
 	padding: 10px 20px 7px 15px;
+}
+
+// MOBILE POLISH: badges (Flexitime, Benefit Package, ...) force width:100%
+// at every breakpoint, so on a 320-414px viewport each perk stacks as its
+// own full-width bar -- a tall list rather than a set of compact badges,
+// and each bar shows a broken-image glyph (badge.icon is frequently null
+// for these badges, e.g. "Flexitime"/"Benefit Package"/"Work-life Balance"
+// on the tested jobs) next to the label. Below 575px, let them wrap as
+// inline chips and hide the decorative (aria-hidden) icon when it has no
+// real image to avoid the broken-icon glyph. Desktop/tablet layout (>575px)
+// is unchanged.
+@media (max-width: 575px) {
+	.badge-card {
+		width: auto;
+		flex: 0 1 auto;
+		padding: 8px 14px;
+		display: flex;
+		align-items: center;
+	}
+	.badge-card img {
+		display: none;
+	}
+	.title-badge {
+		padding-top: 0;
+	}
 }
 
 .badge-0{
@@ -698,6 +759,30 @@
 		span{
 			font-weight: 600 !important;
 			color: #9C9C9C;
+		}
+	}
+}
+
+// MOBILE POLISH: each of the (potentially dozens of) Interview Questions
+// cards renders a fixed 100x100px icon thumbnail. On a 320-414px viewport
+// that single icon eats roughly a third of the card's width, forcing the
+// actual question text into a narrow column that wraps to 4-5 lines and
+// leaves a large blank gray box beside it -- verified live on the
+// Full-Stack Developer (JB-26-920673) job, which has 40 questions, so this
+// compounds into a very long, sparse-looking page. Shrink the thumbnail and
+// tighten the card padding below the 767px breakpoint; desktop/tablet is
+// unchanged.
+@media (max-width: 767px) {
+	#interview-list {
+		.logo-thumbnail {
+			height: 56px;
+			width: 56px;
+			min-width: 56px;
+			border-radius: 10px;
+
+			img {
+				height: 22px;
+			}
 		}
 	}
 }
