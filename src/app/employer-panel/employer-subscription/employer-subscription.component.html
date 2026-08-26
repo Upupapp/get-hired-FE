@@ -359,7 +359,7 @@
         [class.gh-plan-carousel--can-scroll-next]="planCarouselCanScrollNext">
         <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
-          (click)="goToPlanSlide((planCarouselActiveSlide - 1 + planCarouselSlideCount) % planCarouselSlideCount)"
+          (click)="goToPlanSlide((planCarouselActiveIndex - 1 + getEffectivePlanConfigs().length) % getEffectivePlanConfigs().length)"
           aria-label="Previous plan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -431,24 +431,24 @@
         </div>
 
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--next"
-          (click)="goToPlanSlide((planCarouselActiveSlide + 1) % planCarouselSlideCount)"
+          (click)="goToPlanSlide((planCarouselActiveIndex + 1) % getEffectivePlanConfigs().length)"
           aria-label="Next plan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
 
-      <!-- Pagination dots: one per real scrollable PAGE (planCarouselSlides,
-           computed from actual track/viewport width), not one per plan card
-           -- on wide screens where several cards fit in one view, a
-           per-card dot count didn't match the number of places the
-           carousel could actually stop. -->
-      <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan slide">
+      <!-- Pagination dots: one per plan card, matching what people expect
+           a pricing carousel's dots to mean ("this dot is the Growth
+           plan"). Clicking one reliably scrolls that exact card into view
+           via scrollToCard()'s real offsetLeft measurement, and the active
+           dot is kept in sync with manual scroll the same way. -->
+      <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan">
         <button type="button" class="gh-plan-carousel__dot"
-          *ngFor="let slide of planCarouselSlides; let i = index"
-          [class.gh-plan-carousel__dot--active]="planCarouselActiveSlide === i"
+          *ngFor="let plan of getEffectivePlanConfigs(); let i = index"
+          [class.gh-plan-carousel__dot--active]="planCarouselActiveIndex === i"
           role="tab"
-          [attr.aria-selected]="planCarouselActiveSlide === i"
-          [attr.aria-label]="'Go to slide ' + (i + 1)"
+          [attr.aria-selected]="planCarouselActiveIndex === i"
+          [attr.aria-label]="'Go to ' + plan.name + ' plan'"
           (click)="goToPlanSlide(i)">
         </button>
       </div>

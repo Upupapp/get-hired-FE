@@ -177,24 +177,24 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   // ── Available Plans carousel ────────────────────────────────────────────────
-  // Presentational-only: auto-advances one PAGE every 2s (not one card --
-  // see below), pauses on hover/touch/manual interaction, and never touches
-  // plan data, CTA handlers, or current-plan/recommended detection below.
+  // Presentational-only: auto-advances one CARD every 2s, pauses on
+  // hover/touch/manual interaction, and never touches plan data, CTA
+  // handlers, or current-plan/recommended detection below.
   //
-  // AUDIT FIX: the original version indexed by individual card and used
-  // getBoundingClientRect-style math to find "the closest card" on scroll,
-  // with one dot per card -- on wide screens where 2-3 cards are visible at
-  // once, that produced more dots than there were real places to stop, and
-  // dot-click / scroll-sync could disagree with where the track actually
-  // landed. Rewritten to page-based scrolling: a "slide" is exactly one
-  // viewport-width of the track, so slideCount = ceil(scrollWidth /
-  // clientWidth) always matches the number of distinct positions the
-  // track can actually rest at -- one dot per real stopping point, on any
-  // screen size, at any card width, recalculated on resize.
+  // Back to one dot per plan card (per explicit feedback) -- the page-based
+  // dot count from the prior pass was technically "correct" but didn't
+  // match what people expect a pricing carousel's dots to mean ("this dot
+  // is the Growth plan"). What's fixed now that wasn't before: dot-click
+  // reliably scrolls the EXACT clicked card fully into view (measured via
+  // the card's real offsetLeft, not a page-width guess), and the active
+  // dot is kept in sync the same way, so it can never disagree with what's
+  // actually on screen. This is only possible now because the real bugs
+  // that made per-card tracking flaky are already fixed elsewhere in this
+  // file: the recommended card's transform:scale() visual overlap, and
+  // mobile's partial-next-card peek.
   @ViewChild('planCarouselTrack') planCarouselTrack?: ElementRef<HTMLElement>;
 
-  planCarouselActiveSlide = 0;
-  planCarouselSlideCount = 1;
+  planCarouselActiveIndex = 0;
   /** Edge affordance visibility -- the fade/gradient hints are only shown
    *  where there's genuinely more content in that direction, never as a
    *  static decoration that implies clipping when there's nothing to
@@ -210,19 +210,18 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   ngAfterViewInit(): void {
     // Let layout settle (card widths via clamp()) before the first measure.
-    setTimeout(() => this.updatePagination(), 0);
+    setTimeout(() => this.syncScrollBoundaryState(), 0);
 
-    // PRODUCTION HARDENING: a plain window:resize listener only fires on
-    // actual viewport resize -- it misses font-load reflow, a sidebar/drawer
-    // toggling elsewhere on the page, browser zoom, or the track's own
-    // content changing width for any other reason. ResizeObserver watches
-    // the track element itself, so any of those cases recalculate
-    // geometry too. Single resize-handling mechanism (no window listener
-    // running alongside it), debounced so a drag-resize doesn't thrash.
+    // A plain window:resize listener only fires on actual viewport
+    // resize -- it misses font-load reflow, a sidebar/drawer toggling
+    // elsewhere on the page, browser zoom, or the track's own content
+    // changing width for any other reason. ResizeObserver watches the
+    // track element itself, so any of those cases refresh edge-affordance
+    // state too. Debounced so a drag-resize doesn't thrash.
     if (typeof ResizeObserver !== 'undefined' && this.planCarouselTrack?.nativeElement) {
       this.planCarouselResizeObserver = new ResizeObserver(() => {
         clearTimeout(this.planCarouselResizeDebounce);
-        this.planCarouselResizeDebounce = setTimeout(() => this.updatePagination(/* fromResize */ true), 120);
+        this.planCarouselResizeDebounce = setTimeout(() => this.syncScrollBoundaryState(), 120);
       });
       this.planCarouselResizeObserver.observe(this.planCarouselTrack.nativeElement);
     }
@@ -242,58 +241,38 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     }, 2000);
   }
 
-  /** CAROUSEL calculation hub: the viewport (track) determines slide
-   *  geometry, slide geometry determines pagination -- cards never drive
-   *  this math directly. Recomputes slide count from actual scroll
-   *  geometry (not plan/card count), re-clamps + instantly re-snaps the
-   *  active slide so a resize can never leave the track resting between
-   *  two pages, and refreshes edge-affordance/arrow state. Call this any
-   *  time the track's available geometry may have changed (init, resize).
-   */
-  private updatePagination(fromResize: boolean = false): void {
+  private getPlanCarouselCards(): HTMLElement[] {
     const track = this.planCarouselTrack?.nativeElement;
-    if (!track || track.clientWidth === 0) { return; }
-
-    this.planCarouselSlideCount = this.calculateSlideCount(track);
-    const clamped = Math.min(this.planCarouselActiveSlide, this.planCarouselSlideCount - 1);
-    this.planCarouselActiveSlide = Math.max(0, clamped);
-
-    if (fromResize) {
-      // Instant, not smooth -- a resize must never produce a visible
-      // "jump" animation, it just re-anchors to where the layout already
-      // put the content.
-      track.scrollTo({ left: this.planCarouselActiveSlide * track.clientWidth, behavior: 'auto' });
-    }
-
-    this.syncScrollBoundaryState(track);
-  }
-
-  /** Number of distinct viewport-sized positions the track can rest at --
-   *  the true page count, independent of how many cards happen to fit per
-   *  page at the current width. */
-  private calculateSlideCount(track: HTMLElement): number {
-    return Math.max(1, Math.round(track.scrollWidth / track.clientWidth));
+    return track ? (Array.from(track.children) as HTMLElement[]) : [];
   }
 
   advancePlanCarousel(): void {
-    const nextSlide = (this.planCarouselActiveSlide + 1) % this.planCarouselSlideCount;
-    this.scrollToSlide(nextSlide);
+    const cards = this.getPlanCarouselCards();
+    if (cards.length === 0) { return; }
+    const next = (this.planCarouselActiveIndex + 1) % cards.length;
+    this.scrollToCard(next);
   }
 
-  /** Moves the track to the given logical page (smooth). Cards occupy
-   *  stable positions within each page; this never targets an individual
-   *  card. */
-  scrollToSlide(slide: number): void {
+  /** THE FIX: scrolls so the exact card at `index` is fully visible at the
+   *  start of the viewport, using that card's real offsetLeft rather than
+   *  a page-width multiple -- this is what makes "click dot 3, see plan 3"
+   *  actually reliable regardless of how many cards fit per view. Clamped
+   *  by the browser's own scrollTo bounds, so the last card's target
+   *  (which may overshoot scrollWidth) simply settles at the true end. */
+  scrollToCard(index: number): void {
     const track = this.planCarouselTrack?.nativeElement;
-    if (!track) { return; }
-    this.planCarouselActiveSlide = slide;
-    track.scrollTo({ left: slide * track.clientWidth, behavior: 'smooth' });
+    const cards = this.getPlanCarouselCards();
+    const target = cards[index];
+    if (!track || !target) { return; }
+    this.planCarouselActiveIndex = index;
+    track.scrollTo({ left: target.offsetLeft - track.offsetLeft, behavior: 'smooth' });
   }
 
-  /** Manual dot/arrow click: jump to that page and pause auto-advance briefly
-   *  so the carousel doesn't yank focus away right after someone picks one. */
-  goToPlanSlide(slide: number): void {
-    this.scrollToSlide(slide);
+  /** Manual dot/arrow click: jump to that plan card and pause auto-advance
+   *  briefly so the carousel doesn't yank focus away right after someone
+   *  picks one. */
+  goToPlanSlide(index: number): void {
+    this.scrollToCard(index);
     this.planCarouselPaused = true;
     clearTimeout(this.planCarouselResumeTimer);
     this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 5000);
@@ -309,27 +288,35 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   /** Keeps the active dot + edge affordances in sync when the Employer
-   *  manually swipes/drags/scrolls the track (mouse or touch). */
+   *  manually swipes/drags/scrolls the track (mouse or touch) -- finds
+   *  whichever card's left edge is genuinely closest to the current
+   *  scroll position, so the active dot always matches what's actually
+   *  pinned at the start of the viewport. */
   syncActiveSlide(): void {
     const track = this.planCarouselTrack?.nativeElement;
-    if (!track || track.clientWidth === 0) { return; }
-    this.planCarouselActiveSlide = Math.round(track.scrollLeft / track.clientWidth);
-    this.syncScrollBoundaryState(track);
+    const cards = this.getPlanCarouselCards();
+    if (!track || cards.length === 0) { return; }
+
+    let closest = 0;
+    let closestDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs((card.offsetLeft - track.offsetLeft) - track.scrollLeft);
+      if (dist < closestDist) { closestDist = dist; closest = i; }
+    });
+    this.planCarouselActiveIndex = closest;
+
+    this.syncScrollBoundaryState();
   }
 
   /** Whether there's genuinely more content to the left/right of the
-   *  current scroll position -- drives both the edge-fade visibility and
-   *  could gate arrow affordance. A 1px tolerance absorbs sub-pixel
-   *  scroll-position rounding across browsers. */
-  private syncScrollBoundaryState(track: HTMLElement): void {
+   *  current scroll position -- drives the edge-fade visibility. A 1px
+   *  tolerance absorbs sub-pixel scroll-position rounding across
+   *  browsers. */
+  private syncScrollBoundaryState(): void {
+    const track = this.planCarouselTrack?.nativeElement;
+    if (!track) { return; }
     this.planCarouselCanScrollPrev = track.scrollLeft > 1;
     this.planCarouselCanScrollNext = track.scrollLeft < track.scrollWidth - track.clientWidth - 1;
-  }
-
-  /** Array of the real slide count, purely for the dots *ngFor -- see
-   *  updatePagination()/calculateSlideCount(); intentionally NOT plan-count-based. */
-  get planCarouselSlides(): number[] {
-    return Array.from({ length: this.planCarouselSlideCount }, (_, i) => i);
   }
 
   loadSummary(): void {
