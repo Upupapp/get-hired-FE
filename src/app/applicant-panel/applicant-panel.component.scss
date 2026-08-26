@@ -415,10 +415,13 @@
     padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  // Push body content below the sticky mobile top bar
-  #body-main-container {
-    padding-top: 56px;
-  }
+  // REMOVED (was padding-top:56px on #body-main-container): .gh-ap-mobile-topbar
+  // is position:sticky, not fixed, so it stays in normal document flow and
+  // already reserves its own 56px naturally. It's also the first child of
+  // this very container, so the padding pushed the topbar itself down by
+  // 56px instead of pushing content below it -- a real, empty 56px band
+  // above the topbar on every mobile load. No compensating padding is
+  // needed for a sticky element; removing it entirely is the fix.
 
   // AP-01 MOBILEVIEW: flex-wrap: nowrap forces the layout off-screen on narrow
   // viewports. Override to wrap so sidebar and content stack correctly.
