@@ -588,16 +588,16 @@
   }
 }
 
-// Desktop/tablet default: the original static grid, restored -- every plan
-// visible simultaneously, no scroll chrome. (Carousel track behavior --
-// overflow-x, scroll-snap, edge fades, hidden scrollbar -- is re-added
-// inside the mobile-only media query further down, where it's the only
-// place it still applies.)
+// Desktop/tablet default: plan cards laid out left-to-right in a single
+// row (not a wrapping grid), with the row itself horizontally scrollable
+// -- plain native overflow scroll, no snap/dots/arrows/auto-advance chrome
+// (that carousel behavior stays mobile-only, further down).
 .gh-plan-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  display: flex;
   gap: 20px;
   margin-bottom: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .gh-plan-card {
@@ -610,6 +610,10 @@
   border: 1.5px solid var(--gh-border, #E7EAF3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   overflow: hidden; // keeps the top-edge accent bar's corners clean
+  // Stable width in the left-to-right scrollable row -- flex-shrink:0 so
+  // cards never get squeezed to fit, which is exactly what should cause
+  // .gh-plan-grid to overflow and scroll once they don't all fit.
+  flex: 0 0 260px;
   // AUDIT FIX (still applies -- carousel is only active on mobile, but the
   // same card styling is shared by the desktop grid): transform (scale/
   // translateY) doesn't change a flex/grid item's layout box, only its
@@ -1049,10 +1053,10 @@
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 
-  // Tablet: the static grid narrows its columns rather than switching to
-  // a carousel -- carousel behavior is mobile-only (max-width:768px below).
-  .gh-plan-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  // Tablet: narrower cards in the same left-to-right scrollable row --
+  // carousel behavior (snap/dots/auto-advance) is mobile-only (below).
+  .gh-plan-card {
+    flex-basis: 230px;
   }
 }
 
