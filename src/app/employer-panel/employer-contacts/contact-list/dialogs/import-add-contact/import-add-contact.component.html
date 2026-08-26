@@ -1,14 +1,18 @@
 <div class="employee-container ">
 	<div class="card"
 	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
-		<!-- <div class="employee-details w-100">
-			<h4 class="employee-title">
-				Add New Contact
-
-				<button class="btn btn-import-csv"
-				(click)="importContact = true">CSV <img src="/assets/images/placeholder/icons/import-csv.png" style="width: 20px" class="ms-2"></button>
-			</h4>
-		</div> -->
+		<!-- Persistent header: title + close button, visible in both New Contact
+		     and Import Contact modes (previously there was no way to dismiss the
+		     dialog at all while on the Import Contact tab). -->
+		<div class="gh-contact-dialog-header">
+			<span class="gh-contact-dialog-title">
+				<span *ngIf="data">{{ 'EDIT_CONTACT_FORM.TITLE_PAGE' | translate }}</span>
+				<span *ngIf="!data">{{ importContact ? 'Import Contact' : 'New Contact' }}</span>
+			</span>
+			<button type="button" class="gh-contact-dialog-close" (click)="dialogRef.close()" aria-label="Close">
+				<i class="bi bi-x-lg" aria-hidden="true"></i>
+			</button>
+		</div>
 
 		<div class="employee-details row">
 			<div class="col-12 col-md-6 px-0">
@@ -99,13 +103,13 @@
 
 
 						<div class="mt-4">
-							<div style="position: relative;" class="mt-2 text-center">
+							<div class="gh-contact-form-actions mt-2">
 								<button type="button"
-								class="btn me-3 btn-default "
+								class="btn btn-default "
 								(click)="dialogRef.close()">{{ 'EDIT_CONTACT_FORM.CLOSE_BUTTON' | translate }} </button>
 
 								<button type="button"
-								class="btn me-1 btn-primary"
+								class="btn btn-primary"
 								(click)="submitForm()" [disabled]="!contactForm.valid">{{ 'EDIT_CONTACT_FORM.SUBMIT_BUTTON' | translate }}
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
@@ -130,18 +134,18 @@
 							<!-- <button (click)="csvReader.click()" class="btn upload btn-primary">Choose File</button> -->
 
 							<div class="uploader-container">
-								<div class="row">
-								    <div class="col-8 text-start">
-								        <h6>Choose File</h6>
-								        <span>We accept: <span class="text-document">CSV File Only</span></span>
-								    </div>
-
-								    <div class="col-4">
-								        <button type="button" class="btn btn-uploader"
-								        [disabled]="document"
-								        (click)="csvReader.click()">Browse Files</button>
-								    </div>
+								<div class="uploader-icon" aria-hidden="true">
+									<i class="bi bi-cloud-arrow-up-fill"></i>
 								</div>
+								<div class="uploader-text">
+									<h6>Choose a file to upload</h6>
+									<span>We accept: <span class="text-document">CSV file only</span></span>
+								</div>
+								<button type="button" class="btn btn-uploader"
+								[disabled]="document"
+								(click)="csvReader.click()">
+									<i class="bi bi-folder2-open me-1" aria-hidden="true"></i>Browse files
+								</button>
 							</div>
 
 							<div class="upload mt-2">
@@ -197,7 +201,7 @@
 									</div>
 								</form>
 
-								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading || !importContactForm.valid">Upload
+								<button class="btn btn-primary gh-contact-upload-btn" *ngIf="document" (click)="uploadFile()" [disabled]="isLoading || !importContactForm.valid">Upload
 									<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>

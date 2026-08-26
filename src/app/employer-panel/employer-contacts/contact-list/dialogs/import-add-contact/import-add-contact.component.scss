@@ -12,20 +12,82 @@
   }
 }
 
+// ─── Persistent dialog header (title + close button) ───────────────────────
+.gh-contact-dialog-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    background: #fff;
+    border-bottom: 1px solid #EDEDED;
+}
+
+.gh-contact-dialog-title{
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #03011A;
+}
+
+.gh-contact-dialog-close{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: #F4F4F4;
+    color: #5A5A5A;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+
+    &:hover{ background: #ECECEC; color: #23232B; }
+    &:focus-visible{ outline: 2px solid #FF7062; outline-offset: 2px; }
+}
+
 .uploader-container{
     background: #FFFFFF;
     border: 1.29231px dashed #5E5E5E;
     border-radius: 9.69231px;
-    padding: 30px;
-    max-height: 145px;
+    padding: 24px 20px;
+    // Formal, centered "dropzone" composition: icon → helper copy → action,
+    // instead of a cramped 2-column row that squeezed the button on mobile.
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+
+    .uploader-icon{
+        font-size: 28px;
+        color: #FF7062;
+        line-height: 1;
+    }
+
+    .uploader-text{
+        h6{
+            margin: 0 0 2px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #23232B;
+        }
+        span{
+            font-size: 12px;
+            color: #757575;
+        }
+    }
 
     .btn-uploader{
-        padding: 8px 15px !important;
+        padding: 8px 18px !important;
         background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
         box-shadow: 0px 8.4px 29.7231px rgba(255, 112, 98, 0.45) !important;
         border-radius: 6.46154px !important;
-        font-size: 14px !important;
-        margin-left: 10px;
+        font-size: 13px !important;
         color: white !important;
     }
 
@@ -324,4 +386,110 @@
 	color: white !important;
 	border-radius: 5px !important;
 	margin-top: 6px;
+}
+
+// ─── New Contact form action row (Close / Submit) ───────────────────────────
+.gh-contact-form-actions{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+// ─── Mobile (down to Mobile S / 320px): compact, formal, edge-safe layout ───
+// Preserves the same theme colors/gradients everywhere -- only sizing,
+// spacing, and button placement are adjusted for small screens.
+@media (max-width: 575px){
+	.employee-container{
+		// A little breathing room so the dialog's content never sits flush
+		// against the viewport edges.
+		padding: 4px;
+	}
+
+	.gh-contact-dialog-header{
+		padding: 12px 14px;
+	}
+
+	.gh-contact-dialog-title{
+		font-size: 14px;
+	}
+
+	.btn-add{
+		padding: 12px 10px !important;
+		font-size: 12px;
+	}
+
+	.share-container{
+		padding: 14px;
+
+		.title-add{
+			font-size: 15px;
+			line-height: 20px;
+		}
+
+		.title-description{
+			font-size: 11.5px;
+			line-height: 16px;
+		}
+
+		label{
+			font-size: 12px !important;
+		}
+
+		.form-control, .form-select{
+			font-size: 12.5px;
+			min-height: 40px;
+		}
+
+		.employee-email{
+			font-size: 12px;
+		}
+	}
+
+	// Action buttons: full-width and stacked instead of two fixed 145px
+	// buttons that could overflow a 320px viewport side by side.
+	.gh-contact-form-actions{
+		flex-direction: column-reverse;
+		align-items: stretch;
+
+		.btn{
+			width: 100%;
+			min-width: 0;
+			margin: 0 !important;
+			font-size: 12px !important;
+			padding: 10px 16px !important;
+		}
+	}
+
+	.uploader-container{
+		padding: 18px 14px;
+
+		.uploader-icon{ font-size: 24px; }
+
+		.uploader-text{
+			h6{ font-size: 12.5px; }
+			span{ font-size: 11px; }
+		}
+
+		.btn-uploader{
+			font-size: 12px !important;
+			padding: 8px 16px !important;
+			width: 100%;
+			margin-left: 0;
+		}
+	}
+
+	.preview-file{
+		.title-preview, .document-uploaded{
+			font-size: 12.5px;
+		}
+	}
+
+	// Upload button (Import Contact tab) -- full width to match the rest of
+	// the mobile action buttons rather than a fixed inline size.
+	.gh-contact-upload-btn{
+		width: 100%;
+		font-size: 12px !important;
+	}
 }
