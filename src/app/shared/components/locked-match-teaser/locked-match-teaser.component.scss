@@ -119,3 +119,129 @@
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+// ── Wide-screen only: restructure job-card's match-area (icon + title,
+// Create free profile, Log in) into a deliberately composed mini-panel
+// instead of a single cramped row. Scoped strictly to .variant-card
+// (the only variant job-card ever uses) and to >= 769px so the existing
+// mobile layout above/below is completely untouched.
+@media (min-width: 769px){
+  .locked-match-teaser.variant-card {
+    // Grid (not flex) so icon+title can share a row while actions get
+    // their own full-width row below, with no DOM/HTML changes needed --
+    // just re-flowing the same 3 existing elements into named areas.
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon body"
+      "actions actions";
+    align-items: center;
+    column-gap: 0.6rem;
+    row-gap: 0.65rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.9rem;
+    background: linear-gradient(135deg, rgba(255, 112, 98, 0.07) 0%, rgba(108, 107, 173, 0.07) 100%);
+    border: 1px solid rgba(255, 112, 98, 0.16);
+    position: relative;
+    overflow: hidden;
+
+    // A quiet top accent strip -- the same "engineered depth" gradient
+    // used elsewhere, tying this into the rest of the brand rather than
+    // introducing a new color.
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, #FF7062 0%, #6C6BAD 100%);
+    }
+
+    .locked-match-teaser__icon {
+      grid-area: icon;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, rgba(255, 112, 98, 0.16) 0%, rgba(108, 107, 173, 0.16) 100%);
+
+      svg { width: 17px; height: 17px; }
+    }
+
+    .locked-match-teaser__body {
+      grid-area: body;
+    }
+
+    .locked-match-teaser__title {
+      font-size: 0.85rem;
+      letter-spacing: -0.01em;
+    }
+
+    // Actions become their own full-width row beneath icon+title: a
+    // confident, primary gradient CTA with a quiet text link beside it,
+    // instead of two small buttons squeezed next to the copy.
+    .locked-match-teaser__actions {
+      grid-area: actions;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.6rem;
+      width: 100%;
+
+      .btn {
+        font-size: 0.76rem;
+        border-radius: 8px;
+      }
+
+      .btn-primary {
+        padding: 0.42rem 0.9rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+        border: none;
+        box-shadow: 0 4px 12px rgba(255, 61, 110, 0.22);
+      }
+
+      .btn-link {
+        padding: 0.42rem 0.2rem;
+        color: #6C6BAD;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover { text-decoration: underline; color: #4A49A3; }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px){
+  .locked-match-teaser{
+    &.variant-card{
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    &__actions {
+      gap: 3.3rem;
+    }
+  }
+
+  .locked-match-teaser__actions {
+    .btn-link {
+      color: #6C6BAD;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: color 0.2s ease, background-color 0.2s ease;
+
+      &:hover {
+        color: #4A49A3;
+        background-color: rgba(108, 107, 173, 0.1);
+        text-decoration: underline;
+      }
+
+      &:active {
+        color: #3A3880;
+        background-color: rgba(108, 107, 173, 0.2);
+      }
+    }
+  }
+}
