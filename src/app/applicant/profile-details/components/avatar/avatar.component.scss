@@ -1,20 +1,33 @@
 @import "src/assets/styles/colors";
 
+// NEOMORPHISM PASS 2 · desktop avatar: the outer .card already got the
+// soft-UI shadow treatment, but the avatar image itself still used a flat
+// drop-shadow + plain grey border -- didn't read as part of the same
+// language as app-applicant-details below it. Raised circular "emerging
+// from the surface" treatment: same base tone as the card, a light/dark
+// shadow pair instead of a directional drop-shadow, no more hard border.
+$np-av-base:  var(--gh-bg, #F6F7FB);
+$np-av-light: rgba(255, 255, 255, 0.85);
+$np-av-dark:  rgba(163, 177, 198, 0.5);
+$np-av-accent: var(--gh-coral, #FF675D);
+
 .avatar-main{
 	width: 108px !important;
 	min-width: 108px !important;
 	height: 108px !important;
-	
+	border-radius: 50%;
+	background: $np-av-base;
+	box-shadow: 6px 6px 14px $np-av-dark, -6px -6px 14px $np-av-light;
+	padding: 5px;
+
 	img{
-		filter: drop-shadow(0px 12px 27px rgba(63, 63, 63, 0.17));
 		border-radius: 50%;
 		object-fit: cover;
-		width: 108px;
-		height: 108px;
-		border: solid 2px #c9c9c9;
+		width: 100%;
+		height: 100%;
+		border: 2px solid var(--gh-white, #ffffff);
 		object-position: center;
-		border: 2.68116px solid #FFFFFF;
-		filter: drop-shadow(0px 6.43478px 14.4783px rgba(63, 63, 63, 0.17));
+		filter: none;
 	}
 }
 
@@ -41,7 +54,7 @@
 	line-height: 29px;
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 
-	color: #03011A;
+	color: var(--gh-text, #101828);
 }
 
 .title-job{
@@ -52,7 +65,7 @@
 	line-height: 14px;
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 
-	color: #666666;
+	color: var(--gh-text-secondary, #667085);
 }
 
 .btn-invite{
@@ -171,6 +184,125 @@
 // weights in index.html) rather than a second webfont for a
 // mobile-only theme.
 // ============================================================
+// NEOMORPHISM PASS 3 · DESKTOP-ONLY (min-width:768px), completely separate
+// from the max-width:767px "Digital Profile Card" block below (mutually
+// exclusive ranges -- zero interaction, mobile is provably untouched).
+// Mirrors that same "banner + docked avatar + centered identity" ARCHITECTURE
+// the mobile card already uses, per explicit request to make this card match
+// the structure of the other avatar card -- reskinned in soft-UI instead of
+// the mobile card's bold brand gradient: an inset (recessed) banner panel
+// the raised avatar docks into, name/role centered below it, and contact/
+// document rows converted from a plain table into neomorphic inset tiles.
+// ============================================================
+@media (min-width: 768px) {
+	.row {
+		position: relative;
+		padding-top: 150px;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 168px;
+			border-radius: 20px 20px 0 0;
+			background: $np-av-base;
+			box-shadow: inset 5px 5px 12px $np-av-dark, inset -5px -5px 12px $np-av-light;
+		}
+	}
+
+	.d-flex.mt-3 {
+		position: relative;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		margin-top: -114px !important;
+	}
+
+	.avatar-main {
+		width: 128px !important;
+		min-width: 128px !important;
+		height: 128px !important;
+		margin: 0 auto 14px !important;
+	}
+
+	.flex-wrap {
+		width: 100%;
+
+		.details {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		> .d-flex {
+			justify-content: center;
+		}
+	}
+
+	// "Contact Details" / "Documents" headings as a soft inset eyebrow pill
+	// instead of plain heavy text, matching the details page's micro-labels.
+	.title-contact {
+		display: inline-block;
+		padding: 6px 16px;
+		border-radius: 9999px;
+		box-shadow: inset 3px 3px 7px $np-av-dark, inset -3px -3px 7px $np-av-light;
+		font-size: 11px;
+		line-height: 16px;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		font-weight: 800;
+		color: var(--gh-text-muted, #98A2B3);
+		margin-bottom: 14px;
+	}
+
+	// Contact/document rows: from a flat <table> to stacked neomorphic
+	// tiles -- each row raised off the same base surface.
+	.contact-table,
+	.document-table {
+		display: block;
+		width: 100% !important;
+
+		tbody {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		tr {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			background: $np-av-base;
+			border-radius: 14px;
+			box-shadow: 4px 4px 10px $np-av-dark, -4px -4px 10px $np-av-light;
+			padding: 12px 16px;
+			height: auto !important;
+		}
+
+		td {
+			padding: 0 !important;
+			height: auto !important;
+		}
+	}
+
+	.title-details {
+		text-align: right !important;
+	}
+
+	.document-table {
+		td.title-label {
+			display: flex;
+			align-items: center;
+			flex: 0 0 auto;
+			width: auto !important;
+		}
+	}
+}
+
+// ============================================================
 @media (max-width: 767px) {
 	.card {
 		padding: 0 0 var(--gh-space-6, 24px) !important;
@@ -230,6 +362,11 @@
 		// detail that reads as "designed", not just a resized desktop avatar.
 		background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
 		padding: 3px;
+		// Explicit override: the desktop-only neomorphic pass above adds its
+		// own box-shadow to the base .avatar-main rule -- reset it here so
+		// it can never leak through onto the mobile "Digital Profile Card"
+		// gradient ring, which relies purely on its own img box-shadow below.
+		box-shadow: none;
 
 		img {
 			width: 100%;
