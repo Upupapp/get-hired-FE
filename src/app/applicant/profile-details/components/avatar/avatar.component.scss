@@ -148,25 +148,37 @@
 }
 
 // ============================================================
-// MOBILE-ONLY: Facebook-style profile header for the "Apply" flow
-// avatar/details card (jobs/details/:id -> Apply -> Step 1).
+// MOBILE-ONLY: "Digital Profile Card" theme for the shared jobseeker
+// avatar/contact-details header (app-applicant-avatar), used on both
+// the job-application flow (jobs/details/:id -> Apply -> Step 1) and
+// the applicant's own "My Profile" page (My Profile -> Public View).
 // Scoped entirely to max-width:767px so desktop's existing
-// avatar-left / details-table-right layout is untouched.
-// Keeps Manrope (already the app's brand face, already loaded at
-// 400/500/600/700 in index.html, and legible at small sizes) rather
-// than introducing a second webfont dependency for a mobile-only tweak.
+// avatar-left / details-table-right layout is completely untouched.
+//
+// SUPERSEDES an earlier mobile pass on this file that used 8-9px type
+// for name/title/contact rows -- correctly flagged as too small to be
+// usable. Every text size below sits in a genuinely comfortable mobile
+// reading range (13-18px for anything a user needs to actually read;
+// 10.5px only for an all-caps micro-label, never body copy).
+//
+// Keeps Manrope (already the app's brand face, loaded at 400-700
+// weights in index.html) rather than a second webfont for a
+// mobile-only theme.
 // ============================================================
 @media (max-width: 767px) {
 	.card {
-		padding: 0 0 var(--gh-space-4) !important;
-		border-radius: 16px;
+		padding: 0 0 var(--gh-space-6, 24px) !important;
+		border-radius: 20px;
 		overflow: hidden;
+		box-shadow: 0 12px 32px rgba(13, 16, 36, 0.10);
 	}
 
-	// Cover strip the avatar "docks" into, Facebook-profile-style.
+	// Bold gradient banner the avatar "docks" into -- brand coral-to-azure
+	// rather than a flat navy strip, for a more energetic, distinctly
+	// "GetHired" identity card feel instead of a generic social-profile copy.
 	.row {
 		position: relative;
-		padding-top: 64px;
+		padding-top: 72px;
 
 		&::before {
 			content: '';
@@ -174,8 +186,20 @@
 			top: 0;
 			left: 0;
 			right: 0;
-			height: 72px;
-			background: var(--gh-grad-navy, linear-gradient(135deg, #0D1024 0%, #211A3D 55%, #311A35 100%));
+			height: 84px;
+			background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
+		}
+
+		&::after {
+			// Subtle diagonal sheen for depth without extra weight/animation.
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 84px;
+			background: linear-gradient(115deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 45%);
+			pointer-events: none;
 		}
 	}
 
@@ -185,22 +209,27 @@
 		align-items: center;
 		text-align: center;
 		width: 100%;
-		padding: 0 var(--gh-space-5);
-		margin-top: -40px !important;
+		padding: 0 var(--gh-space-5, 20px);
+		margin-top: -44px !important;
 	}
 
 	.avatar-main {
-		width: 76px !important;
-		min-width: 76px !important;
-		height: 76px !important;
-		margin: 0 0 var(--gh-space-3) !important;
+		width: 88px !important;
+		min-width: 88px !important;
+		height: 88px !important;
+		margin: 0 0 var(--gh-space-3, 12px) !important;
 		z-index: 1;
+		border-radius: 50%;
+		// Gradient ring behind the white-bordered photo -- a small signature
+		// detail that reads as "designed", not just a resized desktop avatar.
+		background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
+		padding: 3px;
 
 		img {
-			width: 76px;
-			height: 76px;
+			width: 100%;
+			height: 100%;
 			border: 3px solid var(--gh-white, #FFFFFF);
-			box-shadow: 0 4px 12px rgba(13, 16, 36, 0.18);
+			box-shadow: 0 6px 16px rgba(13, 16, 36, 0.22);
 		}
 	}
 
@@ -215,47 +244,145 @@
 
 		> .d-flex {
 			justify-content: center;
+			margin: var(--gh-space-2, 8px) 0 var(--gh-space-1, 4px);
 		}
 	}
 
 	.title-main {
-		font-size: 9px;
-		line-height: 13px;
+		font-size: 18px;
+		line-height: 24px;
 		font-weight: 700;
-		letter-spacing: 0.01em;
+		letter-spacing: -0.01em;
 	}
 
+	// Job title reads as a small role badge/pill rather than plain grey
+	// caption text -- distinct visual identity, still fully legible.
 	.title-job {
-		font-size: 8px;
-		line-height: 12px;
-		margin-top: 2px;
+		display: inline-block;
+		font-size: 12px;
+		line-height: 16px;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: var(--gh-coral, #FF675D);
+		background: var(--gh-coral-soft, #FFF0EE);
+		border-radius: 9999px;
+		padding: 4px 12px;
+		margin-top: 6px;
 	}
 
 	.mt-2 {
-		font-size: 8px;
-		line-height: 12px;
+		font-size: 13px;
+		line-height: 18px;
+		font-weight: 600;
 		color: var(--gh-text-secondary, #667085);
 	}
 
+	// "Contact Details" section eyebrow -- compact uppercase micro-label
+	// (the one deliberately small size on this page) instead of a large
+	// heading competing with the card header above it.
 	.title-contact {
-		font-size: 9px;
+		font-size: 10.5px;
 		line-height: 14px;
-		padding: 0 var(--gh-space-4);
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--gh-text-muted, #98A2B3);
+		padding: 0 var(--gh-space-5, 20px);
+		margin: var(--gh-space-2, 8px) 0 var(--gh-space-3, 12px) !important;
+		display: block;
 	}
 
-	.title-label,
-	.title-details {
-		font-size: 8px;
-		line-height: 13px;
-	}
-
+	// Contact/document rows: convert the <table> into a stacked list of
+	// "info tile" cards (label above value, not side-by-side columns that
+	// forced tiny text to fit) -- the actual structural upgrade behind the
+	// readability fix, not just a font-size bump.
 	.contact-table,
 	.document-table {
-		padding: 0 var(--gh-space-4);
+		display: block;
+		padding: 0 var(--gh-space-5, 20px);
+		width: 100% !important;
+
+		tbody {
+			display: flex;
+			flex-direction: column;
+			gap: var(--gh-space-2, 8px);
+		}
+
+		tr {
+			display: flex;
+			flex-direction: column;
+			background: var(--gh-bg, #F6F7FB);
+			border-left: 3px solid var(--gh-coral, #FF675D);
+			border-radius: 10px;
+			padding: 10px 14px;
+		}
 
 		td {
+			display: block;
+			width: 100% !important;
 			height: auto !important;
-			padding: var(--gh-space-2) 0;
+			padding: 0 !important;
+			text-align: left !important;
+		}
+	}
+
+	.title-label {
+		font-size: 10.5px;
+		line-height: 14px;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--gh-text-muted, #98A2B3);
+		margin-bottom: 2px;
+	}
+
+	.title-details {
+		font-size: 14px;
+		line-height: 20px;
+		font-weight: 600;
+		color: var(--gh-text, #101828);
+		word-break: break-word;
+	}
+
+	// Document rows reuse the same tile treatment but stay a single-line
+	// filename row with the download affordance visible, not stacked --
+	// distinct from contact tiles since a filename + action is one unit,
+	// not a label/value pair.
+	.document-table {
+		tr {
+			flex-direction: row;
+			align-items: center;
+			border-left-color: var(--gh-azure, #168BFF);
+		}
+
+		// This table also gives its filename cell the .title-label class
+		// (reused from the contact table's markup), which would otherwise
+		// inherit the 10.5px uppercase micro-label styling meant for a
+		// field label like "Email Address" -- wrong here, since the
+		// filename IS the row's primary readable content, not a caption.
+		.title-label {
+			width: auto !important;
+			margin-bottom: 0;
+			flex: 0 0 auto;
+			text-transform: none;
+			letter-spacing: normal;
+			font-weight: 600;
+			font-size: 14px;
+			color: var(--gh-text, #101828);
+			cursor: pointer;
+		}
+
+		// The leading icon cell specifically (inline width:30px from the
+		// template) -- no text at all, just sizes/spaces the icon.
+		.title-label[style*="width: 30px"] {
+			padding-right: 10px;
+			font-size: 0;
+		}
+
+		.download {
+			margin-left: auto;
+			flex: 0 0 auto;
 		}
 	}
 }
