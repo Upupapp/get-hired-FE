@@ -195,17 +195,38 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   planCarouselActiveSlide = 0;
   planCarouselSlideCount = 1;
+  /** Edge affordance visibility -- the fade/gradient hints are only shown
+   *  where there's genuinely more content in that direction, never as a
+   *  static decoration that implies clipping when there's nothing to
+   *  scroll to. */
+  planCarouselCanScrollPrev = false;
+  planCarouselCanScrollNext = false;
+
   private planCarouselTimer: any;
   private planCarouselResumeTimer: any;
   private planCarouselPaused = false;
-  private planCarouselResizeHandler = () => this.recomputePlanCarouselSlides();
+  private planCarouselResizeObserver?: ResizeObserver;
+  private planCarouselResizeDebounce: any;
 
   ngAfterViewInit(): void {
-    // Let layout settle (card widths via clamp()) before measuring.
-    setTimeout(() => this.recomputePlanCarouselSlides(), 0);
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', this.planCarouselResizeHandler);
+    // Let layout settle (card widths via clamp()) before the first measure.
+    setTimeout(() => this.updatePagination(), 0);
+
+    // PRODUCTION HARDENING: a plain window:resize listener only fires on
+    // actual viewport resize -- it misses font-load reflow, a sidebar/drawer
+    // toggling elsewhere on the page, browser zoom, or the track's own
+    // content changing width for any other reason. ResizeObserver watches
+    // the track element itself, so any of those cases recalculate
+    // geometry too. Single resize-handling mechanism (no window listener
+    // running alongside it), debounced so a drag-resize doesn't thrash.
+    if (typeof ResizeObserver !== 'undefined' && this.planCarouselTrack?.nativeElement) {
+      this.planCarouselResizeObserver = new ResizeObserver(() => {
+        clearTimeout(this.planCarouselResizeDebounce);
+        this.planCarouselResizeDebounce = setTimeout(() => this.updatePagination(/* fromResize */ true), 120);
+      });
+      this.planCarouselResizeObserver.observe(this.planCarouselTrack.nativeElement);
     }
+
     this.startPlanCarouselAutoScroll();
   }
 
@@ -221,22 +242,48 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     }, 2000);
   }
 
-  /** Recomputes how many real "pages" the track has, based on its actual
-   *  rendered width vs. its scrollable content width -- true slide count,
-   *  not card count. */
-  recomputePlanCarouselSlides(): void {
+  /** CAROUSEL calculation hub: the viewport (track) determines slide
+   *  geometry, slide geometry determines pagination -- cards never drive
+   *  this math directly. Recomputes slide count from actual scroll
+   *  geometry (not plan/card count), re-clamps + instantly re-snaps the
+   *  active slide so a resize can never leave the track resting between
+   *  two pages, and refreshes edge-affordance/arrow state. Call this any
+   *  time the track's available geometry may have changed (init, resize).
+   */
+  private updatePagination(fromResize: boolean = false): void {
     const track = this.planCarouselTrack?.nativeElement;
     if (!track || track.clientWidth === 0) { return; }
-    this.planCarouselSlideCount = Math.max(1, Math.round(track.scrollWidth / track.clientWidth));
-    this.planCarouselActiveSlide = Math.min(this.planCarouselActiveSlide, this.planCarouselSlideCount - 1);
+
+    this.planCarouselSlideCount = this.calculateSlideCount(track);
+    const clamped = Math.min(this.planCarouselActiveSlide, this.planCarouselSlideCount - 1);
+    this.planCarouselActiveSlide = Math.max(0, clamped);
+
+    if (fromResize) {
+      // Instant, not smooth -- a resize must never produce a visible
+      // "jump" animation, it just re-anchors to where the layout already
+      // put the content.
+      track.scrollTo({ left: this.planCarouselActiveSlide * track.clientWidth, behavior: 'auto' });
+    }
+
+    this.syncScrollBoundaryState(track);
+  }
+
+  /** Number of distinct viewport-sized positions the track can rest at --
+   *  the true page count, independent of how many cards happen to fit per
+   *  page at the current width. */
+  private calculateSlideCount(track: HTMLElement): number {
+    return Math.max(1, Math.round(track.scrollWidth / track.clientWidth));
   }
 
   advancePlanCarousel(): void {
     const nextSlide = (this.planCarouselActiveSlide + 1) % this.planCarouselSlideCount;
-    this.scrollPlanCarouselToSlide(nextSlide);
+    this.scrollToSlide(nextSlide);
   }
 
-  scrollPlanCarouselToSlide(slide: number): void {
+  /** Moves the track to the given logical page (smooth). Cards occupy
+   *  stable positions within each page; this never targets an individual
+   *  card. */
+  scrollToSlide(slide: number): void {
     const track = this.planCarouselTrack?.nativeElement;
     if (!track) { return; }
     this.planCarouselActiveSlide = slide;
@@ -246,7 +293,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   /** Manual dot/arrow click: jump to that page and pause auto-advance briefly
    *  so the carousel doesn't yank focus away right after someone picks one. */
   goToPlanSlide(slide: number): void {
-    this.scrollPlanCarouselToSlide(slide);
+    this.scrollToSlide(slide);
     this.planCarouselPaused = true;
     clearTimeout(this.planCarouselResumeTimer);
     this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 5000);
@@ -261,15 +308,26 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 3000);
   }
 
-  /** Keeps the active dot in sync when the Employer manually swipes/drags the track. */
-  onPlanCarouselScroll(): void {
+  /** Keeps the active dot + edge affordances in sync when the Employer
+   *  manually swipes/drags/scrolls the track (mouse or touch). */
+  syncActiveSlide(): void {
     const track = this.planCarouselTrack?.nativeElement;
     if (!track || track.clientWidth === 0) { return; }
     this.planCarouselActiveSlide = Math.round(track.scrollLeft / track.clientWidth);
+    this.syncScrollBoundaryState(track);
+  }
+
+  /** Whether there's genuinely more content to the left/right of the
+   *  current scroll position -- drives both the edge-fade visibility and
+   *  could gate arrow affordance. A 1px tolerance absorbs sub-pixel
+   *  scroll-position rounding across browsers. */
+  private syncScrollBoundaryState(track: HTMLElement): void {
+    this.planCarouselCanScrollPrev = track.scrollLeft > 1;
+    this.planCarouselCanScrollNext = track.scrollLeft < track.scrollWidth - track.clientWidth - 1;
   }
 
   /** Array of the real slide count, purely for the dots *ngFor -- see
-   *  recomputePlanCarouselSlides(); intentionally NOT plan-count-based. */
+   *  updatePagination()/calculateSlideCount(); intentionally NOT plan-count-based. */
   get planCarouselSlides(): number[] {
     return Array.from({ length: this.planCarouselSlideCount }, (_, i) => i);
   }
@@ -538,9 +596,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     this.destroy$.complete();
     clearInterval(this.planCarouselTimer);
     clearTimeout(this.planCarouselResumeTimer);
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this.planCarouselResizeHandler);
-    }
+    clearTimeout(this.planCarouselResizeDebounce);
+    this.planCarouselResizeObserver?.disconnect();
   }
 
   // ── Subtab navigation ───────────────────────────────────────────────────────

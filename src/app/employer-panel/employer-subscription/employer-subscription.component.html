@@ -354,7 +354,9 @@
       <h2 class="gh-sub-section__title">Available plans</h2>
       <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow.</p>
 
-      <div class="gh-plan-carousel">
+      <div class="gh-plan-carousel"
+        [class.gh-plan-carousel--can-scroll-prev]="planCarouselCanScrollPrev"
+        [class.gh-plan-carousel--can-scroll-next]="planCarouselCanScrollNext">
         <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
           (click)="goToPlanSlide((planCarouselActiveSlide - 1 + planCarouselSlideCount) % planCarouselSlideCount)"
@@ -363,10 +365,12 @@
         </button>
 
         <div class="gh-plan-grid" #planCarouselTrack
-          role="region" aria-label="Plan carousel, auto-advancing every 2 seconds"
+          role="region" aria-roledescription="carousel" aria-label="Available plans, auto-advancing every 2 seconds"
+          tabindex="0"
           (mouseenter)="onPlanCarouselInteractionStart()" (mouseleave)="onPlanCarouselInteractionEnd()"
           (touchstart)="onPlanCarouselInteractionStart()" (touchend)="onPlanCarouselInteractionEnd()"
-          (scroll)="onPlanCarouselScroll()">
+          (focusin)="onPlanCarouselInteractionStart()" (focusout)="onPlanCarouselInteractionEnd()"
+          (scroll)="syncActiveSlide()">
         <div class="gh-plan-card"
           *ngFor="let plan of getEffectivePlanConfigs()"
           [ngClass]="{

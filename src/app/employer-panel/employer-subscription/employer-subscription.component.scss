@@ -512,27 +512,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-
-  // Soft edge fade so the track visually implies "more content this way"
-  // instead of cards just cutting off abruptly.
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 8px;
-    width: 40px;
-    z-index: 2;
-    pointer-events: none;
-  }
-  &::before {
-    left: 0;
-    background: linear-gradient(90deg, var(--gh-bg, #fff) 0%, transparent 100%);
-  }
-  &::after {
-    right: 0;
-    background: linear-gradient(270deg, var(--gh-bg, #fff) 0%, transparent 100%);
-  }
 }
 
 .gh-plan-carousel__arrow {
@@ -598,6 +577,11 @@
 }
 
 .gh-plan-grid {
+  position: relative; // anchors the edge-fade pseudo-elements below to the
+                       // track's OWN edges, not the outer .gh-plan-carousel
+                       // (which also spans the arrow buttons -- anchoring
+                       // there previously hid the fade behind the arrows
+                       // instead of over the actual clipped card content).
   flex: 1 1 auto;
   display: flex;
   gap: 20px;
@@ -611,6 +595,48 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar { display: none; }
+
+  // Keyboard accessibility: tabindex="0" (template) makes the track itself
+  // focusable so arrow-key native scrolling works for keyboard users --
+  // give that a clearly visible, on-brand focus ring instead of relying on
+  // the browser default.
+  &:focus-visible {
+    outline: 2px solid #FF7062;
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  // Soft edge fade hinting "more content this way" -- restrained (a short,
+  // low-contrast gradient, not a heavy shadow) and only shown on the side
+  // that genuinely has more to scroll to (.gh-plan-carousel--can-scroll-prev
+  // / --next, toggled from actual scroll position in component.ts). At
+  // rest with everything visible, or at either true end of the track,
+  // neither fade renders -- it never implies content is being clipped
+  // when there isn't any.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 14px;
+    width: 28px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    @include motion-safe;
+  }
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--gh-bg, #fff) 0%, transparent 100%);
+  }
+  &::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--gh-bg, #fff) 0%, transparent 100%);
+  }
+
+  .gh-plan-carousel--can-scroll-prev &::before { opacity: 1; }
+  .gh-plan-carousel--can-scroll-next &::after { opacity: 1; }
 }
 
 .gh-plan-card {
