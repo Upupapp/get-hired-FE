@@ -11,7 +11,24 @@
 
   <div class="cv-builder-panel" role="tabpanel">
     <ng-container *ngIf="activeTab === 'overview'">
-      <div class="cv-builder-empty">
+      <!-- AUDIT FIX: previously showed the empty "no CV yet" prompt
+           unconditionally, even after a successful upload -- now reflects
+           the real current-CV state from GET /cv-builder/current. -->
+      <div class="cv-builder-current" *ngIf="!loadingCurrentCv && currentCv">
+        <h2>Your current CV</h2>
+        <div class="cv-builder-current-card">
+          <span class="cv-builder-current-icon" aria-hidden="true">&#128196;</span>
+          <div class="cv-builder-current-info">
+            <p class="cv-builder-current-filename">{{ currentCv.filename }}</p>
+            <p class="cv-builder-current-meta">Uploaded {{ currentCv.created_at | date:'mediumDate' }}</p>
+          </div>
+          <a [href]="currentCv.fileurl" target="_blank" rel="noopener" class="btn-link-cta">View</a>
+        </div>
+        <p>CV Health, missing signals, and target-job readiness aren't available yet -- see the other tabs above.</p>
+        <button type="button" class="btn-cv-primary" (click)="startUpload()">Replace CV</button>
+      </div>
+
+      <div class="cv-builder-empty" *ngIf="!loadingCurrentCv && !currentCv">
         <h2>Start with your CV</h2>
         <p>Upload a PDF or DOCX CV to see your CV Health, missing signals, and target-job readiness.</p>
         <button type="button" class="btn-cv-primary" (click)="startUpload()">Upload CV</button>
@@ -22,11 +39,26 @@
     <ng-container *ngIf="activeTab === 'upload'">
       <div class="cv-builder-upload">
         <p class="cv-builder-privacy-note">Your CV stays private. Employers cannot see your CV Health or private recommendations.</p>
+
+        <!-- AUDIT FIX: same current-CV visibility gap as Overview -- show
+             what's already on file before prompting for another upload. -->
+        <div class="cv-builder-current-card" *ngIf="!loadingCurrentCv && currentCv">
+          <span class="cv-builder-current-icon" aria-hidden="true">&#128196;</span>
+          <div class="cv-builder-current-info">
+            <p class="cv-builder-current-filename">{{ currentCv.filename }}</p>
+            <p class="cv-builder-current-meta">Uploaded {{ currentCv.created_at | date:'mediumDate' }} &middot; currently in use</p>
+          </div>
+        </div>
+
         <label class="cv-builder-dropzone">
           <input type="file" accept=".pdf,.docx" (change)="onFileSelected($event)" [disabled]="uploading" />
-          <span *ngIf="!uploading">Choose a PDF or DOCX file</span>
+          <span *ngIf="!uploading">{{ currentCv ? 'Choose a replacement PDF or DOCX file' : 'Choose a PDF or DOCX file' }}</span>
           <span *ngIf="uploading">Uploading…</span>
         </label>
+        <!-- AUDIT FIX: no size/format guidance was shown anywhere before
+             this -- the only real limits (PDF/DOCX, max 5MB) were only
+             discoverable by triggering a rejection. -->
+        <p class="cv-builder-hint">PDF or DOCX &middot; Max 5 MB</p>
 
         <div class="cv-builder-result" *ngIf="uploadResult" [class.error]="!uploadResult.success" role="status">
           <p>{{ uploadResult.message }}</p>
