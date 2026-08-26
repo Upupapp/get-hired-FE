@@ -209,7 +209,7 @@ $np-av-accent: var(--gh-coral, #FF675D);
 		display: grid;
 		grid-template-columns: 35% 65%;
 		column-gap: 28px;
-		row-gap: 0;
+		row-gap: 18px;
 	}
 
 	.np-identity-col {
@@ -221,11 +221,18 @@ $np-av-accent: var(--gh-coral, #FF675D);
 		border-right: none;
 	}
 
+	// BUGFIX: Contact Details/Documents kept their Bootstrap utility margins
+	// (mb-3/mt-3/mt-4, ~40px combined) from the old 3-column layout -- the
+	// grid's own row-gap above is now what controls spacing between them, so
+	// those margins only added an unwanted extra gap pushing Documents too
+	// far from the bottom of Contact Details. Reset to 0 here.
 	.np-details-col {
 		grid-column: 2;
 		max-width: none;
 		width: auto;
 		padding: 0;
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
 	}
 
 	// This div only exists to preserve a 3-column Bootstrap grid's alignment
