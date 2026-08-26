@@ -1257,6 +1257,22 @@
   box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.85);
 }
 
+// MOBILE FIX: .gh-jc-mobile-bar (the fixed Back/Next/Publish step-nav bar,
+// appears at this same max-width:640px breakpoint) sits at z-index:1000 and
+// occupies roughly the bottom ~64px of the viewport. The FAB's default
+// `bottom: max(24px, safe-area)` put it squarely inside that zone with a
+// HIGHER z-index (1240) -- it was floating on top of, and blocking taps on,
+// the Next/Publish button exactly where users need to tap next. Lifted the
+// FAB to clear the mobile bar entirely instead of overlapping it, matching
+// the same clearance already tuned for the floating panel's own <=575px
+// rule above (bottom: max(84px, ...)), so the FAB and panel-when-closed
+// sit at a consistent elevation just above the nav bar.
+@media (max-width: 640px) {
+  .gh-jc-intelligence-fab {
+    bottom: max(80px, calc(env(safe-area-inset-bottom) + 80px));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gh-jc-intelligence-fab::after,
   .gh-jc-intelligence-fab--pulse::before {
