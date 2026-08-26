@@ -146,3 +146,116 @@
 		}
 	}
 }
+
+// ============================================================
+// MOBILE-ONLY: Facebook-style profile header for the "Apply" flow
+// avatar/details card (jobs/details/:id -> Apply -> Step 1).
+// Scoped entirely to max-width:767px so desktop's existing
+// avatar-left / details-table-right layout is untouched.
+// Keeps Manrope (already the app's brand face, already loaded at
+// 400/500/600/700 in index.html, and legible at small sizes) rather
+// than introducing a second webfont dependency for a mobile-only tweak.
+// ============================================================
+@media (max-width: 767px) {
+	.card {
+		padding: 0 0 var(--gh-space-4) !important;
+		border-radius: 16px;
+		overflow: hidden;
+	}
+
+	// Cover strip the avatar "docks" into, Facebook-profile-style.
+	.row {
+		position: relative;
+		padding-top: 64px;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 72px;
+			background: var(--gh-grad-navy, linear-gradient(135deg, #0D1024 0%, #211A3D 55%, #311A35 100%));
+		}
+	}
+
+	.d-flex.mt-3 {
+		position: relative;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		width: 100%;
+		padding: 0 var(--gh-space-5);
+		margin-top: -40px !important;
+	}
+
+	.avatar-main {
+		width: 76px !important;
+		min-width: 76px !important;
+		height: 76px !important;
+		margin: 0 0 var(--gh-space-3) !important;
+		z-index: 1;
+
+		img {
+			width: 76px;
+			height: 76px;
+			border: 3px solid var(--gh-white, #FFFFFF);
+			box-shadow: 0 4px 12px rgba(13, 16, 36, 0.18);
+		}
+	}
+
+	.flex-wrap {
+		width: 100%;
+
+		.details {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		> .d-flex {
+			justify-content: center;
+		}
+	}
+
+	.title-main {
+		font-size: 9px;
+		line-height: 13px;
+		font-weight: 700;
+		letter-spacing: 0.01em;
+	}
+
+	.title-job {
+		font-size: 8px;
+		line-height: 12px;
+		margin-top: 2px;
+	}
+
+	.mt-2 {
+		font-size: 8px;
+		line-height: 12px;
+		color: var(--gh-text-secondary, #667085);
+	}
+
+	.title-contact {
+		font-size: 9px;
+		line-height: 14px;
+		padding: 0 var(--gh-space-4);
+	}
+
+	.title-label,
+	.title-details {
+		font-size: 8px;
+		line-height: 13px;
+	}
+
+	.contact-table,
+	.document-table {
+		padding: 0 var(--gh-space-4);
+
+		td {
+			height: auto !important;
+			padding: var(--gh-space-2) 0;
+		}
+	}
+}
