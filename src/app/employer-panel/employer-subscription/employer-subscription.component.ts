@@ -177,17 +177,35 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   // ── Available Plans carousel ────────────────────────────────────────────────
-  // Presentational-only: auto-advances the plan cards every 2s, pauses on
-  // hover/touch/manual interaction, and never touches plan data, CTA
-  // handlers, or current-plan/recommended detection below.
+  // Presentational-only: auto-advances one PAGE every 2s (not one card --
+  // see below), pauses on hover/touch/manual interaction, and never touches
+  // plan data, CTA handlers, or current-plan/recommended detection below.
+  //
+  // AUDIT FIX: the original version indexed by individual card and used
+  // getBoundingClientRect-style math to find "the closest card" on scroll,
+  // with one dot per card -- on wide screens where 2-3 cards are visible at
+  // once, that produced more dots than there were real places to stop, and
+  // dot-click / scroll-sync could disagree with where the track actually
+  // landed. Rewritten to page-based scrolling: a "slide" is exactly one
+  // viewport-width of the track, so slideCount = ceil(scrollWidth /
+  // clientWidth) always matches the number of distinct positions the
+  // track can actually rest at -- one dot per real stopping point, on any
+  // screen size, at any card width, recalculated on resize.
   @ViewChild('planCarouselTrack') planCarouselTrack?: ElementRef<HTMLElement>;
 
-  planCarouselIndex = 0;
+  planCarouselActiveSlide = 0;
+  planCarouselSlideCount = 1;
   private planCarouselTimer: any;
   private planCarouselResumeTimer: any;
   private planCarouselPaused = false;
+  private planCarouselResizeHandler = () => this.recomputePlanCarouselSlides();
 
   ngAfterViewInit(): void {
+    // Let layout settle (card widths via clamp()) before measuring.
+    setTimeout(() => this.recomputePlanCarouselSlides(), 0);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.planCarouselResizeHandler);
+    }
     this.startPlanCarouselAutoScroll();
   }
 
@@ -203,32 +221,32 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     }, 2000);
   }
 
-  private getPlanCarouselCards(): HTMLElement[] {
+  /** Recomputes how many real "pages" the track has, based on its actual
+   *  rendered width vs. its scrollable content width -- true slide count,
+   *  not card count. */
+  recomputePlanCarouselSlides(): void {
     const track = this.planCarouselTrack?.nativeElement;
-    return track ? (Array.from(track.children) as HTMLElement[]) : [];
+    if (!track || track.clientWidth === 0) { return; }
+    this.planCarouselSlideCount = Math.max(1, Math.round(track.scrollWidth / track.clientWidth));
+    this.planCarouselActiveSlide = Math.min(this.planCarouselActiveSlide, this.planCarouselSlideCount - 1);
   }
 
   advancePlanCarousel(): void {
-    const cards = this.getPlanCarouselCards();
-    if (cards.length === 0) { return; }
-    this.planCarouselIndex = (this.planCarouselIndex + 1) % cards.length;
-    this.scrollPlanCarouselToIndex(this.planCarouselIndex);
+    const nextSlide = (this.planCarouselActiveSlide + 1) % this.planCarouselSlideCount;
+    this.scrollPlanCarouselToSlide(nextSlide);
   }
 
-  scrollPlanCarouselToIndex(index: number): void {
+  scrollPlanCarouselToSlide(slide: number): void {
     const track = this.planCarouselTrack?.nativeElement;
-    const cards = this.getPlanCarouselCards();
-    const target = cards[index];
-    if (track && target) {
-      track.scrollTo({ left: target.offsetLeft - track.offsetLeft, behavior: 'smooth' });
-    }
+    if (!track) { return; }
+    this.planCarouselActiveSlide = slide;
+    track.scrollTo({ left: slide * track.clientWidth, behavior: 'smooth' });
   }
 
-  /** Manual dot click: jump to that plan and pause auto-advance briefly so the
-   *  carousel doesn't yank focus away right after someone picks a slide. */
-  goToPlanSlide(index: number): void {
-    this.planCarouselIndex = index;
-    this.scrollPlanCarouselToIndex(index);
+  /** Manual dot/arrow click: jump to that page and pause auto-advance briefly
+   *  so the carousel doesn't yank focus away right after someone picks one. */
+  goToPlanSlide(slide: number): void {
+    this.scrollPlanCarouselToSlide(slide);
     this.planCarouselPaused = true;
     clearTimeout(this.planCarouselResumeTimer);
     this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 5000);
@@ -246,15 +264,14 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   /** Keeps the active dot in sync when the Employer manually swipes/drags the track. */
   onPlanCarouselScroll(): void {
     const track = this.planCarouselTrack?.nativeElement;
-    const cards = this.getPlanCarouselCards();
-    if (!track || cards.length === 0) { return; }
-    let closest = 0;
-    let closestDist = Infinity;
-    cards.forEach((card, i) => {
-      const dist = Math.abs((card.offsetLeft - track.offsetLeft) - track.scrollLeft);
-      if (dist < closestDist) { closestDist = dist; closest = i; }
-    });
-    this.planCarouselIndex = closest;
+    if (!track || track.clientWidth === 0) { return; }
+    this.planCarouselActiveSlide = Math.round(track.scrollLeft / track.clientWidth);
+  }
+
+  /** Array of the real slide count, purely for the dots *ngFor -- see
+   *  recomputePlanCarouselSlides(); intentionally NOT plan-count-based. */
+  get planCarouselSlides(): number[] {
+    return Array.from({ length: this.planCarouselSlideCount }, (_, i) => i);
   }
 
   loadSummary(): void {
@@ -521,6 +538,9 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     this.destroy$.complete();
     clearInterval(this.planCarouselTimer);
     clearTimeout(this.planCarouselResumeTimer);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.planCarouselResizeHandler);
+    }
   }
 
   // ── Subtab navigation ───────────────────────────────────────────────────────

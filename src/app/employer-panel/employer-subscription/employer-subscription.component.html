@@ -357,7 +357,7 @@
       <div class="gh-plan-carousel">
         <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
-          (click)="goToPlanSlide((planCarouselIndex - 1 + getEffectivePlanConfigs().length) % getEffectivePlanConfigs().length)"
+          (click)="goToPlanSlide((planCarouselActiveSlide - 1 + planCarouselSlideCount) % planCarouselSlideCount)"
           aria-label="Previous plan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -427,20 +427,24 @@
         </div>
 
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--next"
-          (click)="goToPlanSlide((planCarouselIndex + 1) % getEffectivePlanConfigs().length)"
+          (click)="goToPlanSlide((planCarouselActiveSlide + 1) % planCarouselSlideCount)"
           aria-label="Next plan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
 
-      <!-- Pagination dots -->
+      <!-- Pagination dots: one per real scrollable PAGE (planCarouselSlides,
+           computed from actual track/viewport width), not one per plan card
+           -- on wide screens where several cards fit in one view, a
+           per-card dot count didn't match the number of places the
+           carousel could actually stop. -->
       <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan slide">
         <button type="button" class="gh-plan-carousel__dot"
-          *ngFor="let plan of getEffectivePlanConfigs(); let i = index"
-          [class.gh-plan-carousel__dot--active]="planCarouselIndex === i"
+          *ngFor="let slide of planCarouselSlides; let i = index"
+          [class.gh-plan-carousel__dot--active]="planCarouselActiveSlide === i"
           role="tab"
-          [attr.aria-selected]="planCarouselIndex === i"
-          [attr.aria-label]="'Go to ' + plan.name + ' plan'"
+          [attr.aria-selected]="planCarouselActiveSlide === i"
+          [attr.aria-label]="'Go to slide ' + (i + 1)"
           (click)="goToPlanSlide(i)">
         </button>
       </div>

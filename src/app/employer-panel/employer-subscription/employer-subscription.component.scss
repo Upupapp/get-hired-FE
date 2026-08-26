@@ -621,7 +621,15 @@
   padding: 28px 24px;
   border: 1.5px solid var(--gh-border, #E7EAF3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 200ms ease, transform 220ms ease;
+  // AUDIT FIX: transform (scale/translateY) doesn't change a flex item's
+  // layout box, only its painted position -- the recommended card's
+  // scale(1.035) and the hover translateY visually overlapped/misaligned
+  // it against its neighbors in the horizontally-packed track instead of
+  // making room for itself. Removed both; hover/emphasis is now
+  // box-shadow + border only, so every card keeps its exact place in the
+  // row at all times. Only `transition: box-shadow` remains, which is a
+  // calm ease of a static property, not a moving/animating effect.
+  transition: box-shadow 200ms ease;
   @include motion-safe;
 
   // Carousel sizing: a confident, "exaggerated" card width that shows a
@@ -632,20 +640,18 @@
 
   &:hover {
     box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12);
-    transform: translateY(-4px);
   }
 
   &--recommended {
     background: #0D1024;
     border-color: rgba(255, 103, 93, 0.5);
-    box-shadow: 0 0 0 3px rgba(255, 103, 93, 0.15), 0 8px 32px rgba(0, 0, 0, 0.2);
+    // Emphasis via a stronger glow/shadow only -- no scale, so it never
+    // overlaps the cards beside it.
+    box-shadow: 0 0 0 3px rgba(255, 103, 93, 0.22), 0 8px 32px rgba(0, 0, 0, 0.2);
     color: #fff;
-    // A little visual lift over its siblings so "Recommended" reads as the
-    // hero of the carousel, formally, without needing a bigger badge.
-    transform: scale(1.035);
 
     &:hover {
-      transform: scale(1.035) translateY(-4px);
+      box-shadow: 0 0 0 3px rgba(255, 103, 93, 0.3), 0 10px 36px rgba(0, 0, 0, 0.24);
     }
 
     .gh-plan-card__name    { color: #fff; }
@@ -1078,12 +1084,15 @@
     gap: 12px;
   }
 
-  // Mobile: one card fully in view with a deliberate peek of the next one
-  // (rather than 100% width, which would hide that this is a carousel at
-  // all) -- arrows step aside for the swipe gesture, which is more natural
-  // on touch.
+  // AUDIT FIX: mobile now shows exactly ONE card per view (not 84vw, which
+  // left a sliver of the next card peeking in and made "one at a time"
+  // feel ambiguous/cut-off) -- arrows step aside for the swipe gesture,
+  // which is more natural on touch, and the true page count (see
+  // planCarouselSlides in component.ts) now equals the number of cards
+  // exactly, so the dots line up perfectly with each swipe.
   .gh-plan-card {
-    flex-basis: 84vw;
+    flex: 0 0 100%;
+    width: 100%;
   }
 
   .gh-plan-carousel__arrow {
