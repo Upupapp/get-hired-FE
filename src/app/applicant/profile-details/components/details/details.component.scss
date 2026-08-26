@@ -154,35 +154,6 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 	.np-tag-dot { animation: none; }
 }
 
-// A soft rotating conic-gradient glow sitting just behind the inset video
-// frame -- the one deliberately "techy" flourish on the page, subtle and
-// blurred rather than a loud neon ring, and fully static for anyone who
-// prefers reduced motion.
-.np-video-glow {
-	position: relative;
-	border-radius: 16px;
-
-	&::before {
-		content: '';
-		position: absolute;
-		inset: -3px;
-		border-radius: 18px;
-		background: conic-gradient(from 0deg, $np-accent, var(--gh-azure, #168BFF), $np-accent);
-		opacity: 0.35;
-		filter: blur(10px);
-		z-index: 0;
-		animation: np-glow-spin 8s linear infinite;
-	}
-}
-
-@keyframes np-glow-spin {
-	to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.np-video-glow::before { animation: none; }
-}
-
 // Empty state: a clickable inset "lens" orb instead of a static placeholder
 // image, plus a real raised CTA button (was a plain text link).
 .np-video-empty {
@@ -452,22 +423,23 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 	max-width: 640px;
 }
 
-// ─── Wide screens: two-column sidebar + main read ──────────────────────────
+// ─── Wide screens: single full-width column throughout (Bio + Skills first,
+// Video Introduction last), constrained to a comfortable reading width and
+// centered rather than stretching edge-to-edge on very wide viewports ──────
 @media (min-width: 992px) {
+	.np-shell {
+		display: flex;
+		justify-content: center;
+	}
+
 	.np-grid {
-		flex-direction: row;
-		align-items: flex-start;
+		width: 100%;
+		max-width: 820px;
 		gap: 24px;
 	}
 
-	.np-col-side {
-		flex: 0 0 320px;
-		position: sticky;
-		top: 24px;
-	}
-
 	.np-col-main {
-		flex: 1 1 0%;
+		gap: 24px;
 	}
 }
 
@@ -549,11 +521,6 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 	.np-tag {
 		font-size: 10px;
 		padding: 4px 9px;
-	}
-
-	.np-video-glow::before {
-		opacity: 0.25;
-		filter: blur(7px);
 	}
 
 	.np-video-empty {
