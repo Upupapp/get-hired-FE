@@ -94,14 +94,20 @@
 // get visual uniformity.
 @media (min-width: 768px) {
   .recommended-jobs-list {
-    grid-template-columns: repeat(auto-fill, 300px);
-    justify-content: start;
+    grid-template-columns: repeat(auto-fill, 328px);
+    // Was justify-content:start (left-aligned, leaving the row's leftover
+    // space stranded on the right whenever the cards don't fill an exact
+    // multiple of the track width). Centered instead so the row of cards
+    // reads as a deliberately centered group -- still listed strictly
+    // left-to-right within that centered block, just not pinned to the
+    // container's left edge.
+    justify-content: center;
     align-items: stretch;
     gap: var(--gh-space-5, 20px);
   }
 
   .recommended-job-item {
-    width: 300px;
+    width: 328px;
     min-height: 420px;
     display: flex;
     flex-direction: column;
