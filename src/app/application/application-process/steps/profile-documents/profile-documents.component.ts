@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroupDirective } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
+import { CvBuilderService } from '@app-applicant/cv-builder/cv-builder.service';
 
 @Component({
   selector: 'app-profile-documents',
@@ -11,13 +12,49 @@ import { mainAnimations } from '@app-shared/animations/main-animations';
 export class ProfileDocumentsComponent implements OnInit {
   @Input() formGroupName: string;
 
+  // Pre-fills the Resume field's visible chip list from the applicant's
+  // already-uploaded CV, if one exists -- passed to app-file-upload-document
+  // via [fileArray] so it shows without requiring the user to add anything.
+  resumeFileArray: any[] = [];
+
   constructor(
     private rootFormGroup: FormGroupDirective,
     private fb: FormBuilder,
+    private cvBuilderService: CvBuilderService,
   ) { }
 
   ngOnInit(): void {
+    // Resume pre-fill: if the applicant already has a CV on file from
+    // profile setup (GET /cv-builder/current, the is_cv=true row), use it
+    // as the Resume attachment for this application by default instead of
+    // leaving the field empty and forcing a redundant re-upload. If none
+    // exists, the field stays genuinely empty and requires an upload, as
+    // it already did.
+    this.cvBuilderService.getCurrentCv().subscribe({
+      next: (res: any) => {
+        const cv = res?.data;
+        if (!cv) return;
 
+        const resumeDoc = {
+          // No `file` (no new blob to upload) -- fileurl alone tells the
+          // backend to reuse the existing storage object rather than
+          // uploading a duplicate copy of the same file.
+          file: null,
+          filename: cv.filename,
+          size: cv.size,
+          type: cv.type,
+          fileurl: cv.fileurl,
+          created_at: cv.created_at,
+        };
+        this.resumeFileArray = [resumeDoc];
+        this.mappedOutToControl([resumeDoc], this.docResume);
+      },
+      error: () => {
+        // Non-fatal: leave the Resume field empty, same as an applicant
+        // with no CV on file -- this is a convenience pre-fill, not a
+        // required step.
+      },
+    });
   }
 
   get docGovFile() {

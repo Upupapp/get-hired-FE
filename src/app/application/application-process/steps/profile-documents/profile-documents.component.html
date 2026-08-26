@@ -5,7 +5,9 @@
   </div>
 
   <div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
-    <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.RESUME_UPLOAD_BOX' | translate }}" (upload)="getResume($event)">
+    <!-- Pre-filled from the applicant's already-uploaded CV (profile setup),
+         if one exists -- see ProfileDocumentsComponent.ngOnInit(). -->
+    <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.RESUME_UPLOAD_BOX' | translate }}" [fileArray]="resumeFileArray" (upload)="getResume($event)">
     </app-file-upload-document>
   </div>
 
