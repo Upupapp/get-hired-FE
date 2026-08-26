@@ -1114,6 +1114,20 @@ tr:last-child{
       flex: 1 1 100%;
       min-width: 0;
     }
+
+    // Uniform, compact mobile type scale for everything inside this
+    // section (search/filter controls, empty-state copy, pagination info)
+    // -- most of these desktop rules run 13-20px, which reads oversized
+    // once the layout is this compact on a small screen.
+    font-size: 12px;
+  }
+
+  // .img-info (the "List of X is currently empty" empty-state message) had
+  // its own much larger h4 (20px desktop) that the section-level font-size
+  // above doesn't reach since it's a more specific selector -- pin it to
+  // 12px explicitly, as requested.
+  .img-info h4 {
+    font-size: 12px !important;
   }
 }
 
