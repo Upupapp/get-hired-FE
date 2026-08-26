@@ -32,6 +32,21 @@ export class SkillsExperienceComponent implements OnInit {
   success$ = this.applicantFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this))
 
+  // BUGFIX: this component never subscribed to error$ at all, unlike its
+  // sibling steps (e.g. docs-videocv.component.ts). A failed skills save
+  // showed no error feedback whatsoever, and -- because addSkills()/
+  // removeItem() mutate this.professionalSkills optimistically BEFORE the
+  // save even completes -- the UI kept showing the attempted change as if
+  // it had succeeded, with nothing to tell the user or revert it. This is
+  // the second half of "doesn't actually save the skills I've set": the
+  // save could fail silently while the screen still looked correct.
+  error$ = this.applicantFacade.error$
+    .pipe().subscribe(this.onError.bind(this))
+
+  // Snapshot of the last known-persisted skill list, used to roll back
+  // this.professionalSkills if a save fails.
+  private lastSavedSkills: string[] = [];
+
   forChange = [];
   skillsFG: FormGroup
   professionalSkills: string[];
@@ -235,13 +250,34 @@ export class SkillsExperienceComponent implements OnInit {
     }
   }
 
+  /**
+   * BUGFIX: on a failed skills save, revert the optimistically-mutated
+   * professionalSkills back to the last known-persisted list (the store's
+   * additionalInfo was never touched by the Fail action, so it still holds
+   * that same value -- this just makes the visible UI match it again) and
+   * re-enable Apply Change so the user can retry. Without this, a failed
+   * save left the just-added/removed skill showing on screen as if it had
+   * been saved, with nothing to indicate otherwise.
+   */
+  onError(err: any) {
+    if (!err) return;
+    this.professionalSkills = [...this.lastSavedSkills];
+    this.skillChanged = false;
+    const message = typeof err === 'string' && err.trim()
+      ? err
+      : 'We couldn\'t save your changes. Please try again.';
+    this.snackbarService.error(message, '', 5000);
+  }
+
   fillUpArrays(data) {
     console.log(data);
     if (data) {
       if (data.professionalSkills) {
         this.professionalSkills = [...data.professionalSkills]
+        this.lastSavedSkills = [...data.professionalSkills];
       } else {
         this.professionalSkills = [];
+        this.lastSavedSkills = [];
       }
 
       if (data.workExperience) {
@@ -277,7 +313,13 @@ export class SkillsExperienceComponent implements OnInit {
         }
       });
     } else {
-      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+      // BUGFIX: this held the loading dialog open for a flat extra 3
+      // seconds after the save had already finished (success or fail),
+      // with no functional purpose -- close as soon as loading is
+      // actually false. Combined with the saveProfessionalSkillsFail
+      // reducer fix (loading now correctly resets on failure too), Apply
+      // Change now closes immediately once the request actually completes.
+      this.loadingDialog.closeAll();
     }
   }
 
@@ -290,6 +332,10 @@ export class SkillsExperienceComponent implements OnInit {
 
     if (this.skillsAndExperience$) {
       this.skillsAndExperience$.unsubscribe();
+    }
+
+    if (this.error$) {
+      this.error$.unsubscribe();
     }
 
     if (this.loading$) {

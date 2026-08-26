@@ -201,8 +201,15 @@ export const applicantReducer = createReducer<ApplicantState>(
     };
   }),
   on(ApplicantActions.saveProfessionalSkillsFail, (state, action): ApplicantState => {
+    // BUGFIX: this case never reset loading back to false (unlike its own
+    // Success sibling right above it), so a failed save left `loading`
+    // stuck true forever -- the loading dialog (which only closes when
+    // loading transitions to false) never closed, which is exactly what
+    // reads as "the loading is so long": on any failure it wasn't slow,
+    // it was permanently stuck.
     return {
       ...state,
+      loading: false,
       error: action.payload,
       succesMsg: null,
     };
