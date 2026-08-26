@@ -85,4 +85,26 @@
   .aad-page {
     padding: 16px;
   }
+
+  // APP-01 MOBILE READABILITY PASS: bump the back-link and job title to a
+  // more comfortable phone reading scale, and give the back button a real
+  // tap target — desktop rule above is unaffected.
+  .aad-back {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  .aad-job-title {
+    font-size: 19px;
+    line-height: 26px;
+  }
+
+  .aad-company {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .aad-section-title {
+    font-size: 15px;
+  }
 }

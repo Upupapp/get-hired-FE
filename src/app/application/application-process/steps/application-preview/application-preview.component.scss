@@ -302,3 +302,67 @@
 		}
 	}
 }
+
+// APP-01 MOBILE REDESIGN: tighten cards, improve document row alignment
+// and legibility, and give the answered-interview rows a comfortable touch
+// target. Desktop rules above (outside this query) are untouched.
+@media (max-width: 576px) {
+	.card {
+		padding: 16px !important;
+	}
+
+	#profile-document .card {
+		padding: 16px !important;
+	}
+
+	#profile-document .title-main {
+		font-size: 15px;
+		line-height: 22px;
+	}
+
+	// Document rows: force icon + filename onto one comfortable flex row
+	// instead of the desktop's col-md-* grid, which collapses to stacked
+	// full-width blocks with an oversized icon on narrow screens.
+	#profile-document .row.w-100 {
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		gap: 10px;
+		margin-bottom: 10px;
+
+		img {
+			width: 28px !important;
+			flex: 0 0 auto;
+		}
+
+		.col-12 {
+			padding: 0;
+			font-size: 13px;
+			line-height: 18px;
+			word-break: break-word;
+		}
+	}
+
+	#interview-list2 {
+		padding: 12px !important;
+
+		.logo-thumbnail {
+			height: 44px;
+			width: 44px;
+			min-width: 44px;
+			border-radius: 10px;
+
+			img { height: 20px; }
+		}
+
+		.title-label {
+			font-size: 15px;
+			line-height: 20px;
+		}
+
+		.title-label-sub {
+			font-size: 13px;
+			line-height: 18px;
+		}
+	}
+}

@@ -165,3 +165,31 @@
 		}
 	}
 }
+
+// APP-01 MOBILE REDESIGN: the shell card uses a desktop-oriented asymmetric
+// padding (20/30/20/40) that eats readable width on a phone, plus a
+// min-height:100vh that can cause an odd extra scroll jump on short steps.
+// Tighten the surface, restore symmetric breathing room, and make the
+// sticky submit bar a real full-width comfortable tap target. Desktop rule
+// above (outside this query) is unchanged.
+@media (max-width: 576px) {
+	.card {
+		padding: 16px !important;
+		min-height: 0;
+		border-radius: var(--gh-radius-card, 14px);
+	}
+
+	.container-evaluate {
+		padding: 12px 16px;
+		padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+		background: rgba(255, 255, 255, 0.94);
+		backdrop-filter: blur(6px);
+		box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.08);
+	}
+
+	.text-end.mt-4 .btn-save {
+		width: 100%;
+		min-height: 48px;
+		font-size: 15px;
+	}
+}

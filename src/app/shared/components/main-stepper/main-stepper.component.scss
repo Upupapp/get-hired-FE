@@ -90,3 +90,58 @@
 	font-size: 11px !important;
 }
 
+// APP-01 MOBILE REDESIGN: the desktop stepper relies on fixed 180px-wide
+// buttons with a decorative triangle "arrow" connector — on narrow screens
+// that overflows badly and the arrow visually breaks. Below 576px we turn
+// the row into a compact, horizontally scrollable chip rail: smaller pills,
+// no triangle connector, snap-scrolling so the active step is easy to
+// bring into view. Desktop layout above is completely untouched.
+@media (max-width: 576px) {
+	div.d-flex {
+		overflow-x: auto;
+		flex-wrap: nowrap;
+		-webkit-overflow-scrolling: touch;
+		scroll-snap-type: x proximity;
+		gap: 8px;
+		padding-bottom: 6px;
+		margin: 0 calc(-1 * var(--gh-space-4, 16px));
+		padding-left: var(--gh-space-4, 16px);
+		padding-right: var(--gh-space-4, 16px);
+
+		// Hide scrollbar chrome while keeping it scrollable/accessible
+		scrollbar-width: thin;
+	}
+
+	.btn-stepper-active,
+	.btn-stepper-active-2,
+	.btn-stepper-next {
+		min-width: 128px !important;
+		flex: 0 0 auto;
+		scroll-snap-align: start;
+		padding: 10px 14px;
+		font-size: 13px;
+		line-height: 16px;
+		border-radius: var(--gh-radius-pill, 999px) !important;
+		white-space: nowrap;
+	}
+
+	// Kill the decorative triangle connector — reads as a rendering glitch
+	// at chip scale and there's no adjacent chip edge for it to point into.
+	.btn-stepper-active:after {
+		display: none;
+	}
+
+	.badge-step {
+		height: 22px;
+		width: 22px;
+		min-width: 22px;
+		font-size: 13px;
+		line-height: 22px;
+		margin-right: 6px;
+	}
+
+	.title-step {
+		font-size: 10px !important;
+	}
+}
+

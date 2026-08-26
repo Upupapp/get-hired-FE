@@ -34,3 +34,27 @@
 		color: #989898;
 	}
 }
+
+// APP-01 MOBILE REDESIGN: stack upload cards with comfortable readable
+// spacing instead of the desktop's large mb-5 gaps that were tuned for a
+// wide multi-column layout that never actually appears here (col-12 all
+// the way). Desktop is untouched — only the max-width query below changes.
+@media (max-width: 576px) {
+	.card {
+		padding: 16px !important;
+	}
+
+	.row > .col-12 {
+		margin-bottom: 16px !important;
+	}
+
+	.title-main {
+		font-size: 16px;
+		line-height: 24px;
+
+		span {
+			font-size: 13px;
+			line-height: 19px;
+		}
+	}
+}

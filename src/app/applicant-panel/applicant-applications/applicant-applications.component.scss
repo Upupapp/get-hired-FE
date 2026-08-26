@@ -169,10 +169,58 @@
 
   .application-row-header {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .application-row-badge {
     align-self: flex-start;
+  }
+
+  // APP-01 MOBILE READABILITY PASS: the desktop values here (15px title,
+  // 13px meta) get cramped on a phone once the row also has to carry the
+  // status chip and completeness toggle stacked underneath it. Bump the
+  // reading scale and rhythm so title/company/status are easy to scan at
+  // a glance, and give every tappable control a comfortable target.
+  .application-row {
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .application-row-info {
+    h3 {
+      font-size: 16px;
+      line-height: 22px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 20px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .gh-ap-status-chip {
+    font-size: 12.5px;
+    padding: 4px 12px;
+  }
+
+  .app-completeness-toggle {
+    min-height: 32px;
+  }
+
+  .app-row-actions {
+    margin-top: 12px;
+
+    .btn-link-cta {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      font-size: 14px;
+    }
+  }
+
+  .app-detail-link {
+    font-size: 13px;
+    padding-top: 12px;
   }
 }
