@@ -10,10 +10,11 @@
 >
   <div class="job-card__banner">
     <img
-      *ngIf="normalized?.companyLogo; else bannerFallback"
+      *ngIf="normalized?.companyLogo && !logoFailed; else bannerFallback"
       [src]="normalized.companyLogo"
       [alt]="normalized.companyName + ' logo'"
       class="job-card__logo"
+      (error)="logoFailed = true"
     />
     <ng-template #bannerFallback>
       <div class="job-card__logo job-card__logo--fallback" aria-hidden="true">

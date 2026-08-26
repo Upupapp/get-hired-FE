@@ -334,6 +334,15 @@ body {
     outline: 2px solid rgba(255, 112, 98, 0.72);
     outline-offset: 3px;
   }
+
+  // JB-A11Y-01: .btn-primary previously only drew its outline ring on
+  // :hover, so keyboard focus (Tab) produced no visible indicator at all
+  // on every "Apply now" / primary CTA button (WCAG 2.4.7). Mirrors the
+  // :focus-visible treatment already used elsewhere in this file.
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 3px;
+  }
 }
 
 .btn-outline-primary {
@@ -571,7 +580,7 @@ label {
     width: 100% !important;
     max-width: 100vw !important;
     margin: 0 !important;
-    padding: 16px !important;
+    padding: 6px !important;
     height: auto !important;
     max-height: 90vh !important;
     overflow-y: auto !important;
@@ -1034,7 +1043,7 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
 
   app-google-signin-button {
     width: 100%;
-    display: block;
+    display: contents;
   }
 
   // MV6-F3: LinkedIn button must also fill the row width on narrow viewports.
@@ -1042,7 +1051,7 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   // container and can appear narrower than the Google button on 320px screens.
   app-linkedin-button {
     width: 100%;
-    display: block;
+    display: contents;
   }
 
   // Ensure GIS iframe button fills the row width

@@ -44,6 +44,9 @@ export class JobCardComponent implements OnInit {
   isRecruiterOrAdminRole = false;
   /** Entry-animation param — zeroed out for prefers-reduced-motion users. */
   animationDelayMs = 0;
+  /** Set when the company logo URL 404s/fails to load, so the template
+   * falls back to the initial-letter avatar instead of a broken-image icon. */
+  logoFailed = false;
 
   constructor(
     private router: Router,

@@ -231,6 +231,15 @@
       padding: 6px 12px;
       border-radius: 4px;
       transition: color 0.2s ease, background-color 0.2s ease;
+      // JCA-03: "Log in" was rendering at ~26px tall on mobile (no
+      // min-height, unlike .btn-primary which gets 44px globally), 18px
+      // short of the WCAG 2.5.5 44px touch-target minimum. min-height +
+      // inline-flex centering brings it in line with its sibling button
+      // without changing the visible padding/typography.
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
 
       &:hover {
         color: #4A49A3;

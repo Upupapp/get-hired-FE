@@ -11,6 +11,7 @@ import * as Model from '../companies.model';
 })
 export class CompanyCardComponent implements OnInit {
   @Input() company: Model.BasicInfo | Model.Company;
+  logoFailed = false;
 
   constructor(
     private router: Router

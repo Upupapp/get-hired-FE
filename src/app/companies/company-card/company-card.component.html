@@ -2,7 +2,14 @@
    [queryParams]="company.slug ? {} : {id: company.companyId}"
    class="card card-body company-card-anchor"
    [attr.aria-label]="company.companyName + ' company profile'">
-  <img [src]="company.companyLogo" class="img img-fluid company-image">
+  <img *ngIf="company.companyLogo && !logoFailed"
+       [src]="company.companyLogo"
+       [alt]="(company?.companyName || 'Company') + ' logo'"
+       class="img img-fluid company-image"
+       (error)="logoFailed = true">
+  <div *ngIf="!company.companyLogo || logoFailed" class="company-image company-image--fallback" aria-hidden="true">
+    {{ (company?.companyName || '?').charAt(0) }}
+  </div>
 
   <div class="d-flex flex-column align-items-evenly text-center h-100">
     <h5 class="title-company text-capitalize mt-3">{{company?.companyName}}</h5>
