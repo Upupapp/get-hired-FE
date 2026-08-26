@@ -1,275 +1,379 @@
 @import "src/assets/styles/colors";
 
-.card{
-	background: #fff;  
-	border: none;
+// ─── NEOMORPHISM PASS · 2026-08-27 ─────────────────────────────────────────
+// "My Profile" read-only details body. Genuine soft-UI: every surface sits on
+// the SAME base tone as its parent (--gh-bg) and gets its depth purely from a
+// light/dark shadow pair — never a border, never a flat drop shadow. Restraint
+// on colour: near-monochrome base, coral (--gh-coral, matches the avatar
+// header above this component) used only for the small icon glyphs, the
+// active/hover link, timeline dots, and entry badges.
+//
+// Layout: content is restructured (not just reskinned) into a sidebar +
+// main two-column read on wide screens — Bio & Skills form a "quick glance"
+// identity rail, while Services/Experience/Education/Awards form the main
+// reading column. On narrow screens (<992px) both columns collapse to a
+// single stacked column in natural document order.
+
+$np-base:        var(--gh-bg, #F6F7FB);
+$np-light:       rgba(255, 255, 255, 0.85);
+$np-dark:        rgba(163, 177, 198, 0.45);
+$np-dark-strong: rgba(163, 177, 198, 0.65);
+$np-text:        var(--gh-text, #101828);
+$np-text-sec:    var(--gh-text-secondary, #667085);
+$np-text-muted:  var(--gh-text-muted, #98A2B3);
+$np-accent:      var(--gh-coral, #FF675D);
+$np-accent-soft: var(--gh-coral-soft, #FFF0EE);
+
+@mixin np-raised($radius: 20px) {
+	background: $np-base;
+	border-radius: $radius;
+	box-shadow: 8px 8px 18px $np-dark, -8px -8px 18px $np-light;
 }
 
-.video-cv-link{
-	&:hover{
-		text-decoration: underline;
-		cursor: pointer;
+@mixin np-inset($radius: 12px) {
+	background: $np-base;
+	border-radius: $radius;
+	box-shadow: inset 4px 4px 9px $np-dark-strong, inset -4px -4px 9px $np-light;
+}
+
+.np-shell {
+	background: $np-base;
+	border-radius: 24px;
+	padding: clamp(16px, 3vw, 32px);
+}
+
+.np-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.np-col {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	min-width: 0;
+}
+
+// ─── Card ───────────────────────────────────────────────────────────────────
+.np-card {
+	@include np-raised();
+	padding: 22px 24px;
+
+	&.np-card-video {
+		.np-video-frame {
+			@include np-inset(14px);
+			padding: 6px;
+
+			video {
+				border-radius: 10px !important;
+				background: #1b1d29 !important;
+				display: block;
+			}
+		}
+
+		.np-video-placeholder {
+			position: relative;
+			@include np-inset(14px);
+			overflow: hidden;
+
+			img:not(.np-play-button) {
+				display: block;
+				border-radius: 14px;
+			}
+		}
+
+		.np-play-button {
+			height: 54px;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			cursor: pointer;
+			filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+		}
 	}
 }
 
-
-.edit-details{
-	&:hover{
-		text-decoration: underline;
-	}
-}
-
-.btn-save-later{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 27px;
-	background: #FFFFFF;
-	border: 1px solid #B0B0B0;
-	border-radius: 10px;
-	color: #A8A8A8;
-	padding: 7px 25px;
-}
-
-.btn-invite{
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	border-radius: 10px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 27px;
-	/* identical to box height */
-
-	text-align: center;
-
-	color: #FFFFFF;
-	padding: 7px 25px;
-}
-
-
-.title-main{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 600;
-	font-size: 21px;
-	line-height: 29px;
-	/* identical to box height, or 162% */
-
+.np-heading {
 	display: flex;
 	align-items: center;
-	margin-bottom: 5px;
-
-	color: $color-global-sidebar-employer-user-menu;
-}
-
-
-.title-description{
-
+	gap: 10px;
 	font-family: 'Manrope';
 	font-style: normal;
-	font-weight: 400;
-	font-size: 18px;
-	line-height: 25px;
-	/* or 133% */
-
-
-	color: #6D6D6D;
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 22px;
+	letter-spacing: 0.01em;
+	text-transform: uppercase;
+	color: $np-text;
+	margin-bottom: 14px;
 }
 
-.title-details{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 18px;
-	margin-bottom: 5px;
-	color: #585757;
-}
-
-.title-duration{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 24px;
-	/* identical to box height, or 171% */
-
-	display: flex;
+.np-heading-icon {
+	display: inline-flex;
 	align-items: center;
-
-	color: #9E9E9E;
-}
-
-.title-job-type{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 12px;
-	line-height: 12px;
-
-	color: #585757;
-	background: #CBDDFF;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
 	border-radius: 9px;
-	padding: 5px 15px;
-}
-
-.title-experience{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 500;
-	font-size: 18px;
-	line-height: 20px;
-	/* identical to box height, or 120% */
-
-
-	color: #6F6F6F;
-}
-
-.title-other{
-	margin-right: 10px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
 	font-size: 14px;
+	flex: 0 0 auto;
+	@include np-inset(9px);
+	color: $np-accent;
+}
+
+.np-bio-text {
+	font-family: 'Manrope';
+	font-weight: 400;
+	font-size: 15px;
 	line-height: 24px;
-	margin-bottom: 0;;
-	color: #9E9E9E;
+	color: $np-text-sec;
+	margin: 0;
+	white-space: pre-line;
 }
 
-.skills{
-	display: flex;
-  flex-wrap: wrap;
-}
-
-.title-skills{
-	background: #F3F2F1;
-	border-radius: 5px;
+.np-empty-hint {
 	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
 	font-size: 14px;
+	line-height: 20px;
+	color: $np-text-sec;
+	margin-bottom: 12px;
+}
+
+.np-link {
+	color: $np-accent;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+// ─── Skills chips ───────────────────────────────────────────────────────────
+.np-skills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.np-chip {
+	@include np-inset(10px);
+	font-family: 'Manrope';
+	font-weight: 600;
+	font-size: 13px;
 	line-height: 18px;
-	/* identical to box height */
-	padding: 5px 10px;
-	//max-width: 130px;
-	color: #6A6A6A;
-	cursor: pointer;
-	margin-top: 5px;
+	padding: 7px 14px;
+	color: $np-text-sec;
+	cursor: default;
+	transition: color 0.15s ease;
+
+	&:hover {
+		color: $np-accent;
+	}
 }
 
-.play-button{
-	height: 60px;
-	position: absolute;
-	margin-left: auto;
-	margin-right: auto;
-	top: 40%;
-	left: 45%;
-	cursor: pointer;
+// ─── Timeline entries (experience / education / awards) ───────────────────
+.np-timeline {
+	display: flex;
+	flex-direction: column;
 }
 
-// PORTFOLIO-01 MOBILE REDESIGN: read this step as a professional profile
-// portfolio rather than a plain form dump — restrained section headings,
-// clear dividers, a calmer spacing rhythm. Desktop rules above (outside
-// this query) are unchanged; breakpoint matches the app-wide 576px
-// convention used elsewhere in the Apply flow (application-process.component.scss).
+.np-entry {
+	display: flex;
+	gap: 16px;
+	padding-bottom: 22px;
+	margin-bottom: 22px;
+	position: relative;
+
+	&:not(.np-entry-last)::before {
+		content: "";
+		position: absolute;
+		left: 9px;
+		top: 22px;
+		bottom: -4px;
+		width: 2px;
+		background: $np-dark;
+		border-radius: 2px;
+	}
+
+	&.np-entry-last {
+		padding-bottom: 0;
+		margin-bottom: 0;
+	}
+}
+
+.np-entry-dot {
+	flex: 0 0 auto;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	margin-top: 2px;
+	position: relative;
+	z-index: 1;
+
+	&::after {
+		content: "";
+		position: absolute;
+		inset: 6px;
+		border-radius: 50%;
+		background: $np-accent;
+	}
+}
+
+.np-entry-body {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.np-entry-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 6px;
+}
+
+.np-entry-title {
+	font-family: 'Manrope';
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 22px;
+	color: $np-text;
+	margin: 0;
+}
+
+.np-badge {
+	@include np-inset(9999px);
+	font-family: 'Manrope';
+	font-weight: 600;
+	font-size: 11px;
+	line-height: 16px;
+	letter-spacing: 0.02em;
+	padding: 4px 12px;
+	color: $np-accent;
+}
+
+.np-entry-meta {
+	display: flex;
+	flex-wrap: wrap;
+	row-gap: 4px;
+	column-gap: 16px;
+	margin-bottom: 8px;
+}
+
+.np-meta-item {
+	display: inline-flex;
+	align-items: center;
+	font-family: 'Manrope';
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 20px;
+	color: $np-text-sec;
+}
+
+.np-meta-icon {
+	height: 13px;
+	margin-right: 6px;
+	opacity: 0.65;
+}
+
+.np-meta-date {
+	color: $np-text-muted;
+}
+
+.np-entry-details {
+	font-family: 'Manrope';
+	font-weight: 400;
+	font-size: 13.5px;
+	line-height: 21px;
+	color: $np-text-sec;
+	margin: 0;
+	max-width: 640px;
+}
+
+// ─── Wide screens: two-column sidebar + main read ──────────────────────────
+@media (min-width: 992px) {
+	.np-grid {
+		flex-direction: row;
+		align-items: flex-start;
+		gap: 24px;
+	}
+
+	.np-col-side {
+		flex: 0 0 320px;
+		position: sticky;
+		top: 24px;
+	}
+
+	.np-col-main {
+		flex: 1 1 0%;
+	}
+}
+
+// ─── Narrow phones: tighten padding/type, keep the same soft-UI language ──
 @media (max-width: 576px) {
-	.card.card-body {
-		padding: 18px 16px !important;
+	.np-shell {
+		border-radius: 20px;
+		padding: 14px;
 	}
 
-	// Section headings: was 21px/600 on desktop — far too heavy for a phone
-	// column. Bring it down to a restrained, label-like heading with a
-	// small accent rule and a bottom divider so each section reads like a
-	// portfolio/resume block instead of a form field caption.
-	.title-main {
+	.np-grid,
+	.np-col {
+		gap: 14px;
+	}
+
+	.np-card {
+		padding: 16px 16px;
+		border-radius: 16px;
+	}
+
+	.np-heading {
+		font-size: 13px;
+		margin-bottom: 12px;
+	}
+
+	.np-heading-icon {
+		width: 26px;
+		height: 26px;
+		font-size: 12px;
+	}
+
+	.np-bio-text {
 		font-size: 14px;
-		line-height: 18px;
-		font-weight: 700;
-		letter-spacing: 0.02em;
-		text-transform: uppercase;
-		color: var(--gh-navy, #0D1024);
-		padding-bottom: 8px;
-		margin-top: 28px;
-		margin-bottom: 12px !important;
-		border-bottom: 1px solid var(--gh-border, #E7EAF3);
-
-		&::before {
-			content: "";
-			display: inline-block;
-			width: 3px;
-			height: 13px;
-			border-radius: 2px;
-			margin-right: 8px;
-			background: var(--gh-coral, #FF675D);
-		}
-	}
-
-	// First section heading shouldn't carry the extra top gap meant to
-	// separate sections from one another.
-	.row:first-child > .col-12 > .title-main {
-		margin-top: 4px;
-	}
-
-	.title-description {
-		font-size: 14.5px;
-		line-height: 22px;
-	}
-
-	.title-experience {
-		font-size: 15.5px;
 		line-height: 21px;
-		font-weight: 600;
-		color: #333;
 	}
 
-	.title-duration {
-		font-size: 12.5px;
+	.np-entry-title {
+		font-size: 14.5px;
 	}
 
-	.title-job-type {
-		font-size: 11px;
-		padding: 4px 10px;
+	.np-entry-details {
+		font-size: 13px;
+		line-height: 19px;
 	}
 
-	.title-other {
-		font-size: 12.5px;
-		margin-right: 6px;
+	.np-meta-item {
+		font-size: 12px;
 	}
 
-	.title-details {
-		font-size: 13.5px;
-		line-height: 20px;
-		width: 100% !important;
+	.np-entry {
+		gap: 12px;
+		padding-bottom: 18px;
+		margin-bottom: 18px;
 	}
 
-	.title-skills {
-		font-size: 12.5px;
-		padding: 6px 12px;
-		border-radius: 8px;
-		background: var(--gh-bg, #F6F7FB);
-		border: 1px solid var(--gh-border, #E7EAF3);
-		color: var(--gh-text-secondary, #667085);
-	}
+	.np-entry-dot {
+		width: 16px;
+		height: 16px;
 
-	// Work experience entries: give each item breathing room and a subtle
-	// card-like separation instead of relying only on the thin <hr>.
-	hr[style*="border-color"] {
-		margin-top: 20px !important;
-		margin-bottom: 16px !important;
-		border-color: var(--gh-border, #E7EAF3) !important;
-	}
-
-	// Experience header wraps float-end date/type block onto its own line
-	// cleanly on narrow screens instead of squeezing beside the title.
-	.title-experience {
-		display: block;
-
-		.float-end {
-			float: none !important;
-			text-align: left !important;
-			margin-top: 6px;
+		&::after {
+			inset: 5px;
 		}
+	}
+
+	.np-entry:not(.np-entry-last)::before {
+		left: 7px;
 	}
 }

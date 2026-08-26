@@ -18,11 +18,17 @@
 	}
 }
 
+// NEOMORPHISM PASS · 2026-08-27: desktop-only reskin to match the soft-UI
+// language now used in app-applicant-details below it -- same base tone
+// (--gh-bg) with a light/dark shadow pair instead of a flat drop shadow, so
+// the two stacked components read as one coherent surface language. The
+// max-width:767px "Digital Profile Card" block further down is untouched on
+// purpose (its own responsive architecture + fixed bugs stay as-is).
 .card{
-	background: #FFFFFF;
-	border: 1px solid #F5F5F5;
-	box-shadow: 0px 6px 15px rgba(128, 128, 128, 0.1);
-	border-radius: 8px;
+	background: var(--gh-bg, #F6F7FB);
+	border: none;
+	box-shadow: 8px 8px 18px rgba(163, 177, 198, 0.45), -8px -8px 18px rgba(255, 255, 255, 0.85);
+	border-radius: 20px;
 	padding: 10px 30px 10px 40px !important;
 }
 

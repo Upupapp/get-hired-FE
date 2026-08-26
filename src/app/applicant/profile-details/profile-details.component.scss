@@ -42,11 +42,15 @@
 }
 
 
+// NEOMORPHISM PASS · 2026-08-27: the child components (avatar header, details
+// body) now paint their own soft-UI surface/shadow. This outer wrapper is
+// left transparent so it doesn't nest a second flat white box around them.
 .card{
-	background: #FFFFFF;
-	box-shadow: 0px 6px 15px rgba(128, 128, 128, 0.1);
-	border-radius: 8px;
-	border: none
+	background: transparent;
+	box-shadow: none;
+	border-radius: 0;
+	border: none;
+	padding: 0 !important;
 }
 
 .edit-details{
