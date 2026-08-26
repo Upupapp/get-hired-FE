@@ -54,6 +54,21 @@
   font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
 
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.title-banner-name {
+  overflow-wrap: anywhere;
+}
+
+.title-banner-edit-icon {
+  height: 25px;
+  cursor: pointer !important;
+  z-index: 999 !important;
+  flex: 0 0 auto;
 }
 
 .title-banner-description {
@@ -201,4 +216,38 @@
   font-feature-settings: "ss04" on, "ss03" on, "ss02" on;
 
   color: #ffffff;
+}
+
+// MOBILEVIEW: this banner (avatar + name/location/email) had no mobile
+// handling at all -- a fixed 100px circular avatar sat beside a fixed
+// 26px name with no wrapping/sizing control and full Bootstrap .p-5
+// (48px) padding on every side, so on a narrow phone the name text
+// crowded and visually broke the avatar's circle instead of sitting
+// cleanly beside it. Scoped to avatar/name/description/padding only --
+// .bg-banner's own height and the stat cards' -60px overlap positioning
+// below it are untouched, so nothing downstream shifts.
+@media (max-width: 767px) {
+  .bg-banner .p-5 {
+    padding: 28px 20px !important;
+  }
+
+  .company-logo-image {
+    width: 64px;
+    height: 64px;
+    border-width: 2px;
+  }
+
+  .title-banner {
+    font-size: 17px;
+    line-height: 22px;
+  }
+
+  .title-banner-edit-icon {
+    height: 18px;
+  }
+
+  .title-banner-description {
+    font-size: 12px;
+    line-height: 18px;
+  }
 }
