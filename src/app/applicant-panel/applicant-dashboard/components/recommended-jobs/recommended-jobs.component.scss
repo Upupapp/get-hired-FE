@@ -80,3 +80,35 @@
   padding: 3px 10px;
   margin-bottom: var(--gh-space-2, 8px);
 }
+
+// WIDE-SCREEN ONLY: fixed card width + a uniform baseline height so cards
+// read as a deliberately designed grid with real breathing room, instead
+// of the fluid auto-fit/minmax sizing above (which is left completely
+// untouched below this breakpoint, so mobile is unaffected). min-height
+// (not a hard height + overflow:hidden) is used deliberately: job-card's
+// content is genuinely variable per listing (tags, secondary badges,
+// match area may or may not render) -- a hard clip would risk cutting off
+// the Apply button on a card with more content. align-items:stretch on
+// the grid + height:100% on the card instead makes every card in the same
+// row match the row's tallest card, which is the non-destructive way to
+// get visual uniformity.
+@media (min-width: 768px) {
+  .recommended-jobs-list {
+    grid-template-columns: repeat(auto-fill, 300px);
+    justify-content: start;
+    align-items: stretch;
+    gap: var(--gh-space-5, 20px);
+  }
+
+  .recommended-job-item {
+    width: 300px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+
+    ::ng-deep .job-card {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
