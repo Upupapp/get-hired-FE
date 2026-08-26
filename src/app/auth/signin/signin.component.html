@@ -8,6 +8,38 @@
      all screen sizes. -->
 <div class="container-fluid bg-white min-vh-100">
   <div class="row">
+    <!-- MOBILE brand carousel: compact, decorative, non-interactive (aria-hidden).
+         Reuses the same 3 slide logo/illustration/copy sets as the desktop
+         .bg-left carousel below, but at a fixed bounded height (never
+         min-height:100vh) so it can never push the form off-screen. Shown
+         only below lg via d-lg-none; desktop .bg-left is completely untouched. -->
+    <div class="col-12 gh-mobile-carousel d-lg-none order-first" aria-hidden="true">
+      <div class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" id="signin-mobile-welcome-screens">
+          <div class="carousel-item active text-center">
+            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
+            <img src="assets/images/placeholder/login-object-new-2.png" class="gh-mc-img">
+            <p class="gh-mc-text">Bring all your applicants in <span class="title-left-gradient">ONE PLATFORM</span></p>
+          </div>
+          <div class="carousel-item text-center">
+            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
+            <img src="assets/images/placeholder/login-object-new-1.png" class="gh-mc-img">
+            <p class="gh-mc-text">Interview <span class="title-left-gradient">ALL</span> your applicants <span class="title-left-gradient">AUTOMATICALLY</span></p>
+          </div>
+          <div class="carousel-item text-center">
+            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
+            <img src="assets/images/placeholder/login-object-new-3.png" class="gh-mc-img">
+            <p class="gh-mc-text">Choose the <span class="title-left-gradient">BEST</span> applicants — <span class="title-left-gradient">Lights, Camera, GetHired.</span></p>
+          </div>
+        </div>
+        <div class="carousel-indicators">
+          <button data-bs-target="#signin-mobile-welcome-screens" data-bs-slide-to="0" class="active" aria-current="true"></button>
+          <button data-bs-target="#signin-mobile-welcome-screens" data-bs-slide-to="1"></button>
+          <button data-bs-target="#signin-mobile-welcome-screens" data-bs-slide-to="2"></button>
+        </div>
+      </div>
+    </div>
+
     <!-- FORM column: first in DOM, first visually on mobile; moves right on lg+ -->
     <div class="col-12 col-lg-6 order-first order-lg-last bg-form gh-signin-form-col">
       <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">

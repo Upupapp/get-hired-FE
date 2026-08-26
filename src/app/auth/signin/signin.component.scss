@@ -48,6 +48,10 @@
 	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
 
 	color: #03011A;
+
+	@media (max-width: 899px){
+		margin-bottom: 25px;
+	}
 }
 
 .title-sub{
@@ -180,6 +184,10 @@
 	border: none;
 	border-radius: 25px;
 	padding: 20px 40px;
+
+	@media (max-width: 899px){
+		padding: 8px 4px;
+	}
 
 }
 
@@ -367,9 +375,17 @@ input::placeholder{
     padding-left: 5px;
     padding-right: 5px;
   }
+
+	@media (max-width: 899px){
+		
+	}
 }
 
-
+@media (max-width: 899px){
+	h4{
+		margin-bottom: 12px;
+	}
+}
 
 input.ng-dirty + label{
 
@@ -460,4 +476,81 @@ input.ng-invalid.ng-dirty.ng-touched {
 // gh-pressable (from _motion.scss) already provides scale(0.985) on :active
 // with motion-safe fallback.  The btn-submit hover style is preserved below.
 // No additional overrides needed — gh-pressable is applied in the template.
+
+// ─── Mobile brand carousel (below-lg only) ───────────────────────────────────
+// Sibling of .bg-left, NOT a variant of it — deliberately does not touch or
+// inherit the min-height:100vh rule above. Fixed, bounded height only, so it
+// can never push the login form off-screen regardless of viewport height.
+// Visibility is gated purely by the d-lg-none utility class in the template;
+// this block never applies at >=992px, so desktop is unaffected either way.
+.gh-mobile-carousel {
+  height: 200px;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: 16px;
+  margin: 12px 0 16px;
+  padding: 14px 16px 30px;
+  background: linear-gradient(178.76deg, #6160DC -47.98%, #54C5EB 163.51%);
+  position: relative;
+
+  .carousel,
+  .carousel-inner,
+  .carousel-item {
+    height: 100%;
+  }
+
+  .gh-mc-logo {
+    max-height: 22px;
+    width: auto;
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 3px 8px;
+    margin-bottom: 6px;
+    object-fit: contain;
+  }
+
+  .gh-mc-img {
+    display: block;
+    margin: 0 auto 6px;
+    max-height: 62px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .gh-mc-text {
+    font-family: 'Manrope';
+    font-size: 12.5px;
+    line-height: 16px;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0 6px;
+  }
+
+  // Local gradient-text rule: the desktop .title-left-gradient rule is scoped
+  // under .bg-left, so it does not reach this sibling block. Same gradient,
+  // reused here rather than introducing a new palette.
+  .title-left-gradient {
+    font-style: italic;
+    font-weight: bold !important;
+    background: linear-gradient(268.54deg, $color-global-red-buttons 10.03%, #FFCD60 91.14%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .carousel-indicators {
+    margin-bottom: 4px;
+
+    button {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    button.active {
+      opacity: 1;
+    }
+  }
+}
 
