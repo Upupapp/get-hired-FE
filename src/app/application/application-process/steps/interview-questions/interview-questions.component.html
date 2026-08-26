@@ -2,6 +2,14 @@
 <app-record-interview [interviews]="interviews" [index]="selectedIndex" (next)="changeQuestion($event)"
   (submitRecord)="submitAnswer($event)"></app-record-interview>
 
+<!-- Always-available escape hatch: skip the entire screening interview
+     section and proceed directly to Summary & Submit for Evaluation. -->
+<div class="d-flex justify-content-end mb-3">
+  <button class="btn btn-outline-secondary" type="button" (click)="skipToSummary()">
+    {{ 'INTERVIEW_PAGE_SECTION.SKIP_INTERVIEW_BUTTON' | translate }}
+  </button>
+</div>
+
 <!-- INTERVIEW QUESTIONS -->
 <section class="card card-body my-3">
   <div class="p-4">

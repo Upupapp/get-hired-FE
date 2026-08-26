@@ -46,6 +46,15 @@ export class InterviewQuestionsComponent implements OnInit {
     }
   }
 
+  // Lets the applicant bypass the screening interview questions entirely
+  // and jump straight to Summary & Submit, regardless of which question
+  // they're currently on. Previously the only skip paths were the
+  // one-time entry dialog and skipping questions one at a time via
+  // record-interview's per-question Skip button.
+  skipToSummary() {
+    this.nextStep.emit(4);
+  }
+
   submitAnswer(event) {
     console.log(event);
     const { answerFile, questionId, index, answerBlob } = event
