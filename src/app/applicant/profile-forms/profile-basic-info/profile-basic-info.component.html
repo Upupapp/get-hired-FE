@@ -1,25 +1,47 @@
 <div class="card card-body mt-3">
   <form class="row" [formGroup]="profileDetailsForm" (ngSubmit)="submitForm()"
     [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
+    <!-- PROFILE IDENTITY HEADER: avatar + live name/role preview, same
+         Digital Profile Card visual language as the read-only applicant
+         header (app-applicant-avatar). Only the avatar's placement/
+         formation and the text beside it use this treatment -- every
+         other field below is untouched structurally. -->
+    <div class="col-12">
+      <div class="gh-profile-identity">
+        <div class="gh-profile-identity__banner"></div>
+        <div class="gh-profile-identity__row">
+          <div class="gh-profile-identity__avatar">
+            <app-gh-image-upload
+              purpose="applicant_avatar"
+              label=""
+              hint="JPG, PNG, or WebP · Max 5 MB"
+              [currentUrl]="photo || ''"
+              previewShape="circle"
+              (uploaded)="onAvatarUploaded($event)"
+              (cleared)="onAvatarClear()"
+            ></app-gh-image-upload>
+          </div>
+          <div class="gh-profile-identity__text">
+            <span class="gh-profile-identity__name">{{
+              (profileDetailsForm.get('firstName')?.value || profileDetailsForm.get('lastName')?.value)
+                ? ((profileDetailsForm.get('firstName')?.value || '') + ' ' + (profileDetailsForm.get('lastName')?.value || ''))
+                : 'Your Name'
+            }}</span>
+            <span class="gh-profile-identity__role" *ngIf="profileDetailsForm.get('jobTitle')?.value; else noRole">
+              {{ profileDetailsForm.get('jobTitle')?.value }}
+            </span>
+            <ng-template #noRole>
+              <span class="gh-profile-identity__role gh-profile-identity__role--placeholder">Add your current job title below</span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- EMPLOYMENT DETAILS -->
     <div class="col-12">
       <h5 class="title-label">Profile Details</h5>
       <hr style="border: dashed 1px #868686">
-    </div>
-
-    <div class="col-12 col-lg-6">
-      <div class="title-container mb-3">
-        <label>Profile Photo</label>
-        <app-gh-image-upload
-          purpose="applicant_avatar"
-          label=""
-          hint="JPG, PNG, or WebP · Max 5 MB"
-          [currentUrl]="photo || ''"
-          previewShape="circle"
-          (uploaded)="onAvatarUploaded($event)"
-          (cleared)="onAvatarClear()"
-        ></app-gh-image-upload>
-      </div>
     </div>
 
     <div class="col-12 col-lg-6">

@@ -45,3 +45,121 @@ select{
 		max-height: 150px;
 	}
 }
+
+// ============================================================
+// PROFILE IDENTITY HEADER: same Digital Profile Card language as the
+// read-only applicant avatar header (app-applicant-avatar's mobile
+// redesign) -- gradient banner the avatar docks into, gradient ring
+// around the photo, name/role beside it. Applied at all sizes here
+// (unlike that component's redesign, which was mobile-only) since this
+// form's photo field previously had no distinct desktop treatment
+// either -- there's no existing wide-screen design being disrupted.
+// Everything below this header (Profile Details / Contact Details
+// fields) is untouched structurally.
+// ============================================================
+.gh-profile-identity {
+	position: relative;
+	margin: 0 0 24px;
+	border-radius: 16px;
+	overflow: hidden;
+	background: var(--gh-white, #fff);
+	border: 1px solid var(--gh-border, #E7EAF3);
+
+	&__banner {
+		height: 64px;
+		background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(115deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 45%);
+		}
+	}
+
+	&__row {
+		display: flex;
+		align-items: flex-end;
+		gap: 16px;
+		padding: 0 20px 16px;
+		margin-top: -34px;
+
+		@media (max-width: 575px) {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			margin-top: -40px;
+		}
+	}
+
+	&__avatar {
+		flex: 0 0 auto;
+		border-radius: 50%;
+		background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
+		padding: 3px;
+		box-shadow: 0 6px 16px rgba(13, 16, 36, 0.18);
+
+		// Scoped to only this component's instance of app-gh-image-upload
+		// (child template, not the shared component's own stylesheet) --
+		// every other consumer of app-gh-image-upload elsewhere in the app
+		// is unaffected.
+		::ng-deep .gh-image-upload__zone--circle,
+		::ng-deep .gh-image-upload__preview--circle {
+			width: 84px;
+			height: 84px;
+			border: 3px solid var(--gh-white, #fff);
+		}
+	}
+
+	&__text {
+		display: flex;
+		flex-direction: column;
+		padding-bottom: 4px;
+	}
+
+	&__name {
+		font-family: 'Manrope', sans-serif;
+		font-size: 19px;
+		font-weight: 700;
+		color: var(--gh-text, #101828);
+		letter-spacing: -0.01em;
+	}
+
+	&__role {
+		display: inline-block;
+		width: fit-content;
+		margin-top: 4px;
+		font-size: 12px;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: var(--gh-coral, #FF675D);
+		background: var(--gh-coral-soft, #FFF0EE);
+		border-radius: 9999px;
+		padding: 3px 10px;
+
+		&--placeholder {
+			color: var(--gh-text-muted, #98A2B3);
+			background: var(--gh-bg, #F6F7FB);
+			text-transform: none;
+			letter-spacing: normal;
+			font-weight: 600;
+		}
+	}
+}
+
+// BRAND ACCENT: a slight colored left-edge on every field so the form
+// reads as modern/on-brand rather than a plain grey admin form, without
+// changing any field's structure, validation, or behavior -- purely a
+// left border + a touch of padding/hover lift. Kept to a single
+// restrained accent color (not per-section colors) per "not too much."
+.title-container {
+	border-left: 3px solid var(--gh-coral, #FF675D);
+	padding-left: 12px;
+	transition: border-color 150ms ease;
+
+	&:focus-within {
+		border-left-color: var(--gh-azure, #168BFF);
+	}
+}
