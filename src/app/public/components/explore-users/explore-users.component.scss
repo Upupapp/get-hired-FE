@@ -30,6 +30,61 @@
 	margin-left: 50px;
 }
 
+// MOBILEVIEW: .bg-banner used background-size:cover at a fixed 360-400px
+// height, which on a narrow phone crops the illustration aggressively and
+// the fixed 120px/50px text offsets (sized for the desktop cover-filled
+// banner) push the title/button off-balance. Scoped to this component's own
+// .bg-banner/.banner-text only, inside a single mobile media query, so the
+// desktop banner is completely untouched.
+@media (max-width: 767px) {
+	.bg-banner{
+		// contain (not cover) shows the whole illustration instead of an
+		// aggressive crop -- the banner reads smaller/lighter on mobile as
+		// requested. A brand-red fallback fills any space contain leaves
+		// around the image, so it never looks like blank/broken background.
+		background-size: contain;
+		background-position: center top;
+		background-color: #F85B4B;
+		height: auto;
+		min-height: 240px;
+		// Creative alignment: let the (now smaller) illustration sit at the
+		// top of the box and anchor the title + Create Jobs button at the
+		// bottom, so text never overlaps the visible artwork instead of
+		// just being dropped on top of it like the desktop cover layout.
+		display: flex;
+		align-items: flex-end;
+
+		@media (max-width: 1099px){
+			height: auto !important;
+		}
+
+		// Bootstrap's p-5 (3rem/48px) utility, applied inline in the
+		// template, is oversized once the banner itself is this compact --
+		// tighten it here rather than editing the shared markup.
+		> .p-5{
+			padding: 0 !important;
+			width: 100%;
+		}
+	}
+
+	.banner-text{
+		margin: 0;
+		padding: 20px 20px 24px;
+		width: 100%;
+		text-align: center;
+	}
+
+	.title-banner{
+		font-size: 17px;
+		line-height: 22px;
+	}
+
+	.btn-upload{
+		padding: 10px 24px;
+		font-size: 13px;
+	}
+}
+
 .btn-upload{
 	background: linear-gradient(95.7deg, $color-global-red-buttons 14.94%, #F85141 54.97%, #F4402F 76.21%);
 	border-radius: 5px;
