@@ -59,7 +59,14 @@ select{
 // ============================================================
 .gh-profile-identity {
 	position: relative;
-	margin: 0 0 24px;
+	// Minimized, centered footprint instead of stretching the full form
+	// width -- a compact identity card reads more like a deliberate
+	// profile-card component and less like a full-bleed banner. 420px
+	// comfortably fits the avatar + longest realistic name/role text;
+	// on narrower (mobile) viewports this is simply a no-op since the
+	// viewport itself is already under 420px.
+	max-width: 420px;
+	margin: 0 auto 24px;
 	border-radius: 16px;
 	overflow: hidden;
 	background: var(--gh-white, #fff);
@@ -79,21 +86,23 @@ select{
 	}
 
 	&__row {
+		// Same stacked/centered architecture at every width: avatar on
+		// top, name + job title below it, centered. This used to be the
+		// >=576px default (avatar beside the text) with a max-width:575px
+		// override for mobile only -- the base rule now IS what mobile
+		// already had, so mobile's rendering is byte-for-byte unchanged;
+		// only the wide-screen case actually moved to match it.
 		display: flex;
-		align-items: flex-end;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
 		gap: 16px;
 		padding: 0 20px 16px;
-		margin-top: -34px;
-
-		@media (max-width: 575px) {
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-			margin-top: -40px;
-		}
+		margin-top: -40px;
 	}
 
 	&__avatar {
+		position: relative;
 		flex: 0 0 auto;
 		border-radius: 50%;
 		background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
@@ -104,17 +113,95 @@ select{
 		// (child template, not the shared component's own stylesheet) --
 		// every other consumer of app-gh-image-upload elsewhere in the app
 		// is unaffected.
+		::ng-deep .gh-image-upload {
+			// Pins the widget's own footprint to the circle's size so its
+			// block-level siblings below (savings badge, Remove button --
+			// see next two rules) can't force this flex item wider than
+			// the 84px avatar, which is what broke the circular layout
+			// after a successful upload, most visibly on mobile where
+			// there's no spare width to absorb it.
+			width: 84px;
+		}
+
 		::ng-deep .gh-image-upload__zone--circle,
 		::ng-deep .gh-image-upload__preview--circle {
 			width: 84px;
 			height: 84px;
 			border: 3px solid var(--gh-white, #fff);
 		}
+
+		// The "X% smaller · looks the same" savings line is informational,
+		// not actionable -- there's no room for a full sentence of text
+		// under a compact 84px avatar without it wrapping and pushing the
+		// header layout around. The upload still succeeds identically;
+		// this only suppresses the confirmation copy in this one compact
+		// context (every other consumer of app-gh-image-upload, e.g. a
+		// full-width logo uploader, still shows it normally).
+		::ng-deep .gh-image-upload__savings {
+			display: none;
+		}
+
+		// "Remove" was rendering as a full-width text button below the
+		// circle, which is what visually broke the avatar the user
+		// reported -- reworked into the standard small overlay icon button
+		// pinned to the avatar's corner instead, same click handler.
+		::ng-deep .gh-image-upload__clear {
+			position: absolute;
+			top: -2px;
+			right: -2px;
+			width: 22px;
+			height: 22px;
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			background: var(--gh-white, #fff);
+			border: 1px solid var(--gh-border, #E7EAF3);
+			box-shadow: 0 2px 6px rgba(13, 16, 36, 0.18);
+			font-size: 0;
+			line-height: 0;
+			z-index: 1;
+
+			&::before {
+				content: '\2715';
+				font-size: 11px;
+				line-height: 1;
+				color: var(--gh-text-secondary, #667085);
+			}
+		}
+	}
+
+	// WIDE-SCREEN ONLY: bigger avatar for the now-shared stacked layout.
+	// Mobile (<576px) is untouched -- everything here lives behind
+	// min-width:576px, the exact complement of the old mobile-only
+	// max-width:575px boundary, so there's no overlap and no gap.
+	@media (min-width: 576px) {
+		&__banner {
+			height: 96px;
+		}
+
+		&__row {
+			margin-top: -56px;
+		}
+
+		&__avatar {
+			::ng-deep .gh-image-upload {
+				width: 128px;
+			}
+
+			::ng-deep .gh-image-upload__zone--circle,
+			::ng-deep .gh-image-upload__preview--circle {
+				width: 128px;
+				height: 128px;
+			}
+		}
 	}
 
 	&__text {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 		padding-bottom: 4px;
 	}
 
