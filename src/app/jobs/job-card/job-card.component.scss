@@ -11,6 +11,17 @@
   overflow: hidden;
   cursor: pointer;
   outline: none;
+  // Browse Jobs (job-posts-list.component.html) stacks cards via plain
+  // Bootstrap col-* columns inside a .row -- Bootstrap's .row only adds a
+  // horizontal gutter by default, never a vertical one, so cards in
+  // consecutive rows sit flush against each other with nothing but their
+  // own 1px border between them, at every breakpoint (single column on
+  // mobile, multi-column grid on desktop). Applied here at the base level
+  // (not scoped to a single media query) so cards stay comfortably
+  // separated everywhere; scoped to .job-card's own component stylesheet
+  // rather than the parent .row/.col or any shared/global partial so it
+  // can never leak onto an unrelated consumer.
+  margin-bottom: 20px;
   transition: transform $motion-duration-card $motion-ease-standard,
               box-shadow $motion-duration-card $motion-ease-standard,
               border-color $motion-duration-card $motion-ease-standard;
@@ -216,19 +227,6 @@
   }
 }
 
-// MOBILEVIEW: on mobile the Browse Jobs grid (job-posts-list.component.html)
-// stacks cards one per row via a plain Bootstrap col-12 -- Bootstrap's .row
-// only adds a horizontal gutter by default, no vertical one, so cards from
-// consecutive rows sit flush against each other with nothing but their own
-// border between them. Scoped to .job-card itself (not the parent .row/.col
-// or any shared/global partial) so it can never leak onto an unrelated
-// consumer, and confined to this single mobile-only media query so desktop's
-// existing multi-column grid (which already reads fine) is untouched.
-@media (max-width: 767px) {
-  .job-card {
-    margin-bottom: 20px;
-  }
-}
 
 // JCA-01/02 MOBILEVIEW: raise company-link and match-link to 44px touch
 // targets (WCAG 2.5.5) on mobile without changing desktop visual layout.
