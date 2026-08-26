@@ -25,6 +25,24 @@
 	padding: 30px 30px !important;
 }
 
+// Guidance text for the video introduction: real, current upload
+// constraints (100MB max, MP4/WebM/MOV) shown proactively instead of only
+// discovering them from a rejection error after the fact -- this was the
+// core UX gap reported (an upload could fail with no prior indication of
+// why or what's allowed).
+.gh-video-hint {
+	font-family: 'Manrope', sans-serif;
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: var(--gh-text-secondary, #667085);
+	margin: 8px 0 0;
+
+	strong {
+		color: var(--gh-text, #101828);
+		font-weight: 700;
+	}
+}
+
 // BRAND ACCENT: same restrained single-accent left-border treatment as
 // profile-basic-info.component.scss's .title-container -- applied here to
 // this step's section headers (no per-field inputs in this step), purely

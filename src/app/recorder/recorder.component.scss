@@ -4,6 +4,19 @@ video{
   border-radius: 7px !important;
 }
 
+// Real upload constraints shown proactively next to the Upload button
+// (100MB max, matches MAX_VIDEO_BYTES in this component's .ts and the
+// backend's VIDEO_CV_MAX_BYTES exactly) -- previously the only way to
+// learn this was hitting a rejection error after picking an oversized file.
+.gh-recorder-upload-hint {
+  font-family: 'Manrope', sans-serif;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--gh-text-secondary, #667085);
+  text-align: center;
+  margin: 4px 0 0;
+}
+
 .container-bg{
   background: rgba(0,0,0,0.3);
   height: 60px;

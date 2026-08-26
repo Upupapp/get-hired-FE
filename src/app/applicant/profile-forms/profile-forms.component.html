@@ -5,7 +5,16 @@
     </app-main-stepper>
   </div>
   <div class="text-end submit-container" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-    <button class="btn btn-save-draft me-3" *ngIf="applicantProfileId" (click)="redirectToProfile()">Profile Preview</button>
+    <!-- Every section (skills, work experience, education, docs, video) already
+         saves itself independently the moment it's submitted -- nothing on this
+         final step is required to "complete" the profile. This button was the
+         only way to leave the wizard once here, but its old "Profile Preview"
+         label read as purely informational, not as an explicit finish action --
+         relabeled on Step 3 specifically so it's unambiguous that clicking it
+         is how you're done, video/docs optional. -->
+    <button class="btn btn-save-draft me-3" *ngIf="applicantProfileId" (click)="redirectToProfile()">{{
+      stepper === 3 ? 'Finish & View Profile' : 'Profile Preview'
+    }}</button>
     <!-- <button class="btn btn-save me-2" type="button" (click)="basicInfo.submitForm()" *ngIf="stepper==1"
       [disabled]="basicInfo ? !basicInfo.profileDetailsForm.valid : !basicFormValid">
       Submit Changes</button> -->
