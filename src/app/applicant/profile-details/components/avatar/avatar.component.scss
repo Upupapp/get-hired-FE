@@ -184,60 +184,76 @@ $np-av-accent: var(--gh-coral, #FF675D);
 // weights in index.html) rather than a second webfont for a
 // mobile-only theme.
 // ============================================================
-// NEOMORPHISM PASS 3 · DESKTOP-ONLY (min-width:768px), completely separate
+// NEOMORPHISM PASS 4 · DESKTOP-ONLY (min-width:768px), completely separate
 // from the max-width:767px "Digital Profile Card" block below (mutually
 // exclusive ranges -- zero interaction, mobile is provably untouched).
-// Mirrors that same "banner + docked avatar + centered identity" ARCHITECTURE
-// the mobile card already uses, per explicit request to make this card match
-// the structure of the other avatar card -- reskinned in soft-UI instead of
-// the mobile card's bold brand gradient: an inset (recessed) banner panel
-// the raised avatar docks into, name/role centered below it, and contact/
-// document rows converted from a plain table into neomorphic inset tiles.
+// Explicit 35/65 left-right split: avatar + name + job title + rating own
+// the entire left column, Contact Details + Documents stack down the right
+// column. Grid (not flex-wrap) so the left column can reliably span the
+// full card height regardless of how much content sits in the right
+// column -- .np-identity-col / .np-details-col / .np-spacer-col are plain
+// HTML classes added alongside the existing Bootstrap col-* classes so this
+// targets the actual left/right roles instead of fragile position-based
+// selectors (Angular *ngIf removes elements from the DOM entirely, which
+// would shift nth-child targeting depending on whether Documents exists).
+// Card itself is capped narrower than full-bleed per explicit request.
 // ============================================================
 @media (min-width: 768px) {
-	.row {
-		position: relative;
-		padding-top: 150px;
+	.card {
+		max-width: 860px;
+		margin-left: auto;
+		margin-right: auto;
+	}
 
-		&::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 168px;
-			border-radius: 20px 20px 0 0;
-			background: $np-av-base;
-			box-shadow: inset 5px 5px 12px $np-av-dark, inset -5px -5px 12px $np-av-light;
-		}
+	.row {
+		display: grid;
+		grid-template-columns: 35% 65%;
+		column-gap: 28px;
+		row-gap: 0;
+	}
+
+	.np-identity-col {
+		grid-column: 1;
+		grid-row: 1 / -1;
+		max-width: none;
+		width: auto;
+		padding: 0;
+		border-right: none;
+	}
+
+	.np-details-col {
+		grid-column: 2;
+		max-width: none;
+		width: auto;
+		padding: 0;
+	}
+
+	// This div only exists to preserve a 3-column Bootstrap grid's alignment
+	// when Documents is absent -- irrelevant in a 2-column CSS Grid, where it
+	// would otherwise auto-place into row 1/col 2 (since it comes first in
+	// DOM order) and push Contact Details down into row 2, leaving an empty
+	// gap above it.
+	.np-spacer-col {
+		display: none;
 	}
 
 	.d-flex.mt-3 {
-		position: relative;
 		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		margin-top: -114px !important;
+		height: 100%;
+		margin: 0 !important;
 	}
 
 	.avatar-main {
-		width: 128px !important;
-		min-width: 128px !important;
-		height: 128px !important;
-		margin: 0 auto 14px !important;
+		width: 116px !important;
+		min-width: 116px !important;
+		height: 116px !important;
+		margin: 0 0 16px !important;
 	}
 
 	.flex-wrap {
-		width: 100%;
-
 		.details {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-		}
-
-		> .d-flex {
-			justify-content: center;
 		}
 	}
 

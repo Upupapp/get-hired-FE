@@ -1,6 +1,6 @@
 <div class="card card-body" [@animate]="{value:'*', params:{ x:'-10px', delay:'350ms' }}">
   <div class="row">
-    <div class="col-12 col-md-6 col-lg-4 mb-3">
+    <div class="col-12 col-md-6 col-lg-4 mb-3 np-identity-col">
       <div class="d-flex mt-3">
         <div class="avatar-main me-4">
           <img [src]="user.photoUrl" class="img-fluid">
@@ -38,9 +38,9 @@
       </div>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-4" *ngIf="user?.documents?.length === 0"></div>
+    <div class="col-12 col-md-6 col-lg-4 np-spacer-col" *ngIf="user?.documents?.length === 0"></div>
 
-    <div class="col-12 col-md-6 col-lg-4  mb-3 mt-3">
+    <div class="col-12 col-md-6 col-lg-4 mb-3 mt-3 np-details-col">
       <h5 class="title-contact font-bold">{{ 'PROFILE.CONTACT_DETAILS_TEXT' | translate }}</h5>
 
       <table class="w-100 contact-table">
@@ -66,7 +66,7 @@
     </div>
 
 
-    <div class="mt-4 col-12 col-md-6 col-lg-4" *ngIf="user.documents && user.documents.length > 0">
+    <div class="mt-4 col-12 col-md-6 col-lg-4 np-details-col" *ngIf="user.documents && user.documents.length > 0">
       <h5 class="title-contact font-bold">{{ 'PROFILE.DOCUMENTS_TEXT' | translate }}</h5>
 
       <table class="w-100 document-table">
