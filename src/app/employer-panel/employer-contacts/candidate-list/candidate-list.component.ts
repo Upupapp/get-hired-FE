@@ -71,6 +71,20 @@ export class CandidateListComponent implements OnInit {
     };
   };
 
+  // AUDIT: previously read once via route.snapshot.params in the
+  // constructor. This route ('candidate-list/:id') is reused by Angular's
+  // default route-reuse strategy whenever navigating between two
+  // candidate-list URLs that only differ by :id (e.g. clicking "Candidates"
+  // on a different job while already on this page) -- the component
+  // instance survives, the constructor never re-runs, and jobId silently
+  // kept pointing at the PREVIOUS job while the URL and rest of the page
+  // had already moved on. Tracked so the reactive params subscription in
+  // ngOnInit can react to it, plus dedup state for the success/error
+  // snackbar re-trigger fix below.
+  private lastShownError: any = null;
+  private lastShownSuccess: any = null;
+  private latestCandidateState: any = null;
+
   constructor(
     private router: Router,
     private dialog: MatDialog,
@@ -78,35 +92,77 @@ export class CandidateListComponent implements OnInit {
     private snackbarService: SnackbarService,
     private candidateState: Store<StoreState>,
     private jobService: JobService
-    ) {
-      this.jobId = this.route.snapshot.params['id'];
-  }
+    ) { }
 
   ngOnInit(): void {
-    this.localData = JSON.parse(this.localData);
+    // AUDIT: JSON.parse on a possibly-null/corrupted value threw
+    // uncaught, taking down the whole page before it could render
+    // anything (including any error state). Mirrors the safe-parse
+    // pattern already used elsewhere in this app (e.g. PublicComponent).
+    try {
+      this.localData = this.localData ? JSON.parse(this.localData) : null;
+    } catch (_) {
+      this.localData = null;
+    }
+
+    // AUDIT: react to route param changes instead of reading them once,
+    // so navigating to a different job's candidate list (same routed
+    // component, reused instance) re-filters against the new job instead
+    // of silently keeping the previous job's data on screen.
+    this.route.params
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((params) => {
+        this.jobId = params['id'];
+        this.applyCandidateListFilter();
+      });
+
     this.getCandidateList();
 
     this.CandidateData$ = this.candidateState.pipe(select(state => state.candidate));
     this.req =  this.CandidateData$.subscribe((candidate: any) => {
       this.loading = candidate.pending;
+      this.latestCandidateState = candidate;
+      this.applyCandidateListFilter();
 
-      if(candidate.candidateList.length > 0){
-        const result = candidate.candidateList.filter(item => this.jobId.includes(item.job_id));
-        this.candidateList = result;
-      } else {
-        this.candidateList = [];
-      }
-
-      if(candidate.success){
+      // AUDIT: the reducer never clears success/error on a fresh
+      // GET_CANDIDATE_LIST dispatch, so the same stale value kept
+      // re-triggering a snackbar on every unrelated store emission (e.g.
+      // reopening the add-candidate dialog) instead of firing once per
+      // actual event. Only show a given message the first time it appears.
+      if (candidate.success && candidate.success !== this.lastShownSuccess) {
+        this.lastShownSuccess = candidate.success;
         this.snackbarService.success(candidate.success, "");
       }
 
-      if(candidate.error){
+      if (candidate.error && candidate.error !== this.lastShownError) {
+        this.lastShownError = candidate.error;
         this.snackbarService.error("Something went wrong please try again later or contact your administrator", "");
       }
     })
 
     // setTimeout(() => this.loading = false, 1500);
+  }
+
+  private applyCandidateListFilter(): void {
+    const candidate = this.latestCandidateState;
+    if (!candidate || !this.jobId) {
+      this.candidateList = [];
+      return;
+    }
+
+    if (candidate.candidateList && candidate.candidateList.length > 0) {
+      // AUDIT: was `this.jobId.includes(item.job_id)` -- a substring
+      // check, not equality. job_id values in this app are variable-length
+      // slugs (e.g. "JB-26-920673"), not fixed-length UUIDs, so whenever
+      // one job's id happened to be a prefix of another's, candidates from
+      // the WRONG job leaked into this list. Exact match is the actually
+      // intended comparison (one job id per route).
+      this.candidateList = candidate.candidateList.filter(
+        (item) => item.job_id === this.jobId
+      );
+    } else {
+      this.candidateList = [];
+    }
   }
 
 

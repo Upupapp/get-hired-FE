@@ -64,13 +64,19 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
               this.handlingExpiry = true;
               this.coreService.logout();
               this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');
-              // An auto-detected expiry is functionally a sign-out the user
-              // didn't ask for -- land exactly where an explicit Sign Out
-              // does (Home), never on /signin. /signin has its own guard
-              // logic that has no reason to run mid-expiry-handling, and a
-              // stale in-flight route (e.g. the employer portal) must not
-              // stay mounted re-firing more now-doomed authenticated calls.
-              this.router.navigateByUrl('/');
+              // AUTH LIFECYCLE FIX: previously navigated to '/' (Home) here,
+              // on the reasoning that an auto-detected expiry is "just like"
+              // an explicit Sign Out. Per explicit product requirement, an
+              // expired session hit on a protected route must land the user
+              // on the Sign-In FORM directly, not the public homepage --
+              // they were mid-task on a protected page, not choosing to
+              // leave. logout() above already clears local session state,
+              // so UnauthGuard on /signin renders it normally (no stale
+              // "already logged in" redirect loop), and this still tears
+              // down whatever protected route/module was mounted (e.g. the
+              // employer portal), stopping any further now-doomed
+              // authenticated calls the same as before.
+              this.router.navigateByUrl('/signin');
             }
           } else if (err.status === 429) {
             // NOTIFY QA11 (SEC-01): Rate-limit hit. Do NOT log the user out.
