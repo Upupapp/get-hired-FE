@@ -104,6 +104,10 @@
 
         <!-- Signal Ribbon: compact label/value facts. Missing/falsy fields
              disappear cleanly via existing *ngIf guards -- no empty chips. -->
+        <!-- MOBILE REDESIGN PASS 2: on mobile the Signal Ribbon is pulled up
+             to visually dock into the hero's rounded bottom edge (see
+             .gh-signal-ribbon in the SCSS) -- no eyebrow label here so
+             nothing sits between the hero and the card it overlaps. -->
         <div class="gh-snapshot-grid gh-signal-ribbon card card-body mb-3" aria-label="Job facts summary">
           <div class="gh-snapshot-item" *ngIf="nJob.jobType">
             <i class="bi bi-briefcase gh-snapshot-icon" aria-hidden="true"></i>
@@ -158,6 +162,7 @@
 
         <!-- Badges row -->
         <div class="card card-body mb-3" *ngIf="selectedJobPost?.badges?.length > 0">
+          <p class="gh-mobile-eyebrow" aria-hidden="true">Perks &amp; benefits</p>
           <div class="d-flex flex-row flex-wrap" style="gap: 8px;">
             <div class="d-flex badge-card" *ngFor="let badge of selectedJobPost?.badges; let i = index" [ngClass]="'badge-' + i">
               <img src="/assets/images/placeholder/icons/{{badge?.icon}}" [title]="badge?.name" style="height:26px" class="me-2" aria-hidden="true">
@@ -350,6 +355,11 @@
         <!-- Interview questions -->
         <section class="card card-body my-3" *ngIf="selectedJobPost?.interviewQuestions?.length > 0">
           <label class="title-job-interview text-capitalize mb-3">{{ 'APPLY_PAGE.INTERVIEW_QUESTIONS' | translate }}</label>
+          <!-- MOBILE REDESIGN PASS 2: count summary, mobile-only. Gives the
+               (sometimes 40-question) list a scannable "N questions" anchor
+               at the top of the section on narrow screens instead of only
+               an unnumbered label. -->
+          <p class="gh-mobile-eyebrow gh-mobile-eyebrow--interview" aria-hidden="true">{{ selectedJobPost?.interviewQuestions?.length }} question{{ selectedJobPost?.interviewQuestions?.length !== 1 ? 's' : '' }} to expect</p>
           <section class="p-2 px-1 mb-1">
             <div class="row">
               <div class="col-12 col-lg-6" *ngFor="let item of selectedJobPost?.interviewQuestions; let i = index"
@@ -362,10 +372,10 @@
                     <div class="logo-thumbnail-2 me-3 d-flex align-items-center justify-content-center">
                       <img src="/assets/images/placeholder/icons/interview-logo-4-active.png" alt="">
                     </div>
-                    <div class="mt-2">
-                      <p class="title-label-sub">
+                    <div class="mt-2 gh-interview-card-text">
+                      <p class="title-label-sub gh-interview-q-number">
                         <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;" aria-hidden="true">
-                        Question {{ i + 1 }}
+                        <span class="gh-interview-q-number-text">Question {{ i + 1 }}</span>
                       </p>
                       <h3 class="title-label">{{ item.question }}</h3>
                       <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{ item.answerDuration }} minutes</p>
@@ -403,7 +413,10 @@
          .gh-decision-dock in the SCSS). -->
     <div class="gh-mobile-sticky-bar gh-decision-dock" [class.gh-mobile-sticky-bar--visible]="showMobileBar" role="region" aria-label="Quick apply">
       <div class="gh-mobile-sticky-bar__inner">
-        <div class="gh-mobile-sticky-bar__title" aria-hidden="true">{{ nJob.title }}</div>
+        <div class="gh-mobile-sticky-bar__title-group" aria-hidden="true">
+          <span class="gh-mobile-sticky-bar__title">{{ nJob.title }}</span>
+          <span class="gh-mobile-sticky-bar__meta" [class.gh-mobile-sticky-bar__meta--muted]="!nJob.hasSalary">{{ nJob.salaryDisplay }}</span>
+        </div>
         <div class="gh-mobile-sticky-bar__actions">
           <span class="gh-applied-mobile-chip" *ngIf="userRole == '3' && selectedJobPost.isApplied">Applied</span>
           <button class="btn btn-apply-now gh-mobile-sticky-bar__cta" (click)="toApply()"

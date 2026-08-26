@@ -364,6 +364,19 @@
 		}
 	}
 
+	// MOBILE REDESIGN PASS 2: hero gets rounded bottom corners on mobile so
+	// the Signal Ribbon below can visually "dock" into it (see
+	// .gh-signal-ribbon overlap rule further down) -- a layered, app-like
+	// composition instead of a flat stack of full-bleed rectangles.
+	// Desktop/tablet (>767px) hero corners are untouched.
+	@media (max-width: 767px) {
+		.gh-job-hero-media,
+		.bg-banner {
+			border-radius: 0 0 22px 22px;
+			overflow: hidden;
+		}
+	}
+
 	.title-details{
 		font-family: 'Manrope';
 		font-style: normal;
@@ -389,6 +402,34 @@
 	// Padding kept at the cleaner, more even value (was 30px 10px 20px 30px)
 	// -- an explicit text-placement/spacing improvement, kept per request.
 	padding: 24px 24px 20px;
+
+	// MOBILE REDESIGN PASS 2: 24px of horizontal padding on each side eats
+	// ~48px of a 320-375px viewport before any content renders -- reclaim
+	// some of that width for the actual reading content (titles, prose,
+	// lists) while keeping enough padding to avoid a cramped edge-to-edge
+	// feel. Desktop/tablet (>575px) keeps the original 24px padding.
+	@media (max-width: 575px) {
+		padding: 18px 16px 16px;
+		border-radius: 14px;
+	}
+}
+
+// MOBILE REDESIGN PASS 2: consistent vertical rhythm between stacked
+// sections on mobile -- the page uses Bootstrap's .mb-3/.mt-3 (16px)
+// utility classes throughout; at phone widths that reads as slightly
+// cramped between visually-heavy cards, so it's opened up a touch for
+// clearer separation between sections while staying inside this
+// component's own template scope. Desktop/tablet spacing is unchanged
+// (this is a mobile-only override of the same utility classes).
+@media (max-width: 575px) {
+	.gh-detail-main {
+		> .mb-3, > .mt-3, > .my-3 {
+			margin-bottom: 18px !important;
+		}
+		> .mt-3, > .my-3 {
+			margin-top: 18px !important;
+		}
+	}
 }
 
 // SIGNALFRAME REMEDIATION: previously .card and .gh-aligned-block carried an
@@ -497,12 +538,20 @@
 		padding: 8px 14px;
 		display: flex;
 		align-items: center;
+		// MOBILE REDESIGN PASS 2: a subtle border + tighter radius reads as a
+		// deliberate "chip" component rather than a plain color swatch,
+		// consistent with the more considered tech-oriented mobile system
+		// used elsewhere on this pass (snapshot chips, interview badges).
+		border: 1px solid rgba(16, 24, 40, 0.06);
+		border-radius: 999px;
+		min-height: 36px;
 	}
 	.badge-card img {
 		display: none;
 	}
 	.title-badge {
 		padding-top: 0;
+		font-size: 12.5px;
 	}
 }
 
@@ -787,6 +836,89 @@
 	}
 }
 
+// ─── MOBILE REDESIGN PASS 2: Interview question cards ──────────────────────
+// A full rethink of card content hierarchy at phone widths, not just the
+// icon-shrink from the earlier polish pass. The question number moves from
+// a plain gray caption into a small gradient pill (scannable "Q1, Q2..."
+// anchor across a potentially 40-card list), the question text itself gets
+// more breathing room as the primary reading content, and the whole card
+// gains a left accent bar + tighter elevation so a long list of cards
+// reads as a structured, tech-oriented list rather than a stack of plain
+// gray boxes. Entirely inside max-width: 767px -- desktop/tablet keeps the
+// existing card exactly as-is.
+@media (max-width: 767px) {
+	#interview-list.interview-card {
+		position: relative;
+		padding: 16px 16px 16px 18px;
+		border-radius: 14px;
+		border-left: 3px solid var(--gh-sf-active-edge, #168BFF);
+		box-shadow: 0 4px 14px rgba(16, 24, 40, 0.06);
+
+		.logo-thumbnail {
+			display: none !important;
+		}
+
+		.gh-interview-card-text {
+			margin-top: 0 !important;
+			width: 100%;
+		}
+
+		.gh-interview-q-number {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			margin-bottom: 8px;
+			padding: 3px 10px 3px 4px;
+			border-radius: 999px;
+			background: var(--gh-sf-active-edge-soft, #EAF4FF);
+			width: fit-content;
+
+			img { height: 14px !important; }
+		}
+
+		.gh-interview-q-number-text {
+			font-size: 11.5px;
+			font-weight: 700;
+			color: var(--gh-sf-active-edge, #168BFF);
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+		}
+
+		.title-label {
+			font-size: 15.5px;
+			line-height: 1.4;
+			margin-bottom: 10px;
+			color: var(--gh-text, #101828);
+		}
+
+		.title-label-sub-duration {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			font-size: 11.5px;
+			padding: 4px 10px;
+			border-radius: 999px;
+			background: var(--gh-bg, #F6F7FB);
+			color: var(--gh-text-secondary, #667085);
+
+			span { color: inherit; font-weight: 600; }
+
+			&::before {
+				content: '\f292'; // bootstrap-icons clock glyph
+				font-family: 'bootstrap-icons' !important;
+				font-size: 11px;
+			}
+		}
+	}
+
+	// Tighter card-to-card rhythm than the default Bootstrap column gutter --
+	// a long question list should feel like a compact scannable list, not
+	// widely spaced standalone cards.
+	.col-12.col-lg-6 {
+		margin-bottom: 10px;
+	}
+}
+
 .btn-view-more{
 	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
 	border-radius: 10px;
@@ -899,12 +1031,48 @@
   // wider at 1200px+ -- 4 columns uses that reclaimed width instead of
   // leaving 3 wide columns with awkward extra whitespace per cell.
   @media (min-width: 1200px) { grid-template-columns: repeat(4, 1fr); }
+
+  // ─── MOBILE REDESIGN PASS 2 ────────────────────────────────────────────
+  // Below 767px this becomes the "docked" card that visually reads as
+  // sitting on top of the hero (see .gh-job-hero-media border-radius
+  // above): pulled up over the hero's rounded bottom edge, elevated with
+  // its own shadow, given a larger radius. Purely presentational -- no
+  // markup/logic change, scoped entirely inside this max-width query so
+  // desktop/tablet (>767px) keeps its existing flat in-flow card.
+  @media (max-width: 767px) {
+    margin-top: -18px;
+    position: relative;
+    z-index: 5;
+    border-radius: 18px;
+    box-shadow: 0 14px 34px rgba(16, 24, 40, 0.14);
+  }
+
+  // At true phone widths, 2 cramped columns is hard to scan (long values
+  // like "Metro Manila, Philippines" or "₱45,000 - ₱60,000" wrap awkwardly
+  // in a ~140px column). Single-column rows with dividers read far more
+  // comfortably -- this is the "improve placement, easy to see and read"
+  // requirement applied directly to the densest part of the page.
+  @media (max-width: 575px) {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-top: 20px !important;
+  }
 }
 
 .gh-snapshot-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
+
+  @media (max-width: 575px) {
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--gh-border, #E7EAF3);
+
+    &:last-child { border-bottom: none; padding-bottom: 2px; }
+    &:first-child { padding-top: 0; }
+  }
 }
 
 .gh-snapshot-icon {
@@ -914,12 +1082,34 @@
   color: var(--gh-sf-active-edge, #168BFF);
   flex-shrink: 0;
   margin-top: 2px;
+
+  // MOBILE REDESIGN PASS 2: icon becomes a small filled chip at phone
+  // widths -- easier to scan a vertical list of facts by icon shape/color
+  // than a bare glyph, and gives each row a consistent left anchor.
+  @media (max-width: 575px) {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 10px;
+    background: var(--gh-sf-active-edge-soft, #EAF4FF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    margin-top: 0;
+  }
 }
 
 .gh-snapshot-content {
   display: flex;
   flex-direction: column;
   gap: 1px;
+
+  @media (max-width: 575px) {
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 .gh-snapshot-label {
@@ -936,6 +1126,43 @@
   color: var(--gh-text, #101828);
 
   &--muted { color: var(--gh-text-muted, #98A2B3); }
+
+  // MOBILE REDESIGN PASS 2: bump readability of the actual data point (the
+  // thing the user came to this row for) at phone widths -- slightly
+  // larger size + tighter line-height than the desktop 13px default.
+  @media (max-width: 575px) {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+}
+
+// ─── MOBILE REDESIGN PASS 2: shared mobile-only eyebrow label ──────────────
+// Small uppercase section identifier used above the Signal Ribbon, Perks
+// card, and Interview Questions list on mobile so the new denser layout
+// still reads as clearly grouped/labeled content, not an unbroken stack.
+// display:none is the *only* rule outside a max-width query, so this is
+// invisible at every desktop/tablet width by default.
+.gh-mobile-eyebrow {
+  display: none;
+
+  @media (max-width: 767px) {
+    display: block;
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gh-sf-active-edge, #168BFF);
+  }
+
+  &--interview {
+    margin: -6px 0 12px;
+    color: var(--gh-text-muted, #98A2B3);
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+    font-size: 12.5px;
+  }
 }
 
 // ─── V6: Content sections ────────────────────────────────────────────────────
@@ -970,6 +1197,15 @@
   position: relative;
   padding-bottom: 10px;
 
+  // MOBILE REDESIGN PASS 2: slightly larger section titles at phone widths
+  // -- 16px reads small as the primary heading inside each Role Narrative
+  // section on a 320-375px screen; bumped for clearer hierarchy against
+  // the 14px body prose below it.
+  @media (max-width: 575px) {
+    font-size: 17px;
+    margin-bottom: 12px;
+  }
+
   // SIGNALFRAME PHASE F: gradient underline divider between Role Narrative
   // sections -- a small, deliberate "tech showcase" touch derived from the
   // existing Active Edge gradient token, fading to transparent rather than
@@ -1000,6 +1236,13 @@
   color: var(--gh-text-secondary, #667085);
   margin: 0;
   white-space: pre-wrap;
+
+  // MOBILE REDESIGN PASS 2: slightly taller line-height for comfortable
+  // reading on a phone (held closer, often outdoors/on the move) than the
+  // desktop default -- explicit "easy to see and read on mobile" pass.
+  @media (max-width: 575px) {
+    line-height: 1.75;
+  }
 }
 
 .gh-prose-wrap {
@@ -1331,6 +1574,17 @@
   transform: translateY(100%);
   transition: transform 0.25s ease;
   display: block;
+  // MOBILE REDESIGN PASS 2: thin gradient hairline echoing the Signal
+  // Ribbon/section-title accent gradient used elsewhere on this pass, so
+  // the dock reads as part of the same visual system rather than a plain
+  // white bar.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gh-sf-active-edge-gradient, linear-gradient(135deg, #168BFF 0%, #22D3EE 100%));
+  }
 
   // SIGNALFRAME PHASE F: 900px -> 576px. The Reading Companion below is now
   // the merged, always-reachable Apply/Save surface at 576px+ (it replaces
@@ -1351,8 +1605,19 @@
   justify-content: space-between;
   gap: 12px;
   padding: 10px 16px;
+  // MOBILE REDESIGN PASS 2: respect the home-indicator safe area on notched
+  // phones so the dock's bottom edge doesn't sit flush under it.
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   max-width: 600px;
   margin: 0 auto;
+}
+
+.gh-mobile-sticky-bar__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
 }
 
 .gh-mobile-sticky-bar__title {
@@ -1362,8 +1627,26 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  flex: 1;
-  min-width: 0;
+}
+
+// MOBILE REDESIGN PASS 2: salary line under the job title in the sticky
+// dock -- the dock is the primary always-reachable Apply surface below
+// 576px, so surfacing the single highest-signal fact (pay) right next to
+// the CTA gives phone users a reason to tap without scrolling back up.
+// Entire .gh-mobile-sticky-bar is already display:none above 576px, so
+// this is inherently mobile-only -- no extra media query needed.
+.gh-mobile-sticky-bar__meta {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gh-sf-active-edge, #168BFF);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--muted {
+    color: var(--gh-text-muted, #98A2B3);
+    font-weight: 500;
+  }
 }
 
 .gh-mobile-sticky-bar__actions {
@@ -1457,6 +1740,18 @@
     right: 24px;
     bottom: 24px;
   }
+
+  // MOBILE REDESIGN PASS 2: at the narrow 576-767px sliver (large/landscape
+  // phones and small tablets -- still "mobile" per this file's 767px
+  // convention) the FAB sat close to the viewport edge with full desktop
+  // spacing; pull it in slightly so it doesn't crowd the corner, and
+  // shrink it a touch so it reads as a secondary floating action rather
+  // than competing with the primary content column. >767px is completely
+  // untouched by this rule.
+  @media (max-width: 767px) {
+    right: 12px;
+    bottom: 12px;
+  }
 }
 
 .gh-reading-companion__fab {
@@ -1479,6 +1774,14 @@
   &:hover { transform: translateY(-2px); }
   &:active { transform: scale($gh-scale-press); }
   &:focus-visible { outline: 2px solid var(--gh-sf-active-edge, #168BFF); outline-offset: 2px; }
+
+  // MOBILE REDESIGN PASS 2: slightly smaller FAB in the 576-767px sliver so
+  // it reads as a secondary floating control next to the primary content,
+  // not a same-weight competing action. >767px untouched.
+  @media (max-width: 767px) {
+    width: 48px;
+    height: 48px;
+  }
 }
 
 .gh-reading-companion__avatar {
