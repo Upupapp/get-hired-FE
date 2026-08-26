@@ -95,8 +95,11 @@
 	color: #03011A;
 
 	@media (max-width: 899px){
-		font-size: 18px;
-		text-transform: capitalize;
+		font-size: 20px;
+		text-transform: uppercase;
+		font-family: serif;
+		bottom: 34px;
+		position: relative;
 	}
 }
 
@@ -227,9 +230,29 @@
 	border: none;
 	border-radius: 25px;
 	padding: 20px 40px;
+	// Bounded width + auto-centering so the card reads as a deliberately
+	// composed, professional panel at every width, not a form stretched
+	// edge-to-edge -- wide screens already place it on the right via the
+	// column split; this just keeps its own proportions sane there too.
+	width: 100%;
+	max-width: 480px;
+	margin-left: auto;
+	margin-right: auto;
 
+	// AUDIT FIX: this previously collapsed to `padding: 8px 8px` on mobile
+	// (labels/inputs sitting almost flush against the card edges -- not
+	// "formal/professional"). Real, comfortable padding + a subtle
+	// border/shadow so the white card stays visually distinct now that its
+	// padding is no longer providing that separation implicitly.
 	@media (max-width: 899px) {
-		padding: 8px 8px;
+		padding: 28px 22px;
+		border: 1px solid rgba(16, 24, 40, 0.06);
+		box-shadow: 0 4px 24px rgba(16, 24, 40, 0.06);
+	}
+
+	@media (max-width: 575px) {
+		padding: 24px 18px;
+		border-radius: 18px;
 	}
 
 }
@@ -538,11 +561,12 @@ input.ng-invalid.ng-dirty.ng-touched {
 	height: 200px;
 	max-height: 200px;
 	overflow: hidden;
-	border-radius: 16px;
+	border-radius: 0px;
 	margin: 12px 0 16px;
 	padding: 14px 16px 30px;
-	background: linear-gradient(178.76deg, #6160DC -47.98%, #54C5EB 163.51%);
+	background: linear-gradient(135deg, #ff9085 0%, #a10029 100%);
 	position: relative;
+	bottom: 14px;
 
 	.carousel,
 	.carousel-inner,

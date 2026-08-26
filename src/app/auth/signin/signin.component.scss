@@ -51,6 +51,10 @@
 
 	@media (max-width: 899px){
 		margin-bottom: 25px;
+		font-size: 18px;
+		text-transform: uppercase;
+		font-family: serif;
+		position: relative;
 	}
 }
 
@@ -184,11 +188,31 @@
 	border: none;
 	border-radius: 25px;
 	padding: 20px 40px;
+	// Bounded width + auto-centering so the card reads as a deliberately
+	// composed, professional panel at every width, not a form stretched
+	// edge-to-edge -- wide screens already place it on the right via the
+	// column split below; this just keeps its own proportions sane.
+	width: 100%;
+	max-width: 460px;
+	margin-left: auto;
+	margin-right: auto;
 
+	// AUDIT FIX: this previously collapsed to `padding: 2px 2px !important`
+	// (labels/inputs touching the card edges -- not "formal/professional")
+	// plus a meaningless `bottom: 65px` (the card has no `position` set, so
+	// `bottom` was inert dead code doing nothing). Real, comfortable padding
+	// + a subtle border/shadow so the white card stays visually distinct now
+	// that its padding is no longer providing that separation implicitly.
 	@media (max-width: 899px){
-		padding: 8px 4px;
+		padding: 28px 22px;
+		border: 1px solid rgba(16, 24, 40, 0.06);
+		box-shadow: 0 4px 24px rgba(16, 24, 40, 0.06);
 	}
 
+	@media (max-width: 575px){
+		padding: 24px 18px;
+		border-radius: 18px;
+	}
 }
 
 .img-banner{
@@ -432,6 +456,20 @@ input.ng-invalid.ng-dirty.ng-touched {
   max-width: 100%;
   overflow-x: hidden;
 
+  // AUDIT FIX: below lg the mobile brand carousel (.gh-mobile-carousel,
+  // ~200px) now sits ABOVE this column as a sibling, but this rule still
+  // forced min-height:100vh on the form column itself -- stacking to
+  // ~100vh + 200px total and vertically centering the card inside that
+  // extra 100vh block, so the card that's supposed to read as centered
+  // actually sat well below the fold, with a wall of empty space above and
+  // below it. Below lg, size to natural content height instead so the
+  // carousel + card compose as one cohesive screen, not two stacked ones.
+  @media (max-width: 991.98px) {
+    min-height: auto;
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
   @media (max-width: 575px) {
     padding-left: 16px;
     padding-right: 16px;
@@ -487,11 +525,12 @@ input.ng-invalid.ng-dirty.ng-touched {
   height: 200px;
   max-height: 200px;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 0px;
   margin: 12px 0 16px;
   padding: 14px 16px 30px;
-  background: linear-gradient(178.76deg, #6160DC -47.98%, #54C5EB 163.51%);
+  background: linear-gradient(135deg, #ff9085 0%, #a10029 100%);
   position: relative;
+	bottom: 14px;
 
   .carousel,
   .carousel-inner,
