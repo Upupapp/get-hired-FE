@@ -39,6 +39,7 @@
       <div class="col-md-4">
         <h5 class="title-main mb-3">Resume</h5>
         <ng-container *ngFor="let item of resume; let i = index">
+          <div class="doc-file-row">
           <img src="assets/images/file-icon.png" class="col-md-2" />
 
           <div class="row w-100">
@@ -52,12 +53,14 @@
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
+          </div>
           </div>
         </ng-container>
       </div>
       <div class="col-md-4">
         <h5 class="title-main mb-3">Cover Letter</h5>
         <ng-container *ngFor="let item of coverLetter; let i = index">
+          <div class="doc-file-row">
           <img src="assets/images/file-icon.png" class="col-md-2" />
 
           <div class="row w-100">
@@ -72,11 +75,13 @@
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
           </div>
+          </div>
         </ng-container>
       </div>
       <div class="col-md-4">
         <h5 class="title-main mb-3">Government Files</h5>
         <ng-container *ngFor="let item of govFiles; let i = index">
+          <div class="doc-file-row">
           <img src="assets/images/file-icon.png" class="col-md-2" />
 
           <div class="row w-100">
@@ -90,6 +95,7 @@
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
+          </div>
           </div>
         </ng-container>
       </div>

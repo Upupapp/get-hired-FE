@@ -7,6 +7,15 @@
 	border: none;
 }
 
+// MOBILE-03: these elements only exist for the mobile recording redesign
+// below (max-width: 767px) — hidden by default so desktop is completely
+// unaffected by their presence in the DOM.
+.gh-mobile-question-meta,
+.gh-question-strip,
+.gh-recorder-actionbar-spacer {
+	display: none;
+}
+
 
 .bg-interview{
 	background: #DADADA;
@@ -361,6 +370,223 @@
 @media (prefers-reduced-motion: reduce) {
   .gh-recorder-recording-pulse { animation: none; }
   .gh-recorder-btn-primary:active { transform: none; }
+}
+
+// ─── MOBILE-03: Step 3 recording UX rethink ──────────────────────────────────
+//
+// Design reasoning (see final report for full write-up): the desktop layout
+// is a 2-column split — a video "banner" (col-lg-8) beside a controls
+// sidebar (col-lg-6). On mobile those columns already fall back to a plain
+// vertical stack (Bootstrap col-12), which is what made the previous BL-015
+// pass merely usable rather than good — a sidebar's worth of stacked
+// content (avatar card, timer card, duration line, next-question preview,
+// three action buttons) just piles up beneath the video with no hierarchy.
+//
+// This pass restructures that stack, mobile-only, around four ideas:
+//  1. Full-bleed video viewport (break out of the card's padding) so the
+//     recording area reads as the primary surface, the way a camera app
+//     would present it — not a boxed-in banner competing with the sidebar.
+//  2. A horizontal, swipeable question-progress strip (numbered pills)
+//     placed right under the video, replacing the desktop sidebar's
+//     scrollable question list — lets the applicant see "where am I" and
+//     jump to any question in one tap without hunting through a list.
+//  3. A sticky bottom action bar for Upload/Skip/Submit — the exact same
+//     buttons, just pinned within reach so the primary "next action" is
+//     never scrolled out of a one-thumb reach, matching the pattern the
+//     app already uses for the step submit bar (container-evaluate).
+//  4. A compact top question-meta chip + tightened applicant/timer strip
+//     so status information reads as a slim status bar, not a stack of
+//     equal-weight cards.
+// All under (max-width: 767px) to match this component's existing BL-015
+// breakpoint; every rule above this block (and outside this query) is
+// untouched, so desktop is pixel-identical to before this pass.
+@media (max-width: 767px) {
+  // Compact "Question X of N" chip shown above the video. Desktop keeps
+  // this information only inside the in-video overlay.
+  .gh-mobile-question-meta {
+    display: block;
+    margin-bottom: 8px;
+
+    &__count {
+      display: inline-block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--gh-coral, #FF675D);
+      background: var(--gh-coral-soft, #FFF0EE);
+      border-radius: var(--gh-badge-radius, 9999px);
+      padding: 5px 12px;
+    }
+  }
+
+  // Break the video out of the section's p-4 padding for a true full-bleed
+  // viewport — the recording surface should feel primary, not a banner
+  // boxed inside a sidebar layout that no longer exists at this width.
+  .record-container.gh-mobile-fullbleed {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    width: calc(100% + 3rem);
+    border-radius: 0;
+    min-height: unset;
+
+    .placeholder-img,
+    .gh-recorder-preview {
+      border-radius: 0;
+    }
+  }
+
+  // Horizontal question-progress strip: numbered, swipeable, current
+  // question highlighted with the brand coral. Mirrors the app's existing
+  // pill/badge vocabulary (--gh-badge-radius, --gh-coral) instead of
+  // introducing a new visual language.
+  .gh-question-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 12px 2px 4px;
+    margin-bottom: 4px;
+
+    &::-webkit-scrollbar { display: none; }
+
+    &__pill {
+      flex: 0 0 auto;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gh-border, #E7EAF3);
+      background: #fff;
+      color: var(--gh-text-secondary, #667085);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+      &--current {
+        background: var(--gh-coral, #FF675D);
+        border-color: var(--gh-coral, #FF675D);
+        color: #fff;
+      }
+
+      &--disabled {
+        opacity: 0.45;
+      }
+
+      &:active:not(:disabled) {
+        transform: scale(0.93);
+      }
+    }
+  }
+
+  // Applicant/timer block: two equal-weight cards on desktop become one
+  // slim compact status strip on mobile.
+  .question-container .bg-applicant {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 12px;
+
+    .row {
+      display: flex;
+      width: 100%;
+    }
+
+    .col-12.col-lg-6 {
+      flex: 1 1 50%;
+      max-width: 50%;
+    }
+
+    .initial-thumbnail-inner {
+      margin: 0 auto 0 0 !important;
+      height: 32px;
+      width: 32px;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .title-applicant {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .bg-timer {
+      box-shadow: none;
+      padding: 0;
+      background: transparent;
+      text-align: right;
+
+      .title-timer {
+        font-size: 16px;
+        margin: 0 !important;
+        justify-content: flex-end;
+      }
+
+      .title-duration {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .question-container .d-flex.align-items-center.my-2 {
+    font-size: 13px;
+  }
+
+  .question-container .bg-question {
+    padding: 10px 14px;
+
+    .title-question-number {
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .title-question-title {
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+
+  // Sticky bottom action bar: same Upload/Skip/Submit buttons, pinned
+  // within one-thumb reach instead of scrolling away with the page.
+  .gh-recorder-actionbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    margin: 0 !important;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 16px rgba(16, 24, 40, 0.1);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+
+    > div {
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .col-12.col-lg-12.mt-3 {
+      margin-top: 8px !important;
+    }
+
+    .btn-upload,
+    .btn-skip,
+    .btn-submit {
+      min-height: 46px;
+      font-size: 13px;
+    }
+  }
+
+  .gh-recorder-actionbar-spacer {
+    display: block;
+    height: 132px;
+  }
 }
 
 @media (max-width: 767px) {

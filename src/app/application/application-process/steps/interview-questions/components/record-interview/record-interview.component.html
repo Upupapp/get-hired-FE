@@ -3,7 +3,17 @@
     <div class="row">
       <!-- BANNER LEFT -->
       <div class="col-12 col-md-12 col-lg-8 mb-4" [@animate]="{value:'*', params:{ y:'-10px', delay: (150) + 'ms' }}">
-        <div class="record-container">
+
+        <!-- MOBILE-03: compact current-question indicator, shown above the
+             full-bleed video viewport on mobile only (hidden on desktop —
+             the same information already lives inside the video overlay
+             there). Gives an unambiguous "Question X of N" anchor before
+             the user even looks at the video. -->
+        <div class="gh-mobile-question-meta">
+          <span class="gh-mobile-question-meta__count">{{ 'INTERVIEW_PAGE_SECTION.QUESTIONS' | translate }} {{index + 1}} of {{interviews.length}}</span>
+        </div>
+
+        <div class="record-container gh-mobile-fullbleed">
           <div class="get-hired-logo">
             <img src="/assets/images/placeholder/logo.png">
           </div>
@@ -49,6 +59,26 @@
             </div>
           </div>
         </div>
+
+        <!-- MOBILE-03: horizontal question-progress strip — replaces the
+             desktop sidebar's "browse other questions" list with a
+             compact, swipeable row of numbered pills so the applicant can
+             see and jump to every question without leaving the recorder.
+             Desktop-hidden (that browsing already happens in the Questions
+             tab below the recorder there). -->
+        <nav class="gh-question-strip" aria-label="Interview questions">
+          <button type="button"
+            *ngFor="let q of interviews; let i = index"
+            class="gh-question-strip__pill"
+            [class.gh-question-strip__pill--current]="i === index"
+            [class.gh-question-strip__pill--disabled]="isVideoRecording && i !== index"
+            [disabled]="isVideoRecording && i !== index"
+            [attr.aria-current]="i === index ? 'step' : null"
+            [attr.aria-label]="'Question ' + (i + 1)"
+            (click)="goToQuestion(i)">
+            {{ i + 1 }}
+          </button>
+        </nav>
       </div>
 
       <div class="col-12 col-md-12 col-lg-4 mb-4 text-center question-container"
@@ -111,7 +141,12 @@
           </div>
         </div>
 
-        <div class="row mt-4">
+        <!-- MOBILE-03: on mobile this row becomes a sticky bottom action
+             bar (position fixed via CSS, same buttons/handlers — no
+             duplication) so Upload/Skip/Submit stay reachable with one
+             thumb no matter how far the question text has scrolled.
+             Desktop keeps its original in-flow grid layout untouched. -->
+        <div class="row mt-4 gh-recorder-actionbar">
           <div class="col-12 col-lg-6">
             <input #uploadFile hidden type="file" (change)="uploadVideo($event)"
               accept="video/mp4,video/x-m4v,video/*" />
@@ -137,6 +172,10 @@
             </button>
           </div>
         </div>
+        <!-- Spacer that only exists visually on mobile (via CSS) so the
+             sticky action bar above doesn't cover the last piece of
+             in-flow content. -->
+        <div class="gh-recorder-actionbar-spacer" aria-hidden="true"></div>
       </div>
     </div>
   </div>

@@ -246,3 +246,57 @@
         border-radius: 20.5868px;
     }
 }
+
+// APP-01 MOBILE REDESIGN: the "Browse Cover Letter"/"Browse Resume" label
+// (col-8) and the "Browse Files" button (col-4) sit side-by-side on desktop.
+// On a phone that column split gets too narrow, so the label wraps to two
+// lines while the button — top-aligned by default in a Bootstrap row —
+// ends up floating misaligned next to only the first line. Stack them
+// instead: full-width label block, then a full-width, comfortably tall
+// "Browse Files" button underneath, so the relationship between label and
+// action reads as intentional rather than accidental. Desktop layout above
+// (outside this query) is unchanged; breakpoint matches the app-wide 576px
+// convention used elsewhere in the Apply flow.
+@media (max-width: 576px) {
+    .uploader-container {
+        padding: 18px 16px;
+        max-height: none;
+
+        .row {
+            row-gap: 12px;
+        }
+
+        .col-8, .col-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        h6 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        span {
+            font-size: 12.5px;
+        }
+
+        .btn-uploader {
+            width: 100%;
+            margin-left: 0;
+            min-height: 44px;
+            font-size: 14px !important;
+        }
+    }
+
+    .truncate {
+        width: 100%;
+        max-width: 60vw;
+    }
+
+    .preview-file {
+        .title-preview,
+        .document-uploaded {
+            font-size: 14px;
+        }
+    }
+}

@@ -320,19 +320,38 @@
 		line-height: 22px;
 	}
 
-	// Document rows: force icon + filename onto one comfortable flex row
-	// instead of the desktop's col-md-* grid, which collapses to stacked
-	// full-width blocks with an oversized icon on narrow screens.
-	#profile-document .row.w-100 {
+	// Document rows: each file becomes one "perfectly-synced" card — fixed
+	// icon tile, filename/meta stacked to its right, size shown as a small
+	// trailing status chip. Same treatment for Resume / Cover Letter /
+	// Government Files so the three lists read as one consistent system
+	// instead of the desktop's col-md-* grid (which, with no wrapping
+	// column here, just stacks awkwardly with an oversized icon on narrow
+	// screens).
+	#profile-document .doc-file-row {
 		display: flex;
 		align-items: center;
 		flex-wrap: nowrap;
-		gap: 10px;
+		gap: 12px;
 		margin-bottom: 10px;
+		padding: 10px 12px;
+		background: var(--gh-bg, #F6F7FB);
+		border: 1px solid var(--gh-border, #E7EAF3);
+		border-radius: var(--gh-radius-sm, 8px);
 
 		img {
-			width: 28px !important;
+			width: 26px !important;
+			height: 26px !important;
 			flex: 0 0 auto;
+			object-fit: contain;
+		}
+
+		.row.w-100 {
+			display: flex;
+			align-items: center;
+			flex: 1 1 auto;
+			min-width: 0;
+			margin: 0;
+			gap: 8px;
 		}
 
 		.col-12 {
@@ -340,6 +359,27 @@
 			font-size: 13px;
 			line-height: 18px;
 			word-break: break-word;
+
+			&:first-of-type {
+				flex: 1 1 auto;
+				min-width: 0;
+				color: var(--gh-text, #101828);
+				font-weight: 500;
+			}
+
+			// The size figure ("x.xx MB") reads as a status/meta chip,
+			// right-aligned and visually distinct from the filename.
+			&:last-of-type {
+				flex: 0 0 auto;
+				font-size: 11px;
+				font-weight: 600;
+				color: var(--gh-text-secondary, #667085);
+				background: #fff;
+				border: 1px solid var(--gh-border, #E7EAF3);
+				border-radius: var(--gh-badge-radius, 9999px);
+				padding: 3px 9px;
+				white-space: nowrap;
+			}
 		}
 	}
 

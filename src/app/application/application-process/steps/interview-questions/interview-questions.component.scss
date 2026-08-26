@@ -436,3 +436,60 @@
 	margin-top: 10px;
 	font-weight: 600;
 }
+
+// MOBILE-03: the "browse other questions" panel below the recorder (this
+// component's own template/logic is excluded from this pass — mid-edit
+// elsewhere — so only visual polish via existing class hooks happens
+// here). Restrained tab typography, comfortable tap targets, and calmer
+// list-item spacing so this reads consistently with the rest of the
+// recording-step redesign in record-interview.component.scss. Breakpoint
+// matches that component's convention. Desktop rules above are untouched.
+@media (max-width: 767px) {
+	.card.card-body {
+		padding: 16px !important;
+	}
+
+	.title-job-interview,
+	.title-job-answer {
+		font-size: 14px !important;
+		line-height: 20px;
+		width: auto;
+		padding: 8px 4px;
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
+
+	#interview-list2 {
+		padding: 12px !important;
+
+		.logo-thumbnail,
+		.logo-thumbnail-2 {
+			height: 44px;
+			width: 44px;
+			min-width: 44px;
+			border-radius: 10px;
+
+			img { height: 20px; }
+		}
+
+		.title-label {
+			font-size: 14px;
+			line-height: 19px;
+		}
+
+		.title-label-sub {
+			font-size: 12.5px;
+			line-height: 17px;
+		}
+	}
+
+	.title-question-number {
+		font-size: 13px;
+	}
+
+	.title-question-title {
+		font-size: 14px;
+		line-height: 19px;
+	}
+}

@@ -107,6 +107,17 @@ export class RecordInterviewComponent implements OnInit {
     this.next.emit(this.index + 1);
   }
 
+  // MOBILE-03: horizontal question-progress strip navigation. Lets the
+  // applicant jump directly to any question from a compact tap target
+  // instead of scrolling a full sidebar list; blocked mid-recording so an
+  // active take can't be silently abandoned.
+  goToQuestion(i: number) {
+    if (this.isVideoRecording || i === this.index) {
+      return;
+    }
+    this.next.emit(i);
+  }
+
   startRecorder() {
     this.isVideoRecording = true;
     this.ref.detectChanges();
