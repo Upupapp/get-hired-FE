@@ -963,7 +963,14 @@ tr:last-child{
   // rather than a bare list dump.
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  // 20px, matching the same mobile card-spacing standard used on the
+  // Browse Jobs job-card (job-card.component.scss). Increasing the
+  // existing `gap` -- not adding a separate margin-bottom on
+  // .gh-mobile-card -- is the safe way to do this here since gap already
+  // owns spacing for this flex-wrap list; stacking a margin on top of an
+  // existing gap would double up (and leave a stray trailing margin after
+  // the last card) instead of just widening the one true gutter.
+  gap: 20px;
 
   .gh-mobile-card {
     background: #ffffff;
