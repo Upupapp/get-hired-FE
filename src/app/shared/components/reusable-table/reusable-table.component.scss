@@ -956,6 +956,14 @@ tr:last-child{
 
 #table-container-mobile {
   padding: 4px 0;
+  // Formal, professional card list: a flex-wrap grid (matches the outer
+  // <section>'s new flex/gap layout) instead of a plain margin-stacked
+  // column -- single column on narrow phones, a clean 2-up grid once
+  // there's room (~480px+) so the list reads as deliberately composed
+  // rather than a bare list dump.
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 
   .gh-mobile-card {
     background: #ffffff;
@@ -963,9 +971,14 @@ tr:last-child{
     border: 1px solid rgba(0, 0, 0, 0.07);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     padding: 14px 16px;
-    margin-bottom: 10px;
     cursor: pointer;
+    flex: 1 1 100%;
+    min-width: 0;
     animation: gh-card-reveal $motion-duration-card $motion-ease-standard both;
+
+    @media (min-width: 480px) {
+      flex: 1 1 calc(50% - 6px);
+    }
 
     // Tap compression haptic
     &:active {
@@ -1085,7 +1098,23 @@ tr:last-child{
 }
 
 @media (max-width: 767px) {
-  section { overflow-x: hidden; }
+  section {
+    overflow-x: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    // A touch of breathing room so content never sits flush against the
+    // viewport edges on mobile -- the section itself, and each direct
+    // child (search/filter row, card list, pagination row) below.
+    padding: 4px 12px;
+
+    // Each direct child becomes a full-width row within the new flex
+    // layout instead of shrink-wrapping to its content's width.
+    > * {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+  }
 }
 
 // ─── RT-02..05 MOBILEVIEW: absolute-positioned table chrome ──────────────────
