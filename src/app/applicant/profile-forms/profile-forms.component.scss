@@ -77,4 +77,19 @@
     min-height: 44px !important;
     flex: 1;
   }
+
+  // The step content wrapper (<div class="p-4 mt-5">, holds the identity
+  // card on step 1 and the corresponding form on steps 2-3) carries
+  // Bootstrap's .mt-5 (48px) top margin -- sized to clear the DESKTOP
+  // stepper header, which is position:fixed and fully out of flow there.
+  // On mobile .bg-upper-gray above is position:sticky instead (still in
+  // flow, occupying its own real space), so stacking the full 48px on
+  // top of that made the card/form read as "too far from the nav".
+  // Tightened here rather than via a position:relative;bottom hack, which
+  // would only visually shift the card while leaving that same 48px as
+  // dead space below it, and would risk the card sliding under the
+  // sticky header at scroll position 0.
+  .p-4.mt-5 {
+    margin-top: var(--gh-space-4, 16px) !important;
+  }
 }
