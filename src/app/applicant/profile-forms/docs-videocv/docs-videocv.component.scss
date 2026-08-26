@@ -24,3 +24,17 @@
 	border: none;
 	padding: 30px 30px !important;
 }
+
+// BRAND ACCENT: same restrained single-accent left-border treatment as
+// profile-basic-info.component.scss's .title-container -- applied here to
+// this step's section headers (no per-field inputs in this step), purely
+// a left border + padding, no structural/behavioral change.
+.title-container {
+	border-left: 3px solid var(--gh-coral, #FF675D);
+	padding-left: 12px;
+	transition: border-color 150ms ease;
+
+	&:focus-within {
+		border-left-color: var(--gh-azure, #168BFF);
+	}
+}

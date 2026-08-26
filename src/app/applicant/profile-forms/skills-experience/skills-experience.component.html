@@ -3,14 +3,16 @@
 
     <div class="row">
       <div class="col-12 col-md-6 mb-3">
-        <label class="text-center">Professional Skills</label>
-        <div class="form-group d-flex with-add search-group" style="height: 60px;">
-          <input type="text" name="search" class="form-control form-control-main" formControlName="skillsTxt"
-            style="background: white !important" placeholder="ex. Data Encoding, Ruby, JavaScript"
-            (keyup.up)="addSkills()">
-          <button class="btn btn-add-default text-white" (click)="addSkills()">
-            Add
-          </button>
+        <div class="title-container">
+          <label class="text-center">Professional Skills</label>
+          <div class="form-group d-flex with-add search-group" style="height: 60px;">
+            <input type="text" name="search" class="form-control form-control-main" formControlName="skillsTxt"
+              style="background: white !important" placeholder="ex. Data Encoding, Ruby, JavaScript"
+              (keyup.enter)="addSkills()">
+            <button class="btn btn-add-default text-white" (click)="addSkills()">
+              Add
+            </button>
+          </div>
         </div>
         <div class="d-flex flex-wrap">
           <div class="mt-3 d-flex" *ngIf="professionalSkills && professionalSkills.length > 0">

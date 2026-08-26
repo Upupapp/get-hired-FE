@@ -392,3 +392,16 @@ select.ng-invalid.ng-touched {
 	border-radius: 15px !important;
 	margin-bottom: 30px;
 }
+
+// BRAND ACCENT: same restrained single-accent left-border treatment as
+// profile-basic-info.component.scss's .title-container -- a slight
+// colored side edge on each field wrapper, no structural/behavioral change.
+.title-container {
+	border-left: 3px solid var(--gh-coral, #FF675D);
+	padding-left: 12px;
+	transition: border-color 150ms ease;
+
+	&:focus-within {
+		border-left-color: var(--gh-azure, #168BFF);
+	}
+}
