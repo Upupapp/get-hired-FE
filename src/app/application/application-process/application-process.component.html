@@ -76,7 +76,8 @@
             </ng-container>
 
             <ng-container *ngIf="stepper === 3">
-              <app-interview-questions [interviews]="job.interviewQuestions" (nextStep)="changeStep($event)">
+              <app-interview-questions [interviews]="job.interviewQuestions" [interviewTab]="interviewTabOverride"
+                (nextStep)="changeStep($event)">
               </app-interview-questions>
             </ng-container>
 

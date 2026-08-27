@@ -198,8 +198,15 @@ export class CandidateListComponent implements OnInit {
 
   viewMenu(event: any): void {
     if(event?.data.status !== 'imported') {
+      // BUGFIX: width:'34vw' was a fixed viewport fraction with no mobile
+      // fallback -- on a phone-width screen 34vw shrinks to ~120px, far too
+      // narrow for the panel's content. panelClass + maxWidth gives it a
+      // real responsive cap instead (see .candidate-panel-dialog in
+      // table-control-modal.component.scss).
       let openDialog = this.dialog.open(TableControlModalComponent, {
-        width: '34vw',
+        panelClass: 'candidate-panel-dialog',
+        width: '92vw',
+        maxWidth: '440px',
         data: event?.data,
       });
 

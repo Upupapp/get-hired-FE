@@ -1,7 +1,7 @@
 @import "src/assets/styles/colors";
+@import "src/assets/styles/tokens";
 
-
-:host ::ng-deep{
+:host ::ng-deep {
   ::-webkit-scrollbar {
     width: 3px !important;
     height: 10px;
@@ -9,62 +9,191 @@
   }
 }
 
-.side-sub-menu{
-    &-container{
-        cursor: pointer;
+.candidate-panel {
+  position: relative;
+  padding: var(--gh-space-6) var(--gh-space-5) var(--gh-space-5);
+  font-family: var(--gh-font-base);
 
-        &:hover{
-            img{
-                //transform: rotate(-360deg);
-                -webkit-transform: scaleX(-1);
-                transform: scaleX(-1);
-                transition: transform 0.4s ease; 
-            }
-        }
+  &__close {
+    position: absolute;
+    top: var(--gh-space-4);
+    right: var(--gh-space-4);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: var(--gh-radius-pill);
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease;
 
-        img{
-            margin-top: -3px;
-            margin-right: 10px;
-        }
+    img {
+      height: 12px;
+      opacity: 0.6;
     }
 
-    &-title{
-        color: #666;
-        font-size: 14px;
-        font-weight: bold;
-
+    &:hover {
+      background: var(--gh-bg);
     }
-}
+  }
 
-.btn-header-gray{
-  background: #D0D0D0;
-  color: #666;
-}
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: var(--gh-space-4);
+    padding-bottom: var(--gh-space-5);
+    margin-bottom: var(--gh-space-4);
+    border-bottom: 1px solid var(--gh-border);
+  }
 
+  &__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--gh-radius-pill);
+    object-fit: cover;
+    border: 2px solid var(--gh-border);
+    flex-shrink: 0;
+  }
 
+  &__identity {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
 
-.btn-header{
-  border-radius: 5px !important;
-  padding: 7px 30px !important;
-}
+  &__name {
+    font-size: var(--gh-text-card-size, 16px);
+    font-weight: var(--gh-weight-bold);
+    color: var(--gh-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
+  &__job {
+    font-size: 13px;
+    color: var(--gh-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-.dialog-responsive .mat-dialog-container
-{
-    //min-height: 70% !important;
-    min-width: 660px !important;
-    //max-height: 70% !important;
+  &__status {
+    display: inline-flex;
+    align-self: flex-start;
+    margin-top: var(--gh-space-1);
+    padding: 3px 10px;
+    border-radius: var(--gh-badge-radius);
+    font-size: 11px;
+    font-weight: var(--gh-weight-semibold);
+    text-transform: capitalize;
+    background: var(--gh-bg);
+    color: var(--gh-text-secondary);
 
-    @media (max-width: 768px){
-      min-width: unset !important;
-      width: 100% !important;
-      min-height: 50%;
-      min-height: 500px;
+    &.is-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--gh-success);
     }
+
+    &.is-warning {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--gh-warning);
+    }
+
+    &.is-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--gh-error);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gh-space-2);
+  }
+
+  &__action {
+    display: flex;
+    align-items: center;
+    gap: var(--gh-space-3);
+    width: 100%;
+    padding: var(--gh-space-3) var(--gh-space-4);
+    border: 1px solid var(--gh-border);
+    border-radius: var(--gh-radius-input);
+    background: var(--gh-white);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+      border-color: var(--gh-azure);
+      box-shadow: var(--gh-shadow-card);
+      transform: translateY(-1px);
+
+      .candidate-panel__action-chevron {
+        transform: translateX(2px);
+        color: var(--gh-azure);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &-icon,
+  &__action-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--gh-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+  }
+
+  &__action-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: var(--gh-weight-semibold);
+    color: var(--gh-text);
+  }
+
+  &__action-chevron {
+    color: var(--gh-text-muted);
+    font-size: 14px;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
 }
 
-.hvr-underline-from-center{
-    &::before{
-        background: $color-global-red;
+@media (max-width: 767px) {
+  .candidate-panel {
+    padding: var(--gh-space-5) var(--gh-space-4) var(--gh-space-4);
+
+    &__avatar {
+      width: 48px;
+      height: 48px;
     }
+
+    &__name {
+      font-size: 15px;
+    }
+  }
+}
+
+// panelClass lands on the CDK overlay pane, a sibling of this component's
+// host in the DOM -- ::ng-deep is required for it to take effect here.
+::ng-deep .candidate-panel-dialog .mat-dialog-container {
+  border-radius: var(--gh-radius-card) !important;
+  padding: 0 !important;
+  overflow: hidden;
 }

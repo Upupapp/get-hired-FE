@@ -31,6 +31,20 @@ export class TableControlModalComponent implements OnInit {
     (event.target as HTMLImageElement).src = '/assets/images/placeholder/job-post-banner-person.png';
   }
 
+  get statusClass(): string {
+    const status = (this.data?.status || '').toString().toLowerCase();
+    if (status.includes('hire') || status.includes('accept') || status.includes('approve')) {
+      return 'is-success';
+    }
+    if (status.includes('reject') || status.includes('decline') || status.includes('fail')) {
+      return 'is-error';
+    }
+    if (status.includes('pending') || status.includes('review') || status.includes('progress')) {
+      return 'is-warning';
+    }
+    return 'is-neutral';
+  }
+
   close() {
     this.dialogRef.close(null);
   }

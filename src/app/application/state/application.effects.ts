@@ -37,10 +37,21 @@ export class ApplicationEffects {
           // so the FE can show the appropriate inline panel.
           catchError((err) => {
             const errBody = err && err.error ? err.error : {};
+            // BUGFIX: a 413 (payload too large -- almost always an
+            // oversized base64 video interview answer, see server.js's new
+            // /api/application/apply size limit + JSON error handler) was
+            // falling into the generic branch below and showing "Something
+            // went wrong. Please try again." with no indication of what
+            // was actually wrong or how to fix it.
             const errorCode = err && err.status === 409
               ? (errBody.code || 'JOB_APPLICATION_ALREADY_EXISTS')
-              : null;
-            const errorMsg = errBody.error || errBody.message || 'Something went wrong. Please try again.';
+              : err && err.status === 413
+                ? (errBody.code || 'PAYLOAD_TOO_LARGE')
+                : null;
+            const errorMsg = errBody.error || errBody.message ||
+              (err && err.status === 413
+                ? 'One of your uploaded files is too large -- this is most often a recorded video interview answer. Please remove or re-record the oversized video and try again.'
+                : 'Something went wrong. Please try again.');
             return of(ApplicationActions.submitApplicationFail({ payload: errorMsg, errorCode: errorCode }));
           })
         )

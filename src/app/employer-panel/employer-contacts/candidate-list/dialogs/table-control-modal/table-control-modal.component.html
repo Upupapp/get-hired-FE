@@ -1,34 +1,28 @@
-<div class="side-sub-menu px-0">
-	<span class="close float-end">
-		<img src="/assets/images/placeholder/icons/remove-gray.png"
-		style="height: 13px; cursor: pointer;" (click)="dialogRef.close()">
-	</span>
+<div class="candidate-panel">
+	<button type="button" class="candidate-panel__close" (click)="dialogRef.close()" aria-label="Close">
+		<img src="/assets/images/placeholder/icons/remove-gray.png" alt="">
+	</button>
 
-	<h6 class="pb-3 d-flex" style="border-bottom: dashed 1px #d9d9d9;">
-		<img [src]="data?.data?.photoUrl" class="img-avatar"
+	<div class="candidate-panel__header">
+		<img [src]="data?.photo_url || '/assets/images/placeholder/job-post-banner-person.png'" class="candidate-panel__avatar"
 		     alt="Applicant photo"
 		     (error)="onAvatarError($event)">
 
-		<div class="mt-1 ms-2">
-			<strong class="text-capitalize">{{data?.full_name}}</strong>
-
-			<br><!--  - Applied to Job ID {{data?.data?.job_id}} -->
-			<small>{{data?.job_title}} - </small>
-			<small>{{data?.status}}</small>
-		</div>
-	</h6>
-
-
-
-	<div class="row">
-		<div class="col-12 col-md-6 my-2" *ngFor="let menu of tableControls">
-			<div class="side-sub-menu-container text-center p-3 w-100 hvr-underline-from-center"
-			[ngStyle]="{ background: menu?.background }"
-			(click)="openControlMenu(menu)">
-				<!-- <img [src]="menu?.icon" width="18px"> -->
-				<span class="side-sub-menu-title">{{menu.title}}</span>
-			</div>
+		<div class="candidate-panel__identity">
+			<strong class="candidate-panel__name text-capitalize">{{data?.full_name}}</strong>
+			<span class="candidate-panel__job" *ngIf="data?.job_title">{{data?.job_title}}</span>
+			<span class="candidate-panel__status" *ngIf="data?.status" [ngClass]="statusClass">{{data?.status}}</span>
 		</div>
 	</div>
-</div>
 
+	<div class="candidate-panel__actions">
+		<button type="button" class="candidate-panel__action" *ngFor="let menu of tableControls"
+			(click)="openControlMenu(menu)">
+			<span class="candidate-panel__action-icon" [ngStyle]="{ background: menu?.background }">
+				<img [src]="menu?.icon" alt="">
+			</span>
+			<span class="candidate-panel__action-title">{{menu.title}}</span>
+			<i class="bi bi-chevron-right candidate-panel__action-chevron" aria-hidden="true"></i>
+		</button>
+	</div>
+</div>

@@ -77,6 +77,29 @@ export class InterviewQuestionsComponent implements OnInit {
     this.changeQuestion(index + 1);
   }
 
+  // BUGFIX: submitting an application with a recorded video answer could
+  // fail with a 413 (payload too large -- the video is sent as base64 JSON,
+  // see server.js's dedicated /api/application/apply limit) with no way
+  // for the applicant to tell which answer was the problem or fix it short
+  // of restarting the whole application. Approximates the original file
+  // size from the base64 string length (base64 has no persisted Blob/File
+  // by this point) so each answer's size is visible, and removeAnswer()
+  // below lets the applicant drop a specific oversized answer and re-record
+  // it via the Questions tab instead.
+  answerSizeMb(base64: string): number {
+    if (!base64) return 0;
+    const commaIdx = base64.indexOf(',');
+    const data = commaIdx >= 0 ? base64.slice(commaIdx + 1) : base64;
+    const padding = data.endsWith('==') ? 2 : data.endsWith('=') ? 1 : 0;
+    const bytes = Math.floor((data.length * 3) / 4) - padding;
+    return bytes / (1024 * 1024);
+  }
+
+  removeAnswer(index: number, event: Event) {
+    event.stopPropagation();
+    this.interviewAnswers.removeAt(index);
+  }
+
   previewVideo(question, url) {
     let dialog = this.dialog.open(VideoPreviewComponent, {
       width: '92vw',

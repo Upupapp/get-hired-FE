@@ -25,7 +25,10 @@
 <div class="px-3 px-lg-5" style="margin-top: -60px">
   <div class="row">
     <div class="col-12 col-md-4 col-lg-4 mb-3">
-      <div class="orange mb-2 card-application" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
+      <div class="orange mb-2 card-application card-application--clickable" role="button" tabindex="0"
+        [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
+        (click)="goToApplications()" (keydown.enter)="goToApplications()" (keydown.space)="goToApplications()"
+        [attr.aria-label]="('APPLICANT_DASHBOARD.WIDGET_ACTIVE_APPLICATION' | translate) + ': view your applications'">
         <h5 class="title-card">
           {{ 'APPLICANT_DASHBOARD.WIDGET_ACTIVE_APPLICATION' | translate }}
           <img
@@ -41,7 +44,10 @@
     </div>
 
     <div class="col-12 col-md-4 col-lg-4 mb-3">
-      <div class="card-application yellow mb-2" [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }">
+      <div class="card-application card-application--clickable yellow mb-2" role="button" tabindex="0"
+        [@animate]="{ value: '*', params: { y: '10px', delay: '550ms' } }"
+        (click)="goToApplications()" (keydown.enter)="goToApplications()" (keydown.space)="goToApplications()"
+        [attr.aria-label]="('APPLICANT_DASHBOARD.WIDGET_VIDEO_INTERVIEW' | translate) + ': view your applications'">
         <h5 class="title-card">
           {{ 'APPLICANT_DASHBOARD.WIDGET_VIDEO_INTERVIEW' | translate }}
           <img
@@ -56,8 +62,10 @@
       </div>
     </div>
     <div class="col-12 col-md-4 col-lg-4 mb-3">
-      <div class="mb-2 card-application-hired" style="position: relative;"
-        [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}">
+      <div class="mb-2 card-application-hired card-application--clickable" style="position: relative;" role="button" tabindex="0"
+        [@animate]="{value:'*', params:{ y:'10px', delay:'550ms' }}"
+        (click)="goToApplications()" (keydown.enter)="goToApplications()" (keydown.space)="goToApplications()"
+        aria-label="Total Job Application: view your applications">
         <h5 class="title-card">Total Job Application</h5>
         <h3 class="title-stat">{{cardDetails?.totals}}</h3>
         <!-- <h5 class="title-stat-sub-hired">80% Total Increase</h5> -->

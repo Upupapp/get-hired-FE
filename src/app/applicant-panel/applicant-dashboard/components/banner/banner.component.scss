@@ -170,6 +170,26 @@
   height: 110px;
 }
 
+// BUGFIX: these cards had cursor:pointer and an arrow icon suggesting they
+// were clickable, but no click handler existed anywhere -- clicking did
+// nothing. Now wired to goToApplications() in banner.component.ts; this
+// adds a visible :focus-visible ring (keyboard users tab to these via
+// role="button"/tabindex="0") and a small press affordance so the
+// interaction reads as real, not just decorative.
+.card-application--clickable {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
 .card-application-interview {
   border-radius: 15px;
   padding: 20px 12px 10px 15px;

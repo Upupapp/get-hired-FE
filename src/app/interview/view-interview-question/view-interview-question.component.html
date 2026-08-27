@@ -1,25 +1,25 @@
-<div class="mt-2 row interview-question" [@animate]="{value:'*', params:{ y:'10px', delay:  (index * 150) + 'ms' }}">
-  <div class="col-12">
-    <div class="float-end">
+<div class="mt-2 row interview-question gh-vq" [@animate]="{value:'*', params:{ y:'10px', delay:  (index * 150) + 'ms' }}">
+  <div class="col-12 gh-vq__col">
+    <div class="float-end gh-vq__actions">
       <div class="text-end" *ngIf="canDelete">
         <img src="/assets/images/placeholder/icons/remove-gray.png"
         style="height: 14px; margin-top: -17px; cursor: pointer;" class="me-2"
         (click)="removeItem(index)">
       </div>
 
-      <div class="mt-2">
+      <div class="mt-2 gh-vq__record-wrap">
         <!-- <button class="btn btn-upload me-2" (click)="uploadItem(index)">Upload</button> -->
 
-        <button class="btn btn-record" (click)="recordItem(index)"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record / Upload Interview</button>
+        <button class="btn btn-record gh-vq__record-btn" (click)="recordItem(index)"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record / Upload Interview</button>
       </div>
     </div>
 
-    <div class="d-flex">
-      <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
+    <div class="d-flex gh-vq__info">
+      <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center gh-vq__icon">
         <img src="/assets/images/placeholder/icons/interview-logo-4.png">
       </div>
 
-      <div class="mt-2">
+      <div class="mt-2 gh-vq__text">
         <p class="title-label-sub">
           <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
           Question {{index + 1}}

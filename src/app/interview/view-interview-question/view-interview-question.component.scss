@@ -198,3 +198,91 @@
     color: #9c9c9c;
   }
 }
+
+// ─── MOBILE: Step 3 question-list rethink ────────────────────────────────────
+//
+// This row had no mobile handling at all: the question icon/text (.d-flex)
+// and the Record/Upload button (.float-end) sat in the same in-flow column
+// with the button pulled right by a bare Bootstrap float -- on a narrow
+// screen that leaves the button squeezed beside wrapped question text
+// instead of below it, and consecutive rows had no separation, so the whole
+// list read as one crowded block. Scoped entirely to (max-width: 767px);
+// every selector above (and desktop at any wider width) is untouched.
+@media (max-width: 767px) {
+  .gh-vq {
+    margin: 0 0 12px !important;
+    padding: 14px 14px 12px;
+    background: #fff;
+    border: 1px solid var(--gh-border, #E7EAF3);
+    border-radius: var(--gh-radius-input, 12px);
+  }
+
+  .gh-vq__col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // Question info first (top), actions second (bottom) — overrides the
+  // float so it participates in the column instead of floating out of it.
+  .gh-vq__info {
+    order: 1;
+  }
+
+  .gh-vq__actions {
+    order: 2;
+    float: none !important;
+    width: 100%;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--gh-border, #E7EAF3);
+  }
+
+  .gh-vq__icon.logo-thumbnail {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    flex-shrink: 0;
+
+    img {
+      height: 22px;
+    }
+  }
+
+  .gh-vq__text {
+    margin-top: 0;
+    min-width: 0;
+
+    .title-label-sub {
+      font-size: 12px;
+      margin-bottom: 2px;
+
+      img {
+        height: 14px !important;
+      }
+    }
+
+    .title-label {
+      font-size: 15px;
+      line-height: 20px;
+      margin-bottom: 4px;
+    }
+
+    .title-label-sub-duration {
+      font-size: 11px;
+    }
+  }
+
+  .gh-vq__record-wrap {
+    margin-top: 0 !important;
+  }
+
+  .gh-vq__record-btn.btn-record {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+}

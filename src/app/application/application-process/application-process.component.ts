@@ -37,6 +37,10 @@ export class ApplicationProcessComponent implements OnInit {
   // LAUNCH-01: tracks submission lifecycle for inline feedback panels
   submitStatus: string = 'idle'; // idle | submitting | success | error | duplicate
   submitError: string = '';
+  // Forces app-interview-questions to the Answers tab after a
+  // PAYLOAD_TOO_LARGE submit failure, so the flagged oversized video is
+  // immediately visible rather than the default Questions tab.
+  interviewTabOverride: string = 'questions';
 
   stepperItems: any[] = [
     {
@@ -193,6 +197,23 @@ export class ApplicationProcessComponent implements OnInit {
     if (result.errorCode === 'JOB_APPLICATION_ALREADY_EXISTS') {
       this.submitStatus = 'duplicate';
       this.isSubmitting = false;
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // BUGFIX: a 413 gave the applicant a dead-end generic error with no way
+    // to tell which upload was the problem. Sends them straight back to the
+    // Answers tab, where each recorded answer now shows its size and a
+    // Remove button (interview-questions.component.ts/.html) so they can
+    // drop the oversized video and re-record it instead of restarting.
+    if (result.errorCode === 'PAYLOAD_TOO_LARGE') {
+      this.submitStatus = 'error';
+      this.isSubmitting = false;
+      this.submitError = (typeof result.error === 'string' && result.error.trim())
+        ? result.error
+        : 'One of your uploaded files is too large -- this is most often a recorded video interview answer.';
+      this.stepper = 3;
+      this.interviewTabOverride = 'answers';
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       return;
     }

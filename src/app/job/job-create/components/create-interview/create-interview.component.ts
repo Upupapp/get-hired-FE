@@ -92,7 +92,15 @@ export class CreateInterviewComponent implements OnInit {
       .pipe()
       .subscribe((result) => {
         if (result == 1) {
-          this.jobFacade.deleteJobInterview(questionId, this.jobId);
+          // BUGFIX: a question added in this session (e.g. AI Assistant
+          // prefill, or "Add question" before the job is first saved) has
+          // no questionId yet -- it was never persisted. Dispatching
+          // deleteJobInterview(undefined, jobId) sent a bogus backend
+          // request that surfaced as a spurious error toast via jobError$
+          // even though the local removal below is all that's needed.
+          if (questionId) {
+            this.jobFacade.deleteJobInterview(questionId, this.jobId);
+          }
 
           this.questionsContainer.splice(index, 1);
           controlArray.removeAt(index);
@@ -118,8 +126,27 @@ export class CreateInterviewComponent implements OnInit {
       .pipe()
       .subscribe((result) => {
         if (result) {
-          console.log(result);
-          this.jobFacade.updateJobInterview(result);
+          // BUGFIX: neither interviewQuestions (the FormArray) nor
+          // questionsContainer (what the template actually renders) was
+          // ever patched with the edited fields -- this only dispatched to
+          // the backend and waited for afterSubmit()'s broad 'updated'
+          // reset, which itself rebuilds from interviewQuestions.value, so
+          // the dialog closed but the old question text/duration/retakes
+          // kept showing until an unrelated full form reload happened to
+          // occur. Apply the edit locally now, matching removeItem()'s
+          // existing optimistic-update pattern, so it reflects immediately.
+          const group = this.interviewQuestions.at(index) as FormGroup;
+          if (group) {
+            group.patchValue(result);
+          }
+          this.questionsContainer[index] = { ...this.questionsContainer[index], ...result };
+
+          // A question added this session (no questionId yet, never
+          // persisted) has nothing to update on the backend -- same
+          // unsaved-question guard as removeItem().
+          if (result.questionId) {
+            this.jobFacade.updateJobInterview(result);
+          }
         }
       });
 
@@ -127,7 +154,14 @@ export class CreateInterviewComponent implements OnInit {
 
   afterSubmit(event) {
     if (event == 'updated') {
-      this.questionsContainer = [...this.questions];
+      // BUGFIX: this.questions is a static @Input() snapshot from the
+      // parent, never refreshed live -- resetting questionsContainer from
+      // it could resurrect an already-deleted question (parent hadn't
+      // re-emitted yet) and desync questionsContainer's indexes from the
+      // live interviewQuestions FormArray, causing a later delete to pick
+      // up the wrong questionId. Resync from the FormArray itself instead,
+      // since that's the array removeItem()/editItem() actually operate on.
+      this.questionsContainer = [...this.interviewQuestions.value];
 
       this.snackbarService.success(`Interview Question successfully updated`, '');
 

@@ -640,9 +640,26 @@
     bottom: unset;
   }
 
+  // BUGFIX: the question text (.bg-main-question) and the Start/Settings/
+  // Stop controls (.gh-recorder-controls) shared one plain .d-flex row with
+  // no responsive override -- on a narrow screen that squeezed the buttons
+  // beside wrapped question text instead of giving each its own full-width
+  // line, making both hard to read. Stack them top (question) to bottom
+  // (controls) instead.
+  .record-container .bg-bottom > .d-flex {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
   .record-container .bg-main-question {
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .record-container .gh-recorder-controls {
+    justify-content: center;
+    margin: 0 !important;
   }
 
   // Ensure record container expands to fit content on mobile
