@@ -44,6 +44,58 @@
   position: relative;
 }
 
+// BUGFIX: on a narrow (mobile) screen, this list's parent column shrinks to
+// a fraction of its desktop width, but the badges kept trying to lay out
+// left-to-right with no wrap and no overflow handling -- with only 3-4
+// skills added, the row already hit the column's right edge, and anything
+// beyond that either got visually clipped by an ancestor or pushed the
+// page into unwanted horizontal scrolling. Kept explicitly left-to-right,
+// single-row (nowrap) per spec -- badges never wrap to a second line or
+// shrink to fit -- and once the row's natural width exceeds the
+// container's, this container scrolls horizontally instead, so every
+// skill stays fully readable at its normal size.
+.gh-skills-list {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px;
+  margin-top: 4px;
+  border-radius: 8px;
+  transition: border-color 150ms ease, background-color 150ms ease;
+
+  .mt-3.d-flex {
+    flex-wrap: nowrap;
+  }
+
+  // Only take on the "contained list" look once there's actually
+  // something to contain -- an empty state stays visually silent.
+  &:has(.requirement-badge) {
+    border: 1px solid var(--gh-border, #E7EAF3);
+    background: var(--gh-bg, #F6F7FB);
+    padding: 10px 8px;
+  }
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--gh-border, #E7EAF3);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--gh-text-muted, #98A2B3);
+  }
+}
+
+.gh-skills-list__item {
+  // Never shrink or wrap the badge's own text -- the container scrolls
+  // instead, per spec. Each badge keeps its natural, fully-readable width.
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 // BRAND ACCENT: same restrained single-accent left-border treatment as
 // profile-basic-info.component.scss's .title-container -- a slight
 // colored side edge on the field wrapper, no structural/behavioral change.
