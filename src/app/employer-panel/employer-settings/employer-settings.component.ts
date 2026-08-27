@@ -135,8 +135,16 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
   }
 
   promptCreateCompany(): void {
+    // BUGFIX: fixed width:'30vw' with no mobile fallback shrank to
+    // ~96-124px on a 320-414px phone -- and since disableClose:true makes
+    // this dialog inescapable for any employer without a company yet, that
+    // made the very first step of employer onboarding unusable on mobile.
+    // The form inside (company-basic.component.html) is already fluid
+    // (Bootstrap .form-control / w-100), so a responsive dialog width alone
+    // fixes it.
     const dialogRef = this.dialog.open(CompanyBasicComponent, {
-      width: '30vw',
+      width: '92vw',
+      maxWidth: '420px',
       disableClose: true
     });
 

@@ -59,8 +59,15 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
     }
 
     this.hasEmployerDraft = this.jobPreviewService.hasPendingToken();
-    const pendingApply = localStorage.getItem('gh_pending_apply_job_id');
-    this.hasJobApplyIntent = !!pendingApply;
+    // BUGFIX: gh_pending_apply_job_id is never written anywhere in this
+    // codebase -- the real guest-apply-to-job flow stores its intent in
+    // `returnURL` as `/jobs/details/{jobId}` (see
+    // application-process.component.ts's "resume after sign-up" comment).
+    // Reading the dead key made hasJobApplyIntent permanently false, so the
+    // "Recommended for applying to jobs" hint and the employer/job-seeker
+    // conflict dialog below never fired, even when the intent was known.
+    const returnUrl = localStorage.getItem('returnURL');
+    this.hasJobApplyIntent = !!returnUrl && /^\/jobs\/details\//.test(returnUrl);
 
     if (this.hasEmployerDraft) {
       this.recommendedRole = 'employer';
