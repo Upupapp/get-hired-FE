@@ -20,7 +20,7 @@ and was **not** merged — doing so would delete `admin-panel/` and `applicant-p
 |---|---|
 | `ng build --configuration=production` | PASS |
 | `ng run get-hired:server` (SSR bundle) | PASS |
-| `ng test` (ChromeHeadless) | 140/295 at merge time; **296/296 after §7** |
+| `ng test` (ChromeHeadless) | 140/295 at merge time; **384/384 after §7–§8** |
 
 The 155 failures were measured **twice**: once on pristine `origin/master` `923d9144`
 and once with this branch's changes applied. The failing spec-name sets are byte-identical,
@@ -182,3 +182,70 @@ the precondition the role guards enforce at runtime.
   real form mirroring `job-create.component.ts` `setFormGroup()`.
 - Coverage did not increase. This restores a gate that was reporting noise; it does not
   add behavioural tests for the untested surface.
+
+
+## 8. Behavioural tests for the apply flow and job-create stepper
+
+§7 restored the suite but did not add coverage: every `should create` proves only that
+a component can be constructed. This adds **58 behavioural specs** (296 → 384) over the
+two highest-traffic paths, both of whose controllers had **no spec at all** — only their
+child steps did.
+
+### What is now covered
+
+**`application-process.component.ts` (26 specs)** — the apply-flow controller:
+- the **double-submit guard**, and that a failed submission re-opens it for retry;
+- what the payload actually contains (`jobId`/`candidateId`/`applicantId`, `profileDocs`
+  flattened rather than nested, `interviewAnswers` copied not aliased);
+- all four `submitResult$` outcomes, which matter because success, error and errorCode
+  arrive on one stream (LAUNCH-01) and a regression in any arm looks identical to the
+  applicant — the form just sits there: success, `JOB_APPLICATION_ALREADY_EXISTS` →
+  the dedicated duplicate panel rather than "check your connection",
+  `PAYLOAD_TOO_LARGE` → back to step 3 on the Answers tab so the oversized video is
+  findable, and generic failure preferring the backend's real text over the fallback;
+- `changeStep()` opening the interview notification only on step 3, and the skip path;
+- `redirectToUpdate()` storing `returnURL` so the applicant comes back to the job.
+
+**`job-create.component.ts` (32 specs)** — the stepper:
+- **Simplified mode hides Step 3**, so forward (`onNextStep`), back (`onBackStep`) and
+  every `changeStep()` caller must route around it, and the Next/Back button labels must
+  name the step actually landed on rather than `stepper ± 1`;
+- `visibleStepperItems` filtering the display **without** mutating `stepperItems`, which
+  the index-based lookups still depend on;
+- step-1 and step-2 validation gating, including that fields get marked touched so the
+  errors are visible;
+- the unsaved-interview-question guard and both of its dialog outcomes;
+- **`changeStep()` saving the group of the step being LEFT**, verified on the two cases
+  the original `event - 2` bug got wrong: backward navigation and arbitrary jumps;
+- `formatJob()` converting `FREELANCE_JOB_TYPE_SENTINEL` to `null` — `gethired.job_type`
+  has no Freelance row and `job_type_id` is a real FK.
+
+**`job-field-resolvers` + `job-level-resolver` (30 specs)** — the free-text → id mapping
+that feeds job-create from the AI assistant and guest drafts. Asserts the id values
+themselves, the precedence rules (hybrid before onsite, contract before freelance,
+explicit seniority before a years-of-experience number), that the level resolver returns
+ids **from the caller's list** rather than hardcoding any, and that `confidence` is
+right — callers auto-fill on `high` and only suggest on `medium`.
+
+### These were verified to actually fail
+
+A test that cannot fail is worse than no test, so each headline claim was checked by
+reintroducing the bug it describes and confirming the suite goes red:
+
+| Mutation | Caught by |
+|---|---|
+| `changeStep` reverted to `stepperItems[event - 2]` | 2 specs (backward nav, arbitrary jump) |
+| `formatJob` no longer nulls the Freelance sentinel | 1 spec |
+| apply-flow double-submit guard removed | 1 spec |
+| Simplified skip lands on Step 3 instead of Step 4 | 1 spec |
+| `changeStep`'s hidden-step redirect deleted | 2 specs |
+| `nextStepTitle` reverted to naive `stepper + 1` | 1 spec |
+
+All eight mutations were caught by the specs written for them, and the source was
+restored to a zero diff afterwards.
+
+### Scope
+
+No product code changed. `ngOnInit` is not exercised in either controller spec — both
+resolve identity from `localStorage` and start facade loads — so these cover controller
+logic, not bootstrap. The child step components still have only smoke tests.
