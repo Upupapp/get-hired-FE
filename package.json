@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "npm run build:ssr",
+    "build:ssr": "ng build --configuration=production && ng run get-hired:server --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "heroku-postinstall": "npm install --force",

@@ -48,22 +48,22 @@ export class SubscriptionLifecycleService {
   constructor(private http: HttpClient) {}
 
   getLifecycleStatus(): Observable<LifecycleStatusResponse> {
-    return this.http.get<LifecycleStatusResponse>(`${this.base}/api/subscriptions/lifecycle/status`);
+    return this.http.get<LifecycleStatusResponse>(`${this.base}/subscriptions/lifecycle/status`);
   }
 
   getCheckoutReturnStatus(intentId: string): Observable<CheckoutReturnStatus> {
-    return this.http.get<CheckoutReturnStatus>(`${this.base}/api/subscriptions/checkout-intent/${intentId}/return-status`);
+    return this.http.get<CheckoutReturnStatus>(`${this.base}/subscriptions/checkout-intent/${intentId}/return-status`);
   }
 
   getNotifications(): Observable<{ success: boolean; notifications: SubscriptionNotification[] }> {
-    return this.http.get<any>(`${this.base}/api/subscriptions/notifications`);
+    return this.http.get<any>(`${this.base}/subscriptions/notifications`);
   }
 
   markNotificationRead(id: number): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.base}/api/subscriptions/notifications/${id}/read`, {});
+    return this.http.post<{ success: boolean }>(`${this.base}/subscriptions/notifications/${id}/read`, {});
   }
 
   triggerDunningCheck(): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.base}/api/subscriptions/dunning/check`, {});
+    return this.http.post<{ success: boolean }>(`${this.base}/subscriptions/dunning/check`, {});
   }
 }

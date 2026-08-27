@@ -74,7 +74,7 @@ export class SubscriptionUpgradeRecommendationService {
   constructor(private http: HttpClient) {}
 
   getRecommendation(trigger?: string, surface?: string): Observable<UpgradeRecommendationResponse> {
-    let url = `${this.base}/api/subscriptions/upgrade-recommendation`;
+    let url = `${this.base}/subscriptions/upgrade-recommendation`;
     const params: string[] = [];
     if (trigger) params.push(`trigger=${encodeURIComponent(trigger)}`);
     if (surface) params.push(`surface=${encodeURIComponent(surface)}`);
@@ -83,7 +83,7 @@ export class SubscriptionUpgradeRecommendationService {
   }
 
   recordEvent(eventName: string, properties: Record<string, any> = {}): void {
-    this.http.post(`${this.base}/api/subscriptions/upgrade-analytics`, {
+    this.http.post(`${this.base}/subscriptions/upgrade-analytics`, {
       eventName,
       properties,
     }).subscribe({ error: () => {} }); // fire-and-forget

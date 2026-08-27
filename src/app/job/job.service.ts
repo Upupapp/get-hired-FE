@@ -11,6 +11,10 @@ export class JobService {
 
   jobUrl = `${environment.api_url}/job`;
   optionUrl = `${environment.api_url}/options`;
+  // The backend splits interview-question CRUD across two routers: the UPDATE is
+  // interviewRoute.js (/api/interview/...), the DELETE is jobsRoute.js (/api/job/...).
+  // Asymmetric but real — keep both bases so the two are not conflated again.
+  interviewUrl = `${environment.api_url}/interview`;
 
   constructor(
     private baseService: BaseService
@@ -35,7 +39,10 @@ export class JobService {
   }
 
   updateJobInterviewQuestions(interviewQuestion: InterviewModel.InterviewQuestion) {
-    return this.baseService.put<InterviewModel.InterviewQuestion>(`${this.jobUrl}/updatejobinterview`, interviewQuestion);
+    // PUT /api/interview/updatejobinterview — the only route the backend exposes
+    // for this operation. Was /api/job/updatejobinterview, which has no handler:
+    // every question edit 404'd while the UI reported success optimistically.
+    return this.baseService.put<InterviewModel.InterviewQuestion>(`${this.interviewUrl}/updatejobinterview`, interviewQuestion);
   }
 
   deleteJobInterviewQuestions(questionId: string, jobId: string) {
