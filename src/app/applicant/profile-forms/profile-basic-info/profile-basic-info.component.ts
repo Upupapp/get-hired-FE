@@ -19,6 +19,18 @@ import * as Model from '../../applicant.model';
 export class ProfileBasicInfoComponent implements OnInit {
   @Input() user: any;
   @Output() submitBasicInfo: EventEmitter<any> = new EventEmitter();
+  // BUGFIX: the parent wizard's "Next" button advanced to Step 2 the
+  // instant it dispatched the save action, without waiting for the actual
+  // HTTP response -- by the time the backend replied (success OR failure),
+  // this component was already destroyed (stepper flips via *ngIf) and its
+  // success$/error$ subscriptions torn down in ngOnDestroy(), so neither
+  // outcome was ever seen: a successful save showed no confirmation, and a
+  // FAILED save (network hiccup, backend validation, session hiccup) was
+  // completely silent -- the user was already on Step 2 with Short Bio (and
+  // everything else on this step) never actually persisted. This output
+  // lets the parent gate navigation on the real outcome instead of firing
+  // it blind.
+  @Output() saveResult: EventEmitter<'success' | 'error'> = new EventEmitter();
 
   photo: string;
 
@@ -26,6 +38,7 @@ export class ProfileBasicInfoComponent implements OnInit {
   profileImage: any;
   salaryCurrencies = currencies;
   applicantProfileId: string;
+  private submitting = false;
 
   loading$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));
@@ -38,6 +51,13 @@ export class ProfileBasicInfoComponent implements OnInit {
   level$ = this.applicantFacade.level$;
   success$ = this.applicantFacade.success$
     .pipe().subscribe(this.afterSubmit.bind(this))
+
+  // BUGFIX: this component never listened for a save failure at all --
+  // saveApplicantBasicProfileFail reached the store but nothing here
+  // reacted to it, so a failed save (and everything the user typed,
+  // including Short Bio) was lost with zero feedback.
+  error$ = this.applicantFacade.error$
+    .pipe().subscribe(this.onSaveError.bind(this))
 
   constructor(
     private applicantFacade: ApplicantFacade,
@@ -138,6 +158,7 @@ export class ProfileBasicInfoComponent implements OnInit {
 
   submitForm() {
     if (this.profileDetailsForm.valid) {
+      this.submitting = true;
       const applicant = this.profileDetailsForm.value;
 
       const isProfileReady = applicant.firstName != ""
@@ -160,6 +181,17 @@ export class ProfileBasicInfoComponent implements OnInit {
 
       console.log(basicInfo);
       this.applicantFacade.saveBasicInfo(basicInfo);
+    } else {
+      // BUGFIX: previously a silent no-op -- the parent's "Next" button
+      // is disabled while invalid so this path wasn't reachable from
+      // there, but saveProgress() also calls submitForm() directly (via
+      // the stepper's own step-change confirmation), which has no such
+      // guard. Mark every field touched so validation messages actually
+      // render, and tell the user why nothing was saved instead of
+      // leaving them to guess.
+      this.profileDetailsForm.markAllAsTouched();
+      this.snackbarService.error('Please complete all required fields before continuing.', '');
+      this.saveResult.emit('error');
     }
   }
 
@@ -179,11 +211,32 @@ export class ProfileBasicInfoComponent implements OnInit {
    */
   afterSubmit(event) {
     if (event == 'created') {
+      this.submitting = false;
       this.snackbarService.success(`Your profile has been created`, '');
       this.submitBasicInfo.emit('VALID');
+      this.saveResult.emit('success');
     } else if (event == 'updated') {
+      this.submitting = false;
       this.snackbarService.success(`Profile successfully updated`, '');
       this.submitBasicInfo.emit('VALID');
+      this.saveResult.emit('success');
+    }
+  }
+
+  // BUGFIX: previously nothing in this component reacted to a save
+  // failure at all. this.submitting distinguishes a real failed save
+  // from state.error being set by an unrelated action elsewhere in this
+  // reducer's shared error field (see saveApplicantBasicProfileFail and
+  // its siblings), and from the stale leftover value of a much earlier,
+  // already-handled failure.
+  onSaveError(err: any): void {
+    if (err && this.submitting) {
+      this.submitting = false;
+      this.snackbarService.error(
+        typeof err === 'string' ? err : 'We couldn\'t save your profile. Please try again.',
+        ''
+      );
+      this.saveResult.emit('error');
     }
   }
 
@@ -249,6 +302,10 @@ export class ProfileBasicInfoComponent implements OnInit {
     //Add 'implements OnDestroy' to the class.
     if (this.success$) {
       this.success$.unsubscribe();
+    }
+
+    if (this.error$) {
+      this.error$.unsubscribe();
     }
 
     if(this.loading$) {
