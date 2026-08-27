@@ -111,12 +111,21 @@ export class SignupComponent implements OnInit {
       this.submitting = true;
 
       this.email = this.registerForm.get('email').value;
+      // CRITICAL BUGFIX: the backend (controllers/userController.js
+      // registerUser) verifies recaptchaToken and rejects signup with a 400
+      // when it's missing/invalid -- its own comment claims "the frontend
+      // now includes the token in the signup payload", but this object
+      // never actually included it. Once RECAPTCHA_SECRET_KEY is set in the
+      // deployed environment, this silently breaks every single email/
+      // password signup (jobseeker and employer alike) with no way to
+      // recover short of switching to Google sign-up.
       let credentials: Model.Credentials = {
         email: this.registerForm.get('email').value,
         password: this.registerForm.get('password').value,
         firstName: this.registerForm.get('firstName').value,
         lastName: this.registerForm.get('lastName').value,
         role: this.registerForm.get('role').value,
+        recaptchaToken: this.registerForm.get('recaptcha').value,
       };
 
       this.authFacade.signUp(credentials);

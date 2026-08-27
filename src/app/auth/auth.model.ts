@@ -8,6 +8,7 @@ export interface Credentials {
   photoUrl?: string;
   token?: string;
   refreshToken?: string;
+  recaptchaToken?: string;
 }
 
 export interface User {
