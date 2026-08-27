@@ -56,3 +56,35 @@
 		border-left-color: var(--gh-azure, #168BFF);
 	}
 }
+
+// MOBILE: this step had zero responsive handling. The outer .card's fixed
+// 30px padding stacked with Bootstrap's .px-5 (48px) utility on the video
+// section -- ~78px eaten on each side at 320px width, leaving ~164px of
+// usable content and making buttons/text wrap awkwardly. The <video>'s
+// fixed height="330" attribute also forced a disproportionate box on a
+// narrow screen. Scoped entirely to (max-width: 767px); desktop is
+// untouched.
+@media (max-width: 767px) {
+	.card {
+		padding: 18px 16px !important;
+	}
+
+	.px-5 {
+		padding-left: 12px !important;
+		padding-right: 12px !important;
+	}
+
+	video {
+		height: auto !important;
+		aspect-ratio: 16 / 9;
+	}
+
+	.btn-create {
+		padding: 12px 20px;
+		font-size: 13px;
+	}
+
+	.title-main {
+		font-size: 17px;
+	}
+}

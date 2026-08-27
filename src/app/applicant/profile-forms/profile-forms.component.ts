@@ -37,6 +37,11 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
   loading: boolean;
   basicFormValid: boolean;
   stepper: number = 1;
+  // BUGFIX: the target step, set only while a Step 1 save is in flight so
+  // navigation can wait for the real outcome instead of firing blind (see
+  // onBasicInfoSaveResult() and profile-basic-info.component.ts's saveResult
+  // output for the full explanation).
+  private pendingAdvanceTo: number | null = null;
   stepperItems: any[] = [
     {
       id: 1,
@@ -101,18 +106,42 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
     }
   }
 
-  saveProgress(currentStepper: number) {
+  saveProgress(currentStepper: number, target: number) {
     switch(currentStepper) {
       case 1:
+        // BUGFIX: previously this fired the save and the caller advanced
+        // this.stepper on the very next line regardless -- *ngIf="stepper
+        // === 1" then destroyed ProfileBasicInfoComponent immediately,
+        // tearing down its success$/error$ subscriptions before the async
+        // HTTP response could ever reach them. A failed save (or one that
+        // simply hadn't finished yet) was indistinguishable from a
+        // successful one: the user just silently landed on Step 2. Now
+        // navigation itself waits for the real outcome -- see
+        // onBasicInfoSaveResult(), which is the only place this.stepper
+        // gets set for this case.
+        this.pendingAdvanceTo = target;
         this.basicInfo.submitForm();
         break;
       case 2:
+        this.stepper = target;
         break;
       case 3:
+        this.stepper = target;
         break;
     }
+  }
 
-
+  // Bound to app-profile-basic-info's (saveResult) output. Only reacts
+  // while a Step-1-triggered navigation is actually pending, so it can't
+  // fire from some unrelated save happening to resolve at the same time.
+  onBasicInfoSaveResult(result: 'success' | 'error'): void {
+    if (this.pendingAdvanceTo === null) return;
+    if (result === 'success') {
+      this.stepper = this.pendingAdvanceTo;
+    }
+    // On error, stay on Step 1 -- profile-basic-info.component.ts has
+    // already shown the user why (invalid fields or a failed save).
+    this.pendingAdvanceTo = null;
   }
 
   saveProgressConfirmation(event: number) {
@@ -129,9 +158,7 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
         .pipe()
         .subscribe((result) => {
           if (result == 1) {
-            this.saveProgress(this.stepper);
-            this.stepper = event;
-
+            this.saveProgress(this.stepper, event);
           }
         });
     }
