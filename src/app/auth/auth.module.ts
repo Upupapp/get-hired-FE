@@ -18,6 +18,7 @@ import { UnauthGuard } from '@app-shared/guard/unauth.guard';
 import { RoleClassificationComponent } from './role-classification/role-classification.component';
 import { LinkedInCompleteComponent } from './linkedin-complete/linkedin-complete.component';
 import { environment } from '@environments/environment';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 // Expose Google OAuth client ID as a window property for the GIS button component.
 // This runs synchronously at module load — no async required.
@@ -61,6 +62,17 @@ const routes: Routes = [
     SharedModule,
     ReactiveFormsModule,
     FormsModule,
+    // BUGFIX: signup.component.html binds <re-captcha formControlName="recaptcha">,
+    // but RecaptchaFormsModule (the ControlValueAccessor formControlName needs)
+    // was only ever imported in the eager root AppModule. AuthModule is
+    // lazy-loaded (loadChildren in app.routing.module.ts) -- a lazy module's
+    // template compilation scope for directives/components is its own
+    // `imports`, not inherited from the root. Confirmed live via browser QA:
+    // "Error: No value accessor for form control with name: 'recaptcha'"
+    // thrown on every /signup load, which could prevent the reactive form
+    // from finishing setup for that control at all.
+    RecaptchaModule,
+    RecaptchaFormsModule,
     StoreModule.forFeature('status', authReducer),
     EffectsModule.forFeature([AuthEffects]),
     RouterModule.forChild(routes)
