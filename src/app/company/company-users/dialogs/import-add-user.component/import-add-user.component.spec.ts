@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImportAddUserComponent } from './import-add-user.component';
+import { configureComponentTestingModule } from '../../../../../testing/component-harness';
 
 describe('ImportAddUser.ComponentComponent', () => {
   let component: ImportAddUserComponent;
   let fixture: ComponentFixture<ImportAddUserComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ImportAddUserComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ImportAddUserComponent ],
     })
     .compileComponents();
   });

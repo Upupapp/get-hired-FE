@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReusableTableComponent } from './reusable-table.component';
+import { configureComponentTestingModule } from '../../../../testing/component-harness';
 
 describe('ReusableTableComponent', () => {
   let component: ReusableTableComponent;
   let fixture: ComponentFixture<ReusableTableComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ReusableTableComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ReusableTableComponent ],
     })
     .compileComponents();
   });

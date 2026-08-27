@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobPostDetailsApplyComponent } from './job-post-details-apply.component';
+import { configureComponentTestingModule } from '../../../../../testing/component-harness';
 
 describe('JobPostDetailsApplyComponent', () => {
   let component: JobPostDetailsApplyComponent;
   let fixture: ComponentFixture<JobPostDetailsApplyComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ JobPostDetailsApplyComponent ]
+    await configureComponentTestingModule({
+      declarations: [ JobPostDetailsApplyComponent ],
     })
     .compileComponents();
   });

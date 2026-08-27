@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SuccessDialogComponent } from './success-dialog.component';
+import { configureComponentTestingModule } from '../../../../testing/component-harness';
 
 describe('SuccessDialogComponent', () => {
   let component: SuccessDialogComponent;
   let fixture: ComponentFixture<SuccessDialogComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SuccessDialogComponent ]
+    await configureComponentTestingModule({
+      declarations: [ SuccessDialogComponent ],
     })
     .compileComponents();
   });

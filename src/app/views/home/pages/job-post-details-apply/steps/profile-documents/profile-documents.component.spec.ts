@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProfileDocumentsComponent } from './profile-documents.component';
+import { configureComponentTestingModule } from '../../../../../../../testing/component-harness';
 
 describe('ProfileDocumentsComponent', () => {
   let component: ProfileDocumentsComponent;
   let fixture: ComponentFixture<ProfileDocumentsComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ProfileDocumentsComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ProfileDocumentsComponent ],
     })
     .compileComponents();
   });

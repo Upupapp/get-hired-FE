@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ImportAddContactComponent } from './import-add-contact.component';
+import { configureComponentTestingModule } from '../../../../../../testing/component-harness';
 
 describe('ImportAddContactComponent', () => {
   let component: ImportAddContactComponent;
   let fixture: ComponentFixture<ImportAddContactComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ImportAddContactComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ImportAddContactComponent ],
     })
     .compileComponents();
   });

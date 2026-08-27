@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ApplicantDetailsComponent } from './applicant-details.component';
+import { configureComponentTestingModule } from '../../../../../../../../../testing/component-harness';
 
 describe('ApplicantDetailsComponent', () => {
   let component: ApplicantDetailsComponent;
   let fixture: ComponentFixture<ApplicantDetailsComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ApplicantDetailsComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ApplicantDetailsComponent ],
     })
     .compileComponents();
   });

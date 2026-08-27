@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileUploadDocumentComponent } from './file-upload-document.component';
+import { configureComponentTestingModule } from '../../../../../testing/component-harness';
 
 describe('FileUploadDocumentComponent', () => {
   let component: FileUploadDocumentComponent;
   let fixture: ComponentFixture<FileUploadDocumentComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FileUploadDocumentComponent ]
+    await configureComponentTestingModule({
+      declarations: [ FileUploadDocumentComponent ],
     })
     .compileComponents();
   });

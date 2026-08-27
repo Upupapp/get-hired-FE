@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobDetailsAnswerInterviewComponent } from './job-details-answer-interview.component';
+import { configureComponentTestingModule } from '../../../../../../../../../testing/component-harness';
 
 describe('JobDetailsAnswerInterviewComponent', () => {
   let component: JobDetailsAnswerInterviewComponent;
   let fixture: ComponentFixture<JobDetailsAnswerInterviewComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ JobDetailsAnswerInterviewComponent ]
+    await configureComponentTestingModule({
+      declarations: [ JobDetailsAnswerInterviewComponent ],
     })
     .compileComponents();
   });

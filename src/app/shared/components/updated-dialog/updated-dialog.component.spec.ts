@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdatedDialogComponent } from './updated-dialog.component';
+import { configureComponentTestingModule } from '../../../../testing/component-harness';
 
 describe('UpdatedDialogComponent', () => {
   let component: UpdatedDialogComponent;
   let fixture: ComponentFixture<UpdatedDialogComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ UpdatedDialogComponent ]
+    await configureComponentTestingModule({
+      declarations: [ UpdatedDialogComponent ],
     })
     .compileComponents();
   });

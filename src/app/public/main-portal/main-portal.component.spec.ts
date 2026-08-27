@@ -141,18 +141,20 @@ describe('MainPortalComponent -- keyboard nav + CTA analytics (70bc592/172b2a9/f
   // -------------------------------------------------------------------------
 
   it('heroCTAFindJobs() calls trackHeroCTAClicked("find_jobs") then navigates to /jobs', () => {
-    const analyticsCallOrder: string[] = [];
-    const navCallOrder: string[] = [];
-    mockAnalytics.trackHeroCTAClicked.and.callFake(() => analyticsCallOrder.push('analytics'));
-    mockRouter.navigateByUrl.and.callFake(() => { navCallOrder.push('navigate'); return Promise.resolve(true); });
+    // One shared array: the original used two separate arrays, so both indexOf
+    // calls returned 0 and the ordering assertion was always `0 < 0` -- it could
+    // never pass regardless of what the component did.
+    const callOrder: string[] = [];
+    mockAnalytics.trackHeroCTAClicked.and.callFake(() => callOrder.push('analytics'));
+    mockRouter.navigateByUrl.and.callFake(() => { callOrder.push('navigate'); return Promise.resolve(true); });
 
     component.heroCTAFindJobs();
 
     expect(mockAnalytics.trackHeroCTAClicked).toHaveBeenCalledWith('find_jobs', 'home');
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/jobs');
     // Analytics must be called before navigation
-    expect(analyticsCallOrder.indexOf('analytics')).toBeLessThan(
-      navCallOrder.indexOf('navigate')
+    expect(callOrder.indexOf('analytics')).toBeLessThan(
+      callOrder.indexOf('navigate')
     );
   });
 

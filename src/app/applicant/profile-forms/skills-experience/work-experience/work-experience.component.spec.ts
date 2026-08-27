@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkExperienceComponent } from './work-experience.component';
+import { configureComponentTestingModule } from '../../../../../testing/component-harness';
 
 describe('WorkExperienceComponent', () => {
   let component: WorkExperienceComponent;
   let fixture: ComponentFixture<WorkExperienceComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ WorkExperienceComponent ]
+    await configureComponentTestingModule({
+      declarations: [ WorkExperienceComponent ],
     })
     .compileComponents();
   });

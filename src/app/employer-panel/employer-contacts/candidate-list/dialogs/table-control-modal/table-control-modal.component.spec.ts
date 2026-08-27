@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableControlModalComponent } from './table-control-modal.component';
+import { configureComponentTestingModule } from '../../../../../../testing/component-harness';
 
 describe('TableControlModalComponent', () => {
   let component: TableControlModalComponent;
   let fixture: ComponentFixture<TableControlModalComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TableControlModalComponent ]
+    await configureComponentTestingModule({
+      declarations: [ TableControlModalComponent ],
     })
     .compileComponents();
   });

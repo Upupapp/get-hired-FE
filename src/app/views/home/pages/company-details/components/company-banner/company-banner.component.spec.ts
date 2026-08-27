@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CompanyBannerComponent } from './company-banner.component';
+import { configureComponentTestingModule } from '../../../../../../../testing/component-harness';
 
 describe('CompanyBannerComponent', () => {
   let component: CompanyBannerComponent;
   let fixture: ComponentFixture<CompanyBannerComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ CompanyBannerComponent ]
+    await configureComponentTestingModule({
+      declarations: [ CompanyBannerComponent ],
     })
     .compileComponents();
   });

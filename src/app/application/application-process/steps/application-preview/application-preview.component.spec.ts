@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ApplicationPreviewComponent } from './application-preview.component';
+import { configureComponentTestingModule } from '../../../../../testing/component-harness';
 
 describe('ApplicationPreviewComponent', () => {
   let component: ApplicationPreviewComponent;
   let fixture: ComponentFixture<ApplicationPreviewComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ApplicationPreviewComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ApplicationPreviewComponent ],
     })
     .compileComponents();
   });

@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ErrorNotFoundComponent } from './error-not-found.component';
+import { configureComponentTestingModule } from '../../../../testing/component-harness';
 
 describe('ErrorNotFoundComponent', () => {
   let component: ErrorNotFoundComponent;
   let fixture: ComponentFixture<ErrorNotFoundComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ErrorNotFoundComponent ]
+    await configureComponentTestingModule({
+      declarations: [ ErrorNotFoundComponent ],
     })
     .compileComponents();
   });

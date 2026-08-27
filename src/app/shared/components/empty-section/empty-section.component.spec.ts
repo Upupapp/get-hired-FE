@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EmptySectionComponent } from './empty-section.component';
+import { configureComponentTestingModule } from '../../../../testing/component-harness';
 
 describe('EmptySectionComponent', () => {
   let component: EmptySectionComponent;
   let fixture: ComponentFixture<EmptySectionComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ EmptySectionComponent ]
+    await configureComponentTestingModule({
+      declarations: [ EmptySectionComponent ],
     })
     .compileComponents();
   });

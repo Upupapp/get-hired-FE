@@ -4,10 +4,14 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
+import { MatDialog } from '@angular/material/dialog';
+
 import { CompanyDashboardComponent } from './company-dashboard.component';
 import { CompanyFacade } from '../state/company.facade';
 import { CompanyService } from '../company.service';
 import { SeoService } from '@app-core/services/seo.service';
+import { SubscriptionUpgradeRecommendationService } from '../../employer-panel/employer-subscription/services/subscription-upgrade-recommendation.service';
+import { UpgradePromptCooldownService } from '../../employer-panel/employer-subscription/services/upgrade-prompt-cooldown.service';
 
 // ─── Mock factories ──────────────────────────────────────────────────────────
 
@@ -32,6 +36,45 @@ function makeMockCompanyService(pipelineResult: any = null, error = false) {
   return {
     getDashboardPipelineOverview: jasmine.createSpy('getDashboardPipelineOverview')
       .and.returnValue(error ? throwError(() => new Error('pipeline error')) : of(result)),
+    // ngOnInit also calls loadAnalytics(), added in ce4302af. Without this the
+    // component throws before any spec body runs. `data: null` is the shape
+    // _mergeAnalyticsJobPerf() guards against, so it stays inert.
+    getDashboardAnalytics: jasmine.createSpy('getDashboardAnalytics')
+      .and.returnValue(of({ data: null })),
+  };
+}
+
+/**
+ * The component acquired MatDialog, SubscriptionUpgradeRecommendationService and
+ * UpgradePromptCooldownService in ce4302af (Dashboard Analytics V1) without this
+ * suite being updated, which is why all 67 of its specs threw NullInjectorError
+ * before reaching an assertion. Defaults keep the upgrade prompt suppressed so the
+ * pre-existing specs observe the same component state they were written against.
+ */
+function makeMockUpgradeRecommendationService(recommendation: any = null) {
+  return {
+    getRecommendation: jasmine.createSpy('getRecommendation')
+      .and.returnValue(of(recommendation !== null ? recommendation : { showPrompt: false })),
+    recordEvent: jasmine.createSpy('recordEvent'),
+  };
+}
+
+function makeMockUpgradeCooldown(shouldShow = false) {
+  return {
+    shouldShow: jasmine.createSpy('shouldShow').and.returnValue(shouldShow),
+    markShown: jasmine.createSpy('markShown'),
+    dismiss: jasmine.createSpy('dismiss'),
+    isNonDismissible: jasmine.createSpy('isNonDismissible').and.returnValue(false),
+    isFromPricingPage: jasmine.createSpy('isFromPricingPage').and.returnValue(false),
+  };
+}
+
+function makeMockDialog() {
+  return {
+    open: jasmine.createSpy('open').and.returnValue({
+      afterClosed: () => of(undefined),
+      close: () => {},
+    }),
   };
 }
 
@@ -76,6 +119,9 @@ describe('CompanyDashboardComponent', () => {
         { provide: CompanyFacade, useValue: mockFacade },
         { provide: CompanyService, useValue: mockService },
         { provide: SeoService, useValue: { setPageMeta: () => {} } },
+        { provide: MatDialog, useValue: makeMockDialog() },
+        { provide: SubscriptionUpgradeRecommendationService, useValue: makeMockUpgradeRecommendationService() },
+        { provide: UpgradePromptCooldownService, useValue: makeMockUpgradeCooldown() },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     });
@@ -559,10 +605,17 @@ describe('CompanyDashboardComponent', () => {
       fixture.detectChanges();
     });
 
-    it('goToCreateJob navigates to /recruiter/jobs/create', () => {
-      const spy = spyOn(router, 'navigate');
+    it('goToCreateJob opens the AI Create assistant instead of navigating', () => {
+      // Behaviour change: goToCreateJob() used to route to /recruiter/jobs/create.
+      // It now opens EasyJobPostAssistantModalComponent in a dialog and never
+      // navigates. The old assertion was masked by the ngOnInit crash above.
+      const navSpy = spyOn(router, 'navigate');
+      const dialog = TestBed.inject(MatDialog);
+
       component.goToCreateJob();
-      expect(spy).toHaveBeenCalledWith(['/recruiter/jobs/create']);
+
+      expect(dialog.open).toHaveBeenCalled();
+      expect(navSpy).not.toHaveBeenCalled();
     });
 
     it('goToJobsList navigates to /recruiter/jobs/list', () => {

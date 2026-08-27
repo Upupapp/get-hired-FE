@@ -1,14 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EducationalBackgroundComponent } from './educational-background.component';
+import { configureComponentTestingModule } from '../../../../../testing/component-harness';
 
 describe('EducationalBackgroundComponent', () => {
   let component: EducationalBackgroundComponent;
   let fixture: ComponentFixture<EducationalBackgroundComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ EducationalBackgroundComponent ]
+    await configureComponentTestingModule({
+      declarations: [ EducationalBackgroundComponent ],
     })
     .compileComponents();
   });

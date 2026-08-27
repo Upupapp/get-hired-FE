@@ -280,8 +280,18 @@ describe('SeoService (browser)', () => {
       expect(parsed.employmentType).toBe('CONTRACTOR');
     });
 
-    it('omits employmentType for an unrecognised jobTypeName', () => {
+    it('falls back to OTHER for an unrecognised jobTypeName', () => {
+      // mapEmploymentType() deliberately returns 'OTHER' rather than null for
+      // known-but-unmapped types: omitting employmentType entirely reduces
+      // Google for Jobs eligibility. This spec previously asserted the old
+      // omit-the-field behaviour.
       service.setJobPostingJsonLd(makeJob({ jobTypeName: 'Unknown Type' }));
+      const parsed = JSON.parse((document.getElementById('gh-jsonld-jobposting') as any).text);
+      expect(parsed.employmentType).toBe('OTHER');
+    });
+
+    it('omits employmentType when jobTypeName is absent', () => {
+      service.setJobPostingJsonLd(makeJob({ jobTypeName: null }));
       const parsed = JSON.parse((document.getElementById('gh-jsonld-jobposting') as any).text);
       expect(parsed.employmentType).toBeUndefined();
     });

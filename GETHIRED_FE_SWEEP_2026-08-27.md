@@ -20,7 +20,7 @@ and was **not** merged — doing so would delete `admin-panel/` and `applicant-p
 |---|---|
 | `ng build --configuration=production` | PASS |
 | `ng run get-hired:server` (SSR bundle) | PASS |
-| `ng test` (295 specs, ChromeHeadless) | 140 pass / **155 fail** — pre-existing |
+| `ng test` (ChromeHeadless) | 140/295 at merge time; **296/296 after §7** |
 
 The 155 failures were measured **twice**: once on pristine `origin/master` `923d9144`
 and once with this branch's changes applied. The failing spec-name sets are byte-identical,
@@ -76,7 +76,7 @@ still call `ng build` directly.
 
 | # | Finding | Why not fixed here |
 |---|---|---|
-| O-1 | 155/295 unit specs fail on `master` (missing TestBed providers) | Pre-existing and orthogonal to this merge. Repairing 145 spec files is its own task, and doing it inside a merge commit would hide whether the merge itself was clean. |
+| O-1 | ~~155/295 unit specs fail on `master`~~ | **RESOLVED** in a follow-up commit — the suite is now **296/296 green**. See §7. |
 | O-2 | `checkout.service.ts` targets `/api/cart/*` and `/api/checkout/get` | Double-`/api` **and** the backend has no cart/checkout routes at all. The service has zero injectors — Shopify-era dead code. Correcting the base URL would only make dead code look live. Deletion is a product call. |
 | O-3 | Dead FE calls to routes the backend never had: `/auth/checkemailifexist` (×2), `/auth/getcredentials`, `/auth/refreshtoken` (in `auth.service.ts`), `/admin/dashboard`, `/admin/profile` | All confirmed unreachable — no caller for `checkEmailIfExist`, `refreshCredentials`, `getAdminDashboard()`, or `getAdmin()`. Note `auth.service.getRefreshToken` is **not** the one the guards use; the guards call the same-named method on `shared/services/auth/admin/admin.service.ts`, which targets `environment.server`. Removing them is cleanup, not a fix. |
 | O-4 | `company.service.ts` calls `/company/addCompanyUser`; the route is `/company/addcompanyuser` | Works today only because Express's `case sensitive routing` is off by default. Fragile, not broken. Flagged rather than changed so the fix can be made deliberately across all surfaces. |
@@ -111,3 +111,74 @@ Current output: **149 front-end calls, 164 backend routes, 10 orphans** — and 
 the dead code already itemised in O-2, O-3 and O-4. **No reachable front-end call is
 currently pointed at a route that does not exist.** If that orphan count rises above ten,
 something regressed.
+
+
+## 7. Test-suite repair
+
+The 155 failures recorded in §2 are fixed; `ng test` is now **296 passing, 0 failing,
+exit 0**, and is a real gate again. Four distinct causes, none of which was a product
+defect:
+
+**Scaffolding that never had dependencies (72 files, ~118 specs).** `ng generate`
+emits `TestBed.configureTestingModule({ declarations: [Foo] })` and nothing else, so
+every component that injects anything threw `NullInjectorError` before its first
+assertion. `src/testing/component-harness.ts` now supplies that dependency surface —
+measured from the components' constructors, not guessed: Router/ActivatedRoute (37/23
+components), MatDialogRef + MAT_DIALOG_DATA (17 each), MatDialog (10), TranslateService
+(7), FormGroupDirective (6), FormBuilder (5), HttpClient, and a mock NgRx store. It also
+provides the nine `@Injectable()` facades, which have no `providedIn` and so are absent
+from any TestBed that only declares a component.
+
+**A suite left behind by its component (67 specs).** `company-dashboard.component.spec.ts`
+is a deliberate 625-line suite with real mocks, but the component acquired `MatDialog`,
+`SubscriptionUpgradeRecommendationService` and `UpgradePromptCooldownService` in
+`ce4302af` (Dashboard Analytics V1) and gained a `getDashboardAnalytics()` call in
+`ngOnInit` without the suite being updated. Every spec in the file died in `ngOnInit`.
+
+**Assertions that outlived the behaviour they described (11 specs).** These were the
+only judgement calls, and in each case the component was checked against the backend or
+its own rationale comments before the spec was changed:
+- `applicant-action-modal` (8) moved its snacks to `SnackbarService`, which attaches
+  `panelClass` and an aria-live `politeness` per severity, and several message strings
+  were rewritten. The expectations now track current behaviour *and* pin the
+  accessibility config, which nothing previously covered.
+- `seo.service` (1) asserted `employmentType` is omitted for unrecognised job types.
+  `mapEmploymentType()` deliberately returns `'OTHER'` instead, with an in-code note
+  that omitting the field costs Google for Jobs eligibility. The service is right; the
+  spec was updated and a second spec added for the genuinely-absent case.
+- `company-dashboard.goToCreateJob` (1) asserted navigation to `/recruiter/jobs/create`.
+  It now opens the AI Create assistant dialog and never navigates — a real upstream
+  change that the `ngOnInit` crash had been hiding.
+- `app.component` (2) asserted `title === 'my-pet-go'` and looked for
+  "my-pet-go app is running!". That is `ng new` scaffolding from a template project;
+  the title is `'Get Hired'` and the template is a bare `<router-outlet>`. Corrected to
+  assert the real component rather than deleted.
+
+**One test that could never have passed.** `main-portal`'s
+`heroCTAFindJobs() calls trackHeroCTAClicked then navigates` pushed into two separate
+arrays and then asserted `analyticsCallOrder.indexOf('analytics') <
+navCallOrder.indexOf('navigate')` — always `0 < 0`. The component's ordering was correct
+all along; the assertion now uses one shared array and actually verifies it.
+
+### What this did NOT change
+
+No product code was touched. One suspected defect was investigated and dismissed: five
+employer-contacts components initialise `localData = localStorage.getItem('user')` — the
+raw string — and later read `.companyId`. That looks like a missing `JSON.parse`, but
+each one does parse it in `ngOnInit` before use, so production is correct. The specs
+failed only because no user is signed in under test; the harness now seeds one, which is
+the precondition the role guards enforce at runtime.
+
+### Caveats worth knowing
+
+- The smoke tests use `NO_ERRORS_SCHEMA`. They assert a component **can be constructed**,
+  not that its template is correct. Declaring real child components would pull most of
+  the app into every spec. Treat a green `should create` as "this component's injector
+  and init path are sound", nothing stronger.
+- `PermissiveFormGroup` in the harness answers any `get()` with an empty FormArray so the
+  parent-form child components construct. Two specs that render `formControlName`
+  bindings (`create-job-post-step`, `job-post-detail-step`) need real `FormControl`s —
+  Angular calls `registerOnChange()` on whatever a name resolves to — so those build a
+  real form mirroring `job-create.component.ts` `setFormGroup()`.
+- Coverage did not increase. This restores a gate that was reporting noise; it does not
+  add behavioural tests for the untested surface.
