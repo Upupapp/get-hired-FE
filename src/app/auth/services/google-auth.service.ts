@@ -1,4 +1,4 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, Inject, NgZone, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -86,6 +86,7 @@ export class GoogleAuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private ngZone: NgZone,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -250,7 +251,20 @@ export class GoogleAuthService {
   }
 
   // Store session + navigate — matches the exact shape used by SigninComponent.loggedIn()
+  //
+  // PROD FIX: Google Identity Services invokes its credential callback from
+  // outside Angular's NgZone (it's a raw third-party <script>, not
+  // zone-patched). Without ngZone.run(), router.navigate() below still
+  // updates the browser URL via the History API, but Angular's change
+  // detection never runs, so the view keeps rendering SigninComponent --
+  // exactly the "URL changes but stuck on the sign-in page" symptom.
+  // Wrapping here (the single point every post-auth navigation goes
+  // through) fixes it regardless of which caller/context invoked us.
   storeSession(data: any, returnUrl?: string): void {
+    this.ngZone.run(() => this._storeSession(data, returnUrl));
+  }
+
+  private _storeSession(data: any, returnUrl?: string): void {
     localStorage.removeItem('loginError');
     localStorage.setItem('state', 'true');
     localStorage.setItem('role', data.role);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -57,7 +57,7 @@ export class LinkedInAuthService {
     this._pendingLastName = null;
   }
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {}
 
   // Redirect the browser to the BE /start endpoint which then redirects to LinkedIn.
   // intent: 'auto' | 'jobseeker' | 'employer' — lets BE create account with correct role if new user.
@@ -114,7 +114,14 @@ export class LinkedInAuthService {
     return 'error';
   }
 
+  // Wrapped in ngZone.run() as a defensive match for the same fix applied to
+  // GoogleAuthService.storeSession() -- ensures navigation always triggers a
+  // proper view update regardless of the caller's zone context.
   storeSession(data: any, returnUrl?: string): void {
+    this.ngZone.run(() => this._storeSession(data, returnUrl));
+  }
+
+  private _storeSession(data: any, returnUrl?: string): void {
     localStorage.removeItem('loginError');
     localStorage.setItem('state', 'true');
     localStorage.setItem('role', data.role);

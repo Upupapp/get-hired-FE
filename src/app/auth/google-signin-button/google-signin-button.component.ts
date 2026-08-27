@@ -1,6 +1,6 @@
 import {
   Component, Input, Output, EventEmitter,
-  ElementRef, ViewChild, PLATFORM_ID, Inject, AfterViewInit, OnDestroy
+  ElementRef, ViewChild, PLATFORM_ID, Inject, NgZone, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { environment } from '@environments/environment';
@@ -23,7 +23,10 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
   gisReady = false;
   private _pollInterval: any;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private ngZone: NgZone
+  ) {}
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -47,12 +50,22 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
     }, 100);
   }
 
+  // PROD FIX: Google Identity Services calls this from its own external
+  // <script>, outside Angular's NgZone. Without ngZone.run(), everything
+  // downstream (the parent's loading flag, the HTTP call, and eventually
+  // router.navigate()) runs unpatched -- router.navigate() still updates
+  // the URL via the History API, but Angular's change detection never
+  // fires, so the view stays on the sign-in page even though the address
+  // bar has changed. Re-entering the zone here fixes the whole chain at
+  // its source.
   private handleCredential(response: google.accounts.id.CredentialResponse): void {
-    if (response && response.credential) {
-      this.credential.emit(response.credential);
-    } else {
-      this.errorEvent.emit('google_popup_closed');
-    }
+    this.ngZone.run(() => {
+      if (response && response.credential) {
+        this.credential.emit(response.credential);
+      } else {
+        this.errorEvent.emit('google_popup_closed');
+      }
+    });
   }
 
   private mountButton(): void {
