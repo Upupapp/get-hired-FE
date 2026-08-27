@@ -43,23 +43,36 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
         if (err instanceof HttpErrorResponse) {
           // localStorage.setItem('returnURL', this.router.url);
 
-          if (err.status === 401 || err.status === 403) {
-            // Both 401 (unauthenticated) and 403 (forbidden/expired token) should
-            // sign the user out. Previously only 403 was caught -- a 401 from
-            // a truly expired session would silently show API errors with no
-            // guidance to re-authenticate.
+          if (err.status === 401) {
+            // BUGFIX (2026-08-27): the backend's own auth-semantics fix
+            // (get-hired-BE controllers/middleware, "TAB 12 remediation")
+            // made 401 mean ONLY "not authenticated" (missing/invalid/
+            // expired token, verifyAuth) and 403 mean ONLY "authenticated,
+            // but denied for this specific resource/role/permission"
+            // (verifyRoles + the ~20 ownership/BOLA/subscription-limit
+            // checks throughout controllers/*) -- 403 no longer implies a
+            // dead session at all. This interceptor still treated every
+            // 403 as a session expiry and force-logged the user out, which
+            // is exactly the collision that backend fix was written to
+            // eliminate on this side too. A perfectly valid, signed-in
+            // employer or job seeker hitting any ordinary permission
+            // denial (wrong company on a job, no active subscription, role
+            // mismatch) was being silently signed out and redirected to
+            // /signin with "Your session has expired" -- across both
+            // portals, on routine, correctly-denied requests.
             //
-            // GUEST FIX (2026-08-19): a 401/403 only means "your session expired"
-            // for someone who HAD a local session to begin with. A true first-time
-            // guest (isLoggedIn() false -- no local session state at all) calling
-            // a request the app itself never expected to require auth (e.g. the
-            // anonymous AI job-preview generate call) would otherwise be told
-            // their session "expired" and get force-redirected away, even
-            // though they were never signed in -- a misleading error and a lost
-            // in-progress action. For a true guest, skip the logout/redirect/toast
-            // entirely and let the error propagate to the calling component's own
-            // handler, which is better positioned to show an accurate, contextual
-            // message. Authenticated-then-expired behavior is unchanged.
+            // GUEST FIX (2026-08-19): a 401 only means "your session
+            // expired" for someone who HAD a local session to begin with.
+            // A true first-time guest (isLoggedIn() false -- no local
+            // session state at all) calling a request the app itself never
+            // expected to require auth (e.g. the anonymous AI job-preview
+            // generate call) would otherwise be told their session
+            // "expired" and get force-redirected away, even though they
+            // were never signed in -- a misleading error and a lost
+            // in-progress action. For a true guest, skip the logout/
+            // redirect/toast entirely and let the error propagate to the
+            // calling component's own handler, which is better positioned
+            // to show an accurate, contextual message.
             if (this.coreService.isLoggedIn() && !this.handlingExpiry) {
               this.handlingExpiry = true;
               this.coreService.logout();
@@ -78,6 +91,16 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
               // authenticated calls the same as before.
               this.router.navigateByUrl('/signin');
             }
+          } else if (err.status === 403) {
+            // Authenticated but denied -- not a dead session. Surface the
+            // backend's own message when it sent a real, user-safe one;
+            // otherwise a generic permission-denied notice. Never logs out
+            // or redirects -- the calling component/effect still gets the
+            // error and can react (e.g. an inline "not allowed" state)
+            // exactly as it already does for any other non-2xx response.
+            const body = (err as HttpErrorResponse).error;
+            const msg = (body && (body.message || body.error)) || `You don't have permission to do that.`;
+            this.snackbarService.error(msg, '');
           } else if (err.status === 429) {
             // NOTIFY QA11 (SEC-01): Rate-limit hit. Do NOT log the user out.
             // Show a non-destructive warning so the user knows to wait, not retry
