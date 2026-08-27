@@ -171,7 +171,7 @@
     .file{
         border: solid 1px #c9c9c9;
         border-radius: 5px;
-        padding: 20px 10px; 
+        padding: 20px 10px;
         position: relative;
 
         .img-circle{
@@ -180,7 +180,7 @@
             padding-top: 6px;
             padding-left: 1px;
             border-radius: 50%;
-            background: rgba(255, 239, 205, 1); 
+            background: rgba(255, 239, 205, 1);
         }
 
         .chip-text{
@@ -195,7 +195,74 @@
         }
     }
 
+    // BUGFIX: the uploaded-file row used to stack the filename, size and
+    // remove icon on the SAME visual line via float-end + negative
+    // margin-top hacks (margin-top:-40px / -21px) -- fragile at any width,
+    // and on mobile the already-truncated filename fought the floated
+    // close icon and size text for the same cramped space, reading as one
+    // crowded, hard-to-parse row. Rebuilt as a straightforward top-to-
+    // bottom flex stack: icon + name + remove button on one clean row,
+    // size/upload-date below it, progress bar last. No absolute
+    // positioning, no negative margins -- reflows correctly at any width
+    // instead of being tuned for one.
+    .gh-file-row {
+        &__top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
 
+        &__icon {
+            flex: 0 0 auto;
+            margin: 0;
+        }
+
+        &__name {
+            flex: 1 1 auto;
+            min-width: 0;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        &__remove {
+            flex: 0 0 auto;
+            font-size: 18px !important;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            color: #969696;
+            transition: color 150ms ease;
+
+            &:hover {
+                color: $color-global-red;
+            }
+        }
+
+        &__meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 12px;
+            margin-top: 8px;
+            margin-left: 47px; // aligns under the name, past the icon column
+            font-size: 12.5px;
+            color: #767676;
+        }
+
+        &__size {
+            font-weight: 500;
+        }
+
+        &__uploaded {
+            &::before {
+                content: '\2022';
+                margin-right: 12px;
+                color: #c9c9c9;
+            }
+        }
+    }
 }
 
 :host ::ng-deep{
@@ -297,6 +364,32 @@
         .title-preview,
         .document-uploaded {
             font-size: 14px;
+        }
+    }
+
+    .gh-file-row {
+        &__icon {
+            width: 30px;
+            height: 30px;
+
+            img {
+                width: 32px;
+            }
+        }
+
+        &__name {
+            margin-top: 3px;
+            font-size: 13.5px;
+        }
+
+        &__meta {
+            margin-left: 42px;
+            font-size: 11.5px;
+            gap: 2px 8px;
+        }
+
+        &__uploaded::before {
+            margin-right: 8px;
         }
     }
 }
