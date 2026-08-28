@@ -247,6 +247,22 @@
 // .bg-banner's own height and the stat cards' -60px overlap positioning
 // below it are untouched, so nothing downstream shifts.
 @media (max-width: 767px) {
+  // MOBILEVIEW: .bg-banner keeps the tablet breakpoint's fixed height:400px
+  // (set above, @media max-width:1099px) even on phones, but the actual
+  // avatar/name/location/email content here is only ~200px tall once the
+  // mobile padding/font-size overrides above are applied. The stat-cards
+  // row below still only pulls up by the same -60px used on desktop
+  // (unchanged, in banner.component.html), so that leftover ~150-160px of
+  // empty banner background reads as a large gap before "Active
+  // Application" etc. Shrinking the banner height to fit its mobile
+  // content (with a safety buffer for a wrapped long name/email) closes
+  // that gap the same way the -60px overlap already does on desktop,
+  // without touching the overlap value, the tablet/desktop heights, or
+  // the cards themselves.
+  .bg-banner {
+    height: 240px !important;
+  }
+
   .bg-banner .p-5 {
     padding: 28px 20px !important;
   }
