@@ -22,6 +22,16 @@
 }
 
 
+// UI FIX: the shared stepper component sits directly against the applicant
+// info section below it with no breathing room. Scoped to this component
+// only (Angular's default style encapsulation) -- app-main-stepper is a
+// shared component used on other pages, so this margin only applies here,
+// never affecting its appearance elsewhere.
+app-main-stepper {
+	display: block;
+	margin-bottom: 24px;
+}
+
 .container-evaluate{
 	position: fixed;
 	bottom: 0px;
