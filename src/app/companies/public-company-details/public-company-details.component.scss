@@ -306,7 +306,33 @@ $border:       rgba(0,0,0,0.07);
   border-radius: 20px; background: $coral-start;
   font-size: 10px; font-weight: 700; color: #fff;
 }
-.cph-subnav-follow { flex-shrink: 0; margin-left: auto; padding-left: 12px; }
+// Sits in the same scrolling row as the tabs (.cph-subnav-inner scrolls as
+// one unit), so on narrow screens where the 4 tabs alone overflow, a plain
+// margin-left:auto placement gets pushed past the visible edge along with
+// them -- the user has to scroll right to even see Follow. Pin it instead:
+// sticky to the row's right edge so it stays on-screen while tabs scroll
+// underneath, with its own opaque background + left fade so scrolling tab
+// text doesn't visually run into/under the button.
+.cph-subnav-follow {
+	flex-shrink: 0;
+	margin-left: auto;
+	padding-left: 16px;
+	position: sticky;
+	right: 0;
+	background: #ffffff;
+	z-index: 1;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: -16px;
+		width: 16px;
+		background: linear-gradient(to right, rgba(255,255,255,0), #ffffff);
+		pointer-events: none;
+	}
+}
 
 // ─── Follow button ────────────────────────────────────────────────────────────
 .cph-follow-btn {
