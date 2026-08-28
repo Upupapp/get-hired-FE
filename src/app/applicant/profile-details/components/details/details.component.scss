@@ -37,7 +37,12 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 }
 
 .np-shell {
-	background: $np-base;
+	// Transparent per request -- the neomorphic child cards (.np-card etc.,
+	// via the np-raised/np-inset mixins above) keep their own $np-base
+	// background and shadow pair unchanged, so their soft-UI depth still
+	// reads correctly; only the outer shell itself no longer paints a
+	// solid background over whatever sits behind it on the page.
+	background: transparent;
 	border-radius: 24px;
 	padding: clamp(16px, 3vw, 32px);
 }
@@ -269,6 +274,14 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 	line-height: 20px;
 	color: $np-text-sec;
 	margin-bottom: 12px;
+}
+
+// Short Bio's empty state -- a simpler inline prompt, not the larger
+// orb/ring treatment .np-video-empty uses below for the video section.
+.np-empty-inline {
+	.np-empty-hint {
+		margin: 0 0 12px;
+	}
 }
 
 .np-link {
