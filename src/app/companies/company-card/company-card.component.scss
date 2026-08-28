@@ -165,6 +165,10 @@ $company-card-accent-soft: rgba(#E53935, 0.14);
 	line-height: 20px;
 	text-align: center;
 	color: #FFFFFF;
+	// Was mt-auto, which pinned this to the very bottom of the card whenever
+	// a row's cards stretch to match the tallest one -- a fixed, moderate
+	// gap keeps it close to the name/category instead.
+	margin-top: 14px;
 	background: linear-gradient(135deg, $company-card-accent 0%, #C62828 100%);
 	box-shadow: 0 6px 14px rgba($company-card-accent, 0.28);
 	border-radius: 8px;
