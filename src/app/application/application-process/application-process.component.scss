@@ -22,14 +22,21 @@
 }
 
 
-// UI FIX: the shared stepper component sits directly against the applicant
-// info section below it with no breathing room. Scoped to this component
-// only (Angular's default style encapsulation) -- app-main-stepper is a
-// shared component used on other pages, so this margin only applies here,
-// never affecting its appearance elsewhere.
-app-main-stepper {
-	display: block;
-	margin-bottom: 24px;
+// UI FIX: the applicant-info card (avatar/name/contact details, rendered by
+// the shared app-applicant-avatar component) sits directly against the
+// stepper above it with no breathing room. Targeting the wrapping div that
+// belongs to THIS component's own template (not app-applicant-avatar's
+// internal .card, which is a separately-encapsulated style scope shared
+// across other pages) -- so this only affects the application flow, never
+// any other page that reuses the avatar component. Smaller value on mobile
+// so the already space-constrained small-screen layout doesn't get overly
+// pushed down; full spacing from the tablet breakpoint up.
+.applicant-avatar-wrap {
+	margin-top: 12px;
+
+	@media (min-width: 768px) {
+		margin-top: 25px;
+	}
 }
 
 .container-evaluate{

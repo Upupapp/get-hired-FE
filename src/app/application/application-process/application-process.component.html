@@ -60,7 +60,7 @@
       <!-- STEPPER STEPS -->
       <section style="min-height: 100vh; overflow-y: visible;">
         <div class="row" *ngIf="profile$ | async as profile; else noProfile">
-          <div class="col-12 col-md-12 col-lg-12" *ngIf="stepper != 3">
+          <div class="col-12 col-md-12 col-lg-12 applicant-avatar-wrap" *ngIf="stepper != 3">
             <app-applicant-avatar [user]="profile"></app-applicant-avatar>
           </div>
 
