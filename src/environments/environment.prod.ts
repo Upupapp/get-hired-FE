@@ -10,7 +10,7 @@
   isDebug: false,
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
   mapRestrictions: ['sg', 'ph'],
-  recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U",
+  recaptchaSiteKey: "6LesdZ0tAAAAANTArmxFxI6tKsqUPiMn24LAEqui",
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
     authDomain: 'get-hired-363107.firebaseapp.com',

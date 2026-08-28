@@ -7,15 +7,17 @@ export const environment = {
   projectName: 'gethired',
   server: 'http://localhost:3000',
   main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
-  api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
-  //api_url: 'http://localhost:3000/api',
+  // Local dev: pointed at the local backend (see get-hired-BE/docker-compose.yml
+  // + .env). Swap the two lines below to point back at the live API.
+  api_url: 'http://localhost:3000/api',
+  //api_url: 'https://api-dot-get-hired-363107.et.r.appspot.com/api',
   app_url: 'http://localhost:4200',
   NgRxName: 'App devtools',
   NgRxMaxAge: 15,
   isDebug: true,
   mapRestrictions: ['sg', 'ph'],
   apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
-  recaptchaSiteKey: "6LdO9FYmAAAAADJsvwivUIbrsh-onjVZhIlFJ23U",
+  recaptchaSiteKey: "6LesdZ0tAAAAANTArmxFxI6tKsqUPiMn24LAEqui",
   firebase: {
     apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
     authDomain: 'get-hired-363107.firebaseapp.com',
