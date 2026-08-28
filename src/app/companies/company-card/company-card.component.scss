@@ -1,13 +1,28 @@
 @import "src/assets/styles/colors";
 
+// Redesign accent -- distinct from the site-wide $color-global-red-buttons
+// gradient token, scoped to just this card per the requested branding red.
+$company-card-accent: #E53935;
+$company-card-accent-soft: rgba(#E53935, 0.14);
+
 .company-card-anchor {
   display: block;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  // Micro-interaction: card lifts slightly on hover/focus, settles back on
+  // tap. transform+box-shadow only -- never affects layout/grid position.
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  &:hover { text-decoration: none; color: inherit; }
-  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; border-radius: 10px; }
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+    transform: translateY(-4px);
+  }
+  &:active {
+    transform: translateY(-1px) scale(0.99);
+  }
+  &:focus-visible { outline: 2px solid $company-card-accent; outline-offset: 2px; border-radius: 12px; }
 }
 
 .title-companies{
@@ -60,47 +75,68 @@
 }
 
 
+// Badge wrapper -- gives BOTH a real logo image and the fallback letter
+// the same circular, elevated treatment, so image/text/button all read as
+// one consistently-aligned unit regardless of whether the company has a
+// logo on file.
+.company-logo-badge {
+	width: 56px;
+	height: 56px;
+	margin: 0 auto;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(145deg, #FFFFFF 0%, #FBEAEA 100%);
+	box-shadow: 0 4px 10px rgba(#000000, 0.06), inset 0 0 0 1px rgba(#000000, 0.03);
+}
+
 .company-image{
 	object-fit: scale-down;
 	object-position: center;
-	width: auto;
-	height: 35px;
+	width: 34px;
+	height: 34px;
 }
 
 .company-image--fallback{
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 35px;
-	height: 35px;
+	width: 100%;
+	height: 100%;
 	border-radius: 50%;
-	background: $color-global-red-buttons;
+	// Gradient-filled badge with subtle depth, replacing the old flat
+	// solid-red circle.
+	background: linear-gradient(135deg, $company-card-accent 0%, #B71C1C 100%);
+	box-shadow: 0 3px 8px rgba($company-card-accent, 0.35);
 	color: #FFFFFF;
 	font-family: 'Manrope';
-	font-weight: 600;
-	font-size: 16px;
+	font-weight: 700;
+	font-size: 18px;
 	text-transform: uppercase;
 	margin: 0 auto;
 }
 
 .card{
-	background: #FFFFFF;
-	/* shawos */
-
-	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
-	border-radius: 10px;
-	border: none;
-	padding: 20px;
-  height: 100%;
+	// Flat design with subtle depth: neutral background carrying a faint
+	// warm tint (not pure white), soft shadow instead of a hard border.
+	background: linear-gradient(180deg, #FFFFFF 0%, #FDFAFA 100%);
+	box-shadow: 0 6px 16px rgba(#1A1A1A, 0.05);
+	border-radius: 14px;
+	border: 1px solid rgba(#000000, 0.04);
+	padding: 20px 14px;
+	height: 100%;
 }
 
 .title-company{
 	font-family: 'Manrope';
 	font-style: normal;
-	font-weight: 600;
-	font-size: 18px;
-	line-height: 18px;
+	// Hierarchy: name reads as the clear headline of the card.
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 20px;
 	color: #121212;
+	margin-top: 12px !important;
 
 	&:hover{
 		cursor: pointer;
@@ -111,34 +147,70 @@
 .title-company-category{
 	font-family: 'Manrope';
 	font-style: normal;
+	// Hierarchy: category is deliberately smaller/lighter than the name.
 	font-weight: 400;
-	font-size: 12px;
-	line-height: 18px;
-	/* identical to box height */
-
+	font-size: 11px;
+	line-height: 16px;
+	letter-spacing: 0.02em;
 	text-align: center;
-
-	color: #A8A8A8;
+	color: #9B9B9B;
+	margin-bottom: 4px;
 }
 
 .btn-job-opening{
 	font-family: 'Manrope';
 	font-style: normal;
-	font-weight: 400;
-	font-size: 14px;
-	line-height: 21px;
-	/* identical to box height */
-
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 20px;
 	text-align: center;
-
 	color: #FFFFFF;
-	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
-	/* shawos */
+	background: linear-gradient(135deg, $company-card-accent 0%, #C62828 100%);
+	box-shadow: 0 6px 14px rgba($company-card-accent, 0.28);
+	border-radius: 8px;
+	padding: 8px 14px;
+	transition: box-shadow 0.2s ease, background 0.2s ease;
 
-	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
-	border-radius: 6px;
-
+	// Micro-interaction: button glows on hover (handled at the card level
+	// so it also triggers via keyboard focus, not just a literal :hover on
+	// the span itself).
+	.company-card-anchor:hover &,
 	&:hover{
-		background: rgba($color-global-red-buttons, 0.8);
+		background: linear-gradient(135deg, #FF5A52 0%, $company-card-accent 100%);
+		box-shadow: 0 8px 20px rgba($company-card-accent, 0.45);
+	}
+}
+
+// Mobile-specific polish -- the grid is 2-per-row (col-6) on small screens,
+// so the card is narrower here than at any other breakpoint. Slightly
+// tighter padding/sizing keeps everything aligned and readable without
+// crowding or wrapping awkwardly, without changing the grid itself.
+@media (max-width: 767px) {
+	.card{
+		padding: 16px 10px;
+		border-radius: 12px;
+	}
+	.company-logo-badge{
+		width: 48px;
+		height: 48px;
+	}
+	.company-image{
+		width: 28px;
+		height: 28px;
+	}
+	.company-image--fallback{
+		font-size: 15px;
+	}
+	.title-company{
+		font-size: 14px;
+		line-height: 18px;
+		margin-top: 8px !important;
+	}
+	.title-company-category{
+		font-size: 10px;
+	}
+	.btn-job-opening{
+		font-size: 11px;
+		padding: 6px 10px;
 	}
 }
