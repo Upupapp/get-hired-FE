@@ -385,6 +385,13 @@ input::placeholder{
 }
 
 .form-group{
+  // BUGFIX: .gh-pw-toggle below is position:absolute but this container
+  // never established a positioning context, so the button was
+  // positioning itself against a distant unrelated ancestor instead of
+  // sitting inside its own input -- badly misplaced on both desktop and
+  // mobile. This scopes it back to the field it belongs to.
+  position: relative;
+
   label {
   	font-family: 'Manrope';
 		font-style: normal;

@@ -451,6 +451,13 @@ select::placeholder{
 }
 
 .form-group{
+  // BUGFIX: .gh-pw-toggle below is position:absolute but this container
+  // never established a positioning context, so the button was
+  // positioning itself against a distant unrelated ancestor instead of
+  // sitting inside its own input -- badly misplaced on both desktop and
+  // mobile. This scopes it back to the field it belongs to.
+  position: relative;
+
   label {
   	font-family: 'Manrope';
 		font-style: normal;
@@ -626,6 +633,26 @@ input.ng-invalid.ng-dirty.ng-touched {
   align-items: center;
   justify-content: center;
   width: 100%;
+  overflow: hidden;
+}
+
+// BUGFIX: Google's v2 checkbox widget renders at a fixed 304px width that
+// this component doesn't control. justify-content:center above already
+// centers it fine wherever there's room, but on narrow phones (down to
+// Mobile S, 320px) the available width inside the form's own side padding
+// plus this box's 12px padding drops below 304px -- the widget no longer
+// fits, so it can't actually sit centered. Scaling it down from its own
+// center keeps the visual center anchored exactly where the flexbox
+// centering already placed it, instead of fighting the widget's fixed
+// layout size with margins.
+@media (max-width: 767px) {
+  .gh-captcha-box {
+    re-captcha {
+      display: block;
+      transform: scale(0.82);
+      transform-origin: center;
+    }
+  }
 }
 
 // ── Terms & Privacy checkbox row ────────────────────────────────────────────────
