@@ -4,7 +4,6 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { ApplicantPanelComponent } from './applicant-panel.component';
 import { RouterModule, Routes } from '@angular/router';
 import { ApplicantDashboardComponent } from './applicant-dashboard/applicant-dashboard.component';
-import { ApplicantGuard } from '@app-shared/guard/applicant.guard';
 import { CoreModule } from '@app-core/core.module';
 import { ApplicantSidebarComponent } from './applicant-sidebar/applicant-sidebar.component';
 import { ApplicantSettingsComponent } from './applicant-settings/applicant-settings.component';
@@ -24,10 +23,21 @@ import { ApplicantApplicationsComponent } from './applicant-applications/applica
 import { ApplicantApplicationDetailComponent } from './applicant-application-detail/applicant-application-detail.component';
 
 const routes: Routes = [
+  // SIGNOUT ROUTECONFIG-CORRUPTION FIX: canActivate: [ApplicantGuard] removed.
+  // That was a SECOND, legacy guard (src/app/shared/guard/applicant.guard.ts,
+  // distinct from the modern AuthGuard already protecting the parent /user
+  // route in app.routing.module.ts) stacked redundantly on top of it -- and
+  // it called router.resetConfig([...]) as a side effect of its own auth
+  // check, which globally REPLACES the entire app's route table at runtime.
+  // Once triggered, that mutated (partial) route config persists for the
+  // rest of the SPA session -- only a true page reload re-reads the real,
+  // full table from app.routing.module.ts. This was the mechanism behind
+  // "sign out doesn't work until I hard-refresh": AuthGuard already handles
+  // this route correctly, without ever mutating global router state, so
+  // this legacy duplicate is removed rather than patched.
   {
     path: '',
     component: ApplicantPanelComponent,
-    canActivate: [ApplicantGuard],
     children: [
       // {
       //   path: 'apply', component: ApplicantApplicationComponent
