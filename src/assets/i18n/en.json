@@ -46,7 +46,7 @@
         "UPDATE_PROFILE_BUTTON":"Update Profile"
     },
     "PROFILE":{
-        "PUBLIC_VIEW_":"Public View",
+        "PUBLIC_VIEW_TEXT":"Profile Details",
         "EDIT_PROFILE_BUTTON":"Edit Profile",
         "CONTACT_DETAILS_TEXT":"Contact Details",
         "STATUS_TEXT":"Available",

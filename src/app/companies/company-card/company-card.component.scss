@@ -213,10 +213,14 @@ $company-card-accent-soft: rgba(#E53935, 0.14);
 	.title-company-category{
 		font-size: 10px;
 	}
+	// Was position:relative + bottom:47px, pulling the button 47px up the
+	// card so it crowded/overlapped the name and category above it instead
+	// of trailing them. Natural document flow (avatar -> name -> category
+	// -> button, already the source order below) with a slightly larger
+	// mobile gap reads as one clean top-to-bottom stack instead.
 	.btn-job-opening{
 		font-size: 11px;
 		padding: 6px 10px;
-		position: relative;
-		bottom: 47px;
+		margin-top: 16px;
 	}
 }
