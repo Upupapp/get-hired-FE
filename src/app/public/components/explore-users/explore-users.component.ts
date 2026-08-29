@@ -22,14 +22,20 @@ export class ExploreUsersComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // BUGFIX: this was a stub with empty switch cases -- the buttons did
+  // nothing. AuthGuard (on both /recruiter/** and /user/**) already
+  // redirects a logged-out visitor to /signin with its own snackbar, so
+  // no extra logged-in check is needed here.
   redirectToCreate(item: string) {
-    // TODO check if loggedIn
     switch (item) {
       case 'job':
-        // TODO Redirect to Create Jobs
+        // Same openAiCreate=1 integration point EmployerPanelComponent's
+        // ngOnInit already watches for, opening the AI Create job-post
+        // assistant -- reused instead of duplicating that MatDialog flow.
+        this.router.navigate(['/recruiter/dashboard'], { queryParams: { openAiCreate: 1 } });
         break;
       case 'resume':
-        // TODO Redirect to create Resume
+        this.router.navigateByUrl('/user/profile/edit');
         break;
     }
   }
