@@ -21,6 +21,38 @@
       </svg>
     </button>
     <span class="gh-ap-mobile-topbar-title" aria-hidden="true">GetHired</span>
+
+    <!-- Mobile account entry point: the desktop topbar (avatar + its
+         Settings/Sign out menu) is d-none below md, and the drawer above
+         has no sign-out at all -- so mobile users had no way to sign out.
+         Reuses the same avatar/menu markup, classes, and
+         toggleAvatarMenu()/avatarMenuOpen state as the desktop topbar. -->
+    <div class="gh-ap-topbar-avatar-wrap gh-ap-mobile-topbar-avatar-wrap">
+      <button type="button" class="gh-ap-topbar-avatar gh-pressable"
+        (click)="toggleAvatarMenu()"
+        [attr.aria-expanded]="avatarMenuOpen"
+        aria-haspopup="true"
+        [attr.aria-label]="'Account menu for ' + (user.firstName || 'account')">
+        <ng-container *ngIf="user?.photoUrl; else apMobileTopbarInitials">
+          <img [src]="user.photoUrl" alt="" class="gh-ap-topbar-avatar-img">
+        </ng-container>
+        <ng-template #apMobileTopbarInitials>
+          <span class="gh-ap-topbar-avatar-initials" aria-hidden="true">
+            {{ user.firstName?.charAt(0)?.toUpperCase() }}{{ user.lastName?.charAt(0)?.toUpperCase() }}
+          </span>
+        </ng-template>
+      </button>
+      <div class="gh-ap-topbar-avatar-menu" *ngIf="avatarMenuOpen" role="menu">
+        <div class="gh-ap-avatar-menu-header">
+          <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+          <span>Job Seeker</span>
+        </div>
+        <a routerLink="/user/settings" class="gh-ap-avatar-menu-item" role="menuitem"
+          (click)="closeAvatarMenu()">Settings</a>
+        <button type="button" class="gh-ap-avatar-menu-item gh-ap-avatar-menu-item--danger" role="menuitem"
+          (click)="logout()">Sign out</button>
+      </div>
+    </div>
   </div>
 
   <!-- MOBILEVIEW: Scrim overlay — dismisses drawer on tap -->

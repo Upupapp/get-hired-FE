@@ -110,3 +110,14 @@
 	box-shadow: 0px 10px 19px rgba(0, 0, 0, 0.06);
 	border-radius: 6px;
 }
+
+// Mobile-only nudge so the button sits closer to the card content instead
+// of trailing extra whitespace beneath it -- desktop/tablet untouched.
+@media (max-width: 767px) {
+	.btn-job-opening {
+		font-size: 11px;
+		padding: 6px 10px;
+		position: relative;
+		bottom: 5px;
+	}
+}

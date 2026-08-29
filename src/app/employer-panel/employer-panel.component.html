@@ -27,6 +27,46 @@
       </svg>
     </button>
     <span class="gh-mobile-topbar-title">{{ pageTitle }}</span>
+
+    <!-- Mobile account entry point: the desktop topbar (with the avatar +
+         its Settings/Sign out menu) is d-none below md, and the drawer
+         above has no sign-out at all -- so mobile users had no way to sign
+         out. Reuses the same avatar/menu markup, classes, and
+         toggleAvatarMenu()/avatarMenuOpen state as the desktop topbar
+         (styled at 42px via the existing @media 767px rules), just a
+         distinct id so both instances don't collide in the DOM. -->
+    <div class="gh-topbar-avatar-wrap gh-mobile-topbar-avatar-wrap">
+      <button type="button" class="gh-topbar-avatar gh-pressable"
+        [id]="'topbarAvatarBtnMobile'"
+        (click)="toggleAvatarMenu()"
+        [attr.aria-expanded]="avatarMenuOpen"
+        aria-haspopup="true"
+        [attr.aria-label]="'Account menu for ' + employee.firstName">
+        <ng-container *ngIf="employee?.photoUrl; else topbarCompanyLogoMobile">
+          <img [src]="employee.photoUrl" alt="" class="gh-topbar-avatar-img">
+        </ng-container>
+        <ng-template #topbarCompanyLogoMobile>
+          <ng-container *ngIf="companyLogoUrl$ | async as logoUrl; else topbarInitialsMobile">
+            <img [src]="logoUrl" alt="" class="gh-topbar-avatar-img">
+          </ng-container>
+        </ng-template>
+        <ng-template #topbarInitialsMobile>
+          <span class="gh-topbar-avatar-initials" aria-hidden="true">
+            {{ employee.firstName?.charAt(0)?.toUpperCase() }}{{ employee.lastName?.charAt(0)?.toUpperCase() }}
+          </span>
+        </ng-template>
+      </button>
+      <div class="gh-topbar-avatar-menu" *ngIf="avatarMenuOpen" role="menu">
+        <div class="gh-avatar-menu-header">
+          <strong>{{ employee.firstName }} {{ employee.lastName }}</strong>
+          <span>{{ companyNameForTopbar$ | async }}</span>
+        </div>
+        <a routerLink="/recruiter/company/settings" class="gh-avatar-menu-item" role="menuitem"
+          (click)="closeAvatarMenu()">Settings</a>
+        <button type="button" class="gh-avatar-menu-item gh-avatar-menu-item--danger" role="menuitem"
+          (click)="logout()">Sign out</button>
+      </div>
+    </div>
   </div>
 
   <!-- B02: Scrim overlay — dismisses drawer on tap; aria-hidden so screen

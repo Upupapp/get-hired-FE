@@ -89,6 +89,21 @@
   color: #ffffff;
   letter-spacing: 0.3px;
   flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Keeps the account avatar at a fixed size on the far right instead of
+// getting squeezed by the flex:1 title next to it, down to 320px viewports.
+.gh-ap-mobile-topbar-avatar-wrap {
+  flex-shrink: 0;
+
+  .gh-ap-topbar-avatar {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 // ─── MOBILEVIEW: Applicant hamburger button ───────────────────────────────────

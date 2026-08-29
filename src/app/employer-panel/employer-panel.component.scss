@@ -134,6 +134,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
+// Keeps the account avatar at a fixed size on the far right instead of
+// getting squeezed by the flex:1 title next to it, down to 320px viewports.
+.gh-mobile-topbar-avatar-wrap {
+  flex-shrink: 0;
+}
+
 .gh-mobile-topbar-title {
   font-family: 'Manrope', sans-serif;
   font-weight: 700;

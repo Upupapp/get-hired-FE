@@ -69,6 +69,31 @@
   }
 }
 
+// Mobile: title/sub shrink small enough that top-aligning them against the
+// 40px icon (the desktop layout) leaves them looking stranded near the top
+// of the icon instead of reading as one unit with it. align-items:center
+// on the header row centers the icon against the now-much-shorter text
+// block automatically -- title sits toward the icon's vertical middle,
+// sub trails just below it -- without hardcoding a top offset that would
+// need re-tuning if the copy ever wraps to a second line.
+@media (max-width: 899px){
+  .eja-header{
+    align-items: center;
+
+    &__icon{
+      margin-top: 0;
+    }
+
+    &__title{
+      font-size: 9px;
+    }
+
+    &__sub{
+      font-size: 7px;
+    }
+  }
+}
+
 .eja-close {
   flex-shrink: 0;
   background: rgba(255,255,255,0.1);
@@ -312,6 +337,15 @@
     border: 1.5px solid #E5E7EB;
 
     &:hover { background: #F9FAFB; }
+  }
+}
+
+@media (max-width: 899px){
+  .eja-btn{
+    &--primary{
+      padding: 10px 24px;
+      font-size: 15px;
+    }
   }
 }
 
