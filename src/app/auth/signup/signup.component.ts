@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,6 +45,13 @@ export class SignupComponent implements OnInit {
   googleLoading = false;
   googleError: string | null = null;
 
+  // Consolidated Google/LinkedIn "Sign up with" dropdown -- pure presentational
+  // state, unrelated to the OAuth handling above. Desktop reveals the panel on
+  // hover/focus purely via CSS (see .gh-social-dropdown); this boolean drives
+  // the click/tap-to-open behavior needed on touch devices and keyboard-driven
+  // Escape/outside-click dismissal on both.
+  signupMethodOpen = false;
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -54,6 +61,7 @@ export class SignupComponent implements OnInit {
     private authFacade: AuthFacade,
     private seoService: SeoService,
     private googleAuthService: GoogleAuthService,
+    private elementRef: ElementRef,
   ) { }
 
   ngOnInit(): void {
@@ -197,6 +205,37 @@ export class SignupComponent implements OnInit {
   onGoogleError(errorCode: string): void {
     if (errorCode === 'google_popup_closed' || errorCode === 'google_prompt_dismissed') return;
     this.googleError = 'Google sign-up did not complete. Try again or use email.';
+  }
+
+  toggleSignupMethod(): void {
+    this.signupMethodOpen = !this.signupMethodOpen;
+  }
+
+  closeSignupMethod(returnFocus: boolean = false): void {
+    if (!this.signupMethodOpen) {
+      return;
+    }
+    this.signupMethodOpen = false;
+    if (returnFocus) {
+      const trigger: HTMLElement = this.elementRef.nativeElement.querySelector('#signup-social-trigger');
+      if (trigger) {
+        trigger.focus();
+      }
+    }
+  }
+
+  // Outside click/tap closes the open dropdown. Bound to the document rather
+  // than a template (click.outside) so it also catches taps on completely
+  // unrelated parts of the page (e.g. the decorative carousel column).
+  @HostListener('document:click', ['$event'])
+  onDocumentClickForSignupMethod(event: MouseEvent): void {
+    if (!this.signupMethodOpen) {
+      return;
+    }
+    const dropdown: HTMLElement = this.elementRef.nativeElement.querySelector('.gh-social-dropdown');
+    if (dropdown && !dropdown.contains(event.target as Node)) {
+      this.signupMethodOpen = false;
+    }
   }
 
   openVerification(email: string) {

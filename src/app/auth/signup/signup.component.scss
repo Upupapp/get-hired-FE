@@ -574,24 +574,85 @@ input.ng-invalid.ng-dirty.ng-touched {
   color: $color-global-red-buttons;
 }
 
-// ── Google / LinkedIn: side by side on Register, wrapping to stacked rows
-// whenever the available card width can't fit both buttons legibly. This
-// uses flex-wrap driven by each button's own min-width rather than a
-// viewport media query, because the card sits at very different widths
-// depending on the breakpoint (full-width below lg, ~half-viewport-minus-
-// padding at lg/xl where the carousel column is also visible) -- a fixed
-// viewport cutoff (e.g. 450px) looks right in isolation but clips/overlaps
-// the button labels at in-between widths like 992px where the card itself
-// is narrow even though the viewport is "desktop-sized".
-.gh-social-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: stretch;
+// ── Google / LinkedIn: consolidated "Sign up with" disclosure ────────────────
+// Replaces two full-width stacked OAuth rows with one compact trigger. Desktop
+// (hover-capable + fine pointer) reveals the panel on hover OR keyboard focus
+// purely via CSS (:hover / :focus-within) so it works even before JS state
+// settles; touch devices fall back to the .gh-social-dropdown--open class,
+// which signupMethodOpen (in signup.component.ts) toggles on tap.
+.gh-social-dropdown {
+  position: relative;
+  margin-bottom: 4px;
 
-  .gh-google-btn-row {
-    flex: 1 1 190px;
-    min-width: 190px;
+  .gh-social-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 50px;
+    background: #FFFFFF;
+    border: 1px solid #E6E6E6;
+    border-radius: 14px;
+    font-family: 'Manrope';
+    font-size: 14px;
+    font-weight: 600;
+    color: #4D4D4D;
+    cursor: pointer;
+    transition: border-color 150ms ease, color 150ms ease;
+
+    .gh-social-trigger-chevron {
+      transition: transform 150ms ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+      border-color: $color-global-red-buttons;
+      color: $color-global-red-buttons;
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 103, 93, 0.25);
+      outline-offset: 2px;
+    }
+  }
+
+  .gh-social-menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: #FFFFFF;
+    border: 1px solid #EFEFEF;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(20, 18, 31, 0.10);
+    padding: 12px;
+  }
+
+  &--open .gh-social-menu {
+    display: flex;
+  }
+
+  &--open .gh-social-trigger .gh-social-trigger-chevron {
+    transform: rotate(180deg);
+  }
+
+  // Desktop/hover-capable: reveal on hover or keyboard focus-within,
+  // regardless of the click-driven --open state.
+  @media (hover: hover) and (pointer: fine) {
+    &:hover .gh-social-menu,
+    &:focus-within .gh-social-menu {
+      display: flex;
+    }
+
+    &:hover .gh-social-trigger .gh-social-trigger-chevron,
+    &:focus-within .gh-social-trigger .gh-social-trigger-chevron {
+      transform: rotate(180deg);
+    }
   }
 }
 
@@ -824,25 +885,16 @@ select.gh-input {
 }
 
 // ── CAPTCHA ──────────────────────────────────────────────────────────────────
-// Reference design: a soft, light neutral-gray rounded box (not hard-bordered)
-// around the widget, with generous margin above/below so it reads as its own
-// breathing-room'd step between "I want to register as" and the terms
-// checkbox. Padding is intentionally modest on mobile so the box itself
-// never forces the 304px-wide Google widget to overflow -- the iframe-width
-// safety rule below still does the real work of keeping it inside 320px.
+// No visible box/border/background here by design -- the user explicitly
+// asked (twice) for the reCAPTCHA widget to sit with generous, formal
+// spacing, clearly separated from the role select above and the terms
+// checkbox below, but WITHOUT any container treatment around it. Just margin.
 .gh-captcha-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 28px 0;
-  padding: 14px;
+  margin: 32px 0;
   width: 100%;
-  background: #FAFAFB;
-  border-radius: 16px;
-
-  @media (max-width: 575px) {
-    padding: 10px 6px;
-  }
 }
 
 // Google's v2 checkbox widget renders at a fixed 304px width this

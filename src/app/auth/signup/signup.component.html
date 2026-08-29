@@ -117,32 +117,53 @@
             </p>
           </div>
 
-          <!-- Google / LinkedIn sign-up — at the top of the form panel, side by side per reference -->
-          <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">
-            {{ googleError }}
-          </div>
+          <!-- Google / LinkedIn sign-up — consolidated into a single disclosure
+               trigger so the top of the form isn't dominated by two full-width
+               OAuth rows. Desktop (hover-capable pointers) reveals the panel on
+               hover OR keyboard focus purely via CSS; touch/mobile relies on
+               signupMethodOpen (tap-to-open, outside-tap/Escape-to-close). -->
+          <div class="gh-social-dropdown" [class.gh-social-dropdown--open]="signupMethodOpen"
+            (keydown.escape)="closeSignupMethod(true)">
+            <button type="button"
+              id="signup-social-trigger"
+              class="gh-social-trigger"
+              aria-haspopup="true"
+              [attr.aria-expanded]="signupMethodOpen"
+              aria-controls="signup-social-menu"
+              (click)="toggleSignupMethod()">
+              <span>Sign up with</span>
+              <svg class="gh-social-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true" focusable="false">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </button>
 
-          <div *ngIf="googleLoading" class="text-center py-2" aria-live="polite" style="font-size:13px;color:#6b7280;">
-            Connecting to Google…
-          </div>
+            <div class="gh-social-menu" id="signup-social-menu" role="menu" aria-labelledby="signup-social-trigger">
+              <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">
+                {{ googleError }}
+              </div>
 
-          <div class="gh-social-row">
-            <div class="gh-google-btn-row" *ngIf="!googleLoading">
-              <app-google-signin-button
-                label="signup_with"
-                [fullWidth]="true"
-                (credential)="onGoogleCredential($event)"
-                (errorEvent)="onGoogleError($event)">
-              </app-google-signin-button>
-            </div>
+              <div *ngIf="googleLoading" class="text-center py-2" aria-live="polite" style="font-size:13px;color:#6b7280;">
+                Connecting to Google…
+              </div>
 
-            <!-- LinkedIn sign-up button -->
-            <div class="gh-google-btn-row">
-              <app-linkedin-button
-                label="Sign up with LinkedIn"
-                intent="auto"
-                [fullWidth]="true">
-              </app-linkedin-button>
+              <div class="gh-social-menu-item" role="menuitem" *ngIf="!googleLoading">
+                <app-google-signin-button
+                  label="signup_with"
+                  [fullWidth]="true"
+                  (credential)="onGoogleCredential($event)"
+                  (errorEvent)="onGoogleError($event)">
+                </app-google-signin-button>
+              </div>
+
+              <!-- LinkedIn sign-up button -->
+              <div class="gh-social-menu-item" role="menuitem">
+                <app-linkedin-button
+                  label="Sign up with LinkedIn"
+                  intent="auto"
+                  [fullWidth]="true">
+                </app-linkedin-button>
+              </div>
             </div>
           </div>
 
@@ -354,7 +375,7 @@
               </svg>
             </span>
 
-            <select class="form-select gh-input gh-input--icon-left gh-input--icon-right mt-4" formControlName="role" name="role" id="signup-role" aria-label="Register as">
+            <select class="form-select gh-input gh-input--icon-left gh-input--icon-right" formControlName="role" name="role" id="signup-role" aria-label="Register as">
               <option [value]="null" disabled>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</option>
               <option [value]="3">{{ 'CREATE_ACCOUNT.REGISTRATION_TYPE_SELECTOR' | translate }}</option>
               <option [value]="2">{{ 'CREATE_ACCOUNT.REGISTRATION_TYPE_SELECTOR2' | translate }}</option>
