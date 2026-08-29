@@ -537,7 +537,7 @@ input.ng-invalid.ng-dirty.ng-touched {
 }
 
 .gh-auth-card-logo {
-  margin-bottom: 18px;
+  margin-bottom: -2px;
 
   .gh-auth-card-logo-img {
     height: auto;
@@ -552,7 +552,7 @@ input.ng-invalid.ng-dirty.ng-touched {
 	.gh-auth-card-logo{
 		margin-bottom: 8px;
     position: relative;
-    top: 17px;
+    top: 15px;
 	}
 }
 
@@ -880,24 +880,25 @@ select.gh-input {
 // asked (twice) for the reCAPTCHA widget to sit with generous, formal
 // spacing, clearly separated from the role select above and the terms
 // checkbox below, but WITHOUT any container treatment around it. Just margin.
+//
+// Sizing: Google's v2 checkbox widget has NO responsive-width option at all
+// (fixed 304x78px, unlike the sign-in buttons above which measure their own
+// container). signup.component.ts measures this wrapper's real width via
+// ResizeObserver and applies a computed transform:scale + margin-left to
+// <re-captcha> at every breakpoint: on a narrow phone the scaled widget
+// ends up exactly as wide as the wrapper (matching the input fields, edge
+// to edge); on desktop/tablet, where the widened card leaves more room than
+// the widget's native 304px, the same formula centers it instead of
+// leaving it flush against one edge. re-captcha needs `display:block`
+// (custom elements default to inline) so the JS-set transform/margin/
+// height apply predictably -- no flex-centering needed here, the TS owns
+// centering entirely.
 .gh-captcha-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin: 32px 0;
   width: 100%;
-}
 
-// Google's v2 checkbox widget renders at a fixed 304px width this
-// component doesn't control -- on narrow phones (down to Mobile S, 320px)
-// that can exceed the available form width and overflow off-screen.
-// Forcing the iframe itself to the container's width keeps it fully
-// visible and centered. Desktop has enough room natively, so this is
-// mobile-only.
-@media (max-width: 767px) {
-  iframe[title="reCAPTCHA"] {
-    width: 100% !important;
-    height: 80px !important;
+  re-captcha {
+    display: block;
   }
 }
 

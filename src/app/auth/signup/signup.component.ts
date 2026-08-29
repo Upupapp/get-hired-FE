@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +18,7 @@ import { GoogleAuthService } from '../services/google-auth.service';
   styleUrls: ['./signup.component.scss'],
   animations: [mainAnimations]
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, AfterViewInit {
   unsubscribe$ = new Subject<void>();
   req$: Subscription;
 
@@ -44,6 +44,19 @@ export class SignupComponent implements OnInit {
 
   googleLoading = false;
   googleError: string | null = null;
+
+  // reCAPTCHA (ng-recaptcha's <re-captcha>) renders Google's v2 checkbox
+  // widget at a hard-fixed 304x78px -- unlike the Google/LinkedIn sign-in
+  // buttons above, the v2 API has no responsive-width option at all, so
+  // there's no CSS-only way to make it fill the input fields' actual width.
+  // Measuring that width and applying a computed transform:scale is the
+  // only way to genuinely match it (and, as a side effect, replaces every
+  // previous hand-picked/eyeballed offset with a value that's always
+  // mathematically correct for the real rendered input width).
+  @ViewChild('captchaWrap') captchaWrapRef?: ElementRef<HTMLElement>;
+  private recaptchaResizeObserver?: ResizeObserver;
+  private static readonly RECAPTCHA_NATIVE_WIDTH = 304;
+  private static readonly RECAPTCHA_NATIVE_HEIGHT = 78;
 
   constructor(
     private router: Router,
@@ -81,7 +94,12 @@ export class SignupComponent implements OnInit {
       firstName: [null, Validators.compose([Validators.required])],
       lastName: [null, Validators.compose([Validators.required])],
       agreeToTerms: [null, Validators.compose([Validators.required])],
-      recaptcha: [null],
+      // BUGFIX: had no validator, so an unchecked reCAPTCHA never disabled
+      // the submit button -- registerForm.valid was true regardless. The
+      // click still failed (the backend independently rejects a missing/
+      // invalid recaptchaToken with a 400), but only after a round trip;
+      // this makes the button itself reflect the real requirement.
+      recaptcha: [null, Validators.compose([Validators.required])],
       role: [null, Validators.compose([Validators.required])]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
 
@@ -113,6 +131,57 @@ export class SignupComponent implements OnInit {
         return of(err);
       })
     ).subscribe();
+  }
+
+  ngAfterViewInit(): void {
+    this.setupRecaptchaScale();
+  }
+
+  // Scales the reCAPTCHA widget so its rendered width matches the actual
+  // width of its wrapper (which sits in the same column as every text
+  // input, so this makes it visually match them) instead of Google's fixed
+  // 304px. Runs once after view init, then on every real resize/orientation
+  // change via ResizeObserver -- so it's correct on load and stays correct,
+  // not a one-time guess for a single assumed viewport width.
+  private setupRecaptchaScale(): void {
+    const wrap = this.captchaWrapRef && this.captchaWrapRef.nativeElement;
+    if (!wrap || typeof ResizeObserver === 'undefined') return;
+    this.recaptchaResizeObserver = new ResizeObserver(() => this.applyRecaptchaScale());
+    this.recaptchaResizeObserver.observe(wrap);
+    this.applyRecaptchaScale();
+  }
+
+  // One formula, every breakpoint -- no separate desktop/mobile branch:
+  //   scale = min(availableWidth / 304, 1)              -- never scale up
+  //   scaledWidth = 304 * scale
+  //   leftOffset = (availableWidth - scaledWidth) / 2    -- centers it
+  // On a narrow phone, availableWidth < 304 -> scale < 1 -> scaledWidth
+  // ends up equal to availableWidth itself -> leftOffset is 0, so the
+  // widget fills the same full width as the input fields, edge to edge.
+  // On desktop/tablet (card widened, plenty of room), availableWidth stays
+  // comfortably above 304 -> scale is capped at 1 -> scaledWidth is the
+  // native 304px -> leftOffset centers that native-size widget within the
+  // wider available space instead of sitting flush against either edge.
+  private applyRecaptchaScale(): void {
+    const wrap = this.captchaWrapRef && this.captchaWrapRef.nativeElement;
+    if (!wrap) return;
+    const target = wrap.querySelector('re-captcha') as HTMLElement | null;
+    if (!target) return;
+
+    const availableWidth = wrap.clientWidth;
+    if (!availableWidth) return;
+
+    const scale = Math.min(availableWidth / SignupComponent.RECAPTCHA_NATIVE_WIDTH, 1);
+    const scaledWidth = SignupComponent.RECAPTCHA_NATIVE_WIDTH * scale;
+    const leftOffset = (availableWidth - scaledWidth) / 2;
+
+    target.style.transformOrigin = 'top left';
+    target.style.transform = `scale(${scale})`;
+    target.style.marginLeft = `${leftOffset}px`;
+    // transform doesn't affect layout, so the wrapper still reserves the
+    // widget's full unscaled height unless told otherwise -- reserving the
+    // real scaled height here avoids leftover empty space below it.
+    wrap.style.height = `${SignupComponent.RECAPTCHA_NATIVE_HEIGHT * scale}px`;
   }
 
   computePasswordStrength(value: string): 'empty' | 'weak' | 'medium' | 'strong' {
@@ -272,6 +341,7 @@ export class SignupComponent implements OnInit {
     localStorage.removeItem('signupMessage');
 
     if (this.req$) this.req$.unsubscribe();
+    if (this.recaptchaResizeObserver) this.recaptchaResizeObserver.disconnect();
 
   }
 
