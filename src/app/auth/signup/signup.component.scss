@@ -520,6 +520,205 @@ input.ng-invalid.ng-dirty.ng-touched {
 	margin-bottom: 35px;
 }
 
+// ─── Reference-design restyle: form card only ────────────────────────────────
+// Everything below targets elements inside .card (view-encapsulation-scoped
+// to this component), so none of it can leak to other pages that share the
+// global .form-group rule in styles.scss.
+
+.gh-auth-card {
+  box-shadow: 0 20px 45px rgba(255, 61, 110, 0.10);
+}
+
+.gh-auth-card-logo {
+  margin-bottom: 18px;
+
+  .gh-auth-card-logo-img {
+    height: auto;
+    max-height: 34px;
+    width: auto;
+    max-width: 170px;
+    object-fit: contain;
+  }
+}
+
+.gh-auth-heading {
+  text-align: center !important;
+  margin-bottom: 20px;
+
+  .gh-auth-subtitle {
+    font-family: 'Manrope';
+    font-size: 14px;
+    color: #8D8D8D;
+    margin: 6px 0 0;
+  }
+}
+
+.gh-auth-title {
+  font-size: 24px !important;
+  line-height: 30px !important;
+  text-align: center;
+  color: #14121F;
+
+  @media (max-width: 899px) {
+    font-size: 20px !important;
+    line-height: 26px !important;
+    text-transform: none !important;
+    font-family: 'Manrope' !important;
+    position: static !important;
+    bottom: auto !important;
+    margin-bottom: 6px !important;
+  }
+}
+
+.gh-auth-accent {
+  color: $color-global-red-buttons;
+}
+
+// ── Google / LinkedIn: side by side on Register, wrapping to stacked rows
+// whenever the available card width can't fit both buttons legibly. This
+// uses flex-wrap driven by each button's own min-width rather than a
+// viewport media query, because the card sits at very different widths
+// depending on the breakpoint (full-width below lg, ~half-viewport-minus-
+// padding at lg/xl where the carousel column is also visible) -- a fixed
+// viewport cutoff (e.g. 450px) looks right in isolation but clips/overlaps
+// the button labels at in-between widths like 992px where the card itself
+// is narrow even though the viewport is "desktop-sized".
+.gh-social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: stretch;
+
+  .gh-google-btn-row {
+    flex: 1 1 190px;
+    min-width: 190px;
+  }
+}
+
+// ── Fields with inline SVG icons ──────────────────────────────────────────
+.gh-name-row {
+  display: flex;
+  gap: 14px;
+
+  .gh-field {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  @media (max-width: 575px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.gh-field {
+  .gh-field-label {
+    position: static !important;
+    margin-top: 0 !important;
+    margin-left: 4px !important;
+    background: transparent !important;
+    padding: 0 !important;
+    color: #6B7280 !important;
+    font-size: 13px !important;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block !important;
+  }
+
+  .gh-field-icon {
+    position: absolute;
+    top: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    pointer-events: none;
+
+    &--left {
+      left: 16px;
+    }
+
+    &--right {
+      right: 16px;
+    }
+  }
+
+  &--select .gh-field-icon {
+    top: 38px;
+  }
+}
+
+.gh-input {
+  background: #F7F7F8 !important;
+  border: 1px solid #F7F7F8 !important;
+  border-radius: 14px !important;
+  height: 50px;
+  font-family: 'Manrope';
+  font-size: 14px;
+
+  &--icon-left {
+    padding-left: 46px !important;
+  }
+
+  &--icon-right {
+    padding-right: 46px !important;
+  }
+
+  &:focus {
+    background: #FFFFFF !important;
+    border: 1.5px solid $color-global-red-buttons !important;
+    outline: 2px solid rgba(255, 103, 93, 0.25) !important;
+    outline-offset: 1px;
+  }
+}
+
+select.gh-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+// Password toggle icon needs to sit above the field, aligned with the input
+// (the field label above the input shifts the whole stack down vs. the old
+// floating-label layout, so re-anchor relative to the input's own top).
+.form-group.gh-field .gh-pw-toggle {
+  top: 30px;
+  right: 6px;
+  margin-top: 0;
+}
+
+// ── Submit button: gradient + right-arrow-in-circle ───────────────────────
+.gh-submit-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-weight: 700;
+  gap: 8px;
+
+  .gh-submit-btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    color: #FFFFFF;
+    flex-shrink: 0;
+  }
+
+  .gh-submit-btn-spinner {
+    margin: 0;
+  }
+}
+
+.join-us {
+  font-family: 'Manrope';
+  font-size: 14px;
+  color: #8D8D8D;
+}
+
 // V5: btn-submit motion tokens merged into base block above.
 
 .bg-form {
@@ -625,15 +824,25 @@ input.ng-invalid.ng-dirty.ng-touched {
 }
 
 // ── CAPTCHA ──────────────────────────────────────────────────────────────────
-// No bordered "holder" box -- removed per direct request: the box was
-// crowding/misplacing the widget on mobile. Plain generous spacing above
-// and below instead, so it reads as its own breathing-room'd step between
-// "I want to register as" and the terms checkbox, not squeezed against
-// either.
+// Reference design: a soft, light neutral-gray rounded box (not hard-bordered)
+// around the widget, with generous margin above/below so it reads as its own
+// breathing-room'd step between "I want to register as" and the terms
+// checkbox. Padding is intentionally modest on mobile so the box itself
+// never forces the 304px-wide Google widget to overflow -- the iframe-width
+// safety rule below still does the real work of keeping it inside 320px.
 .gh-captcha-wrap {
   display: flex;
   justify-content: center;
-  margin: 32px 0;
+  align-items: center;
+  margin: 28px 0;
+  padding: 14px;
+  width: 100%;
+  background: #FAFAFB;
+  border-radius: 16px;
+
+  @media (max-width: 575px) {
+    padding: 10px 6px;
+  }
 }
 
 // Google's v2 checkbox widget renders at a fixed 304px width this

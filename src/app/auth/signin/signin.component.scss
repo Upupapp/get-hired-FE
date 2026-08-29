@@ -581,6 +581,197 @@ input.ng-invalid.ng-dirty.ng-touched {
 // can never push the login form off-screen regardless of viewport height.
 // Visibility is gated purely by the d-lg-none utility class in the template;
 // this block never applies at >=992px, so desktop is unaffected either way.
+// ─── Reference-design restyle: form card only ────────────────────────────────
+// Everything below targets elements inside .card (view-encapsulation-scoped
+// to this component), so none of it can leak to other pages that share the
+// global .form-group rule in styles.scss.
+
+.gh-auth-card {
+  box-shadow: 0 20px 45px rgba(255, 61, 110, 0.10);
+}
+
+.gh-auth-card-logo {
+  margin-bottom: 18px;
+
+  .gh-auth-card-logo-img {
+    height: auto;
+    max-height: 34px;
+    width: auto;
+    max-width: 170px;
+    object-fit: contain;
+  }
+}
+
+.gh-auth-heading {
+  text-align: center !important;
+  margin-top: 0 !important;
+  margin-bottom: 22px;
+}
+
+.gh-auth-title {
+  font-size: 26px !important;
+  line-height: 32px !important;
+  text-align: center;
+  color: #14121F;
+
+  @media (max-width: 899px) {
+    font-size: 21px !important;
+    line-height: 28px !important;
+    text-transform: none !important;
+    font-family: 'Manrope' !important;
+    position: static !important;
+    margin-bottom: 6px !important;
+  }
+}
+
+.gh-auth-accent {
+  color: $color-global-red-buttons;
+}
+
+.gh-auth-subtitle {
+  font-family: 'Manrope';
+  font-size: 14px;
+  color: #8D8D8D;
+  margin: 6px 0 0;
+}
+
+// ── Fields with inline SVG icons ──────────────────────────────────────────
+.gh-field {
+  .gh-field-label {
+    position: static !important;
+    margin-top: 0 !important;
+    margin-left: 4px !important;
+    background: transparent !important;
+    padding: 0 !important;
+    color: #6B7280 !important;
+    font-size: 13px !important;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block !important;
+  }
+
+  .gh-field-icon {
+    position: absolute;
+    top: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9CA3AF;
+    pointer-events: none;
+
+    &--left {
+      left: 16px;
+    }
+  }
+}
+
+.gh-input {
+  background: #F7F7F8 !important;
+  border: 1px solid #F7F7F8 !important;
+  border-radius: 14px !important;
+  height: 50px;
+  font-family: 'Manrope';
+  font-size: 14px;
+
+  &--icon-left {
+    padding-left: 46px !important;
+  }
+
+  &--icon-right {
+    padding-right: 46px !important;
+  }
+
+  &:focus {
+    background: #FFFFFF !important;
+    border: 1.5px solid $color-global-red-buttons !important;
+    outline: 2px solid rgba(255, 103, 93, 0.25) !important;
+    outline-offset: 1px;
+  }
+}
+
+// Password toggle icon needs to sit above the field, aligned with the input
+// (the field label above the input shifts the whole stack down vs. the old
+// floating-label layout, so re-anchor relative to the input's own top).
+.form-group.gh-field .gh-pw-toggle {
+  top: 30px;
+  right: 6px;
+  margin-top: 0;
+}
+
+// ── Remember me / forgot password row ─────────────────────────────────────
+.gh-remember-me {
+  ::ng-deep .mat-checkbox-frame {
+    border-color: $color-global-red-buttons !important;
+    border-radius: 5px;
+  }
+  ::ng-deep .mat-checkbox-checked .mat-checkbox-background {
+    background-color: $color-global-red-buttons !important;
+  }
+}
+
+.forget-password {
+  color: $color-global-red-buttons !important;
+  font-weight: 600;
+}
+
+// ── Submit button: gradient + right-arrow-in-circle ───────────────────────
+.gh-submit-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-weight: 700;
+  gap: 8px;
+
+  .gh-submit-btn-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    color: #FFFFFF;
+    flex-shrink: 0;
+  }
+
+  .gh-submit-btn-spinner {
+    margin: 0;
+  }
+}
+
+// ── Divider ─────────────────────────────────────────────────────────────
+.gh-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+
+  .gh-auth-divider-line {
+    flex: 1;
+    height: 1px;
+    background: #E9E9EC;
+  }
+
+  .gh-auth-divider-text {
+    font-family: 'Manrope';
+    font-size: 12.5px;
+    color: #9A9A9A;
+    white-space: nowrap;
+  }
+}
+
+// ── Google / LinkedIn button rows: stacked on Sign-In per reference ───────
+.gh-google-btn-row {
+  width: 100%;
+}
+
+.join-us {
+  font-family: 'Manrope';
+  font-size: 14px;
+  color: #8D8D8D;
+}
+
 .gh-mobile-carousel {
   height: 200px;
   max-height: 200px;

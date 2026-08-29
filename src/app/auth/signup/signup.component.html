@@ -93,25 +93,31 @@
     </div>
 
     <div class="col-12 col-lg-6 bg-form order-first order-lg-last">
-      <div class="card py-5 pt-2" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+      <div class="card gh-auth-card py-5 pt-2" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+        <div class="gh-auth-card-logo text-center">
+          <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-auth-card-logo-img" alt="GetHired">
+        </div>
         <!-- Error Message -->
         <form class="" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
-          <div class="form-group text-start">
+          <div class="form-group text-start gh-auth-heading">
             <!-- V5: Employer-specific title when role=2 is pre-selected via ?role=2 query param.
                  Falls back to generic title for applicant signup (role=3) or when no role is set. -->
-            <h4 class="main-title m-0"
+            <h4 class="main-title gh-auth-title m-0"
               *ngIf="role_validators?.value === 2; else genericTitle">
-              Create your employer account
+              Create <span class="gh-auth-accent">your employer account</span>
             </h4>
             <ng-template #genericTitle>
-              <h4 class="main-title m-0"> {{ 'CREATE_ACCOUNT.CREATE_ACCOUNT_TEXT' | translate }}</h4>
+              <h4 class="main-title gh-auth-title m-0">Create <span class="gh-auth-accent">your account</span></h4>
             </ng-template>
-            <p class="gh-signup-subtitle" *ngIf="role_validators?.value === 2">
+            <p class="gh-auth-subtitle" *ngIf="role_validators?.value === 2">
               Start hiring in minutes. Post your first job and reach qualified candidates.
+            </p>
+            <p class="gh-auth-subtitle" *ngIf="role_validators?.value !== 2">
+              Start your journey with GetHired
             </p>
           </div>
 
-          <!-- Google / LinkedIn sign-up — moved to the top of the form panel -->
+          <!-- Google / LinkedIn sign-up — at the top of the form panel, side by side per reference -->
           <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">
             {{ googleError }}
           </div>
@@ -120,27 +126,29 @@
             Connecting to Google…
           </div>
 
-          <div class="gh-google-btn-row" *ngIf="!googleLoading">
-            <app-google-signin-button
-              label="signup_with"
-              [fullWidth]="true"
-              (credential)="onGoogleCredential($event)"
-              (errorEvent)="onGoogleError($event)">
-            </app-google-signin-button>
-          </div>
+          <div class="gh-social-row">
+            <div class="gh-google-btn-row" *ngIf="!googleLoading">
+              <app-google-signin-button
+                label="signup_with"
+                [fullWidth]="true"
+                (credential)="onGoogleCredential($event)"
+                (errorEvent)="onGoogleError($event)">
+              </app-google-signin-button>
+            </div>
 
-          <!-- LinkedIn sign-up button -->
-          <div class="gh-google-btn-row mt-2">
-            <app-linkedin-button
-              label="Sign up with LinkedIn"
-              intent="auto"
-              [fullWidth]="true">
-            </app-linkedin-button>
+            <!-- LinkedIn sign-up button -->
+            <div class="gh-google-btn-row">
+              <app-linkedin-button
+                label="Sign up with LinkedIn"
+                intent="auto"
+                [fullWidth]="true">
+              </app-linkedin-button>
+            </div>
           </div>
 
           <div class="gh-auth-divider mt-3" aria-hidden="true">
             <span class="gh-auth-divider-line"></span>
-            <span class="gh-auth-divider-text">or</span>
+            <span class="gh-auth-divider-text">or sign up with email</span>
             <span class="gh-auth-divider-line"></span>
           </div>
 
@@ -151,51 +159,76 @@
             <span>{{ error }}</span>
           </div>
 
-          <div class="form-group mt-4">
-            <input type="text" class="form-control" formControlName="firstName" name="firstName" id="signup-firstName"
-              placeholder="First Name" autocomplete="given-name"
-              [class.is-invalid]="firstName_validators?.invalid && firstName_validators?.touched"
-              [attr.aria-invalid]="firstName_validators?.invalid && firstName_validators?.touched ? 'true' : null"
-              [attr.aria-describedby]="firstName_validators?.invalid && firstName_validators?.touched ? 'signup-firstName-error' : null">
+          <div class="gh-name-row">
+            <div class="form-group gh-field mt-4">
+              <label class="d-flex gh-field-label" for="signup-firstName">
+                <div>{{ 'CREATE_ACCOUNT.FIRSTNAME_TEXTBOX' | translate }}</div>
+              </label>
 
-            <label class="d-flex" for="signup-firstName">
-              <div>{{ 'CREATE_ACCOUNT.FIRSTNAME_TEXTBOX' | translate }}</div>
-            </label>
+              <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                  <circle cx="12" cy="7" r="4"/>
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+                </svg>
+              </span>
 
-            <div class="mt-1 ms-4" id="signup-firstName-error" *ngIf="
-            (firstName_validators?.invalid && firstName_validators?.touched) || firstName_validators?.dirty">
-              <small *ngIf="firstName_validators?.errors?.required" class="text-danger">First Name is required</small>
+              <input type="text" class="form-control gh-input gh-input--icon-left" formControlName="firstName" name="firstName" id="signup-firstName"
+                placeholder="First Name" autocomplete="given-name"
+                [class.is-invalid]="firstName_validators?.invalid && firstName_validators?.touched"
+                [attr.aria-invalid]="firstName_validators?.invalid && firstName_validators?.touched ? 'true' : null"
+                [attr.aria-describedby]="firstName_validators?.invalid && firstName_validators?.touched ? 'signup-firstName-error' : null">
+
+              <div class="mt-1 ms-4" id="signup-firstName-error" *ngIf="
+              (firstName_validators?.invalid && firstName_validators?.touched) || firstName_validators?.dirty">
+                <small *ngIf="firstName_validators?.errors?.required" class="text-danger">First Name is required</small>
+              </div>
+            </div>
+
+            <div class="form-group gh-field mt-4">
+              <label class="d-flex gh-field-label" for="signup-lastName">
+                <div>{{ 'CREATE_ACCOUNT.LASTNAME_TEXTBOX' | translate }}</div>
+              </label>
+
+              <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                  <circle cx="12" cy="7" r="4"/>
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+                </svg>
+              </span>
+
+              <input type="text" class="form-control gh-input gh-input--icon-left" formControlName="lastName" name="lastName" id="signup-lastName"
+                placeholder="Last Name" autocomplete="family-name"
+                [class.is-invalid]="lastName_validators?.invalid && lastName_validators?.touched"
+                [attr.aria-invalid]="lastName_validators?.invalid && lastName_validators?.touched ? 'true' : null"
+                [attr.aria-describedby]="lastName_validators?.invalid && lastName_validators?.touched ? 'signup-lastName-error' : null">
+
+              <div class="mt-1 ms-4" id="signup-lastName-error" *ngIf="
+              (lastName_validators?.invalid && lastName_validators?.touched) || lastName_validators?.dirty">
+                <small *ngIf="lastName_validators?.errors?.required" class="text-danger">Last Name is required</small>
+              </div>
             </div>
           </div>
 
-          <div class="form-group  mt-4">
-            <input type="text" class="form-control" formControlName="lastName" name="lastName" id="signup-lastName"
-              placeholder="Last Name" autocomplete="family-name"
-              [class.is-invalid]="lastName_validators?.invalid && lastName_validators?.touched"
-              [attr.aria-invalid]="lastName_validators?.invalid && lastName_validators?.touched ? 'true' : null"
-              [attr.aria-describedby]="lastName_validators?.invalid && lastName_validators?.touched ? 'signup-lastName-error' : null">
-
-            <label class="d-flex" for="signup-lastName">
-              <div>{{ 'CREATE_ACCOUNT.LASTNAME_TEXTBOX' | translate }}</div>
+          <div class="form-group gh-field mt-4">
+            <label class="d-flex gh-field-label" for="signup-email">
+              <div>{{ 'CREATE_ACCOUNT.EMAIL_TEXTBOX' | translate }}</div>
             </label>
 
+            <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M22 6 12 13 2 6"/>
+              </svg>
+            </span>
 
-            <div class="mt-1 ms-4" id="signup-lastName-error" *ngIf="
-            (lastName_validators?.invalid && lastName_validators?.touched) || lastName_validators?.dirty">
-              <small *ngIf="lastName_validators?.errors?.required" class="text-danger">Last Name is required</small>
-            </div>
-          </div>
-
-          <div class="form-group mt-4">
-            <input type="email" class="form-control" formControlName="email" name="email" id="signup-email"
+            <input type="email" class="form-control gh-input gh-input--icon-left" formControlName="email" name="email" id="signup-email"
               placeholder="Email Address" autocomplete="email"
               [class.is-invalid]="email_validators?.invalid && email_validators?.touched"
               [attr.aria-invalid]="email_validators?.invalid && email_validators?.touched ? 'true' : null"
               [attr.aria-describedby]="email_validators?.invalid && email_validators?.touched ? 'signup-email-error' : null">
-
-            <label class="d-flex" for="signup-email">
-              <div>{{ 'CREATE_ACCOUNT.EMAIL_TEXTBOX' | translate }}</div>
-            </label>
 
             <div class="mt-1 ms-4" id="signup-email-error" *ngIf="
             (email_validators?.invalid && email_validators?.touched) || email_validators?.dirty">
@@ -203,91 +236,136 @@
             </div>
           </div>
 
-          <div class="form-group mt-4">
-            <input [type]="inputType" class="form-control" id="password" placeholder="********************"
-              formControlName="password" autocomplete="new-password"
-              [attr.aria-invalid]="pw_validators?.invalid && pw_validators?.touched ? 'true' : null"
-              [attr.aria-describedby]="'password-strength-hint' + ((pw_validators?.invalid && pw_validators?.touched) ? ' password-error' : '')">
+          <div class="gh-name-row">
+            <div class="form-group gh-field mt-4">
+              <label class="d-flex gh-field-label" for="password">
+                <div>{{ 'CREATE_ACCOUNT.PASSWORD_TEXTBOX' | translate }}</div>
+              </label>
 
-            <label class="d-flex" for="password">
-              <div>{{ 'CREATE_ACCOUNT.PASSWORD_TEXTBOX' | translate }}</div>
-            </label>
-
-            <div>
-              <button type="button" class="gh-pw-toggle" (click)="toggleInputVisibility()"
-                [attr.aria-label]="inputType === 'password' ? 'Show password' : 'Hide password'"
-                [attr.aria-pressed]="inputType === 'text'">
-                <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid img-plc"
-                  *ngIf="inputType === 'password'" alt="">
-                <img src="/assets/images/placeholder/icons/show-password.png" width="23px" class="img-fluid img-plc"
-                  *ngIf="inputType === 'text'" alt="">
-              </button>
-            </div>
-
-            <!-- Real-time password strength meter -- purely a UX affordance layered on
-                 top of the real pwPattern validator; never relaxes/replaces it. -->
-            <div class="gh-strength-meter" id="password-strength-hint" *ngIf="passwordStrength !== 'empty'" aria-live="polite">
-              <div class="gh-strength-bar" [ngClass]="'gh-strength-' + passwordStrength">
-                <span></span><span></span><span></span>
-              </div>
-              <span class="gh-strength-label" [ngClass]="'gh-strength-label-' + passwordStrength">
-                {{ passwordStrength === 'weak' ? 'Weak' : passwordStrength === 'medium' ? 'Medium' : 'Strong' }}
+              <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                  <rect x="5" y="11" width="14" height="10" rx="2"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                </svg>
               </span>
+
+              <input [type]="inputType" class="form-control gh-input gh-input--icon-left gh-input--icon-right" id="password" placeholder="Create password"
+                formControlName="password" autocomplete="new-password"
+                [attr.aria-invalid]="pw_validators?.invalid && pw_validators?.touched ? 'true' : null"
+                [attr.aria-describedby]="'password-strength-hint' + ((pw_validators?.invalid && pw_validators?.touched) ? ' password-error' : '')">
+
+              <div>
+                <button type="button" class="gh-pw-toggle" (click)="toggleInputVisibility()"
+                  [attr.aria-label]="inputType === 'password' ? 'Show password' : 'Hide password'"
+                  [attr.aria-pressed]="inputType === 'text'">
+                  <svg *ngIf="inputType === 'password'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg *ngIf="inputType === 'text'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false">
+                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.86 21.86 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a21.86 21.86 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <path d="M1 1l22 22"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Real-time password strength meter -- purely a UX affordance layered on
+                   top of the real pwPattern validator; never relaxes/replaces it. -->
+              <div class="gh-strength-meter" id="password-strength-hint" *ngIf="passwordStrength !== 'empty'" aria-live="polite">
+                <div class="gh-strength-bar" [ngClass]="'gh-strength-' + passwordStrength">
+                  <span></span><span></span><span></span>
+                </div>
+                <span class="gh-strength-label" [ngClass]="'gh-strength-label-' + passwordStrength">
+                  {{ passwordStrength === 'weak' ? 'Weak' : passwordStrength === 'medium' ? 'Medium' : 'Strong' }}
+                </span>
+              </div>
+
+              <div class="mt-1 ms-4" id="password-error" *ngIf="
+                (pw_validators?.invalid && pw_validators?.touched) ||
+                pw_validators?.dirty
+              ">
+                <small *ngIf="pw_validators?.errors?.required" class="text-danger">Password is required</small>
+                <small *ngIf="pw_validators?.errors?.pattern" class="text-danger">
+                  Password must be 8 characters long with mixed uppercase, special
+                  characters and numbers.
+                </small>
+              </div>
             </div>
 
-            <div class="mt-1 ms-4" id="password-error" *ngIf="
-              (pw_validators?.invalid && pw_validators?.touched) ||
-              pw_validators?.dirty
-            ">
-              <small *ngIf="pw_validators?.errors?.required" class="text-danger">Password is required</small>
-              <small *ngIf="pw_validators?.errors?.pattern" class="text-danger">
-                Password must be 8 characters long with mixed uppercase, special
-                characters and numbers.
-              </small>
+            <div class="form-group gh-field mt-4">
+              <label class="d-flex gh-field-label" for="confirmPassword">
+                <div>{{ 'CREATE_ACCOUNT.CONFIRM_PASSWORD_TEXTBOX' | translate }}</div>
+              </label>
+
+              <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                  <rect x="5" y="11" width="14" height="10" rx="2"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                </svg>
+              </span>
+
+              <input [type]="confirmInputType" class="form-control gh-input gh-input--icon-left gh-input--icon-right" id="confirmPassword" placeholder="Confirm password"
+                formControlName="confirmPassword" autocomplete="new-password"
+                [attr.aria-invalid]="pw_reValidators?.invalid && pw_reValidators?.touched ? 'true' : null"
+                [attr.aria-describedby]="pw_reValidators?.invalid && pw_reValidators?.touched ? 'confirmPassword-error' : null">
+
+              <div>
+                <button type="button" class="gh-pw-toggle" (click)="toggleConfirmVisibility()"
+                  [attr.aria-label]="confirmInputType === 'password' ? 'Show password' : 'Hide password'"
+                  [attr.aria-pressed]="confirmInputType === 'text'">
+                  <svg *ngIf="confirmInputType === 'password'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg *ngIf="confirmInputType === 'text'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false">
+                    <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.86 21.86 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a21.86 21.86 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <path d="M1 1l22 22"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="mt-1 ms-4" id="confirmPassword-error" *ngIf="
+                (pw_reValidators?.invalid && pw_reValidators?.touched) ||
+                pw_reValidators?.dirty
+              ">
+                <small *ngIf="pw_reValidators?.errors?.required" class="text-danger">Re-enter Password is required</small>
+                <small *ngIf="pw_reValidators?.hasError('notEquivalent')" class="text-danger">
+                  Passwords do not match
+                </small>
+              </div>
             </div>
           </div>
 
-          <div class="form-group mt-4">
-            <input [type]="confirmInputType" class="form-control" id="confirmPassword" placeholder="********************"
-              formControlName="confirmPassword" autocomplete="new-password"
-              [attr.aria-invalid]="pw_reValidators?.invalid && pw_reValidators?.touched ? 'true' : null"
-              [attr.aria-describedby]="pw_reValidators?.invalid && pw_reValidators?.touched ? 'confirmPassword-error' : null">
-
-            <label class="d-flex" for="confirmPassword">
-              <div>{{ 'CREATE_ACCOUNT.CONFIRM_PASSWORD_TEXTBOX' | translate }}</div>
+          <div class="form-group gh-field gh-field--select mt-4">
+            <label class="d-flex gh-field-label" for="signup-role">
+              <div>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</div>
             </label>
 
-            <div>
-              <button type="button" class="gh-pw-toggle" (click)="toggleConfirmVisibility()"
-                [attr.aria-label]="confirmInputType === 'password' ? 'Show password' : 'Hide password'"
-                [attr.aria-pressed]="confirmInputType === 'text'">
-                <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid img-plc"
-                  *ngIf="confirmInputType === 'password'" alt="">
-                <img src="/assets/images/placeholder/icons/show-password.png" width="23px" class="img-fluid img-plc"
-                  *ngIf="confirmInputType === 'text'" alt="">
-              </button>
-            </div>
-            <div class="mt-1 ms-4" id="confirmPassword-error" *ngIf="
-              (pw_reValidators?.invalid && pw_reValidators?.touched) ||
-              pw_reValidators?.dirty
-            ">
-              <small *ngIf="pw_reValidators?.errors?.required" class="text-danger">Re-enter Password is required</small>
-              <small *ngIf="pw_reValidators?.hasError('notEquivalent')" class="text-danger">
-                Passwords do not match
-              </small>
-            </div>
-          </div>
+            <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                <circle cx="12" cy="7" r="4"/>
+                <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+              </svg>
+            </span>
 
-          <div class="form-group">
-            <select class="form-select mt-4" formControlName="role" name="role" id="signup-role" aria-label="Register as">
+            <select class="form-select gh-input gh-input--icon-left gh-input--icon-right mt-4" formControlName="role" name="role" id="signup-role" aria-label="Register as">
               <option [value]="null" disabled>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</option>
               <option [value]="3">{{ 'CREATE_ACCOUNT.REGISTRATION_TYPE_SELECTOR' | translate }}</option>
               <option [value]="2">{{ 'CREATE_ACCOUNT.REGISTRATION_TYPE_SELECTOR2' | translate }}</option>
             </select>
 
-            <label class="d-flex" for="signup-role">
-              <div>{{ 'CREATE_ACCOUNT.REGISTER_AS' | translate }}</div>
-            </label>
+            <span class="gh-field-icon gh-field-icon--right" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="16" height="16" focusable="false">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </span>
 
             <div class="mt-1 ms-4" *ngIf="
             (role_validators?.invalid && role_validators?.touched) || role_validators?.dirty">
@@ -313,7 +391,7 @@
               <span class="gh-terms-text">
                 By creating your account, you agree to GetHired's
                 <a routerLink="/privacy" class="gh-legal-inline-link" target="_blank" rel="noopener">Privacy Policy</a>
-                and Terms of Use.
+                and <span class="gh-legal-inline-link">Terms of Use</span>.
               </span>
             </mat-checkbox>
           </div>
@@ -321,25 +399,33 @@
           <!-- V5: Employer-specific CTA text when role=2 is selected.
                gh-pressable provides micro-scale press feedback. -->
           <button type="submit"
-            class="btn btn-submit d-block w-100 float-end mt-4 mb-3 gh-pressable"
+            class="btn btn-submit gh-submit-btn d-block w-100 mt-4 mb-3 gh-pressable"
             [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)"
             [attr.aria-busy]="submitting ? 'true' : null">
-            <ng-container *ngIf="role_validators?.value === 2; else genericSubmit">
-              <ng-container *ngIf="!submitting">Create employer account</ng-container>
-              <ng-container *ngIf="submitting">Creating account...</ng-container>
-            </ng-container>
-            <ng-template #genericSubmit>
-              <ng-container *ngIf="!submitting">{{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}</ng-container>
-              <ng-container *ngIf="submitting">Creating account...</ng-container>
-            </ng-template>
-            <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
+            <span class="gh-submit-btn-label">
+              <ng-container *ngIf="role_validators?.value === 2; else genericSubmit">
+                <ng-container *ngIf="!submitting">Create employer account</ng-container>
+                <ng-container *ngIf="submitting">Creating account...</ng-container>
+              </ng-container>
+              <ng-template #genericSubmit>
+                <ng-container *ngIf="!submitting">{{ 'CREATE_ACCOUNT.REGISTRATION_BUTTON' | translate }}</ng-container>
+                <ng-container *ngIf="submitting">Creating account...</ng-container>
+              </ng-template>
+            </span>
+            <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid gh-submit-btn-spinner"
               *ngIf="submitting" alt="">
+            <span class="gh-submit-btn-arrow" *ngIf="!submitting" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="14" height="14" focusable="false">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </span>
           </button>
 
           <div class="clearfix"></div>
 
-          <div class="text-center mt-5 join-us">
-            <br><br>
+          <div class="text-center mt-4 join-us">
             <ng-container *ngIf="role_validators?.value === 2">
               Already have an employer account? <a [routerLink]="'/signin'" class="register">Sign in</a>
             </ng-container>

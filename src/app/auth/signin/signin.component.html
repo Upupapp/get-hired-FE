@@ -42,11 +42,14 @@
 
     <!-- FORM column: first in DOM, first visually on mobile; moves right on lg+ -->
     <div class="col-12 col-lg-6 order-first order-lg-last bg-form gh-signin-form-col">
-      <div class="card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+      <div class="card gh-auth-card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
+        <div class="gh-auth-card-logo text-center">
+          <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-auth-card-logo-img" alt="GetHired">
+        </div>
         <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
-          <div class="form-group text-start mt-5">
-            <h4 class="main-title m-0">{{ 'SIGNIN.WELCOME_MESSAGE' | translate }}</h4>
-            <br>
+          <div class="form-group text-start gh-auth-heading">
+            <h4 class="main-title gh-auth-title m-0">Welcome <span class="gh-auth-accent">back!</span></h4>
+            <p class="gh-auth-subtitle">Sign in to continue to your account</p>
           </div>
 
           <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
@@ -61,39 +64,61 @@
               <span class="verify" (click)="resendVerification()">link to verify again</span>.</span>
           </div>
 
-          <div class="form-group mt-2">
-            <input type="email" class="form-control" formControlName="email" name="email" id="signin-email"
+          <div class="form-group gh-field mt-2">
+            <label class="d-flex gh-field-label" for="signin-email">
+              <div>Email</div>
+            </label>
+
+            <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M22 6 12 13 2 6"/>
+              </svg>
+            </span>
+
+            <input type="email" class="form-control gh-input gh-input--icon-left" formControlName="email" name="email" id="signin-email"
               placeholder="username@mailer.com" autocomplete="username"
               [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'true' : null"
               [attr.aria-describedby]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'signin-email-error' : null">
-
-              <label class="d-flex" for="signin-email">
-                <div>Email</div>
-              </label>
 
               <div class="mt-1 ms-4" id="signin-email-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
                 <small class="text-danger">{{ loginForm.get('email')?.errors?.required ? 'Email is required' : 'Enter a valid email address' }}</small>
               </div>
           </div>
 
-          <div class="form-group mt-4">
-            <input [type]="inputType" class="form-control" id="signin-password" placeholder="********************"
+          <div class="form-group gh-field mt-4">
+            <label class="d-flex gh-field-label" for="signin-password">
+              <div>Password</div>
+            </label>
+
+            <span class="gh-field-icon gh-field-icon--left" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="18" height="18" focusable="false">
+                <rect x="5" y="11" width="14" height="10" rx="2"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+            </span>
+
+            <input [type]="inputType" class="form-control gh-input gh-input--icon-left gh-input--icon-right" id="signin-password" placeholder="********************"
               formControlName="password" autocomplete="current-password"
               [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'true' : null"
               [attr.aria-describedby]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'signin-password-error' : null">
-
-            <label class="d-flex" for="signin-password">
-              <div>Password</div>
-            </label>
 
             <div>
               <button type="button" class="gh-pw-toggle" (click)="togglePasswordVisibility()"
                 [attr.aria-label]="inputType === 'password' ? 'Show password' : 'Hide password'"
                 [attr.aria-pressed]="inputType === 'text'">
-                <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid img-plc"
-                  *ngIf="inputType === 'password'" alt="">
-                <img src="/assets/images/placeholder/icons/show-password.png" width="23px" class="img-fluid img-plc"
-                  *ngIf="inputType === 'text'" alt="">
+                <svg *ngIf="inputType === 'password'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg *ngIf="inputType === 'text'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.86 21.86 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a21.86 21.86 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <path d="M1 1l22 22"/>
+                </svg>
               </button>
             </div>
 
@@ -114,11 +139,18 @@
           <br>
           <!-- BL-012: gh-pressable adds tap-compression on mobile (scale 0.985 on :active).
                Defined in _motion.scss. Respects prefers-reduced-motion via @include motion-safe. -->
-          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3 gh-pressable" [disabled]="submitting"
+          <button type="submit" class="btn btn-submit gh-submit-btn d-block w-100 mt-4 mb-3 gh-pressable" [disabled]="submitting"
             [attr.aria-busy]="submitting ? 'true' : null">
-            {{ 'SIGNIN.LOGIN_TEXTBOX' | translate }}
-            <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
+            <span class="gh-submit-btn-label">{{ 'SIGNIN.LOGIN_TEXTBOX' | translate }}</span>
+            <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid gh-submit-btn-spinner"
               *ngIf="submitting" alt="">
+            <span class="gh-submit-btn-arrow" *ngIf="!submitting" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" width="14" height="14" focusable="false">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </span>
           </button>
 
           <div class="clearfix"></div>
@@ -126,7 +158,7 @@
           <!-- Google sign-in divider -->
           <div class="gh-auth-divider" aria-hidden="true">
             <span class="gh-auth-divider-line"></span>
-            <span class="gh-auth-divider-text">or</span>
+            <span class="gh-auth-divider-text">or continue with</span>
             <span class="gh-auth-divider-line"></span>
           </div>
 
@@ -159,8 +191,7 @@
             </app-linkedin-button>
           </div>
 
-          <div class="text-center mt-5 join-us">
-            <br><br>
+          <div class="text-center mt-4 join-us">
             {{ 'SIGNIN.REGISTRATION_PROMPT' | translate }} <a [routerLink]="'/signup'" class="register"> {{ 'SIGNIN.REGISTER' | translate }}</a>
           </div>
         </form>
