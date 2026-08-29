@@ -571,9 +571,10 @@ input.ng-invalid.ng-dirty.ng-touched {
   min-width: 44px;
   min-height: 44px;
   position: absolute;
-  right: 4px;
-  margin-top: -50px;
-  border-radius: 8px;
+  right: 13px;
+	margin-top: -50px;
+	border-bottom-right-radius: 10px;
+	border-top-right-radius: 10px;
 
   &:focus-visible {
     outline: 2px solid $color-global-red-buttons;
@@ -648,9 +649,10 @@ input.ng-invalid.ng-dirty.ng-touched {
 @media (max-width: 767px) {
   .gh-captcha-box {
     re-captcha {
-      display: block;
-      transform: scale(0.82);
-      transform-origin: center;
+			display: block;
+			position: relative;
+			top: 8px;
+			right: -31px;
     }
   }
 }
@@ -678,6 +680,34 @@ input.ng-invalid.ng-dirty.ng-touched {
   .gh-legal-inline-link {
     color: $color-global-red-buttons;
   }
+}
+
+@media (max-width: 768px){
+	.gh-terms-row {
+		.gh-terms-text {
+			font-family: "Manrope";
+			font-size: 12px;
+			line-height: 0px;
+			color: #4D4D4D;
+			position: relative;
+			left: 7px;
+		}
+	}
+
+	.mat-checkbox-inner-container {
+    display: inline-block !important;
+    height: 22px !important;
+    line-height: 0 !important;
+    margin: auto !important;
+    margin-right: 8px !important;
+    order: 0 !important;
+    position: relative !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    width: 22px !important;
+    flex-shrink: 0 !important;
+    border: solid !important;
+	}
 }
 
 // ─── Mobile brand carousel (below-lg only) ───────────────────────────────────
