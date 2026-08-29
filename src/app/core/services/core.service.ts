@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
-import { catchError, filter, map } from 'rxjs/operators';
+import { BehaviorSubject, of, race, timer } from 'rxjs';
+import { catchError, filter, map, shareReplay } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
 import { NavigationEnd, Router } from '@angular/router';
@@ -106,21 +106,22 @@ export class CoreService {
   /**
    * GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: the canonical logout method --
    * every caller (interceptor, all panel components) already goes through
-   * this. Previously left as a literal "TODO api for firebase logout" --
-   * the backend's real session-revoke endpoint (POST /auth/logout ->
-   * revokeTokenInFirebase(uid), see get-hired-BE/routes/userRoute.js) was
-   * never actually called, so a "signed out" browser could still hold a
-   * server-side-valid refresh token. That call fires here, BEFORE the
-   * local token is cleared below (verifyAuth needs the current
-   * Authorization header) -- fire-and-forget: never awaited, never blocks
-   * the local sign-out. This app's actual "am I logged in" state is
-   * entirely local (the `state`/`user` keys read by isLoggedIn()/route
-   * guards), so a network hiccup on the revoke call must not leave the
-   * user stuck unable to sign out of their own browser, and every existing
-   * caller of this method keeps its current synchronous contract --
-   * nothing needs to subscribe to anything for the actual sign-out to
-   * complete. The returned Observable exists only so a caller that wants
-   * completion timing (e.g. a confirmation-modal loading state) can use it.
+   * this. The backend's real session-revoke endpoint (POST /auth/logout ->
+   * revokeTokenInFirebase(uid), see get-hired-BE/routes/userRoute.js) is
+   * called near the bottom of this method -- its Authorization token is
+   * captured into `tokenForRevoke` at the very top, BEFORE local cleanup
+   * removes it from localStorage, and passed explicitly on that request
+   * (see the SIGNOUT-NAVIGATION-ABORTS-IN-FLIGHT-REQUEST note below for
+   * why: the request is a cold observable that doesn't actually fire until
+   * the caller subscribes, which happens after this method has already
+   * returned and already cleared localStorage). This app's actual "am I
+   * logged in" state is entirely local (the `state`/`user` keys read by
+   * isLoggedIn()/route guards) and is cleared unconditionally below,
+   * regardless of what the revoke call does -- a network hiccup must never
+   * leave the user stuck unable to sign out of their own browser. Every
+   * caller that cares about completion timing (e.g. not navigating away
+   * until the revoke call has had a real chance to reach the server)
+   * should subscribe to the returned Observable; see its own comment.
    *
    * TARGETED LOCAL-STORAGE CLEANUP: removes only AUTH_SESSION_STORAGE_KEYS
    * (this app's own complete auth/session key set) -- never
@@ -134,10 +135,17 @@ export class CoreService {
    * to know that key exists, let alone preserve/restore it.
    */
   logout() {
-    this.baseService.post(`${this.authUrl}/logout`, {}).subscribe({
-      next: () => {},
-      error: () => {}, // best-effort -- never blocks local sign-out
-    });
+    // Captured BEFORE the cleanup below removes it -- the revoke request
+    // constructed further down is a COLD observable (HttpClient requests
+    // don't actually fire until something subscribes), and the caller only
+    // subscribes to what this method returns AFTER this method has already
+    // returned. By then localStorage['token'] would already be gone, and
+    // both auth interceptors only attach an Authorization header when
+    // localStorage.getItem('token') is truthy -- skipping entirely once
+    // it's cleared. Passed explicitly as a request header below so the
+    // revoke call still authenticates correctly regardless of when it
+    // actually fires relative to the cleanup.
+    const tokenForRevoke = localStorage.getItem('token');
 
     this.isLogin = false;
     this.roleAs = '';
@@ -180,7 +188,50 @@ export class CoreService {
     // method returns, not on some later, possibly-nonexistent navigation.
     this.authStateSubject.next(false);
 
-    return of({ success: true, role: '' });
+    // NAVIGATION-ABORTS-IN-FLIGHT-REQUEST FIX: this used to fire the
+    // backend's session-revoke call (POST /auth/logout ->
+    // revokeTokenInFirebase(uid)) via a disconnected .subscribe() and
+    // return an always-immediately-emitting of(...) regardless of that
+    // call's real status. A caller that navigates as soon as this
+    // Observable emits (e.g. window.location.href = '/' right after
+    // .subscribe()) could then trigger a full page navigation WHILE the
+    // revoke request was still in flight -- browsers can and do abort
+    // in-flight requests on navigation, so the request server never
+    // actually ran revokeRefreshTokens(): the session silently never got
+    // revoked, even though every local sign-out step above (localStorage,
+    // NgRx store, authState$) still completed correctly. That's the
+    // "Google sign-out works, email/password doesn't reliably" /
+    // "hard-reload sign-out still loops back to the dashboard" bug.
+    //
+    // The returned Observable now genuinely reflects the revoke call's
+    // completion, race()'d against a 1.5s timer so a slow/dead network can
+    // never trap a user on the page -- every caller already navigates
+    // (or not) the same way it did before, just now only after the revoke
+    // request has actually had a real chance to reach the server. Local
+    // sign-out above is unconditional regardless of which side of the
+    // race wins.
+    // shareReplay(1): several existing callers (header.component.ts,
+    // UnAuthorizedInterceptor's auto-logout-on-401, UnauthGuard's
+    // self-heal) call coreService.logout() as a bare statement and never
+    // subscribe to what it returns -- with a plain cold observable, the
+    // HTTP request would then never actually execute at all. Subscribing
+    // once internally below guarantees it always fires exactly once,
+    // regardless of caller behavior; shareReplay(1) means a caller that
+    // DOES subscribe to the returned race() (to wait for real completion
+    // before navigating) replays that same single execution instead of
+    // triggering a second, duplicate revoke request.
+    const revokeCall$ = this.baseService.post(
+      `${this.authUrl}/logout`,
+      {},
+      tokenForRevoke ? { headers: { Authorization: tokenForRevoke } } : {},
+    ).pipe(
+      map(() => ({ success: true, role: '' })),
+      catchError(() => of({ success: true, role: '' })), // best-effort -- local sign-out already happened above
+      shareReplay(1),
+    );
+    revokeCall$.subscribe();
+
+    return race(revokeCall$, timer(1500).pipe(map(() => ({ success: true, role: '' }))));
   }
 
   isLoggedIn() {
