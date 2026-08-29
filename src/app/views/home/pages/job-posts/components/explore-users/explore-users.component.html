@@ -8,7 +8,7 @@
 					<h5 class="title-banner mb-3" >Let employers find you</h5>
 
 					<div class="mt-4">
-						<button class="btn btn-upload">{{ 'PUBLIC_PAGE.RESUME_UPLOAD_BUTTON' | translate }}</button>
+						<button class="btn btn-upload" type="button" (click)="goToUploadResume()">{{ 'PUBLIC_PAGE.RESUME_UPLOAD_BUTTON' | translate }}</button>
 					</div>
 				</ng-container>
 
@@ -16,7 +16,7 @@
 					<h5 class="title-banner mb-3" >Let's find a solution to your problem</h5>
 
 					<div class="mt-4">
-						<button class="btn btn-upload">Create Jobs</button>
+						<button class="btn btn-upload" type="button" (click)="goToCreateJob()">Create Jobs</button>
 					</div>
 				</ng-container>
 			</div>
