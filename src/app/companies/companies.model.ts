@@ -43,6 +43,9 @@ export interface PublicCompanyProfile {
   heroBanner: { url: string; alt: string } | null;
   openJobsCount: number;
   updatedAt: string | null;
+  // True only for a renamed duplicate ("Company Name #2", etc.) from the
+  // historical-duplicates backfill -- drives the "duplicate listing" banner.
+  isDuplicate?: boolean;
   seo: {
     title: string;
     description: string;
