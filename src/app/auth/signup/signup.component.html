@@ -117,10 +117,6 @@
             </p>
           </div>
 
-          <!-- Google / LinkedIn sign-up errors/loading -- shared by both the
-               mobile dropdown and the desktop side-by-side row below, shown
-               once regardless of which layout is active at the current
-               viewport. -->
           <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">
             {{ googleError }}
           </div>
@@ -129,51 +125,15 @@
             Connecting to Google…
           </div>
 
-          <!-- MOBILE/TABLET ONLY: Google / LinkedIn sign-up consolidated into a
-               single disclosure trigger (tap to open, outside-tap/Escape to
-               close) so the top of the form isn't dominated by two full-width
-               OAuth rows on a narrow screen. -->
-          <div class="gh-social-dropdown d-lg-none" [class.gh-social-dropdown--open]="signupMethodOpen"
-            (keydown.escape)="closeSignupMethod(true)">
-            <button type="button"
-              id="signup-social-trigger"
-              class="gh-social-trigger"
-              aria-haspopup="true"
-              [attr.aria-expanded]="signupMethodOpen"
-              aria-controls="signup-social-menu"
-              (click)="toggleSignupMethod()">
-              <span>Sign up with</span>
-              <svg class="gh-social-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true" focusable="false">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </button>
-
-            <div class="gh-social-menu" id="signup-social-menu" role="menu" aria-labelledby="signup-social-trigger">
-              <div class="gh-social-menu-item" role="menuitem" *ngIf="!googleLoading">
-                <app-google-signin-button
-                  label="signup_with"
-                  [fullWidth]="true"
-                  (credential)="onGoogleCredential($event)"
-                  (errorEvent)="onGoogleError($event)">
-                </app-google-signin-button>
-              </div>
-
-              <!-- LinkedIn sign-up button -->
-              <div class="gh-social-menu-item" role="menuitem">
-                <app-linkedin-button
-                  label="Sign up with LinkedIn"
-                  intent="auto"
-                  [fullWidth]="true">
-                </app-linkedin-button>
-              </div>
-            </div>
-          </div>
-
-          <!-- DESKTOP/TABLET-UP ONLY: side-by-side Google + LinkedIn buttons,
-               equal height/width, per explicit request that the dropdown
-               stays mobile-only. -->
-          <div class="gh-social-row d-none d-lg-flex">
+          <!-- Google / LinkedIn sign-up: one side-by-side row at every
+               breakpoint (dropdown removed per explicit request -- the
+               dropdown's hidden-then-shown mount was also the root cause of
+               the Google button's unstable sizing: Google measures its
+               container's offsetWidth once at mount, and a display:none
+               ancestor reports 0, so it fell back to a fixed 340px
+               regardless of the real column width. A single always-visible
+               mount point measures correctly every time. -->
+          <div class="gh-social-row">
             <div class="gh-social-row-item" *ngIf="!googleLoading">
               <app-google-signin-button
                 label="signup_with"

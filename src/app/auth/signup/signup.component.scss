@@ -253,6 +253,13 @@
 		border-radius: 18px;
 	}
 
+	// Widen the card on desktop/tablet only (mobile untouched, still 480px
+	// max above) so the side-by-side Google/LinkedIn row -- and every other
+	// field -- has real breathing room instead of squeezing OAuth button
+	// text right up against its own padding.
+	@media (min-width: 768px) {
+		max-width: 560px;
+	}
 }
 
 .img-object{
@@ -582,95 +589,17 @@ input.ng-invalid.ng-dirty.ng-touched {
   color: $color-global-red-buttons;
 }
 
-// ── Google / LinkedIn: consolidated "Sign up with" disclosure ────────────────
-// Replaces two full-width stacked OAuth rows with one compact trigger. Desktop
-// (hover-capable + fine pointer) reveals the panel on hover OR keyboard focus
-// purely via CSS (:hover / :focus-within) so it works even before JS state
-// settles; touch devices fall back to the .gh-social-dropdown--open class,
-// which signupMethodOpen (in signup.component.ts) toggles on tap.
-.gh-social-dropdown {
-  position: relative;
-  margin-bottom: 4px;
-
-  .gh-social-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    height: 50px;
-    background: #FFFFFF;
-    border: 1px solid #E6E6E6;
-    border-radius: 14px;
-    font-family: 'Manrope';
-    font-size: 14px;
-    font-weight: 600;
-    color: #4D4D4D;
-    cursor: pointer;
-    transition: border-color 150ms ease, color 150ms ease;
-
-    .gh-social-trigger-chevron {
-      transition: transform 150ms ease;
-    }
-
-    &:hover,
-    &:focus-visible {
-      border-color: $color-global-red-buttons;
-      color: $color-global-red-buttons;
-    }
-
-    &:focus-visible {
-      outline: 2px solid rgba(255, 103, 93, 0.25);
-      outline-offset: 2px;
-    }
-  }
-
-  .gh-social-menu {
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    z-index: 20;
-    background: #FFFFFF;
-    border: 1px solid #EFEFEF;
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(20, 18, 31, 0.10);
-    padding: 12px;
-  }
-
-  &--open .gh-social-menu {
-    display: flex;
-  }
-
-  &--open .gh-social-trigger .gh-social-trigger-chevron {
-    transform: rotate(180deg);
-  }
-
-  // Desktop/hover-capable: reveal on hover or keyboard focus-within,
-  // regardless of the click-driven --open state.
-  @media (hover: hover) and (pointer: fine) {
-    &:hover .gh-social-menu,
-    &:focus-within .gh-social-menu {
-      display: flex;
-    }
-
-    &:hover .gh-social-trigger .gh-social-trigger-chevron,
-    &:focus-within .gh-social-trigger .gh-social-trigger-chevron {
-      transform: rotate(180deg);
-    }
-  }
-}
-
-// ── Google / LinkedIn: desktop/tablet side-by-side row (d-lg-flex) ───────────
-// Equal-height, equal-width columns with a real gap so the two buttons never
-// crowd each other -- Google's button measures its own parent's offsetWidth
-// at mount time (google-signin-button.component.ts), so as long as this flex
-// layout has already sized each column before that runs, it renders at the
-// column's actual width rather than the full card width.
+// ── Google / LinkedIn: side-by-side on desktop/tablet, stacked on mobile ─────
+// Equal-height, equal-width columns with a real gap on desktop/tablet (>=768px,
+// matching the .card widen breakpoint above) so the two buttons never crowd
+// each other. Google's button measures its own parent's offsetWidth ONCE at
+// mount (google-signin-button.component.ts) -- this used to also live inside
+// a display:none dropdown menu on some viewports, which reports offsetWidth 0
+// and made Google fall back to a fixed 340px regardless of the real column
+// width (the "unstable" sizing). A single always-visible mount point measures
+// its real, current column width every time.
 .gh-social-row {
+  display: flex;
   gap: 12px;
   margin-bottom: 4px;
 
@@ -682,6 +611,28 @@ input.ng-invalid.ng-dirty.ng-touched {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+  }
+
+  // Mobile: full-width, top-to-bottom (Google first, LinkedIn second, same
+  // DOM order) instead of squeezing both into half-width columns -- each
+  // button gets the card's full available width so its content (Google's
+  // own rendered "Continue with Google" text/icon, LinkedIn's label) has
+  // real room, matching the desktop columns' height (44px) so neither
+  // reads as more/less prominent than the other.
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 10px;
+
+    .gh-social-row-item {
+      // BUGFIX: the base rule's `flex: 1 1 0` sets flex-basis:0 for the
+      // desktop ROW layout (main axis = width). In this column layout the
+      // main axis is height, so that same flex-basis:0 was overriding the
+      // `height: 44px` below and collapsing both buttons to 0px tall --
+      // `flex: none` here lets height (not flex-basis) drive sizing again.
+      flex: none;
+      width: 100%;
+      height: 44px;
+    }
   }
 }
 
