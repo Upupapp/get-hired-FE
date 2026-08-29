@@ -541,6 +541,14 @@ input.ng-invalid.ng-dirty.ng-touched {
   }
 }
 
+@media (max-width: 768px){
+	.gh-auth-card-logo{
+		margin-bottom: 8px;
+    position: relative;
+    top: 17px;
+	}
+}
+
 .gh-auth-heading {
   text-align: center !important;
   margin-bottom: 20px;
@@ -656,6 +664,27 @@ input.ng-invalid.ng-dirty.ng-touched {
   }
 }
 
+// ── Google / LinkedIn: desktop/tablet side-by-side row (d-lg-flex) ───────────
+// Equal-height, equal-width columns with a real gap so the two buttons never
+// crowd each other -- Google's button measures its own parent's offsetWidth
+// at mount time (google-signin-button.component.ts), so as long as this flex
+// layout has already sized each column before that runs, it renders at the
+// column's actual width rather than the full card width.
+.gh-social-row {
+  gap: 12px;
+  margin-bottom: 4px;
+
+  .gh-social-row-item {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+}
+
 // ── Fields with inline SVG icons ──────────────────────────────────────────
 .gh-name-row {
   display: flex;
@@ -706,6 +735,17 @@ input.ng-invalid.ng-dirty.ng-touched {
 
   &--select .gh-field-icon {
     top: 38px;
+  }
+
+  // BUGFIX: the select's chevron (icon--right) sat visually too high inside
+  // the 50px-tall field vs. the other inputs' icons -- select elements
+  // render their native text baseline slightly differently than a text
+  // input, so the same top offset that centers a text input's icon reads
+  // a few px high here. Nudged down 6px (mid-range of the requested 5-8px)
+  // for the chevron only; the left person icon on this same field is
+  // untouched, as is every other field's icon-right (password eye toggles).
+  &--select .gh-field-icon--right {
+    top: 44px;
   }
 }
 
