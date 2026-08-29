@@ -417,7 +417,13 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
         // Redirect ONLY after logout has actually completed, and only Home --
         // never dashboard/signin/register/the previous protected page.
         dialogRef.close();
-        this.router.navigateByUrl('/');
+        // HARD-RELOAD SIGNOUT FIX: was router.navigateByUrl('/') -- see the
+        // matching comment in applicant-panel.component.ts's logout() for
+        // the full reasoning. window.location.href forces a true full
+        // browser reload (fresh bundle fetch, fresh Angular bootstrap,
+        // nothing carried over in memory) instead of an in-SPA transition
+        // that keeps every singleton/store slice/subscription alive.
+        window.location.href = '/';
       },
       error: () => {
         // coreService.logout()'s local state-clear has no real failure mode

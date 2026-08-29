@@ -150,7 +150,21 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
     this.coreService.logout().subscribe({
       next: () => {
         this.logoutInProgress = false;
-        this.router.navigateByUrl('/');
+        // HARD-RELOAD SIGNOUT FIX: was router.navigateByUrl('/') -- an
+        // in-SPA transition that keeps every Angular singleton/NgRx store
+        // slice/RxJS subscription alive in memory. After multiple targeted
+        // fixes (a resetConfig-mutating legacy guard, missing Cache-Control
+        // on the session-check endpoint, unenforced token revocation, a
+        // stateful Firebase Client SDK singleton on the email/password
+        // login path) still didn't fully resolve "sign out then /signin
+        // bounces back to the dashboard, repeatedly, until rate-limited,"
+        // a full browser-level reload is the more defensible fix: it
+        // guarantees a truly clean slate (fresh bundle fetch, fresh
+        // Angular bootstrap, nothing carried over in memory) at this
+        // security-sensitive boundary, regardless of which in-memory state
+        // was still going stale. window.location.href (not router
+        // navigation) is what actually forces that reload.
+        window.location.href = '/';
       },
       error: () => {
         // coreService.logout()'s local state-clear has no real failure mode
@@ -159,7 +173,21 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
         // exists so a future failure mode is handled truthfully rather than
         // silently, matching employer-panel's own logout().
         this.logoutInProgress = false;
-        this.router.navigateByUrl('/');
+        // HARD-RELOAD SIGNOUT FIX: was router.navigateByUrl('/') -- an
+        // in-SPA transition that keeps every Angular singleton/NgRx store
+        // slice/RxJS subscription alive in memory. After multiple targeted
+        // fixes (a resetConfig-mutating legacy guard, missing Cache-Control
+        // on the session-check endpoint, unenforced token revocation, a
+        // stateful Firebase Client SDK singleton on the email/password
+        // login path) still didn't fully resolve "sign out then /signin
+        // bounces back to the dashboard, repeatedly, until rate-limited,"
+        // a full browser-level reload is the more defensible fix: it
+        // guarantees a truly clean slate (fresh bundle fetch, fresh
+        // Angular bootstrap, nothing carried over in memory) at this
+        // security-sensitive boundary, regardless of which in-memory state
+        // was still going stale. window.location.href (not router
+        // navigation) is what actually forces that reload.
+        window.location.href = '/';
       },
     });
   }

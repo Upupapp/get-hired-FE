@@ -28,6 +28,18 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
     private activatedRoute: ActivatedRoute
   ) { }
 
+  // REDIRECT-LOOP RATE-LIMIT GUARD: if this guard JUST determined (within
+  // the last few seconds) that a locally-claimed session is actually
+  // invalid, don't re-verify against the backend again on every immediately-
+  // repeated /signin visit -- go straight to the self-heal. Without this, a
+  // tight loop (whatever repeatedly re-triggers navigation back to /signin)
+  // fires a fresh GET /auth/getprofile every single time, which is exactly
+  // what was exhausting that endpoint's rate limit ("spamming until
+  // blocked"). This guard is providedIn:'root' (a true singleton), so this
+  // state persists across calls within the same browser tab/session.
+  private lastInvalidCheckAt = 0;
+  private static readonly INVALID_CHECK_COOLDOWN_MS = 5000;
+
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
@@ -72,6 +84,13 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
     // async guard before rendering anything, so this adds a brief resolve
     // delay for the stale-state case only -- never a flash of the wrong
     // page, and never a redirect loop (both branches below terminate).
+    if (Date.now() - this.lastInvalidCheckAt < UnauthGuard.INVALID_CHECK_COOLDOWN_MS) {
+      // Already found this invalid moments ago -- skip straight to the
+      // self-heal instead of firing another GET /auth/getprofile.
+      this.coreService.logout();
+      return true;
+    }
+
     const userRole = await this.coreService.getRole();
     try {
       await this.coreService.verifySession().toPromise();
@@ -84,6 +103,7 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
       // (never a parallel mechanism; preserves this owner's AI recovery,
       // same as every other logout() caller), then let the auth page
       // render normally instead of leaving the optimistic redirect in place.
+      this.lastInvalidCheckAt = Date.now();
       this.coreService.logout();
       return true;
     }
