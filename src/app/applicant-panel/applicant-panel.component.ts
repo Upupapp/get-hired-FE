@@ -127,10 +127,41 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
     this.router.navigate(['/jobs']);
   }
 
+  // SIGNOUT RACE FIX: this used to fire coreService.logout() and
+  // router.navigate(['/signin']) as two bare consecutive statements. /signin
+  // is gated by UnauthGuard, which -- if it sees any stale "still logged in"
+  // signal -- makes a real network call (verifySession() -> GET
+  // /auth/getprofile) before deciding whether to render /signin or redirect
+  // straight back into the dashboard. That guard resolution is async, and
+  // while it's pending the previous (dashboard) view stays on screen: from
+  // the user's side, "I clicked sign out and nothing happened," reliably
+  // fixed only by a hard refresh (a truly clean bootstrap with no leftover
+  // in-memory state to race). employer-panel.component.ts's logout()
+  // (GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX) already avoids this entirely by
+  // sequencing through coreService.logout().subscribe(...) and redirecting
+  // to '/' (Home, no UnauthGuard at all) instead of '/signin' -- same fix,
+  // applied here.
+  logoutInProgress = false;
+
   logout(): void {
+    if (this.logoutInProgress) return; // duplicate-click guard
+    this.logoutInProgress = true;
     this.closeAvatarMenu();
-    this.coreService.logout();
-    this.router.navigate(['/signin']);
+    this.coreService.logout().subscribe({
+      next: () => {
+        this.logoutInProgress = false;
+        this.router.navigateByUrl('/');
+      },
+      error: () => {
+        // coreService.logout()'s local state-clear has no real failure mode
+        // (synchronous localStorage writes; the backend revoke call is
+        // already caught internally and never surfaces here) -- this branch
+        // exists so a future failure mode is handled truthfully rather than
+        // silently, matching employer-panel's own logout().
+        this.logoutInProgress = false;
+        this.router.navigateByUrl('/');
+      },
+    });
   }
 
   signInAgain(): void {
