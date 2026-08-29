@@ -212,6 +212,7 @@
 	@media (max-width: 575px){
 		padding: 24px 18px;
 		border-radius: 18px;
+		padding-top: 0px !important;
 	}
 }
 
@@ -471,10 +472,10 @@ input.ng-invalid.ng-dirty.ng-touched {
   }
 
   @media (max-width: 575px) {
-    padding-left: 16px;
-    padding-right: 16px;
-    // iOS safe-area insets (notch / home indicator)
-    padding-bottom: env(safe-area-inset-bottom, 16px);
+		padding-left: 16px;
+		padding-right: 16px;
+		position: relative;
+		bottom: 88px;
   }
 }
 
@@ -514,6 +515,56 @@ input.ng-invalid.ng-dirty.ng-touched {
 // gh-pressable (from _motion.scss) already provides scale(0.985) on :active
 // with motion-safe fallback.  The btn-submit hover style is preserved below.
 // No additional overrides needed — gh-pressable is applied in the template.
+
+// ── Accessible password show/hide toggle + remember-me/forgot-password row ──
+// Replaces the previous bare <img> click targets (no accessible name, no
+// keyboard focus) and the invalid <a> wrapping a <mat-checkbox> markup.
+.gh-pw-toggle {
+  background: none;
+  border: none;
+  padding: 8px;
+  margin: -8px -8px -8px 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  position: absolute;
+  right: 4px;
+  margin-top: -50px;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+
+  img {
+    margin: 0 !important;
+  }
+}
+
+.gh-signin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gh-remember-me {
+  margin: 0;
+  ::ng-deep .mat-checkbox-label {
+    font-family: 'Manrope';
+    font-size: 14px;
+    color: #4D4D4D;
+  }
+  ::ng-deep .mat-checkbox-inner-container {
+    width: 20px;
+    height: 20px;
+  }
+}
 
 // ─── Mobile brand carousel (below-lg only) ───────────────────────────────────
 // Sibling of .bg-left, NOT a variant of it — deliberately does not touch or

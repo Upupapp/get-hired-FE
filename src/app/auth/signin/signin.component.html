@@ -62,48 +62,63 @@
           </div>
 
           <div class="form-group mt-2">
-            <input type="email" class="form-control" formControlName="email" name="email"
-              placeholder="username@mailer.com">
+            <input type="email" class="form-control" formControlName="email" name="email" id="signin-email"
+              placeholder="username@mailer.com" autocomplete="username"
+              [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'true' : null"
+              [attr.aria-describedby]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'signin-email-error' : null">
 
-              <label class="d-flex">
+              <label class="d-flex" for="signin-email">
                 <div>Email</div>
               </label>
+
+              <div class="mt-1 ms-4" id="signin-email-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                <small class="text-danger">{{ loginForm.get('email')?.errors?.required ? 'Email is required' : 'Enter a valid email address' }}</small>
+              </div>
           </div>
 
           <div class="form-group mt-4">
-            <input [type]="inputType" class="form-control" id="password" placeholder="********************"
-              formControlName="password">
+            <input [type]="inputType" class="form-control" id="signin-password" placeholder="********************"
+              formControlName="password" autocomplete="current-password"
+              [attr.aria-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'true' : null"
+              [attr.aria-describedby]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched ? 'signin-password-error' : null">
 
-            <label class="d-flex">
+            <label class="d-flex" for="signin-password">
               <div>Password</div>
             </label>
 
             <div>
-              <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid me-2 img-plc"
-                *ngIf="inputType === 'password'" (click)="inputType = 'text'" style="margin-top: -15px;">
+              <button type="button" class="gh-pw-toggle" (click)="togglePasswordVisibility()"
+                [attr.aria-label]="inputType === 'password' ? 'Show password' : 'Hide password'"
+                [attr.aria-pressed]="inputType === 'text'">
+                <img src="/assets/images/placeholder/icons/hide-password.png" width="23px" class="img-fluid img-plc"
+                  *ngIf="inputType === 'password'" alt="">
+                <img src="/assets/images/placeholder/icons/show-password.png" width="23px" class="img-fluid img-plc"
+                  *ngIf="inputType === 'text'" alt="">
+              </button>
+            </div>
 
-              <img src="/assets/images/placeholder/icons/show-password.png" width="23px" class="img-fluid me-2 img-plc"
-                *ngIf="inputType === 'text'" (click)="inputType = 'password'" style="margin-top: -15px;">
+            <div class="mt-1 ms-4" id="signin-password-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+              <small class="text-danger">Password must be at least 8 characters</small>
             </div>
           </div>
 
-          <div class="mt-3">
+          <div class="mt-3 gh-signin-row">
+            <label class="gh-remember-me">
+              <mat-checkbox formControlName="rememberMe" aria-label="Remember me">Remember me</mat-checkbox>
+            </label>
+
             <a [routerLink]="'/reset-password'"
-              class="mat-primary text-center forget-password hvr-grow float-end">{{ 'FORGET_PASSWORD.FORGET_PASSWORD_TEXT' | translate }}?</a>
-
-            <a class="mat-primary text-center float-start forget-password ms-2" style="margin-top: 5px;">
-              <mat-checkbox class="remember-me">Remember me</mat-checkbox>
-
-            </a>
+              class="mat-primary text-center forget-password hvr-grow">{{ 'FORGET_PASSWORD.FORGET_PASSWORD_TEXT' | translate }}?</a>
           </div>
 
           <br>
           <!-- BL-012: gh-pressable adds tap-compression on mobile (scale 0.985 on :active).
                Defined in _motion.scss. Respects prefers-reduced-motion via @include motion-safe. -->
-          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3 gh-pressable" [disabled]="submitting">
+          <button type="submit" class="btn btn-submit d-block w-100 float-end mt-4 mb-3 gh-pressable" [disabled]="submitting"
+            [attr.aria-busy]="submitting ? 'true' : null">
             {{ 'SIGNIN.LOGIN_TEXTBOX' | translate }}
             <img src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"
-              *ngIf="submitting">
+              *ngIf="submitting" alt="">
           </button>
 
           <div class="clearfix"></div>

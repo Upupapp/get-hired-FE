@@ -246,8 +246,6 @@
 	// padding is no longer providing that separation implicitly.
 	@media (max-width: 899px) {
 		padding: 28px 22px;
-		border: 1px solid rgba(16, 24, 40, 0.06);
-		box-shadow: 0 4px 24px rgba(16, 24, 40, 0.06);
 	}
 
 	@media (max-width: 575px) {
@@ -549,6 +547,110 @@ input.ng-invalid.ng-dirty.ng-touched {
 	@media (max-width: 899px){
 		width: 20%;
 	}
+}
+
+// ── Accessible password show/hide toggle ──────────────────────────────────────
+// Replaces the previous bare <img> click targets (no accessible name, no
+// keyboard focus, sub-44px hit area).
+.gh-pw-toggle {
+  background: none;
+  border: none;
+  padding: 8px;
+  margin: -8px -8px -8px 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  position: absolute;
+  right: 4px;
+  margin-top: -50px;
+  border-radius: 8px;
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+
+  img {
+    margin: 0 !important;
+  }
+}
+
+// ── Real-time password strength meter ─────────────────────────────────────────
+.gh-strength-meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 0 4px;
+}
+
+.gh-strength-bar {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  max-width: 160px;
+
+  span {
+    height: 4px;
+    flex: 1;
+    border-radius: 999px;
+    background: #E6E6E6;
+    transition: background 150ms ease;
+  }
+
+  &.gh-strength-weak span:nth-child(1) { background: $color-global-red-buttons; }
+  &.gh-strength-medium span:nth-child(1),
+  &.gh-strength-medium span:nth-child(2) { background: #F59E0B; }
+  &.gh-strength-strong span { background: #10B981; }
+}
+
+.gh-strength-label {
+  font-family: 'Manrope';
+  font-size: 12px;
+  font-weight: 600;
+
+  &.gh-strength-label-weak { color: $color-global-red-buttons; }
+  &.gh-strength-label-medium { color: #F59E0B; }
+  &.gh-strength-label-strong { color: #10B981; }
+}
+
+// ── CAPTCHA bordered box (spec section 4) ──────────────────────────────────────
+.gh-captcha-box {
+  border: 1px solid #E6E6E6;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+// ── Terms & Privacy checkbox row ────────────────────────────────────────────────
+// Was previously an <a> wrapping a <mat-checkbox> -- invalid nested-interactive
+// markup that confuses keyboard/screen-reader users. A plain flex row instead;
+// <mat-checkbox> already renders its own accessible, keyboard-focusable control.
+.gh-terms-row {
+  display: flex;
+  align-items: flex-start;
+
+  ::ng-deep .mat-checkbox-layout {
+    white-space: normal;
+    align-items: flex-start;
+  }
+
+  .gh-terms-text {
+    font-family: 'Manrope';
+    font-size: 13px;
+    line-height: 20px;
+    color: #4D4D4D;
+  }
+
+  .gh-legal-inline-link {
+    color: $color-global-red-buttons;
+  }
 }
 
 // ─── Mobile brand carousel (below-lg only) ───────────────────────────────────

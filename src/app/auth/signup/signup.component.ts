@@ -28,6 +28,11 @@ export class SignupComponent implements OnInit {
   inputType: string = 'password';
   submitting: boolean = false;
   pwPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/;
+  confirmInputType: string = 'password';
+  // Real-time strength meter -- purely a UX affordance layered on top of the
+  // real backend/form requirement (pwPattern above: 8+ chars, upper, lower,
+  // digit, special char). It does not relax or replace that requirement.
+  passwordStrength: 'empty' | 'weak' | 'medium' | 'strong' = 'empty';
   email: string;
   isResent: boolean;
   siteKey = environment.recaptchaSiteKey;
@@ -84,6 +89,10 @@ export class SignupComponent implements OnInit {
     // as Employer" -> /signup?role=2) so visitors don't have to pick it
     // again. Falls back to the existing required-field behavior if absent
     // or not one of the two valid values.
+    this.registerForm.get('password').valueChanges.subscribe((value: string) => {
+      this.passwordStrength = this.computePasswordStrength(value);
+    });
+
     const requestedRole = this.activatedRoute.snapshot.queryParamMap.get('role');
     if (requestedRole === '2' || requestedRole === '3') {
       this.registerForm.patchValue({ role: Number(requestedRole) });
@@ -104,6 +113,29 @@ export class SignupComponent implements OnInit {
         return of(err);
       })
     ).subscribe();
+  }
+
+  computePasswordStrength(value: string): 'empty' | 'weak' | 'medium' | 'strong' {
+    if (!value) return 'empty';
+    let score = 0;
+    if (value.length >= 8) score++;
+    if (value.length >= 12) score++;
+    if (/[A-Z]/.test(value)) score++;
+    if (/[a-z]/.test(value)) score++;
+    if (/\d/.test(value)) score++;
+    if (/[^\da-zA-Z]/.test(value)) score++;
+
+    if (score <= 2) return 'weak';
+    if (score <= 4) return 'medium';
+    return 'strong';
+  }
+
+  toggleInputVisibility(): void {
+    this.inputType = this.inputType === 'password' ? 'text' : 'password';
+  }
+
+  toggleConfirmVisibility(): void {
+    this.confirmInputType = this.confirmInputType === 'password' ? 'text' : 'password';
   }
 
   register(event) {

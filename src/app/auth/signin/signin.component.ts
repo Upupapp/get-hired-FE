@@ -52,10 +52,17 @@ export class SigninComponent implements OnInit {
     });
     this.onAlertClose();
 
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+
     this.loginForm = this.formBuilder.group({
-      email: [null, Validators.compose([Validators.required, Validators.email])],
-      password: [null, Validators.compose([Validators.required, Validators.minLength(8)])]
+      email: [rememberedEmail || null, Validators.compose([Validators.required, Validators.email])],
+      password: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
+      rememberMe: [!!rememberedEmail]
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.inputType = this.inputType === 'password' ? 'text' : 'password';
   }
 
   loggedIn(user) {
@@ -158,6 +165,15 @@ export class SigninComponent implements OnInit {
     this.email = this.loginForm?.get('email')?.value;
     const password = this.loginForm?.get('password')?.value;
     this.submitting = true;
+
+    // "Remember me" persistence: only the email is retained locally (never the
+    // password/token) so the field can be prefilled on return -- no real
+    // extended-session/"stay signed in" behavior is implemented on the backend.
+    if (this.loginForm?.get('rememberMe')?.value) {
+      localStorage.setItem('rememberedEmail', this.email.toLowerCase());
+    } else {
+      localStorage.removeItem('rememberedEmail');
+    }
 
     this.authFacade.signIn(this.email.toLowerCase(), password);
   }
