@@ -480,8 +480,8 @@ label {
 
 @media (max-width: 800px) {
   ::-webkit-scrollbar {
-    width: 0px !important;
-    height: 0px !important;
+    width: 100% !important;
+    height: 100% !important;
     cursor: move;
   }
 }

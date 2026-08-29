@@ -624,60 +624,29 @@ input.ng-invalid.ng-dirty.ng-touched {
   &.gh-strength-label-strong { color: #10B981; }
 }
 
-// ── CAPTCHA bordered box (spec section 4) ──────────────────────────────────────
-.gh-captcha-box {
-  border: 1px solid #E6E6E6;
-  border-radius: 12px;
-  padding: 12px;
-  min-height: 74px;
+// ── CAPTCHA ──────────────────────────────────────────────────────────────────
+// No bordered "holder" box -- removed per direct request: the box was
+// crowding/misplacing the widget on mobile. Plain generous spacing above
+// and below instead, so it reads as its own breathing-room'd step between
+// "I want to register as" and the terms checkbox, not squeezed against
+// either.
+.gh-captcha-wrap {
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 100%;
-  overflow: hidden;
+  margin: 32px 0;
 }
 
-// BUGFIX: Google's v2 checkbox widget renders at a fixed 304px width that
-// this component doesn't control. justify-content:center above already
-// centers it fine wherever there's room, but on narrow phones (down to
-// Mobile S, 320px) the available width inside the form's own side padding
-// plus this box's 12px padding drops below 304px -- the widget no longer
-// fits, so it can't actually sit centered. Scaling it down from its own
-// center keeps the visual center anchored exactly where the flexbox
-// centering already placed it, instead of fighting the widget's fixed
-// layout size with margins.
+// Google's v2 checkbox widget renders at a fixed 304px width this
+// component doesn't control -- on narrow phones (down to Mobile S, 320px)
+// that can exceed the available form width and overflow off-screen.
+// Forcing the iframe itself to the container's width keeps it fully
+// visible and centered. Desktop has enough room natively, so this is
+// mobile-only.
 @media (max-width: 767px) {
-  .gh-captcha-box {
-		  border: 0px !important;
-			border-radius: 8px;
-			padding: 12px;
-			min-height: 74px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 100%;
-			overflow: auto;
-			padding-left: 4px;
-			padding-right: 4px;
-			padding-top: 0px;
-			padding-bottom: 0px;
-
-    re-captcha {
-			position: relative;
-			width: 100%;
-			height: 100%;
-			justify-content: center;
-			align-items: center;
-			display: flex;
-			top: 8px;
-    }
+  iframe[title="reCAPTCHA"] {
+    width: 100% !important;
+    height: 80px !important;
   }
-
-	iframe[title="reCAPTCHA"] {
-		border: 2px solid #000 !important;
-		width: 100% !important;
-		height: 80px !important;
-	}
 }
 
 // ── Terms & Privacy checkbox row ────────────────────────────────────────────────
