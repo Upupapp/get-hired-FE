@@ -5,10 +5,44 @@
         <h5 class="mb-2 title-main">Profile Documents</h5>
       </div>
 
+      <!-- Dedicated CV/Resume upload -- wired directly to the same
+           /cv-builder endpoints the CV Builder page and job-application
+           Resume auto-fill already read from, so there's exactly one CV
+           per applicant recognized consistently everywhere in the app.
+           This used to only be settable from the separate CV Builder page
+           at /user/profile/cv-builder; uploading a resume via the generic
+           "documents" list below never made it "your CV" anywhere else. -->
+      <div class="card card-body mt-3 gh-cv-card">
+        <div class="row flex align-items-center">
+          <div class="col-12 col-lg-7">
+            <h6 class="mb-1">Your Resume / CV</h6>
+            <p class="mb-0">This is the file used to auto-fill your Resume when applying for jobs, and shown to employers.</p>
+          </div>
+          <div class="col-12 col-lg-5 text-lg-end mt-3 mt-lg-0">
+            <input #cvFileInput hidden type="file" accept=".pdf,.doc,.docx" (change)="onCvFileSelected($event)" />
+            <button type="button" class="btn btn-save" [disabled]="uploadingCv" (click)="cvFileInput.click()">
+              <span *ngIf="!uploadingCv">{{ currentCv ? 'Replace CV' : 'Upload CV' }}</span>
+              <span *ngIf="uploadingCv">Uploading…</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="gh-cv-current mt-3" *ngIf="!loadingCurrentCv && currentCv">
+          <img src="/assets/images/placeholder/icons/document-upload.png" width="28" alt="">
+          <div class="gh-cv-current__info">
+            <a [href]="currentCv.fileurl" target="_blank" rel="noopener" class="gh-cv-current__name">{{ currentCv.filename }}</a>
+            <span class="gh-cv-current__date">Uploaded {{ currentCv.created_at | date: 'mediumDate' }}</span>
+          </div>
+        </div>
+        <p class="gh-cv-empty mt-3" *ngIf="!loadingCurrentCv && !currentCv">
+          No CV uploaded yet. Employers and job applications won't have a resume to show until you upload one.
+        </p>
+      </div>
+
       <div class="card card-body mt-3">
         <div class="row flex">
           <div class="col-12 col-lg-6">
-            <p>You can upload your CV, resume and other documents that might help you <br>with your job application.</p>
+            <p>You can upload cover letters, government IDs, and other supporting documents here. <br>This is separate from your Resume/CV above.</p>
           </div>
           <div class="col-12 col-lg-6 text-end">
             <button class="btn btn-save"
@@ -20,7 +54,7 @@
 
         <div class="px-3">
           <app-file-upload-document [labelTop]="true" [multiple]="true" (upload)="onUpload($event)" [fileArray]="docs"
-            label="Upload documents you want to share"></app-file-upload-document>
+            label="Upload other supporting documents (not your CV)"></app-file-upload-document>
         </div>
       </div>
     </div>

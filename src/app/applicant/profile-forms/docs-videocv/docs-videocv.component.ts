@@ -9,6 +9,16 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { RecorderComponent } from '@main/recorder/recorder.component';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import * as Model from '../../applicant.model';
+import { CvBuilderService } from '@app-applicant/cv-builder/cv-builder.service';
+
+interface CurrentCv {
+  id: string;
+  filename: string;
+  fileurl: string;
+  size?: number;
+  type?: string;
+  created_at: string;
+}
 
 @Component({
   selector: 'app-docs-videocv',
@@ -38,6 +48,25 @@ export class DocsVideocvComponent implements OnInit {
   // alone leaves a window before Angular re-renders.
   private videoSubmitInFlight = false;
 
+  // RESUME/CV FRAGMENTATION FIX: this page's original "Profile Documents"
+  // uploader (docs/tempDocs below, via applicantFacade.saveDocs()) writes
+  // to the same gethired.documents table as the dedicated CV Builder
+  // (/cv-builder/upload, /cv-builder/current) but deliberately excludes
+  // is_cv=true rows (see applicantsController.js's saveDocuments -- "CV
+  // Builder stays the single source of truth for 'the current CV'"). That
+  // left this page with no way to actually set a CV at all: an applicant
+  // uploading their resume here (the page most people would naturally use
+  // first) never had it recognized as "their CV" anywhere else in the app
+  // -- the job-application Resume auto-fill and the CV Builder Overview
+  // tab both read exclusively from the is_cv=true row, which this page
+  // never touched. Adds a dedicated CV upload slot, wired to the exact
+  // same /cv-builder endpoints CV Builder itself uses, so there is exactly
+  // one CV per applicant and every surface in the app agrees on what it is.
+  currentCv: CurrentCv | null = null;
+  loadingCurrentCv = true;
+  uploadingCv = false;
+  cvUploadError: string | null = null;
+
   private unsubscribe$ = new Subject<void>();
   recording$: Subscription;
   confirmation$: Subscription;
@@ -59,10 +88,12 @@ export class DocsVideocvComponent implements OnInit {
     private applicantFacade: ApplicantFacade,
     private snackbarService: SnackbarService,
     private loadingDialog: MatDialog,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private cvBuilderService: CvBuilderService,
   ) { }
 
   ngOnInit(): void {
+    this.loadCurrentCv();
     // QA10 FIX-9 + SEC-03: surface saveVideoCV errors with BE rejection message.
     // err.error.message carries the video validation reason (VIDEO_DISALLOWED,
     // VIDEO_SIGNATURE_MISMATCH, etc.) set by the backend; fall back to the HTTP
@@ -104,6 +135,50 @@ export class DocsVideocvComponent implements OnInit {
           this.ref.detectChanges();
         }
       });
+  }
+
+  loadCurrentCv(): void {
+    this.loadingCurrentCv = true;
+    this.cvBuilderService.getCurrentCv().subscribe({
+      next: (res: any) => {
+        this.currentCv = res?.data || null;
+        this.loadingCurrentCv = false;
+      },
+      error: () => {
+        this.currentCv = null;
+        this.loadingCurrentCv = false;
+      },
+    });
+  }
+
+  onCvFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.uploadingCv = true;
+      this.cvUploadError = null;
+      this.cvBuilderService.uploadCv(reader.result as string, file.name).subscribe({
+        next: (res: any) => {
+          this.uploadingCv = false;
+          if (res?.data) {
+            this.currentCv = res.data;
+          }
+          this.snackbarService.success('Your CV has been uploaded.', '', 4000);
+        },
+        error: (err) => {
+          this.uploadingCv = false;
+          const body = err?.error;
+          this.cvUploadError = body?.message || "We couldn't process that file right now.";
+          this.snackbarService.error(this.cvUploadError, '', 6000);
+        },
+      });
+    };
+    reader.readAsDataURL(file);
+    // Allow re-selecting the same filename to re-trigger onChange next time.
+    input.value = '';
   }
 
   onUpload(docu: any) {
