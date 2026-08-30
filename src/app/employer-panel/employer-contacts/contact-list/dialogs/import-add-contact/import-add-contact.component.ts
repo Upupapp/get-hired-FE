@@ -63,12 +63,31 @@ export class ImportAddContactComponent implements OnInit {
     this.getJobList();
     this.getGroupList();
     this.contactForm = this.formBuilder.group({
-      firstName: [this.data ? this.data?.firstname : '', [Validators.required]],
-      lastName: [this.data ? this.data?.lastname : '', [Validators.required]],
+      // BUGFIX: prefilled from `this.data?.firstname`/`lastname` (no
+      // underscore), but the real contacts-list row shape (contactList()
+      // in services/contact.service.js, the `contact` table rows) uses
+      // `first_name`/`last_name`. So editing any genuine contact left these
+      // required fields undefined -- Validators.required treats undefined
+      // as empty, so the form was permanently invalid and Submit stayed
+      // disabled for every real contact. (The only rows where `firstname`/
+      // `lastname` without an underscore actually existed were the
+      // job-applicant-derived pseudo-contacts also merged into this list,
+      // which have no real contact_id to update in the first place -- see
+      // the editContact() fix in contact.service.js for that half of this
+      // bug.) Read both key shapes so either row source prefills correctly.
+      firstName: [this.data ? (this.data?.first_name ?? this.data?.firstname) : '', [Validators.required]],
+      lastName: [this.data ? (this.data?.last_name ?? this.data?.lastname) : '', [Validators.required]],
       email: [this.data ? this.data?.email : '', [Validators.email, Validators.required]],
       mobileNumber: [this.data ? this.data?.mobile_number : ''],
       address: [this.data ? this.data?.address : ''],
-      jobId: [''], 
+      // In Edit mode: auto-populated from whichever job this contact/
+      // candidate record is already associated with, and disabled --
+      // never user-editable (previously an editable dropdown letting the
+      // employer reassign ANY job onto an existing contact, which this
+      // field was never actually wired to persist in the first place --
+      // editContact() in contact.service.js has never read jobId at all).
+      // In New Contact mode, left as before: an empty, user-selectable field.
+      jobId: [{ value: this.data ? (this.data?.job_id || '') : '', disabled: !!this.data }],
       groupName: ['', !this.data ? [Validators.required] : null],
       groupId: ['']
     });

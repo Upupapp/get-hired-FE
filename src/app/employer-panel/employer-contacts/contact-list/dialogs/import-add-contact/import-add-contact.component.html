@@ -81,9 +81,17 @@
 						</div>
 
 						<div class="form-group mt-3">
-							<label class="mb-2">Job Id</label>
-							<select class="form-select" formControlName="jobId">
-								<option selected disabled hidden value="">Select Job Id </option>
+							<label class="mb-2">
+								Job Id
+								<!-- Auto-generated, read-only in Edit mode: this reflects
+								     whichever job the contact/candidate is already
+								     associated with rather than letting it be reassigned
+								     -- it was never actually persisted by the update
+								     endpoint in the first place. -->
+								<span class="gh-jobid-readonly-hint" *ngIf="data">(auto-generated, cannot be changed)</span>
+							</label>
+							<select class="form-select" formControlName="jobId" [attr.aria-readonly]="!!data">
+								<option selected disabled hidden value="">{{ data ? 'No job associated' : 'Select Job Id' }}</option>
 								<ng-container *ngFor="let item of jobList; let i = index">
 									<option [value]="item.jobId">{{item.jobId}}</option>
 								</ng-container>
