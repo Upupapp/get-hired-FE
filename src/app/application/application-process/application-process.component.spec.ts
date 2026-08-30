@@ -38,6 +38,7 @@ describe('ApplicationProcessComponent -- submit lifecycle', () => {
   let dialogAfterClosed$: Subject<any>;
 
   const JOB: any = { jobId: 'JOB-1', interviewQuestions: [] };
+  const JOB_WITH_QUESTIONS: any = { jobId: 'JOB-1', interviewQuestions: [{ question: 'Why this role?' }] };
   const USER: any = { applicantProfileId: 'APP-PROFILE-1' };
 
   beforeEach(async () => {
@@ -270,9 +271,11 @@ describe('ApplicationProcessComponent -- submit lifecycle', () => {
       expect(component.stepper).toBe(2);
     });
 
-    it('opens the interview notification when entering step 3', () => {
+    it('opens the interview notification when entering step 3 with interview questions', () => {
+      component.job = JOB_WITH_QUESTIONS;
       component.changeStep(3);
       expect(mockDialog.open).toHaveBeenCalled();
+      expect(component.stepper).toBe(3);
     });
 
     it('does not open the interview notification for other steps', () => {
@@ -282,13 +285,36 @@ describe('ApplicationProcessComponent -- submit lifecycle', () => {
       expect(mockDialog.open).not.toHaveBeenCalled();
     });
 
+    // BUGFIX regression test: a job with no interview questions left Step 3
+    // genuinely empty and still opened InterviewNotificationComponent with
+    // no data, rendering as a blank panel. Entering step 3 must now skip
+    // straight to Step 4 (Summary) instead, exactly like using the
+    // existing "Skip Interview" escape hatch.
+    it('skips step 3 entirely and goes to Summary when the job has no interview questions', () => {
+      mockDialog.open.calls.reset();
+      component.job = JOB; // interviewQuestions: []
+      component.changeStep(3);
+      expect(mockDialog.open).not.toHaveBeenCalled();
+      expect(component.stepper).toBe(4);
+    });
+
+    it('skips step 3 entirely when job is not yet loaded at all', () => {
+      mockDialog.open.calls.reset();
+      component.job = undefined as any;
+      component.changeStep(3);
+      expect(mockDialog.open).not.toHaveBeenCalled();
+      expect(component.stepper).toBe(4);
+    });
+
     it('skips to the summary step when the interview notification is dismissed with skip', () => {
+      component.job = JOB_WITH_QUESTIONS;
       component.changeStep(3);
       dialogAfterClosed$.next({ skip: true });
       expect(component.stepper).toBe(4);
     });
 
     it('stays on the interview step when the notification is closed without skipping', () => {
+      component.job = JOB_WITH_QUESTIONS;
       component.changeStep(3);
       dialogAfterClosed$.next(undefined);
       expect(component.stepper).toBe(3);

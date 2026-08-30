@@ -235,6 +235,24 @@ export class ApplicationProcessComponent implements OnInit {
   }
 
   changeStep(step: number): void {
+    // BUGFIX: a job with no interview questions left Step 3 genuinely
+    // empty (app-interview-questions has nothing to render or record
+    // against) but this still unconditionally opened
+    // InterviewNotificationComponent with no `data` -- its template reads
+    // fields off `data` with no guard for `data` being undefined, so it
+    // rendered as a blank white panel instead of its real "Recruiter would
+    // like to ask you some questions" content. The stepper rail already
+    // knew to disable Step 3 for this exact case (see stepperItems[2]'s
+    // `disabled` binding above, keyed off the same interviewQuestions
+    // check) -- clicking Next just never consulted that same condition.
+    // Skip straight to Step 4 (Summary) when there's nothing to show,
+    // exactly as if the applicant had used the "Skip Interview" escape
+    // hatch that already exists once actually on Step 3.
+    const hasInterviewQuestions = !!(this.job && this.job.interviewQuestions && this.job.interviewQuestions.length > 0);
+    if (step === 3 && !hasInterviewQuestions) {
+      step = 4;
+    }
+
     this.stepper = step;
 
     if (step === 3) {
