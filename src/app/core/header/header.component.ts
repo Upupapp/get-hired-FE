@@ -16,19 +16,32 @@ import {
 } from '@angular/router';
 import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
+import { NotificationService, AppNotification } from '@main/shared/services/notification.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   @Input() user: any;
   @Input() isUserLoggedIn: boolean;
   @Input() isPublic: boolean;
   userRole = localStorage.getItem('role');
   initials: string;
+
+  // Notification bell/center -- lightweight local-component-state +
+  // polling (no store round-trip needed for this), matching the
+  // established "pick the simpler thing" convention elsewhere in this
+  // header. Shown for any logged-in portal user (employer role '2' or
+  // jobseeker role '3'); the backend scopes everything server-side to
+  // req.user.uid regardless of role.
+  notifications: AppNotification[] = [];
+  unreadCount = 0;
+  notifPanelOpen = false;
+  private notifPollSub: Subscription;
+  private static readonly NOTIF_POLL_INTERVAL_MS = 45000;
 
   // Mobile nav drawer — same pattern as the Employer/Applicant/Admin portal
   // drawers (gh-mobile-drawer + gh-mobile-scrim), so the public site nav
@@ -45,7 +58,8 @@ export class HeaderComponent implements OnInit {
     private coreService: CoreService,
     private router: Router,
     private route: ActivatedRoute,
-    private appFacade: AppFacade
+    private appFacade: AppFacade,
+    private notificationService: NotificationService
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -94,6 +108,73 @@ export class HeaderComponent implements OnInit {
     if (this.user) {
       this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
     }
+
+    if (this.isUserLoggedIn && this.user) {
+      this.refreshNotifications();
+      // Polling, not a websocket -- no real-time push infra exists in this
+      // codebase yet; 45s is a reasonable balance between freshness and
+      // load for a small in-app notification count.
+      this.notifPollSub = interval(HeaderComponent.NOTIF_POLL_INTERVAL_MS).subscribe(() => {
+        this.refreshNotifications();
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.notifPollSub) {
+      this.notifPollSub.unsubscribe();
+    }
+  }
+
+  refreshNotifications(): void {
+    this.notificationService.list().subscribe({
+      next: (result) => {
+        this.notifications = result.notifications || [];
+        this.unreadCount = result.unreadCount || 0;
+      },
+      error: () => {
+        // Non-fatal -- the bell just stays at its last-known state.
+      }
+    });
+  }
+
+  toggleNotifPanel(): void {
+    this.notifPanelOpen = !this.notifPanelOpen;
+    if (this.notifPanelOpen) {
+      this.refreshNotifications();
+    }
+  }
+
+  closeNotifPanel(): void {
+    this.notifPanelOpen = false;
+  }
+
+  onNotificationClick(notification: AppNotification): void {
+    if (!notification.isRead) {
+      this.notificationService.markRead(notification.id).subscribe({
+        next: () => {
+          notification.isRead = true;
+          this.unreadCount = Math.max(0, this.unreadCount - 1);
+        },
+        error: () => {}
+      });
+    }
+    this.notifPanelOpen = false;
+    if (notification.linkRoute) {
+      this.router.navigate([notification.linkRoute], {
+        queryParams: notification.linkQuery || {}
+      });
+    }
+  }
+
+  markAllNotificationsRead(): void {
+    this.notificationService.markAllRead().subscribe({
+      next: () => {
+        this.notifications = this.notifications.map((n) => ({ ...n, isRead: true }));
+        this.unreadCount = 0;
+      },
+      error: () => {}
+    });
   }
 
   navigateToJobs(){
