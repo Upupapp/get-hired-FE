@@ -164,11 +164,50 @@ export class ContactListComponent implements OnInit {
     });
   }
 
+  // BUGFIX (root cause of PUT /contacts/updatecontact 403 on Submit):
+  // getContactList() (dispatches GET_CONTACT_LIST -> BE's contactList())
+  // merges THREE different data sources into one table: real, employer-
+  // created gethired.contact rows (the only ones with a real contact_id,
+  // company-scoped and genuinely editable/deletable) alongside read-only
+  // projections of candidates and job_applicants that happen to have
+  // contact-shaped fields (name/email/phone) but no contact_id at all --
+  // they were never meant to be edited or deleted through this endpoint.
+  // Opening the Edit dialog (or the Delete confirmation) for one of those
+  // always fails server-side once actually submitted (editContact()/
+  // deleteContact() in contact.service.js resolve nothing to update/delete
+  // for a contact_id that doesn't exist, which correctly comes back as a
+  // 403 -- but only once the applicant has already filled out and
+  // submitted the form, or confirmed a delete, with no explanation of why).
+  // Gate both actions on contact_id being present so the applicant gets an
+  // immediate, clear explanation instead of a doomed submit attempt.
+  private isEditableContact(row: any): boolean {
+    return !!(row && row.contact_id);
+  }
+
   editContact(data: any){
-    this.addContacts(data?.data)
+    const row = data?.data;
+    if (!this.isEditableContact(row)) {
+      this.snackbarService.info(
+        'This entry was added automatically from a job application or candidate record, not created as a contact -- it can\'t be edited here.',
+        '',
+        6000
+      );
+      return;
+    }
+    this.addContacts(row);
   }
 
   deleteRow(data: any) {
+    const row = data?.data;
+    if (!this.isEditableContact(row)) {
+      this.snackbarService.info(
+        'This entry was added automatically from a job application or candidate record, not created as a contact -- it can\'t be removed here.',
+        '',
+        6000
+      );
+      return;
+    }
+
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
@@ -183,9 +222,9 @@ export class ContactListComponent implements OnInit {
         if (result == 1) {
           this.contactState.dispatch({
             type:ContactActionTypes.DELETE_CONTACT,
-            payload: data?.data
+            payload: row
           });
-          
+
         }
       });
   }
