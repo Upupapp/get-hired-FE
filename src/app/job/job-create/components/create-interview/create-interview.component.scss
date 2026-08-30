@@ -437,6 +437,99 @@ label{
 	padding: 15px;
 }
 
+// Interview question card -- top-to-bottom layout, mobile-friendly type
+// scale (not the 27px/58px main-title scale used elsewhere in this file,
+// nor too small to read on a phone).
+.gh-iq-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.gh-iq-top {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.gh-iq-icon-wrap {
+  flex-shrink: 0;
+}
+
+.gh-iq-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.gh-iq-index {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  color: #9c9c9c;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+
+  img {
+    height: 18px;
+    width: auto;
+  }
+}
+
+.gh-iq-question-text {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+  color: #4d4d4d;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.gh-iq-duration {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  color: #9c9c9c;
+  margin-bottom: 0;
+
+  span {
+    font-weight: 600;
+    color: #9c9c9c;
+  }
+}
+
+.gh-iq-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  .btn-record,
+  .btn-upload {
+    flex: 1 1 auto;
+    min-width: 96px;
+    text-align: center;
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gh-iq-question-text {
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .gh-iq-actions {
+    .btn-record,
+    .btn-upload {
+      flex: 1 1 45%;
+    }
+  }
+}
+
 .btn-upload{
 	font-family: 'Manrope';
 	font-style: normal;

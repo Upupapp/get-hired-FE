@@ -35,38 +35,33 @@
     Questions Preview
   </h5>
 
-  <section class="card card-body mt-3" *ngFor="let item of questionsContainer; let i = index"
+  <section class="card card-body mt-3 gh-iq-card" *ngFor="let item of questionsContainer; let i = index"
     [@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
-    <!-- INTERVIEWS -->
-    <div class="mt-2 row">
-      <div class="col-12">
-        <div class="float-end">
-          <div class="mt-2">
-            <button class="btn btn-upload me-2" type="button"
-              [attr.aria-label]="'Delete question ' + (i + 1)"
-              (click)="removeItem(i, this.interviewQuestions)">Delete</button>
-
-            <button class="btn btn-record"
-              [attr.aria-label]="'Edit question ' + (i + 1)"
-              (click)="editItem(i)">Edit</button>
-          </div>
-        </div>
-
-        <div class="d-flex">
-          <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
-            <img src="/assets/images/placeholder/icons/interview-logo-4.png">
-          </div>
-
-          <div class="mt-2">
-            <p class="title-label-sub">
-              <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
-              Question {{i + 1}}
-            </p>
-            <h5 class="title-label">{{item?.question}}</h5>
-            <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{item?.answerDuration}} minutes</p>
-          </div>
-        </div>
+    <!-- Top-to-bottom layout: index -> question text -> duration -> actions.
+         Replaces the old float-end button row, which overlapped the question
+         text on narrow (mobile) widths since the float never reserved space
+         for itself in the document flow. -->
+    <div class="gh-iq-top">
+      <div class="logo-thumbnail gh-iq-icon-wrap d-flex align-items-center justify-content-center">
+        <img src="/assets/images/placeholder/icons/interview-logo-4.png" alt="">
       </div>
+      <div class="gh-iq-body">
+        <p class="gh-iq-index">
+          <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" alt="">
+          Question {{i + 1}}
+        </p>
+        <h5 class="gh-iq-question-text">{{item?.question}}</h5>
+        <p class="gh-iq-duration"><span>Estimated duration:</span> {{item?.answerDuration}} minutes</p>
+      </div>
+    </div>
+
+    <div class="gh-iq-actions">
+      <button class="btn btn-record" type="button"
+        [attr.aria-label]="'Edit question ' + (i + 1)"
+        (click)="editItem(i)">Edit</button>
+      <button class="btn btn-upload" type="button"
+        [attr.aria-label]="'Delete question ' + (i + 1)"
+        (click)="removeItem(i, this.interviewQuestions)">Delete</button>
     </div>
   </section>
 </div>

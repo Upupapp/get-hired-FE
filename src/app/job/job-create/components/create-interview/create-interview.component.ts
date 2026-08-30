@@ -68,14 +68,32 @@ export class CreateInterviewComponent implements OnInit {
   }
 
   addQuestion(item) {
+    // BUG #4 FIX (root cause): CreateQuestionComponent's own `sequence`
+    // control is set once in its ngOnInit() from the questionIndex @Input
+    // and never recomputed -- Angular doesn't re-run ngOnInit just because
+    // an @Input value changes on a static (non-*ngFor) component instance,
+    // and questionsForm.reset() after each add() restores that same
+    // original value. So every question added after the first one in a
+    // session emitted the SAME item.sequence. patchInterviewQuestionsFromResponse()
+    // in job-create.component.ts matches newly-created questions back to
+    // form controls by sequence -- colliding sequences meant multiple new
+    // questions were misattributed to the same persisted questionId, so
+    // most of them never learned their real id and kept getting
+    // recreated as duplicates on every autosave. Compute the sequence here
+    // instead, from the live container, ignoring whatever sequence the
+    // child emitted.
+    const nextSequence = this.questionsContainer.length
+      ? Math.max(...this.questionsContainer.map((q) => q.sequence || 0)) + 1
+      : 1;
+
     this.interviewQuestions.push(new FormGroup({
       question: new FormControl(item.question),
       answerDuration: new FormControl(item.answerDuration),
       retakes: new FormControl(item.retakes),
-      sequence: new FormControl(item.sequence),
+      sequence: new FormControl(nextSequence),
     }));
 
-    this.questionsContainer.push(item);
+    this.questionsContainer.push({ ...item, sequence: nextSequence });
   }
 
   removeItem(index: number, controlArray: FormArray) {
