@@ -44,6 +44,28 @@ export class ProfileBasicInfoComponent implements OnInit {
   // can Dismiss without it touching what they've already typed.
   aiSuggestion: ProfileSuggestion | null = null;
 
+  // BUGFIX: app-gh-image-upload uploads the photo asynchronously and only
+  // reports success via its (uploaded) output once the HTTP call actually
+  // completes -- nothing previously blocked this form's Submit/Next while
+  // that was still in flight. A user who picked a photo and clicked Next
+  // quickly (a completely normal flow -- the local file preview appears
+  // instantly, so it looks done) could submit before (uploaded) ever
+  // fired, meaning the photo they just "attached" was never actually
+  // included in that submission. Bound to app-gh-image-upload's new
+  // (uploading) output; guards both submitForm() and the template's Next
+  // button.
+  avatarUploading = false;
+
+  // Proactive AI-suggestion prompt: previously the AI suggestion was only
+  // reachable via a small, easy-to-miss "Suggest Bio & Services with AI"
+  // button -- nothing surfaced it at the moment it's actually useful
+  // (right after typing a job title). Shown once per distinct job title
+  // value (tracked via aiPromptedForTitle) so it doesn't re-pop on every
+  // blur if the applicant already dismissed it or already has a
+  // suggestion showing for the same title.
+  showAiPrompt = false;
+  private aiPromptedForTitle: string | null = null;
+
   profileDetailsForm: FormGroup;
   profileImage: any;
   salaryCurrencies = currencies;
@@ -222,6 +244,27 @@ export class ProfileBasicInfoComponent implements OnInit {
     this.aiSuggestion = null;
   }
 
+  // Fired on the Current Job Title field's (blur). Offers the AI
+  // suggestion proactively instead of relying on the applicant noticing
+  // the manual "Suggest Bio & Services with AI" button on their own.
+  onJobTitleBlur(): void {
+    const jobTitle = (this.profileDetailsForm.get('jobTitle')?.value || '').trim();
+    if (!jobTitle || jobTitle === this.aiPromptedForTitle || this.aiSuggestion) {
+      return;
+    }
+    this.aiPromptedForTitle = jobTitle;
+    this.showAiPrompt = true;
+  }
+
+  acceptAiPrompt(): void {
+    this.showAiPrompt = false;
+    this.generateAiSuggestion();
+  }
+
+  dismissAiPrompt(): void {
+    this.showAiPrompt = false;
+  }
+
   onAvatarUploaded(result: any): void {
     this.photo = result.primaryUrl;
     this.profileImage = null;
@@ -235,6 +278,11 @@ export class ProfileBasicInfoComponent implements OnInit {
   }
 
   submitForm() {
+    if (this.avatarUploading) {
+      this.snackbarService.error('Your photo is still uploading. Please wait a moment and try again.', '');
+      this.saveResult.emit('error');
+      return;
+    }
     if (this.profileDetailsForm.valid) {
       this.submitting = true;
       const applicant = this.profileDetailsForm.value;

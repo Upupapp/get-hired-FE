@@ -9,7 +9,19 @@
           <span class="np-heading-icon" aria-hidden="true">&#128100;</span>
           {{ 'PROFILE.SHORT_BIO_SECTION' | translate }}
         </h5>
-        <p class="np-bio-text">{{ user.shortBio }}</p>
+        <!-- BUGFIX: rendered an empty <p> with no fallback when shortBio
+             was blank -- silent blank space with no indication whether
+             that's intentional or the field just never saved. Now Short
+             Bio is confirmed to save correctly (backend fix elsewhere),
+             mirrors the Video Introduction section's own existing
+             empty-state pattern below: a real prompt for the profile
+             owner, nothing shown to an employer viewing someone else's
+             incomplete profile. -->
+        <p class="np-bio-text" *ngIf="user.shortBio">{{ user.shortBio }}</p>
+        <div class="np-empty-inline" *ngIf="!user.shortBio && userRole != '2'">
+          <p class="np-empty-hint">Add a short bio so employers get a quick sense of who you are.</p>
+          <button type="button" class="np-cta-btn" (click)="navigateToEdit()">Add your bio</button>
+        </div>
       </section>
 
       <section class="np-card np-card-raised" *ngIf="user.skills && user.skills.length > 0">

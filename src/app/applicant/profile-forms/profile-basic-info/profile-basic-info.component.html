@@ -19,7 +19,13 @@
               previewShape="circle"
               (uploaded)="onAvatarUploaded($event)"
               (cleared)="onAvatarClear()"
+              (uploading)="avatarUploading = $event"
             ></app-gh-image-upload>
+            <!-- Guards against submitting before the photo upload above
+                 actually finishes -- see avatarUploading's doc comment. -->
+            <p class="gh-avatar-uploading-hint" *ngIf="avatarUploading">
+              Uploading photo…
+            </p>
           </div>
           <div class="gh-profile-identity__text">
             <span class="gh-profile-identity__name">{{
@@ -49,9 +55,21 @@
         <label>Current Job title</label>
         <div class="form-group">
           <input type="text" class="form-control" placeholder="i.e. Full Stack Developer" formControlName="jobTitle"
-            [class.is-invalid]="jobTitle_validators?.invalid && jobTitle_validators?.touched">
+            [class.is-invalid]="jobTitle_validators?.invalid && jobTitle_validators?.touched"
+            (blur)="onJobTitleBlur()">
           <div class="px-3" *ngIf="jobTitle_validators?.invalid && jobTitle_validators?.touched">
             <small class="invalid-feedback">Title is required</small>
+          </div>
+
+          <!-- Proactive AI-suggestion prompt -- offered right after typing
+               a job title, instead of relying on the applicant to notice
+               the manual "Suggest Bio & Services with AI" button below. -->
+          <div class="ai-prompt-banner mt-2" *ngIf="showAiPrompt">
+            <span><i class="bi bi-magic"></i> Want an AI-generated Bio &amp; Services suggestion based on this title?</span>
+            <div class="ai-prompt-banner__actions">
+              <button type="button" class="btn btn-save btn-sm" (click)="acceptAiPrompt()">Yes, generate</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="dismissAiPrompt()">No thanks</button>
+            </div>
           </div>
         </div>
       </div>

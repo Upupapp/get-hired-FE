@@ -32,6 +32,18 @@ export class GhImageUploadComponent implements OnInit, OnDestroy {
   @Output() uploaded = new EventEmitter<GhImageUploadResult>();
   @Output() cleared = new EventEmitter<void>();
   @Output() uploadError = new EventEmitter<{ code: string; message: string }>();
+  // BUGFIX: the upload itself is async (imageUploadService.uploadImage()
+  // below) and only reports success via `uploaded` once the HTTP call
+  // actually completes -- but nothing told the consuming form that an
+  // upload was in flight. A user who picks a photo and clicks the form's
+  // Next/Submit button quickly (a completely normal flow -- the local
+  // preview via FileReader below appears instantly, so it looks done)
+  // submits before `uploaded` ever fires, meaning the photo they just
+  // "attached" was silently never included in that submission at all.
+  // Emits true the moment an upload starts, false once it resolves
+  // (success or error) or the field is cleared, so any consumer can
+  // disable its own submit action for that window.
+  @Output() uploading = new EventEmitter<boolean>();
 
   @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
 
@@ -121,6 +133,7 @@ export class GhImageUploadComponent implements OnInit, OnDestroy {
 
     this.state = 'uploading';
     this.errorMessage = '';
+    this.uploading.emit(true);
 
     this.imageUploadService.uploadImage(file, this.purpose)
       .pipe(takeUntil(this.destroy$))
@@ -130,6 +143,7 @@ export class GhImageUploadComponent implements OnInit, OnDestroy {
             this.state = 'success';
             this.previewDataUrl = res.image.primaryUrl || this.previewDataUrl;
             this.savingsPercent = (res.image.optimized && res.image.optimized.savingsPercent) || 0;
+            this.uploading.emit(false);
             this.uploaded.emit({
               primaryUrl:      res.image.primaryUrl,
               srcset:          res.image.srcset || null,
@@ -153,6 +167,7 @@ export class GhImageUploadComponent implements OnInit, OnDestroy {
     const err = (res && res.error) ? res.error : res || {};
     this.errorMessage = err.message || 'Upload failed. Please try again.';
     this.previewDataUrl = this.currentUrl || '';
+    this.uploading.emit(false);
     this.uploadError.emit({ code: err.code || 'unknown_error', message: this.errorMessage });
   }
 }

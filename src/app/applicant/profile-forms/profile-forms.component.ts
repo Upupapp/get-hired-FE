@@ -22,17 +22,6 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
   details$ = this.applicantFacade.applicantDetails$
     .pipe().subscribe(this.getBasicInfo.bind(this))
 
-  // PROFILE-SETUP PHASE 1 FIX (confirmed P1): reuses the existing
-  // returnURL localStorage mechanism (see application-process.component.ts
-  // redirectToUpdate()) rather than a parallel one. Any successful save on
-  // any Career Profile section, while a job-specific returnURL is pending,
-  // sends the applicant back to that exact job instead of leaving them
-  // stranded here. Consumed once (read + removed immediately) so it can
-  // never fire again in a later, unrelated editing session, and validated
-  // to be an internal /jobs/details/ path only -- never an open redirect.
-  private success$ = this.applicantFacade.success$
-    .pipe().subscribe(this.consumeReturnUrlOnSave.bind(this))
-
   applicantProfileId: string;
   loading: boolean;
   basicFormValid: boolean;
@@ -70,16 +59,6 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
     private router: Router,
     private snackbarService: SnackbarService,
   ) { }
-
-  /** See the success$ subscription doc comment above. */
-  private consumeReturnUrlOnSave(event: any): void {
-    if (!event) return;
-    const returnUrl = localStorage.getItem('returnURL');
-    if (!returnUrl || !returnUrl.startsWith('/jobs/details/')) return;
-    localStorage.removeItem('returnURL');
-    this.snackbarService.success('Profile updated. Taking you back to the job.', '', 3000);
-    this.router.navigateByUrl(returnUrl);
-  }
 
   ngOnInit(): void {
     if (this.user) {
@@ -164,7 +143,31 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // BUGFIX: this used to redirect back to the pending job (see
+  // returnURL below) the instant Step 1 saved -- consumeReturnUrlOnSave()
+  // fired on applicantFacade.success$, a shared event bus across the
+  // whole applicant module, so the very first successful save (Step 1)
+  // triggered it immediately, before the applicant ever got a chance to
+  // continue through Steps 2/3. That defeated the wizard's own "Next"
+  // buttons entirely for anyone arriving here from "you need a profile to
+  // apply" -- they were bounced back to the job after Basic Info alone,
+  // with Skills/Experience and Documents never even offered.
+  //
+  // The return-to-job redirect now only happens here, at the wizard's own
+  // actual finish action -- Step 1 (Profile Details) is still mandatory
+  // (gated by its own required-field validation before Next is even
+  // enabled, unchanged), while Steps 2 and 3 remain freely skippable
+  // exactly as before (their Next/Finish buttons have never required
+  // anything to be filled in) -- so this satisfies "let them skip
+  // everything except Step 1" without adding a separate skip control.
   redirectToProfile() {
+    const returnUrl = localStorage.getItem('returnURL');
+    if (returnUrl && returnUrl.startsWith('/jobs/details/')) {
+      localStorage.removeItem('returnURL');
+      this.snackbarService.success('Profile updated. Taking you back to the job.', '', 3000);
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
     this.router.navigateByUrl('user/profile/details');
   }
 
@@ -173,9 +176,6 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
     //Add 'implements OnDestroy' to the class.
     if(this.confirmation$) {
       this.confirmation$.unsubscribe();
-    }
-    if (this.success$) {
-      this.success$.unsubscribe();
     }
   }
 

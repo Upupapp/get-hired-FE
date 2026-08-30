@@ -19,7 +19,7 @@
       [disabled]="basicInfo ? !basicInfo.profileDetailsForm.valid : !basicFormValid">
       Submit Changes</button> -->
       <button class="btn btn-save me-2" type="button" (click)="saveProgressConfirmation(2)" *ngIf="stepper==1"
-      [disabled]="basicInfo ? !basicInfo.profileDetailsForm.valid : !basicFormValid">
+      [disabled]="basicInfo ? (!basicInfo.profileDetailsForm.valid || basicInfo.avatarUploading) : !basicFormValid">
       Next</button>
       <button class="btn btn-save me-2" type="button" (click)="saveProgressConfirmation(3)" *ngIf="stepper==2">
       Next</button>

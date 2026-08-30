@@ -64,6 +64,46 @@ select{
 // Everything below this header (Profile Details / Contact Details
 // fields) is untouched structurally.
 // ============================================================
+.ai-prompt-banner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px;
+	background: #fff6f4;
+	border: 1px dashed #e0664e;
+	border-radius: 8px;
+	padding: 8px 12px;
+	font-family: 'Manrope', sans-serif;
+	font-size: 13px;
+	color: #4d4d4d;
+
+	&__actions {
+		display: flex;
+		gap: 8px;
+		flex-shrink: 0;
+	}
+}
+
+@media (max-width: 575px) {
+	.ai-prompt-banner__actions {
+		width: 100%;
+
+		button {
+			flex: 1 1 0;
+		}
+	}
+}
+
+.gh-avatar-uploading-hint {
+	font-family: 'Manrope', sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	color: #ff3d6e;
+	margin: 6px 0 0;
+	text-align: center;
+}
+
 .gh-profile-identity {
 	position: relative;
 	// Minimized, centered footprint instead of stretching the full form
