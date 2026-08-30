@@ -71,13 +71,27 @@
         up to <strong>100 MB</strong>. No time limit, but shorter (1-2 minutes) usually works best.
       </p>
 
-      <div class="px-5 mt-4">
-        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="showVideoRecorder()">
+      <div class="px-5 mt-4 gh-video-actions">
+        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="showVideoRecorder()" *ngIf="!previewBlob && !videoUrl">
           <img src="/assets/images/placeholder/icons/video-create.png" style="height: 17px;" class="me-3">
           Record or Upload a Video
         </button>
 
-        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="submitVideo()" [disabled]="!previewBlob">
+        <!-- Selected-file size detail: shown the moment a video is picked
+             (either recorded or uploaded), so "why can't I submit" is
+             never a silent mystery -- see docsVideocvComponent's
+             videoSizeMb()/isVideoTooLarge doc comments. -->
+        <div class="gh-video-size-hint mb-3" *ngIf="videoFile">
+          <span [class.gh-video-size-hint--danger]="isVideoTooLarge">
+            {{ videoSizeMb.toFixed(1) }} MB / {{ MAX_VIDEO_MB }} MB
+          </span>
+          <p class="gh-video-size-warning mb-0" *ngIf="isVideoTooLarge">
+            This video is too large to upload. Please replace it with a smaller file (under {{ MAX_VIDEO_MB }} MB).
+          </p>
+        </div>
+
+        <button class="btn btn-save btn-create w-100 btn-block mb-3" (click)="submitVideo()"
+          *ngIf="previewBlob" [disabled]="isVideoTooLarge">
           Submit Video
         </button>
 
@@ -100,13 +114,22 @@
     </div>
     <div class="col-12 col-lg-6" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
       <div class="card card-body h-100">
-        <h5 class="title-preview mb-4" *ngIf="!videoUrl">Preview Video File</h5>
-        <h5 class="title-preview mb-4" *ngIf="videoUrl">Uploaded Video File</h5>
+        <div class="gh-video-preview-head">
+          <h5 class="title-preview mb-4" *ngIf="!videoUrl">Preview Video File</h5>
+          <h5 class="title-preview mb-4" *ngIf="videoUrl">Uploaded Video File</h5>
+
+          <!-- Replace Video -- lets the applicant pick a new video that
+               replaces whatever is currently shown here (a not-yet-saved
+               preview, or an already-uploaded video), without needing a
+               separate "start over" step. Reuses the exact same
+               Record/Upload dialog as the initial selection. -->
+          <button type="button" class="btn btn-outline-secondary btn-sm gh-video-replace-btn"
+            *ngIf="previewBlob || videoUrl" (click)="showVideoRecorder()">
+            Replace Video
+          </button>
+        </div>
         <img src="/assets/images/video-placeholder.png" class="w-100 h-100"
         *ngIf="!previewBlob && !videoUrl" />
-        <!-- <video #preview class="w-100" height="340" controls autoplay="autoplay">
-          <source *ngIf="previewBlob" [src]="previewBlob">
-        </video> -->
         <video #preview class="w-100" height="330"
           controls autoplay="autoplay"
           style="border-radius: 6px !important;

@@ -48,6 +48,36 @@ export class DocsVideocvComponent implements OnInit {
   // alone leaves a window before Angular re-renders.
   private videoSubmitInFlight = false;
 
+  // VIDEO SIZE FEEDBACK: app-recorder (the Record/Upload dialog) already
+  // rejects a clearly-oversized file outright at selection time (never
+  // even lets it become a preview -- see recorder.component.ts's own
+  // validateVideoFile()/MAX_VIDEO_BYTES), so a file reaching this far has
+  // already passed that check once. This is a second, defense-in-depth
+  // check plus -- the actual point of it -- surfacing the real size to
+  // the applicant once a video IS selected, so "why can't I submit" is
+  // never a silent mystery. Matches the backend's real limit exactly
+  // (get-hired-BE helpers/videoValidator.js's VIDEO_CV_MAX_BYTES).
+  readonly MAX_VIDEO_MB = 100;
+
+  // videoFile is a base64 data-URL string by the time it reaches here
+  // (recorder.service.ts's blobToBase64()/getBase64()), not a real Blob/File
+  // with a byte length available directly -- same estimation technique
+  // already used for interview-answer videos in
+  // interview-questions.component.ts's answerSizeMb().
+  get videoSizeMb(): number {
+    if (!this.videoFile) return 0;
+    const base64 = String(this.videoFile);
+    const commaIdx = base64.indexOf(',');
+    const data = commaIdx >= 0 ? base64.slice(commaIdx + 1) : base64;
+    const padding = data.endsWith('==') ? 2 : data.endsWith('=') ? 1 : 0;
+    const bytes = Math.floor((data.length * 3) / 4) - padding;
+    return bytes / (1024 * 1024);
+  }
+
+  get isVideoTooLarge(): boolean {
+    return this.videoSizeMb > this.MAX_VIDEO_MB;
+  }
+
   // RESUME/CV FRAGMENTATION FIX: this page's original "Profile Documents"
   // uploader (docs/tempDocs below, via applicantFacade.saveDocs()) writes
   // to the same gethired.documents table as the dedicated CV Builder
@@ -264,6 +294,18 @@ export class DocsVideocvComponent implements OnInit {
     // binding in the template is the only other protection and can lag a
     // frame behind a fast double-click.
     if (this.videoSubmitInFlight) return;
+    // Defense-in-depth: the Record/Upload dialog already rejects a
+    // clearly-oversized file before it ever becomes a preview, and the
+    // template's own [disabled] binding on Submit Video already covers
+    // this -- this guard exists only so a stale/racing click can never
+    // slip a too-large video past both of those.
+    if (this.isVideoTooLarge) {
+      this.snackbarService.error(
+        `This video is too large (${this.videoSizeMb.toFixed(1)} MB, max ${this.MAX_VIDEO_MB} MB). Please choose a smaller file.`,
+        ''
+      );
+      return;
+    }
     this.videoSubmitInFlight = true;
 
     const video: Model.VideoCV = {

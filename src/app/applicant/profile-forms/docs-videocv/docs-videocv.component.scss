@@ -156,4 +156,47 @@
 	.title-main {
 		font-size: 17px;
 	}
+
+	.gh-video-preview-head {
+		flex-direction: column;
+		align-items: flex-start !important;
+		gap: 8px;
+
+		.gh-video-replace-btn {
+			width: 100%;
+		}
+	}
+}
+
+// Selected-video size feedback (Video Introduction, Last Step)
+.gh-video-size-hint {
+	font-family: 'Manrope', sans-serif;
+	font-size: 13px;
+	font-weight: 600;
+	color: #6b7280;
+	text-align: center;
+
+	&--danger {
+		color: #dc2626;
+	}
+}
+
+.gh-video-size-warning {
+	font-family: 'Manrope', sans-serif;
+	font-size: 12.5px;
+	font-weight: 500;
+	color: #dc2626;
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 6px;
+	padding: 8px 12px;
+	margin-top: 6px;
+}
+
+// Preview panel header + Replace Video button
+.gh-video-preview-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
 }
