@@ -317,6 +317,89 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 	}
 }
 
+// ─── Documents (CV/Resume + other uploaded files) ─────────────────────────
+.np-doc-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.np-doc-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	@include np-inset(12px);
+	padding: 12px 14px;
+
+	&__icon {
+		flex: 0 0 auto;
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 15px;
+		color: $np-accent;
+	}
+
+	&__info {
+		flex: 1 1 auto;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	&__name {
+		font-family: 'Manrope';
+		font-weight: 600;
+		font-size: 14px;
+		line-height: 20px;
+		color: $np-text;
+		cursor: pointer;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+
+		&:hover {
+			color: $np-accent;
+			text-decoration: underline;
+		}
+	}
+
+	&__tag {
+		font-family: 'Manrope';
+		font-weight: 600;
+		font-size: 11px;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: $np-accent;
+	}
+
+	&__download {
+		flex: 0 0 auto;
+		width: 34px;
+		height: 34px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+		border-radius: 50%;
+		transition: background 150ms ease;
+
+		img {
+			height: 16px;
+			width: auto;
+		}
+
+		&:hover {
+			background: $np-accent-soft;
+		}
+	}
+}
+
 // ─── Timeline entries (experience / education / awards) ───────────────────
 .np-timeline {
 	display: flex;
@@ -491,6 +574,30 @@ $np-accent-soft: var(--gh-coral-soft, #FFF0EE);
 
 	.np-entry-title {
 		font-size: 14.5px;
+	}
+
+	.np-doc-row {
+		padding: 10px 12px;
+		gap: 10px;
+
+		&__icon {
+			width: 28px;
+			height: 28px;
+			font-size: 13px;
+		}
+
+		&__name {
+			font-size: 13px;
+		}
+
+		&__download {
+			width: 30px;
+			height: 30px;
+
+			img {
+				height: 14px;
+			}
+		}
 	}
 
 	.np-entry-details {

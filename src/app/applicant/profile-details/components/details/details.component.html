@@ -24,6 +24,48 @@
         </div>
       </section>
 
+      <!-- ═══ Documents — CV/Resume + other uploaded files, own card ═══
+           CV comes from the dedicated /cv-builder/current endpoint (the
+           single source of truth for "the current CV" -- see
+           DetailsComponent's own doc comment); user.documents already
+           excludes it by design, so both are combined here rather than
+           user.documents alone missing the CV entirely. -->
+      <section class="np-card np-card-raised" *ngIf="!loadingCurrentCv">
+        <h5 class="np-heading">
+          <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
+          {{ 'PROFILE.DOCUMENTS_TEXT' | translate }}
+        </h5>
+
+        <div class="np-doc-list" *ngIf="hasAnyDocuments">
+          <div class="np-doc-row" *ngIf="currentCv">
+            <div class="np-doc-row__icon" aria-hidden="true">&#128196;</div>
+            <div class="np-doc-row__info">
+              <span class="np-doc-row__name" (click)="viewDocs(currentCv)">{{ currentCv.filename }}</span>
+              <span class="np-doc-row__tag">CV / Resume</span>
+            </div>
+            <button type="button" class="np-doc-row__download" (click)="downloadFile(currentCv)" aria-label="Download CV">
+              <img src="/assets/images/placeholder/icons/download.png" alt="">
+            </button>
+          </div>
+
+          <div class="np-doc-row" *ngFor="let doc of user.documents">
+            <div class="np-doc-row__icon" aria-hidden="true">&#128196;</div>
+            <div class="np-doc-row__info">
+              <span class="np-doc-row__name" (click)="viewDocs(doc)">{{ doc.filename }}</span>
+            </div>
+            <button type="button" class="np-doc-row__download" (click)="downloadFile(doc)" aria-label="Download document">
+              <img src="/assets/images/placeholder/icons/download.png" alt="">
+            </button>
+          </div>
+        </div>
+
+        <div class="np-empty-inline" *ngIf="!hasAnyDocuments && userRole != '2'">
+          <p class="np-empty-hint">Upload your CV/Resume and any supporting documents so employers can review them.</p>
+          <button type="button" class="np-cta-btn" (click)="navigateToEdit()">Add documents</button>
+        </div>
+        <p class="np-empty-hint mb-0" *ngIf="!hasAnyDocuments && userRole == '2'">No documents uploaded yet.</p>
+      </section>
+
       <section class="np-card np-card-raised" *ngIf="user.skills && user.skills.length > 0">
         <h5 class="np-heading">
           <span class="np-heading-icon" aria-hidden="true">&#10024;</span>
