@@ -426,11 +426,39 @@
 		position: relative;
 	}
 
+	// BUGFIX: the hover banner below covers the entire row (inset: 0) with
+	// an opaque gradient at z-index: 2 -- since this actions block had no
+	// z-index/background of its own, it sat visually underneath the banner
+	// on hover, making Change Video/Remove unreadable (though still
+	// clickable, since the banner is pointer-events: none) exactly when
+	// hover is what reveals them. Raise above the banner and give the
+	// buttons their own solid background so they stay legible against it.
+	.gh-answer-row__actions {
+		position: relative;
+		z-index: 3;
+	}
+
 	.gh-answer-row__buttons {
 		display: flex;
 		gap: 8px;
 		justify-content: flex-end;
 		flex-wrap: wrap;
+
+		button {
+			background: #fff;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+		}
+	}
+
+	// Same reasoning as .gh-answer-row__buttons above: plain grey/red text
+	// with no background of its own is barely legible sitting on top of the
+	// coral hover banner once raised above it.
+	.gh-answer-row__actions .title-label-sub-duration {
+		display: inline-block;
+		background: #fff;
+		border-radius: 6px;
+		padding: 2px 8px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 	}
 
 	// Hidden by default; fades/slides in on hover (or keyboard focus, since

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, ViewChild, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
@@ -23,12 +23,19 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./record-interview.component.scss'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class RecordInterviewComponent implements OnInit {
+export class RecordInterviewComponent implements OnInit, OnChanges {
   @ViewChild('videoElement') videoElement: any;
   @ViewChild('previewElement') previewElement: any;
 
   @Input() interviews: Model.InterviewQuestion[];
   @Input() index: number;
+  // Question index -> its already-recorded answer (if any), from
+  // InterviewQuestionsComponent.existingAnswersByIndex. Lets navigating to
+  // an already-answered question (via Change Video, the Questions tab, or
+  // the question strip below) show that video already loaded in the
+  // preview player, so the applicant can see what's attached and decide
+  // whether it actually needs replacing instead of re-recording blind.
+  @Input() existingAnswers: { [index: number]: { answerBlob: any; answerFile: any } } = {};
 
   @Output() next = new EventEmitter();
   @Output() submitRecord = new EventEmitter();
@@ -101,6 +108,28 @@ export class RecordInterviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.getUserFullName().then(name => this.fullName = name);
+    this.loadExistingAnswerForCurrentQuestion();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Runs whenever the applicant lands on a different question --
+    // whether via Change Video, goToQuestion() (question strip / Questions
+    // tab), or the normal Next/Skip flow. Recording state (isVideoRecording,
+    // the live timer, etc.) intentionally is NOT reset here beyond what
+    // loadExistingAnswerForCurrentQuestion() already touches -- an active
+    // recording blocks navigation entirely (see goToQuestion()'s own guard),
+    // so this never fires mid-recording.
+    if (changes.index && !changes.index.firstChange) {
+      this.loadExistingAnswerForCurrentQuestion();
+    }
+  }
+
+  private loadExistingAnswerForCurrentQuestion(): void {
+    const existing = this.existingAnswers && this.existingAnswers[this.index];
+    this.previewBlob = existing ? existing.answerBlob : null;
+    this.videoFile = existing ? existing.answerFile : null;
+    this.videoBlob = null;
+    this.isVideoRecording = false;
   }
 
   skipInterview() {

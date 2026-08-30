@@ -1,18 +1,26 @@
 <div class="row">
   <div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'350ms' }}">
-    <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.COVERLETTER_UPLOAD_BOX' | translate }}" (upload)="getCover($event)">
+    <!-- Re-seeded from docCover's FormArray value on every mount -- see
+         ProfileDocumentsComponent.ngOnInit() -- so previously uploaded
+         cover letters survive navigating away from and back to this step. -->
+    <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.COVERLETTER_UPLOAD_BOX' | translate }}" [fileArray]="coverFileArray" (upload)="getCover($event)">
     </app-file-upload-document>
   </div>
 
   <div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'450ms' }}">
-    <!-- Pre-filled from the applicant's already-uploaded CV (profile setup),
-         if one exists -- see ProfileDocumentsComponent.ngOnInit(). -->
+    <!-- Pre-filled from the applicant's already-uploaded CV (profile setup)
+         if none was attached yet this session, otherwise re-seeded from
+         docResume's current FormArray value -- see
+         ProfileDocumentsComponent.ngOnInit(). -->
     <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.RESUME_UPLOAD_BOX' | translate }}" [fileArray]="resumeFileArray" (upload)="getResume($event)">
     </app-file-upload-document>
   </div>
 
   <div class="col-12 col-lg-12 mb-5" [@animate]="{value:'*', params:{ x:'10px', delay:'550ms' }}">
-    <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.GOV_FILES_UPLOAD_BOX' | translate }}" (upload)="getGovFile($event)">
+    <!-- Re-seeded from docGovFile's FormArray value on every mount -- see
+         ProfileDocumentsComponent.ngOnInit() -- so previously uploaded
+         government files survive navigating away from and back to this step. -->
+    <app-file-upload-document [labelTop]="true" label="{{ 'ADDITIONAL_DOCUMENTS_PAGE_SECTION.GOV_FILES_UPLOAD_BOX' | translate }}" [fileArray]="govFileArray" (upload)="getGovFile($event)">
     </app-file-upload-document>
   </div>
 </div>

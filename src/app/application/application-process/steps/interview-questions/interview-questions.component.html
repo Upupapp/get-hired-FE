@@ -1,6 +1,6 @@
 <!-- RECORD INTERVIEW -->
-<app-record-interview [interviews]="interviews" [index]="selectedIndex" (next)="changeQuestion($event)"
-  (submitRecord)="submitAnswer($event)"></app-record-interview>
+<app-record-interview [interviews]="interviews" [index]="selectedIndex" [existingAnswers]="existingAnswersByIndex"
+  (next)="changeQuestion($event)" (submitRecord)="submitAnswer($event)"></app-record-interview>
 
 <!-- Always-available escape hatch: skip the entire screening interview
      section and proceed directly to Summary & Submit for Evaluation. -->

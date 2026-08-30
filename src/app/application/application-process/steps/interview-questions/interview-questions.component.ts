@@ -103,6 +103,28 @@ export class InterviewQuestionsComponent implements OnInit {
     event.stopPropagation();
     this.selectedIndex = index;
     this.interviewTab = 'questions';
+    // The recorder is always rendered above the tabs, so "Change Video"
+    // otherwise leaves the applicant staring at the same scroll position
+    // with no visual confirmation anything happened. Scroll them to it.
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }
+
+  // Map of question index -> its already-recorded answer, passed down to
+  // app-record-interview so that navigating (via Change Video, the
+  // Questions tab, or the recorder's own question strip) to a question
+  // that already has an answer shows that video loaded in the preview
+  // player instead of a blank "start recording" prompt -- letting the
+  // applicant actually see what's attached before deciding whether to
+  // replace it, rather than being forced to re-record blind.
+  get existingAnswersByIndex(): { [index: number]: { answerBlob: any; answerFile: any } } {
+    const map: { [index: number]: { answerBlob: any; answerFile: any } } = {};
+    this.interviewAnswers.controls.forEach((ctrl) => {
+      map[ctrl.value.index] = {
+        answerBlob: ctrl.value.answerBlob,
+        answerFile: ctrl.value.answerFile,
+      };
+    });
+    return map;
   }
 
   // BUGFIX: submitting an application with a recorded video answer could

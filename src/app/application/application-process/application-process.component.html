@@ -57,14 +57,6 @@
       <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
       </app-main-stepper>
 
-      <!-- Top "Next" button -- same advance action as the bottom one, just placed
-           near the stepper so long steps don't force a scroll to move on. -->
-      <div class="text-end mt-2" *ngIf="stepper === 1 || stepper === 2">
-        <button class="btn btn-save" type="button" (click)="goToNextStep()">
-          {{ 'USER_APPLICATION_PAGE.NEXT_BUTTON' | translate }}
-        </button>
-      </div>
-
       <!-- STEPPER STEPS -->
       <section style="min-height: 100vh; overflow-y: visible;">
         <div class="row" *ngIf="profile$ | async as profile; else noProfile">
@@ -112,7 +104,12 @@
         </ng-template>
       </section>
 
-      <!-- Bottom "Next" button -- same goToNextStep() handler as the top one. -->
+      <!-- Single "Next" advance action for Steps 1-2 -- an earlier pass added
+           a second, near-identical copy of this button near the stepper
+           above, which read as a confusing duplicate since the stepper's
+           own steps are already directly clickable (app-main-stepper) and
+           this button is just an optional shortcut, not the only way to
+           advance. Removed that copy; this is the only one now. -->
       <div class="text-end mt-4" *ngIf="stepper === 1 || stepper === 2">
         <button class="btn btn-save" type="button" (click)="goToNextStep()">
           {{ 'USER_APPLICATION_PAGE.NEXT_BUTTON' | translate }}
