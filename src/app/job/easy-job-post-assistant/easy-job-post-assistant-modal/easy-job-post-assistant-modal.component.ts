@@ -30,9 +30,13 @@ import { AssistantExtractionResult, AssistantStep, GenerateIntentInputs, Instant
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 import { JobService } from '@app-job/job.service';
+import * as Model from '@app-job/job.model';
 import { Options } from '@app-job/job.model';
 import { suggestIndustryName, matchSuggestedIndustry } from '@app-job/utils/job-industry-suggester';
 import { JobPostModeDialogComponent, JobPostMode } from '@app-job/job-create/components/job-post-mode-dialog/job-post-mode-dialog.component';
+import { resolveJobLevelId, LevelOption } from '@app-job/utils/job-level-resolver';
+import { resolveWorkSetupId, resolveJobTypeId, FREELANCE_JOB_TYPE_SENTINEL } from '@app-job/utils/job-field-resolvers';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 @Component({
   selector: 'app-easy-job-post-assistant-modal',
@@ -70,6 +74,11 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   generateErrors: { jobTitle?: string } = {};
   generatedDraft: InstantJobDraft | null = null;
   generatedJobRoleId: number | null = null;
+  // BUG #2 FIX: "Post this job" fast path -- lets the employer publish the
+  // AI-generated draft directly from this modal instead of being forced
+  // through the full manual job-create stepper. Purely additive: fillFromGenerated()
+  // (the pre-existing "Use this draft" -> manual form handoff) is untouched.
+  postingNow: boolean = false;
 
   // GETHIRED_EMPLOYER_AI_CREATE_PERSISTENT_UNFINISHED_JOB_DRAFT_FLOW_SINGLE_COMMAND_V2:
   // this modal's Generate step IS "AI Create" -- the sole persistent
@@ -106,6 +115,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     private haptics: HapticFeedbackService,
     private aiCreateDraft: AiCreateDraftService,
     private jobService: JobService,
+    private snackbarService: SnackbarService,
   ) {}
 
   ngOnInit(): void {
@@ -547,6 +557,100 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     this.assistantService.setExtractionResult(mapped);
     this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', fromGenerate: true });
     this.router.navigate(['/recruiter/jobs/create'], { queryParams: { fromAssistant: '1', mode: 'generated' } });
+  }
+
+  /**
+   * BUG #2 FIX: publishes the AI-generated draft directly, without routing
+   * the employer through the full manual job-create stepper. This is an
+   * ADDITIONAL fast path alongside fillFromGenerated() ("Use this draft"),
+   * which still hands off to the manual form unchanged for anyone who wants
+   * to review/edit first.
+   *
+   * Reuses the exact same hint->id resolvers the manual form's
+   * applyAssistantPrefill()/formatJob() use (resolveJobLevelId,
+   * resolveWorkSetupId, resolveJobTypeId) so a directly-posted job resolves
+   * job level/work setup/employment type identically to one that went
+   * through the manual review step. Job banner is deliberately left unset --
+   * see job-readiness.service.ts, which no longer treats it as required
+   * (Bug #1 fix), so omitting it here does not block anything server-side.
+   */
+  postJobNow(): void {
+    if (!this.generatedDraft || this.postingNow) return;
+    this.errorMsg = null;
+
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const companyId = user && user.companyId;
+    if (!companyId) {
+      this.errorMsg = 'Your company profile is not set up yet. Please complete it before publishing.';
+      return;
+    }
+
+    this.postingNow = true;
+    this.haptics.selection();
+    const draft = this.generatedDraft;
+
+    this.jobService.getLevelList().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => {
+        const levels: LevelOption[] = (res && res.data) || res || [];
+        const levelMatch = resolveJobLevelId(draft.basics.seniority, levels);
+        const workSetupId = resolveWorkSetupId(draft.basics.workSetup);
+        const rawJobTypeId = resolveJobTypeId(draft.basics.employmentType);
+        // FREELANCE_JOB_TYPE_SENTINEL has no backend job_type row -- never
+        // send it as a fabricated jobTypeId (mirrors JobCreateComponent.formatJob()).
+        const jobTypeId = rawJobTypeId === FREELANCE_JOB_TYPE_SENTINEL ? null : (rawJobTypeId as number | null);
+        const industryMatch = matchSuggestedIndustry(this.generateInputs.industry, this.industryOptions);
+
+        const job: Model.Job = {
+          jobTitle: draft.basics.jobTitle || '',
+          companyId,
+          industryId: industryMatch ? industryMatch.id : undefined,
+          jobRoleId: this.generatedJobRoleId ?? undefined,
+          jobTypeId: jobTypeId ?? undefined,
+          jobLevelId: levelMatch.confidence === 'high' ? levelMatch.id : undefined,
+          jobDescription: draft.content.roleSummary || '',
+          jobDuties: (draft.content.responsibilities || []).join('\n'),
+          workSetupId: workSetupId ?? undefined,
+          jobCity: (draft.basics.jobLocation && draft.basics.jobLocation.city) || '',
+          jobCountry: (draft.basics.jobLocation && draft.basics.jobLocation.country) || 'Philippines',
+          isInterviewRequired: false,
+          requirements: draft.content.requiredQualifications || [],
+          goodToHave: draft.content.preferredQualifications || [],
+          skills: draft.content.skills || [],
+          interviewQuestions: (draft.application.interviewQuestionSuggestions || []).map((q, i) => ({
+            question: q,
+            answerDuration: 5,
+            retakes: 5,
+            sequence: i + 1,
+          } as any)),
+          jobStatusId: 2, // Published
+        };
+
+        this.jobService.saveJob(job).pipe(takeUntil(this.destroy$)).subscribe({
+          next: (saveRes: any) => {
+            this.postingNow = false;
+            this.haptics.success();
+            const newId = saveRes && saveRes.data && saveRes.data.jobId;
+            // Same reasoning as fillFromGenerated()/afterSubmit() in
+            // job-create.component.ts: once the job has real server
+            // persistence, the local AI Create recovery draft is redundant.
+            if (this.ownerScope) this.aiCreateDraft.clear(this.ownerScope);
+            this.snackbarService.success('"' + job.jobTitle + '" is now live.', '', 5000);
+            this.dialogRef.close({ navigateTo: '/recruiter/jobs/list', published: true });
+            this.router.navigate(['/recruiter/jobs/list'], newId ? { queryParams: { published: newId } } : undefined);
+          },
+          error: (err) => {
+            this.postingNow = false;
+            this.haptics.error();
+            if (err && err.status === 401) { this.dialogRef.close(); return; }
+            this.errorMsg = (err && err.error && err.error.message) || 'Could not publish this job. Please try again.';
+          },
+        });
+      },
+      error: () => {
+        this.postingNow = false;
+        this.errorMsg = 'Could not load job levels. Please try again.';
+      },
+    });
   }
 
   // --- Review + prefill ---

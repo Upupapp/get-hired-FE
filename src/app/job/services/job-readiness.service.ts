@@ -5,12 +5,14 @@
  * No AI, no MATCH, no external HTTP calls.
  * canPublish mirrors the ACTUAL publishJobPost() gate in job-create.component.ts
  * (jobTypeId + jobLevelId + jobCity + jobCountry + jobDescription + workSetupId
- *  + banner + companyId).
+ *  + companyId).
  *
  * B04 preservation: interview/video questions NEVER block publish.
  * Certifications / licenses NEVER block publish.
  * Company brand/benefits NEVER block publish.
  * Salary/benefits NEVER block publish.
+ * BUG #1 FIX (2026-08-30): banner image NEVER blocks publish -- it is a
+ * recommended (non-blocking) field, same tier as skills/requirements/etc.
  */
 import { Injectable } from '@angular/core';
 
@@ -129,7 +131,6 @@ export class JobReadinessService {
     pushRequired('jobCountry',   'Job location (country)', hasCountry, 'section-location',    'geo-alt');
     pushRequired('description',  'Job description',    hasDesc,      'section-description',   'file-text');
     pushRequired('workSetup',    'Work setup',         hasWorkSetup, 'section-work-setup',    'building');
-    pushRequired('banner',       'Job banner image',   hasBanner,    'section-banner',        'image');
     pushRequired('company',      'Company profile',    hasCompany,   'section-company',       'buildings');
 
     // ── Recommended checks (non-blocking) ──
@@ -155,6 +156,12 @@ export class JobReadinessService {
       }
     };
 
+    // BUG #1 FIX: banner image is no longer a publish-blocking requirement --
+    // moved from pushRequired() to pushRec() so it still shows as a
+    // suggested improvement (encourages a stronger post) but never appears
+    // in blockingItems / never fails canPublish. See sectionStatuses below,
+    // which also now marks it non-blocking.
+    pushRec('banner',           'Job banner image',           hasBanner,           'section-banner',        'image');
     pushRec('duties',           'Responsibilities section',   hasJobDuties,        'section-duties',        'list-task');
     pushRec('skills',           'Skills',                     hasSkills,           'section-skills',        'tools');
     pushRec('requirements',     'Required qualifications',    hasRequirements,     'section-requirements',  'check2-square');
@@ -232,7 +239,8 @@ export class JobReadinessService {
         sectionId: 'section-banner',
         label: 'Banner image',
         complete: hasBanner,
-        blocking: !hasBanner,
+        // BUG #1 FIX: banner is a recommended field, not a publish blocker.
+        blocking: false,
       },
       {
         sectionId: 'section-company',

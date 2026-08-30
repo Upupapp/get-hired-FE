@@ -388,14 +388,25 @@
       <span>This draft is pre-filled from role templates. You can edit every field in the job form before publishing.</span>
     </div>
 
+    <!-- BUG #2 FIX: error surfaced from a failed direct Post attempt -->
+    <div *ngIf="errorMsg" class="eja-notice eja-notice--error" role="alert">
+      <span>{{ errorMsg }}</span>
+    </div>
+
     <div class="eja-review-actions">
-      <button class="eja-btn eja-btn--primary" type="button" (click)="fillFromGenerated()">
-        Use this draft
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+      <button class="eja-btn eja-btn--publish" type="button" (click)="postJobNow()" [disabled]="postingNow">
+        <ng-container *ngIf="!postingNow">
+          Post this job
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </ng-container>
+        <span *ngIf="postingNow">Posting...</span>
       </button>
-      <button class="eja-btn eja-btn--ghost" type="button" (click)="chooseManual()">
+      <button class="eja-btn eja-btn--primary" type="button" (click)="fillFromGenerated()" [disabled]="postingNow">
+        Review & edit first
+      </button>
+      <button class="eja-btn eja-btn--ghost" type="button" (click)="chooseManual()" [disabled]="postingNow">
         Skip and start fresh
       </button>
     </div>

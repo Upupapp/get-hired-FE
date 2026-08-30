@@ -149,8 +149,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // (see the pushRequired()/pushRec() key lists in job-readiness.service.ts),
     // so anything in the filtered completedItems that isn't a required key
     // must be a (visible) completed recommendation.
+    // BUG #1 FIX: 'banner' removed -- job-readiness.service.ts no longer
+    // treats the banner image as a required (publish-blocking) field.
     const requiredKeys = new Set([
-      'jobTitle', 'jobType', 'jobLevel', 'jobCity', 'jobCountry', 'description', 'workSetup', 'banner', 'company',
+      'jobTitle', 'jobType', 'jobLevel', 'jobCity', 'jobCountry', 'description', 'workSetup', 'company',
     ]);
     const recommendedComplete = completedItems.filter(i => !requiredKeys.has(i.key)).length;
     const recommendedTotal = recommendationItems.length + recommendedComplete;
@@ -252,6 +254,16 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   initial$: any;
   info$: any;
   status: any = 1;
+  // BUG #3 FIX: steps 2/3/4 used to start (and stay) `disabled` until the
+  // previous step's form group reported VALID via the statusChanges
+  // listeners in setFormGroup() below -- an employer could not jump ahead
+  // to review/edit a later step without first satisfying every earlier
+  // step's validators in order. Per-step navigation should be permissive by
+  // default: none of steps 1-4 read data that doesn't already exist (jobForm
+  // is always fully initialized in setFormGroup() before the stepper renders,
+  // and every step component tolerates empty/default field values), so there
+  // is no crash risk in allowing a direct jump. `disabled` is no longer set
+  // here or updated by the statusChanges subscriptions -- see setFormGroup().
   stepperItems: any[] = [
     {
       id: 1,
@@ -261,19 +273,16 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     {
       id: 2,
       title: 'Requirements & Benefits',
-      disabled: !this.initialFormValid,
       formName: 'jobInfo'
     },
     {
       id: 3,
       title: 'Screening & Interview',
-      disabled: !this.jobInfoValid,
       formName: 'interview'
     },
     {
       id: 4,
       title: 'Preview & Publish',
-      disabled: !this.interviewValid,
     },
   ];
 
@@ -605,7 +614,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .pipe(distinctUntilChanged())
         .subscribe((status) => {
           this.initialFormValid = status === 'VALID';
-          this.stepperItems[1].disabled = status != 'VALID';
+          // BUG #3 FIX: no longer sets stepperItems[1].disabled -- steps 2-4
+          // stay clickable regardless of earlier-step validity (see the
+          // stepperItems declaration above for the reasoning).
         })
     );
 
@@ -614,10 +625,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .pipe(distinctUntilChanged())
         .subscribe((status) => {
           this.jobInfoValid = status === 'VALID';
-          this.stepperItems[2].disabled = status != 'VALID';
           this.interviewValid = status === 'VALID';
-          this.stepperItems[3].disabled = status != 'VALID';
-
+          // BUG #3 FIX: no longer sets stepperItems[2]/[3].disabled -- see
+          // the stepperItems declaration above for the reasoning.
         })
     );
 
@@ -1456,7 +1466,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     const job = this.formatJob(this.status || 1);
     this.setAutoSaveState('saving');
     this.jobService.saveJob(job).pipe(take(1)).subscribe({
-      next: () => {
+      next: (res: any) => {
+        // BUG #4 FIX: see patchInterviewQuestionsFromResponse() -- without
+        // this, a newly-added interview question stays "new" (no questionId)
+        // forever from this bypass-the-store save path, and every following
+        // autosave tick would re-insert it as a fresh duplicate row.
+        this.patchInterviewQuestionsFromResponse(res);
         this.setAutoSaveState('saved');
         setTimeout(() => {
           if (this.autoSaveState === 'saved') this.setAutoSaveState('unsaved');
@@ -1465,6 +1480,55 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       error: () => {
         this.setAutoSaveState('failed');
       },
+    });
+  }
+
+  /**
+   * BUG #4 FIX: both performAutosave() and persistAssistantDraft() call
+   * JobService.saveJob() directly, bypassing the NgRx store/editJob$ flow
+   * on purpose (see their own doc comments) so the form isn't reset out
+   * from under the employer mid-edit. The tradeoff: a newly-added interview
+   * question (pushed by CreateInterviewComponent.addQuestion(), which never
+   * sets a questionId) never learned its real, backend-assigned questionId
+   * -- so it looked "new" forever, and every subsequent autosave resubmitted
+   * it, and the backend (services/job.service.js's interviewQuestionsUpdate())
+   * inserted it again each time as a fresh duplicate row.
+   *
+   * Patches the interview FormArray in place (never calls setFormGroup(),
+   * which would blow away in-progress edits on every other field) using the
+   * real questionIds/templateId now returned by the create/update job
+   * endpoints. Matches returned questions back to form controls by
+   * `sequence` (the one field guaranteed present and stable across both
+   * sides -- see formatJob()/setFormGroup(), which always carry it).
+   */
+  private patchInterviewQuestionsFromResponse(res: any): void {
+    const data = res && res.data;
+    if (!data || !this.jobForm) return;
+    const interviewGroup = this.jobForm.get('interview') as FormGroup;
+    if (!interviewGroup) return;
+
+    if (data.interviewTemplateId) {
+      interviewGroup.get('interviewTemplateId')?.setValue(data.interviewTemplateId, { emitEvent: false });
+    }
+    const persistedQuestions: Array<{ questionId: string; sequence: number }> = data.interviewQuestions;
+    if (!persistedQuestions || !persistedQuestions.length) return;
+
+    const iqArray = interviewGroup.get('interviewQuestions') as FormArray;
+    if (!iqArray) return;
+
+    iqArray.controls.forEach((ctrl: FormGroup) => {
+      const questionIdCtrl = ctrl.get('questionId');
+      // Already has a real questionId (pre-existing question, untouched by
+      // this save) -- nothing to patch.
+      if (questionIdCtrl && questionIdCtrl.value) return;
+      const seq = ctrl.get('sequence')?.value;
+      const match = persistedQuestions.find(q => q.sequence === seq);
+      if (!match) return;
+      if (questionIdCtrl) {
+        questionIdCtrl.setValue(match.questionId, { emitEvent: false });
+      } else {
+        ctrl.addControl('questionId', new FormControl(match.questionId));
+      }
     });
   }
 
@@ -1492,6 +1556,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           // this session, and routes future formatJob() saves through PUT
           // /updatejobs instead of creating a second job record.
           this.jobId = newId;
+          // BUG #4 FIX: this create call is what first persists any
+          // AI-assistant-supplied interview questions -- patch their real
+          // questionIds in now so this component's OWN next save (Save
+          // Draft/Publish, or the very next autosave tick once jobId is set)
+          // doesn't resubmit them as brand new. See
+          // patchInterviewQuestionsFromResponse() for the full mechanism.
+          this.patchInterviewQuestionsFromResponse(res);
           this.setAutoSaveState('saved');
           // This background save already creates a real Draft-status job
           // server-side -- the local AI Create recovery is redundant the

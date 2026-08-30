@@ -338,6 +338,18 @@
 
     &:hover { background: #F9FAFB; }
   }
+
+  // BUG #2 FIX: "Post this job" fast-path CTA -- deliberately visually
+  // distinct from --primary (which now reads "Review & edit first") so the
+  // two paths from generate_review don't look interchangeable.
+  &--publish {
+    background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+    color: #fff;
+    width: 100%;
+    box-shadow: 0 12px 28px rgba(22, 163, 74, 0.18);
+
+    &:not(:disabled):hover { opacity: 0.88; }
+  }
 }
 
 @media (max-width: 899px){
@@ -644,6 +656,12 @@
     color: #1E40AF;
 
     svg { color: #3B82F6; }
+  }
+
+  &--error {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #991B1B;
   }
 }
 
