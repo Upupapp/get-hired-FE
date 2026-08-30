@@ -3,7 +3,7 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, FormGr
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import * as Model from '@main/applicant/applicant.model';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
-import { month } from '@app-shared/mock.data';
+import { month, years } from '@app-shared/mock.data';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -23,7 +23,7 @@ export class WorkExperienceComponent implements OnInit {
   jobType$ = this.applicantFacade.typeList$;
 
   public month: string[] = month;
-  public year: number[] = new Array(30).fill(0).map((el, i) => 1995 + i);
+  public year: number[] = years;
 
   constructor(
     private fb: FormBuilder,

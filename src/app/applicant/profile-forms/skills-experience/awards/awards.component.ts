@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular
 import { AbstractControl, FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { month } from '@app-shared/mock.data';
+import { month, years } from '@app-shared/mock.data';
 
 @Component({
   selector: 'app-awards-details',
@@ -15,7 +15,7 @@ export class AwardsComponent implements OnInit {
   certForm: FormGroup;
 
   public month: string[] = month;
-  public year: number[] = new Array(30).fill(0).map((el, i) => 1995 + i);
+  public year: number[] = years;
 
   constructor(
     private fb: FormBuilder,

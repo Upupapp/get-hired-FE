@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, Inject } from '@angular
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
-import { month } from '@app-shared/mock.data';
+import { month, years } from '@app-shared/mock.data';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -15,7 +15,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class EducationalBackgroundComponent implements OnInit {
 
   public month: string[] = month;
-  public year: number[] = new Array(30).fill(0).map((el, i) => 1995 + i);
+  public year: number[] = years;
   educBgForm: FormGroup;
 
   level$ = this.applicantFacade.level$;
