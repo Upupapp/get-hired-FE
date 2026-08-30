@@ -16,12 +16,16 @@ export class ViewInterviewQuestionComponent implements OnInit {
   @Input() canDelete: boolean = false;
   @Input() index: number;
   @Input() item: Model.InterviewQuestion;
+  // Whether this question already has a recorded/uploaded video answer --
+  // the Questions tab previously gave no indication of this at all, so an
+  // applicant going back to it had no way to tell which questions still
+  // needed a video versus which already had one recorded.
+  @Input() isAnswered: boolean = false;
+  @Input() answerSizeMb: number = 0;
 
   constructor() { }
 
-  ngOnInit(): void {
-    console.log('ANO na')
-  }
+  ngOnInit(): void { }
 
   removeItem(index) {
     this.remove.emit(index)

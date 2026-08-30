@@ -291,31 +291,32 @@
 	}
 
 	border: 1px solid #ffffff;
+	position: relative;
+	overflow: hidden;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 
+	// BUGFIX: this used to swap `.logo-thumbnail` for a second element,
+	// `.logo-thumbnail-2` (display: none <-> flex), on hover. That second
+	// element was removed from both the Questions tab (view-interview-
+	// question.component.html) and the Answers tab (this component's own
+	// template) in an earlier pass, but this hover rule still hid
+	// `.logo-thumbnail` unconditionally -- with nothing left to replace it,
+	// hovering any row made its icon vanish into a blank gap, which read as
+	// a layout glitch. Calm, non-destructive hover treatment instead: a
+	// subtle border/shadow/background lift, no elements toggled in/out.
 	&:hover{
-		background: #FFFFFF;
-		border: 1px solid $color-global-red-buttons;
+		background: #FFFAFA;
+		border-color: $color-global-red-buttons;
 		border-radius: 12px;
-		transition: all 0.3s ease !important;
+		box-shadow: 0 4px 14px rgba(255, 61, 110, 0.08);
 		cursor: pointer;
 
 		.logo-thumbnail{
-			display: none !important;
-		}
-
-		.logo-thumbnail-2{
-			transition: all 0.3s ease !important;
-			display: flex !important;
 			background: #FFF6F5;
-			border-radius: 14px;
-			height: 100px;
-			width: 100px;
-			min-width: 100px;
 
 			img{
-				width: auto;
-				height: 34px;
-				transition: all 0.8s !important;
+				transition: transform 0.25s ease;
+				transform: scale(1.05);
 			}
 		}
 	}
@@ -415,6 +416,99 @@
 	}
 }
 
+
+// Answers-tab row: hover banner + Change Video/Remove button pair. Scoped
+// to .interview-answer-card (added alongside id="interview-list2" so its
+// existing base styles still apply) rather than redefining #interview-list2
+// again, keeping this addition isolated from the Questions-tab list above.
+.interview-answer-card {
+	.gh-answer-row {
+		position: relative;
+	}
+
+	.gh-answer-row__buttons {
+		display: flex;
+		gap: 8px;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+	}
+
+	// Hidden by default; fades/slides in on hover (or keyboard focus, since
+	// the row is also focusable via tabindex+role=button) rather than
+	// popping in abruptly -- avoids reintroducing the kind of hover glitch
+	// this pass just removed above.
+	.gh-answer-hover-banner {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		background: linear-gradient(135deg, rgba(255, 112, 98, 0.94) 0%, rgba(255, 61, 110, 0.94) 100%);
+		border-radius: 12px;
+		color: #fff;
+		font-family: 'Manrope', sans-serif;
+		font-weight: 600;
+		font-size: 14px;
+		opacity: 0;
+		transform: translateY(4px);
+		pointer-events: none;
+		transition: opacity 0.2s ease, transform 0.2s ease;
+		z-index: 2;
+
+		&__icon {
+			height: 18px;
+			width: auto;
+			filter: brightness(0) invert(1);
+		}
+	}
+
+	.gh-answer-row:hover .gh-answer-hover-banner,
+	.gh-answer-row:focus-visible .gh-answer-hover-banner {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.gh-answer-hover-banner {
+			transition: none;
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.interview-answer-card {
+		.gh-answer-hover-banner {
+			font-size: 12px;
+			gap: 6px;
+
+			&__icon {
+				height: 15px;
+			}
+		}
+
+		.gh-answer-row__actions {
+			float: none !important;
+			width: 100%;
+			margin-top: 12px !important;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 6px;
+		}
+
+		.gh-answer-row__buttons {
+			width: 100%;
+			justify-content: stretch;
+
+			button {
+				flex: 1 1 0;
+				font-size: 12px;
+				padding: 8px 10px;
+			}
+		}
+	}
+}
 
 .btn-submit{
 	background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);

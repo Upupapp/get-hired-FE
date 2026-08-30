@@ -199,6 +199,36 @@
   }
 }
 
+// Answered/unanswered detail (Questions tab guidance) -- see component
+// header comment: previously there was no way to tell, from this list,
+// whether a question already had a recorded video answer.
+.gh-vq__answered-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Manrope", sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: #1a9c5c;
+  margin: 4px 0 0;
+}
+
+.gh-vq__answered-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1a9c5c;
+  flex-shrink: 0;
+}
+
+.gh-vq__unanswered-hint {
+  font-family: "Manrope", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #b3b3b3;
+  margin: 4px 0 0;
+}
+
 // ─── MOBILE: Step 3 question-list rethink ────────────────────────────────────
 //
 // This row had no mobile handling at all: the question icon/text (.d-flex)

@@ -56,8 +56,21 @@ export class InterviewQuestionsComponent implements OnInit {
   }
 
   submitAnswer(event) {
-    console.log(event);
     const { answerFile, questionId, index, answerBlob } = event
+
+    // BUGFIX: this used to unconditionally push a new FormArray entry, so
+    // using "Change Video" (or re-recording via the Questions tab) on a
+    // question that already had an answer created a SECOND entry for the
+    // same index instead of replacing the first -- both got submitted,
+    // and the stale one silently reappeared in the Answers list alongside
+    // the new one. Remove any existing entry for this question index first.
+    const existingIdx = this.interviewAnswers.controls.findIndex(
+      (ctrl) => ctrl.value.index === index
+    );
+    if (existingIdx > -1) {
+      this.interviewAnswers.removeAt(existingIdx);
+    }
+
     const array = this.fb.group({
       answerFile: new FormControl(answerFile),
       questionId: new FormControl(questionId),
@@ -66,15 +79,30 @@ export class InterviewQuestionsComponent implements OnInit {
     });
 
     this.interviewAnswers.controls.push(array);
-    this.interviewAnswers.value.push({
-      answerFile,
-      questionId,
-      index,
-      answerBlob
-    });
 
-    console.log(this.interviewAnswers);
     this.changeQuestion(index + 1);
+  }
+
+  // Question indices that already have a recorded/uploaded answer -- lets
+  // the Questions tab show "already answered" state and label the action
+  // "Change Video" instead of "Record / Upload Interview".
+  get answeredIndices(): Set<number> {
+    return new Set(this.interviewAnswers.controls.map((ctrl) => ctrl.value.index));
+  }
+
+  answerSizeMbForIndex(index: number): number {
+    const ctrl = this.interviewAnswers.controls.find((c) => c.value.index === index);
+    return ctrl ? this.answerSizeMb(ctrl.value.answerFile) : 0;
+  }
+
+  // "Change Video" action from the Answers tab -- jumps the always-visible
+  // recorder (above the tabs) to this question so the applicant can
+  // re-record/upload without leaving the page. submitAnswer() above
+  // replaces the existing entry for this index rather than duplicating it.
+  changeVideo(index: number, event: Event): void {
+    event.stopPropagation();
+    this.selectedIndex = index;
+    this.interviewTab = 'questions';
   }
 
   // BUGFIX: submitting an application with a recorded video answer could

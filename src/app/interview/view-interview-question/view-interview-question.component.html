@@ -8,15 +8,16 @@
       </div>
 
       <div class="mt-2 gh-vq__record-wrap">
-        <!-- <button class="btn btn-upload me-2" (click)="uploadItem(index)">Upload</button> -->
-
-        <button class="btn btn-record gh-vq__record-btn" (click)="recordItem(index)"><img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">Record / Upload Interview</button>
+        <button class="btn gh-vq__record-btn" [class.btn-record]="!isAnswered" [class.btn-outline-secondary]="isAnswered"
+          (click)="recordItem(index)">
+          <img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">{{ isAnswered ? 'Change Video' : 'Record / Upload Interview' }}
+        </button>
       </div>
     </div>
 
     <div class="d-flex gh-vq__info">
       <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center gh-vq__icon">
-        <img src="/assets/images/placeholder/icons/interview-logo-4.png">
+        <img [src]="isAnswered ? '/assets/images/check-icon.png' : '/assets/images/placeholder/icons/interview-logo-4.png'">
       </div>
 
       <div class="mt-2 gh-vq__text">
@@ -26,6 +27,16 @@
         </p>
         <h5 class="title-label">{{item?.question}}</h5>
         <p class="title-label-sub-duration"><span>Estimated Duration:</span> {{item?.answerDuration}} minutes</p>
+        <!-- Answered-status detail: without this, an applicant returning to
+             the Questions tab had no way to tell a video answer already
+             existed for this question versus it still being unanswered. -->
+        <p class="gh-vq__answered-badge" *ngIf="isAnswered">
+          <span class="gh-vq__answered-dot" aria-hidden="true"></span>
+          Video attached ({{ answerSizeMb.toFixed(1) }} MB)
+        </p>
+        <p class="gh-vq__unanswered-hint" *ngIf="!isAnswered">
+          No video answer yet
+        </p>
       </div>
     </div>
   </div>
