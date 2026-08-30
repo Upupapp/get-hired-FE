@@ -179,7 +179,8 @@
         "USER_INFORMATION_SECTION":"My details",
         "EXTRA_DOCUMENTS_SECTION":"Additonal Documents",
         "INTERVIEW_SECTION":"Interview",
-        "SUMMARY_SECTION":"Summary"
+        "SUMMARY_SECTION":"Summary",
+        "NEXT_BUTTON":"Next"
     },
     "ADDITIONAL_DOCUMENTS_PAGE_SECTION":{
         "COVERLETTER_UPLOAD_BOX":"Browse Cover Letter",

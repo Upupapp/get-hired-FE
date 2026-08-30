@@ -1,0 +1,179 @@
+<section class="am-page" aria-label="Messages inbox">
+
+  <div class="am-page-header">
+    <h1 class="am-page-title">Messages</h1>
+    <p class="am-page-subtitle">Conversations with employers about your applications.</p>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div *ngIf="loading" class="am-skeleton-wrap" aria-busy="true" aria-label="Loading messages">
+    <div class="am-skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="!loading && error" class="am-state-panel am-state-panel--error" role="alert">
+    <p class="am-state-title">We couldn't load your messages</p>
+    <p class="am-state-body">Please try again. If the issue continues, go back to your dashboard.</p>
+    <div class="am-state-actions">
+      <button type="button" class="gh-btn-primary gh-pressable" (click)="retry()" [disabled]="retrying">
+        {{ retrying ? 'Trying…' : 'Try again' }}
+      </button>
+      <button type="button" class="gh-btn-secondary gh-pressable" (click)="goToApplications()">
+        Back to my applications
+      </button>
+    </div>
+  </div>
+
+  <!-- Main inbox layout (loaded, no error) -->
+  <ng-container *ngIf="!loading && !error">
+
+    <!-- Filter chips -->
+    <div class="am-filters" role="group" aria-label="Filter conversations">
+      <button type="button" class="am-chip gh-pressable"
+        [class.am-chip--active]="activeFilter === 'all'"
+        (click)="setFilter('all')"
+        [attr.aria-pressed]="activeFilter === 'all'">
+        All
+      </button>
+      <button type="button" class="am-chip gh-pressable"
+        [class.am-chip--active]="activeFilter === 'needs-reply'"
+        (click)="setFilter('needs-reply')"
+        [attr.aria-pressed]="activeFilter === 'needs-reply'">
+        Needs reply
+      </button>
+    </div>
+
+    <!-- Two-pane desktop / list-first mobile -->
+    <div class="am-inbox" [class.am-inbox--detail-open]="showDetail">
+
+      <!-- Thread list pane -->
+      <aside class="am-thread-list"
+        [class.am-thread-list--hidden-mobile]="showDetail"
+        aria-label="Conversation list">
+
+        <!-- Global empty state (no threads at all) -->
+        <div *ngIf="threads.length === 0" class="am-empty-state am-empty-state--reveal">
+          <div class="am-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M6 8a2 2 0 0 1 2-2h32a2 2 0 0 1 2 2v24a2 2 0 0 1-2 2H14l-8 6V8z"/>
+              <line x1="14" y1="16" x2="34" y2="16"/>
+              <line x1="14" y1="22" x2="28" y2="22"/>
+            </svg>
+          </div>
+          <h2 class="am-empty-title">No messages yet</h2>
+          <p class="am-empty-body">When you or an employer starts a conversation about one of your applications, it'll show up here.</p>
+          <div class="am-empty-actions">
+            <button type="button" class="gh-btn-primary gh-pressable" (click)="goToApplications()">View my applications</button>
+            <button type="button" class="gh-btn-secondary gh-pressable" (click)="goToJobs()">Browse jobs</button>
+          </div>
+        </div>
+
+        <!-- Filtered empty state -->
+        <div *ngIf="threads.length > 0 && filteredThreads.length === 0" class="am-empty-state am-empty-state--reveal">
+          <h2 class="am-empty-title">No messages match this filter</h2>
+          <p class="am-empty-body">Try another filter or return to all conversations.</p>
+          <button type="button" class="gh-btn-secondary gh-pressable" (click)="setFilter('all')">View all messages</button>
+        </div>
+
+        <!-- Thread rows -->
+        <ul class="am-thread-list-ul" role="list"
+          *ngIf="filteredThreads.length > 0">
+          <li *ngFor="let t of filteredThreads; trackBy: trackByThreadId"
+            class="am-thread-row"
+            [class.am-thread-row--selected]="selectedThread?.threadId === t.threadId"
+            [class.am-thread-row--needs-reply]="t.needsReply"
+            role="button"
+            tabindex="0"
+            [attr.aria-label]="threadLabel(t)"
+            [attr.aria-pressed]="selectedThread?.threadId === t.threadId"
+            (click)="selectThread(t)"
+            (keydown.enter)="selectThread(t)"
+            (keydown.space)="$event.preventDefault(); selectThread(t)">
+
+            <span class="am-thread-avatar" aria-hidden="true">
+              <img *ngIf="t.companyLogoUrl && !t['_logoError']"
+                [src]="t.companyLogoUrl"
+                alt="" class="am-thread-avatar-img" loading="lazy"
+                width="38" height="38"
+                (error)="t['_logoError'] = true">
+              <span *ngIf="!t.companyLogoUrl || t['_logoError']">{{ avatarInitial(t) }}</span>
+            </span>
+
+            <div class="am-thread-body">
+              <div class="am-thread-top">
+                <span class="am-thread-name">{{ employerLabel(t) }}</span>
+                <span class="am-thread-time">{{ t.lastMessageAt | date:'shortTime' }}</span>
+              </div>
+
+              <div class="am-thread-job" *ngIf="t.jobTitle">
+                <span class="am-thread-job-chip">{{ t.jobTitle }}</span>
+              </div>
+
+              <p class="am-thread-snippet">{{ snippet(t) }}</p>
+
+              <div class="am-thread-badges">
+                <span *ngIf="t.needsReply" class="am-badge am-badge--needs-reply"
+                  aria-label="Needs your reply">Needs reply</span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Thread detail pane -->
+      <main class="am-thread-detail"
+        [class.am-thread-detail--visible-mobile]="showDetail"
+        aria-label="Conversation detail">
+
+        <!-- Back button (mobile only) -->
+        <button *ngIf="showDetail" type="button" class="am-back-btn gh-pressable"
+          (click)="backToList()" aria-label="Back to messages list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            aria-hidden="true" focusable="false" style="width:16px;height:16px;display:inline;vertical-align:middle">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Back to messages
+        </button>
+
+        <!-- No thread selected (desktop idle) -->
+        <div *ngIf="!selectedThread" class="am-detail-idle">
+          <p class="am-detail-idle-text">Select a conversation to read and reply.</p>
+        </div>
+
+        <!-- Selected thread detail -->
+        <div *ngIf="selectedThread" class="am-detail-wrap am-detail-reveal">
+
+          <div class="am-detail-header">
+            <div class="am-detail-header-info">
+              <h2 class="am-detail-name">{{ employerLabel(selectedThread) }}</h2>
+              <div class="am-detail-meta" *ngIf="selectedThread.jobTitle">
+                <span class="am-thread-job-chip">{{ selectedThread.jobTitle }}</span>
+              </div>
+              <div class="am-detail-meta" *ngIf="selectedThread.needsReply">
+                <span class="am-badge am-badge--needs-reply" aria-label="Needs your reply">Needs reply</span>
+              </div>
+            </div>
+            <div class="am-detail-links">
+              <button type="button" class="am-link-btn gh-pressable"
+                (click)="goToApplications()"
+                aria-label="View my applications">
+                My applications
+              </button>
+            </div>
+          </div>
+
+          <!-- Reuse the existing shared message-thread component -- same
+               one the employer inbox uses, handles polling/send/errors. -->
+          <app-message-thread
+            [jobId]="selectedThread.jobId"
+            [otherPartyLabel]="employerLabel(selectedThread)"
+            currentUserRole="applicant">
+          </app-message-thread>
+        </div>
+
+      </main>
+    </div>
+
+  </ng-container>
+
+</section>

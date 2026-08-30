@@ -42,6 +42,23 @@ export interface RecruiterThreadSummary {
 }
 
 /**
+ * Jobseeker Messages tab -- applicant-side equivalent of
+ * RecruiterThreadSummary, returned by GET /api/messages/applicant/threads.
+ */
+export interface ApplicantThreadSummary {
+  threadId: string;
+  jobId: string;
+  companyId: string;
+  jobTitle: string | null;
+  companyName: string | null;
+  companyLogoUrl: string | null;
+  lastMessageSnippet: string | null;
+  lastSenderRole: 'employer' | 'applicant' | null;
+  lastMessageAt: string;
+  needsReply: boolean;
+}
+
+/**
  * Frontend for GH-EMP-B04's messaging backend (controllers/messageController.js,
  * services/message.service.js) -- the backend has existed since that pass,
  * but had zero frontend consumers until now (confirmed via grep; see the
@@ -83,6 +100,16 @@ export class MessageService {
   getRecruiterThreads(): Observable<RecruiterThreadSummary[]> {
     return this.baseService
       .get<any>(`${this.base}/recruiter/threads`)
+      .pipe(map((res: any) => res?.data ?? []));
+  }
+
+  /** Jobseeker Messages tab -- returns all thread summaries where the
+   * authenticated caller is the applicant. Scoping is enforced server-side
+   * (message.service.listApplicantThreads); a caller can only ever see
+   * their own threads. */
+  getApplicantThreads(): Observable<ApplicantThreadSummary[]> {
+    return this.baseService
+      .get<any>(`${this.base}/applicant/threads`)
       .pipe(map((res: any) => res?.data ?? []));
   }
 }

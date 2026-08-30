@@ -1,0 +1,518 @@
+@import "src/assets/styles/colors";
+@import "~assets/styles/motion";
+
+// ─── Page shell ─────────────────────────────────────────────────────────────
+
+.am-page {
+  padding: 24px 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Manrope', sans-serif;
+
+  animation: am-page-reveal 220ms $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+@keyframes am-page-reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.am-page-header {
+  margin-bottom: 20px;
+}
+
+.am-page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+  margin: 0 0 4px;
+}
+
+.am-page-subtitle {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0;
+}
+
+// ─── Loading skeleton ────────────────────────────────────────────────────────
+
+.am-skeleton-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+.am-skeleton-row {
+  height: 72px;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e9eaf0 50%, #f3f4f6 75%);
+  background-size: 400% 100%;
+  border-radius: 12px;
+  animation: am-shimmer 1.4s ease-in-out infinite;
+  @include ambient-motion-safe;
+}
+
+@keyframes am-shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// ─── State panels ────────────────────────────────────────────────────────────
+
+.am-state-panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 32px 24px;
+  text-align: center;
+  margin-top: 16px;
+
+  &--error {
+    border-color: #fca5a5;
+    background: #fff7f7;
+  }
+}
+
+.am-state-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+  margin: 0 0 8px;
+}
+
+.am-state-body {
+  font-size: 14px;
+  color: #4b5563;
+  margin: 0 0 20px;
+}
+
+.am-state-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+// ─── Filter chips ────────────────────────────────────────────────────────────
+
+.am-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.am-chip {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  outline: none;
+  transition: background 140ms $motion-ease-standard, color 140ms $motion-ease-standard,
+              border-color 140ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 103, 93, 0.7);
+    outline-offset: 2px;
+  }
+
+  &--active {
+    background: var(--gh-text, #101828);
+    color: #fff;
+    border-color: var(--gh-text, #101828);
+  }
+}
+
+// ─── Two-pane inbox layout ───────────────────────────────────────────────────
+
+.am-inbox {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 16px;
+  min-height: 520px;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── Thread list pane ────────────────────────────────────────────────────────
+
+.am-thread-list {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  overflow-y: auto;
+  max-height: 700px;
+
+  @media (max-width: 767px) {
+    &--hidden-mobile {
+      display: none;
+    }
+  }
+}
+
+.am-thread-list-ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.am-thread-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  outline: none;
+  transition: background 120ms $motion-ease-standard, transform 120ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: #f9fafb;
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 103, 93, 0.7);
+    outline-offset: -2px;
+    border-radius: 10px;
+  }
+
+  &--selected {
+    background: var(--gh-coral-soft, #FFF0EE);
+    border-left: 3px solid var(--gh-coral, #FF675D);
+  }
+
+  &--needs-reply {
+    // subtle left accent for needs-reply even when not selected
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+}
+
+.am-thread-avatar {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $color-pipeline-accent, $color-teal-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 2px;
+  overflow: hidden;
+}
+
+.am-thread-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.am-thread-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.am-thread-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.am-thread-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.am-thread-time {
+  font-size: 11px;
+  color: var(--gh-text-muted, #98A2B3);
+  white-space: nowrap;
+}
+
+.am-thread-job {
+  margin-bottom: 4px;
+}
+
+.am-thread-job-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 2px 6px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.am-thread-snippet {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.am-thread-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+// ─── Badges ──────────────────────────────────────────────────────────────────
+
+.am-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+
+  &--needs-reply {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+}
+
+// ─── Thread detail pane ──────────────────────────────────────────────────────
+
+.am-thread-detail {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    display: none;
+
+    &--visible-mobile {
+      display: flex;
+    }
+  }
+}
+
+.am-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gh-coral, #FF675D);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 16px 0;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 103, 93, 0.7);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  transition: color 120ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:active {
+    color: var(--gh-text, #101828);
+  }
+}
+
+.am-detail-idle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.am-detail-idle-text {
+  font-size: 14px;
+  color: var(--gh-text-muted, #98A2B3);
+  text-align: center;
+}
+
+.am-detail-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.am-detail-reveal {
+  animation: am-detail-slide 220ms $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+@keyframes am-detail-slide {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.am-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  background: #fafafa;
+}
+
+.am-detail-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.am-detail-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+  margin: 0;
+}
+
+.am-detail-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.am-detail-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.am-link-btn {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gh-coral, #FF675D);
+  background: none;
+  border: 1px solid var(--gh-coral-soft, #FFF0EE);
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  transition: background 120ms $motion-ease-standard, color 120ms $motion-ease-standard;
+  @include motion-safe;
+
+  &:hover {
+    background: var(--gh-coral-soft, #FFF0EE);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 103, 93, 0.7);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// app-message-thread fills the remainder of the detail pane
+:host ::ng-deep .msg-thread {
+  border: none;
+  border-radius: 0;
+  flex: 1;
+  max-height: none;
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+
+.am-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 24px;
+  gap: 12px;
+}
+
+.am-empty-state--reveal {
+  animation: am-empty-reveal 280ms $motion-ease-decelerate both;
+  @include motion-safe;
+}
+
+@keyframes am-empty-reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.am-empty-icon {
+  color: #c4b5fd;
+  svg {
+    width: 52px;
+    height: 52px;
+  }
+}
+
+.am-empty-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+  margin: 0;
+}
+
+.am-empty-body {
+  font-size: 13px;
+  color: #4b5563;
+  max-width: 360px;
+  margin: 0;
+}
+
+.am-empty-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+// ─── Mobile — push content above bottom nav ──────────────────────────────────
+
+@media (max-width: 767px) {
+  .am-page {
+    padding-bottom: 80px;
+  }
+}

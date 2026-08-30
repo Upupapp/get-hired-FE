@@ -9,6 +9,7 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { currencies } from '@app-shared/mock.data';
 import { startWith, pairwise, debounceTime, distinctUntilChanged } from 'rxjs';
 import * as Model from '../../applicant.model';
+import { generateProfileSuggestion, ProfileSuggestion } from './profile-ai-suggestion.util';
 
 @Component({
   selector: 'app-profile-basic-info',
@@ -33,6 +34,15 @@ export class ProfileBasicInfoComponent implements OnInit {
   @Output() saveResult: EventEmitter<'success' | 'error'> = new EventEmitter();
 
   photo: string;
+  // Prefill for the shared Google Places search box (address/state/country);
+  // populated once the applicant's saved profile loads in fillUpForm().
+  rawAddress: any;
+
+  // AI-suggested Short Bio / Services Offered (heuristic/template-based --
+  // see profile-ai-suggestion.util.ts). Never auto-applied: shown as a
+  // clearly-labeled suggestion the applicant must explicitly Accept, and
+  // can Dismiss without it touching what they've already typed.
+  aiSuggestion: ProfileSuggestion | null = null;
 
   profileDetailsForm: FormGroup;
   profileImage: any;
@@ -140,8 +150,76 @@ export class ProfileBasicInfoComponent implements OnInit {
         this.profileDetailsForm.get('city').setValue(data.city);
         this.profileDetailsForm.get('country').setValue(data.country);
 
+        this.rawAddress = {
+          address: data.address,
+          country: data.country,
+          city: data.city,
+        };
       }
     }
+  }
+
+  // Fired when the applicant selects a suggestion from the Google Places
+  // autocomplete box (app-google-address-search). Mirrors
+  // company-details-form.component.ts's addressChange() -- combines the
+  // component's addressOne/town breakdown into this form's single free-text
+  // "address" control, and fills city/country. The applicant can still edit
+  // any of the resulting fields afterwards; nothing here is submitted
+  // automatically.
+  onAddressAutocomplete(event: any): void {
+    if (!event) {
+      return;
+    }
+    const combinedAddress = [event.addressOne, event.town]
+      .filter(part => !!part)
+      .join(', ');
+
+    if (combinedAddress) {
+      this.profileDetailsForm.get('address')?.setValue(combinedAddress);
+    }
+    if (event.city) {
+      this.profileDetailsForm.get('city')?.setValue(event.city);
+    }
+    if (event.country) {
+      this.profileDetailsForm.get('country')?.setValue(event.country);
+    }
+  }
+
+  // Generates a Short Bio + Services Offered suggestion from Current Job
+  // Title (plus Job Type/Level if already selected). Purely template/rule
+  // based -- no external AI API call, same pattern as the existing "AI Job
+  // Post Assistant" on the employer side. Populates aiSuggestion for the
+  // user to review; does NOT write into the form controls by itself.
+  generateAiSuggestion(): void {
+    const jobTitle = this.profileDetailsForm.get('jobTitle')?.value;
+    if (!jobTitle || !jobTitle.trim()) {
+      this.snackbarService.error('Enter your Current Job title first so a suggestion can be generated.', '');
+      return;
+    }
+
+    this.aiSuggestion = generateProfileSuggestion({ jobTitle });
+  }
+
+  // Applies the currently-shown suggestion into the real form controls.
+  // Only fires on explicit user action -- never silently overwrites
+  // whatever the applicant already typed before they click Accept.
+  acceptAiSuggestion(field: 'shortBio' | 'servicesProvided' | 'both'): void {
+    if (!this.aiSuggestion) {
+      return;
+    }
+    if (field === 'shortBio' || field === 'both') {
+      this.profileDetailsForm.get('shortBio')?.setValue(this.aiSuggestion.shortBio);
+      this.profileDetailsForm.get('shortBio')?.markAsDirty();
+    }
+    if (field === 'servicesProvided' || field === 'both') {
+      this.profileDetailsForm.get('servicesProvided')?.setValue(this.aiSuggestion.servicesProvided);
+      this.profileDetailsForm.get('servicesProvided')?.markAsDirty();
+    }
+    this.aiSuggestion = null;
+  }
+
+  dismissAiSuggestion(): void {
+    this.aiSuggestion = null;
   }
 
   onAvatarUploaded(result: any): void {

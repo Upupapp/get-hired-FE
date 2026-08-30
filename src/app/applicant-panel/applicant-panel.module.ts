@@ -21,6 +21,7 @@ import { SharedModule } from '@app-shared/shared.module';
 import { ApplicantJobsComponent } from './applicant-jobs/applicant-jobs.component';
 import { ApplicantApplicationsComponent } from './applicant-applications/applicant-applications.component';
 import { ApplicantApplicationDetailComponent } from './applicant-application-detail/applicant-application-detail.component';
+import { ApplicantMessagesComponent } from './applicant-messages/applicant-messages.component';
 
 const routes: Routes = [
   // SIGNOUT ROUTECONFIG-CORRUPTION FIX: canActivate: [ApplicantGuard] removed.
@@ -72,6 +73,13 @@ const routes: Routes = [
         path: 'settings',
         component: ApplicantSettingsComponent,
       },
+      // GH-ACT jobseeker Messages tab -- applicant-side equivalent of the
+      // employer portal's /recruiter/messages inbox (recruiter-messages
+      // component), reusing the same message.service.ts / app-message-thread.
+      {
+        path: 'messages',
+        component: ApplicantMessagesComponent,
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
@@ -85,6 +93,7 @@ const routes: Routes = [
     ApplicantJobsComponent,
     ApplicantApplicationsComponent,
     ApplicantApplicationDetailComponent,
+    ApplicantMessagesComponent,
   ],
   imports: [
     CommonModule,

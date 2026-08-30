@@ -57,6 +57,14 @@
       <app-main-stepper [stepper]="stepper" [stepperItems]="stepperItems" (changeStepper)="changeStep($event)">
       </app-main-stepper>
 
+      <!-- Top "Next" button -- same advance action as the bottom one, just placed
+           near the stepper so long steps don't force a scroll to move on. -->
+      <div class="text-end mt-2" *ngIf="stepper === 1 || stepper === 2">
+        <button class="btn btn-save" type="button" (click)="goToNextStep()">
+          {{ 'USER_APPLICATION_PAGE.NEXT_BUTTON' | translate }}
+        </button>
+      </div>
+
       <!-- STEPPER STEPS -->
       <section style="min-height: 100vh; overflow-y: visible;">
         <div class="row" *ngIf="profile$ | async as profile; else noProfile">
@@ -103,6 +111,13 @@
           </div>
         </ng-template>
       </section>
+
+      <!-- Bottom "Next" button -- same goToNextStep() handler as the top one. -->
+      <div class="text-end mt-4" *ngIf="stepper === 1 || stepper === 2">
+        <button class="btn btn-save" type="button" (click)="goToNextStep()">
+          {{ 'USER_APPLICATION_PAGE.NEXT_BUTTON' | translate }}
+        </button>
+      </div>
 
       <div class="text-end mt-4"
         [ngClass]="showEvaluateButton ? '' : 'container-evaluate'"

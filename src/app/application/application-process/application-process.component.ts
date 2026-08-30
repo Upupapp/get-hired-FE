@@ -242,6 +242,14 @@ export class ApplicationProcessComponent implements OnInit {
     }
   }
 
+  // Convenience "Next" buttons (top + bottom of each step, steps 1-2) reuse
+  // this same changeStep() advance logic -- no separate validation path.
+  goToNextStep(): void {
+    if (this.stepper < 4) {
+      this.changeStep(this.stepper + 1);
+    }
+  }
+
   openInterviewNotification(data?: any) {
     let dialogModal = this.dialog.open(
       InterviewNotificationComponent,

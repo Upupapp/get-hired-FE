@@ -177,7 +177,8 @@
         "USER_INFORMATION_SECTION":"Thông tin của tôi",
         "EXTRA_DOCUMENTS_SECTION":"Tài liệu đính kèm",
         "INTERVIEW_SECTION":"Phỏng vấn",
-        "SUMMARY_SECTION":"Tổng kết"
+        "SUMMARY_SECTION":"Tổng kết",
+        "NEXT_BUTTON":"Tiếp theo"
     },
     "ADDITIONAL_DOCUMENTS_PAGE_SECTION":{
         "COVERLETTER_UPLOAD_BOX":"Đăng tải Thư giới thiệu",

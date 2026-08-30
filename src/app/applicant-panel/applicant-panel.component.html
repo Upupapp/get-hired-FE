@@ -47,6 +47,8 @@
           <strong>{{ user.firstName }} {{ user.lastName }}</strong>
           <span>Job Seeker</span>
         </div>
+        <a routerLink="/user/messages" class="gh-ap-avatar-menu-item" role="menuitem"
+          (click)="closeAvatarMenu()">Messages</a>
         <a routerLink="/user/settings" class="gh-ap-avatar-menu-item" role="menuitem"
           (click)="closeAvatarMenu()">Settings</a>
         <button type="button" class="gh-ap-avatar-menu-item gh-ap-avatar-menu-item--danger" role="menuitem"
@@ -155,6 +157,21 @@
             <polyline points="14 2 14 8 20 8"/>
           </svg>
           <span class="gh-ap-drawer-nav-label">Applications</span>
+        </a>
+      </li>
+      <li role="listitem">
+        <a routerLink="/user/messages"
+           routerLinkActive="gh-ap-drawer-nav-item--active"
+           [routerLinkActiveOptions]="{exact:false}"
+           #rla4="routerLinkActive"
+           [attr.aria-current]="rla4.isActive ? 'page' : null"
+           class="gh-ap-drawer-nav-item"
+           (click)="closeMobileNav()">
+          <svg class="gh-ap-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span class="gh-ap-drawer-nav-label">Messages</span>
         </a>
       </li>
     </ul>
@@ -270,6 +287,14 @@
         <polyline points="14 2 14 8 20 8"/>
       </svg>
       <span class="gh-ap-mobile-nav-label">Applied</span>
+    </a>
+    <a routerLink="/user/messages" routerLinkActive="gh-ap-mobile-nav-item--active"
+      class="gh-ap-mobile-nav-item" aria-label="Messages">
+      <svg class="gh-ap-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" aria-hidden="true" focusable="false">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span class="gh-ap-mobile-nav-label">Messages</span>
     </a>
     <a routerLink="/user/profile" routerLinkActive="gh-ap-mobile-nav-item--active"
       class="gh-ap-mobile-nav-item" aria-label="Profile">

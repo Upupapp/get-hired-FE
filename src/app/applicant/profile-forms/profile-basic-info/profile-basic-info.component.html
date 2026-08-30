@@ -58,6 +58,50 @@
     </div>
 
     <div class="col-12 col-lg-12 mb-3">
+      <!-- AI suggestion trigger: heuristic/template-based (no external AI
+           API), same pattern as the employer's AI Job Post Assistant. Only
+           enabled once a Current Job title is entered. -->
+      <div class="mb-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm"
+          (click)="generateAiSuggestion()">
+          <i class="bi bi-magic"></i> Suggest Bio &amp; Services with AI
+        </button>
+      </div>
+
+      <!-- Suggestion review panel -- never applied automatically. The
+           applicant must explicitly Accept (per field, or both) or Dismiss. -->
+      <div class="ai-suggestion-panel mb-3 p-3" *ngIf="aiSuggestion"
+        style="border: 1px dashed #e0664e; border-radius: 8px; background: #fff6f4;">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <strong class="text-primary-red">AI Suggestion (Draft)</strong>
+          <button type="button" class="btn-close" aria-label="Dismiss suggestion"
+            (click)="dismissAiSuggestion()"></button>
+        </div>
+
+        <div class="mb-2">
+          <label class="d-block mb-1"><em>Suggested Short Bio</em></label>
+          <p class="mb-1">{{ aiSuggestion.shortBio }}</p>
+          <button type="button" class="btn btn-save btn-sm me-2" (click)="acceptAiSuggestion('shortBio')">
+            Use this Bio
+          </button>
+        </div>
+
+        <div class="mb-2">
+          <label class="d-block mb-1"><em>Suggested Services Provided</em></label>
+          <p class="mb-1">{{ aiSuggestion.servicesProvided }}</p>
+          <button type="button" class="btn btn-save btn-sm me-2" (click)="acceptAiSuggestion('servicesProvided')">
+            Use these Services
+          </button>
+        </div>
+
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="acceptAiSuggestion('both')">
+          Use Both
+        </button>
+        <small class="d-block text-muted mt-2">
+          This is only a suggestion -- feel free to edit it after accepting, or write your own instead.
+        </small>
+      </div>
+
       <div class="title-container mb-3">
         <label>Short Bio</label>
         <div class="form-group">
@@ -196,6 +240,20 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="col-12 mb-3">
+      <!-- Google Places autocomplete: same shared component already used on
+           the employer's company-address form (company-details-form.html).
+           Typing an address suggests matching places; selecting one
+           auto-fills Address/City/Country below via onAddressAutocomplete().
+           The plain fields stay visible (and stay the source of truth for
+           profileDetailsForm) so the applicant can still see/edit the final
+           values, same as the employer form's pattern. -->
+      <app-google-address-search
+        [rawAddress]="rawAddress"
+        (addressChange)="onAddressAutocomplete($event)"
+      ></app-google-address-search>
     </div>
 
     <div class="col-12 col-lg-6 mb-3">
