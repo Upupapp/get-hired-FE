@@ -461,6 +461,21 @@ export const jobReducer = createReducer<JobState>(
     return {
       ...state,
       job: action.job,
+      // PRODUCTION FIX: this is the response from getJobById() -- the
+      // "load an existing job to edit it" flow -- but state.selected was
+      // never actually set here. state.selected is the ONLY thing
+      // job-create.component.ts's editJob$ subscription reads to build
+      // the form (jobDetails$ -> getJobDetails selector -> state.selected);
+      // every other reducer case here that sets state.selected is a
+      // save/publish/question-edit success, none of which fire on a plain
+      // load. The Update Job page's form was never actually being
+      // populated from this action at all -- setFormGroup(data) either
+      // never ran, or ran against stale leftover state.selected data from
+      // an unrelated earlier action in the same session. action.job is
+      // the complete, already-mapped job record (job.service.js's
+      // mappedJob()) -- the exact same shape state.selected holds
+      // everywhere else, so this is a direct, safe assignment.
+      selected: action.job,
       jobLoading: false,
       succesMsg: null  // QA7 FIX-8: loading a job must not pollute succesMsg with a stale status string
     };
