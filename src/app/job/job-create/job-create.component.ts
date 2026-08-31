@@ -80,6 +80,23 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     return items.map(i => ({ ...i, title: this.getStepTitle(i.id) }));
   }
 
+  /** PRODUCTION FIX: visibleStepperItems is a getter returning a brand-new
+   *  array of brand-new objects on every single evaluation -- with no
+   *  trackBy, *ngFor's default identity tracking sees a completely
+   *  different object on every change-detection cycle (this getter is
+   *  re-evaluated constantly: readinessResult recompute, autosave ticks,
+   *  the FAB pulse timer, any of it), so Angular destroys and recreates
+   *  every stepper button's actual DOM node far more often than it looks
+   *  like it should need to. A native browser click only fires if the
+   *  element that received mousedown is still the same element at mouseup
+   *  -- if a change-detection cycle happens to land in that window and
+   *  swaps the DOM node out, the click is silently dropped with no error
+   *  anywhere. Tracking by the stable step id instead keeps the same DOM
+   *  nodes across re-renders, removing that window entirely. */
+  trackByStepId(_index: number, item: any): number {
+    return item.id;
+  }
+
   /** Resolves a step's display title, with the Simplified-mode override for
    *  Step 2: in Simplified mode that step only shows the Compensation &
    *  schedule card (Industry/Skills are hidden), which reads to an applicant

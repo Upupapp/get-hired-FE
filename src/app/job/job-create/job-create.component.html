@@ -56,7 +56,7 @@
   <!-- ── SINGLE STEPPER ──────────────────────────────────────────────────── -->
   <div class="gh-jc-stepper-wrap" role="navigation" aria-label="Job creation steps">
     <div class="gh-jc-stepper">
-      <ng-container *ngFor="let item of visibleStepperItems; let i = index; let last = last">
+      <ng-container *ngFor="let item of visibleStepperItems; let i = index; let last = last; trackBy: trackByStepId">
         <button
           class="gh-step-btn"
           type="button"
