@@ -26,11 +26,23 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   private collapsedRoutes = new Set<string>();
 
   // Messages sidebar badge -- same lightweight unread-count endpoint the
-  // Messages tab uses, same 45s poll cadence as the header notification
-  // bell (no websocket/push infra exists to do better than polling).
+  // Messages tab uses. No websocket/push infra exists in this codebase,
+  // so this can't be truly push-driven -- but authenticated requests
+  // bypass the rate limiter entirely (server.js's globalLimiter skip
+  // check), so there's no cost reason to poll as slowly as the header
+  // notification bell's 45s does. Tightened to 10s (a "feels real-time"
+  // cadence) plus an immediate refresh on window focus/tab visibility
+  // return, so the badge updates right away when the employer switches
+  // back to this tab instead of waiting out the interval.
   unreadMessageCount = 0;
   private unreadPollSub: Subscription;
-  private static readonly UNREAD_POLL_INTERVAL_MS = 45000;
+  private unreadChangeSub: Subscription;
+  private static readonly UNREAD_POLL_INTERVAL_MS = 10000;
+  private onVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      this.refreshUnreadCount();
+    }
+  };
 
   constructor(
     private router: Router,
@@ -70,6 +82,12 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
     );
     this.refreshUnreadCount();
     this.unreadPollSub = interval(EmployerSidebarComponent.UNREAD_POLL_INTERVAL_MS).subscribe(() => {
+      this.refreshUnreadCount();
+    });
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+    // Instant update the moment a thread is marked read on the Messages
+    // page itself, rather than waiting out the poll interval.
+    this.unreadChangeSub = this.messageService.unreadCountChanged$.subscribe(() => {
       this.refreshUnreadCount();
     });
   }
@@ -161,6 +179,8 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.req) this.req.unsubscribe();
     if (this.unreadPollSub) this.unreadPollSub.unsubscribe();
+    if (this.unreadChangeSub) this.unreadChangeSub.unsubscribe();
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   isSubnavOpen(route: string): boolean {

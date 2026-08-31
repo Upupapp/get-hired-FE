@@ -1,8 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
 import { BaseService } from '@main/core/services/base.service';
 import { environment } from 'environments/environment';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 export interface MessageThread {
   id: string;
@@ -78,6 +78,17 @@ export interface ApplicantThreadSummary {
 export class MessageService {
   private base = `${environment.api_url}/messages`;
 
+  // Fires whenever this service knows the caller's unread state just
+  // changed (a thread was marked read, or a message was just sent -- see
+  // markThreadRead()/sendMessage() below) -- both sidebars subscribe to
+  // this alongside their own poll interval so the badge updates the
+  // instant the applicant/employer actually reads or sends a message,
+  // instead of waiting out the next poll tick. Still no real push
+  // infrastructure (no websocket exists in this codebase); this only
+  // shortcuts the delay for actions that happen inside the SAME browser
+  // tab, which is the common case this was reported against.
+  unreadCountChanged$ = new Subject<void>();
+
   constructor(private baseService: BaseService) {}
 
   /** Opens (or creates) the thread for a (jobId, applicantUid) pair.
@@ -124,7 +135,10 @@ export class MessageService {
   markThreadRead(threadId: string): Observable<any> {
     return this.baseService
       .post<any>(`${this.base}/thread/${encodeURIComponent(threadId)}/read`, {})
-      .pipe(map((res: any) => res?.data));
+      .pipe(
+        map((res: any) => res?.data),
+        tap(() => this.unreadCountChanged$.next()),
+      );
   }
 
   /** Total unread message count across all of the caller's threads --
