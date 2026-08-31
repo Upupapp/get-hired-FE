@@ -95,13 +95,23 @@ select{
 	}
 }
 
+// Reserves its own height permanently (visibility, not display/*ngIf) so
+// starting/finishing an upload never resizes the identity column above it.
+// Neutral secondary-text color, not the coral alert color -- this is a
+// routine in-progress status, not a warning.
 .gh-avatar-uploading-hint {
 	font-family: 'Manrope', sans-serif;
 	font-size: 12px;
 	font-weight: 600;
-	color: #ff3d6e;
+	line-height: 16px;
+	color: var(--gh-text-secondary, #667085);
 	margin: 6px 0 0;
 	text-align: center;
+	visibility: hidden;
+
+	&--visible {
+		visibility: visible;
+	}
 }
 
 .gh-profile-identity {

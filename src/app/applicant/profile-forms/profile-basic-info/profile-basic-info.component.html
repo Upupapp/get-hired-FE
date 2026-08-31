@@ -22,8 +22,12 @@
               (uploading)="avatarUploading = $event"
             ></app-gh-image-upload>
             <!-- Guards against submitting before the photo upload above
-                 actually finishes -- see avatarUploading's doc comment. -->
-            <p class="gh-avatar-uploading-hint" *ngIf="avatarUploading">
+                 actually finishes -- see avatarUploading's doc comment.
+                 Always rendered (not *ngIf) and toggled via CSS visibility
+                 instead: an *ngIf here popped this line in and out of the
+                 DOM, which shifted the whole centered avatar/name/title
+                 column up and down every time an upload started/finished. -->
+            <p class="gh-avatar-uploading-hint" [class.gh-avatar-uploading-hint--visible]="avatarUploading" aria-live="polite">
               Uploading photo…
             </p>
           </div>
