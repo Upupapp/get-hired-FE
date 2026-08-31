@@ -276,8 +276,24 @@ export const applicantReducer = createReducer<ApplicantState>(
       // models, not something introduced here. Cast at the object-literal
       // boundary rather than per-field; runtime values are unaffected
       // either way (both sides ultimately hold whatever the backend sent).
-      selected: state.selected ? {
-        ...state.selected,
+      // CRITICAL BUGFIX: previously `state.selected ? {...merge} : state.selected`
+      // -- for a genuinely brand-new applicant (first-ever Basic Info save,
+      // no prior profile row to have fetched), state.selected starts out
+      // null, so that guard skipped the merge entirely and left it null.
+      // profile-forms.component.ts's applicantProfileId (its OWN gate for
+      // rendering Step 2/3's content -- `*ngIf="stepper === 2 &&
+      // applicantProfileId"` -- AND for showing the "Profile Preview"/
+      // "Finish & View Profile" button that's the only way to trigger
+      // redirectToProfile()'s return-to-job redirect) comes exclusively
+      // from this same state.selected via applicantDetails$. With it stuck
+      // null, a new applicant who just created their profile hit a
+      // literal dead end: Step 2 rendered nothing, and there was no button
+      // left to get back to the job they were trying to apply for.
+      // Now always builds a real object -- spread onto state.selected when
+      // it exists (preserves any already-known joined fields), or onto {}
+      // for the true first-save case (nothing existed to preserve anyway).
+      selected: {
+        ...(state.selected || {}),
         photoUrl: action.basicProfile.photoUrl,
         jobTitle: action.basicProfile.jobTitle,
         shortBio: action.basicProfile.shortBio,
@@ -295,7 +311,7 @@ export const applicantReducer = createReducer<ApplicantState>(
         country: action.basicProfile.country,
         contactNumber: action.basicProfile.contactNumber,
         applicantProfileId: action.basicProfile.applicantProfileId,
-      } as unknown as Model.Applicant : state.selected,
+      } as unknown as Model.Applicant,
       succesMsg: action.basicProfile.applicantProfileId ? 'updated' : 'created'
     };
   }),
