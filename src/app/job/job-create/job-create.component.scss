@@ -146,10 +146,16 @@
 // directly in the component), the mobile-vs-desktop split points at
 // something in the desktop layout sitting on top of this row and
 // intercepting the click before it ever reaches the button, rather than a
-// JS bug. Establishing an explicit stacking context with a high z-index
-// here guarantees this row -- and every button in it -- always wins that
-// stacking order, regardless of which sibling/ancestor element turns out
-// to be the actual culprit. Non-destructive: this only affects paint/
+// JS bug. A weaker z-index-only attempt (z-index:50 against the sticky
+// mission bar's 40) did not resolve it, and disabling the row entirely on
+// wide screens was reverted per explicit direction -- both stepper tabs
+// and Next/Back must be functional everywhere. Reinforced here with a much
+// higher z-index plus isolation:isolate, which forces a genuinely new
+// stacking context regardless of any ancestor stacking-context quirk (a
+// transformed/animated/will-change ancestor can silently create one that
+// traps z-index comparisons differently than a plain z-index value alone
+// would predict) -- the strongest CSS-level guarantee available that
+// nothing can paint above this row. Non-destructive: only affects paint/
 // stacking order, not layout, sizing, or position.
 .gh-jc-stepper-wrap {
   background: #fff;
@@ -161,7 +167,13 @@
   // JC-01 MOBILEVIEW: smooth momentum scrolling on iOS for the step pill row
   -webkit-overflow-scrolling: touch;
   position: relative;
-  z-index: 50;
+  z-index: 900;
+  // isolation:isolate forces a genuinely new stacking context regardless of
+  // ancestor stacking-context quirks (a transformed/animated ancestor, a
+  // will-change, etc. can silently create one that traps z-index compared
+  // between siblings differently than expected) -- stronger guarantee than
+  // z-index alone that nothing can paint above this row.
+  isolation: isolate;
 }
 
 .gh-jc-stepper {
@@ -254,25 +266,6 @@
     }
   }
 
-  // PRODUCTION MITIGATION: the z-index fix above did not resolve repeated
-  // wide-screen-only "unclickable" reports (confirmed working correctly on
-  // mobile). Per explicit direction, disabling this row's interactivity
-  // above the mobile breakpoint (640px, matching .gh-jc-mobile-bar's own
-  // threshold elsewhere in this file) rather than continuing to guess at
-  // the exact desktop-only cause -- Next/Back (onNextStep()/changeStep(),
-  // both unaffected by this) remain the way to navigate on wide screens,
-  // and the confirmed-working mobile stepper is untouched. Visual-only
-  // below this breakpoint: still shows progress, just no longer
-  // clickable/hoverable. Placed last in this rule (not nested earlier) so
-  // it reliably wins over every state above regardless of Sass @media
-  // hoisting order. Trivially reversible once the actual cause is found.
-  @media (min-width: 641px) {
-    cursor: default !important;
-    // pointer-events:none alone already makes :hover unreachable (a
-    // non-interactive element can't receive mouse-enter), so no separate
-    // hover override is needed here.
-    pointer-events: none;
-  }
 }
 
 .gh-step-num {
