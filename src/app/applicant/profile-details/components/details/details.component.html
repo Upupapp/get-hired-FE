@@ -30,13 +30,13 @@
            DetailsComponent's own doc comment); user.documents already
            excludes it by design, so both are combined here rather than
            user.documents alone missing the CV entirely. -->
-      <section class="np-card np-card-raised" *ngIf="!loadingCurrentCv">
-        <h5 class="np-heading">
+      <section class="np-card np-card-raised" *ngIf="!loadingCurrentCv && hasAnyDocuments">
+        <h5 class="np-heading np-heading--flush mb-3">
           <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
           {{ 'PROFILE.DOCUMENTS_TEXT' | translate }}
         </h5>
 
-        <div class="np-doc-list" *ngIf="hasAnyDocuments">
+        <div class="np-doc-list">
           <div class="np-doc-row" *ngIf="currentCv">
             <div class="np-doc-row__icon" aria-hidden="true">&#128196;</div>
             <div class="np-doc-row__info">
@@ -58,12 +58,40 @@
             </button>
           </div>
         </div>
+      </section>
 
-        <div class="np-empty-inline" *ngIf="!hasAnyDocuments && userRole != '2'">
-          <p class="np-empty-hint">Upload your CV/Resume and any supporting documents so employers can review them.</p>
-          <button type="button" class="np-cta-btn" (click)="navigateToEdit()">Add documents</button>
+      <!-- DOCUMENTS EMPTY STATE -- same prominent orb/ring/CTA treatment as
+           the Video Introduction empty state below, instead of a plain
+           inline text hint that read as "nothing rendered" rather than
+           "this section is empty." -->
+      <section class="np-card np-card-raised np-card-video" *ngIf="!loadingCurrentCv && !hasAnyDocuments && userRole != '2'">
+        <div class="np-video-head">
+          <h5 class="np-heading np-heading--flush">
+            <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
+            {{ 'PROFILE.DOCUMENTS_TEXT' | translate }}
+          </h5>
+          <span class="np-tag np-tag--muted">None yet</span>
         </div>
-        <p class="np-empty-hint mb-0" *ngIf="!hasAnyDocuments && userRole == '2'">No documents uploaded yet.</p>
+        <div class="np-video-empty" (click)="navigateToEdit()">
+          <div class="np-video-empty-orb" aria-hidden="true">
+            <span class="np-video-empty-icon">&#128196;</span>
+            <span class="np-video-empty-ring"></span>
+          </div>
+          <p class="np-empty-hint np-empty-hint--center">
+            Upload your CV/Resume and any supporting documents so employers can review them.
+          </p>
+          <button type="button" class="np-cta-btn" (click)="navigateToEdit()">
+            Add documents
+          </button>
+        </div>
+      </section>
+
+      <section class="np-card np-card-raised" *ngIf="!loadingCurrentCv && !hasAnyDocuments && userRole == '2'">
+        <h5 class="np-heading">
+          <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
+          {{ 'PROFILE.DOCUMENTS_TEXT' | translate }}
+        </h5>
+        <p class="np-empty-hint mb-0">No documents uploaded yet.</p>
       </section>
 
       <section class="np-card np-card-raised" *ngIf="user.skills && user.skills.length > 0">

@@ -74,6 +74,17 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       loading: false,
       videoCV: action.video,
+      // REAL-TIME PROFILE UPDATES: state.selected is the single shared
+      // "full profile" object every read-only display surface (Avatar,
+      // Details' Video Introduction section, etc. -- anything subscribed
+      // to applicantDetails$/getApplicantById) actually renders from. This
+      // save's response only ever updated the separate videoCV field
+      // above, leaving state.selected.videoCVUrl stale until whatever page
+      // the user next lands on happened to re-dispatch getApplicantById()
+      // itself -- edits didn't show up "live" across already-mounted
+      // sections in the same session. Same fix applied to every other
+      // save-success case below.
+      selected: state.selected ? { ...state.selected, videoCVUrl: action.video.videoCVUrl } : state.selected,
       succesMsg: action.video.videoCVUrl ? 'updated': 'deleted'
     };
   }),
@@ -97,6 +108,8 @@ export const applicantReducer = createReducer<ApplicantState>(
       ...state,
       loading: false,
       documents: action.docs,
+      // See saveVideoCVSuccess's doc comment above for why this is needed.
+      selected: state.selected ? { ...state.selected, documents: action.docs } : state.selected,
       succesMsg: 'updated'
     };
   }),
@@ -122,6 +135,8 @@ export const applicantReducer = createReducer<ApplicantState>(
         ...state.additionalInfo,
         certifications: action.certs
       },
+      // See saveVideoCVSuccess's doc comment above for why this is needed.
+      selected: state.selected ? { ...state.selected, certifications: action.certs } : state.selected,
       succesMsg: 'updated'
     };
   }),
@@ -147,6 +162,8 @@ export const applicantReducer = createReducer<ApplicantState>(
         ...state.additionalInfo,
         educationalBackground: action.educBg
       },
+      // See saveVideoCVSuccess's doc comment above for why this is needed.
+      selected: state.selected ? { ...state.selected, educationalBackground: action.educBg } : state.selected,
       succesMsg: 'updated'
     };
   }),
@@ -172,6 +189,8 @@ export const applicantReducer = createReducer<ApplicantState>(
         ...state.additionalInfo,
         workExperience: action.workExperience
       },
+      // See saveVideoCVSuccess's doc comment above for why this is needed.
+      selected: state.selected ? { ...state.selected, workExperience: action.workExperience } : state.selected,
       succesMsg: 'updated'
     };
   }),
@@ -197,6 +216,11 @@ export const applicantReducer = createReducer<ApplicantState>(
         ...state.additionalInfo,
         professionalSkills: action.skills
       },
+      // See saveVideoCVSuccess's doc comment above for why this is needed.
+      // getApplicantSuccess (below) maps action.applicant.skills into
+      // additionalInfo.professionalSkills -- "skills" is the field name on
+      // the raw Applicant/state.selected object itself.
+      selected: state.selected ? { ...state.selected, skills: action.skills } : state.selected,
       succesMsg: 'updated'
     };
   }),
@@ -237,6 +261,41 @@ export const applicantReducer = createReducer<ApplicantState>(
       user: state.user
         ? { ...state.user, photoUrl: action.basicProfile.photoUrl }
         : state.user,
+      // REAL-TIME PROFILE UPDATES (see saveVideoCVSuccess's doc comment
+      // above for the general explanation). Listed explicitly rather than
+      // a blanket `...action.basicProfile` spread: basicProfile comes from
+      // updateProfileBasicInfo()'s narrower UPDATE query, which never
+      // joins job_type/job_level/work_setup -- it always includes
+      // jobTypeName/jobLevelName/workSetupName as keys, just undefined.
+      // A blanket spread would overwrite state.selected's real (joined,
+      // human-readable) label values with those undefineds after every
+      // Basic Info save.
+      // BasicProfileInfo types its numeric-ID fields (jobTypeId, jobLevelId,
+      // workSetupId) as `string`, while Applicant types the same underlying
+      // ids as `number` -- a pre-existing looseness between these two
+      // models, not something introduced here. Cast at the object-literal
+      // boundary rather than per-field; runtime values are unaffected
+      // either way (both sides ultimately hold whatever the backend sent).
+      selected: state.selected ? {
+        ...state.selected,
+        photoUrl: action.basicProfile.photoUrl,
+        jobTitle: action.basicProfile.jobTitle,
+        shortBio: action.basicProfile.shortBio,
+        servicesProvided: action.basicProfile.servicesProvided,
+        jobTypeId: action.basicProfile.jobTypeId,
+        jobLevelId: action.basicProfile.jobLevelId,
+        workSetUpId: action.basicProfile.workSetupId,
+        salaryMinimum: action.basicProfile.salaryMinimum,
+        salaryMaximum: action.basicProfile.salaryMaximum,
+        salaryCurrency: action.basicProfile.salaryCurrency,
+        firstName: action.basicProfile.firstName,
+        lastName: action.basicProfile.lastName,
+        address: action.basicProfile.address,
+        city: action.basicProfile.city,
+        country: action.basicProfile.country,
+        contactNumber: action.basicProfile.contactNumber,
+        applicantProfileId: action.basicProfile.applicantProfileId,
+      } as unknown as Model.Applicant : state.selected,
       succesMsg: action.basicProfile.applicantProfileId ? 'updated' : 'created'
     };
   }),
