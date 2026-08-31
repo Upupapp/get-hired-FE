@@ -24,6 +24,15 @@ export class CreateInterviewComponent implements OnInit {
   @Output() publishChanges = new EventEmitter();
   @ViewChild(CreateQuestionComponent) createQuestionRef: CreateQuestionComponent;
 
+  /** Called by job-create.component.ts's syncInterviewQuestionsFromStore()
+   *  after it replaces the interviewQuestions FormArray with the backend's
+   *  authoritative list -- questionsContainer (what the template actually
+   *  renders) is a plain snapshot, not a reactive view of the FormArray, so
+   *  it needs this explicit nudge to pick up the resync. */
+  syncQuestionsFromFormArray(): void {
+    this.questionsContainer = [...this.interviewQuestions.value];
+  }
+
   hasPendingQuestion(): boolean {
     if (!this.createQuestionRef) return false;
     const ctrl = this.createQuestionRef.questionsForm && this.createQuestionRef.questionsForm.get('question');

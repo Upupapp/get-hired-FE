@@ -442,6 +442,23 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           // the Employer is doing -- completely alone.
           if (!this.jobForm) {
             this.setFormGroup(data);
+          } else {
+            // PRODUCTION FIX: blocking the full rebuild above (previous fix)
+            // also stopped Step 3 from ever resyncing with the backend's
+            // own authoritative interview-question list after a delete/edit
+            // -- deleteInterviewQuestion in jobsController.js renumbers and
+            // returns the real remaining set server-side, but nothing here
+            // applied it back, so the local FormArray could drift from what
+            // the server actually has. A drifted entry still missing its
+            // real questionId got resubmitted as "new" on the next
+            // save/autosave, and interviewQuestionsUpdate() (job.service.js)
+            // creates a fresh row for anything without a questionId --
+            // compounding into the duplicate questions reported in
+            // production. Replace ONLY the interview section with the
+            // server's exact list on every emission; Step 1/2 fields are
+            // still never touched here (that's what the guard above still
+            // prevents).
+            this.syncInterviewQuestionsFromStore(data);
           }
           this.status = data.jobStatusId;
           // TAB 16 FIX: this also fires on a successful explicit Save Draft
@@ -839,6 +856,55 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   getJobById() {
     this.jobFacade.getJobById(this.jobId);
+  }
+
+  /**
+   * PRODUCTION FIX: replaces ONLY the interview section of jobForm with the
+   * backend's authoritative list (data.interviewQuestions -- real
+   * questionIds, server-renumbered sequences) on every editJob$ emission,
+   * without touching initialData/jobInfo (that guard stays exactly as-is
+   * above). Previously, blocking the full setFormGroup() rebuild to stop
+   * Step 1/2 fields from being wiped (see the 422 fix above) also silently
+   * stopped Step 3 from ever resyncing with the server after a delete/edit
+   * -- a locally-drifted question missing its real questionId got
+   * resubmitted as "new" on the next save, and interviewQuestionsUpdate()
+   * (job.service.js) creates a fresh row for anything without one,
+   * compounding into duplicate questions across repeated autosave ticks.
+   */
+  private syncInterviewQuestionsFromStore(data: any): void {
+    if (!this.jobForm) return;
+    const interviewGroup = this.jobForm.get('interview') as FormGroup;
+    if (!interviewGroup) return;
+
+    if (data.interviewTemplateId !== undefined) {
+      interviewGroup.get('interviewTemplateId')?.setValue(data.interviewTemplateId, { emitEvent: false });
+    }
+
+    const serverQuestions: QuestionModel.InterviewQuestion[] = data.interviewQuestions;
+    if (!Array.isArray(serverQuestions)) return;
+
+    const iqArray = interviewGroup.get('interviewQuestions') as FormArray;
+    if (!iqArray) return;
+
+    iqArray.clear();
+    serverQuestions.forEach((q) => {
+      iqArray.push(this.fb.group({
+        questionId: new FormControl(q.questionId),
+        question: new FormControl(q.question),
+        answerDuration: new FormControl(q.answerDuration),
+        retakes: new FormControl(q.retakes),
+        sequence: new FormControl(q.sequence),
+      }));
+    });
+    this.questions = [...iqArray.value];
+
+    // Step 3's own display list (questionsContainer) is a plain snapshot
+    // taken once in its ngOnInit -- it doesn't observe the FormArray
+    // reactively, so it needs an explicit nudge to actually show this
+    // authoritative resync. Only present while stepper === 3 (destroyed by
+    // *ngIf otherwise), which is always true here since a delete/edit can
+    // only originate from that step being open in the first place.
+    this.createInterviewRef?.syncQuestionsFromFormArray();
   }
 
   async saveAsDraft() {
