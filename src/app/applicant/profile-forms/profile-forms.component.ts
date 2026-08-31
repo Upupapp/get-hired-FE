@@ -7,6 +7,7 @@ import { ConfirmationDialogComponent } from '@app-shared/components/confirmation
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { Subscription } from 'rxjs';
 import { ProfileBasicInfoComponent } from './profile-basic-info/profile-basic-info.component';
+import { ProfileSetupChoiceDialogComponent, ProfileSetupChoice } from './profile-setup-choice-dialog/profile-setup-choice-dialog.component';
 
 @Component({
   selector: 'app-profile-forms',
@@ -116,11 +117,46 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
   onBasicInfoSaveResult(result: 'success' | 'error'): void {
     if (this.pendingAdvanceTo === null) return;
     if (result === 'success') {
-      this.stepper = this.pendingAdvanceTo;
+      // Only offer the "apply now vs continue setup" fork right after
+      // Step 1 specifically (pendingAdvanceTo === 2, i.e. this save was
+      // triggered by Step 1's own Next), and only when there's an actual
+      // pending job to return to -- an applicant editing their profile
+      // through the normal (non-apply) route has no job to fork toward,
+      // so they just advance to Step 2 as before.
+      const returnUrl = localStorage.getItem('returnURL');
+      const hasPendingJob = !!returnUrl && returnUrl.startsWith('/jobs/details/');
+      if (this.pendingAdvanceTo === 2 && hasPendingJob) {
+        this.showProfileSetupChoice();
+      } else {
+        this.stepper = this.pendingAdvanceTo;
+      }
     }
     // On error, stay on Step 1 -- profile-basic-info.component.ts has
     // already shown the user why (invalid fields or a failed save).
     this.pendingAdvanceTo = null;
+  }
+
+  // Lets the applicant choose, right after Step 1 saves, between applying
+  // immediately with just what they've entered or continuing through
+  // Skills & Experience / Documents first -- neither is a dead end, both
+  // eventually return to the job via redirectToProfile()'s own returnURL
+  // handling. disableClose forces an explicit choice rather than leaving
+  // the applicant on an ambiguous half-state if they dismiss it.
+  private showProfileSetupChoice(): void {
+    const ref = this.dialog.open(ProfileSetupChoiceDialogComponent, {
+      width: 'min(420px, 92vw)',
+      disableClose: true,
+    });
+
+    ref.afterClosed().subscribe((choice: ProfileSetupChoice) => {
+      if (choice === 'apply-now') {
+        this.redirectToProfile();
+      } else {
+        // 'continue-setup' (the only other real outcome, since disableClose
+        // prevents a bare dismissal) -- proceed into Step 2 as normal.
+        this.stepper = 2;
+      }
+    });
   }
 
   saveProgressConfirmation(event: number) {

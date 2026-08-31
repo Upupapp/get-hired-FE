@@ -20,6 +20,7 @@ import { ProfileBasicInfoComponent } from './profile-forms/profile-basic-info/pr
 import { ProfileFormsComponent } from './profile-forms/profile-forms.component';
 import { SkillsExperienceComponent } from './profile-forms/skills-experience/skills-experience.component';
 import { DocsVideocvComponent } from './profile-forms/docs-videocv/docs-videocv.component';
+import { ProfileSetupChoiceDialogComponent } from './profile-forms/profile-setup-choice-dialog/profile-setup-choice-dialog.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { DocsVideocvComponent } from './profile-forms/docs-videocv/docs-videocv.
     ProfileBasicInfoComponent,
     ProfileFormsComponent,
     SkillsExperienceComponent,
-    DocsVideocvComponent
+    DocsVideocvComponent,
+    ProfileSetupChoiceDialogComponent
   ],
   imports: [
     CommonModule,
