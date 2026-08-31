@@ -600,16 +600,42 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         const jobTypeId = rawJobTypeId === FREELANCE_JOB_TYPE_SENTINEL ? null : (rawJobTypeId as number | null);
         const industryMatch = matchSuggestedIndustry(this.generateInputs.industry, this.industryOptions);
 
+        // BUGFIX (production 422 on POST /job/create): this only accepted
+        // 'high' confidence for job level, and left jobLevelId/workSetupId/
+        // jobTypeId as `undefined` whenever the AI draft's free-text hint
+        // didn't resolve -- but jobStatusId:2 (Published, set below) makes
+        // all three required server-side (jobMiddleware.js's
+        // validateJobPublishPayload). A generated draft whose seniority only
+        // matched a synonym bucket ('medium' confidence -- a real match, not
+        // a guess) or whose work setup/employment type phrasing wasn't in
+        // resolveWorkSetupId/resolveJobTypeId's fixed keyword list silently
+        // hit that gate with no explanation, surfacing only a bare 422 in
+        // the browser console. 'medium' is now accepted (fixes the common
+        // case); a genuine remaining gap is now caught here, before the
+        // request, with a specific, actionable message instead of a 422.
+        const resolvedJobLevelId = levelMatch.confidence !== 'none' ? levelMatch.id : null;
+
+        const missingLabels: string[] = [];
+        if (!resolvedJobLevelId) missingLabels.push('Experience level');
+        if (!workSetupId) missingLabels.push('Work setup');
+        if (!jobTypeId) missingLabels.push('Employment type');
+        if (missingLabels.length > 0) {
+          this.postingNow = false;
+          this.errorMsg = `The AI draft didn't clearly specify: ${missingLabels.join(', ')}. `
+            + `Use "Use this draft" below to fill these in before publishing.`;
+          return;
+        }
+
         const job: Model.Job = {
           jobTitle: draft.basics.jobTitle || '',
           companyId,
           industryId: industryMatch ? industryMatch.id : undefined,
           jobRoleId: this.generatedJobRoleId ?? undefined,
-          jobTypeId: jobTypeId ?? undefined,
-          jobLevelId: levelMatch.confidence === 'high' ? levelMatch.id : undefined,
+          jobTypeId: jobTypeId,
+          jobLevelId: resolvedJobLevelId,
           jobDescription: draft.content.roleSummary || '',
           jobDuties: (draft.content.responsibilities || []).join('\n'),
-          workSetupId: workSetupId ?? undefined,
+          workSetupId: workSetupId,
           jobCity: (draft.basics.jobLocation && draft.basics.jobLocation.city) || '',
           jobCountry: (draft.basics.jobLocation && draft.basics.jobLocation.country) || 'Philippines',
           isInterviewRequired: false,
@@ -642,7 +668,15 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
             this.postingNow = false;
             this.haptics.error();
             if (err && err.status === 401) { this.dialogRef.close(); return; }
-            this.errorMsg = (err && err.error && err.error.message) || 'Could not publish this job. Please try again.';
+            // Surface the backend's own `missing` field list when present
+            // (validateJobPublishPayload's 422 shape) instead of just its
+            // generic message -- covers any required field the pre-check
+            // above doesn't already catch (e.g. city/country/description).
+            const missing = err && err.error && err.error.missing;
+            const baseMsg = (err && err.error && err.error.message) || 'Could not publish this job. Please try again.';
+            this.errorMsg = (Array.isArray(missing) && missing.length > 0)
+              ? `${baseMsg} (${missing.join(', ')})`
+              : baseMsg;
           },
         });
       },
