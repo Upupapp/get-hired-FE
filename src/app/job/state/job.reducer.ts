@@ -186,10 +186,21 @@ export const jobReducer = createReducer<JobState>(
       ...state,
       loading: false,
       succesMsg: 'deleted',
+      // BUGFIX (production crash): state.selected is never populated for an
+      // AI-Assistant-created job -- its initial persist (persistAssistantDraft
+      // in job-create.component.ts) deliberately bypasses this facade/store,
+      // calling JobService directly instead, specifically so the form isn't
+      // reset out from under the Employer (see that method's own doc
+      // comment). Deleting/editing a question afterward DOES go through
+      // this facade though, so this case can run with state.selected still
+      // null. `{...null}` is harmless (spreads to nothing) so this
+      // particular line never crashed, but produced a nearly-empty
+      // `selected` object with only interviewQuestions set -- fall back to
+      // an empty object explicitly so that's at least clearly intentional.
       selected: {
-        ...state.selected,
+        ...(state.selected || {}),
         interviewQuestions: action.questions
-      },
+      } as Model.Job,
       interview: action.questions
     };
   }),
@@ -207,20 +218,35 @@ export const jobReducer = createReducer<JobState>(
     };
   }),
   on(JobActions.updateJobQuestionSuccess, (state, action): JobState => {
-    const mappedInterviews = state.selected.interviewQuestions.map(question => {
-      if (question.questionId == action.interviewQuestion.questionId) {
-        return action.interviewQuestion
-      }
-      return question;
-    });
+    // BUGFIX (production crash: "Cannot read properties of null (reading
+    // 'interviewQuestions')"): state.selected is null for an AI-Assistant-
+    // created job whose initial persist bypassed this store entirely (see
+    // deleteJobQuestionSuccess's doc comment above, same root cause) --
+    // editing a question afterward DOES route through this facade, so this
+    // direct `state.selected.interviewQuestions.map(...)` crashed the
+    // moment an Employer edited a question on one of those jobs, which
+    // then left the app's NgRx effects pipeline in a broken state for
+    // everything after it (explaining the follow-on Publish 422 -- not a
+    // second bug, a downstream symptom of this crash). Fall back to
+    // action.interviewQuestion alone (the one real, freshly-updated
+    // question) when there was nothing to merge it into.
+    const existingInterviews = (state.selected && state.selected.interviewQuestions) || [];
+    const mappedInterviews = existingInterviews.length
+      ? existingInterviews.map(question => {
+          if (question.questionId == action.interviewQuestion.questionId) {
+            return action.interviewQuestion
+          }
+          return question;
+        })
+      : [action.interviewQuestion];
 
     return {
       ...state,
       loading: false,
       selected: {
-        ...state.selected,
+        ...(state.selected || {}),
         interviewQuestions: mappedInterviews
-      },
+      } as Model.Job,
       interview: mappedInterviews,
       error: null,
       succesMsg: 'updated'
