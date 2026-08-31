@@ -635,29 +635,31 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   setFormGroup(data?: any) {
-    // PRODUCTION FIX: AI Assistant jobs get their own, deliberately smaller
-    // required-field set (Step 1: job title + work setup; Step 2:
-    // compensation; Step 3: nothing) so "Review & edit first" can be
-    // stepped through and published without being forced to backfill
-    // fields the AI draft never asked about (jobCity/jobCountry in
-    // particular -- Generate step's location input isn't always filled).
-    // Only ever applied when assistantPrefilled is true, which is only
-    // ever set from the AI Assistant prefill path in ngOnInit -- Start
-    // From Scratch / Comprehensive / Simplified always take the `else`
-    // branch below and keep their exact previous validators untouched.
-    const isAiFlow = this.assistantPrefilled;
+    // PRODUCTION FIX (universal, per explicit product decision -- this
+    // used to be gated behind assistantPrefilled only, but repeated reports
+    // that the stepper still felt locked/blocking for AI-created drafts led
+    // to simplifying this to ONE consistent policy for every mode instead
+    // of two diverging ones): Job title is the only hard requirement
+    // anywhere -- a title-less job can't be listed, searched, or displayed
+    // meaningfully, so that floor stays for Comprehensive, Simplified, and
+    // AI Assistant alike. Every other field (type, level, city, country,
+    // description, work setup, compensation) is optional at the form-control
+    // level for all modes now; publishJobPost() below still checks whether
+    // the recommended fields are filled and, if not, asks for confirmation
+    // before publishing with them empty rather than silently allowing or
+    // silently blocking.
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
         jobTitle: [data ? data.jobTitle : null, Validators.required],
         jobTypeId: [data ? data.jobTypeId : null],
         jobLevelId: [data ? data.jobLevelId : null],
         jobAddress: [data ? data.jobAddress : null],
-        jobCity: [data ? data.jobCity : null, isAiFlow ? [] : Validators.required],
-        jobCountry: [data ? data.jobCountry : null, isAiFlow ? [] : Validators.required],
+        jobCity: [data ? data.jobCity : null],
+        jobCountry: [data ? data.jobCountry : null],
         jobDescription: [data ? data.jobDescription : null],
         jobDuties: [data ? data.jobDuties : null],
         jobCategoryId: [data ? data.jobCategoryId : null],
-        workSetupId: [data ? data.workSetupId : null, isAiFlow ? Validators.required : []],
+        workSetupId: [data ? data.workSetupId : null],
         expirationDate: [data ? data.expirationDate : null],
         jobBanner: [data ? data.jobBanner : null],
         bannerFile: new FormArray([]),
@@ -678,9 +680,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         tags: new FormArray([]),
         jobTagsTxt: [null],
         rate: [data ? data.rate : null],
-        salaryMinimum: [data ? data.salaryMinimum : null, isAiFlow ? Validators.required : []],
-        salaryMaximum: [data ? data.salaryMaximum : null, isAiFlow ? Validators.required : []],
-        salaryCurrency: [data ? data.salaryCurrency : null, isAiFlow ? Validators.required : []],
+        salaryMinimum: [data ? data.salaryMinimum : null],
+        salaryMaximum: [data ? data.salaryMaximum : null],
+        salaryCurrency: [data ? data.salaryCurrency : null],
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }),
@@ -975,78 +977,67 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // sentinel-to-null mapping never leaks into the readiness gate.
     const rawJobTypeId = this.jobForm.controls.initialData.value.jobTypeId;
     this.readinessResult = this.jobReadiness.evaluate({ ...job, jobTypeId: rawJobTypeId, companyId: this.companyId } as any);
-    // PRODUCTION FIX: the AI Assistant flow's own, smaller required set
-    // (job title + work setup; compensation; nothing from Step 3) gates
-    // Publish here instead of the shared JobReadinessService result --
-    // that result is still computed above unchanged, so the readiness
-    // score/bar/"Job post strength" badge keep working exactly as before
-    // for every mode, including AI-sourced jobs. Only which boolean
-    // actually blocks the Publish button differs, and only when
-    // assistantPrefilled. Comprehensive/Simplified are untouched --
-    // isReadyToPublish still comes straight from readinessResult.canPublish.
-    this.isReadyToPublish = this.assistantPrefilled
-      ? !!(job.jobTitle && job.workSetupId && job.salaryMinimum && job.salaryMaximum && job.salaryCurrency)
-      : this.readinessResult.canPublish;
 
-    if (this.isReadyToPublish) {
-      this.jobFacade.saveJob(job);
-    } else {
+    // PRODUCTION FIX (universal, replacing the earlier AI-only carve-out):
+    // Job title is the one true hard requirement, for every mode -- see
+    // setFormGroup()'s header comment for the full reasoning. Everything
+    // else JobReadinessService considers "required" (type, level, city,
+    // country, description, work setup, company) is now advisory only:
+    // if any of it is missing, ask for explicit confirmation before
+    // publishing with it empty, rather than blocking outright. `company`
+    // is excluded from that prompt -- companyId is derived server-side
+    // from the JWT, never actually something the Employer can "fill in",
+    // so flagging it here would be confusing/actionable-nothing.
+    if (!job.jobTitle) {
       this.haptics.warning();
-
-      // Derive blocking fields from the freshly-evaluated readinessResult (always
-      // in sync with the Step 4 checklist, since both read from the same source).
-      const sectionStepMap: { [sid: string]: number } = {
-        'section-job-title': 1, 'section-employment': 1, 'section-job-level': 1,
-        'section-location': 1, 'section-description': 1, 'section-work-setup': 1,
-        'section-banner': 1, 'section-company': 1,
-        'section-duties': 2, 'section-skills': 2, 'section-requirements': 2, 'section-compensation': 2,
-        'section-interview': 3,
-      };
-      // AI Assistant flow: only the 3 fields this component actually
-      // requires for it (see isReadyToPublish above) -- readinessResult.
-      // blockingItems reflects the broader shared required set and would
-      // list fields (city, country, description...) this flow deliberately
-      // doesn't require, confusing the "fix these" list.
-      const aiBlockingItems: { sectionId: string; label: string }[] = [];
-      if (this.assistantPrefilled) {
-        if (!job.jobTitle) aiBlockingItems.push({ sectionId: 'section-job-title', label: 'Job title' });
-        if (!job.workSetupId) aiBlockingItems.push({ sectionId: 'section-work-setup', label: 'Work setup' });
-        if (!job.salaryMinimum || !job.salaryMaximum || !job.salaryCurrency) {
-          aiBlockingItems.push({ sectionId: 'section-compensation', label: 'Compensation' });
-        }
-      }
-      const blockingItems = this.assistantPrefilled ? aiBlockingItems : this.readinessResult.blockingItems;
-      const fieldActions = blockingItems.map((f) => ({
-        label: 'Fix: ' + f.label,
-        value: 'fix:' + (sectionStepMap[f.sectionId] || 1) + ':' + f.sectionId,
-        primary: false as boolean,
-      }));
-      fieldActions.push({ label: 'Close', value: 'close', primary: false });
-
-      const blockDialog = this.dialog.open(UpdatedDialogComponent, {
+      this.dialog.open(UpdatedDialogComponent, {
         data: {
           icon: 'exclamation-circle',
-          message: "Your job can't be published yet. Tap a field below to fix it:",
-          actions: fieldActions,
+          message: 'Job title is required before this can be published.',
+          actions: [{ label: 'Add a title', value: 'fix', primary: true }],
         },
+      }).afterClosed().subscribe((action: string) => {
+        if (action === 'fix' && this.stepper !== 1) this.changeStep(1);
       });
-
-      blockDialog.afterClosed().subscribe((action: string) => {
-        if (!action || action === 'close') return;
-        if (action.startsWith('fix:')) {
-          const parts = action.split(':');
-          const targetStep = parseInt(parts[1], 10);
-          const sectionId = parts.slice(2).join(':');
-          if (targetStep !== this.stepper) {
-            this.changeStep(targetStep);
-          }
-          setTimeout(() => {
-            const el = document.getElementById(sectionId);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 300);
-        }
-      });
+      return;
     }
+
+    const emptyRecommended = this.readinessResult.blockingItems.filter(f => f.sectionId !== 'section-job-title');
+    if (emptyRecommended.length === 0) {
+      this.isReadyToPublish = true;
+      this.jobFacade.saveJob(job);
+      return;
+    }
+
+    this.haptics.warning();
+    const sectionStepMap: { [sid: string]: number } = {
+      'section-job-title': 1, 'section-employment': 1, 'section-job-level': 1,
+      'section-location': 1, 'section-description': 1, 'section-work-setup': 1,
+      'section-banner': 1, 'section-company': 1,
+      'section-duties': 2, 'section-skills': 2, 'section-requirements': 2, 'section-compensation': 2,
+      'section-interview': 3,
+    };
+    const fieldList = emptyRecommended.map(f => f.label).join(', ');
+    const confirmDialog = this.dialog.open(UpdatedDialogComponent, {
+      data: {
+        icon: 'exclamation-circle',
+        message: `This job post is missing: ${fieldList}. You can publish it as-is and add these later, or go back and fill them in now.`,
+        actions: [
+          { label: 'Proceed Posting', value: 'proceed', primary: true },
+          { label: 'Cancel', value: 'cancel', primary: false },
+        ],
+      },
+    });
+
+    confirmDialog.afterClosed().subscribe((action: string) => {
+      if (action === 'proceed') {
+        this.isReadyToPublish = true;
+        this.jobFacade.saveJob(job);
+      }
+      // 'cancel' (or a bare dismissal): stay right where the Employer was,
+      // on Step 4, free to navigate back to any step and fill fields in --
+      // no forced redirect, no field-by-field "fix" jump.
+    });
   }
 
   formatJob(status) {

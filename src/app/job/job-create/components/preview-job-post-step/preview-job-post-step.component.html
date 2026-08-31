@@ -121,7 +121,7 @@
       </div>
 
       <h5 class="job-title text-capitalize" *ngIf="preview.jobTitle">{{ preview.jobTitle }}</h5>
-      <h5 class="job-title text-capitalize pv-no-data" *ngIf="!preview.jobTitle && assistantPrefilled">No Data Provided</h5>
+      <h5 class="job-title text-capitalize pv-no-data" *ngIf="!preview.jobTitle">No Data Provided</h5>
       <h5 class="title-label pv-category-line" *ngIf="preview.industryId">
         {{ getFilteredArray('industries', preview.industryId) }}
         <span class="pv-category-sep mx-2" *ngIf="preview.jobRoleId">&middot;</span>
@@ -138,7 +138,7 @@
             <img src="/assets/images/placeholder/icons/job-icon-type.png" class="pv-meta-pill-icon" alt="">
             {{ getFilteredArray('setups', preview.workSetupId) }}
           </span>
-          <span class="pv-meta-pill pv-no-data" *ngIf="!preview.workSetupId && assistantPrefilled">
+          <span class="pv-meta-pill pv-no-data" *ngIf="!preview.workSetupId">
             Work setup: No Data Provided
           </span>
           <span class="pv-meta-pill" *ngIf="preview.jobLevelId">
@@ -155,7 +155,7 @@
           PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} - PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
           <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
         </div>
-        <div class="pv-meta-line pv-no-data" *ngIf="!preview.salaryMinimum && assistantPrefilled">
+        <div class="pv-meta-line pv-no-data" *ngIf="!preview.salaryMinimum">
           Compensation: No Data Provided
         </div>
       </div>
