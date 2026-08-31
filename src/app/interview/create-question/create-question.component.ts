@@ -35,8 +35,22 @@ export class CreateQuestionComponent implements OnInit {
   }
 
   update() {
+    // BUGFIX (production 422 on Submit after editing a question): the
+    // form's own `sequence` control is only ever set once, in ngOnInit,
+    // from `questionIndex` -- the question's *position in the list at the
+    // moment the edit dialog opened*, not its real, persisted sequence
+    // number. After any earlier delete in the same session, the backend
+    // has already renumbered the remaining questions' real sequences
+    // (deleteInterviewQuestion in jobsController.js does this
+    // immediately), so a stale positional index sent back here could
+    // silently overwrite a question's sequence to a value that collides
+    // with another question's -- the backend then rejects the next
+    // save/publish with 422. Always send the question's own real,
+    // original sequence back unchanged; only the fields the user actually
+    // edited (question/answerDuration/retakes) come from the form.
     this.addItem.emit({
       ...this.questionsForm.value,
+      sequence: this.interviewQuestion.sequence,
       questionId: this.interviewQuestion.questionId
     });
   }

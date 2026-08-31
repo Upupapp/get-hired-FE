@@ -420,7 +420,29 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.editJob$.subscribe((data: any) => {
         if (data) {
-          this.setFormGroup(data);
+          // BUGFIX (production 422 on Submit after editing/deleting an
+          // interview question): jobDetails$ (state.selected) re-emits a
+          // new object reference on ANY action that touches it -- not
+          // just loading a job by route id, but also deleteJobQuestionSuccess/
+          // updateJobQuestionSuccess (see job.reducer.ts), which only ever
+          // intend to update interviewQuestions. This callback used to
+          // call setFormGroup(data) unconditionally on every emission,
+          // which rebuilds the ENTIRE jobForm from scratch -- discarding
+          // whatever the Employer had just typed into Step 1/2 that
+          // hadn't been persisted yet (autosave is debounced), reverting
+          // those fields to their last-saved (possibly empty/null) value.
+          // If that included a required field, Publish then failed with a
+          // 422 that looked totally unrelated to "I just edited a
+          // question." Only rebuild the form on its first real population
+          // (this.jobForm doesn't exist yet -- the genuine "load an
+          // existing job by route id" case, via getJobById(), called
+          // exactly once in ngOnInit below); every later emission for the
+          // SAME session (question edits/deletes, autosave echoes, etc.)
+          // leaves the live form -- the actual source of truth for what
+          // the Employer is doing -- completely alone.
+          if (!this.jobForm) {
+            this.setFormGroup(data);
+          }
           this.status = data.jobStatusId;
           // TAB 16 FIX: this also fires on a successful explicit Save Draft
           // (jobFacade.saveJob() -> saveJobSuccess sets state.selected), not

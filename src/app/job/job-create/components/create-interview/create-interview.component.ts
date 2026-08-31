@@ -122,6 +122,22 @@ export class CreateInterviewComponent implements OnInit {
 
           this.questionsContainer.splice(index, 1);
           controlArray.removeAt(index);
+
+          // BUGFIX (production 422 on Submit after deleting a question):
+          // deleteInterviewQuestion in jobsController.js renumbers every
+          // remaining question's sequence server-side immediately
+          // (1..N in their existing order) -- but nothing here mirrored
+          // that locally, so questionsContainer/interviewQuestions kept
+          // their old sequence values. Editing (or just re-saving) after a
+          // delete then sent those stale numbers back, which could
+          // duplicate/collide with another question's now-renumbered
+          // sequence and get rejected with 422 on the next save/publish.
+          // Renumber locally the exact same way (position-based, 1..N) so
+          // client and server never disagree on sequence.
+          this.questionsContainer.forEach((q, i) => { q.sequence = i + 1; });
+          controlArray.controls.forEach((ctrl, i) => {
+            (ctrl as FormGroup).get('sequence')?.setValue(i + 1);
+          });
           // this.publishChanges.emit();
         }
       });
