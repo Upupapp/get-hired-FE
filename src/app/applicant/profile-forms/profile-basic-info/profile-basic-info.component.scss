@@ -186,7 +186,36 @@ select{
 		// circle, which is what visually broke the avatar the user
 		// reported -- reworked into the standard small overlay icon button
 		// pinned to the avatar's corner instead, same click handler.
-		::ng-deep .gh-image-upload__clear {
+		// Empty state (no photo yet): plain person-silhouette placeholder, no
+			// CTA text or hint copy -- the whole circle is already an obvious
+			// click/drag target, and the file picker's own dialog explains
+			// accepted formats, so a text label here is redundant clutter
+			// given the design reference (formal, icon-only).
+			::ng-deep .gh-image-upload__empty-icon {
+				display: none;
+			}
+
+			::ng-deep .gh-image-upload__empty-cta,
+			::ng-deep .gh-image-upload__hint {
+				display: none;
+			}
+
+			::ng-deep .gh-image-upload__empty::before {
+				content: '';
+				display: block;
+				width: 36px;
+				height: 36px;
+				background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Ccircle cx='12' cy='8' r='4' stroke='%23C4C9D4' stroke-width='1.8'/%3E%3Cpath d='M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7' stroke='%23C4C9D4' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain;
+			}
+
+			// Optimizing/uploading state: spinner only, no "Optimizing…"
+			// caption underneath it -- same formal, icon-only treatment as
+			// the empty state above.
+			::ng-deep .gh-image-upload__spinner-label {
+				display: none;
+			}
+
+			::ng-deep .gh-image-upload__clear {
 			position: absolute;
 			top: -2px;
 			right: -2px;
