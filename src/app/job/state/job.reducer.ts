@@ -227,10 +227,29 @@ export const jobReducer = createReducer<JobState>(
     // moment an Employer edited a question on one of those jobs, which
     // then left the app's NgRx effects pipeline in a broken state for
     // everything after it (explaining the follow-on Publish 422 -- not a
-    // second bug, a downstream symptom of this crash). Fall back to
-    // action.interviewQuestion alone (the one real, freshly-updated
-    // question) when there was nothing to merge it into.
-    const existingInterviews = (state.selected && state.selected.interviewQuestions) || [];
+    // second bug, a downstream symptom of this crash).
+    //
+    // BUGFIX (production, "editing a question vanishes all the others"):
+    // the backend's updatejobinterview response only ever returns the ONE
+    // edited question (interviewController.js's updateJobInterviewQuestion
+    // UPDATE ... RETURNING *), never the job's full question list. The
+    // original fallback here -- `[action.interviewQuestion]` whenever
+    // state.selected.interviewQuestions was empty -- meant that any edit
+    // made while state.selected was still null (e.g. an AI-Assistant-created
+    // job edited in the same session, before any getJobSuccess ever
+    // populated `selected`) replaced the ENTIRE question list with just the
+    // one being edited. job-create.component.ts's editJob$ subscription
+    // then rebuilds the interviewQuestions FormArray straight from this
+    // state on every emission (syncInterviewQuestionsFromStore), so the
+    // other questions visibly disappeared from Step 3 the instant an edit
+    // was saved. state.interview is populated independently (setInterview,
+    // dispatched during AI-draft prefill) and reflects the job's real full
+    // question list even when `selected` itself is still null -- prefer it
+    // over collapsing to a single question.
+    const existingInterviews =
+      (state.selected && state.selected.interviewQuestions && state.selected.interviewQuestions.length
+        ? state.selected.interviewQuestions
+        : state.interview) || [];
     const mappedInterviews = existingInterviews.length
       ? existingInterviews.map(question => {
           if (question.questionId == action.interviewQuestion.questionId) {
