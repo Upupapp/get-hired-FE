@@ -39,6 +39,18 @@
              [state]="{ jobTitle: app.jobTitle, companyName: app.companyName, status: app.applicantStatusName, jobId: app.jobId, dateApplied: app.dateApplied, hasEmployerMessage: app.hasEmployerMessage }">
             View full details <span aria-hidden="true">→</span>
           </a>
+          <!-- Brought back per explicit request: deep-links into the
+               dedicated Messages tab (rather than an inline expandable
+               thread here, the approach removed earlier) so applicants
+               have one real place to message from, this row just opens
+               the right conversation there directly -- creates the
+               thread on first message if none exists yet. -->
+          <a class="btn-link-cta"
+             routerLink="/user/messages"
+             [queryParams]="{ jobId: app.jobId }"
+             [state]="{ jobTitle: app.jobTitle, companyName: app.companyName }">
+            Message employer
+          </a>
         </div>
       </div>
     </div>

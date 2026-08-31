@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessageService, ApplicantThreadSummary } from '@app-shared/services/message.service';
@@ -37,12 +37,20 @@ export class ApplicantMessagesComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  /** Set from a ?jobId= deep link (e.g. "Message employer" on the
+   *  Applications page) -- consumed once threads load, then cleared. */
+  private pendingDeepLinkJobId: string | null = null;
+  private pendingDeepLinkState: { jobTitle?: string; companyName?: string } = {};
+
   constructor(
     private messageService: MessageService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
+    this.pendingDeepLinkJobId = this.route.snapshot.queryParamMap.get('jobId');
+    this.pendingDeepLinkState = (window.history.state as any) || {};
     this.loadThreads();
   }
 
@@ -63,6 +71,7 @@ export class ApplicantMessagesComponent implements OnInit, OnDestroy {
           this.applyFilter();
           this.loading = false;
           this.retrying = false;
+          this.consumeDeepLinkJobId();
         },
         error: () => {
           this.loading = false;
@@ -70,6 +79,40 @@ export class ApplicantMessagesComponent implements OnInit, OnDestroy {
           this.retrying = false;
         },
       });
+  }
+
+  /** Handles a ?jobId= deep link (e.g. "Message employer" on the
+   *  Applications page): selects the matching existing thread if one
+   *  exists, or opens a brand-new one for that job if this is the
+   *  applicant's first message to that employer -- app-message-thread's
+   *  own openThread() find-or-creates the real thread server-side the
+   *  moment they actually send something. */
+  private consumeDeepLinkJobId(): void {
+    const jobId = this.pendingDeepLinkJobId;
+    this.pendingDeepLinkJobId = null;
+    if (!jobId) return;
+
+    const existing = this.threads.find((t) => t.jobId === jobId);
+    if (existing) {
+      this.selectThread(existing);
+      return;
+    }
+
+    const state = this.pendingDeepLinkState;
+    this.selectedThread = {
+      threadId: '',
+      jobId,
+      companyId: '',
+      jobTitle: state.jobTitle || null,
+      companyName: state.companyName || null,
+      companyLogoUrl: null,
+      lastMessageSnippet: null,
+      lastSenderRole: null,
+      lastMessageAt: new Date().toISOString(),
+      needsReply: false,
+      unreadCount: 0,
+    };
+    this.showDetail = true;
   }
 
   retry(): void {
