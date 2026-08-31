@@ -307,8 +307,13 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       this.haptics.selection();
       this.assistantService.clearExtractionResult();
       const queryParams = mode === 'simplified' ? { postMode: 'simplified' } : undefined;
+      // Same fix as fillFromGenerated() below -- wait for this modal's own
+      // close to actually finish before navigating, so its overlay can't
+      // race the next page's render and get left behind.
+      this.dialogRef.afterClosed().subscribe(() => {
+        this.router.navigate(['/recruiter/jobs/create'], queryParams ? { queryParams } : undefined);
+      });
       this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', postMode: mode });
-      this.router.navigate(['/recruiter/jobs/create'], queryParams ? { queryParams } : undefined);
     });
   }
 
@@ -557,8 +562,21 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       })),
     };
     this.assistantService.setExtractionResult(mapped);
+    // PRODUCTION FIX: navigating in the same tick as dialogRef.close() races
+    // the dialog's own closing animation/CDK overlay teardown -- the new
+    // route can finish rendering while that overlay (or its backdrop) is
+    // still mid-teardown, leaving it attached to the DOM invisibly and
+    // silently swallowing every click on the page underneath it (no
+    // console error, since a backdrop click handler doesn't throw -- it
+    // just closes an already-closing dialog). This exactly matched
+    // production reports of the Job Create stepper looking "unclickable"
+    // specifically after arriving via "Review & edit first." Wait for
+    // afterClosed() to actually resolve before navigating, so the overlay
+    // is fully gone first.
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.router.navigate(['/recruiter/jobs/create'], { queryParams: { fromAssistant: '1', mode: 'generated' } });
+    });
     this.dialogRef.close({ navigateTo: '/recruiter/jobs/create', fromGenerate: true });
-    this.router.navigate(['/recruiter/jobs/create'], { queryParams: { fromAssistant: '1', mode: 'generated' } });
   }
 
   /**
@@ -675,8 +693,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
             // or about to mount fresh (its own ngOnInit fetch is then just
             // a harmless duplicate).
             this.jobFacade.getBasicList(companyId);
+            // Same fix as fillFromGenerated() -- wait for this modal to
+            // actually finish closing before navigating.
+            this.dialogRef.afterClosed().subscribe(() => {
+              this.router.navigate(['/recruiter/jobs/list'], newId ? { queryParams: { published: newId } } : undefined);
+            });
             this.dialogRef.close({ navigateTo: '/recruiter/jobs/list', published: true });
-            this.router.navigate(['/recruiter/jobs/list'], newId ? { queryParams: { published: newId } } : undefined);
           },
           error: (err) => {
             this.postingNow = false;
@@ -739,8 +761,12 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     if (!this.extractionResult) return;
     this.haptics.success();
     this.assistantService.setExtractionResult(this.extractionResult);
+    // Same fix as fillFromGenerated() -- wait for this modal to actually
+    // finish closing before navigating.
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.router.navigate(['/recruiter/jobs/create'], { queryParams: { fromAssistant: '1' } });
+    });
     this.dialogRef.close({ navigateTo: '/recruiter/jobs/create' });
-    this.router.navigate(['/recruiter/jobs/create'], { queryParams: { fromAssistant: '1' } });
   }
 
   close(): void {
