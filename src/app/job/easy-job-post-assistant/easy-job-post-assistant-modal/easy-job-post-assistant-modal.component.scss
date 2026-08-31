@@ -413,6 +413,24 @@
   background: #fff;
   cursor: pointer;
   transition: border-color 0.15s;
+  // PRODUCTION FIX: reported as the dropdown's selected value rendering
+  // with invisible/white text once Employment Type and Industry actually
+  // started showing real restored/suggested values (this select's other
+  // field, Work Setup, was and still is unaffected -- it was never empty
+  // long enough to expose this). Native <select>/<option> elements can be
+  // themed by the browser/OS's own dark-mode preference independently of
+  // this element's own `color` -- explicitly opting this control out of
+  // that auto-theming is the standard fix; without it, a dark-mode
+  // browser can render this select's white background correctly (an
+  // author style) while still substituting its own light-on-dark palette
+  // for the native option list/value text (a UA-level default this
+  // element's `color` alone doesn't reliably override in every engine).
+  color-scheme: light;
+
+  option {
+    color: #111827;
+    background: #fff;
+  }
 
   &:focus { outline: none; border-color: #6C6BAD; box-shadow: 0 0 0 3px rgba(108, 107, 173, 0.1); }
   &:disabled { opacity: 0.55; cursor: default; }
