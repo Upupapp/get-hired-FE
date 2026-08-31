@@ -140,6 +140,17 @@
 }
 
 // ─── Stepper ─────────────────────────────────────────────────────────────────
+// PRODUCTION FIX: repeatedly reported as unclickable on wide/desktop
+// viewports specifically while working correctly on mobile -- since the
+// click handler itself (changeStep()) has no gating logic at all (verified
+// directly in the component), the mobile-vs-desktop split points at
+// something in the desktop layout sitting on top of this row and
+// intercepting the click before it ever reaches the button, rather than a
+// JS bug. Establishing an explicit stacking context with a high z-index
+// here guarantees this row -- and every button in it -- always wins that
+// stacking order, regardless of which sibling/ancestor element turns out
+// to be the actual culprit. Non-destructive: this only affects paint/
+// stacking order, not layout, sizing, or position.
 .gh-jc-stepper-wrap {
   background: #fff;
   border-radius: 18px;
@@ -149,6 +160,8 @@
   overflow-x: auto;
   // JC-01 MOBILEVIEW: smooth momentum scrolling on iOS for the step pill row
   -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 50;
 }
 
 .gh-jc-stepper {
@@ -156,9 +169,14 @@
   align-items: center;
   gap: 0;
   min-width: fit-content;
+  position: relative;
+  z-index: 1;
 }
 
 .gh-step-btn {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   gap: 10px;
