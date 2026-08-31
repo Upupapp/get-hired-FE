@@ -30,6 +30,7 @@ import { AssistantExtractionResult, AssistantStep, GenerateIntentInputs, Instant
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
 import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 import { JobService } from '@app-job/job.service';
+import { JobFacade } from '@app-job/state/job.facade';
 import * as Model from '@app-job/job.model';
 import { Options } from '@app-job/job.model';
 import { suggestIndustryName, matchSuggestedIndustry } from '@app-job/utils/job-industry-suggester';
@@ -115,6 +116,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     private haptics: HapticFeedbackService,
     private aiCreateDraft: AiCreateDraftService,
     private jobService: JobService,
+    private jobFacade: JobFacade,
     private snackbarService: SnackbarService,
   ) {}
 
@@ -661,6 +663,18 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
             // persistence, the local AI Create recovery draft is redundant.
             if (this.ownerScope) this.aiCreateDraft.clear(this.ownerScope);
             this.snackbarService.success('"' + job.jobTitle + '" is now live.', '', 5000);
+            // BUGFIX: this modal is opened FROM the Jobs List page in the
+            // common case (its own "Post a Job" button). Navigating there
+            // with router.navigate() alone is a same-route navigation
+            // (only queryParams differ), which Angular does not re-run
+            // ngOnInit() for -- JobListComponent's own getBasicList() fetch
+            // never re-fired, so the just-published job silently waited for
+            // a manual page refresh to appear. Refreshing the store here
+            // directly guarantees it shows immediately, whether the list
+            // page is already mounted (its list$ | async just re-renders)
+            // or about to mount fresh (its own ngOnInit fetch is then just
+            // a harmless duplicate).
+            this.jobFacade.getBasicList(companyId);
             this.dialogRef.close({ navigateTo: '/recruiter/jobs/list', published: true });
             this.router.navigate(['/recruiter/jobs/list'], newId ? { queryParams: { published: newId } } : undefined);
           },
