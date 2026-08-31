@@ -268,7 +268,18 @@
         </div>
         <div class="eja-field-group eja-field-group--half">
           <label class="eja-label" for="gen-emp-type">Employment type</label>
-          <select id="gen-emp-type" class="eja-select" [(ngModel)]="generateInputs.employmentType" (ngModelChange)="scheduleAutosave()" [disabled]="loading">
+          <!-- PRODUCTION FIX: confirmed in production that a restored draft's
+               employmentType could still show blank despite carrying a real
+               value, even after deferring its restoration until this list
+               had loaded (a subtler Angular ngModel/dynamic-<option> timing
+               issue than that fix accounted for). Removes the timing window
+               entirely instead of trying to win it: this select (and its
+               ngModel binding) doesn't exist in the DOM at all until
+               employmentTypeOptions is genuinely populated, so there is no
+               point at which a value could be assigned with no matching
+               <option> to bind to. Loading placeholder shown in the interim
+               (typically imperceptible -- this list loads on modal open). -->
+          <select *ngIf="employmentTypeOptions.length" id="gen-emp-type" class="eja-select" [(ngModel)]="generateInputs.employmentType" (ngModelChange)="scheduleAutosave()" [disabled]="loading">
             <option value="">Not specified</option>
             <option *ngFor="let opt of employmentTypeOptions" [value]="opt.name">{{ opt.name }}</option>
             <!-- "Freelance" has no gethired.job_type row yet (backend gap, see
@@ -278,14 +289,23 @@
                  the way it used to (FK violation on a nonexistent id). -->
             <option value="Freelance">Freelance</option>
           </select>
+          <select *ngIf="!employmentTypeOptions.length" class="eja-select" disabled>
+            <option>Loading…</option>
+          </select>
         </div>
       </div>
 
       <div class="eja-field-group">
         <label class="eja-label" for="gen-industry">Industry</label>
-        <select id="gen-industry" class="eja-select" [(ngModel)]="generateInputs.industry" (ngModelChange)="onIndustryChanged()" [disabled]="loading">
+        <!-- Same fix as Employment Type above -- gated on industryOptions
+             actually being loaded so a restored/suggested value always has
+             a real <option> to bind to. -->
+        <select *ngIf="industryOptions.length" id="gen-industry" class="eja-select" [(ngModel)]="generateInputs.industry" (ngModelChange)="onIndustryChanged()" [disabled]="loading">
           <option value="">Select industry</option>
           <option *ngFor="let opt of industryOptions" [value]="opt.name">{{ opt.name }}</option>
+        </select>
+        <select *ngIf="!industryOptions.length" class="eja-select" disabled>
+          <option>Loading…</option>
         </select>
         <p class="eja-field-hint" *ngIf="industrySuggested">Suggested based on your job title — you can change it.</p>
       </div>
