@@ -2,9 +2,10 @@ import { Component, Input, OnInit, OnDestroy, HostListener } from '@angular/core
 import { Router } from '@angular/router';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompanyFacade } from '@main/company/state/company.facade';
+import { MessageService } from '@app-shared/services/message.service';
 
 @Component({
   selector: 'app-employer-sidebar',
@@ -24,10 +25,18 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
   sidebarItems: any[];
   private collapsedRoutes = new Set<string>();
 
+  // Messages sidebar badge -- same lightweight unread-count endpoint the
+  // Messages tab uses, same 45s poll cadence as the header notification
+  // bell (no websocket/push infra exists to do better than polling).
+  unreadMessageCount = 0;
+  private unreadPollSub: Subscription;
+  private static readonly UNREAD_POLL_INTERVAL_MS = 45000;
+
   constructor(
     private router: Router,
     private translate: TranslateService,
-    private companyFacade: CompanyFacade
+    private companyFacade: CompanyFacade,
+    private messageService: MessageService
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -59,6 +68,17 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
     this.companyLogoUrl$ = this.companyFacade.companyDetails$.pipe(
       map(company => (company && company.companyLogoUrl) ? company.companyLogoUrl : '')
     );
+    this.refreshUnreadCount();
+    this.unreadPollSub = interval(EmployerSidebarComponent.UNREAD_POLL_INTERVAL_MS).subscribe(() => {
+      this.refreshUnreadCount();
+    });
+  }
+
+  private refreshUnreadCount(): void {
+    this.messageService.getUnreadCount().subscribe({
+      next: (count) => { this.unreadMessageCount = count || 0; },
+      error: () => { /* non-fatal -- badge just stays at its last-known state */ },
+    });
   }
 
   subRouteActive(route) {
@@ -140,6 +160,7 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.req) this.req.unsubscribe();
+    if (this.unreadPollSub) this.unreadPollSub.unsubscribe();
   }
 
   isSubnavOpen(route: string): boolean {

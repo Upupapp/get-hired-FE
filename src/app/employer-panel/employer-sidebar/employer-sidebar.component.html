@@ -34,6 +34,7 @@
           </ng-container>
         </span>
         <span class="gh-sidebar-label">{{ item?.title }}</span>
+        <span *ngIf="item?.route === 'messages' && unreadMessageCount > 0" class="gh-sidebar-badge" [attr.aria-label]="unreadMessageCount + ' unread messages'">{{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}</span>
         <!-- Sub-route caret — click toggles the sub-menu independently of navigation -->
         <svg *ngIf="item?.sub_routes?.length > 0" class="gh-sidebar-caret"
           [class.gh-sidebar-caret--open]="isSubnavOpen(item?.route)"

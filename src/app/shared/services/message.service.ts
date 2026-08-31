@@ -39,6 +39,9 @@ export interface RecruiterThreadSummary {
   lastSenderRole: 'employer' | 'applicant' | null;
   lastMessageAt: string;
   needsReply: boolean;
+  /** Real per-thread unread count -- messages sent by the applicant since
+   * the employer side last read this thread (message_threads.employer_last_read_at). */
+  unreadCount: number;
 }
 
 /**
@@ -56,6 +59,9 @@ export interface ApplicantThreadSummary {
   lastSenderRole: 'employer' | 'applicant' | null;
   lastMessageAt: string;
   needsReply: boolean;
+  /** Real per-thread unread count -- messages sent by the employer since
+   * the applicant last read this thread (message_threads.applicant_last_read_at). */
+  unreadCount: number;
 }
 
 /**
@@ -111,5 +117,21 @@ export class MessageService {
     return this.baseService
       .get<any>(`${this.base}/applicant/threads`)
       .pipe(map((res: any) => res?.data ?? []));
+  }
+
+  /** Marks the caller's own side of a thread as read (up to now).
+   * Call this when the user actually opens/views a thread's messages. */
+  markThreadRead(threadId: string): Observable<any> {
+    return this.baseService
+      .post<any>(`${this.base}/thread/${encodeURIComponent(threadId)}/read`, {})
+      .pipe(map((res: any) => res?.data));
+  }
+
+  /** Total unread message count across all of the caller's threads --
+   * backs the sidebar Messages badge. */
+  getUnreadCount(): Observable<number> {
+    return this.baseService
+      .get<any>(`${this.base}/unread-count`)
+      .pipe(map((res: any) => res?.data?.unreadCount ?? 0));
   }
 }

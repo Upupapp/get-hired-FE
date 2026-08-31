@@ -112,6 +112,8 @@
               <div class="rm-thread-badges">
                 <span *ngIf="t.needsReply" class="rm-badge rm-badge--needs-reply"
                   aria-label="Needs your reply">Needs reply</span>
+                <span *ngIf="t.unreadCount > 0" class="rm-badge rm-badge--unread-count"
+                  [attr.aria-label]="t.unreadCount + ' unread messages'">{{ t.unreadCount > 9 ? '9+' : t.unreadCount }}</span>
               </div>
             </div>
           </li>

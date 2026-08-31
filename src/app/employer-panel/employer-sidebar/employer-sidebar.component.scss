@@ -122,6 +122,20 @@
   text-overflow: ellipsis;
 }
 
+.gh-sidebar-badge {
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: $color-global-red-buttons;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
 .gh-sidebar-caret {
   flex-shrink: 0;
   color: rgba(255,255,255,0.4);

@@ -82,6 +82,9 @@ export class MessageThreadComponent implements OnChanges, OnDestroy, AfterViewCh
         if (this.threadId) {
           this.loadMessages();
           this.startPolling();
+          // Opening the thread is "viewing" it -- mark read now. Errors
+          // are non-fatal to viewing the conversation itself.
+          this.messageService.markThreadRead(this.threadId).subscribe({ error: () => {} });
         } else {
           this.loading = false;
           this.error = 'Could not open this conversation.';
@@ -127,7 +130,14 @@ export class MessageThreadComponent implements OnChanges, OnDestroy, AfterViewCh
         if (!msgs) return;
         const grew = msgs.length > this.messages.length;
         this.messages = msgs;
-        if (grew) this.shouldScroll = true;
+        if (grew) {
+          this.shouldScroll = true;
+          // Thread stays open/visible while polling -- treat newly-arrived
+          // messages as read too, not just the ones present on first open.
+          if (this.threadId) {
+            this.messageService.markThreadRead(this.threadId).subscribe({ error: () => {} });
+          }
+        }
       });
   }
 

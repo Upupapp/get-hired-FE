@@ -1,7 +1,8 @@
 import { Component, HostListener, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
+import { MessageService } from '@app-shared/services/message.service';
 
 /**
  * DESIGN OVERHAUL PORT (2026-08-19) -- ported from gethired-jobseeker-FE's
@@ -28,6 +29,13 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
   public screenHeight: number = 300;
   initials: string;
 
+  // Messages sidebar badge -- polls the same lightweight unread-count
+  // endpoint the Messages tab itself uses, on the same 45s cadence as the
+  // header notification bell (no websocket/push infra exists to do better).
+  unreadMessageCount = 0;
+  private unreadPollSub: Subscription;
+  private static readonly UNREAD_POLL_INTERVAL_MS = 45000;
+
   sidebarItems = [
     {
       title: 'Dashboard', route: '/user/dashboard', icon: 'dashboard',
@@ -39,6 +47,9 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
       title: 'Applications', route: '/user/applications', icon: 'applications',
     },
     {
+      title: 'Messages', route: '/user/messages', icon: 'messages',
+    },
+    {
       title: 'Career', route: '/user/profile', icon: 'career',
       sub_routes: [
         { title: 'Profile', route: '/user/profile/details' },
@@ -47,7 +58,7 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private messageService: MessageService) {
     this.req = this.router.events.subscribe((event: any) => {
       if (!event || !event.url) { return; }
       this.location = this.router.url;
@@ -72,6 +83,17 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
       this.initials = (this.user.firstName ? this.user.firstName.charAt(0) : '').toUpperCase()
         + (this.user.lastName ? this.user.lastName.charAt(0) : '').toUpperCase();
     }
+    this.refreshUnreadCount();
+    this.unreadPollSub = interval(ApplicantSidebarComponent.UNREAD_POLL_INTERVAL_MS).subscribe(() => {
+      this.refreshUnreadCount();
+    });
+  }
+
+  private refreshUnreadCount(): void {
+    this.messageService.getUnreadCount().subscribe({
+      next: (count) => { this.unreadMessageCount = count || 0; },
+      error: () => { /* non-fatal -- badge just stays at its last-known state */ },
+    });
   }
 
   isItemActive(item: any): boolean {
@@ -105,5 +127,6 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.req) { this.req.unsubscribe(); }
+    if (this.unreadPollSub) { this.unreadPollSub.unsubscribe(); }
   }
 }

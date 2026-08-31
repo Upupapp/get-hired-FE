@@ -304,6 +304,14 @@
     background: #FEF3C7;
     color: #92400E;
   }
+
+  &--unread-count {
+    background: var(--gh-coral, #FF675D);
+    color: #fff;
+    border-radius: 9px;
+    min-width: 16px;
+    text-align: center;
+  }
 }
 
 // ─── Thread detail pane ──────────────────────────────────────────────────────

@@ -107,6 +107,10 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
   selectThread(thread: RecruiterThreadSummary): void {
     this.selectedThread = thread;
     this.showDetail = true; // mobile: switch to detail view
+    // Optimistic local clear -- app-message-thread marks the thread read
+    // on the backend as soon as it opens; reflect that in the list
+    // immediately instead of waiting for the next poll/reload.
+    thread.unreadCount = 0;
   }
 
   backToList(): void {
