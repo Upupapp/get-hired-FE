@@ -82,7 +82,8 @@
             </ng-container>
 
             <ng-container *ngIf="stepper === 4">
-              <app-application-preview [profile]="profile" [interviews]="job.interviewQuestions"></app-application-preview>
+              <app-application-preview [profile]="profile" [interviews]="job.interviewQuestions"
+                (goBackToInterview)="goBackToStep3()"></app-application-preview>
             </ng-container>
           </div>
         </div>

@@ -11,6 +11,15 @@
 	margin-bottom: 0;
 }
 
+// Step 4 Interview Answers -- applicant's own review (count + Go Back to
+// Step 3 / skipped note), replacing the full video list on this step.
+.interview-summary-note {
+	font-family: 'Manrope', sans-serif;
+	font-size: 14px;
+	color: #6b7280;
+	margin: 0 0 12px;
+}
+
 .card{
 	background: #FFFFFF;
 	border: 1px solid #F5F5F5;

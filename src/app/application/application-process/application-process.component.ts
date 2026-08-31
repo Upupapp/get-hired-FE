@@ -268,6 +268,19 @@ export class ApplicationProcessComponent implements OnInit {
     }
   }
 
+  // BUGFIX (production): Step 4's "Go Back to Step 3" action (see
+  // application-preview.component.html/.ts) must land back on Step 3
+  // WITHOUT re-showing the "Recruiter would like to ask you some
+  // questions" dialog -- that dialog is only meant for arriving at Step 3
+  // forward (from Step 1/2, via changeStep()/goToNextStep()), not for an
+  // applicant who already answered (or already explicitly skipped) and is
+  // just going back to review/re-record. Sets the stepper directly instead
+  // of routing through changeStep(3), which is the one thing that opens
+  // that dialog.
+  goBackToStep3(): void {
+    this.stepper = 3;
+  }
+
   openInterviewNotification(data?: any) {
     let dialogModal = this.dialog.open(
       InterviewNotificationComponent,

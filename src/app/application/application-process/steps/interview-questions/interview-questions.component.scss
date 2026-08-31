@@ -444,9 +444,24 @@
 		justify-content: flex-end;
 		flex-wrap: wrap;
 
+		// BUGFIX: Bootstrap's .btn-outline-secondary:hover sets color:#fff
+		// (expecting its own dark hover background to go with it) -- but the
+		// white background above stays white on hover (deliberately, to
+		// stay legible against the coral banner behind it), so the text
+		// turned white-on-white and effectively vanished. Pin the text
+		// color at every interaction state so it never depends on which
+		// hover background Bootstrap thinks it's paired with.
 		button {
 			background: #fff;
 			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+			color: #495057;
+
+			&:hover,
+			&:focus-visible,
+			&:active {
+				color: #495057 !important;
+				background: #fff !important;
+			}
 		}
 	}
 
