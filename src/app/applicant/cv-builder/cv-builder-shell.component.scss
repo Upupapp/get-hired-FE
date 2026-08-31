@@ -194,3 +194,93 @@
   color: #9ca3af;
   margin: 10px 0 0 0;
 }
+
+// Versions / History (Phase B)
+.cv-builder-versions {
+  padding: 8px 4px;
+
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-align: left;
+  }
+}
+
+.cv-builder-version-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cv-builder-version-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f9fafb;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+
+  &.active {
+    background: #fff6f4;
+    border-color: rgba(255, 61, 110, 0.35);
+  }
+}
+
+.cv-builder-version-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: $color-global-red-buttons;
+  background: rgba(255, 61, 110, 0.1);
+  border-radius: 9999px;
+  padding: 2px 8px;
+  vertical-align: middle;
+}
+
+.cv-builder-version-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.btn-link-cta {
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--danger {
+    color: #b42318;
+  }
+}
+
+// Responsive: this shell had no explicit mobile handling at all before
+// Phase B. The tab strip already wraps (flex-wrap on .cv-builder-tabs);
+// the version rows are the one new layout that genuinely needs it -- three
+// actions plus filename/meta text in one row is too tight under ~420px.
+@media (max-width: 480px) {
+  .cv-builder-shell {
+    padding: 16px;
+  }
+
+  .cv-builder-current-card,
+  .cv-builder-version-row {
+    flex-wrap: wrap;
+  }
+
+  .cv-builder-version-actions {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    padding-left: 34px; // aligns under the filename, past the icon
+  }
+}

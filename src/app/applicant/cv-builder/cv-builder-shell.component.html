@@ -5,7 +5,8 @@
   <nav class="cv-builder-tabs" role="tablist" aria-label="CV Builder sections">
     <button type="button" role="tab" [attr.aria-selected]="activeTab === 'overview'" (click)="setTab('overview')" class="cv-builder-tab" [class.active]="activeTab === 'overview'">Overview</button>
     <button type="button" role="tab" [attr.aria-selected]="activeTab === 'upload'" (click)="setTab('upload')" class="cv-builder-tab" [class.active]="activeTab === 'upload'">Upload CV</button>
-    <button type="button" role="tab" *ngFor="let tab of comingSoonTabs" [attr.aria-selected]="activeTab === 'unavailable'" (click)="setTab('unavailable')" class="cv-builder-tab" [class.active]="activeTab === 'unavailable'">{{ tab.label }}</button>
+    <button type="button" role="tab" *ngFor="let tab of unavailableTabs" [attr.aria-selected]="activeTab === tab.tab" (click)="setTab(tab.tab)" class="cv-builder-tab" [class.active]="activeTab === tab.tab">{{ tab.label }}</button>
+    <button type="button" role="tab" [attr.aria-selected]="activeTab === 'history'" (click)="setTab('history')" class="cv-builder-tab" [class.active]="activeTab === 'history'">Versions / History</button>
     <button type="button" role="tab" [attr.aria-selected]="activeTab === 'privacy'" (click)="setTab('privacy')" class="cv-builder-tab" [class.active]="activeTab === 'privacy'">Privacy &amp; Data Use</button>
   </nav>
 
@@ -66,11 +67,61 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="activeTab === 'unavailable'">
+    <!-- CV Health / Surgical Review / Match Explorer / Action Plan: each
+         shows its own distinct explanation (currentUnavailableCopy, keyed
+         off activeTab) instead of one shared generic placeholder. -->
+    <ng-container *ngIf="currentUnavailableCopy as copy">
       <div class="cv-builder-empty">
-        <h2>This part of CV Builder isn't ready yet</h2>
-        <p>We're still setting this up. Check back soon, or upload your CV now so it's ready when this feature launches.</p>
-        <button type="button" class="btn-cv-primary" (click)="setTab('upload')">Upload CV</button>
+        <h2>{{ copy.heading }}</h2>
+        <p>{{ copy.body }}</p>
+        <button type="button" class="btn-cv-primary" (click)="setTab('upload')">{{ currentCv ? 'Replace CV' : 'Upload CV' }}</button>
+      </div>
+    </ng-container>
+
+    <!-- Versions / History -- real, backed by /cv-builder/versions
+         (Phase B). Lists every kept version; the active one can't be
+         deleted (server-enforced), a prior one can be made active again
+         or deleted outright. -->
+    <ng-container *ngIf="activeTab === 'history'">
+      <div class="cv-builder-versions">
+        <h2>Versions / History</h2>
+        <p class="cv-builder-privacy-note">
+          Every CV you've uploaded is kept here. Switch back to an older version, or delete one you no longer need.
+        </p>
+
+        <div class="cv-builder-result error" *ngIf="versionActionError" role="alert">
+          <p>{{ versionActionError }}</p>
+        </div>
+
+        <p *ngIf="loadingVersions">Loading your CV versions…</p>
+
+        <div class="cv-builder-empty" *ngIf="!loadingVersions && versions.length === 0">
+          <h2>No CV versions yet</h2>
+          <p>Upload a CV to start building your version history.</p>
+          <button type="button" class="btn-cv-primary" (click)="setTab('upload')">Upload CV</button>
+        </div>
+
+        <ul class="cv-builder-version-list" *ngIf="!loadingVersions && versions.length > 0">
+          <li class="cv-builder-version-row" *ngFor="let version of versions" [class.active]="version.isActive">
+            <span class="cv-builder-current-icon" aria-hidden="true">&#128196;</span>
+            <div class="cv-builder-current-info">
+              <p class="cv-builder-current-filename">
+                {{ version.filename }}
+                <span class="cv-builder-version-badge" *ngIf="version.isActive">Active</span>
+              </p>
+              <p class="cv-builder-current-meta">Uploaded {{ version.created_at | date:'mediumDate' }}</p>
+            </div>
+            <div class="cv-builder-version-actions">
+              <a [href]="version.fileurl" target="_blank" rel="noopener" class="btn-link-cta">View</a>
+              <button type="button" class="btn-link-cta" *ngIf="!version.isActive"
+                [disabled]="versionActionInFlight === version.id"
+                (click)="activateVersion(version)">Make active</button>
+              <button type="button" class="btn-link-cta btn-link-cta--danger" *ngIf="!version.isActive"
+                [disabled]="versionActionInFlight === version.id"
+                (click)="deleteVersion(version)">Delete</button>
+            </div>
+          </li>
+        </ul>
       </div>
     </ng-container>
 
@@ -79,9 +130,10 @@
         <h2>Privacy &amp; Data Use</h2>
         <p>CVCOACH uses your CV to give you applicant-side feedback only.</p>
         <ul>
-          <li>Employers cannot see your CV Health or private recommendations.</li>
+          <li>Your CV file is uploaded to secure cloud storage and linked only to your own applicant profile -- other applicants and employers cannot access it directly.</li>
+          <li>Only your name/filename and the file itself are stored; no analysis, scoring, or AI processing happens on it yet, since that engine doesn't exist in this version of GetHired.</li>
+          <li>Uploading a new CV keeps your previous version instead of erasing it -- see Versions / History to view or permanently delete a prior version.</li>
           <li>Your CV is never made public or shared with third-party AI services.</li>
-          <li>You can delete your CV at any time once this feature is fully available.</li>
         </ul>
       </div>
     </ng-container>
