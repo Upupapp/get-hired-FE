@@ -133,21 +133,59 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       this.storageListenerBound = true;
     }
 
+    // A saved AI Create draft represents real unfinished work and takes
+    // priority over the generic company-context defaults below (Phase 15/19).
+    const draft = this.ownerScope ? this.aiCreateDraft.load(this.ownerScope) : null;
+
+    // PRODUCTION FIX: Employment Type (and Industry) come from a live
+    // backend list, unlike Work Setup's hardcoded <option>s in the
+    // template. Restoring the draft synchronously here set
+    // generateInputs.employmentType/.industry to a real string ('Full
+    // time', etc.) before that list's HTTP response had come back --
+    // native <select> silently drops a value with no matching <option> at
+    // the moment it's assigned, and never retroactively re-applies it once
+    // a matching option shows up later (Angular's ngModel only re-writes
+    // the DOM value when the bound value itself changes, which it
+    // wouldn't here since nothing reassigns it again). Confirmed in
+    // production: Work Setup restored correctly, Employment Type silently
+    // showed blank despite a real value being restored underneath it.
+    // Fix: apply these two fields only inside each list's own response
+    // callback, once matching <option>s genuinely exist in the DOM -- a
+    // real first-time assignment Angular's change detection will actually
+    // pick up, not a no-op reassignment of an already-set value.
     this.jobService.getIndustryList().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res: any) => { this.industryOptions = (res && res.data) || res || []; },
+      next: (res: any) => {
+        this.industryOptions = (res && res.data) || res || [];
+        if (draft && draft.input && draft.input.industry) {
+          this.generateInputs = { ...this.generateInputs, industry: draft.input.industry };
+        } else if (!this.generateInputs.industry) {
+          // No industry to restore -- retry the suggestion now that
+          // industryOptions is actually populated (trySuggestIndustry()
+          // matches against it; calling it earlier, before this list
+          // loaded, could only ever be a no-op against an empty array).
+          this.trySuggestIndustry();
+        }
+      },
       error: () => { /* non-fatal -- Industry select just stays empty */ },
     });
 
     this.jobService.getTypeList().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (res: any) => { this.employmentTypeOptions = (res && res.data) || res || []; },
+      next: (res: any) => {
+        this.employmentTypeOptions = (res && res.data) || res || [];
+        if (draft && draft.input && draft.input.employmentType) {
+          this.generateInputs = { ...this.generateInputs, employmentType: draft.input.employmentType };
+        }
+      },
       error: () => { /* non-fatal -- Employment type select just stays empty */ },
     });
 
-    // A saved AI Create draft represents real unfinished work and takes
-    // priority over the generic company-context defaults below (Phase 15/19).
-    const draft = this.ownerScope ? this.aiCreateDraft.load(this.ownerScope) : null;
     if (draft) {
-      this.generateInputs = { ...this.generateInputs, ...draft.input };
+      // industry/employmentType deliberately excluded here -- applied
+      // above, once their real <option>s exist. Everything else (job
+      // title, location, work setup -- all static/no async dependency)
+      // restores immediately as before.
+      const { industry, employmentType, ...restorableNow } = draft.input;
+      this.generateInputs = { ...this.generateInputs, ...restorableNow };
       this.draftRestored = true;
       this.step = 'generate';
       if (!this.generateInputs.industry) {
