@@ -78,7 +78,19 @@ export class InterviewQuestionsComponent implements OnInit {
       answerBlob: new FormControl(answerBlob)
     });
 
-    this.interviewAnswers.controls.push(array);
+    // ROOT-CAUSE FIX (production): this pushed directly into
+    // interviewAnswers.controls -- the FormArray's internal array -- instead
+    // of calling interviewAnswers.push(array), the actual FormArray API.
+    // Angular's FormArray.value is a cached snapshot only recomputed inside
+    // the real push()/removeAt()/etc. methods, not a live getter over
+    // .controls; a raw .controls.push() correctly grows .controls.length
+    // (so this component's own answeredIndices/answerSizeMbForIndex, both
+    // of which iterate .controls directly, looked completely correct) but
+    // never touches the cached .value Step 4's summary actually reads
+    // (application-preview.component.ts's answersArray.value) -- so a
+    // genuinely-recorded, genuinely-submitted answer could still show as
+    // "You skipped the interview questions" on Step 4 every time.
+    this.interviewAnswers.push(array);
 
     this.changeQuestion(index + 1);
   }
