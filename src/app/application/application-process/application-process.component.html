@@ -110,8 +110,19 @@
            above, which read as a confusing duplicate since the stepper's
            own steps are already directly clickable (app-main-stepper) and
            this button is just an optional shortcut, not the only way to
-           advance. Removed that copy; this is the only one now. -->
-      <div class="text-end mt-4" *ngIf="stepper === 1 || stepper === 2">
+           advance. Removed that copy; this is the only one now.
+
+           Same "smart sticky" treatment as Step 4's Submit button below:
+           fixed to the bottom while the Employer -- er, Applicant -- is
+           still scrolling through the form (so Next is always reachable
+           without hunting for it), then settles back into normal inline
+           flow once they've scrolled far enough that a fixed bar would
+           start covering the form's own fields (showEvaluateButton/
+           onScroll, already used for Step 4 -- reused here rather than a
+           second, diverging sticky-button implementation). -->
+      <div class="text-end mt-4"
+        [ngClass]="showEvaluateButton ? '' : 'container-evaluate'"
+        *ngIf="stepper === 1 || stepper === 2">
         <button class="btn btn-save" type="button" (click)="goToNextStep()">
           {{ 'USER_APPLICATION_PAGE.NEXT_BUTTON' | translate }}
         </button>
