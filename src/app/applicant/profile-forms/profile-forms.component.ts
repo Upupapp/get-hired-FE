@@ -126,7 +126,12 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
       const returnUrl = localStorage.getItem('returnURL');
       const hasPendingJob = !!returnUrl && returnUrl.startsWith('/jobs/details/');
       if (this.pendingAdvanceTo === 2 && hasPendingJob) {
-        this.showProfileSetupChoice();
+        // BUGFIX: capture the return URL now, before the dialog opens --
+        // showProfileSetupChoice() previously re-read localStorage itself,
+        // later, inside redirectToProfile(). Passing it through explicitly
+        // means "Apply Now" can never silently lose its destination to
+        // something else clearing/overwriting that key in the meantime.
+        this.showProfileSetupChoice(returnUrl);
       } else {
         this.stepper = this.pendingAdvanceTo;
       }
@@ -142,20 +147,37 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
   // eventually return to the job via redirectToProfile()'s own returnURL
   // handling. disableClose forces an explicit choice rather than leaving
   // the applicant on an ambiguous half-state if they dismiss it.
-  private showProfileSetupChoice(): void {
-    const ref = this.dialog.open(ProfileSetupChoiceDialogComponent, {
-      width: 'min(420px, 92vw)',
-      disableClose: true,
-    });
+  //
+  // BUGFIX: reported in production as "picking either button does the same
+  // thing -- it always lands on Step 2 instead of waiting for a real
+  // choice." The dialog was being opened synchronously from inside the
+  // save-success handler, itself invoked from an async HTTP response
+  // callback -- a known Angular CDK Overlay race where a dialog opened
+  // this way can inherit a stray focus/keyboard event from whatever UI
+  // interaction (e.g. pressing Enter to confirm the earlier "Save Step 1"
+  // dialog) triggered the save, resolving it before the user's actual
+  // click on THIS dialog is ever processed. Two changes address it:
+  // deferring the open to the next macrotask (setTimeout) so it starts
+  // from a clean event loop tick with nothing left over to inherit, and
+  // autoFocus:false so no button auto-receives keyboard focus at all --
+  // only an explicit mouse/touch click (or explicit Tab+Enter) can choose.
+  private showProfileSetupChoice(returnUrl: string | null): void {
+    setTimeout(() => {
+      const ref = this.dialog.open(ProfileSetupChoiceDialogComponent, {
+        width: 'min(420px, 92vw)',
+        disableClose: true,
+        autoFocus: false,
+      });
 
-    ref.afterClosed().subscribe((choice: ProfileSetupChoice) => {
-      if (choice === 'apply-now') {
-        this.redirectToProfile();
-      } else {
-        // 'continue-setup' (the only other real outcome, since disableClose
-        // prevents a bare dismissal) -- proceed into Step 2 as normal.
-        this.stepper = 2;
-      }
+      ref.afterClosed().subscribe((choice: ProfileSetupChoice) => {
+        if (choice === 'apply-now') {
+          this.redirectToProfile(returnUrl);
+        } else {
+          // 'continue-setup' (the only other real outcome, since disableClose
+          // prevents a bare dismissal) -- proceed into Step 2 as normal.
+          this.stepper = 2;
+        }
+      });
     });
   }
 
@@ -196,8 +218,11 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
   // exactly as before (their Next/Finish buttons have never required
   // anything to be filled in) -- so this satisfies "let them skip
   // everything except Step 1" without adding a separate skip control.
-  redirectToProfile() {
-    const returnUrl = localStorage.getItem('returnURL');
+  redirectToProfile(capturedReturnUrl?: string | null) {
+    // Prefer a URL the caller already captured (see showProfileSetupChoice)
+    // over re-reading localStorage now -- avoids losing the destination to
+    // anything that clears/overwrites that key between capture and here.
+    const returnUrl = capturedReturnUrl !== undefined ? capturedReturnUrl : localStorage.getItem('returnURL');
     if (returnUrl && returnUrl.startsWith('/jobs/details/')) {
       localStorage.removeItem('returnURL');
       this.snackbarService.success('Profile updated. Taking you back to the job.', '', 3000);
