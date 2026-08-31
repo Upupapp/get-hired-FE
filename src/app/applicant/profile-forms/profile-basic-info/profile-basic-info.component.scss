@@ -95,25 +95,6 @@ select{
 	}
 }
 
-// Reserves its own height permanently (visibility, not display/*ngIf) so
-// starting/finishing an upload never resizes the identity column above it.
-// Neutral secondary-text color, not the coral alert color -- this is a
-// routine in-progress status, not a warning.
-.gh-avatar-uploading-hint {
-	font-family: 'Manrope', sans-serif;
-	font-size: 12px;
-	font-weight: 600;
-	line-height: 16px;
-	color: var(--gh-text-secondary, #667085);
-	margin: 6px 0 0;
-	text-align: center;
-	visibility: hidden;
-
-	&--visible {
-		visibility: visible;
-	}
-}
-
 .gh-profile-identity {
 	position: relative;
 	// Minimized, centered footprint instead of stretching the full form
@@ -171,15 +152,18 @@ select{
 		// every other consumer of app-gh-image-upload elsewhere in the app
 		// is unaffected.
 		::ng-deep .gh-image-upload {
-			// Pins the widget's own footprint to the circle's size so its
-			// block-level siblings below (savings badge, Remove button --
-			// see next two rules) can't force this flex item wider than
-			// the 84px avatar, which is what broke the circular layout
-			// after a successful upload, most visibly on mobile where
-			// there's no spare width to absorb it.
+			// Pins the widget's own footprint to the circle's size, on both
+			// axes, and stops it from flexing at all -- so no state (idle,
+			// dragging, optimizing/uploading, success, error) can resize
+			// this container. Previously only width was pinned, which is
+			// what let the optimizing state's spinner+label content push
+			// the height taller than the 84px circle.
 			width: 84px;
+			height: 84px;
+			flex: 0 0 84px;
 		}
 
+		::ng-deep .gh-image-upload__zone,
 		::ng-deep .gh-image-upload__zone--circle,
 		::ng-deep .gh-image-upload__preview--circle {
 			width: 84px;
@@ -245,8 +229,11 @@ select{
 		&__avatar {
 			::ng-deep .gh-image-upload {
 				width: 128px;
+				height: 128px;
+				flex: 0 0 128px;
 			}
 
+			::ng-deep .gh-image-upload__zone,
 			::ng-deep .gh-image-upload__zone--circle,
 			::ng-deep .gh-image-upload__preview--circle {
 				width: 128px;

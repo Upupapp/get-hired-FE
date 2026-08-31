@@ -21,15 +21,12 @@
               (cleared)="onAvatarClear()"
               (uploading)="avatarUploading = $event"
             ></app-gh-image-upload>
-            <!-- Guards against submitting before the photo upload above
-                 actually finishes -- see avatarUploading's doc comment.
-                 Always rendered (not *ngIf) and toggled via CSS visibility
-                 instead: an *ngIf here popped this line in and out of the
-                 DOM, which shifted the whole centered avatar/name/title
-                 column up and down every time an upload started/finished. -->
-            <p class="gh-avatar-uploading-hint" [class.gh-avatar-uploading-hint--visible]="avatarUploading" aria-live="polite">
-              Uploading photo…
-            </p>
+            <!-- avatarUploading (bound below) still guards form submission
+                 while a photo upload is in flight -- see its doc comment on
+                 the .ts property. No visible status line here anymore: the
+                 upload zone's own internal spinner overlay is the only
+                 indicator, and the avatar's footprint is hard-locked to a
+                 fixed size below so nothing around it can shift. -->
           </div>
           <div class="gh-profile-identity__text">
             <span class="gh-profile-identity__name">{{
