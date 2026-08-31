@@ -17,8 +17,13 @@
         has been received. We've sent a confirmation to your registered email address.
       </p>
       <div class="result-actions">
-        <a class="btn btn-primary me-2" routerLink="/user/applications">View my applications</a>
-        <button class="btn btn-outline-secondary" type="button" (click)="apply.emit(false)">Browse more jobs</button>
+        <!-- BUGFIX (production): both use a genuine full browser navigation
+             (hardNavigate(), not routerLink/apply.emit()) so no state from
+             this successful submission can ever carry forward onto
+             whatever the applicant does next -- see hardNavigate()'s doc
+             comment in the .ts file. -->
+        <button class="btn btn-primary me-2" type="button" (click)="hardNavigate('/user/applications')">View my applications</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="hardNavigate('/jobs')">Browse more jobs</button>
       </div>
     </div>
 
@@ -36,7 +41,7 @@
         You can track your application status on your applications page.
       </p>
       <div class="result-actions">
-        <a class="btn btn-primary me-2" routerLink="/user/applications">View my applications</a>
+        <button class="btn btn-primary me-2" type="button" (click)="hardNavigate('/user/applications')">View my applications</button>
         <button class="btn btn-outline-secondary" type="button" (click)="apply.emit(false)">Back to job</button>
       </div>
     </div>

@@ -359,6 +359,25 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
     this.router.navigateByUrl('user/profile/edit')
   }
 
+  /**
+   * BUGFIX (production): after a successful submission, leaving this
+   * success panel via an ordinary Angular route navigation (routerLink /
+   * apply.emit(false), both SPA-style) let this component's state --
+   * submitStatus especially -- carry over if the applicant's next action
+   * landed them back on the apply flow without this exact instance ever
+   * being destroyed (e.g. clicking straight into a different job's Apply
+   * from a related-jobs link still visible on this same success screen).
+   * ngOnChanges above is supposed to catch a same-instance job switch, but
+   * this was still reported happening in production -- a genuine full
+   * browser navigation is a hard guarantee no in-memory state (this
+   * component's or any other's) can leak forward, which the requested fix
+   * explicitly asks for rather than continuing to patch the SPA reset
+   * path. Used for both exits from the success panel below.
+   */
+  hardNavigate(url: string): void {
+    window.location.href = url;
+  }
+
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
