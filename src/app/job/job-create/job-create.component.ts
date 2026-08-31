@@ -465,6 +465,30 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * PRODUCTION FIX: an AI-generated draft's free-text hints don't always
+   * resolve to a confident field match (unfamiliar phrasing, an
+   * unconventional job title, etc.). Previously that just left the field
+   * blank and asked the Employer to fill it in manually before Publish
+   * would accept the job -- reasonable for a careful manual form, but it
+   * defeated the entire point of "Review & edit first" from the AI
+   * Assistant: an Employer who made zero changes still couldn't jump
+   * straight to Step 4 and publish, because required fields silently
+   * stayed empty. This applies a genuinely reasonable default (not a
+   * fabrication -- Full-time/Onsite/a mid-level tier are the most common
+   * real answers for a role with no stronger signal) so every AI-sourced
+   * draft is always publishable end to end without being forced back
+   * through every step. Only ever called from AI Assistant prefill paths
+   * below -- Start From Scratch / Comprehensive / Simplified manual entry
+   * never call this and are completely unaffected.
+   */
+  private pickDefaultJobLevelId(levels: Model.Options[]): number | null {
+    if (!levels || !levels.length) return null;
+    const midMatch = resolveJobLevelId('mid level', levels);
+    if (midMatch.id) return midMatch.id;
+    return levels[0].id;
+  }
+
   applyAssistantPrefill(data: any): void {
     // Job level options are a live backend-owned list (unlike work setup/job type,
     // which are matched against a fixed FE enum below) — resolve against whatever is
@@ -472,8 +496,17 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // tryResolveJobLevelFromPendingHint() retries once jobFacade.level$ emits.
     const levelMatch = resolveJobLevelId(data.jobLevelHint, this.latestLevels);
     if (levelMatch.confidence !== 'high') {
+      // Still try to resolve now, in case the level list already loaded
+      // before this ran -- tryResolveJobLevelFromPendingHint() only fires
+      // on a fresh level$ emission, which won't happen again if it's
+      // already cached. Only keep the pending-retry flag set if nothing
+      // could be applied yet at all (empty list).
       this.jobLevelHintPending = data.jobLevelHint || null;
     }
+    const defaultedJobLevelId = data.jobLevelId
+      ? null
+      : (levelMatch.confidence === 'high' ? levelMatch.id : this.pickDefaultJobLevelId(this.latestLevels));
+    if (defaultedJobLevelId) this.jobLevelHintPending = null;
 
     // Build a partial job object that setFormGroup understands
     const prefillData: any = {
@@ -485,9 +518,12 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       salaryMinimum: data.salaryMinimum || null,
       salaryMaximum: data.salaryMaximum || null,
       salaryCurrency: data.salaryCurrency || 'PHP',
-      workSetupId: data.workSetupId || resolveWorkSetupId(data.workSetupHint),
-      jobTypeId: data.jobTypeId || resolveJobTypeId(data.jobTypeHint),
-      jobLevelId: data.jobLevelId || (levelMatch.confidence === 'high' ? levelMatch.id : null),
+      // Defaults applied when the hint doesn't resolve (Onsite / Full-time
+      // are the most common real answers) -- see pickDefaultJobLevelId's
+      // header comment for the full reasoning. AI-Assistant-only.
+      workSetupId: data.workSetupId || resolveWorkSetupId(data.workSetupHint) || 1,
+      jobTypeId: data.jobTypeId || resolveJobTypeId(data.jobTypeHint) || 1,
+      jobLevelId: data.jobLevelId || defaultedJobLevelId || null,
       jobRoleId: (data.jobRoleId !== undefined && data.jobRoleId !== null) ? data.jobRoleId : null,
       // BUG FIX: Industry was already provided (suggested or manually
       // picked) by the Employer in AI Create's Generate step -- must
@@ -1604,19 +1640,20 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       return;
     }
     const match = resolveJobLevelId(this.jobLevelHintPending, this.latestLevels);
-    if (match.confidence === 'high' && match.id) {
-      this.jobForm.get('initialData.jobLevelId').setValue(match.id);
-      this.jobLevelHintPending = null;
-      return;
-    }
+    const resolvedId = (match.confidence === 'high' && match.id) ? match.id : this.pickDefaultJobLevelId(this.latestLevels);
     this.jobLevelHintPending = null;
+    if (!resolvedId) return;
+
+    this.jobForm.get('initialData.jobLevelId').setValue(resolvedId);
     if (this.jobLevelConfirmationShown) return;
     this.jobLevelConfirmationShown = true;
-    // Not an error: AI Create deliberately leaves ambiguous fields for the
-    // Employer to finish, rather than guessing. Styled as success (green),
-    // not a failure state -- this is the expected next step, not a problem.
+    // Not an error: AI Create fills in a reasonable default (Mid Level, or
+    // the closest live match to the hint) rather than blocking publish on
+    // it -- Employer can still change it below any time before publishing.
     this.snackbarService.success(
-      "Almost there — add the Experience Level below. You're finishing this job post, so add anything else it needs before you publish.",
+      match.confidence === 'high'
+        ? "Experience Level set from your import. Review it below before publishing."
+        : "Experience Level defaulted to Mid Level (your import didn't specify one clearly). Review it below before publishing.",
       '', 6000
     );
     if (this.stepper === 1) {
