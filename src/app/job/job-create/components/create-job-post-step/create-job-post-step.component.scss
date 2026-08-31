@@ -26,6 +26,7 @@
 .gh-field { display: flex; flex-direction: column; gap: 4px; }
 .gh-label { font-size: 13px; font-weight: 600; color: #1a1830; margin: 0; }
 .gh-label-optional { color: #9CA3AF; font-weight: 400; font-size: 12px; margin-left: 4px; }
+.gh-label-required { color: $color-global-red-buttons; font-weight: 600; font-size: 12px; margin-left: 4px; }
 .gh-label--sr {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap;

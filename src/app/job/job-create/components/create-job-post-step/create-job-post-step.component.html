@@ -108,14 +108,15 @@
   </div>
 
   <!-- ── CARD 3: Compensation & Schedule ──────────────────────────────────── -->
-  <div class="gh-form-card mb-4">
+  <div class="gh-form-card mb-4" id="section-compensation">
     <div class="gh-form-card-header">
       <h2 class="gh-form-card-title">
         <i class="bi bi-currency-exchange me-2" aria-hidden="true"></i>Compensation & schedule
       </h2>
       <p class="gh-form-card-subtitle">
         Jobs with salary ranges receive up to 30% more applications.
-        <span class="gh-label-optional">All fields optional.</span>
+        <span class="gh-label-optional" *ngIf="!assistantPrefilled">All fields optional.</span>
+        <span class="gh-label-required" *ngIf="assistantPrefilled">Required to publish.</span>
       </p>
     </div>
 

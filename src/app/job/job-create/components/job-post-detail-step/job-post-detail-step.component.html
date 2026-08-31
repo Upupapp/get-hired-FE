@@ -89,8 +89,11 @@
       </div>
 
       <!-- Work Setup cards -->
-      <div class="gh-field mb-4" role="group" aria-labelledby="work-setup-label">
-        <label class="gh-label mb-1" id="work-setup-label">Work setup</label>
+      <div class="gh-field mb-4" role="group" aria-labelledby="work-setup-label" id="section-work-setup">
+        <label class="gh-label mb-1" id="work-setup-label">
+          Work setup
+          <span class="gh-label-required" aria-label="required" *ngIf="assistantPrefilled">*</span>
+        </label>
         <p class="gh-field-helper gh-work-setup-subtitle">Choose the arrangement candidates should expect.</p>
         <div class="gh-work-setup-grid" *ngIf="workSetup$ | async as workSetup">
           <button
@@ -128,7 +131,9 @@
         <div class="gh-location-row">
           <div class="gh-field">
             <label class="gh-label" for="job-city">
-              City <span class="gh-label-required" aria-label="required">*</span>
+              City
+              <span class="gh-label-required" aria-label="required" *ngIf="!assistantPrefilled">*</span>
+              <span class="gh-label-optional" *ngIf="assistantPrefilled">(optional)</span>
             </label>
             <input id="job-city" type="text" class="gh-input"
               placeholder="Manila"
@@ -146,7 +151,9 @@
 
           <div class="gh-field">
             <label class="gh-label" for="job-country">
-              Country <span class="gh-label-required" aria-label="required">*</span>
+              Country
+              <span class="gh-label-required" aria-label="required" *ngIf="!assistantPrefilled">*</span>
+              <span class="gh-label-optional" *ngIf="assistantPrefilled">(optional)</span>
             </label>
             <input id="job-country" type="text" class="gh-input"
               placeholder="Philippines"

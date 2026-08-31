@@ -17,6 +17,12 @@ export class CreateJobPostStepComponent implements OnInit {
   /** Simplified Job-Post mode -- see job-post-detail-step.component.ts for
    *  the same flag's rationale. Display-only; form model is unchanged. */
   @Input() simplified: boolean = false;
+  /** True only for jobs reached via the AI Assistant's "Review & edit
+   *  first" -- compensation is required for that flow (job-create.
+   *  component.ts's setFormGroup()); everywhere else it's still optional,
+   *  unchanged. Display-only here (labels/asterisk); the actual validator
+   *  is attached in the parent form group, not this component. */
+  @Input() assistantPrefilled: boolean = false;
 
   industry$ = this.jobFacade.industry$;
   jobRoles$ = this.jobFacade.jobRole$;

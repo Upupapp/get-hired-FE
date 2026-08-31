@@ -18,6 +18,11 @@ export class JobPostDetailStepComponent implements OnInit {
    *  form model and its controls are untouched, so nothing here changes what
    *  gets submitted; hidden fields just stay empty/default. */
   @Input() simplified: boolean = false;
+  /** True only for jobs reached via the AI Assistant's "Review & edit
+   *  first" -- that flow requires Work setup (not City/Country) for Step
+   *  1, the opposite of every other mode (job-create.component.ts's
+   *  setFormGroup() attaches the actual validators). Display-only here. */
+  @Input() assistantPrefilled: boolean = false;
 
   initialDetailsForm: FormGroup;
   workSetupSelected: number;

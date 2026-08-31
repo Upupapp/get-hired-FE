@@ -22,6 +22,15 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
    *  Questions preview section here must not offer any goToStep(3) link --
    *  it's replaced with a plain informational note instead. */
   @Input() simplified: boolean = false;
+  /** True only for jobs reached via the AI Assistant's "Review & edit
+   *  first". Shows "No Data Provided" for the 3 fields that flow actually
+   *  requires (job title, work setup, compensation) when still empty --
+   *  the Employer must be able to reach and view this step regardless of
+   *  what's filled in, per that flow's own smaller required set (see
+   *  job-create.component.ts's setFormGroup()/publishJobPost()). Every
+   *  other mode keeps its current behavior (pill/line simply doesn't
+   *  render when empty) completely unchanged. */
+  @Input() assistantPrefilled: boolean = false;
   @Output() navigateToStep = new EventEmitter<number>();
   subscriptions = new Subscription();
 

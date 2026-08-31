@@ -118,12 +118,12 @@
 
         <!-- ── STEP 1: Job Basics ──────────────────────────────────────── -->
         <ng-container *ngIf="stepper === 1">
-          <app-job-post-detail-step formGroupName="initialData" [simplified]="isSimplified"></app-job-post-detail-step>
+          <app-job-post-detail-step formGroupName="initialData" [simplified]="isSimplified" [assistantPrefilled]="assistantPrefilled"></app-job-post-detail-step>
         </ng-container>
 
         <!-- ── STEP 2: Compensation, Requirements & Benefits ──────────── -->
         <ng-container *ngIf="stepper === 2">
-          <app-create-job-post-step formGroupName="jobInfo" [simplified]="isSimplified"></app-create-job-post-step>
+          <app-create-job-post-step formGroupName="jobInfo" [simplified]="isSimplified" [assistantPrefilled]="assistantPrefilled"></app-create-job-post-step>
         </ng-container>
 
         <!-- ── STEP 3: Screening & Interview ──────────────────────────── -->
@@ -141,6 +141,7 @@
           <app-preview-job-post-step
             [jobPostData]="jobForm.value.initialData"
             [simplified]="isSimplified"
+            [assistantPrefilled]="assistantPrefilled"
             (navigateToStep)="changeStep($event)"></app-preview-job-post-step>
         </ng-container>
 

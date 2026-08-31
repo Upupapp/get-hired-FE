@@ -1,6 +1,16 @@
 @import "src/assets/styles/colors";
 @import "src/assets/styles/_motion";
 
+// AI Assistant flow only: "No Data Provided" fallback for job title / work
+// setup / compensation when the AI draft left them empty -- muted/italic so
+// it reads as a placeholder, not real content, distinct from every other
+// mode's unchanged behavior (the pill/line simply doesn't render at all).
+.pv-no-data {
+  color: #9CA3AF;
+  font-style: italic;
+  font-weight: 500;
+}
+
 // B13: Job Readiness in preview step
 .jrc-preview-readiness-card {
   border-left: 3px solid #10B981;

@@ -596,18 +596,29 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   }
 
   setFormGroup(data?: any) {
+    // PRODUCTION FIX: AI Assistant jobs get their own, deliberately smaller
+    // required-field set (Step 1: job title + work setup; Step 2:
+    // compensation; Step 3: nothing) so "Review & edit first" can be
+    // stepped through and published without being forced to backfill
+    // fields the AI draft never asked about (jobCity/jobCountry in
+    // particular -- Generate step's location input isn't always filled).
+    // Only ever applied when assistantPrefilled is true, which is only
+    // ever set from the AI Assistant prefill path in ngOnInit -- Start
+    // From Scratch / Comprehensive / Simplified always take the `else`
+    // branch below and keep their exact previous validators untouched.
+    const isAiFlow = this.assistantPrefilled;
     this.jobForm = this.fb.group({
       initialData: this.fb.group({
         jobTitle: [data ? data.jobTitle : null, Validators.required],
         jobTypeId: [data ? data.jobTypeId : null],
         jobLevelId: [data ? data.jobLevelId : null],
         jobAddress: [data ? data.jobAddress : null],
-        jobCity: [data ? data.jobCity : null, Validators.required],
-        jobCountry: [data ? data.jobCountry : null, Validators.required],
+        jobCity: [data ? data.jobCity : null, isAiFlow ? [] : Validators.required],
+        jobCountry: [data ? data.jobCountry : null, isAiFlow ? [] : Validators.required],
         jobDescription: [data ? data.jobDescription : null],
         jobDuties: [data ? data.jobDuties : null],
         jobCategoryId: [data ? data.jobCategoryId : null],
-        workSetupId: [data ? data.workSetupId : null],
+        workSetupId: [data ? data.workSetupId : null, isAiFlow ? Validators.required : []],
         expirationDate: [data ? data.expirationDate : null],
         jobBanner: [data ? data.jobBanner : null],
         bannerFile: new FormArray([]),
@@ -628,9 +639,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         tags: new FormArray([]),
         jobTagsTxt: [null],
         rate: [data ? data.rate : null],
-        salaryMinimum: [data ? data.salaryMinimum : null],
-        salaryMaximum: [data ? data.salaryMaximum : null],
-        salaryCurrency: [data ? data.salaryCurrency : null],
+        salaryMinimum: [data ? data.salaryMinimum : null, isAiFlow ? Validators.required : []],
+        salaryMaximum: [data ? data.salaryMaximum : null, isAiFlow ? Validators.required : []],
+        salaryCurrency: [data ? data.salaryCurrency : null, isAiFlow ? Validators.required : []],
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }),
@@ -876,7 +887,18 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // sentinel-to-null mapping never leaks into the readiness gate.
     const rawJobTypeId = this.jobForm.controls.initialData.value.jobTypeId;
     this.readinessResult = this.jobReadiness.evaluate({ ...job, jobTypeId: rawJobTypeId, companyId: this.companyId } as any);
-    this.isReadyToPublish = this.readinessResult.canPublish;
+    // PRODUCTION FIX: the AI Assistant flow's own, smaller required set
+    // (job title + work setup; compensation; nothing from Step 3) gates
+    // Publish here instead of the shared JobReadinessService result --
+    // that result is still computed above unchanged, so the readiness
+    // score/bar/"Job post strength" badge keep working exactly as before
+    // for every mode, including AI-sourced jobs. Only which boolean
+    // actually blocks the Publish button differs, and only when
+    // assistantPrefilled. Comprehensive/Simplified are untouched --
+    // isReadyToPublish still comes straight from readinessResult.canPublish.
+    this.isReadyToPublish = this.assistantPrefilled
+      ? !!(job.jobTitle && job.workSetupId && job.salaryMinimum && job.salaryMaximum && job.salaryCurrency)
+      : this.readinessResult.canPublish;
 
     if (this.isReadyToPublish) {
       this.jobFacade.saveJob(job);
@@ -889,10 +911,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         'section-job-title': 1, 'section-employment': 1, 'section-job-level': 1,
         'section-location': 1, 'section-description': 1, 'section-work-setup': 1,
         'section-banner': 1, 'section-company': 1,
-        'section-duties': 2, 'section-skills': 2, 'section-requirements': 2,
+        'section-duties': 2, 'section-skills': 2, 'section-requirements': 2, 'section-compensation': 2,
         'section-interview': 3,
       };
-      const fieldActions = this.readinessResult.blockingItems.map((f) => ({
+      // AI Assistant flow: only the 3 fields this component actually
+      // requires for it (see isReadyToPublish above) -- readinessResult.
+      // blockingItems reflects the broader shared required set and would
+      // list fields (city, country, description...) this flow deliberately
+      // doesn't require, confusing the "fix these" list.
+      const aiBlockingItems: { sectionId: string; label: string }[] = [];
+      if (this.assistantPrefilled) {
+        if (!job.jobTitle) aiBlockingItems.push({ sectionId: 'section-job-title', label: 'Job title' });
+        if (!job.workSetupId) aiBlockingItems.push({ sectionId: 'section-work-setup', label: 'Work setup' });
+        if (!job.salaryMinimum || !job.salaryMaximum || !job.salaryCurrency) {
+          aiBlockingItems.push({ sectionId: 'section-compensation', label: 'Compensation' });
+        }
+      }
+      const blockingItems = this.assistantPrefilled ? aiBlockingItems : this.readinessResult.blockingItems;
+      const fieldActions = blockingItems.map((f) => ({
         label: 'Fix: ' + f.label,
         value: 'fix:' + (sectionStepMap[f.sectionId] || 1) + ':' + f.sectionId,
         primary: false as boolean,
@@ -1695,6 +1731,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     if (event == 4) {
       this.jobFacade.getIndustry();
       this.jobFacade.getJobRole();
+
+      // BUGFIX: landing on Step 4 (Preview) via a direct stepper-tab jump
+      // (e.g. Step 1 straight to Step 4 -- the whole point of a clickable
+      // stepper) used to only dispatch whichever ONE step was being left,
+      // via the switch below -- any step skipped entirely on the way
+      // (Step 2/3's data, even though it's sitting right there in
+      // jobForm) never reached the store that Preview actually reads
+      // from (info$/initial$/interview$), so Preview showed stale/empty
+      // data for anything not individually visited first. Preview needs
+      // all three synced regardless of which single step was "left",
+      // since it renders the whole job at once.
+      const initialBody = this.jobForm.controls['initialData'].value;
+      this.jobFacade.saveInitialForm(initialBody);
+      const infoBody = this.jobForm.controls['jobInfo'].value;
+      this.jobFacade.saveJobInfo(infoBody);
+      const interviewBody = this.jobForm.controls['interview'].value;
+      this.jobFacade.saveInterview(interviewBody.interviewQuestions, interviewBody.interviewTemplateId);
+      return;
     }
 
     switch (formCtrl) {
