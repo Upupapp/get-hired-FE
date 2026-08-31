@@ -7,22 +7,59 @@
 
   <!-- Application metadata header (populated from list navigation state) -->
   <div class="aad-header" *ngIf="jobTitle || companyName">
-    <h1 class="aad-job-title">{{ jobTitle || 'Application' }}</h1>
+    <div class="aad-header-row">
+      <h1 class="aad-job-title">{{ jobTitle || 'Application' }}</h1>
+      <span class="gh-ap-contact-chip" [ngClass]="hasEmployerMessage ? 'gh-ap-contact-chip--reviewed' : 'gh-ap-contact-chip--pending'">
+        {{ hasEmployerMessage ? 'Reviewed' : 'Pending' }}
+      </span>
+    </div>
     <p class="aad-company" *ngIf="companyName">{{ companyName }}</p>
     <span class="gh-ap-status-chip" [ngClass]="statusChipClass" *ngIf="statusName">{{ statusName }}</span>
   </div>
   <h1 class="aad-job-title" *ngIf="!jobTitle && !companyName">Application Details</h1>
 
-  <!-- Completeness card: uses the single endpoint (includes snapshotCreatedAt) -->
-  <section class="aad-completeness" aria-label="Application completeness">
-    <h2 class="aad-section-title">Application completeness</h2>
-    <app-application-completeness-card
-      [snapshot]="snapshot"
-      [loading]="loading"
-      [error]="error"
-      [applicationId]="applicationId"
-      (retryClick)="retry()">
-    </app-application-completeness-card>
+  <app-inline-loading *ngIf="loading"></app-inline-loading>
+
+  <div class="aad-error" *ngIf="!loading && error" role="alert">
+    <p>We couldn't load this job's details right now.</p>
+    <button type="button" class="btn-link-cta" (click)="retry()">Try again</button>
+  </div>
+
+  <!-- Essential job + company details -- the whole point of this page:
+       what job, at what company, on what terms. Nothing here depends on
+       the completeness/snapshot feature that used to make this page
+       fail for every application. -->
+  <section class="aad-job-details" *ngIf="!loading && !error && job">
+    <h2 class="aad-section-title">Job Details</h2>
+
+    <dl class="aad-detail-list">
+      <ng-container *ngIf="job.jobCity || job.jobCountry">
+        <dt>Location</dt>
+        <dd>{{ locationLabel }}</dd>
+      </ng-container>
+      <ng-container *ngIf="job.workSetupName">
+        <dt>Work Setup</dt>
+        <dd>{{ job.workSetupName }}</dd>
+      </ng-container>
+      <ng-container *ngIf="job.jobTypeName">
+        <dt>Employment Type</dt>
+        <dd>{{ job.jobTypeName }}</dd>
+      </ng-container>
+      <ng-container *ngIf="job.jobLevelName">
+        <dt>Experience Level</dt>
+        <dd>{{ job.jobLevelName }}</dd>
+      </ng-container>
+      <ng-container *ngIf="dateApplied">
+        <dt>Applied On</dt>
+        <dd>{{ dateApplied | date: 'mediumDate' }}</dd>
+      </ng-container>
+    </dl>
+
+    <p class="aad-job-description" *ngIf="job.jobDescription">{{ job.jobDescription }}</p>
+
+    <a class="aad-view-job-link" [routerLink]="['/jobs/details', job.jobId]">
+      View full job posting <span aria-hidden="true">→</span>
+    </a>
   </section>
 
 </div>

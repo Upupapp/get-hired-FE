@@ -21,63 +21,24 @@
             <span class="gh-ap-status-chip" [ngClass]="statusChipClass(app.applicantStatusName)">{{ app.applicantStatusName || 'Applied' }}</span>
           </div>
 
-          <!-- Completeness badge: compact pill shown in the list row -->
-          <div class="application-row-badge" *ngIf="app.jobApplicationId">
-            <button type="button"
-                    class="app-completeness-toggle"
-                    [attr.aria-expanded]="expandedSnapshotId === app.jobApplicationId"
-                    [attr.aria-controls]="'completeness-' + app.jobApplicationId"
-                    [attr.aria-label]="(expandedSnapshotId === app.jobApplicationId ? 'Hide' : 'Show') + ' application completeness for ' + app.jobTitle"
-                    (click)="toggleSnapshot(app.jobApplicationId)"
-                    title="View application completeness details">
-              <app-application-completeness-badge
-                [level]="snapshotsLoaded ? snapshotFor(app.jobApplicationId)?.completenessLevel ?? null : null"
-                [score]="snapshotsLoaded ? snapshotFor(app.jobApplicationId)?.completenessScore ?? null : null"
-                [loading]="!snapshotsLoaded"
-                [compact]="true">
-              </app-application-completeness-badge>
-              <span class="app-completeness-toggle-chevron"
-                    [class.app-completeness-toggle-chevron--open]="expandedSnapshotId === app.jobApplicationId"
-                    aria-hidden="true">&#8250;</span>
-            </button>
-          </div>
+          <!-- Contact status: whether the employer has reached out yet.
+               Replaces the old completeness badge here -- that feature
+               depended on a snapshot only ever populated at submission
+               time, so it read "Unavailable" for every application that
+               predated it (in practice, always). Message threads are
+               already covered by the dedicated Messages section, not
+               duplicated here. -->
+          <span class="gh-ap-contact-chip" [ngClass]="app.hasEmployerMessage ? 'gh-ap-contact-chip--reviewed' : 'gh-ap-contact-chip--pending'">
+            {{ app.hasEmployerMessage ? 'Reviewed' : 'Pending' }}
+          </span>
         </div>
 
-        <!-- Expandable completeness detail card -->
-        <div class="app-snapshot"
-             *ngIf="app.jobApplicationId && expandedSnapshotId === app.jobApplicationId"
-             [id]="'completeness-' + app.jobApplicationId"
-             role="region"
-             aria-label="Application completeness details"
-             aria-live="polite"
-             aria-atomic="false">
-          <app-application-completeness-card
-            [snapshot]="snapshotsLoaded ? snapshotFor(app.jobApplicationId) : null"
-            [loading]="!snapshotsLoaded"
-            [error]="snapshotsError"
-            [applicationId]="app.jobApplicationId"
-            (retryClick)="onSnapshotRetry()">
-          </app-application-completeness-card>
-          <a class="app-detail-link"
+        <div class="app-row-actions" *ngIf="app.jobApplicationId">
+          <a class="btn-link-cta"
              [routerLink]="['/user/applications', app.jobApplicationId]"
-             [state]="{ jobTitle: app.jobTitle, companyName: app.companyName, status: app.applicantStatusName }"
-             [attr.aria-label]="'View full application details for ' + app.jobTitle">
+             [state]="{ jobTitle: app.jobTitle, companyName: app.companyName, status: app.applicantStatusName, jobId: app.jobId, dateApplied: app.dateApplied, hasEmployerMessage: app.hasEmployerMessage }">
             View full details <span aria-hidden="true">→</span>
           </a>
-        </div>
-
-        <div class="app-row-actions">
-          <button type="button" class="btn-link-cta" (click)="toggleMessages(app.jobId)">
-            {{ expandedJobId === app.jobId ? 'Hide messages' : 'Message employer' }}
-          </button>
-        </div>
-
-        <div class="application-row-messages" *ngIf="expandedJobId === app.jobId">
-          <app-message-thread
-            [jobId]="app.jobId"
-            [otherPartyLabel]="app.companyName || 'the employer'"
-            currentUserRole="applicant">
-          </app-message-thread>
         </div>
       </div>
     </div>

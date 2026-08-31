@@ -83,81 +83,39 @@
   &--rejected    { background: #FEF2F2; color: #B91C1C; }
 }
 
-// ── Completeness toggle button (wraps badge pill + chevron) ─────────────
+// ── Employer contact status pill ─────────────────────────────────────────
+// Replaces the old completeness badge -- that feature depended on a
+// snapshot only ever populated at submission time, so it always read
+// "Unavailable" in practice. This instead reflects whether the employer
+// has sent any message for this application yet.
 
 .application-row-badge {
   flex-shrink: 0;
 }
 
-.app-completeness-toggle {
+.gh-ap-contact-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  padding: 2px 4px 2px 0;
-  cursor: pointer;
-  border-radius: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--gh-font-base);
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
 
-  // Keyboard focus ring — meets WCAG 2.4.7
-  &:focus-visible {
-    outline: 2px solid var(--gh-coral);
-    outline-offset: 2px;
-  }
-
-  &:hover .app-completeness-toggle-chevron {
-    color: var(--gh-coral);
-  }
-}
-
-.app-completeness-toggle-chevron {
-  display: inline-block;
-  font-size: 14px;
-  color: #9ca3af;
-  transform: rotate(90deg);
-  transition: transform $motion-duration-micro $motion-ease-standard,
-              color $motion-duration-micro $motion-ease-standard;
-  @include motion-safe;
-
-  &--open {
-    transform: rotate(270deg);
-    color: var(--gh-coral);
-  }
-}
-
-// ── Expanded completeness detail section ────────────────────────────────
-
-.app-snapshot {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  &--pending  { background: #f5f5f5; color: #6b6887; }
+  &--reviewed { background: #EFF6FF; color: #1D4ED8; }
 }
 
 // ── Row actions ─────────────────────────────────────────────────────────
 
-.application-row-messages {
-  margin-top: 12px;
-}
-
 .app-row-actions {
   margin-top: 10px;
-}
 
-// "View full details" link inside the expanded snapshot section
-// Rendered after the card content — separated by a top border to anchor it
-// visually as a "footer action" rather than inline card text.
-.app-detail-link {
-  display: block;
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--gh-coral);
-  text-decoration: none;
-
-  &:hover { text-decoration: underline; }
-  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; border-radius: 2px; }
+  .btn-link-cta {
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
 }
 
 // ── Responsive ──────────────────────────────────────────────────────────
@@ -204,8 +162,9 @@
     padding: 4px 12px;
   }
 
-  .app-completeness-toggle {
-    min-height: 32px;
+  .gh-ap-contact-chip {
+    font-size: 12.5px;
+    padding: 4px 12px;
   }
 
   .app-row-actions {
@@ -217,10 +176,5 @@
       min-height: 40px;
       font-size: 14px;
     }
-  }
-
-  .app-detail-link {
-    font-size: 13px;
-    padding-top: 12px;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, HostListener, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./application-process.component.scss'],
   animations: [mainAnimations]
 })
-export class ApplicationProcessComponent implements OnInit {
+export class ApplicationProcessComponent implements OnInit, OnChanges {
   @Input() job: JobModel.Job;
   @Output() apply = new EventEmitter();
 
@@ -150,6 +150,34 @@ export class ApplicationProcessComponent implements OnInit {
       this.applicantFacade.getApplicantById(this.userId);
     }
 
+    this.initializedForm();
+  }
+
+  // BUGFIX (production): this component is reused (not destroyed/recreated)
+  // when the applicant navigates from one job's details page straight to
+  // another's -- e.g. "Apply now" success -> "Browse jobs" -> a different
+  // job post from the same company -- since public-details.component.html
+  // only toggles [job] via *ngIf="isApplying" on the same host component
+  // instance, Angular's router doesn't tear this one down. Without this,
+  // every bit of state from the PREVIOUS application (the "Application
+  // Submitted!" success panel, the stepper position, answered interview
+  // questions) stayed visible on the new job until a hard refresh. Resets
+  // everything back to a clean first-visit state whenever the bound job
+  // actually changes to a different one (not on the initial binding,
+  // which ngOnInit already handles).
+  ngOnChanges(changes: SimpleChanges): void {
+    const jobChange = changes['job'];
+    if (!jobChange || jobChange.firstChange) return;
+
+    const prevId = jobChange.previousValue && jobChange.previousValue.jobId;
+    const newId = jobChange.currentValue && jobChange.currentValue.jobId;
+    if (prevId === newId) return;
+
+    this.submitStatus = 'idle';
+    this.isSubmitting = false;
+    this.submitError = '';
+    this.interviewTabOverride = 'questions';
+    this.stepper = 1;
     this.initializedForm();
   }
 

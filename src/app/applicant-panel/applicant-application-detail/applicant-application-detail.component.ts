@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { ApplicationService } from '@app-application/application.service';
+import { JobService } from '@app-job/job.service';
 
 @Component({
   selector: 'app-applicant-application-detail',
@@ -17,8 +15,20 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
   jobTitle: string = '';
   companyName: string = '';
   statusName: string = '';
+  jobId: string = '';
+  dateApplied: string | null = null;
+  hasEmployerMessage: boolean = false;
 
-  snapshot: any = null;
+  // BUGFIX (production): this page used to depend entirely on the
+  // application-completeness snapshot endpoint, which reads from a table
+  // that never actually existed in production -- every visit here showed
+  // "Couldn't load completeness details right now." with no way to see
+  // anything about the job itself. Replaced with the real, always-available
+  // job record (same one the public job details page uses) so this shows
+  // the actual job/company info that matters -- not a fragile scoring
+  // feature. "Message employer" was also removed from here (and the list
+  // page): the dedicated Messages section already covers that.
+  job: any = null;
   loading = true;
   error = false;
 
@@ -27,7 +37,7 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private applicationService: ApplicationService,
+    private jobService: JobService,
   ) {
     // router.getCurrentNavigation() is only valid synchronously during
     // construction — it returns null in ngOnInit (navigation is already
@@ -38,6 +48,9 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
     this.jobTitle = state['jobTitle'] ?? '';
     this.companyName = state['companyName'] ?? '';
     this.statusName = state['status'] ?? '';
+    this.jobId = state['jobId'] ?? '';
+    this.dateApplied = state['dateApplied'] ?? null;
+    this.hasEmployerMessage = !!state['hasEmployerMessage'];
   }
 
   ngOnInit(): void {
@@ -53,16 +66,25 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
   }
 
   private load(): void {
-    this.sub = this.applicationService.getApplicationSnapshot(this.applicationId).pipe(
-      // Discriminate HTTP error from legitimate null-data (pre-deployment app).
-      // { data: null, error: false } → card shows its "unavailable" state, no retry.
-      // { data: null, error: true  } → component shows error+retry block.
-      map((res: any) => ({ data: res?.data ?? null, error: false })),
-      catchError(() => of({ data: null, error: true })),
-    ).subscribe(({ data, error }) => {
-      this.snapshot = data;
+    if (!this.jobId) {
+      // Arrived here directly (e.g. a bookmark/refresh), not via the list
+      // link that carries jobId through router state -- nothing to fetch.
       this.loading = false;
-      this.error = error;
+      this.error = true;
+      return;
+    }
+
+    this.sub = this.jobService.getJobById(this.jobId).subscribe({
+      next: (res: any) => {
+        this.job = (res && res.data) || res || null;
+        this.loading = false;
+        this.error = !this.job;
+      },
+      error: () => {
+        this.job = null;
+        this.loading = false;
+        this.error = true;
+      },
     });
   }
 
@@ -70,7 +92,7 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
     this.loading = true;
     this.error = false;
-    this.snapshot = null;
+    this.job = null;
     this.load();
   }
 
@@ -81,6 +103,11 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
   // DESIGN OVERHAUL PORT (2026-08-19): same status-chip mapping as
   // applicant-applications.component.ts, kept as a separate copy (not a
   // shared service) since it's a small, presentation-only lookup.
+  get locationLabel(): string {
+    if (!this.job) return '';
+    return [this.job.jobCity, this.job.jobCountry].filter(Boolean).join(', ');
+  }
+
   get statusChipClass(): string {
     const s = (this.statusName || '').toLowerCase();
     if (s.includes('hire')) return 'gh-ap-status-chip--hired';
