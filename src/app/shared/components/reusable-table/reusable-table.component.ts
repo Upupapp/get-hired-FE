@@ -52,6 +52,16 @@ export class ReusableTableComponent implements OnInit {
    *  applicants" link elsewhere) -- pre-fills and applies the search box
    *  on load, same as if the user had typed it themselves. */
   @Input() initialSearch: string = "";
+  /** BUGFIX (QA EM-27, P2): the delete/trash icon always rendered
+   *  regardless of whether the caller actually listens to
+   *  (deleteSelectedRow) -- candidate-list.component.html never did,
+   *  making it a confirmed dead control there (clicking it emitted an
+   *  event nobody handled). Defaults to true (existing behavior
+   *  unchanged for every caller that DOES wire it up -- job-list,
+   *  contact-list, contact-group); set false only where there is
+   *  genuinely no destructive action defined, so the control is removed
+   *  rather than left silently inert. */
+  @Input() showDeleteAction: boolean = true;
 
   // for filtering
   public searchBy: string = '';

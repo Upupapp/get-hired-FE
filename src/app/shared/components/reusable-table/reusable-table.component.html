@@ -128,7 +128,7 @@
               </button>
 
               <button type="button" class="btn p-0 border-0 bg-transparent" aria-label="Delete"
-                (click)="openDialog('delete', data)" *ngIf="data.status != 'Archived'">
+                (click)="openDialog('delete', data)" *ngIf="showDeleteAction && data.status != 'Archived'">
                 <img src="/assets/images/placeholder/icons/delete-circle-red.png" class="hvr-grow delete-image" alt="">
               </button>
             </span>
@@ -315,7 +315,7 @@
         </button>
         <button type="button" class="gh-mobile-card__action-btn gh-mobile-card__action-btn--delete"
                 aria-label="Delete"
-                *ngIf="data.status != 'Archived'"
+                *ngIf="showDeleteAction && data.status != 'Archived'"
                 (click)="openDialog('delete', data); $event.stopPropagation()">
           <img src="/assets/images/placeholder/icons/delete-circle-red.png"
                class="delete-image" alt="Delete" style="width:30px;">

@@ -225,28 +225,35 @@ export class CandidateListComponent implements OnInit {
   }
 
   viewMenu(event: any): void {
-    if(event?.data.status !== 'imported') {
-      // BUGFIX: width:'34vw' was a fixed viewport fraction with no mobile
-      // fallback -- on a phone-width screen 34vw shrinks to ~120px, far too
-      // narrow for the panel's content. panelClass + maxWidth gives it a
-      // real responsive cap instead (see .candidate-panel-dialog in
-      // table-control-modal.component.scss).
-      let openDialog = this.dialog.open(TableControlModalComponent, {
-        panelClass: 'candidate-panel-dialog',
-        width: '92vw',
-        maxWidth: '440px',
-        data: event?.data,
-      });
+    // BUGFIX (QA EM-26, P2): this used to skip opening the menu entirely
+    // for any manually-imported (CSV) candidate (status === 'imported'),
+    // with zero feedback -- clicking the menu icon on those rows did
+    // literally nothing, a confirmed dead control. The menu now always
+    // opens (deterministic behavior for every row); the dialog itself
+    // shows an explanatory empty state for imported candidates instead
+    // of a "View Candidate Detail" action that would lead nowhere (they
+    // have no real application/profile behind them to view).
+    //
+    // BUGFIX: width:'34vw' was a fixed viewport fraction with no mobile
+    // fallback -- on a phone-width screen 34vw shrinks to ~120px, far too
+    // narrow for the panel's content. panelClass + maxWidth gives it a
+    // real responsive cap instead (see .candidate-panel-dialog in
+    // table-control-modal.component.scss).
+    let openDialog = this.dialog.open(TableControlModalComponent, {
+      panelClass: 'candidate-panel-dialog',
+      width: '92vw',
+      maxWidth: '440px',
+      data: event?.data,
+    });
 
-      openDialog
-        .afterClosed()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(result => {
-          if(result && result.profile) {
-            this.getApplicant(result.data.candidate_id);
-          }
-        });
-    }
+    openDialog
+      .afterClosed()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(result => {
+        if(result && result.profile) {
+          this.getApplicant(result.data.candidate_id);
+        }
+      });
   }
 
   getApplicant(userId: string, jobId: string = this.jobId) {

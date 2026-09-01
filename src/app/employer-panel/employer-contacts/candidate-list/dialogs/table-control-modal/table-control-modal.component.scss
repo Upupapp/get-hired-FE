@@ -173,6 +173,16 @@
     font-size: 14px;
     transition: transform 0.15s ease, color 0.15s ease;
   }
+
+  &__imported-notice {
+    margin: 0;
+    padding: var(--gh-space-4);
+    border: 1px dashed var(--gh-border);
+    border-radius: var(--gh-radius-input);
+    font-size: 13px;
+    color: var(--gh-text-secondary);
+    text-align: center;
+  }
 }
 
 @media (max-width: 767px) {
