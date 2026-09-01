@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { take } from 'rxjs/operators';
+import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
 @Component({
   selector: 'app-signin',
@@ -160,7 +161,26 @@ export class SigninComponent implements OnInit {
     }
   }
 
-  loginAdmin() {
+  loginAdmin(event?: Event) {
+    // BUGFIX (QA EM-12, P1 -- true root cause): the template binds plain
+    // (submit), not (ngSubmit), which never preventDefault()s on its own --
+    // this method didn't even accept the event to call it. Submitting with
+    // Enter in either field (which does not respect a disabled button the
+    // way a mouse click does) triggered a real browser page
+    // navigation/reload before any of the code below ever ran, discarding
+    // whatever was typed with zero visible feedback. Separately, this had
+    // NO validity check at all: an empty/invalid submit that somehow did
+    // reach this code called `this.email.toLowerCase()` on a null email,
+    // throwing -- also silent, since nothing displayed that error either.
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
+
+    if (this.loginForm.invalid) {
+      focusFirstInvalidControl(this.loginForm);
+      return;
+    }
+
     // localStorage.clear();
     this.email = this.loginForm?.get('email')?.value;
     const password = this.loginForm?.get('password')?.value;

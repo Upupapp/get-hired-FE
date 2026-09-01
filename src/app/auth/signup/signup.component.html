@@ -163,6 +163,14 @@
             <button type="button" class="btn-close hvr-buzz-out" data-bs-dismiss="alert" aria-label="Close"
               (click)="onAlertClose()"></button>
             <span>{{ error }}</span>
+            <!-- BUGFIX (QA EM-07, P1): duplicate-account message was a dead
+                 end -- give it an actual recovery path instead of leaving
+                 the applicant to guess. -->
+            <span *ngIf="isDuplicateAccount">
+              <a routerLink="/signin" class="gh-legal-inline-link">Sign in</a>
+              or
+              <a routerLink="/reset-password" class="gh-legal-inline-link">reset your password</a>.
+            </span>
           </div>
 
           <div class="gh-name-row">
@@ -239,6 +247,12 @@
             <div class="mt-1 ms-4" id="signup-email-error" *ngIf="
             (email_validators?.invalid && email_validators?.touched) || email_validators?.dirty">
               <small *ngIf="email_validators?.errors?.required" class="text-danger">Email is required</small>
+              <!-- BUGFIX (QA EM-03, P1): Validators.email sets an `email`
+                   error key (not `required`) on a non-empty malformed
+                   address -- nothing here ever showed it, so a bad email
+                   address (e.g. "not-an-email") looked accepted with zero
+                   feedback. -->
+              <small *ngIf="email_validators?.errors?.email" class="text-danger">Please enter a valid email address</small>
             </div>
           </div>
 
@@ -393,6 +407,8 @@
 
           <div class="mt-4 gh-terms-row">
             <mat-checkbox formControlName="agreeToTerms" class="remember-me mt-1"
+              [attr.aria-invalid]="agreeToTerms_validators?.invalid && agreeToTerms_validators?.touched ? 'true' : null"
+              [attr.aria-describedby]="agreeToTerms_validators?.invalid && agreeToTerms_validators?.touched ? 'signup-terms-error' : null"
               aria-label="I agree to GetHired's Privacy Policy and Terms of Use">
               <span class="gh-terms-text">
                 By creating your account, you agree to GetHired's
@@ -400,6 +416,15 @@
                 and <span class="gh-legal-inline-link">Terms of Use</span>.
               </span>
             </mat-checkbox>
+            <!-- BUGFIX (QA EM-08, P1): the submit button is already
+                 [disabled] while unchecked, but a disabled button gives no
+                 explanation -- it just looks broken. Also covers the Enter-
+                 key submit path (bypasses the disabled button entirely),
+                 which register()'s invalid branch now marks touched for. -->
+            <div class="mt-1" id="signup-terms-error"
+              *ngIf="agreeToTerms_validators?.invalid && agreeToTerms_validators?.touched">
+              <small class="text-danger">You must agree to the Privacy Policy and Terms of Use to continue</small>
+            </div>
           </div>
 
           <!-- V5: Employer-specific CTA text when role=2 is selected.

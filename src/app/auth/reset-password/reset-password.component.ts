@@ -5,6 +5,7 @@ import { mainAnimations } from '@main/shared/animations/main-animations';
 import { map, catchError, of } from 'rxjs';
 import { AuthService } from '../auth.service';
 import { SeoService } from '@app-core/services/seo.service';
+import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
 @Component({
   selector: 'app-reset-password',
@@ -52,6 +53,22 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   submitEmail(event: Event): void {
+    // BUGFIX (QA JS-19/20, P1 -- true root cause): the template binds plain
+    // (submit), not (ngSubmit), which never preventDefault()s on its own --
+    // submitting with Enter triggered a real browser page
+    // navigation/reload before any of the code below ever ran, silently
+    // discarding whatever was typed. This also had NO validity check at
+    // all: an empty/invalid submit that did reach this code sent the
+    // request anyway with an empty/malformed email.
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
+
+    if (this.pwForm.invalid) {
+      focusFirstInvalidControl(this.pwForm);
+      return;
+    }
+
     this.email = this.pwForm?.get('email')?.value;
     this.loading = true;
     this.authService.getEmailPwLink(this.email)

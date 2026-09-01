@@ -46,7 +46,7 @@
         <div class="gh-auth-card-logo text-center">
           <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-auth-card-logo-img" alt="GetHired">
         </div>
-        <form class="px-3" (submit)="loginAdmin()" [formGroup]="loginForm">
+        <form class="px-3" (submit)="loginAdmin($event)" [formGroup]="loginForm">
           <div class="form-group text-start gh-auth-heading">
             <h4 class="main-title gh-auth-title m-0">Welcome <span class="gh-auth-accent">back!</span></h4>
             <p class="gh-auth-subtitle">Sign in to continue to your account</p>

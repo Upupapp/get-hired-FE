@@ -11,6 +11,7 @@ import { take } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
+import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
 @Component({
   selector: 'app-signup',
@@ -44,6 +45,14 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   googleLoading = false;
   googleError: string | null = null;
+  // BUGFIX (QA EM-07, P1): the duplicate-account message ("User is already
+  // Registered...") already existed and was already safe (no leaked
+  // Firebase/provider identifiers), but was shown as a bare, dead-end alert
+  // -- no way to actually act on it besides retyping. Detected the same way
+  // signin.component.ts's showError() already special-cases its own "verify
+  // email" message, driving a real Sign In link in the template instead of
+  // a plain string.
+  isDuplicateAccount: boolean = false;
 
   // reCAPTCHA (ng-recaptcha's <re-captcha>) renders Google's v2 checkbox
   // widget at a hard-fixed 304x78px -- unlike the Google/LinkedIn sign-in
@@ -208,6 +217,20 @@ export class SignupComponent implements OnInit, AfterViewInit {
   }
 
   register(event) {
+    // BUGFIX (QA EM-02/03/08, P1 -- true root cause): the template binds
+    // plain (submit), not Angular's (ngSubmit), which does NOT
+    // preventDefault() automatically. Without this, submitting the form
+    // (Enter key in any field always does this regardless of the submit
+    // button's own [disabled] state) triggers a real browser form
+    // submission/page navigation to the current URL -- reloading the page
+    // and wiping all entered data AND any error state before Angular ever
+    // gets to render one. That's a genuinely silent failure, not just a
+    // missing-message one: markAllAsTouched() below wouldn't matter if the
+    // page reloads out from under it first.
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
+
     if (this.registerForm.valid) {
       this.submitting = true;
 
@@ -231,7 +254,17 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
       this.authFacade.signUp(credentials);
     } else {
+      // BUGFIX (QA EM-02/03/08, P1): an invalid submit -- all fields empty,
+      // a malformed email, or terms unchecked -- silently did nothing. The
+      // submit button is [disabled] while invalid for a mouse click, but
+      // pressing Enter inside any text field still triggers (ngSubmit) on
+      // the form regardless of a disabled button, reaching this exact
+      // branch with zero feedback. Every field already has its own
+      // *ngIf="control.invalid && control.touched" error message in the
+      // template -- they just never rendered because nothing had marked
+      // the controls touched yet.
       this.submitting = false;
+      focusFirstInvalidControl(this.registerForm);
     }
   }
 
@@ -282,6 +315,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     if (err) {
       window.scroll(0, 0);
       this.error = err;
+      this.isDuplicateAccount = typeof err === 'string' && err.indexOf('already Registered') > -1;
     }
   }
 
@@ -306,6 +340,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     localStorage.removeItem('loginMessage');
     this.error = undefined;
     this.message = undefined;
+    this.isDuplicateAccount = false;
   }
 
   get email_validators() {

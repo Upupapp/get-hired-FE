@@ -10,6 +10,7 @@ import { currencies } from '@app-shared/mock.data';
 import { startWith, pairwise, debounceTime, distinctUntilChanged } from 'rxjs';
 import * as Model from '../../applicant.model';
 import { generateProfileSuggestion, ProfileSuggestion } from './profile-ai-suggestion.util';
+import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
 @Component({
   selector: 'app-profile-basic-info',
@@ -70,7 +71,10 @@ export class ProfileBasicInfoComponent implements OnInit {
   profileImage: any;
   salaryCurrencies = currencies;
   applicantProfileId: string;
-  private submitting = false;
+  // Made public (was private): profile-forms.component.html's Next button
+  // now reads this directly to guard only against a double-submit while a
+  // save is already in flight (QA JS-14 fix -- see that template's [disabled]).
+  submitting = false;
 
   loading$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));
@@ -309,13 +313,15 @@ export class ProfileBasicInfoComponent implements OnInit {
       this.applicantFacade.saveBasicInfo(basicInfo);
     } else {
       // BUGFIX: previously a silent no-op -- the parent's "Next" button
-      // is disabled while invalid so this path wasn't reachable from
-      // there, but saveProgress() also calls submitForm() directly (via
-      // the stepper's own step-change confirmation), which has no such
-      // guard. Mark every field touched so validation messages actually
-      // render, and tell the user why nothing was saved instead of
-      // leaving them to guess.
-      this.profileDetailsForm.markAllAsTouched();
+      // used to stay disabled while invalid so this path was unreachable
+      // from there (QA JS-14 -- fixed in profile-forms.component.html by
+      // removing that disable gate), but saveProgress() also calls
+      // submitForm() directly (via the stepper's own step-change
+      // confirmation), which had no such guard either way. Mark every
+      // field touched so validation messages actually render, focus/scroll
+      // to the first invalid one, and tell the user why nothing was saved
+      // instead of leaving them to guess.
+      focusFirstInvalidControl(this.profileDetailsForm);
       this.snackbarService.error('Please complete all required fields before continuing.', '');
       this.saveResult.emit('error');
     }

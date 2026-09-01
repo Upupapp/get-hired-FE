@@ -18,8 +18,18 @@
     <!-- <button class="btn btn-save me-2" type="button" (click)="basicInfo.submitForm()" *ngIf="stepper==1"
       [disabled]="basicInfo ? !basicInfo.profileDetailsForm.valid : !basicFormValid">
       Submit Changes</button> -->
+      <!-- BUGFIX (QA JS-14, P1): this used to stay [disabled] while the
+           form was invalid -- Step 1's own required-field validation is
+           still mandatory before advancing, unchanged, but a disabled
+           button silently explains nothing, so clicking it while empty
+           looked like Next simply didn't work. Now always clickable
+           (only guarded against double-submit while a save is already in
+           flight); saveProgressConfirmation(2) -> saveProgress() ->
+           basicInfo.submitForm() already marks every field touched and
+           shows a clear error toast when invalid -- that path just could
+           never be reached by a click before. -->
       <button class="btn btn-save me-2" type="button" (click)="saveProgressConfirmation(2)" *ngIf="stepper==1"
-      [disabled]="basicInfo ? (!basicInfo.profileDetailsForm.valid || basicInfo.avatarUploading) : !basicFormValid">
+      [disabled]="basicInfo?.submitting">
       Next</button>
       <button class="btn btn-save me-2" type="button" (click)="saveProgressConfirmation(3)" *ngIf="stepper==2">
       Next</button>
