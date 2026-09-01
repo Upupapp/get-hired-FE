@@ -152,17 +152,32 @@
         <div class="gh-salary-field">
           <label class="gh-label gh-label--sr" for="salary-min">Minimum salary</label>
           <input id="salary-min" type="number" class="gh-input" placeholder="Min (e.g. 25000)"
-            formControlName="salaryMinimum" min="0">
+            formControlName="salaryMinimum" min="0"
+            [attr.aria-invalid]="jobInfoForm.get('salaryMinimum')?.invalid && jobInfoForm.get('salaryMinimum')?.touched ? 'true' : null"
+            [attr.aria-describedby]="jobInfoForm.get('salaryMinimum')?.invalid && jobInfoForm.get('salaryMinimum')?.touched ? 'salary-min-error' : null">
         </div>
         <span class="gh-salary-to" aria-hidden="true">to</span>
         <div class="gh-salary-field">
           <label class="gh-label gh-label--sr" for="salary-max">Maximum salary</label>
           <input id="salary-max" type="number" class="gh-input" placeholder="Max (e.g. 45000)"
-            formControlName="salaryMaximum" min="0">
+            formControlName="salaryMaximum" min="0"
+            [attr.aria-invalid]="jobInfoForm.get('salaryMaximum')?.invalid && jobInfoForm.get('salaryMaximum')?.touched ? 'true' : null"
+            [attr.aria-describedby]="jobInfoForm.get('salaryMaximum')?.invalid && jobInfoForm.get('salaryMaximum')?.touched ? 'salary-max-error' : null">
         </div>
         <span class="gh-salary-period" *ngIf="selectedRates">
           / {{ selectedRates | lowercase }}
         </span>
+      </div>
+      <!-- BUGFIX (QA EM-21, P1): neither field had any error feedback at
+           all -- a negative value or a max below min looked accepted. -->
+      <div class="mt-1" *ngIf="jobInfoForm.get('salaryMinimum')?.invalid && jobInfoForm.get('salaryMinimum')?.touched" id="salary-min-error">
+        <small class="text-danger">Minimum salary cannot be negative.</small>
+      </div>
+      <div class="mt-1" *ngIf="jobInfoForm.get('salaryMaximum')?.invalid && jobInfoForm.get('salaryMaximum')?.touched" id="salary-max-error">
+        <small class="text-danger">Maximum salary cannot be negative.</small>
+      </div>
+      <div class="mt-1" *ngIf="jobInfoForm.errors?.maxLessThanMin && (jobInfoForm.get('salaryMinimum')?.touched || jobInfoForm.get('salaryMaximum')?.touched)">
+        <small class="text-danger">Maximum salary cannot be less than minimum salary.</small>
       </div>
     </div>
   </div>

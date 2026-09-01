@@ -282,8 +282,16 @@
       <!-- Job Description -->
       <div class="gh-field mb-4">
         <div class="gh-label-row">
+          <!-- BUGFIX (QA EM-20, P1): labeled required (asterisk) but never
+               actually enforced -- neither this form's own FormControl
+               (job-create.component.ts, no Validators.required) nor the
+               backend's publish gate (jobMiddleware.js's
+               validateJobPublishPayload requires only jobTitle) ever
+               blocked publishing without it. Relabeled to match the
+               universal "job title is the one true requirement" policy
+               already in effect everywhere else on this form. -->
           <label class="gh-label" for="job-description">
-            Job description <span class="gh-label-required" aria-label="required">*</span>
+            Job description <span class="gh-label-optional">(optional)</span>
           </label>
           <span class="gh-char-count" aria-live="polite">
             {{ (initialDetailsForm.get('jobDescription').value || '').length }}/2000

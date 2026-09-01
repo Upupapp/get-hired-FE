@@ -50,11 +50,13 @@
 				<div class="d-flex mt-1" *ngIf="data?.salaryMaximum || data?.salaryMinimum">
 					<h5 class="d-flex title-details me-3 ms-1">
 						<i class="bi bi-cash-stack me-2" aria-hidden="true"></i>
+						<!-- BUGFIX (QA EM-22/23, P1): hardcoded "PHP" regardless of
+						 the job's actual selected currency. -->
 						<ng-container *ngIf="data?.salaryMinimum && data?.salaryMaximum; else oneSalaryBound">
-							PHP {{data.salaryMinimum | number:'1.0':'en-US'}} &ndash; PHP {{data.salaryMaximum | number:'1.0':'en-US'}}
+							{{data.salaryMinimum | currency: data.salaryCurrency : 'symbol':'1.0-0'}} &ndash; {{data.salaryMaximum | currency: data.salaryCurrency : 'symbol':'1.0-0'}}
 						</ng-container>
 						<ng-template #oneSalaryBound>
-							PHP {{(data?.salaryMaximum || data?.salaryMinimum) | number:'1.0':'en-US'}}
+							{{(data?.salaryMaximum || data?.salaryMinimum) | currency: data?.salaryCurrency : 'symbol':'1.0-0'}}
 						</ng-template>
 					</h5>
 				</div>

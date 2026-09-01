@@ -16,8 +16,10 @@
             <p class="title-banner-description mb-2">
               <ng-container *ngIf="selectedJobPost?.industryName">
                 {{selectedJobPost?.industryName}} /
-              </ng-container> {{selectedJobPost?.workSetupName}} / PHP {{selectedJobPost?.salaryMinimum |
-              number:'1.0':'en-US' }} - PHP {{selectedJobPost?.salaryMaximum | number:'1.0':'en-US' }}
+              </ng-container> {{selectedJobPost?.workSetupName}} /
+              <!-- BUGFIX (QA EM-22/23, P1): hardcoded "PHP" regardless of
+                   the job's actual selected currency. -->
+              {{selectedJobPost?.salaryMinimum | currency: selectedJobPost?.salaryCurrency : 'symbol':'1.0-0' }} - {{selectedJobPost?.salaryMaximum | currency: selectedJobPost?.salaryCurrency : 'symbol':'1.0-0' }}
             </p>
           </div>
         </div>

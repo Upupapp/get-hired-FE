@@ -152,7 +152,11 @@
         </div>
         <div class="pv-meta-line pv-meta-line--salary" *ngIf="preview.salaryMinimum">
           <img src="/assets/images/placeholder/icons/job-icon-salary.png" class="pv-meta-line-icon" alt="">
-          PHP {{ preview.salaryMinimum | number:'1.0':'en-US' }} - PHP {{ preview.salaryMaximum | number:'1.0':'en-US' }}
+          <!-- BUGFIX (QA EM-22/23, P1): hardcoded "PHP" regardless of the
+               job's actual selected currency -- reuses Angular's built-in
+               currency pipe with the stored salaryCurrency code, same
+               pattern already correct in job-details-sidecard.component.html. -->
+          {{ preview.salaryMinimum | currency: preview.salaryCurrency : 'symbol':'1.0-0' }} - {{ preview.salaryMaximum | currency: preview.salaryCurrency : 'symbol':'1.0-0' }}
           <span *ngIf="preview.rate && preview.rate != ''">/ {{ preview.rate }}</span>
         </div>
         <div class="pv-meta-line pv-no-data" *ngIf="!preview.salaryMinimum">

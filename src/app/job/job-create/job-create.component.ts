@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, HostListener, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobFacade } from '@app-job/state/job.facade';
@@ -651,6 +651,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
   }
 
+  // BUGFIX (QA EM-21, P1): group-level validator for the jobInfo FormGroup
+  // -- max < min was never checked anywhere on the frontend. Arrow-function
+  // class property (not a regular method) so `this` isn't needed and
+  // Angular can call it directly as a plain ValidatorFn reference. Only
+  // flags maxSalary on the FormGroup's own errors (not either individual
+  // control) so it doesn't fight with each field's own Validators.min(0)
+  // error, and only fires once both values are actually present -- a
+  // solitary min or max is a legitimate, valid, optional entry.
+  salaryRangeValidator = (group: AbstractControl): ValidationErrors | null => {
+    const min = group.get('salaryMinimum')?.value;
+    const max = group.get('salaryMaximum')?.value;
+    if (min === null || min === undefined || min === '' ||
+        max === null || max === undefined || max === '') {
+      return null;
+    }
+    return Number(max) < Number(min) ? { maxLessThanMin: true } : null;
+  };
+
   setFormGroup(data?: any) {
     // PRODUCTION FIX (universal, per explicit product decision -- this
     // used to be gated behind assistantPrefilled only, but repeated reports
@@ -697,12 +715,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         tags: new FormArray([]),
         jobTagsTxt: [null],
         rate: [data ? data.rate : null],
-        salaryMinimum: [data ? data.salaryMinimum : null],
-        salaryMaximum: [data ? data.salaryMaximum : null],
+        // BUGFIX (QA EM-21, P1): these had no validators at all -- the
+        // template's `min="0"` is a cosmetic HTML attribute only (it
+        // steers the native number-input spinner, it does not block
+        // typing a negative value or block Angular's own form submission)
+        // -- so a negative salary was silently accepted end to end. Both
+        // fields stay genuinely optional (no Validators.required); only
+        // validate the value actually entered.
+        salaryMinimum: [data ? data.salaryMinimum : null, Validators.min(0)],
+        salaryMaximum: [data ? data.salaryMaximum : null, Validators.min(0)],
         salaryCurrency: [data ? data.salaryCurrency : null],
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
-      }),
+      }, { validators: this.salaryRangeValidator }),
       interview: this.fb.group({
         interviewQuestions: this.fb.array([]),
         interviewTemplateId: [data ? data.interviewTemplateId : null],
@@ -1015,6 +1040,32 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         },
       }).afterClosed().subscribe((action: string) => {
         if (action === 'fix' && this.stepper !== 1) this.changeStep(1);
+      });
+      return;
+    }
+
+    // BUGFIX (QA EM-21, P1): JobReadinessService only checks presence
+    // (hasSalary etc.), never numeric validity -- a negative or reversed
+    // salary range never appeared in blockingItems at all, so it sailed
+    // straight through to jobFacade.saveJob() below with no gate whatsoever,
+    // "Ready to Publish" or not. This is a genuine data-integrity error
+    // (not a missing-optional-field one), so it hard-blocks like the
+    // jobTitle check above -- no "Proceed anyway" option -- rather than
+    // joining the soft confirm-dialog for merely-empty recommended fields.
+    const jobInfoGroup = this.jobForm.get('jobInfo');
+    if (jobInfoGroup && jobInfoGroup.invalid) {
+      this.haptics.warning();
+      const salaryMessage = jobInfoGroup.errors?.maxLessThanMin
+        ? 'Maximum salary cannot be less than minimum salary.'
+        : 'Salary values cannot be negative.';
+      this.dialog.open(UpdatedDialogComponent, {
+        data: {
+          icon: 'exclamation-circle',
+          message: salaryMessage,
+          actions: [{ label: 'Fix compensation', value: 'fix', primary: true }],
+        },
+      }).afterClosed().subscribe((action: string) => {
+        if (action === 'fix' && this.stepper !== 2) this.changeStep(2);
       });
       return;
     }
