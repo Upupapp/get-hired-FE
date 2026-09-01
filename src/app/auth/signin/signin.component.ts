@@ -56,7 +56,7 @@ export class SigninComponent implements OnInit {
     const rememberedEmail = localStorage.getItem('rememberedEmail');
 
     this.loginForm = this.formBuilder.group({
-      email: [rememberedEmail || null, Validators.compose([Validators.required, Validators.email])],
+      email: [rememberedEmail || null, Validators.compose([Validators.required, Validators.email, Validators.maxLength(254)])],
       password: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
       rememberMe: [!!rememberedEmail]
     });

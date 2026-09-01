@@ -23,7 +23,7 @@
         "REGISTRATION_BUTTON":"Register"
     },
     "FORGET_PASSWORD":{
-        "FORGET_PASSWORD_TEXT":"Forget Password",
+        "FORGET_PASSWORD_TEXT":"Forgot Password",
         "RESET_PASSWORD_TEXT":"Reset Password",
         "PW_RESET_CONFIRMATION_TEXT":"We'll send you an email with a link to reset the password to your account",
         "GET_RESET_LINK_BUTTON":"Get Reset Link",
@@ -72,7 +72,7 @@
         "CURRENT_JOB_TITLE_TEXT":"Current Job Title",
         "JOB_TYPE":"Job Type",
         "JOB_TYPE_SELECTOR":"Full time, Part time, Contractor",
-        "WORK_SETUP":"Preffered Work Setup",
+        "WORK_SETUP":"Preferred Work Setup",
         "WORK_SETUP_SELECTOR":"Hybrid, On-site, Remote",
         "EXPERIENCE_LEVEL":"Level of Experience",
         "EXPERIENCE_LEVEL_SELECTOR":"Intern or Student, Newer or Entry Level, Intermedetate 2 to 3 years of experience, More than 5 years of experience, Belonging to the Board of Directors and senior management personnel",
@@ -292,7 +292,7 @@
     },
     "CANDIDATE_APPLIED_ON_JOB_TABLE":{
         "CANDIDATE_MANAGEMENT":"Candidate List",
-        "ADD_CANDIDATE_BUTTON":"Add Cnadidate +"
+        "ADD_CANDIDATE_BUTTON":"Add Candidate +"
     },
     "NEW_CANDIDATE_FORM":{
         "NEW_CONTACT":"New Contact",

@@ -25,10 +25,28 @@ export class TableControlModalComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute) { }
 
+  // BUGFIX (QA EM-28, P3): the no-photo fallback was a realistic stock
+  // person photo (job-post-banner-person.png, actually meant for job
+  // banners) rendered with alt="Applicant photo" -- indistinguishable from
+  // a real uploaded photo and misleading about whether this candidate
+  // actually uploaded one. Replaced with an honest initials avatar,
+  // matching the same pattern already used elsewhere in this app
+  // (recruiter-messages.component.ts's avatarInitial()).
+  hasAvatarError = false;
+
   ngOnInit(): void {}
 
-  onAvatarError(event: Event): void {
-    (event.target as HTMLImageElement).src = '/assets/images/placeholder/job-post-banner-person.png';
+  onAvatarError(): void {
+    this.hasAvatarError = true;
+  }
+
+  get showRealAvatar(): boolean {
+    return !!this.data?.photo_url && !this.hasAvatarError;
+  }
+
+  get avatarInitial(): string {
+    const name = (this.data?.full_name || '').trim();
+    return name ? name.charAt(0).toUpperCase() : '?';
   }
 
   get statusClass(): string {

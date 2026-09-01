@@ -55,6 +55,16 @@
     object-fit: cover;
     border: 2px solid var(--gh-border);
     flex-shrink: 0;
+
+    &--initial {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gh-azure, #1D72F1);
+      color: #fff;
+      font-size: 20px;
+      font-weight: var(--gh-weight-bold);
+    }
   }
 
   &__identity {

@@ -299,15 +299,26 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   }
 
   getShareableLink(jobId: string) {
+    // BUGFIX (QA JS-11, P3): success already gave deterministic feedback
+    // (clipboard copy + "Link copied" toast), but a failed request --
+    // network error, backend down, or a response with no res.data --
+    // silently did nothing at all. Share went from "works" to "looks
+    // completely broken with zero explanation" depending purely on
+    // network conditions, with no way to tell the two apart.
     this.link$ = this.jobsService.getShareableLink(jobId)
       .pipe(
         tap(res => {
-          if (res.data) {
+          if (res && res.data) {
             this.clipboard.copy(res.data.shortLink)
             this.snackbarService.success(`Link copied to your clipboard`, '');
+          } else {
+            this.snackbarService.error(`Couldn't copy the link. Please try again.`, '');
           }
         }),
-        catchError(err => of(err))
+        catchError(err => {
+          this.snackbarService.error(`Couldn't copy the link. Please try again.`, '');
+          return of(err);
+        })
       ).subscribe();
 
   }

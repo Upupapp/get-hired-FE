@@ -78,12 +78,13 @@
             </span>
 
             <input type="email" class="form-control gh-input gh-input--icon-left" formControlName="email" name="email" id="signin-email"
-              placeholder="username@mailer.com" autocomplete="username"
+              placeholder="username@mailer.com" autocomplete="username" maxlength="254"
               [attr.aria-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'true' : null"
               [attr.aria-describedby]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched ? 'signin-email-error' : null">
 
+              <!-- BUGFIX (QA EM-17, P2): no maximum length was enforced anywhere. -->
               <div class="mt-1 ms-4" id="signin-email-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-                <small class="text-danger">{{ loginForm.get('email')?.errors?.required ? 'Email is required' : 'Enter a valid email address' }}</small>
+                <small class="text-danger">{{ loginForm.get('email')?.errors?.required ? 'Email is required' : loginForm.get('email')?.errors?.maxlength ? 'Email address is too long (max 254 characters)' : 'Enter a valid email address' }}</small>
               </div>
           </div>
 

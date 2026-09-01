@@ -96,7 +96,11 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
 
     this.registerForm = this.formBuilder.group({
-      email: [null, Validators.compose([Validators.required, Validators.email])],
+      // BUGFIX (QA EM-17, P2): neither this nor the backend enforced any
+      // maximum email length -- maxlength="254" on the input guards typing/
+      // pasting, this catches any other path a value could reach the
+      // control (e.g. a future paste-bypass or programmatic set).
+      email: [null, Validators.compose([Validators.required, Validators.email, Validators.maxLength(254)])],
       password: [null,
         Validators.compose([Validators.required, Validators.pattern(this.pwPattern)])],
       confirmPassword: [null, Validators.compose([Validators.required, Validators.minLength(8)])],

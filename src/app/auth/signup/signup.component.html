@@ -239,7 +239,7 @@
             </span>
 
             <input type="email" class="form-control gh-input gh-input--icon-left" formControlName="email" name="email" id="signup-email"
-              placeholder="Email Address" autocomplete="email"
+              placeholder="Email Address" autocomplete="email" maxlength="254"
               [class.is-invalid]="email_validators?.invalid && email_validators?.touched"
               [attr.aria-invalid]="email_validators?.invalid && email_validators?.touched ? 'true' : null"
               [attr.aria-describedby]="email_validators?.invalid && email_validators?.touched ? 'signup-email-error' : null">
@@ -253,6 +253,7 @@
                    address (e.g. "not-an-email") looked accepted with zero
                    feedback. -->
               <small *ngIf="email_validators?.errors?.email" class="text-danger">Please enter a valid email address</small>
+              <small *ngIf="email_validators?.errors?.maxlength" class="text-danger">Email address is too long (max 254 characters)</small>
             </div>
           </div>
 

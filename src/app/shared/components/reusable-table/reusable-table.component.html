@@ -135,7 +135,13 @@
           </span>
 
           <ng-container>
-            <span class="text-capitalize" *ngIf="header?.col_name !== 'profile_image'
+            <!-- BUGFIX (QA JS-05/EM-25, P3): text-capitalize applied to
+                 every generic column value here -- including emails,
+                 addresses, job IDs, and any other data-bound text -- e.g.
+                 "chris@lguids.com.ph" rendering as "Chris@Lguids.Com.Ph".
+                 Data values must render exactly as stored/entered;
+                 capitalization belongs on static headings/labels, not here. -->
+            <span *ngIf="header?.col_name !== 'profile_image'
 						 && header?.col_name !== 'icon'
 						 && header?.col_name !== 'action'
 						 && header?.type !== 'date'

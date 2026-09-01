@@ -43,7 +43,7 @@ export class ResetPasswordComponent implements OnInit {
 
     this.onAlertClose(); // Reset all errors
     this.pwForm = this.formBuilder.group({
-      email: [null, Validators.compose([Validators.required, Validators.email])]
+      email: [null, Validators.compose([Validators.required, Validators.email, Validators.maxLength(254)])]
     });
   }
 

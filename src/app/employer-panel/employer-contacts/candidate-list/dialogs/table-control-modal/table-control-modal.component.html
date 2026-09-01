@@ -4,9 +4,15 @@
 	</button>
 
 	<div class="candidate-panel__header">
-		<img [src]="data?.photo_url || '/assets/images/placeholder/job-post-banner-person.png'" class="candidate-panel__avatar"
+		<img *ngIf="showRealAvatar" [src]="data?.photo_url" class="candidate-panel__avatar"
 		     alt="Applicant photo"
-		     (error)="onAvatarError($event)">
+		     (error)="onAvatarError()">
+		<!-- BUGFIX (QA EM-28, P3): honest initials fallback instead of a
+		     realistic stock person photo -- no photo can't look like a
+		     photo was actually uploaded. -->
+		<span *ngIf="!showRealAvatar" class="candidate-panel__avatar candidate-panel__avatar--initial" aria-hidden="true">
+			{{ avatarInitial }}
+		</span>
 
 		<div class="candidate-panel__identity">
 			<strong class="candidate-panel__name text-capitalize">{{data?.full_name}}</strong>

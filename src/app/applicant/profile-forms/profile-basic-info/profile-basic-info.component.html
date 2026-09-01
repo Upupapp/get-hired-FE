@@ -159,7 +159,7 @@
       </div>
 
       <div class="title-container mb-3" *ngIf="workSetup$ | async as workSetup">
-        <label>Preffered Work Setup</label>
+        <label>Preferred Work Setup</label>
         <select class="form-select" formControlName="workSetupId"
         [class.is-invalid]="workSetupId_validators?.invalid && workSetupId_validators?.touched">
           <option selected disabled [ngValue]="null">Select Work Setup</option>
