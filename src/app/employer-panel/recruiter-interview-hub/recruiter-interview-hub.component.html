@@ -114,26 +114,30 @@
         </div>
 
         <div class="ih-card-actions">
-          <a
-            [routerLink]="getCandidateRoute(item)"
-            [queryParams]="getCandidateQueryParams(item)"
-            class="ih-action ih-action--primary">
-            View applicants
-          </a>
-          <a
-            *ngIf="item.hasVideoAnswers"
-            [routerLink]="getVideoReviewRoute(item)"
-            [queryParams]="getVideoReviewQueryParams(item)"
-            class="ih-action ih-action--secondary">
-            Review responses
-          </a>
-          <a
-            routerLink="/recruiter/messages"
-            [queryParams]="getMessageQueryParams(item)"
-            [state]="getMessageState(item)"
-            class="ih-action ih-action--ghost">
-            Message
-          </a>
+          <ng-container *ngIf="activeFilter === 'has-video'; else defaultActions">
+            <a
+              *ngIf="item.hasVideoAnswers"
+              [routerLink]="getVideoReviewRoute(item)"
+              [queryParams]="getVideoReviewQueryParams(item)"
+              class="ih-action ih-action--secondary">
+              Review video answers
+            </a>
+          </ng-container>
+          <ng-template #defaultActions>
+            <a
+              [routerLink]="getCandidateRoute(item)"
+              [queryParams]="getCandidateQueryParams(item)"
+              class="ih-action ih-action--primary">
+              View applicants
+            </a>
+            <a
+              routerLink="/recruiter/messages"
+              [queryParams]="getMessageQueryParams(item)"
+              [state]="getMessageState(item)"
+              class="ih-action ih-action--ghost">
+              Message
+            </a>
+          </ng-template>
         </div>
 
       </div>
