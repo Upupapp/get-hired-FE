@@ -106,6 +106,15 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
     return ['/recruiter/contacts/candidate-list', item.jobId];
   }
 
+  /** Deep-link query params for "Review responses" -- candidate-list.component.ts
+   *  reads applicantId to load this specific applicant automatically (instead
+   *  of landing on the generic table and requiring a manual re-click), and
+   *  openAnswers to open the video review modal straight onto their first
+   *  answer. */
+  getVideoReviewQueryParams(item: InterviewHubItem): { applicantId: string; openAnswers: string } {
+    return { applicantId: item.applicantId, openAnswers: '1' };
+  }
+
   getDisplayName(item: InterviewHubItem): string {
     return item.applicantName || item.applicantEmail || 'Applicant';
   }

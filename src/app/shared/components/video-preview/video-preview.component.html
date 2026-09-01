@@ -1,4 +1,4 @@
-<div class="video-preview-dialog" [class.is-buffering]="isVideoBuffering">
+<div class="video-preview-dialog" [class.is-buffering]="isVideoBuffering" [class.has-nav]="hasMultiple">
 
   <button
     type="button"
@@ -17,34 +17,73 @@
 
   <div class="video-preview-shell">
     <div class="video-preview-header">
-      <span class="video-preview-kicker">{{ kicker }}</span>
+      <div class="video-preview-header-top">
+        <span class="video-preview-kicker">{{ kicker }}</span>
+        <span *ngIf="items" class="video-preview-progress">{{ progressLabel }}</span>
+      </div>
       <h2 class="video-preview-title">{{ title }}</h2>
     </div>
 
-    <div class="video-frame">
-      <div class="video-loading-state" *ngIf="isVideoBuffering && !hasVideoError" aria-live="polite">
-        <span class="loading-dot" aria-hidden="true"></span>
-        Loading video&hellip;
+    <div class="video-frame-row">
+      <button
+        *ngIf="hasMultiple"
+        type="button"
+        class="video-nav-arrow video-nav-arrow--prev"
+        aria-label="Previous answer"
+        (click)="goPrev()">
+        <span aria-hidden="true">&lsaquo;</span>
+      </button>
+
+      <div class="video-frame">
+        <div class="video-loading-state" *ngIf="isVideoBuffering && !hasVideoError" aria-live="polite">
+          <span class="loading-dot" aria-hidden="true"></span>
+          Loading video&hellip;
+        </div>
+
+        <div class="video-error-state" *ngIf="hasVideoError" aria-live="assertive">
+          Unable to load video. Please close and try again.
+        </div>
+
+        <video
+          class="video-preview-player"
+          [src]="currentUrl"
+          controls
+          autoplay
+          playsinline
+          preload="metadata"
+          (loadstart)="onVideoBuffering()"
+          (waiting)="onVideoBuffering()"
+          (stalled)="onVideoBuffering()"
+          (canplay)="onVideoReady()"
+          (playing)="onVideoReady()"
+          (error)="onVideoError()">
+        </video>
       </div>
 
-      <div class="video-error-state" *ngIf="hasVideoError" aria-live="assertive">
-        Unable to load video. Please close and try again.
-      </div>
+      <button
+        *ngIf="hasMultiple"
+        type="button"
+        class="video-nav-arrow video-nav-arrow--next"
+        aria-label="Next answer"
+        (click)="goNext()">
+        <span aria-hidden="true">&rsaquo;</span>
+      </button>
+    </div>
 
-      <video
-        class="video-preview-player"
-        [src]="data?.url"
-        controls
-        autoplay
-        playsinline
-        preload="metadata"
-        (loadstart)="onVideoBuffering()"
-        (waiting)="onVideoBuffering()"
-        (stalled)="onVideoBuffering()"
-        (canplay)="onVideoReady()"
-        (playing)="onVideoReady()"
-        (error)="onVideoError()">
-      </video>
+    <!-- Question strip: lets a reviewer jump straight to any answer instead
+         of stepping through one at a time. Horizontally scrollable so it
+         holds up with any number of questions on narrow screens. -->
+    <div class="video-question-strip" *ngIf="hasMultiple" role="tablist" aria-label="Interview answers">
+      <button
+        *ngFor="let q of items; let i = index"
+        type="button"
+        role="tab"
+        class="video-question-pill"
+        [class.video-question-pill--active]="i === currentIndex"
+        [attr.aria-selected]="i === currentIndex"
+        (click)="jumpTo(i)">
+        {{ i + 1 }}
+      </button>
     </div>
   </div>
 </div>

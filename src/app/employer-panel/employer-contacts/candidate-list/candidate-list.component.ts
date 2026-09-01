@@ -52,6 +52,10 @@ export class CandidateListComponent implements OnInit {
   profile:ApplicantModel.Applicant;
   profileDocs = [];
   answers = [];
+  /** Set from a ?applicantId=/?openAnswers=1 deep link (recruiter-interview-hub's
+   *  "Review responses") -- passed to app-application-preview so it opens the
+   *  video review modal on its own once the applicant's answers load. */
+  autoOpenFirstAnswer: boolean = false;
 
 
   public displayedColumns: TableHeader[] = displayedColumns;
@@ -114,6 +118,23 @@ export class CandidateListComponent implements OnInit {
       .subscribe((params) => {
         this.jobId = params['id'];
         this.applyCandidateListFilter();
+      });
+
+    // Deep link from recruiter-interview-hub's "Review responses": jump
+    // straight to this applicant's answers instead of landing on the
+    // generic candidate table and requiring a manual re-click.
+    // route.snapshot.params (not the this.jobId instance field, which is
+    // set by a separate subscription with no guaranteed ordering against
+    // this one) is always current the moment this callback runs -- both
+    // come from the same route snapshot update.
+    this.route.queryParams
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((queryParams) => {
+        const applicantId = queryParams['applicantId'];
+        if (applicantId) {
+          this.autoOpenFirstAnswer = queryParams['openAnswers'] === '1';
+          this.getApplicant(applicantId, this.route.snapshot.params['id']);
+        }
       });
 
     this.getCandidateList();
@@ -221,8 +242,8 @@ export class CandidateListComponent implements OnInit {
     }
   }
 
-  getApplicant(userId: string) {
-    this.jobService.getJobApplicantDetails(this.jobId, userId)
+  getApplicant(userId: string, jobId: string = this.jobId) {
+    this.jobService.getJobApplicantDetails(jobId, userId)
       .pipe().subscribe(res => {
         if(res.data) {
           this.profile = res.data.profile;

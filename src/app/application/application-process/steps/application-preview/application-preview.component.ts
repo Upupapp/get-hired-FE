@@ -20,6 +20,11 @@ export class ApplicationPreviewComponent implements OnInit {
    * application-flow usage of this shared component never passes this,
    * so the template's *ngIf keeps that path completely unaffected. */
   @Input() matchSignals: any;
+  /** Employer-view-only, optional: opens the first answer straight into the
+   * review modal on load -- used when arriving here via a "Review responses"
+   * deep link (recruiter-interview-hub) so the recruiter lands directly on
+   * the video instead of having to click a row themselves. */
+  @Input() autoOpenFirstAnswer: boolean = false;
 
   // BUGFIX (production): Step 4's Interview Answers section used to render
   // the full per-question video list -- redundant with Step 3, and every
@@ -89,6 +94,11 @@ export class ApplicationPreviewComponent implements OnInit {
           index: this.interviews.findIndex(intv => intv.questionId === answer.questionId)
         }
       })
+
+      if (this.autoOpenFirstAnswer && this.reviewItems.length) {
+        // Dialog service needs the host view fully initialized first.
+        setTimeout(() => this.openAnswersReview(0));
+      }
     }
 
   }
@@ -97,17 +107,42 @@ export class ApplicationPreviewComponent implements OnInit {
     this.profileSummary = !this.profileSummary
   }
 
-  previewVideo(question, url) {
+  // BUGFIX (defensive): an answer whose questionId no longer matches any
+  // question in `interviews` (question deleted/edited after the applicant
+  // answered) previously produced index: -1, and the template's
+  // `interviews[item.index].question` would throw on `interviews[-1]`
+  // being undefined -- silently breaking the whole answers list. Filtered
+  // out here instead, and this is now the SINGLE source both the template
+  // and openAnswersReview() read from, so their indexes always agree.
+  get reviewItems(): { question: string; url: string; createdAt?: string }[] {
+    if (!this.answers || !this.answers.length) return [];
+    return this.answers
+      .filter(a => a && this.interviews && this.interviews[a.index])
+      .map(a => ({
+        question: this.interviews[a.index].question,
+        url: a.answerBlob || a.answerUrl,
+        createdAt: a.createdAt,
+      }));
+  }
 
-    let dialog = this.dialog.open(VideoPreviewComponent, {
+  // PROFESSIONAL REVIEW UPGRADE: previously each row opened its own,
+  // single-video dialog -- reviewing all of an applicant's answers meant
+  // closing and reopening the modal per question. Now every row opens the
+  // SAME dialog with the applicant's full answer set, starting at the
+  // clicked question, so a recruiter can step through with Next/Previous
+  // (or the question strip) without leaving the modal.
+  openAnswersReview(startIndex: number): void {
+    const items = this.reviewItems;
+    if (!items.length) return;
+
+    this.dialog.open(VideoPreviewComponent, {
       width: '92vw',
-      maxWidth: '920px',
+      maxWidth: '960px',
       panelClass: 'video-preview-panel',
       data: {
-        title: question,
-        url
+        items,
+        startIndex,
       }
     });
-
   }
 }

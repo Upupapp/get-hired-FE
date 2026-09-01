@@ -126,13 +126,16 @@
 
   <!-- Employer-side (job applicants / candidate list) read-only view: full
        detail, unchanged -- an employer needs to actually review/play each
-       answer here, not just see a count. -->
+       answer here, not just see a count. Every row opens the SAME review
+       modal (see openAnswersReview()) so a recruiter can step through all
+       of this applicant's answers with Next/Previous instead of reopening
+       a fresh dialog per question. -->
   <ng-template #employerAnswerList>
-    <ng-container *ngIf="answers.length > 0">
-      <section class="interview-card card-body p-2 px-1 mb-1" id="interview-list2"
-        *ngFor="let item of answers; let i = index">
+    <ng-container *ngIf="reviewItems.length > 0">
+      <section class="interview-card card-body p-2 px-1 mb-1"
+        *ngFor="let item of reviewItems; let i = index">
         <div class="row" [@animate]="{value:'*', params:{ y:'10px', delay:  (i * 150) + 'ms' }}"
-          (click)="previewVideo(interviews[item.index].question, item.answerBlob || item.answerUrl)">
+          (click)="openAnswersReview(i)">
           <div class="col-12">
             <div class="d-flex">
               <div class="logo-thumbnail me-3 d-flex align-items-center justify-content-center">
@@ -142,9 +145,9 @@
               <div class="mt-2">
                 <p class="title-label-sub">
                   <img src="/assets/images/placeholder/icons/interview-logo-3.png" class="me-2" style="height: 20px;">
-                  Answer {{item.index + 1}}
+                  Answer {{i + 1}}
                 </p>
-                <h5 class="title-label">{{interviews[item.index].question}}</h5>
+                <h5 class="title-label">{{item.question}}</h5>
                 <span *ngIf="item.createdAt">Created At: {{ item.createdAt | date: 'short' }}</span>
               </div>
             </div>
