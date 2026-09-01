@@ -48,6 +48,10 @@ export class ReusableTableComponent implements OnInit {
   @Input() statusFilter: boolean = false;
   @Input() statusArray: any[] = ["Active", "Inactive", "Pending"];
   @Input() statusName: string = "";
+  /** Optional deep-link value (e.g. an applicant's name from a "View
+   *  applicants" link elsewhere) -- pre-fills and applies the search box
+   *  on load, same as if the user had typed it themselves. */
+  @Input() initialSearch: string = "";
 
   // for filtering
   public searchBy: string = '';
@@ -96,6 +100,11 @@ export class ReusableTableComponent implements OnInit {
     this.dataSource.data = [...this.listDataSource].slice(0, this.maxRows);
     this.pageNumbers = Math.ceil([...this.listDataSource].length / this.maxRows);
     this.paginate = Array(this.pageNumbers).fill(0).map((el, i) => i + 1);
+
+    if (this.initialSearch) {
+      this.searchBy = this.initialSearch;
+      this.searchDataSource();
+    }
   }
 
   ngAfterViewInit() {

@@ -56,6 +56,11 @@ export class CandidateListComponent implements OnInit {
    *  "Review responses") -- passed to app-application-preview so it opens the
    *  video review modal on its own once the applicant's answers load. */
   autoOpenFirstAnswer: boolean = false;
+  /** Set from a ?q= deep link (recruiter-interview-hub's "View applicants") --
+   *  pre-fills the candidate table's own search box so the list is already
+   *  narrowed to this one applicant instead of showing every candidate for
+   *  the job and making the recruiter search themselves. */
+  initialSearch: string = '';
 
 
   public displayedColumns: TableHeader[] = displayedColumns;
@@ -135,6 +140,8 @@ export class CandidateListComponent implements OnInit {
           this.autoOpenFirstAnswer = queryParams['openAnswers'] === '1';
           this.getApplicant(applicantId, this.route.snapshot.params['id']);
         }
+
+        this.initialSearch = queryParams['q'] || '';
       });
 
     this.getCandidateList();

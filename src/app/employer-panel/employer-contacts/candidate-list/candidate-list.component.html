@@ -18,10 +18,11 @@
         <app-reusable-table [loading]="loading"
           [componentTitle]="'Candidates'"
           [displayedColumns]="displayedColumns"
-          [selectedColumns]="selectedColumns" 
+          [selectedColumns]="selectedColumns"
           [selectedColumnsMobile]="selectedColumns"
           [searchSource]="searchSource"
           [maxRows]="10"
+          [initialSearch]="initialSearch"
           (updateSelectedRowDialog)="viewMenu($event)"
           [listDataSource]="candidateList">
         </app-reusable-table>

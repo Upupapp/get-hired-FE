@@ -101,6 +101,14 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
     return ['/recruiter/contacts/candidate-list', item.jobId];
   }
 
+  /** Deep-link query params for "View applicants" -- candidate-list.component.ts
+   *  reads q to pre-fill its own search box with this applicant's name, so
+   *  the recruiter lands on this one candidate already filtered out of the
+   *  job's full list instead of having to search for them manually. */
+  getCandidateQueryParams(item: InterviewHubItem): { q: string } | undefined {
+    return item.applicantName ? { q: item.applicantName } : undefined;
+  }
+
   /** Returns the job applicants route for drilling into video review. */
   getVideoReviewRoute(item: InterviewHubItem): string[] {
     return ['/recruiter/contacts/candidate-list', item.jobId];
