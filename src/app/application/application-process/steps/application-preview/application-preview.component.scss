@@ -111,7 +111,16 @@
 	padding: 10px 30px;
 }
 
-#interview-list2{
+// BUGFIX (production, "check icon huge on the Interview Answers rows"):
+// this was keyed on #interview-list2 -- an id that used to sit on every row
+// in application-preview.component.html. The multi-answer review upgrade
+// removed that duplicate id (each answer rendered its own copy of the same
+// id, invalid HTML) since rows now key off *ngFor's index instead, which
+// silently detached this entire sizing block (the 100x100 icon tile, 34px
+// icon, and the 576px-breakpoint 44x20 mobile version below) -- the
+// checkmark image rendered at its raw native pixel size instead. Rescoped
+// to .interview-card, the class that was already on the element.
+.interview-card{
 
 
 	.bg-interview{
@@ -392,7 +401,7 @@
 		}
 	}
 
-	#interview-list2 {
+	.interview-card {
 		padding: 12px !important;
 
 		.logo-thumbnail {
