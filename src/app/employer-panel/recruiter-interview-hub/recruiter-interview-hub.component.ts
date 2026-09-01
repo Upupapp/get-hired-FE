@@ -115,6 +115,21 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
     return { applicantId: item.applicantId, openAnswers: '1' };
   }
 
+  /** Deep-link query params for "Message" -- recruiter-messages.component.ts
+   *  reads jobId/applicantUid to select (or start) this specific applicant's
+   *  conversation automatically, instead of landing on a blank inbox and
+   *  making the recruiter find the right thread themselves. */
+  getMessageQueryParams(item: InterviewHubItem): { jobId: string; applicantUid: string } {
+    return { jobId: item.jobId, applicantUid: item.applicantId };
+  }
+
+  /** Router state alongside getMessageQueryParams() -- lets the messages
+   *  page show the applicant's name/job title immediately if this is a
+   *  brand-new conversation with no thread row to read them from yet. */
+  getMessageState(item: InterviewHubItem): { applicantName: string | null; jobTitle: string } {
+    return { applicantName: item.applicantName, jobTitle: item.jobTitle };
+  }
+
   getDisplayName(item: InterviewHubItem): string {
     return item.applicantName || item.applicantEmail || 'Applicant';
   }

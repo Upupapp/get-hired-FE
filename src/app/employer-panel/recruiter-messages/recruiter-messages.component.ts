@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MessageService, RecruiterThreadSummary } from '@app-shared/services/message.service';
@@ -43,12 +43,22 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  /** Set from a ?jobId=/?applicantUid= deep link (e.g. "Message" on the
+   *  Interviews hub) -- consumed once threads load, then cleared. */
+  private pendingDeepLinkJobId: string | null = null;
+  private pendingDeepLinkApplicantUid: string | null = null;
+  private pendingDeepLinkState: { applicantName?: string | null; jobTitle?: string } = {};
+
   constructor(
     private messageService: MessageService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
+    this.pendingDeepLinkJobId = this.route.snapshot.queryParamMap.get('jobId');
+    this.pendingDeepLinkApplicantUid = this.route.snapshot.queryParamMap.get('applicantUid');
+    this.pendingDeepLinkState = (window.history.state as any) || {};
     this.loadThreads();
   }
 
@@ -69,6 +79,7 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
           this.applyFilter();
           this.loading = false;
           this.retrying = false;
+          this.consumeDeepLink();
         },
         error: () => {
           this.loading = false;
@@ -76,6 +87,44 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
           this.retrying = false;
         },
       });
+  }
+
+  /** Handles a ?jobId=&applicantUid= deep link (e.g. "Message" on the
+   *  Interviews hub): selects the matching existing thread if one exists,
+   *  or opens a brand-new one for that (job, applicant) pair if this is the
+   *  first message to this candidate -- app-message-thread's own
+   *  [jobId]/[applicantUid] inputs find-or-create the real thread
+   *  server-side the moment the recruiter actually sends something. */
+  private consumeDeepLink(): void {
+    const jobId = this.pendingDeepLinkJobId;
+    const applicantUid = this.pendingDeepLinkApplicantUid;
+    this.pendingDeepLinkJobId = null;
+    this.pendingDeepLinkApplicantUid = null;
+    if (!jobId || !applicantUid) return;
+
+    const existing = this.threads.find(
+      (t) => t.jobId === jobId && t.applicantUid === applicantUid
+    );
+    if (existing) {
+      this.selectThread(existing);
+      return;
+    }
+
+    const state = this.pendingDeepLinkState;
+    this.selectedThread = {
+      threadId: '',
+      applicantUid,
+      applicantName: state.applicantName || null,
+      applicantPhotoUrl: null,
+      jobId,
+      jobTitle: state.jobTitle || null,
+      lastMessageSnippet: null,
+      lastSenderRole: null,
+      lastMessageAt: new Date().toISOString(),
+      needsReply: false,
+      unreadCount: 0,
+    };
+    this.showDetail = true;
   }
 
   retry(): void {
