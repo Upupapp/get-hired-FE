@@ -57,7 +57,13 @@ export class SigninComponent implements OnInit {
 
     this.loginForm = this.formBuilder.group({
       email: [rememberedEmail || null, Validators.compose([Validators.required, Validators.email, Validators.maxLength(254)])],
-      password: [null, Validators.compose([Validators.required, Validators.minLength(8)])],
+      // EMP-006 fix: signin is not signup -- only verify a password value
+      // was supplied, then let Firebase authoritatively determine whether
+      // it's correct. A minLength(8) requirement here rejected a legitimate
+      // existing credential whenever today's signup complexity policy
+      // didn't match how an older account's password was originally set,
+      // and showed a signup-strength message for a merely empty field.
+      password: [null, Validators.required],
       rememberMe: [!!rememberedEmail]
     });
   }

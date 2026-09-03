@@ -32,7 +32,7 @@ export class CompanyBasicComponent implements OnInit {
   ngOnInit(): void {
     this.companyBasicForm = this.fb.group({
       companyName: [null, Validators.required],
-      companyEmail: [null, [Validators.email, Validators.required]]
+      companyEmail: [null, [Validators.required, Validators.email, Validators.maxLength(254)]]
     });
   }
 
