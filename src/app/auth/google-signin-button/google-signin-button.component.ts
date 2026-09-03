@@ -130,6 +130,16 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
         text: this.label,
         shape: 'rectangular',
         logo_alignment: 'left',
+        // BUGFIX: hl=en on the gsi/client script tag (index.html) does NOT
+        // reach this specific rendering call -- confirmed via live network
+        // inspection, the internal accounts.google.com/gsi/button request
+        // this triggers carries no hl param at all, and the button kept
+        // rendering in a geo-detected language (Filipino, for requests
+        // from the Philippines) regardless. GsiButtonConfiguration.locale
+        // (typings.d.ts) is the per-call option that actually reaches this
+        // request; forcing it to 'en' is what produces literal
+        // "Sign in with Google" / "Sign up with Google".
+        locale: 'en',
         width: finalWidth
       });
       this._lastRenderedWidth = measuredWidth;
