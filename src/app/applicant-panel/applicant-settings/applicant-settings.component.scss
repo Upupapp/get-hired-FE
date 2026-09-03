@@ -1,72 +1,236 @@
-// DESIGN OVERHAUL PORT (2026-08-20): converted to --gh-* tokens and the
-// Employer portal's card language. Removed a large amount of dead CSS
-// (.badge-selection/.rate-card/.industry-*/.btn-work-setup/.avatar-image/
-// etc.) that had no matching markup anywhere in this component's template
-// -- confirmed via the template above before removal (only
-// .submit-container/.btn-save/.card/.title-label/.title-container/
-// .form-group/.form-control are actually used).
+// REDESIGN (GETHIRED_JOBSEEKER_SETTINGS_PROFILE_AUTH_REMEDIATION_V1):
+// minimalist, formal, technology-product aesthetic per Tab 06 -- uses the
+// project's own existing --gh-* design tokens (src/assets/styles/_tokens.scss)
+// rather than inventing a parallel style system. Restrained borders/shadows,
+// consistent radius, strong whitespace, no decorative clutter.
 
-.submit-container {
-  z-index: 99 !important;
-  position: fixed !important;
-  right: 20px;
-  top: 105px;
+.gh-settings {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--gh-space-page, 48px) var(--gh-space-4, 16px) var(--gh-space-12, 48px);
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
 }
 
-.title-label {
-  font-family: var(--gh-font-base);
+.gh-settings__page-header {
+  margin-bottom: var(--gh-space-8, 32px);
+}
+
+.gh-settings__title {
+  margin: 0;
+  font-size: 28px;
   font-weight: 700;
-  font-size: 16px;
-  margin-bottom: 5px;
-  color: var(--gh-text);
+  color: var(--gh-text, #101828);
+  letter-spacing: -0.01em;
 }
 
-.title-container label {
-  font-family: var(--gh-font-base);
-  font-weight: 600;
+.gh-settings__subtitle {
+  margin: var(--gh-space-1, 4px) 0 0;
+  font-size: 14px;
+  color: var(--gh-text-secondary, #667085);
+}
+
+.gh-settings__card {
+  background: var(--gh-white, #fff);
+  border: 1px solid var(--gh-border, #E7EAF3);
+  border-radius: var(--gh-radius-card, 18px);
+  padding: var(--gh-space-card, 20px) var(--gh-space-8, 32px) var(--gh-space-8, 32px);
+  margin-bottom: var(--gh-space-6, 24px);
+}
+
+.gh-settings__card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gh-space-4, 16px);
+  flex-wrap: wrap;
+  padding-bottom: var(--gh-space-4, 16px);
+  margin-bottom: var(--gh-space-6, 24px);
+  border-bottom: 1px solid var(--gh-border, #E7EAF3);
+}
+
+.gh-settings__section-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gh-text, #101828);
+}
+
+.gh-settings__section-hint {
+  margin: var(--gh-space-1, 4px) 0 0;
   font-size: 13px;
-  color: var(--gh-text-secondary);
+  color: var(--gh-text-secondary, #667085);
+  max-width: 42ch;
 }
 
-.card {
-  background: var(--gh-color-bg-card);
-  box-shadow: var(--gh-shadow-card);
-  border-radius: var(--gh-card-radius, 14px);
-  border: 1px solid var(--gh-border);
-  padding: 24px !important;
-}
+.gh-settings__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gh-space-6, 24px) var(--gh-space-6, 24px);
 
-.form-control {
-  background: var(--gh-color-bg-card);
-  min-height: 44px;
-  border: 1px solid var(--gh-border) !important;
-  border-radius: 8px;
-  font-family: var(--gh-font-base);
-
-  &:focus {
-    border-color: var(--gh-coral) !important;
-    box-shadow: 0 0 0 2px rgba(255, 103, 93, 0.15);
+  &--single {
+    grid-template-columns: 1fr;
+    max-width: 420px;
   }
 }
 
-.btn-save {
-  background: var(--gh-grad-cta);
-  border-radius: var(--gh-btn-radius, 7px);
-  font-family: var(--gh-font-base);
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--gh-white);
-  padding: 8px 22px !important;
-  border: none;
-  cursor: pointer;
+.gh-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gh-space-1, 4px);
 
-  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; }
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gh-text-secondary, #667085);
+  }
+
+  input {
+    height: 44px;
+    padding: 0 var(--gh-space-4, 16px);
+    border: 1px solid var(--gh-border, #E7EAF3);
+    border-radius: var(--gh-radius-input, 12px);
+    font-size: 14px;
+    color: var(--gh-text, #101828);
+    background: var(--gh-white, #fff);
+    transition: border-color 0.15s ease;
+
+    &:focus-visible {
+      outline: 2px solid var(--gh-azure, #168BFF);
+      outline-offset: 1px;
+      border-color: var(--gh-azure, #168BFF);
+    }
+
+    &[readonly] {
+      background: var(--gh-bg, #F6F7FB);
+      color: var(--gh-text-secondary, #667085);
+      cursor: default;
+    }
+
+    &[aria-invalid="true"] {
+      border-color: var(--gh-error, #EF4444);
+    }
+  }
 }
 
-@media (max-width: 480px) {
-  .submit-container {
-    position: static !important;
-    text-align: right;
-    margin-bottom: 12px;
+.gh-field__hint {
+  font-size: 12px;
+  color: var(--gh-text-muted, #98A2B3);
+}
+
+.gh-field__error {
+  font-size: 12px;
+  color: var(--gh-error, #EF4444);
+}
+
+.gh-password-input {
+  position: relative;
+  display: flex;
+
+  input {
+    flex: 1;
+    padding-right: 64px;
+  }
+}
+
+.gh-password-input__toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 44px;
+  padding: 0 var(--gh-space-4, 16px);
+  border: none;
+  background: transparent;
+  color: var(--gh-azure, #168BFF);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--gh-azure, #168BFF);
+    outline-offset: -2px;
+    border-radius: var(--gh-radius-sm, 8px);
+  }
+}
+
+.gh-settings__card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--gh-space-6, 24px);
+}
+
+.gh-btn {
+  height: 42px;
+  padding: 0 var(--gh-space-6, 24px);
+  border-radius: var(--gh-btn-radius, 10px);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: var(--gh-grad-cta, linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%));
+    color: var(--gh-white, #fff);
+
+    &:focus-visible {
+      outline: 2px solid var(--gh-navy, #0D1024);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.gh-alert {
+  padding: var(--gh-space-3, 12px) var(--gh-space-4, 16px);
+  border-radius: var(--gh-radius-sm, 8px);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: var(--gh-space-5, 20px);
+
+  &--success {
+    background: color-mix(in srgb, var(--gh-success, #10B981) 12%, white);
+    color: var(--gh-success, #10B981);
+  }
+
+  &--error {
+    background: var(--gh-coral-soft, #FFF0EE);
+    color: var(--gh-error, #EF4444);
+  }
+}
+
+// RESPONSIVE (Tab 15): stack to one column below tablet width, keep
+// touch targets and helper/error text readable, no horizontal overflow.
+@media (max-width: 640px) {
+  .gh-settings {
+    padding: var(--gh-space-8, 32px) var(--gh-space-4, 16px);
+  }
+
+  .gh-settings__card {
+    padding: var(--gh-space-5, 20px);
+  }
+
+  .gh-settings__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gh-settings__card-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gh-settings__card-head .gh-btn {
+    width: 100%;
+  }
+
+  .gh-settings__card-actions .gh-btn {
+    width: 100%;
   }
 }

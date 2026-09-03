@@ -1,8 +1,50 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { AbstractControl, FormGroup, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
+import { AuthService } from '@main/auth/auth.service';
+import { SnackbarService } from '@app-core/services/snackbar.service';
+import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
+
+// REDESIGN (GETHIRED_JOBSEEKER_SETTINGS_PROFILE_AUTH_REMEDIATION_V1):
+// the previous single, unbound, decorative "Password" field is replaced
+// with a real Current/New/Confirm Change Password flow, wired to the
+// EXISTING POST /auth/account/change-password endpoint
+// (AuthService.changePasswordInSession -- already implemented backend and
+// frontend service method, just never called from any component). Account
+// Information (name/email) and Change Password are two separate forms with
+// two separate submit actions -- per Tab 18, these are deliberately
+// different security flows and are never merged into one request.
+const PASSWORD_MIN_LENGTH = 12;
+const PASSWORD_MAX_LENGTH = 128;
+
+function passwordsMatchValidator(newKey: string, confirmKey: string): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const newCtrl = group.get(newKey);
+    const confirmCtrl = group.get(confirmKey);
+    if (!newCtrl || !confirmCtrl) return null;
+    if (confirmCtrl.value && newCtrl.value !== confirmCtrl.value) {
+      confirmCtrl.setErrors({ ...confirmCtrl.errors, notMatching: true });
+    } else if (confirmCtrl.errors) {
+      const { notMatching, ...rest } = confirmCtrl.errors;
+      confirmCtrl.setErrors(Object.keys(rest).length ? rest : null);
+    }
+    return null;
+  };
+}
+
+function notEqualToValidator(otherKey: string): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const parent = control.parent;
+    if (!parent) return null;
+    const other = parent.get(otherKey);
+    if (other && control.value && other.value && control.value === other.value) {
+      return { sameAsCurrent: true };
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-applicant-settings',
@@ -11,7 +53,17 @@ import { AuthFacade } from '@main/auth/state/auth.facade';
 })
 export class ApplicantSettingsComponent implements OnInit {
   profileDetailsForm: FormGroup;
+  passwordForm: FormGroup;
   user;
+
+  savingAccount = false;
+  changingPassword = false;
+  passwordChangeError: string | null = null;
+  passwordChangeSuccess = false;
+
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   profile$ = this.authFacade.profile$
     .pipe()
@@ -24,18 +76,39 @@ export class ApplicantSettingsComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,
-    private dialog: MatDialog
+    private authService: AuthService,
+    private dialog: MatDialog,
+    private snackbarService: SnackbarService,
   ) {}
 
   ngOnInit(): void {
     this.authFacade.getUserProfile();
 
     this.profileDetailsForm = this.formBuilder.group({
-      firstName: [''],
-      lastName: [''],
-      email: [{ value: '', disabled: true }],
-      password: [{ value: '', disabled: true }],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      // Read-only via the template's [readonly] attribute, not a disabled
+      // FormControl -- disabled controls are pulled from the tab order and
+      // some assistive tech, which is worse for an informational-but-real
+      // identity field than a plain readonly input. Never included in the
+      // payload onSubmitAccount() actually sends either way.
+      email: [''],
     });
+
+    this.passwordForm = this.formBuilder.group({
+      currentPassword: ['', [Validators.required]],
+      newPassword: ['', [
+        Validators.required,
+        Validators.minLength(PASSWORD_MIN_LENGTH),
+        Validators.maxLength(PASSWORD_MAX_LENGTH),
+        notEqualToValidator('currentPassword'),
+      ]],
+      confirmPassword: ['', [Validators.required]],
+    }, { validators: passwordsMatchValidator('newPassword', 'confirmPassword') });
+
+    // Re-validate "must differ from current" live as either field changes.
+    this.passwordForm.get('currentPassword')?.valueChanges.subscribe(() =>
+      this.passwordForm.get('newPassword')?.updateValueAndValidity({ emitEvent: false }));
   }
 
   setupForm(user) {
@@ -49,20 +122,80 @@ export class ApplicantSettingsComponent implements OnInit {
     }
   }
 
-  onSubmit() {
-    if (this.profileDetailsForm.valid) {
-      const profile = {
-        ...this.user,
-        firstName: this.profileDetailsForm.controls.firstName.value,
-        lastName: this.profileDetailsForm.controls.lastName.value,
-      };
-
-      this.authFacade.updateProfile(profile);
+  onSubmitAccount(event: Event): void {
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
     }
+
+    if (this.profileDetailsForm.invalid) {
+      focusFirstInvalidControl(this.profileDetailsForm);
+      return;
+    }
+
+    this.savingAccount = true;
+    const profile = {
+      ...this.user,
+      firstName: this.profileDetailsForm.controls.firstName.value,
+      lastName: this.profileDetailsForm.controls.lastName.value,
+    };
+
+    this.authFacade.updateProfile(profile);
   }
+
+  onSubmitPasswordChange(event: Event): void {
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
+
+    this.passwordChangeError = null;
+    this.passwordChangeSuccess = false;
+
+    if (this.passwordForm.invalid) {
+      focusFirstInvalidControl(this.passwordForm);
+      return;
+    }
+
+    this.changingPassword = true;
+    const { currentPassword, newPassword } = this.passwordForm.value;
+
+    this.authService.changePasswordInSession({
+      currentPassword,
+      newPassword,
+      signOutOtherSessions: false,
+      clientEventId: `settings-${Date.now()}`,
+    }).subscribe({
+      next: (res: any) => {
+        this.changingPassword = false;
+        if (res && res.success) {
+          this.passwordChangeSuccess = true;
+          this.passwordForm.reset();
+          // Clears "touched"/validation display left over from the just-submitted values.
+          Object.keys(this.passwordForm.controls).forEach(key => {
+            this.passwordForm.get(key)?.markAsPristine();
+            this.passwordForm.get(key)?.markAsUntouched();
+          });
+          this.snackbarService.success('Your password has been updated.', '');
+        } else {
+          this.passwordChangeError = (res && res.feedback && res.feedback.body) || 'We couldn’t update your password. Please try again.';
+        }
+      },
+      error: (err) => {
+        this.changingPassword = false;
+        const body = err && err.error;
+        this.passwordChangeError = (body && body.feedback && body.feedback.body)
+          || (body && body.error && body.error.message)
+          || 'We couldn’t update your password. Please try again.';
+      },
+    });
+  }
+
+  toggleShowCurrentPassword(): void { this.showCurrentPassword = !this.showCurrentPassword; }
+  toggleShowNewPassword(): void { this.showNewPassword = !this.showNewPassword; }
+  toggleShowConfirmPassword(): void { this.showConfirmPassword = !this.showConfirmPassword; }
 
   afterChange(event) {
     if (event == 'updated') {
+      this.savingAccount = false;
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
         data: 'Profile successfully updated',
@@ -70,7 +203,21 @@ export class ApplicantSettingsComponent implements OnInit {
     }
   }
 
-  changePw() {
-    // TODO Change password
+  get newPasswordErrorMessage(): string | null {
+    const ctrl = this.passwordForm.get('newPassword');
+    if (!ctrl || !ctrl.touched || !ctrl.errors) return null;
+    if (ctrl.errors.required) return 'New password is required.';
+    if (ctrl.errors.minlength) return `Use at least ${PASSWORD_MIN_LENGTH} characters.`;
+    if (ctrl.errors.maxlength) return `Use fewer than ${PASSWORD_MAX_LENGTH} characters.`;
+    if (ctrl.errors.sameAsCurrent) return 'New password must be different from your current password.';
+    return null;
+  }
+
+  get confirmPasswordErrorMessage(): string | null {
+    const ctrl = this.passwordForm.get('confirmPassword');
+    if (!ctrl || !ctrl.touched || !ctrl.errors) return null;
+    if (ctrl.errors.required) return 'Please confirm your new password.';
+    if (ctrl.errors.notMatching) return 'Passwords do not match.';
+    return null;
   }
 }

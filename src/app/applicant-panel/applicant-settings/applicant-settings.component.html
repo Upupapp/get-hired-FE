@@ -1,56 +1,134 @@
-<section class="mt-4 px-4">
-  <form [formGroup]="profileDetailsForm" (ngSubmit)="onSubmit()">
-    <div class="text-end submit-container pe-3 pt-3" [@animate]="{value:'*', params:{ y:'10px', delay:  (150) + 'ms' }}">
-      <button class="btn btn-save me-2" (click)="changePw()">{{ 'SETTINGS.SUBMIT_CHANGES_BUTTON' | translate }}</button>
+<section class="gh-settings">
+  <header class="gh-settings__page-header">
+    <h1 class="gh-settings__title">Settings</h1>
+    <p class="gh-settings__subtitle">Manage your account and security preferences.</p>
+  </header>
+
+  <!-- ACCOUNT INFORMATION -->
+  <form class="gh-settings__card" [formGroup]="profileDetailsForm" (submit)="onSubmitAccount($event)" novalidate>
+    <div class="gh-settings__card-head">
+      <h2 class="gh-settings__section-title">Account Information</h2>
+      <button type="submit" class="gh-btn gh-btn--primary" [disabled]="savingAccount || profileDetailsForm.invalid">
+        {{ savingAccount ? 'Saving…' : 'Save Account Changes' }}
+      </button>
     </div>
 
-    <div class="card card-body mt-3">
-
-      <div class="row" [@animate]="{value:'*', params:{ y:'50px', delay:'200ms' }}">
-        <!-- CONTACT DETAILS -->
-        <div class="col-12 mt-2">
-          <h5 class="title-label">{{ 'SETTINGS.ACCOUNT_SETTINGS' | translate }}</h5>
-          <hr style="border-top: 1px solid var(--gh-border); opacity: 1;">
+    <div class="gh-settings__grid">
+      <div class="gh-field">
+        <label for="settings-first-name">First Name</label>
+        <input id="settings-first-name" type="text" formControlName="firstName" name="firstName"
+          autocomplete="given-name"
+          [attr.aria-invalid]="profileDetailsForm.get('firstName')?.invalid && profileDetailsForm.get('firstName')?.touched ? 'true' : null"
+          [attr.aria-describedby]="profileDetailsForm.get('firstName')?.invalid && profileDetailsForm.get('firstName')?.touched ? 'settings-first-name-error' : null">
+        <div class="gh-field__error" id="settings-first-name-error"
+          *ngIf="profileDetailsForm.get('firstName')?.invalid && profileDetailsForm.get('firstName')?.touched">
+          First name is required.
         </div>
+      </div>
 
-        <div class="col-12 col-lg-6 mb-3">
-          <div class="title-container mb-3">
-            <label>First Name</label>
-
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="George" formControlName="firstName" autocomplete="given-name" name="firstName">
-            </div>
-          </div>
-
-          <div class="title-container mb-3">
-            <label>Email</label>
-
-            <div class="form-group">
-              <input type="email" class="form-control" placeholder="sample.email@gmail.com" formControlName="email" autocomplete="email" name="email">
-            </div>
-          </div>
+      <div class="gh-field">
+        <label for="settings-last-name">Last Name</label>
+        <input id="settings-last-name" type="text" formControlName="lastName" name="lastName"
+          autocomplete="family-name"
+          [attr.aria-invalid]="profileDetailsForm.get('lastName')?.invalid && profileDetailsForm.get('lastName')?.touched ? 'true' : null"
+          [attr.aria-describedby]="profileDetailsForm.get('lastName')?.invalid && profileDetailsForm.get('lastName')?.touched ? 'settings-last-name-error' : null">
+        <div class="gh-field__error" id="settings-last-name-error"
+          *ngIf="profileDetailsForm.get('lastName')?.invalid && profileDetailsForm.get('lastName')?.touched">
+          Last name is required.
         </div>
+      </div>
 
-        <div class="col-12 col-lg-6 mb-3">
-          <div class="title-container mb-3">
-            <label>Last Name</label>
-
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Cruz" formControlName="lastName" autocomplete="family-name" name="lastName">
-            </div>
-          </div>
-
-          <div class="title-container mb-3">
-            <label>Password</label>
-
-            <div class="container-input flex-wrap">
-              <input type="password" class="form-control" placeholder="***********" autocomplete="new-password" name="password">
-              <!-- <button  (click)="changePw()" type="button" class="btn btn-primary float-end">Change</button> -->
-            </div>
-          </div>
+      <div class="gh-field gh-field--full">
+        <label for="settings-email">Email Address</label>
+        <input id="settings-email" type="email" formControlName="email" name="email" autocomplete="email" readonly
+          aria-describedby="settings-email-hint">
+        <div class="gh-field__hint" id="settings-email-hint">
+          Your email is your account identity and can't be changed here.
         </div>
       </div>
     </div>
   </form>
 
+  <!-- SECURITY -->
+  <form class="gh-settings__card" [formGroup]="passwordForm" (submit)="onSubmitPasswordChange($event)" novalidate>
+    <div class="gh-settings__card-head">
+      <div>
+        <h2 class="gh-settings__section-title">Security</h2>
+        <p class="gh-settings__section-hint">Use your current password to securely set a new password.</p>
+      </div>
+    </div>
+
+    <div role="status" class="gh-alert gh-alert--success" *ngIf="passwordChangeSuccess">
+      Your password has been updated.
+    </div>
+    <div role="alert" class="gh-alert gh-alert--error" *ngIf="passwordChangeError">
+      {{ passwordChangeError }}
+    </div>
+
+    <div class="gh-settings__grid gh-settings__grid--single">
+      <div class="gh-field">
+        <label for="settings-current-password">Current Password</label>
+        <div class="gh-password-input">
+          <input id="settings-current-password" [type]="showCurrentPassword ? 'text' : 'password'"
+            formControlName="currentPassword" name="currentPassword" autocomplete="current-password"
+            [attr.aria-invalid]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched ? 'true' : null"
+            [attr.aria-describedby]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched ? 'settings-current-password-error' : null">
+          <button type="button" class="gh-password-input__toggle" (click)="toggleShowCurrentPassword()"
+            [attr.aria-label]="showCurrentPassword ? 'Hide current password' : 'Show current password'"
+            [attr.aria-pressed]="showCurrentPassword">
+            {{ showCurrentPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <div class="gh-field__error" id="settings-current-password-error"
+          *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+          Current password is required.
+        </div>
+      </div>
+
+      <div class="gh-field">
+        <label for="settings-new-password">New Password</label>
+        <div class="gh-password-input">
+          <input id="settings-new-password" [type]="showNewPassword ? 'text' : 'password'"
+            formControlName="newPassword" name="newPassword" autocomplete="new-password"
+            [attr.aria-invalid]="newPasswordErrorMessage ? 'true' : null"
+            [attr.aria-describedby]="newPasswordErrorMessage ? 'settings-new-password-error' : 'settings-new-password-hint'">
+          <button type="button" class="gh-password-input__toggle" (click)="toggleShowNewPassword()"
+            [attr.aria-label]="showNewPassword ? 'Hide new password' : 'Show new password'"
+            [attr.aria-pressed]="showNewPassword">
+            {{ showNewPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <div class="gh-field__hint" id="settings-new-password-hint" *ngIf="!newPasswordErrorMessage">
+          At least 12 characters, and different from your current password.
+        </div>
+        <div class="gh-field__error" id="settings-new-password-error" *ngIf="newPasswordErrorMessage">
+          {{ newPasswordErrorMessage }}
+        </div>
+      </div>
+
+      <div class="gh-field">
+        <label for="settings-confirm-password">Confirm New Password</label>
+        <div class="gh-password-input">
+          <input id="settings-confirm-password" [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword" name="confirmPassword" autocomplete="new-password"
+            [attr.aria-invalid]="confirmPasswordErrorMessage ? 'true' : null"
+            [attr.aria-describedby]="confirmPasswordErrorMessage ? 'settings-confirm-password-error' : null">
+          <button type="button" class="gh-password-input__toggle" (click)="toggleShowConfirmPassword()"
+            [attr.aria-label]="showConfirmPassword ? 'Hide confirmed password' : 'Show confirmed password'"
+            [attr.aria-pressed]="showConfirmPassword">
+            {{ showConfirmPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <div class="gh-field__error" id="settings-confirm-password-error" *ngIf="confirmPasswordErrorMessage">
+          {{ confirmPasswordErrorMessage }}
+        </div>
+      </div>
+    </div>
+
+    <div class="gh-settings__card-actions">
+      <button type="submit" class="gh-btn gh-btn--primary" [disabled]="changingPassword || passwordForm.invalid">
+        {{ changingPassword ? 'Updating…' : 'Update Password' }}
+      </button>
+    </div>
+  </form>
 </section>
