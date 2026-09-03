@@ -600,24 +600,78 @@ input.ng-invalid.ng-dirty.ng-touched {
 // its real, current column width every time.
 .gh-social-row {
   display: flex;
+  // BUGFIX: at desktop widths near the 1024px floor, the card's available
+  // row width can be too narrow for LinkedIn's protected content-width
+  // PLUS Google's safe minimum both at once -- flex-wrap lets the row
+  // safely drop to the same stacked layout already used below 768px
+  // instead of squeezing Google under its safe minimum (see
+  // .gh-social-row-item--google's min-width below) whenever that happens.
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 4px;
 
   .gh-social-row-item {
-    flex: 1 1 0;
     min-width: 0;
-    height: 44px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
+  }
+
+  // BUGFIX (desktop wrapping/clipping inconsistency): an even `flex: 1 1 0`
+  // split gave both buttons the same width regardless of what their actual
+  // label needs -- LinkedIn's "Sign up with LinkedIn" (white-space:nowrap,
+  // ~160px comfortable) got the same slot as Google's, which needs closer
+  // to 230-250px for English "Continue with Google"/"Sign up with Google"
+  // at Google's own 'large' size. On narrower desktop widths that even
+  // split measured out to ~200px for Google (google-signin-button.
+  // component.ts reads its container's real offsetWidth at mount) -- too
+  // narrow for Google's own widget to keep the label on one line, and the
+  // old fixed 44px + overflow:hidden then clipped whatever didn't fit
+  // instead of just showing a slightly taller two-line button. LinkedIn
+  // sizes to its own content (flex: 0 0 auto -- it's already
+  // white-space:nowrap, so this never shrinks it below what it needs);
+  // Google gets the rest of the row (flex: 1 1 auto), which is always
+  // wider than an even split and gives its own JS width-measurement real
+  // room. Height raised to 48px (Google's own natural 'large' button
+  // height) with overflow:visible so a genuine edge case is visible
+  // instead of silently cropped; LinkedIn's 44px button is still centered
+  // in the extra 4px via align-items:center above, not stretched.
+  .gh-social-row-item--linkedin {
+    flex: 0 0 auto;
+  }
+
+  .gh-social-row-item--google {
+    flex: 1 1 230px;
+    // Real floor, not just a flex-basis hint: 230px is comfortably enough
+    // for English "Continue with Google"/"Sign up with Google" at Google's
+    // own 'large' button size without wrapping. Below this, flex-wrap on
+    // the row (above) drops LinkedIn to its own line rather than letting
+    // this shrink further.
+    min-width: 230px;
+
+    // BUGFIX: <app-google-signin-button> is an unstyled custom element --
+    // as a flex item on the main (width) axis it defaults to flex:0 1 auto,
+    // shrink-wrapping to its own rendered content's width rather than
+    // filling this item's now-widened flex-basis. `justify-content:center`
+    // above (from the shared .gh-social-row-item rule) then centers that
+    // shrink-fit element instead of stretching it, so the 268px this item
+    // actually has never reaches the component that measures it. Forcing
+    // it to width:100% here makes the width this item now guarantees
+    // actually visible to google-signin-button.component.ts's own
+    // offsetWidth measurement.
+    app-google-signin-button {
+      display: block;
+      width: 100%;
+    }
   }
 
   // Mobile: full-width, top-to-bottom (Google first, LinkedIn second, same
   // DOM order) instead of squeezing both into half-width columns -- each
   // button gets the card's full available width so its content (Google's
   // own rendered "Continue with Google" text/icon, LinkedIn's label) has
-  // real room, matching the desktop columns' height (44px) so neither
+  // real room, matching the desktop columns' height (48px) so neither
   // reads as more/less prominent than the other.
   @media (max-width: 767px) {
     flex-direction: column;
@@ -627,11 +681,11 @@ input.ng-invalid.ng-dirty.ng-touched {
       // BUGFIX: the base rule's `flex: 1 1 0` sets flex-basis:0 for the
       // desktop ROW layout (main axis = width). In this column layout the
       // main axis is height, so that same flex-basis:0 was overriding the
-      // `height: 44px` below and collapsing both buttons to 0px tall --
+      // `height: 48px` below and collapsing both buttons to 0px tall --
       // `flex: none` here lets height (not flex-basis) drive sizing again.
       flex: none;
       width: 100%;
-      height: 44px;
+      height: 48px;
     }
   }
 }
@@ -762,6 +816,13 @@ select.gh-input {
 
   .gh-submit-btn-spinner {
     margin: 0;
+  }
+
+  // Visual stand-in for the native :disabled dimming this button used to
+  // get automatically -- see the template comment on this button for why
+  // it's no longer actually disabled while the form is merely incomplete.
+  &.gh-submit-btn--not-ready {
+    opacity: 0.65;
   }
 }
 
@@ -896,6 +957,22 @@ select.gh-input {
 .gh-captcha-wrap {
   margin: 32px 0;
   width: 100%;
+  // BUGFIX (Terms checkbox / reCAPTCHA overlap): Google's v2 checkbox
+  // widget is NOT a fixed 78px tall in every state -- verified in a real
+  // browser, its iframe grows to ~150px during its own inline
+  // verify/retry transitions (confirmed via getBoundingClientRect() on the
+  // live widget, independent of this wrapper's own CSS). This div had no
+  // min-height, so its layout box only ever reserved space for the
+  // widget's small resting size; the moment the iframe grew taller than
+  // that, it visually extended past this wrapper and into the Terms row
+  // that follows in normal flow, with nothing forcing a hit-testable
+  // overlap notice until a real click landed on the iframe instead of the
+  // checkbox beneath it. Reserving the widget's own larger real-world
+  // height up front (rather than clipping or margin-hacking around it)
+  // means the Terms row is always pushed down far enough, in every widget
+  // state, without depending on exactly which state happens to be active
+  // when the page renders.
+  min-height: 160px;
 
   re-captcha {
     display: block;

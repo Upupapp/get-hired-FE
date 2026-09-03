@@ -375,6 +375,10 @@ export class SignupComponent implements OnInit, AfterViewInit {
     return this.registerForm.get('confirmPassword');
   }
 
+  get recaptcha_validators() {
+    return this.registerForm.get('recaptcha');
+  }
+
   ngOnDestroy(): void {
     localStorage.removeItem('signupError');
     localStorage.removeItem('signupMessage');

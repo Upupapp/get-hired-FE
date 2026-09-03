@@ -134,7 +134,7 @@
                regardless of the real column width. A single always-visible
                mount point measures correctly every time. -->
           <div class="gh-social-row">
-            <div class="gh-social-row-item" *ngIf="!googleLoading">
+            <div class="gh-social-row-item gh-social-row-item--google" *ngIf="!googleLoading">
               <app-google-signin-button
                 label="signup_with"
                 [fullWidth]="true"
@@ -143,7 +143,7 @@
               </app-google-signin-button>
             </div>
 
-            <div class="gh-social-row-item">
+            <div class="gh-social-row-item gh-social-row-item--linkedin">
               <app-linkedin-button
                 label="Sign up with LinkedIn"
                 intent="auto"
@@ -403,7 +403,20 @@
           </div>
 
           <div class="gh-captcha-wrap" #captchaWrap role="group" aria-label="Verify you are not a robot">
-            <re-captcha formControlName="recaptcha" aria-label="reCAPTCHA verification"></re-captcha>
+            <re-captcha formControlName="recaptcha" aria-label="reCAPTCHA verification"
+              [attr.aria-invalid]="recaptcha_validators?.invalid && recaptcha_validators?.touched ? 'true' : null"
+              [attr.aria-describedby]="recaptcha_validators?.invalid && recaptcha_validators?.touched ? 'signup-recaptcha-error' : null"></re-captcha>
+            <!-- BUGFIX: recaptcha already participates in registerForm's
+                 overall validity (submit button correctly stays disabled,
+                 and an Enter-key submit already marks it touched via
+                 focusFirstInvalidControl), but nothing ever rendered an
+                 error for it -- every other field has its own *ngIf error
+                 block, this one never did, so leaving it unchecked looked
+                 like the button silently did nothing. -->
+            <div class="mt-1" id="signup-recaptcha-error" role="alert"
+              *ngIf="recaptcha_validators?.invalid && recaptcha_validators?.touched">
+              <small class="text-danger">Please complete the reCAPTCHA verification.</small>
+            </div>
           </div>
 
           <div class="mt-4 gh-terms-row">
@@ -430,9 +443,24 @@
 
           <!-- V5: Employer-specific CTA text when role=2 is selected.
                gh-pressable provides micro-scale press feedback. -->
+          <!-- BUGFIX (silent CAPTCHA/Terms validation): the native [disabled]
+               attribute previously covered the whole form-invalid state, not
+               just submitting -- but browsers never dispatch a click event
+               to a disabled button at all, so a user who filled everything
+               except reCAPTCHA (or Terms) and clicked Register triggered
+               zero JS, reaching neither register()'s existing invalid-branch
+               (which already calls focusFirstInvalidControl() to show every
+               field's error) nor any other feedback. Only submitting now
+               uses the real disabled attribute (prevents a genuine
+               double-submit mid-request); the still-incomplete state is
+               conveyed via aria-disabled + a matching dimmed visual class
+               instead, so the click reaches register() and its already-
+               correct invalid branch actually runs. -->
           <button type="submit"
             class="btn btn-submit gh-submit-btn d-block w-100 mt-4 mb-3 gh-pressable"
-            [disabled]="submitting || !(registerForm.valid && registerForm.controls.agreeToTerms.value)"
+            [class.gh-submit-btn--not-ready]="!submitting && !(registerForm.valid && registerForm.controls.agreeToTerms.value)"
+            [disabled]="submitting"
+            [attr.aria-disabled]="!submitting && !(registerForm.valid && registerForm.controls.agreeToTerms.value) ? 'true' : null"
             [attr.aria-busy]="submitting ? 'true' : null">
             <span class="gh-submit-btn-label">
               <ng-container *ngIf="role_validators?.value === 2; else genericSubmit">

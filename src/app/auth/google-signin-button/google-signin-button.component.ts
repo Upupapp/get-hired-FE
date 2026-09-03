@@ -35,7 +35,20 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
 
   private waitForGIS(): void {
     if ((window as any).google) {
-      this.mountButton();
+      // BUGFIX (desktop wrapping): when Google's gsi/client script is
+      // already loaded/cached (e.g. not this component's first mount in
+      // the session), this branch fires synchronously from
+      // ngAfterViewInit -- before the browser has necessarily completed a
+      // layout pass that accounts for sibling flex items (the LinkedIn
+      // button next to this one). mountButton() measures its container's
+      // real offsetWidth to size Google's button, so an early measurement
+      // here could read a stale/incomplete flex-basis:auto width and pass
+      // too narrow a value to Google's renderButton(), which then wraps
+      // the label onto two lines with no way to re-measure afterward.
+      // requestAnimationFrame defers to after the next layout/paint, by
+      // which point sibling sizing (including this row's content-based
+      // flex split) has settled.
+      requestAnimationFrame(() => this.mountButton());
       return;
     }
     var attempts = 0;
@@ -43,7 +56,7 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
       attempts++;
       if ((window as any).google) {
         clearInterval(this._pollInterval);
-        this.mountButton();
+        requestAnimationFrame(() => this.mountButton());
       } else if (attempts > 40) {
         clearInterval(this._pollInterval);
       }
