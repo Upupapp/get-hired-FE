@@ -1701,6 +1701,13 @@
 // ─── HOW IT WORKS ─────────────────────────────────────────────
 .ep-hiw {
   background: #fff;
+  // BUGFIX: the template had scroll-margin-top="88px" as a plain HTML
+  // attribute, which does nothing -- it's a CSS property, not an HTML
+  // attribute, so this section had no scroll offset at all. The sticky
+  // header above (--ep-header-h, 68px) would otherwise sit directly over
+  // this section's top edge (and thus its own "How it works" heading)
+  // once scrollIntoView({block:'start'}) lands here.
+  scroll-margin-top: calc(var(--ep-header-h) + 20px);
 }
 
 .ep-hiw .ep-section-h2 {

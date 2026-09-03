@@ -306,7 +306,19 @@
           <p class="ep-banner-note">If a file or link cannot be read, you can try another source or continue manually.</p>
           <div class="ep-banner-ctas">
             <button type="button" class="ep-btn ep-btn--primary" (click)="startHiring()">Start hiring</button>
-            <a class="ep-btn ep-btn--ghost-sm" href="#how-it-works">See how it works →</a>
+            <!-- BUGFIX: a bare fragment href resolves against index.html's
+                 <base href="/">, not the current /employers path -- clicking
+                 this sent the browser to /#how-it-works, which the router
+                 then redirected to /home (its default route for ''),
+                 dropping the fragment and leaving the page nowhere near
+                 "How it works". scrollToSection() already exists on this
+                 component and already works correctly (getElementById +
+                 scrollIntoView) but was never wired to this link. href is
+                 kept for keyboard users / no-JS fallback and semantics;
+                 preventDefault stops the broken native navigation so the JS
+                 scroll runs instead. -->
+            <a class="ep-btn ep-btn--ghost-sm" href="#how-it-works"
+              (click)="$event.preventDefault(); scrollToSection('how-it-works')">See how it works →</a>
           </div>
         </div>
 
