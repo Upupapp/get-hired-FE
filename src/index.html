@@ -76,7 +76,14 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- Google Identity Services — One Tap + "Continue with Google" button -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- hl=en: Google's own documented locale parameter for its Identity
+       Services button widget. Without it, Google renders the button's
+       label in a geo-detected language (observed: Filipino "Mag-sign in/
+       up sa Google" for requests from the Philippines) regardless of the
+       `text` option google-signin-button.component.ts passes -- that
+       option only selects which semantic string (signin_with/signup_with/
+       continue_with) to use, not the language it's rendered in. -->
+  <script src="https://accounts.google.com/gsi/client?hl=en" async defer></script>
 </head>
 
 <body>

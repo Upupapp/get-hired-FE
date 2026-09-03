@@ -3,6 +3,8 @@
   justify-content: center;
   min-height: 44px;
   position: relative;
+  box-sizing: border-box;
+  max-width: 100%;
 
   &.gh-google-btn-full {
     width: 100%;
@@ -12,6 +14,18 @@
 
 .gh-gis-container {
   transition: opacity 0.2s ease;
+  // BUGFIX (mobile clipping): Google's rendered iframe is given an exact
+  // pixel width in google-signin-button.component.ts (measured from this
+  // container's own real offsetWidth). max-width:100% + box-sizing:
+  // border-box keeps THIS container itself from ever exceeding its
+  // parent's available width. Deliberately NOT overflow:hidden -- clipping
+  // is exactly the failure mode being fixed, and cropping Google's own
+  // rendered icon/text would itself violate Google's branding guidelines;
+  // the real fix is an accurate width measurement (see mountButton() and
+  // the ResizeObserver-driven remeasure below) so overflow never needs to
+  // happen in the first place.
+  max-width: 100%;
+  box-sizing: border-box;
 
   &.gh-gis-hidden {
     opacity: 0;

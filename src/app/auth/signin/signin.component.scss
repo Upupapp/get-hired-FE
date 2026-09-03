@@ -772,6 +772,8 @@ input.ng-invalid.ng-dirty.ng-touched {
 // ── Google / LinkedIn button rows: stacked on Sign-In per reference ───────
 .gh-google-btn-row {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .join-us {

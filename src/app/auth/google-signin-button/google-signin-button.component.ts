@@ -22,6 +22,8 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
 
   gisReady = false;
   private _pollInterval: any;
+  private _resizeObserver?: ResizeObserver;
+  private _lastRenderedWidth = 0;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -31,6 +33,30 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
     this.waitForGIS();
+
+    // BUGFIX (responsive/mobile clipping): mountButton() previously only
+    // ever measured its container once, at initial mount. Rotating a
+    // phone, resizing a window, or any later layout change left Google's
+    // rendered button at its original, now-stale width -- either too wide
+    // for a newly-narrower container (clipping) or unnecessarily narrow
+    // for a newly-wider one. Re-measuring and re-rendering on real size
+    // changes keeps it correct continuously, not just at the moment it
+    // first mounted -- the same pattern already used for the reCAPTCHA
+    // widget in signup.component.ts.
+    if (this.containerRef?.nativeElement?.parentElement && 'ResizeObserver' in window) {
+      this._resizeObserver = new ResizeObserver(() => {
+        const el = this.containerRef?.nativeElement?.parentElement;
+        if (!el) return;
+        const w = el.offsetWidth;
+        // Only re-render on a real (>=8px) change -- ResizeObserver fires
+        // on sub-pixel layout noise too, and Google's renderButton() does
+        // a real DOM replace each call, not worth doing for a 1px jitter.
+        if (this.gisReady && Math.abs(w - this._lastRenderedWidth) >= 8) {
+          this.mountButton();
+        }
+      });
+      this._resizeObserver.observe(this.containerRef.nativeElement.parentElement);
+    }
   }
 
   private waitForGIS(): void {
@@ -91,9 +117,11 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
         cancel_on_tap_outside: true
       });
 
+      const measuredWidth = (this.containerRef.nativeElement.parentElement || this.containerRef.nativeElement).offsetWidth;
       const width = this.fullWidth
-        ? Math.min((this.containerRef.nativeElement.parentElement || this.containerRef.nativeElement).offsetWidth || 340, 400)
+        ? Math.min(measuredWidth || 340, 400)
         : 320;
+      const finalWidth = width > 60 ? width : 340;
 
       google.accounts.id.renderButton(this.containerRef.nativeElement, {
         type: 'standard',
@@ -102,8 +130,9 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
         text: this.label,
         shape: 'rectangular',
         logo_alignment: 'left',
-        width: width > 60 ? width : 340
+        width: finalWidth
       });
+      this._lastRenderedWidth = measuredWidth;
       this.gisReady = true;
     } catch (e) {
       console.error('[GoogleSigninButton] mount error:', e);
@@ -112,5 +141,6 @@ export class GoogleSigninButtonComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this._pollInterval) clearInterval(this._pollInterval);
+    if (this._resizeObserver) this._resizeObserver.disconnect();
   }
 }
