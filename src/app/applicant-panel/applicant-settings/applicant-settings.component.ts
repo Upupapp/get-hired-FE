@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { AuthService } from '@main/auth/auth.service';
+import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
@@ -65,10 +66,6 @@ export class ApplicantSettingsComponent implements OnInit {
   showNewPassword = false;
   showConfirmPassword = false;
 
-  profile$ = this.authFacade.profile$
-    .pipe()
-    .subscribe(this.setupForm.bind(this));
-
   success$ = this.authFacade.success$
     .pipe()
     .subscribe(this.afterChange.bind(this));
@@ -77,13 +74,12 @@ export class ApplicantSettingsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authFacade: AuthFacade,
     private authService: AuthService,
+    private applicantFacade: ApplicantFacade,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
   ) {}
 
   ngOnInit(): void {
-    this.authFacade.getUserProfile();
-
     this.profileDetailsForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -109,6 +105,22 @@ export class ApplicantSettingsComponent implements OnInit {
     // Re-validate "must differ from current" live as either field changes.
     this.passwordForm.get('currentPassword')?.valueChanges.subscribe(() =>
       this.passwordForm.get('newPassword')?.updateValueAndValidity({ emitEvent: false }));
+
+    // BUGFIX: previously read from AuthFacade.profile$/getUserProfile(),
+    // which dispatches AuthActions.getUserProfile() -- but that action's
+    // effect (AuthEffects.profile$, hitting /auth/getprofile) never fires
+    // in this app's actual routing (confirmed via network capture: no
+    // request is ever sent), so Account Information's First/Last Name and
+    // Email were permanently blank. ApplicantFacade.user$/getUser() is the
+    // mechanism this panel's own sidebar/avatar already relies on
+    // successfully (hits /applicant/userprofile), so it's reused here
+    // instead. Subscribing here (after profileDetailsForm exists) also
+    // avoids the earlier subscribe-in-field-initializer ordering: that ran
+    // at construction time, before ngOnInit created the form, so
+    // setupForm()'s existing `this.profileDetailsForm` guard silently
+    // dropped the first emission.
+    this.applicantFacade.user$.subscribe(this.setupForm.bind(this));
+    this.applicantFacade.getUser();
   }
 
   setupForm(user) {
