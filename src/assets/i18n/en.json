@@ -286,13 +286,13 @@
         "SUBMIT_BUTTON":"Submit"
     },
     "CONTACTS_CANDIDATES":{
-        "SIDEBAR_CANDIDATE":"Candidates",
+        "SIDEBAR_CANDIDATE":"Applicants",
         "TABLE_COLUMN_MIN_SALARY":"Minimum Salary",
         "TABLE_COLUMN_MAX_SALARY":"Maximum Salary"
     },
     "CANDIDATE_APPLIED_ON_JOB_TABLE":{
-        "CANDIDATE_MANAGEMENT":"Candidate List",
-        "ADD_CANDIDATE_BUTTON":"Add Candidate +"
+        "CANDIDATE_MANAGEMENT":"Applicants",
+        "ADD_CANDIDATE_BUTTON":"Add Applicant +"
     },
     "NEW_CANDIDATE_FORM":{
         "NEW_CONTACT":"New Contact",

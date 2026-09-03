@@ -277,12 +277,12 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (url.includes('/jobs/view'))           return 'Job Preview';
     if (url.includes('/jobs/dashboard'))      return 'Job Overview';
     if (url.includes('/jobs'))                return 'Jobs';
-    if (url.includes('/contacts/list'))       return 'Contact List';
+    if (url.includes('/contacts/list'))       return 'Contacts';
     if (url.includes('/contacts/candidates')) return 'Applicants';
     if (url.includes('/contacts/candidate-list')) return 'Candidate Profile';
     if (url.includes('/contacts/groups'))     return 'Contact Groups';
     if (url.includes('/contacts/group-list')) return 'Contact Group';
-    if (url.includes('/contacts'))            return 'Candidates';
+    if (url.includes('/contacts'))            return 'Talent';
     if (url.includes('/interview'))           return 'Interviews';
     if (url.includes('/messages'))            return 'Messages';
     if (url.includes('/company'))             return 'Company';
@@ -299,7 +299,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
         url.includes('/jobs/dashboard'))      return 'Jobs';
     if (url.includes('/contacts/list') || url.includes('/contacts/candidates') ||
         url.includes('/contacts/candidate-list') || url.includes('/contacts/groups') ||
-        url.includes('/contacts/group-list')) return 'Candidates';
+        url.includes('/contacts/group-list')) return 'Talent';
     if (url.includes('/interview') || url.includes('/messages')) return 'Hiring Workspace';
     if (url.includes('/company'))             return 'Company';
     if (url.includes('/subscription'))        return 'Account';
@@ -314,7 +314,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (url.includes('/jobs/create'))             return 'Build and publish your job post step by step.';
     if (url.includes('/jobs/edit'))               return 'Update this job post and republish changes.';
     if (url.includes('/jobs/applicants'))         return 'Review candidates who applied to this job.';
-    if (url.includes('/contacts/list'))           return 'Manage candidate contacts and outreach records.';
+    if (url.includes('/contacts/list'))           return 'Manage your contacts and outreach records.';
     if (url.includes('/contacts/candidates'))     return 'Review all candidates who applied to your jobs.';
     if (url.includes('/contacts/candidate-list')) return 'Review this candidate\'s application and profile.';
     if (url.includes('/contacts/groups'))         return 'Organise contacts into groups for hiring campaigns.';

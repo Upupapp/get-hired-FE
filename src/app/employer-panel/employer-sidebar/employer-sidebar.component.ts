@@ -139,15 +139,28 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
         ]
       },
       {
-        // Previously "Contacts" — renamed to "Candidates" for employer clarity.
-        // Sub-routes are preserved so existing /recruiter/contacts/** links still work.
-        title: 'Candidates', icon: 'applicants.png', class: 'applicants', route: 'contacts',
+        // BUGFIX (parent/child naming collision -- confirmed via audit):
+        // was "Contacts", then "Candidates" for employer clarity, but its
+        // own child route at contacts/candidates is ALSO titled
+        // "Candidates" (CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE below), so
+        // the sidebar read "Candidates > Candidates" with no way to tell
+        // that child apart from "Contact List"/"Contact Group" without
+        // opening each one. "Talent" covers what this section actually is
+        // -- job applicants (contacts/candidates, real ApplicantModel/
+        // job_id data per candidate-list.component.ts), general contacts
+        // (contacts/list -- itself already titled "Contacts" on-page, per
+        // contact-list.component.html's componentTitle, so this also fixes
+        // a pre-existing sidebar/page-title mismatch), and saved contact
+        // groupings (contacts/groups) -- without colliding with any one of
+        // them. Sub-routes/URLs unchanged so existing /recruiter/
+        // contacts/** links and deep links still work.
+        title: 'Talent', icon: 'applicants.png', class: 'applicants', route: 'contacts',
         sub_routes: [
           {
-            title: 'Contact List', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
+            title: 'Contacts', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
           },
           {
-            title: 'Contact Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
+            title: 'Contact Groups', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
           },
           {
             title: this.translate.instant('CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE'), icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
