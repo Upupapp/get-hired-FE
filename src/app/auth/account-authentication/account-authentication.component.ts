@@ -27,6 +27,21 @@ export class AccountAuthenticationComponent implements OnInit {
   isResent: boolean;
   resendLinkForm: FormGroup;
   manual: boolean = false;
+  // BUGFIX (bare /verify dead-end): the switch below has no case for a
+  // missing/unrecognized `mode` -- previously fell through to `default:
+  // break;`, which never touched `loading` (initialized true above), so
+  // the page rendered <app-loading> forever. This is a real, observed
+  // entry point (link-scanner prefetch, an email client stripping query
+  // params, a bookmarked/re-visited URL, etc.) -- handleCodeInApp:true is
+  // already set on both action-link generators (get-hired-BE
+  // helpers/firebaseFunctions.js), so a genuine email-link click always
+  // carries mode+oobCode and never reaches this state. Deliberately a
+  // third, distinct state from both `isVerified` (would be fabricating
+  // success with no evidence) and the alarming "Error Verifying your
+  // account" `errorSent` template (implies a real failure that didn't
+  // necessarily happen) -- truthful "can't confirm from here" copy with
+  // real Sign In / Resend navigation, per the recovery-state requirement.
+  unknownState: boolean = false;
   // GETHIRED_LOCAL_ACCOUNT_VERIFICATION_500_REMEDIATION_SINGLE_COMMAND_V1:
   // in-flight guard -- the resend button previously fired resendVerification()
   // from BOTH (click) and the form's (ngSubmit) (a bare <button> inside a
@@ -91,6 +106,12 @@ export class AccountAuthenticationComponent implements OnInit {
         this.isResent = true;
         break;
       default:
+        // No recognized mode (including a completely bare /verify) -- stop
+        // loading and show the honest recovery state instead of hanging.
+        // Never sets isVerified here: that would assert success this
+        // component has no actual evidence for.
+        this.loading = false;
+        this.unknownState = true;
         break;
     }
   }

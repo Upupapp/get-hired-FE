@@ -3,6 +3,36 @@
     <app-loading></app-loading>
   </div>
   <div *ngIf="!loading" class="text-center">
+    <!-- BUGFIX (bare /verify dead-end): a distinct, honest third state --
+         this page has no evidence either way, so it neither claims
+         "verified" nor implies a real failure occurred. Gives the same
+         real navigation (Sign In / Resend) as the other terminal states. -->
+    <div *ngIf="unknownState; else resentOrError">
+      <h5 class="title-main px-5">
+        We couldn't confirm your verification status from this link.
+      </h5>
+      <p class="text-muted px-4">
+        If you just verified your email, you're all set — sign in below.
+        Otherwise, request a new verification link.
+      </p>
+      <div class="text-center mb-3">
+        <button class="btn btn-submit d-block w-100 float-end mt-2 mb-3" (click)="redirectToLogin()" type="button" aria-label="Sign in to your account">
+          Sign In
+        </button>
+        <form [formGroup]="resendLinkForm" (ngSubmit)="resendVerification()" class="mt-3">
+          <input type="email" formControlName="email" class="form-control" placeholder="sample@email.com" />
+          <div class="mt-1 ms-4"
+            *ngIf="(email_validators?.invalid && email_validators?.touched) || email_validators?.dirty">
+            <small *ngIf="email_validators?.errors?.required" class="text-danger">Email is required</small>
+          </div>
+          <button type="submit" class="btn btn-outline-primary d-block w-100 mt-2 mb-3" [disabled]="resending"
+            [attr.aria-busy]="resending ? 'true' : null">
+            {{ resending ? 'Sending…' : 'Resend Verification link' }}
+          </button>
+        </form>
+      </div>
+    </div>
+    <ng-template #resentOrError>
     <div *ngIf="isResent; else errorSent">
       <img src="assets/images/success.gif" />
       <h5 class="title-main px-5">
@@ -43,6 +73,7 @@
         </p>
 
       </div>
+    </ng-template>
     </ng-template>
   </div>
 </div>
