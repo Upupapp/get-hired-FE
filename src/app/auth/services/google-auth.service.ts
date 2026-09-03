@@ -195,11 +195,20 @@ export class GoogleAuthService {
     });
   }
 
-  // Core method: send Google ID token to BE, get session or role_required
-  exchangeGoogleToken(googleIdToken: string): Observable<GoogleSessionResponse> {
+  // Core method: send a Google credential to BE, get session or role_required.
+  //
+  // The custom Sign in with Google button (google-signin-button.component.ts)
+  // uses the OAuth2 token-client flow and emits an access token, not a GIS
+  // ID-token JWT -- so this now sends { credential, credentialType }, an
+  // exact allowlisted enum the backend maps to the correct Firebase
+  // exchange itself (see GETHIRED_CUSTOM_GOOGLE_AUTH_BUTTON TAB06). The
+  // backend still separately accepts the legacy { googleIdToken } shape for
+  // any caller that hasn't migrated, so this change is additive, not a
+  // breaking rename of the wire contract.
+  exchangeGoogleToken(googleCredential: string): Observable<GoogleSessionResponse> {
     return this.http.post<GoogleSessionResponse>(
       `${this.apiUrl}/auth/google/firebase-session`,
-      { googleIdToken }
+      { credential: googleCredential, credentialType: 'google_access_token' }
     );
   }
 
