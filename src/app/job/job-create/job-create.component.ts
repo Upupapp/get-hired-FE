@@ -1158,12 +1158,21 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           this.aiCreateDraft.clear(user._id);
         }
       }
-      // Brief success pulse — clears automatically after 2s
+      // Brief success pulse (cosmetic animation only) — clears after 2s.
       this.saveSuccessPulse = true;
       this.setAutoSaveState('saved');
+      // EMP-018 fix: this used to also unconditionally force autoSaveState
+      // back to 'unsaved' here, 2s after EVERY successful save/publish --
+      // including a Publish, which (unlike Save Draft) stays on this same
+      // page afterward instead of navigating away, so the employer could
+      // watch a genuinely successful "is now live" publish sit next to an
+      // "Unsaved changes" pill a couple seconds later, even though nothing
+      // had changed since. The jobForm.valueChanges subscription above
+      // already sets 'unsaved' correctly the moment a REAL edit happens
+      // after a save -- that's the only thing that should ever move this
+      // state off 'saved'. A timer isn't a substitute for that signal.
       setTimeout(() => {
         this.saveSuccessPulse = false;
-        this.setAutoSaveState('unsaved');
       }, 2000);
     }
     if (event == 'asDraft') {
@@ -1696,10 +1705,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         // forever from this bypass-the-store save path, and every following
         // autosave tick would re-insert it as a fresh duplicate row.
         this.patchInterviewQuestionsFromResponse(res);
+        // EMP-018 fix: same reasoning as afterSubmit() above -- this used
+        // to blindly force 'unsaved' back 3s after every successful
+        // background autosave too, regardless of whether the employer had
+        // actually edited anything since. jobForm.valueChanges already
+        // sets 'unsaved' the moment a real edit happens; nothing else
+        // should move this state off 'saved'.
         this.setAutoSaveState('saved');
-        setTimeout(() => {
-          if (this.autoSaveState === 'saved') this.setAutoSaveState('unsaved');
-        }, 3000);
       },
       error: () => {
         this.setAutoSaveState('failed');
