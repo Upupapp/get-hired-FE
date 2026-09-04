@@ -640,6 +640,23 @@ input.ng-invalid.ng-dirty.ng-touched {
   // in the extra 4px via align-items:center above, not stretched.
   .gh-social-row-item--linkedin {
     flex: 0 0 auto;
+
+    // MOBILE-BUTTON-SIZE-PARITY FIX: <app-linkedin-button> is an unstyled
+    // custom element -- same root cause as <app-google-signin-button> below
+    // (it defaults to shrink-wrapping its own rendered content instead of
+    // filling this item), but it never got the equivalent fix. On mobile,
+    // where .gh-social-row-item is forced to width:100% (see the media
+    // query below) so both buttons are meant to match the card's full
+    // width, LinkedIn's host element stayed shrink-wrapped to its ~200px
+    // label content while Google correctly stretched to the full ~307px --
+    // the two buttons rendered at different widths (same 44px height,
+    // since that's set directly on each inner <button>). Forcing the host
+    // to width:100% here makes .gh-linkedin-btn--full's own width:100%
+    // resolve against the item's real (now full) width, same as Google.
+    app-linkedin-button {
+      display: block;
+      width: 100%;
+    }
   }
 
   .gh-social-row-item--google {

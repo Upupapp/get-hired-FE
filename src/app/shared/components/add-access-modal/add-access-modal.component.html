@@ -59,9 +59,10 @@
 						[@animate]="{value:'*', params:{ y:'-5px', delay:'200ms' }}"
 						*ngFor="let item of emailArray">
 							{{item}}
-							<span class="float-end" (click)="removeEmployee(item)">
+							<!-- A11Y FIX: was a non-focusable <span> for a real (destructive) action -- real <button>. -->
+							<button type="button" class="float-end" style="background:none;border:none;padding:0;" (click)="removeEmployee(item)" [attr.aria-label]="'Remove ' + item">
 								<img src="/assets/images/placeholder/icons/remove-gray.png" style="width: 13px;">
-							</span>
+							</button>
 						</div>
 					</div>
 

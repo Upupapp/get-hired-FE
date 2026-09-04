@@ -40,7 +40,8 @@
           <div class="np-doc-row" *ngIf="currentCv">
             <div class="np-doc-row__icon" aria-hidden="true">&#128196;</div>
             <div class="np-doc-row__info">
-              <span class="np-doc-row__name" (click)="viewDocs(currentCv)">{{ currentCv.filename }}</span>
+              <!-- A11Y FIX: was a non-focusable <span> for a real action -- real <button>. -->
+              <button type="button" class="np-doc-row__name" style="background:none;border:none;padding:0;text-align:left;display:block;width:100%;" (click)="viewDocs(currentCv)">{{ currentCv.filename }}</button>
               <span class="np-doc-row__tag">CV / Resume</span>
             </div>
             <button type="button" class="np-doc-row__download" (click)="downloadFile(currentCv)" aria-label="Download CV">
@@ -51,7 +52,8 @@
           <div class="np-doc-row" *ngFor="let doc of user.documents">
             <div class="np-doc-row__icon" aria-hidden="true">&#128196;</div>
             <div class="np-doc-row__info">
-              <span class="np-doc-row__name" (click)="viewDocs(doc)">{{ doc.filename }}</span>
+              <!-- A11Y FIX: was a non-focusable <span> for a real action -- real <button>. -->
+              <button type="button" class="np-doc-row__name" style="background:none;border:none;padding:0;text-align:left;display:block;width:100%;" (click)="viewDocs(doc)">{{ doc.filename }}</button>
             </div>
             <button type="button" class="np-doc-row__download" (click)="downloadFile(doc)" aria-label="Download document">
               <img src="/assets/images/placeholder/icons/download.png" alt="">

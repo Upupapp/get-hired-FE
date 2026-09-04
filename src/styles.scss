@@ -30,8 +30,7 @@ img, video, iframe {
 @media (hover: none) and (pointer: coarse) {
   .mat-raised-button:active,
   .mat-flat-button:active,
-  .btn:active,
-  .gh-card:active {
+  .btn:active {
     transform: scale($gh-scale-press);
   }
 }
@@ -102,7 +101,13 @@ img, video, iframe {
 // ─── MOBILEVIEW: Global card hover/tap behavior ──────────────────────────────
 // Desktop: subtle lift on hover. Mobile: scale compress on :active (haptic feel).
 // Reduced-motion: transforms disabled, tint only.
-.gh-card, .job-card, .mat-card {
+// UI-INTERACTION-SEMANTICS: .gh-card removed from this shared interactive
+// treatment -- every current usage (company-dashboard.component.html,
+// job-create.component.html) is a static analytics/checklist/tips panel
+// with no click handler, so this global rule was giving purely
+// informational cards an interactive-looking hover lift + tap-compress.
+// .job-card/.mat-card (genuinely clickable elsewhere) keep it.
+.job-card, .mat-card {
   transition: transform $motion-duration-micro $motion-ease-standard,
               box-shadow $motion-duration-micro $motion-ease-standard;
   @include motion-safe;

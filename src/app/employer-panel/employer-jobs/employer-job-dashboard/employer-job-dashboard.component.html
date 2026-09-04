@@ -39,9 +39,10 @@
         <div class="jd-title-block">
           <h1 class="jd-job-title">{{ job.jobTitle || 'Your Job Post' }}</h1>
 
-          <!-- Status chip: subtle glow for Published state -->
+          <!-- Status chip: subtle glow for Published state. UI-INTERACTION-
+               SEMANTICS: consolidated onto the shared .gh-badge primitive. -->
           <span
-            class="jd-status-chip"
+            class="gh-badge jd-status-chip"
             [ngClass]="getStatusClass(job)"
             [attr.aria-label]="'Job status: ' + getStatusLabel(job)"
           >

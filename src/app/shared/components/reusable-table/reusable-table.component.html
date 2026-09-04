@@ -341,21 +341,24 @@
     </p>
 
     <!-- PAGINATOR -->
+    <!-- A11Y FIX: every control here was a non-focusable <span> -- real
+         <button>s (styling matches via the added `button` selectors in
+         .paginator's scss instead of the old `span` selector). -->
     <p class="pagination-controls float-end paginator" *ngIf="paginate.length > 1">
-      <span class="text-black" (click)="page !== 1 ? changePage(page-1): ''">
+      <button type="button" class="text-black" [disabled]="page === 1" (click)="changePage(page-1)" aria-label="Previous page">
         <img src="/assets/images/placeholder/icons/caret-left.png" class="img-fluid" width="7px">
-      </span>
+      </button>
 
-      <span *ngFor="let i of paginate.slice(
+      <button type="button" *ngFor="let i of paginate.slice(
 				this.pageRange(this.page, this.paginate.length)['start'],
 				this.pageRange(this.page, this.paginate.length)['end']
-			)" (click)="changePage(i)">
+			)" (click)="changePage(i)" [attr.aria-current]="i === page ? 'page' : null" [attr.aria-label]="'Page ' + i">
         <span [ngClass]="i === page ? 'text-purple': 'text-black'">{{i}}</span>
-      </span>
+      </button>
 
-      <span class="text-black" (click)="page !== paginate.length ? changePage(page+1): ''">
+      <button type="button" class="text-black" [disabled]="page === paginate.length" (click)="changePage(page+1)" aria-label="Next page">
         <img src="/assets/images/placeholder/icons/caret-right.png" class="img-fluid" width="7px">
-      </span>
+      </button>
     </p>
   </div>
 </section>

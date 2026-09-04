@@ -164,14 +164,17 @@ export class EmployerJobDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  // UI-INTERACTION-SEMANTICS: consolidated onto the shared .gh-badge
+  // primitive's modifiers (styles.scss) instead of this component's own
+  // .jd-status-chip .status-* duplicate set.
   getStatusClass(job: any): string {
     if (!job) return '';
     switch (job.jobStatusId) {
-      case 2: return 'status-published';
-      case 1: return 'status-draft';
-      case 3: return 'status-expired';
-      case 4: return 'status-archived';
-      default: return 'status-published';
+      case 2: return 'gh-badge--success';
+      case 1: return 'gh-badge--muted';
+      case 3: return 'gh-badge--error';
+      case 4: return 'gh-badge--navy';
+      default: return 'gh-badge--success';
     }
   }
 

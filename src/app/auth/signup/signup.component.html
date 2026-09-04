@@ -424,10 +424,19 @@
               [attr.aria-invalid]="agreeToTerms_validators?.invalid && agreeToTerms_validators?.touched ? 'true' : null"
               [attr.aria-describedby]="agreeToTerms_validators?.invalid && agreeToTerms_validators?.touched ? 'signup-terms-error' : null"
               aria-label="I agree to GetHired's Privacy Policy and Terms of Use">
+              <!-- TERMS-LINK FIX: "Terms of Use" was a plain <span> styled
+                   identically to the real "Privacy Policy" link next to it
+                   -- it looked clickable but went nowhere, since no Terms
+                   of Use page/route exists anywhere in this app (confirmed
+                   via a full-repo search; only privacy.component.html
+                   exists). Merged into one real link to the one page that
+                   actually exists, so it always resolves rather than
+                   silently doing nothing. If a separate Terms of Use page
+                   is added later, split this back into two <a> tags
+                   pointing at their own routes. -->
               <span class="gh-terms-text">
                 By creating your account, you agree to GetHired's
-                <a routerLink="/privacy" class="gh-legal-inline-link" target="_blank" rel="noopener">Privacy Policy</a>
-                and <span class="gh-legal-inline-link">Terms of Use</span>.
+                <a routerLink="/privacy" class="gh-legal-inline-link" target="_blank" rel="noopener">Privacy Policy and Terms of Use</a>.
               </span>
             </mat-checkbox>
             <!-- BUGFIX (QA EM-08, P1): the submit button is already

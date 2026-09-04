@@ -490,12 +490,28 @@
 	margin-top: 10px;
 	@extend .noselect;
 
-	span{
+	span, button{
 		margin-left: 5px;
 		text-decoration: none;
 		font-size: 12px;
 		font-weight: 600;
 		cursor: pointer;
+	}
+
+	// UI-INTERACTION-SEMANTICS: pagination controls are real <button>s now
+	// (were non-focusable <span>s) -- reset default browser button chrome so
+	// they still look identical to the span-based styling above.
+	button{
+		background: none;
+		border: none;
+		font-family: inherit;
+
+		&:disabled{
+			cursor: default;
+			opacity: 0.45;
+
+			&:hover{ background: none; }
+		}
 	}
 
 	.text-black{

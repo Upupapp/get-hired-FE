@@ -48,13 +48,14 @@
             />Edit
           </button>
 
+          <!-- A11Y FIX: dropdown items were non-focusable <div>s -- real <button>s. -->
           <div class="dropdown-menu" aria-labelledby="editCompany">
-            <div class="dropdown-item" (click)="redirectToEdit('banner')">
+            <button type="button" class="dropdown-item" (click)="redirectToEdit('banner')">
               Update Banner
-            </div>
-            <div class="dropdown-item" (click)="redirectToEdit('edit')">
+            </button>
+            <button type="button" class="dropdown-item" (click)="redirectToEdit('edit')">
               Edit Details
-            </div>
+            </button>
           </div>
         </div>
 
