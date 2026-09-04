@@ -176,7 +176,9 @@
             [jobId]="selectedThread.jobId"
             [applicantUid]="selectedThread.applicantUid"
             [otherPartyLabel]="applicantLabel(selectedThread)"
-            currentUserRole="employer">
+            currentUserRole="employer"
+            (threadOpened)="onThreadOpened($event)"
+            (messageSent)="onMessageSent($event)">
           </app-message-thread>
         </div>
 

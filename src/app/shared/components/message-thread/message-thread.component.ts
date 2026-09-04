@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ChatMessage, MessageService } from '@app-shared/services/message.service';
 import { Subject, interval, switchMap, takeUntil, catchError, of } from 'rxjs';
 
@@ -31,6 +31,16 @@ export class MessageThreadComponent implements OnChanges, OnDestroy, AfterViewCh
   @Input() applicantUid?: string;
   @Input() otherPartyLabel = 'this conversation';
   @Input() currentUserRole: 'employer' | 'applicant' = 'applicant';
+
+  // APP-017 fix: this component previously had no way to tell its parent
+  // (applicant-messages / recruiter-messages) that a thread was opened
+  // (possibly find-or-created server-side, for a first-ever conversation)
+  // or that a message was sent -- so the sidebar/conversation list never
+  // learned about either and stayed on whatever it last fetched, including
+  // a stale empty state. Real threadId only becomes known once openThread()
+  // resolves; real snippet/timestamp only once a message is actually sent.
+  @Output() threadOpened = new EventEmitter<{ threadId: string; jobId: string; applicantUid?: string }>();
+  @Output() messageSent = new EventEmitter<ChatMessage>();
 
   @ViewChild('scrollAnchor') private scrollAnchor!: ElementRef<HTMLDivElement>;
 
@@ -85,6 +95,7 @@ export class MessageThreadComponent implements OnChanges, OnDestroy, AfterViewCh
           // Opening the thread is "viewing" it -- mark read now. Errors
           // are non-fatal to viewing the conversation itself.
           this.messageService.markThreadRead(this.threadId).subscribe({ error: () => {} });
+          this.threadOpened.emit({ threadId: this.threadId, jobId: this.jobId, applicantUid: this.applicantUid });
         } else {
           this.loading = false;
           this.error = 'Could not open this conversation.';
@@ -151,6 +162,7 @@ export class MessageThreadComponent implements OnChanges, OnDestroy, AfterViewCh
         this.newBody = '';
         this.sending = false;
         this.shouldScroll = true;
+        this.messageSent.emit(msg);
       },
       error: () => {
         this.sending = false;

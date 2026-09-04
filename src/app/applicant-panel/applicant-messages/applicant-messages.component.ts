@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MessageService, ApplicantThreadSummary } from '@app-shared/services/message.service';
+import { MessageService, ApplicantThreadSummary, ChatMessage } from '@app-shared/services/message.service';
 
 type InboxFilter = 'all' | 'needs-reply';
 
@@ -185,5 +185,55 @@ export class ApplicantMessagesComponent implements OnInit, OnDestroy {
 
   trackByThreadId(_i: number, t: ApplicantThreadSummary): string {
     return t.threadId;
+  }
+
+  // APP-017 fix: message-thread now tells us when it actually opened a
+  // thread (real threadId, possibly just find-or-created server-side for
+  // a first-ever conversation) and when a message was sent. Without this,
+  // the sidebar never learned about either -- it stayed on whatever
+  // loadThreads() last returned, including the empty state, until a full
+  // reload.
+  onThreadOpened(evt: { threadId: string; jobId: string; applicantUid?: string }): void {
+    if (this.selectedThread && this.selectedThread.jobId === evt.jobId) {
+      this.selectedThread.threadId = evt.threadId;
+    }
+    const alreadyKnown = this.threads.some((t) => t.threadId === evt.threadId);
+    if (alreadyKnown) return;
+
+    // Genuinely new thread (the synthetic placeholder case from
+    // consumeDeepLinkJobId, threadId === ''): insert it now using what's
+    // already known locally rather than a full network refetch.
+    const summary: ApplicantThreadSummary = this.selectedThread && this.selectedThread.jobId === evt.jobId
+      ? { ...this.selectedThread, threadId: evt.threadId }
+      : {
+          threadId: evt.threadId,
+          jobId: evt.jobId,
+          companyId: '',
+          jobTitle: null,
+          companyName: null,
+          companyLogoUrl: null,
+          lastMessageSnippet: null,
+          lastSenderRole: null,
+          lastMessageAt: new Date().toISOString(),
+          needsReply: false,
+          unreadCount: 0,
+        };
+    this.threads = [summary, ...this.threads];
+    this.applyFilter();
+  }
+
+  onMessageSent(msg: ChatMessage): void {
+    const idx = this.threads.findIndex((t) => t.threadId === msg.thread_id);
+    if (idx === -1) return;
+    const updated: ApplicantThreadSummary = {
+      ...this.threads[idx],
+      lastMessageSnippet: msg.body,
+      lastSenderRole: msg.sender_role,
+      lastMessageAt: msg.created_at,
+      needsReply: false,
+    };
+    const rest = this.threads.filter((_, i) => i !== idx);
+    this.threads = [updated, ...rest];
+    this.applyFilter();
   }
 }

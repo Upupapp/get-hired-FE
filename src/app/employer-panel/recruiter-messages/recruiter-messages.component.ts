@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { MessageService, RecruiterThreadSummary } from '@app-shared/services/message.service';
+import { MessageService, RecruiterThreadSummary, ChatMessage } from '@app-shared/services/message.service';
 
 type InboxFilter = 'all' | 'needs-reply';
 
@@ -207,5 +207,50 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
 
   trackByThreadId(_i: number, t: RecruiterThreadSummary): string {
     return t.threadId;
+  }
+
+  // APP-017 fix -- mirrors applicant-messages.component.ts's handlers; see
+  // that file's comment for the root cause (message-thread previously had
+  // no way to tell either inbox parent about a newly-opened/created thread
+  // or a sent message).
+  onThreadOpened(evt: { threadId: string; jobId: string; applicantUid?: string }): void {
+    if (this.selectedThread && this.selectedThread.jobId === evt.jobId && this.selectedThread.applicantUid === evt.applicantUid) {
+      this.selectedThread.threadId = evt.threadId;
+    }
+    const alreadyKnown = this.threads.some((t) => t.threadId === evt.threadId);
+    if (alreadyKnown) return;
+
+    const summary: RecruiterThreadSummary = this.selectedThread && this.selectedThread.jobId === evt.jobId && this.selectedThread.applicantUid === evt.applicantUid
+      ? { ...this.selectedThread, threadId: evt.threadId }
+      : {
+          threadId: evt.threadId,
+          applicantUid: evt.applicantUid || '',
+          applicantName: null,
+          applicantPhotoUrl: null,
+          jobId: evt.jobId,
+          jobTitle: null,
+          lastMessageSnippet: null,
+          lastSenderRole: null,
+          lastMessageAt: new Date().toISOString(),
+          needsReply: false,
+          unreadCount: 0,
+        };
+    this.threads = [summary, ...this.threads];
+    this.applyFilter();
+  }
+
+  onMessageSent(msg: ChatMessage): void {
+    const idx = this.threads.findIndex((t) => t.threadId === msg.thread_id);
+    if (idx === -1) return;
+    const updated: RecruiterThreadSummary = {
+      ...this.threads[idx],
+      lastMessageSnippet: msg.body,
+      lastSenderRole: msg.sender_role,
+      lastMessageAt: msg.created_at,
+      needsReply: false,
+    };
+    const rest = this.threads.filter((_, i) => i !== idx);
+    this.threads = [updated, ...rest];
+    this.applyFilter();
   }
 }
