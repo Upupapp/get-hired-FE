@@ -186,7 +186,12 @@ export class ProfileFormsComponent implements OnInit, OnDestroy {
       const ref = this.dialog.open(ConfirmationDialogComponent, {
         disableClose: true,
         data: {
-          action: `Save Step ${this.stepper}`,
+          // APP-016 fix: ConfirmationDialogComponent's template already
+          // reads "Would you like to save your progress in " + action + "?"
+          // -- passing "Save Step N" here duplicated "Save" ("...progress
+          // in Save Step 1 ?"). action is only ever used inside that one
+          // sentence, so just the step name belongs here.
+          action: `Step ${this.stepper}`,
         },
       });
 
