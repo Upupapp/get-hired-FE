@@ -118,7 +118,7 @@
 
         <!-- ── STEP 1: Job Basics ──────────────────────────────────────── -->
         <ng-container *ngIf="stepper === 1">
-          <app-job-post-detail-step formGroupName="initialData" [simplified]="isSimplified" [assistantPrefilled]="assistantPrefilled"></app-job-post-detail-step>
+          <app-job-post-detail-step formGroupName="initialData" [simplified]="isSimplified" [assistantPrefilled]="assistantPrefilled" (bannerUploadPending)="onBannerUploadPending($event)"></app-job-post-detail-step>
         </ng-container>
 
         <!-- ── STEP 2: Compensation, Requirements & Benefits ──────────── -->

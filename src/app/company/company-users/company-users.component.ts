@@ -82,7 +82,9 @@ export class CompanyUsersComponent implements OnInit, OnDestroy {
 
   restrictUserCreation(): void {
     const ref = this.dialog.open(SubscriptionAlertComponent, {
-      width: '34vw',
+      // OVERLAY-AUDIT FIX: same narrow-viewport gap as job-list.component.ts's
+      // identical SubscriptionAlertComponent dialog -- same fix.
+      width: 'clamp(340px, 34vw, 480px)',
       data: { isError: true }
     });
     this.subscriptions$.add(
@@ -96,7 +98,11 @@ export class CompanyUsersComponent implements OnInit, OnDestroy {
 
   addUserToCompany(): void {
     this.dialog.open(ImportAddUserComponent, {
-      width: '34vw',
+      // OVERLAY-AUDIT FIX: flat 34vw is too narrow at 768-900px for this
+      // dialog's two-tab form content. Floor raised to 380px (wider than
+      // the simple-alert dialogs above -- this one holds real form fields,
+      // not just a heading and a button). maxWidth/maxHeight unchanged.
+      width: 'clamp(380px, 34vw, 560px)',
       maxWidth: '100vw',
       maxHeight: '90vh',
     });

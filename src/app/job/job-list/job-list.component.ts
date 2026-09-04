@@ -304,7 +304,12 @@ export class JobListComponent implements OnInit, OnDestroy {
     let openChecker = this.dialog.open(
       SubscriptionAlertComponent,
       {
-        width: '34vw',
+        // OVERLAY-AUDIT FIX: flat 34vw computed to ~270-300px on the
+        // 768-900px tablet/small-desktop range -- too narrow for this
+        // dialog's large fs-1 heading. clamp() gives it a real floor
+        // (340px) and ceiling (480px) instead. True mobile (<=767px) is
+        // unaffected -- a separate global rule already forces full width there.
+        width: 'clamp(340px, 34vw, 480px)',
         data: {
           isError: restriction
         }

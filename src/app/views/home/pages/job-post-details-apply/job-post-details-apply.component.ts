@@ -104,7 +104,9 @@ export class JobPostDetailsApplyComponent implements OnInit {
     let dialogModal = this.dialog.open(
       InterviewNotificationComponent,
       {
-        width: '37vw',
+        // OVERLAY-AUDIT FIX: same narrow-viewport gap as
+        // application-process.component.ts's identical dialog -- same fix.
+        width: 'clamp(320px, 37vw, 460px)',
         data: data,
       }
     );

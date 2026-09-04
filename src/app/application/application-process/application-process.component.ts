@@ -313,7 +313,10 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
     let dialogModal = this.dialog.open(
       InterviewNotificationComponent,
       {
-        width: '37vw',
+        // OVERLAY-AUDIT FIX: flat 37vw computed to ~290-330px on the
+        // 768-900px range -- narrow for this dialog's image + heading +
+        // paragraph + two buttons. clamp() floors it at 320px, caps at 460px.
+        width: 'clamp(320px, 37vw, 460px)',
         data: data,
       }
     );

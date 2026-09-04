@@ -605,6 +605,61 @@ label {
   }
 }
 
+// ─── OVERLAY-AUDIT: loading dialog stays compact and centered, never a
+// bottom sheet ─────────────────────────────────────────────────────────────
+// Every other panelClass exemption above (video-preview-panel, gh-jac-dialog,
+// gh-setup-success-dialog) still ADOPTS the mobile bottom-sheet shape, just
+// with its own chrome -- appropriate for real dialog content. A brief
+// loading/spinner state is different: it's not a decision, and sliding a
+// "LOADING" card up from the bottom like a real modal misrepresents a
+// transient wait as an actionable panel. This is the one exemption that
+// opts fully OUT of the bottom-sheet transform instead of restyling it.
+// Applied via MatDialogRef.addPanelClass('gh-loading-panel') from inside
+// LoadingComponent/InlineLoadingComponent/RecordLoadingComponent's own
+// constructors -- no dialog.open() call site needs to pass panelClass.
+// NOTE: addPanelClass()/panelClass applies the class to .cdk-overlay-pane,
+// not directly to the nested .mat-dialog-container -- confirmed by DOM
+// inspection (matches the descendant-combinator selector already used by
+// every other panelClass exemption above, e.g. ".gh-setup-success-dialog
+// .mat-dialog-container"). Both forms are kept for safety, but the
+// descendant one (second selector) is the one that actually matches.
+.gh-loading-panel.mat-dialog-container,
+.gh-loading-panel .mat-dialog-container {
+  max-width: 280px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18) !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .gh-loading-panel.mat-dialog-container,
+  .gh-loading-panel .mat-dialog-container {
+    width: auto !important;
+    max-width: 260px !important;
+    margin: 0 auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    // Full rounding, not the bottom-sheet's rounded-top-only shape.
+    border-radius: 16px !important;
+    // Skip the slide-up-from-bottom entrance used for real dialogs.
+    animation: none !important;
+  }
+  // The pane itself (which IS where the class lands) also needs its width
+  // freed from the global BL-010 rule's `width: 100% !important` above.
+  .gh-loading-panel.cdk-overlay-pane {
+    width: auto !important;
+    max-width: 260px !important;
+  }
+  // MV6-NOTE: :has() support caveat already documented above for the other
+  // panelClass exemptions -- same progressive-enhancement tradeoff. Without
+  // it, this dialog still gets full-width/max-height overridden correctly
+  // above; only the wrapper's flex-end (bottom) alignment would persist,
+  // vertically anchoring an otherwise-compact card to the bottom of the
+  // screen instead of centering it.
+  .cdk-global-overlay-wrapper:has(.gh-loading-panel) {
+    align-items: center !important;
+  }
+}
+
 // ─── BL-010: Fix hardcoded min-width on action/control modals ─────────────────
 // table-control-modal and applicant-action-modal have component-level SCSS that
 // forces min-width: 660px even on mobile. Override that here globally so these

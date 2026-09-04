@@ -219,6 +219,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // ── New v2 state ──────────────────────────────────────────────────────────
   /** Autosave indicator state: 'unsaved' | 'saving' | 'saved' | 'failed' */
   autoSaveState: 'unsaved' | 'saving' | 'saved' | 'failed' = 'unsaved';
+  /** BANNER-RACE FIX: true while app-job-post-detail-step's banner upload is
+   *  in flight. performAutosave() defers while this is true, instead of
+   *  saving the form's current (stale) jobBanner value -- see that method's
+   *  own comment for the full sequencing. */
+  private bannerUploadPending = false;
   /** Validation error chips shown at step top after failed step-advance */
   stepErrorSummary: Array<{ fieldId: string; label: string }> = [];
   showStepErrors: boolean = false;
@@ -1680,10 +1685,39 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.autosaveTimerId = setTimeout(() => this.performAutosave(), 2000);
   }
 
+  /** BANNER-RACE FIX: relayed from app-job-post-detail-step's own
+   *  app-gh-image-upload (uploading) event. While a banner upload is in
+   *  flight, jobBanner in the form is still the OLD value -- the upload's
+   *  own completion (onBannerUploaded() -> jobBanner.setValue()) is what
+   *  eventually carries the real URL, and that setValue is itself a form
+   *  change that reschedules a fresh autosave. Forcing one here too
+   *  (rather than only relying on that reactive-forms propagation) makes
+   *  the "save immediately once the upload resolves" behavior explicit,
+   *  not incidental. */
+  onBannerUploadPending(pending: boolean): void {
+    this.bannerUploadPending = pending;
+    if (!pending && this.jobId) {
+      this.scheduleAutosave();
+    }
+  }
+
   /** Executes the background draft save via JobService (not NgRx store) to
    *  avoid triggering the editJob$ → setFormGroup() form-reset side effect. */
   private performAutosave(): void {
-    if (!this.jobId || this.autoSaveState === 'saving') return;
+    if (!this.jobId) return;
+    if (this.autoSaveState === 'saving' || this.bannerUploadPending) {
+      // BANNER-RACE FIX: either another save is already in flight (started
+      // before the upload began, so it still holds correct data -- letting
+      // it finish is safe) or a banner upload hasn't resolved yet (saving
+      // now would persist its stale jobBanner value, possibly the shared
+      // default placeholder). Reschedule rather than silently drop this
+      // tick: onBannerUploadPending() also reschedules the moment the
+      // upload resolves, but retrying here too closes the gap where an
+      // unrelated save was still in flight at that exact moment, so the
+      // eventual save always reflects the current, correct form state.
+      this.scheduleAutosave();
+      return;
+    }
     // AUTOSAVE-STATUS-REGRESSION FIX: this used to hardcode formatJob(1)
     // (Draft) unconditionally. A debounced autosave scheduled just before a
     // genuine Publish click can have its request land AFTER the publish

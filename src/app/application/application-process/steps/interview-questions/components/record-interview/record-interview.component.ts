@@ -271,7 +271,14 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
     let dialogModal = this.dialog.open(
       SettingsModalComponent,
       {
-        minWidth: '30vw',
+        // OVERLAY-AUDIT FIX: bare 30vw floor computed to ~230-270px on the
+        // 768-900px range -- narrow for this dialog's camera/mic device
+        // <select> dropdowns, which can carry long real device names. Flat
+        // 360px floor is more appropriate than a vw-scaled one here since
+        // device-name length doesn't scale with viewport; 520px ceiling
+        // keeps it from stretching unreasonably wide on large screens.
+        minWidth: '360px',
+        maxWidth: '520px',
         data: data,
       }
     );

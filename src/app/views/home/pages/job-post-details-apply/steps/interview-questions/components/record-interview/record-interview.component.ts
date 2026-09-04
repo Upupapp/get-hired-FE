@@ -98,7 +98,10 @@ export class RecordInterviewComponent implements OnInit {
     let dialogModal = this.dialog.open(
       SettingsModalComponent,
       {
-        minWidth: '30vw',
+        // OVERLAY-AUDIT FIX: same narrow-viewport gap as the identical
+        // dialog in application-process's record-interview component -- same fix.
+        minWidth: '360px',
+        maxWidth: '520px',
         data: data,
       }
     );

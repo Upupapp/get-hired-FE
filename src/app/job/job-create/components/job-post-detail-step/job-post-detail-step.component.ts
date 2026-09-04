@@ -13,6 +13,15 @@ import { SnackbarService } from '@app-core/services/snackbar.service';
 })
 export class JobPostDetailStepComponent implements OnInit {
   @Input() formGroupName: string;
+  /** BANNER-RACE FIX: relays app-gh-image-upload's own (uploading) lifecycle
+   *  event up to job-create.component.ts, which owns the autosave timer.
+   *  Without this, a background autosave firing mid-upload persists
+   *  whatever jobBanner value the form already had -- the previous banner,
+   *  or the shared default placeholder for a job that never had one --
+   *  because onBannerUploaded() (below) hasn't set the real URL yet. See
+   *  GETHIRED_OVERLAY_BANNER_AUDIT for the reproduced request-ordering
+   *  evidence. */
+  @Output() bannerUploadPending = new EventEmitter<boolean>();
   /** Simplified Job-Post mode (see job-post-mode-dialog): hides secondary/detail
    *  sections in the template below. Purely a display flag -- the underlying
    *  form model and its controls are untouched, so nothing here changes what
@@ -94,6 +103,13 @@ export class JobPostDetailStepComponent implements OnInit {
     this.bannerUrl = null;
     this.initialDetailsForm.get('jobBanner').setValue(null);
     this.bannerSelected.clear();
+  }
+
+  /** BANNER-RACE FIX: app-gh-image-upload emits this true the instant a
+   *  banner upload starts and false once it resolves (success, error, or
+   *  clear) -- see its own doc comment. Relayed unchanged to the parent. */
+  onBannerUploading(isUploading: boolean): void {
+    this.bannerUploadPending.emit(isUploading);
   }
 
   selectWorkSetUp(chosen) {
