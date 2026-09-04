@@ -57,7 +57,7 @@
       </div>
 
       <div class="banner-container">
-        <div #bannerBoundary class="bg-opacity" style="height:360px; overflow: hidden; background: #c9c9c9; border-radius: 7px; position: relative;">
+        <div class="bg-opacity banner-frame">
           <!-- BUG FIX: this used to require `preview` (the NgRx-derived
                summary) truthy on top of hasBannerSrc, but hasBannerSrc
                already falls back to `preview` itself if the live form value
@@ -75,17 +75,7 @@
 
           <img *ngIf="hasBannerSrc"
             [src]="previewBannerSrc" id="banner-source-file"
-            cdkDragLockAxis="y" (cdkDragEnded)="onDragEnded($event)" cdkDrag
-            [cdkDragBoundary]="bannerBoundary" [cdkDragFreeDragPosition]="dragPosition"
             class="banner-image">
-
-          <!-- OPTIONAL fine-tune affordance, not an instruction: the banner is
-               already positioned correctly by default (object-fit: cover +
-               a neutral 0,0 drag offset), so this reads as a small optional
-               hint rather than something the user must do. -->
-          <div class="drag-position-container" *ngIf="hasBannerSrc" title="Optional: drag the banner image up or down to fine-tune its crop">
-            <i class="bi bi-arrows-move me-1" aria-hidden="true"></i>Drag to fine-tune (optional)
-          </div>
 
           <!-- Upload/change overlay -->
           <button type="button" class="pv-banner-change-btn" (click)="goToStep(1)"
@@ -105,7 +95,7 @@
             </ng-container>
           </div>
           <div class="tags ms-0 mt-3" *ngIf="preview.tags">
-            <div class="title-tags me-2 mb-2" *ngFor="let tag of preview.tags">{{tag}}</div>
+            <div class="gh-tag me-2 mb-2" *ngFor="let tag of preview.tags">{{tag}}</div>
           </div>
         </div>
       </div>

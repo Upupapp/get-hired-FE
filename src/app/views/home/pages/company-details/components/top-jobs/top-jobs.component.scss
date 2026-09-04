@@ -79,21 +79,5 @@
   flex-wrap: wrap;
 }
 
-.title-tags{
-	background: #F3F2F1;
-	border-radius: 5px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 300;
-	font-size: 12px;
-	line-height: 18px;
-	/* identical to box height */
-	padding: 5px 10px;
-	//max-width: 130px;
-	color: #6A6A6A;
-	cursor: pointer;
-
-	&:hover{
-		text-decoration: underline;
-	}
-}
+// UI-INTERACTION-SEMANTICS: .title-tags consolidated onto the shared
+// .gh-tag primitive (styles.scss) -- template now uses class="gh-tag".

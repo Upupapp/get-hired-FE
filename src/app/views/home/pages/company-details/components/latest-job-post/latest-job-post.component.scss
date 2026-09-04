@@ -110,9 +110,7 @@
 	padding: 5px 10px;
 	//max-width: 130px;
 	color: #6A6A6A;
-	cursor: pointer;
-
-	&:hover{
-		text-decoration: underline;
-	}
+	// FALSE-HOVER-AFFORDANCE FIX: no click handler in the template -- this is
+	// purely informational text (job type/setup), not a link.
+	cursor: default;
 }

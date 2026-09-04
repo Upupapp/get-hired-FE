@@ -18,6 +18,8 @@ import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
 import { Subscription, interval } from 'rxjs';
 import { NotificationService, AppNotification } from '@main/shared/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-header',
@@ -59,7 +61,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private appFacade: AppFacade,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private dialog: MatDialog,
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -199,7 +202,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
+  // LOGOUT-CONFIRM: normal user-initiated logout now asks for confirmation
+  // first (reuses the shared ConfirmationDialogComponent, same pattern as
+  // every other confirm/cancel dialog in the app). Cancel leaves the
+  // session completely untouched -- performLogout() below is only ever
+  // called after an explicit "Proceed to Logout".
   logout() {
+    this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Log out?',
+        message: 'Are you sure you want to log out of your GetHired account?',
+        confirmLabel: 'Proceed to Logout',
+        cancelLabel: 'Cancel',
+      },
+    }).afterClosed().subscribe((result) => {
+      if (result === 1) {
+        this.performLogout();
+      }
+    });
+  }
+
+  private performLogout(): void {
     // Was localStorage.clear() -- the same unsafe blanket-clear bug fixed
     // in CoreService.logout() earlier (bc2d35e0), reintroduced here via a
     // separate, unguarded logout path. A blanket clear() deletes ANY other

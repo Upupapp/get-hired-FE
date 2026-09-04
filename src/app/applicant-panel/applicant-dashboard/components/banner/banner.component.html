@@ -1,7 +1,8 @@
 <div class="bg-banner">
   <div class="p-5 d-flex">
     <div class="company-logo me-4">
-      <img [src]="details.photoUrl" class="img-fluid company-logo-image" />
+      <img *ngIf="hasAvatar" [src]="details.photoUrl" class="img-fluid company-logo-image" (error)="onAvatarError()" alt="" />
+      <div *ngIf="!hasAvatar" class="company-logo-image company-logo-image--fallback" aria-hidden="true">{{ avatarInitials }}</div>
     </div>
     <div class="mt-1">
       <h5 class="title-banner mb-3">

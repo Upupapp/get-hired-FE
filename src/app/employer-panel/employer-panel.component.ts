@@ -12,6 +12,7 @@ import { filter, map, take } from 'rxjs/operators';
 import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
 import { AiCreateDraftService } from '@app-job/services/ai-create-draft.service';
 import { AiRecoveryReconciliationDialogComponent, AiRecoveryReconciliationResult } from '@app-shared/components/ai-recovery-reconciliation-dialog/ai-recovery-reconciliation-dialog.component';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-employer-panel',
@@ -407,8 +408,27 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
    *  permanently dangling; it's simply no longer purged immediately as an
    *  explicit opt-in at this moment. Per this cluster's own instruction:
    *  sign-out is not the place for unsaved-work protection UI. */
+  // LOGOUT-CONFIRM: normal user-initiated sign-out now asks for
+  // confirmation first (reuses the shared ConfirmationDialogComponent).
+  // Cancel leaves the session untouched -- performLogout() below is only
+  // reached after an explicit "Proceed to Logout".
   logout(): void {
     if (this.logoutInProgress) return; // duplicate-click guard
+    this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Log out?',
+        message: 'Are you sure you want to log out of your GetHired account?',
+        confirmLabel: 'Proceed to Logout',
+        cancelLabel: 'Cancel',
+      },
+    }).afterClosed().subscribe((result) => {
+      if (result === 1) {
+        this.performLogout();
+      }
+    });
+  }
+
+  private performLogout(): void {
     this.logoutInProgress = true;
     this.coreService.logout().subscribe({
       next: () => {

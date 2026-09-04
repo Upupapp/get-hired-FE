@@ -122,7 +122,10 @@
                 </div>
               </li>
               <li>
-                <span class="gh-nav-dropdown-item" (click)="logout()">Log out</span>
+                <!-- A11Y FIX: was a non-focusable <span> for a critical action
+                     (logout) -- keyboard users could not reach or activate
+                     it. Real <button>, same visual class. -->
+                <button type="button" class="gh-nav-dropdown-item" (click)="logout()">Log out</button>
               </li>
             </ul>
           </div>

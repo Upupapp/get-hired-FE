@@ -45,19 +45,6 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     }
   };
 
-  // POLISH FIX: previous default { x: 0.25, y: -160 } predated the
-  // object-fit:cover fix on .banner-image (see banner-container comment in
-  // the .scss). Cover-fit already centers/crops the image correctly inside
-  // its fixed-height frame on its own -- a nonzero default translate on top
-  // of that just shoved a well-fitted image out of frame for every job that
-  // never touched "drag to reposition". { x: 0, y: 0 } is the correct
-  // "untouched" default; any saved manual reposition (job-post-banner-position
-  // in sessionStorage) still takes priority exactly as before.
-  public dragPosition = JSON.parse(sessionStorage.getItem('job-post-banner-position')) || {
-    x: 0, y: 0
-  }
-
-
   preview: Model.Job;
   industries: Model.Options[] = [];
   roles: Model.Options[] = [];
@@ -100,7 +87,6 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
         isInterviewRequired: false,
         interviewQuestions: interview,
         companyId: JSON.parse(user).companyId,
-        bannerPosition: this.dragPosition
       }
 
       this.matchability = this.matchabilityService.evaluate(this.normalizer.normalize(this.preview));
@@ -273,31 +259,6 @@ export class PreviewJobPostStepComponent implements OnInit, OnDestroy {
     // crashing; the template already updates once the *$ subscription fires.
     const filteredArray = chosenArray.filter(option => option.id == id);
     return filteredArray[0] ? filteredArray[0].name : '';
-  }
-
-  // Update Drag position
-  onDragEnded(event) {
-    let element = event.source.getRootElement();
-    let imageSourceFile = document.getElementById('banner-source-file');
-    let boundingClientRect = element.getBoundingClientRect();
-    let parentPosition = this.getPosition(element);
-    let dragPosition = { x: 0, y: /*((imageSourceFile?.offsetHeight)/2) +*/ ((boundingClientRect.y) - (parentPosition.top)) };
-
-    // temporary save to local storage
-    sessionStorage.setItem('job-post-banner-position', JSON.stringify(dragPosition))
-    //console.log(dragPosition, imageSourceFile?.scrollHeight);
-    //console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));
-  }
-
-  getPosition(el) {
-    let x = 0;
-    let y = 0;
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      x += el.offsetLeft - el.scrollLeft;
-      y += el.offsetTop - el.scrollTop;
-      el = el.offsetParent;
-    }
-    return { top: y, left: x };
   }
 
   ngOnDestroy() {

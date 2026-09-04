@@ -38,6 +38,7 @@ import { DropdownSearchComponent } from './components/input/dropdown-search/drop
 import { GoogleAddressSearchComponent } from './components/google-address-search/google-address-search.component';
 import { CountdownTimerComponent } from './components/countdown-timer/countdown-timer.component';
 import { SubscriptionAlertComponent } from './components/subscription-alert/subscription-alert.component';
+import { SecurityLogoutCountdownComponent } from './components/security-logout-countdown/security-logout-countdown.component';
 import { InlineLoadingComponent } from './components/inline-loading/inline-loading.component';
 import { LockedMatchTeaserComponent } from './components/locked-match-teaser/locked-match-teaser.component';
 import { TalentProofBadgeComponent } from './components/talent-proof-badge/talent-proof-badge.component';
@@ -88,6 +89,7 @@ const classesToInclude: any[] = [
   GoogleAddressSearchComponent,
   CountdownTimerComponent,
   SubscriptionAlertComponent,
+  SecurityLogoutCountdownComponent,
   InlineLoadingComponent,
   LockedMatchTeaserComponent,
   TalentProofBadgeComponent,

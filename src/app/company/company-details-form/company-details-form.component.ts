@@ -187,6 +187,19 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
     this.companyDetailsForm.controls['companyLogoFile'].setValue(this.profileImage);
   }
 
+  // IMAGE-CONSISTENCY FIX: app-gh-image-upload exposes `uploading` (see its
+  // own doc comment) specifically so a consumer can block Save while a
+  // logo upload is still in flight -- this form never bound it, so
+  // clicking Save right after picking a new logo (the local preview
+  // appears instantly, looks done) submitted with the OLD companyLogoUrl,
+  // silently dropping the new logo from that save. Same bug class/fix as
+  // job-create's bannerUploadPending.
+  logoUploadPending = false;
+
+  onLogoUploading(pending: boolean): void {
+    this.logoUploadPending = pending;
+  }
+
   onLogoUploaded(result: any) {
     this.profileImage = result.primaryUrl;
     // Store the already-uploaded URL so the save form skips re-uploading
@@ -205,6 +218,11 @@ export class CompanyDetailsFormComponent implements OnInit, OnDestroy {
   onSubmit() {
     // Double-submit guard: ignore while a request is in-flight
     if (this.saving) { return; }
+    // IMAGE-CONSISTENCY FIX: also ignore while a logo upload is still in
+    // flight -- see onLogoUploading() above. The Save button is already
+    // disabled for this case in the template; this is the defensive
+    // second guard for (ngSubmit) firing via other means (e.g. Enter key).
+    if (this.logoUploadPending) { return; }
 
     // Mark all fields touched to surface inline validation errors
     Object.values(this.companyDetailsForm.controls).forEach(c => c.markAsTouched());

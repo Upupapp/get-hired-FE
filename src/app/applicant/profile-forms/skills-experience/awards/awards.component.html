@@ -11,9 +11,12 @@
             </h5>
           </div>
           <div class="col-12 col-md-3">
-            <span (click)="cancel()" class="float-end btn btn-add">
+            <!-- A11Y FIX: was a non-focusable <span> styled as a button
+                 (.btn class already applied visually) -- real <button> so
+                 keyboard users can reach/activate it. -->
+            <button type="button" (click)="cancel()" class="float-end btn btn-add" aria-label="Cancel">
               <img src="/assets/images/placeholder/icons/remove-gray.png" style="height: 15px">
-            </span>
+            </button>
           </div>
         </div>
         <hr style="border: dashed 1px #868686">

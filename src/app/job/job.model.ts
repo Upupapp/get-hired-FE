@@ -56,7 +56,6 @@ export interface Job {
   skills?: string[];
   tags?: string[];
   rate?: string;
-  bannerPosition?: any;
   companyName?: string;
   companyCity?: string;
   companyCountry?: string;

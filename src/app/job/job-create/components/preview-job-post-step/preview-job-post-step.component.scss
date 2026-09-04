@@ -191,48 +191,25 @@
 	background: rgba(0, 0, 0, 0.3);
 }
 
-// POLISH: this used to be a full-width dark bar reading "Drag to reposition"
-// stretched across the top of the banner -- it read as an instruction the
-// user had to follow. The banner is now positioned correctly by default
-// (object-fit: cover + a neutral 0,0 drag offset -- see .ts), so this is now
-// a small, quiet, optional pill tucked in the corner. It fades in on hover
-// of the banner so it doesn't compete with the image at rest.
-.drag-position-container{
-	position: absolute;
-	top: 12px;
-	left: 12px;
-	display: inline-flex;
-	align-items: center;
-	width: auto;
-	max-width: calc(100% - 140px);
-	background: rgba(13, 16, 36, 0.55);
-	backdrop-filter: blur(4px);
-	border: 1px solid rgba(255, 255, 255, 0.18);
-	border-radius: 100px;
-	padding: 5px 12px;
-	font-family: 'Manrope', sans-serif;
-	font-weight: 500;
-	font-size: 12px;
-	color: rgba(255, 255, 255, 0.92);
-	letter-spacing: 0.01em;
-	opacity: 0;
-	transform: translateY(-2px);
-	transition: opacity 160ms ease, transform 160ms ease;
-	pointer-events: none;
-	z-index: 5;
-
-	i { font-size: 12px; opacity: 0.85; }
-
-	@media (prefers-reduced-motion: reduce) {
-		transition: opacity 160ms ease;
-		transform: none;
-	}
-}
-
-.banner-container:hover .drag-position-container,
-.banner-container:focus-within .drag-position-container {
-	opacity: 1;
-	transform: translateY(0);
+// BANNER-AUDIT: the container used to be a hardcoded height:360px (inline
+// style) with a CDK-drag reposition control layered on top to compensate
+// for whatever that fixed height cropped away. Removed the drag control
+// entirely and replaced the fixed height with an aspect-ratio frame that
+// matches the banner upload's own documented recommendation (see
+// job-post-detail-step.component.html's hint: "Recommended 1200 x 400 px",
+// i.e. 3:1) -- so a compliant upload displays with effectively no cropping,
+// at any viewport width, without needing manual repositioning. min-height
+// keeps very narrow viewports from collapsing the frame too short;
+// max-height keeps very wide desktop viewports from stretching it into an
+// oversized block.
+.banner-frame{
+	position: relative;
+	overflow: hidden;
+	border-radius: 10px;
+	width: 100%;
+	aspect-ratio: 3 / 1;
+	min-height: 140px;
+	max-height: 420px;
 }
 
 // Job title -- the single dominant heading of the whole preview. Everything
@@ -354,16 +331,16 @@
 .banner-container{
 	position: relative;
 	.banner-image{
-		cursor: move;
-		// BUG FIX: these were commented out, so an uploaded banner rendered
-		// at its natural intrinsic aspect ratio inside the container's fixed
-		// height:360px/overflow:hidden (set inline on .bg-opacity) -- a
-		// short/wide image could end up a barely-visible sliver, and a
-		// tall/narrow one mostly cropped away. object-fit:cover fills the
-		// full 360px consistently, matching the placeholder image's own
-		// effective sizing.
-		height: 360px;
+		// BANNER-AUDIT: absolutely positioned to fill .banner-frame's
+		// aspect-ratio box (see above) instead of a hardcoded pixel height --
+		// object-fit:cover only crops the (small, expected) difference
+		// between an uploaded image's actual ratio and the documented 3:1
+		// recommendation, not an arbitrary viewport-driven amount. No longer
+		// draggable, so no reposition cursor.
+		position: absolute;
+		inset: 0;
 		width: 100%;
+		height: 100%;
 		object-position: center;
 		object-fit: cover;
 		border-radius: 10px;
@@ -616,24 +593,13 @@
   flex-wrap: wrap;
 }
 
-.title-tags{
-	background: #F3F2F1;
-	border-radius: 5px;
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 400;
+// UI-INTERACTION-SEMANTICS: .title-tags consolidated onto the shared
+// .gh-tag primitive (styles.scss) -- template uses class="gh-tag" with a
+// slightly larger font here (14px vs the primitive's 12px) plus this
+// section's own spacing, kept as a local override.
+.gh-tag {
 	font-size: 14px;
-	line-height: 18px;
-	/* identical to box height */
-	padding: 5px 10px;
-	//max-width: 130px;
-	color: #6A6A6A;
-	cursor: pointer;
 	margin-top: 5px;
-
-	&:hover{
-		text-decoration: underline;
-	}
 }
 
 
@@ -1017,20 +983,20 @@
 // ═══════════════════════════════════════════════════════════════════════
 @media (max-width: 767px) {
 
-  // ── 1. Banner: compact, still colorful (object-fit: cover keeps the
-  // full-bleed crop; only the height shrinks). The container height is
-  // set inline in the template (style="height:360px"), so an
-  // !important is required here to win over it.
-  .bg-opacity {
-    height: 190px !important;
+  // ── 1. Banner: compact, still colorful. .banner-frame's aspect-ratio
+  // (see main .scss block above) already scales the height down with the
+  // viewport on its own -- this just tightens the corner radius and caps
+  // how tall the frame is allowed to get so it still reads as a compact
+  // header rather than a slab.
+  .banner-frame {
     border-radius: 12px !important;
+    max-height: 200px;
   }
 
   .banner-container {
     margin-bottom: 4px;
 
     .banner-image {
-      height: 190px !important;
       border-radius: 12px;
     }
   }
@@ -1041,14 +1007,6 @@
     bottom: 8px;
     right: 8px;
     border-radius: 7px;
-  }
-
-  .drag-position-container {
-    top: 8px;
-    left: 8px;
-    padding: 4px 9px;
-    font-size: 10.5px;
-    max-width: calc(100% - 96px);
   }
 
   // The badges/tags floating-card was absolutely positioned to sit

@@ -462,9 +462,12 @@
         <div class="gh-jobperf-title-cell">
           <span class="gh-jobperf-job-title" [title]="job.title">{{ job.title }}</span>
           <div class="gh-jobperf-badges">
-            <span class="gh-status-badge"
-              [class.gh-status-badge--active]="job.status === 'Published'"
-              [class.gh-status-badge--draft]="job.status !== 'Published'">
+            <!-- UI-INTERACTION-SEMANTICS: consolidated onto the shared .gh-badge
+                 primitive (styles.scss) instead of this component's own
+                 .gh-status-badge duplicate. -->
+            <span class="gh-badge"
+              [class.gh-badge--success]="job.status === 'Published'"
+              [class.gh-badge--muted]="job.status !== 'Published'">
               {{ job.status }}
             </span>
             <span class="gh-review-chip gh-review-chip--has" *ngIf="job.newApplicants > 0">

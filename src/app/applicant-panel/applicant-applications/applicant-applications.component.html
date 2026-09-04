@@ -18,7 +18,8 @@
           <div class="application-row-info">
             <h3>{{ app.jobTitle }}</h3>
             <p>{{ app.companyName }}</p>
-            <span class="gh-ap-status-chip" [ngClass]="statusChipClass(app.applicantStatusName)">{{ app.applicantStatusName || 'Applied' }}</span>
+            <!-- UI-INTERACTION-SEMANTICS: consolidated onto the shared .gh-badge primitive. -->
+            <span class="gh-badge" [ngClass]="statusChipClass(app.applicantStatusName)">{{ app.applicantStatusName || 'Applied' }}</span>
           </div>
 
           <!-- Contact status: whether the employer has reached out yet.

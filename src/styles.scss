@@ -937,6 +937,50 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   }
 }
 
+// UI-INTERACTION-SEMANTICS: shared static info-pill primitive -- distinct
+// from .gh-badge (which carries semantic status modifiers, e.g. --success/
+// --warning). .gh-tag is for plain metadata (job type, work setup, skill
+// tags, etc.) duplicated verbatim across ~7 component stylesheets as
+// ".title-tags", each with cursor:pointer + underline-on-hover even though
+// none of them have a click handler -- made purely informational text look
+// clickable. One shared, genuinely non-interactive primitive instead.
+.gh-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #F3F2F1;
+  border-radius: 5px;
+  font-family: 'Manrope', sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 18px;
+  padding: 5px 10px;
+  color: #6A6A6A;
+  cursor: default;
+}
+
+// UI-INTERACTION-SEMANTICS: one restrained shared link treatment. Existing
+// per-component link styling is largely fine (color/underline only) and is
+// left alone -- this primitive is for new links and for the confirmed
+// button-like outliers being fixed to use it.
+.gh-link {
+  color: $color-global-red-buttons;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 120ms ease;
+
+  &:hover,
+  &:focus-visible {
+    color: $color-global-red-buttons;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-global-red-buttons;
+    outline-offset: 2px;
+  }
+}
+
 // ── Inputs ───────────────────────────────────────────────────────────────────
 
 .gh-input {

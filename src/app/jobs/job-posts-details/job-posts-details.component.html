@@ -32,7 +32,7 @@
   <!-- Identity Horizon: job title + company identity, compact. HERO: employer
        image or CSS gradient (navy structural-layer) fallback. -->
   <div class="p-0 gh-identity-horizon" id="banner" *ngIf="withBanner">
-    <ng-container *ngIf="selectedJobPost?.jobBanner; else cssHeroBanner">
+    <ng-container *ngIf="selectedJobPost?.jobBanner && !heroBannerFailed; else cssHeroBanner">
       <div class="gh-job-hero-media" role="img" [attr.aria-label]="(selectedJobPost?.jobTitle || '') + ' hero image'">
         <img
           class="gh-job-hero-img"
@@ -42,12 +42,25 @@
           fetchpriority="high"
           width="1200"
           height="400"
+          (error)="onHeroBannerError()"
         />
         <div class="gh-job-hero-overlay" aria-hidden="true"></div>
         <div class="gh-job-hero-text" [@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
-          <div class="gh-hero-company-row" *ngIf="$any(selectedJobPost)?.companyLogo || selectedJobPost?.companyName">
-            <img *ngIf="$any(selectedJobPost)?.companyLogo" [src]="$any(selectedJobPost).companyLogo" [alt]="selectedJobPost.companyName + ' logo'" class="gh-hero-company-logo" />
-            <div *ngIf="!$any(selectedJobPost)?.companyLogo && selectedJobPost?.companyName" class="gh-hero-company-logo gh-hero-company-logo--fallback" aria-hidden="true">{{ selectedJobPost.companyName.charAt(0) }}</div>
+          <!-- IMAGE-CONSISTENCY FIX: was $any(selectedJobPost)?.companyLogo --
+               `companyLogo` does not exist on the raw Job model (see
+               job.model.ts), only on the *normalized* job object built by
+               PublicJobNormalizerService. selectedJobPost here is the raw,
+               un-normalized stream, so that read was always undefined and
+               this hero silently fell back to the generated-initial for
+               every company, even ones with a real uploaded logo -- while
+               the Reading Companion panel further down this same page
+               (bound to the normalized `nJob` stream) correctly showed the
+               real logo. companyLogoUrl is the raw model's actual field
+               (job.model.ts, also used directly by employer-company.
+               component.html for the same raw-object case). -->
+          <div class="gh-hero-company-row" *ngIf="selectedJobPost?.companyLogoUrl || selectedJobPost?.companyName">
+            <img *ngIf="selectedJobPost?.companyLogoUrl && !heroLogoFailed" [src]="selectedJobPost.companyLogoUrl" [alt]="selectedJobPost.companyName + ' logo'" class="gh-hero-company-logo" (error)="onHeroLogoError()" />
+            <div *ngIf="(!selectedJobPost?.companyLogoUrl || heroLogoFailed) && selectedJobPost?.companyName" class="gh-hero-company-logo gh-hero-company-logo--fallback" aria-hidden="true">{{ selectedJobPost.companyName.charAt(0) }}</div>
             <span class="gh-hero-company-name">{{ selectedJobPost?.companyName }}</span>
           </div>
           <h1 class="title-banner">{{ selectedJobPost?.jobTitle }}</h1>
@@ -67,9 +80,12 @@
       <div class="row">
         <div class="row px-5 text-white py-5 bg-banner col-12 col-lg-12">
           <div class="col-12 col-md-12 text-center" [@animate]="{value:'*', params:{ y:'-10px', delay:'300ms' }}">
-            <div class="gh-hero-company-row gh-hero-company-row--centered mb-2" *ngIf="$any(selectedJobPost)?.companyLogo || selectedJobPost?.companyName">
-              <img *ngIf="$any(selectedJobPost)?.companyLogo" [src]="$any(selectedJobPost).companyLogo" [alt]="selectedJobPost.companyName + ' logo'" class="gh-hero-company-logo" />
-              <div *ngIf="!$any(selectedJobPost)?.companyLogo && selectedJobPost?.companyName" class="gh-hero-company-logo gh-hero-company-logo--fallback" aria-hidden="true">{{ selectedJobPost.companyName.charAt(0) }}</div>
+            <!-- IMAGE-CONSISTENCY FIX: see the identical fix/comment on the
+                 image-hero variant above -- same bug (raw Job model has no
+                 companyLogo field), same fix (companyLogoUrl). -->
+            <div class="gh-hero-company-row gh-hero-company-row--centered mb-2" *ngIf="selectedJobPost?.companyLogoUrl || selectedJobPost?.companyName">
+              <img *ngIf="selectedJobPost?.companyLogoUrl && !heroLogoFailed" [src]="selectedJobPost.companyLogoUrl" [alt]="selectedJobPost.companyName + ' logo'" class="gh-hero-company-logo" (error)="onHeroLogoError()" />
+              <div *ngIf="(!selectedJobPost?.companyLogoUrl || heroLogoFailed) && selectedJobPost?.companyName" class="gh-hero-company-logo gh-hero-company-logo--fallback" aria-hidden="true">{{ selectedJobPost.companyName.charAt(0) }}</div>
               <span class="gh-hero-company-name">{{ selectedJobPost?.companyName }}</span>
             </div>
             <h1 class="title-banner">{{ selectedJobPost?.jobTitle }}</h1>
@@ -291,7 +307,7 @@
           <div class="gh-tags-row">
             <strong class="gh-tags-label me-3">Tags</strong>
             <div class="tags">
-              <div class="title-tags me-2 mb-2" *ngFor="let tag of nJob.tags">{{ tag }}</div>
+              <div class="gh-tag me-2 mb-2" *ngFor="let tag of nJob.tags">{{ tag }}</div>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { SecurityLogoutCountdownComponent } from '@app-shared/components/security-logout-countdown/security-logout-countdown.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { AuthService } from '@main/auth/auth.service';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
@@ -187,6 +188,23 @@ export class ApplicantSettingsComponent implements OnInit {
             this.passwordForm.get(key)?.markAsUntouched();
           });
           this.snackbarService.success('Your password has been updated.', '');
+
+          // SECURITY-LOGOUT-COUNTDOWN: only reached after the password
+          // change request has actually succeeded -- a validation failure,
+          // network error, or provider rejection lands in the `error`
+          // branch below instead and never opens this dialog. The dialog
+          // itself is non-dismissible and owns the actual logout call (see
+          // SecurityLogoutCountdownComponent) so there is exactly one path
+          // to logout here, not a second one duplicated in this component.
+          this.dialog.open(SecurityLogoutCountdownComponent, {
+            disableClose: true,
+            data: {
+              title: 'Password changed successfully',
+              message: 'Your GetHired password has been updated. For your account’s security, we’re signing you out of this session now so the new password takes effect.',
+              nextStepMessage: 'You’ll be returned to the sign-in page automatically -- just log back in with your new password to continue.',
+              seconds: 5,
+            },
+          });
         } else {
           this.passwordChangeError = (res && res.feedback && res.feedback.body) || 'We couldn’t update your password. Please try again.';
         }

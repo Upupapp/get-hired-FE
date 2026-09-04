@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, Subject } from 'rxjs';
+import { skip, distinctUntilChanged } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompanyActionTypes } from '@main/shared/store/actions/company.action';
@@ -80,7 +81,20 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
     });
 
     this.invitedCompanyUsers$ = this.companyState.pipe(select(state => state.company));
-    this.req = this.invitedCompanyUsers$.subscribe((invite: CompanyState) => {
+    // STALE-RESULT-ON-REOPEN FIX: NgRx `select()` replays the CURRENT store
+    // value the instant a new subscriber attaches. companyUserRes is set on
+    // SAVE_COMPANY_USER_SUCCESS and never reset anywhere in the reducer --
+    // so if a previous invite already succeeded earlier in this session,
+    // closing and reopening this dialog immediately re-fired that OLD
+    // result's success/partial/failure toast + result panel before the user
+    // had typed or submitted anything new this time. skip(1) ignores that
+    // replayed snapshot; distinctUntilChanged (by reference) additionally
+    // stops an unrelated company-state update from re-processing the same
+    // companyUserRes object a second time.
+    this.req = this.invitedCompanyUsers$.pipe(
+      skip(1),
+      distinctUntilChanged((a: CompanyState, b: CompanyState) => a.companyUserRes === b.companyUserRes),
+    ).subscribe((invite: CompanyState) => {
       this.loading = invite.pending;
 
       if (invite.companyUserRes) {

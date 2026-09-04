@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
+import { SecurityLogoutCountdownComponent } from '@app-shared/components/security-logout-countdown/security-logout-countdown.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { AuthService } from '@main/auth/auth.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
@@ -107,7 +108,16 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
 
     this.subs.push(
       this.authFacade.error$.subscribe((err: any) => {
-        if (err) { this.profileSaving = false; }
+        if (err) {
+          this.profileSaving = false;
+          // IMAGE-CONSISTENCY FIX: a failed save previously just stopped the
+          // spinner with no user-facing message at all -- the button looked
+          // idle again with no indication anything went wrong (contrast the
+          // Change Password flow below, which has a full error state
+          // machine). Reuses the same avatarError field/template slot this
+          // form already renders for avatar-specific errors.
+          this.avatarError = (typeof err === 'string' && err) || 'We couldn’t save your profile. Please try again.';
+        }
       })
     );
 
@@ -144,6 +154,20 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
     this.avatarError = '';
   }
 
+  // IMAGE-CONSISTENCY FIX: same bannerUploadPending/logoUploadPending
+  // pattern used elsewhere in this codebase (job-create.component.ts,
+  // company-details-form.component.ts) -- app-gh-image-upload's own
+  // `uploading` output exists exactly to let a consumer block Save while
+  // an avatar upload is still in flight, but this form never bound it.
+  // Without this, clicking "Save profile" right after picking a new photo
+  // saved with the OLD avatarPreviewUrl (or none), silently dropping the
+  // new photo from that save.
+  avatarUploadPending = false;
+
+  onAvatarUploading(pending: boolean): void {
+    this.avatarUploadPending = pending;
+  }
+
   removeAvatar(): void {
     this.pendingAvatarBase64 = '';
     this.avatarPreviewUrl = '';
@@ -161,6 +185,8 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
 
   onSaveProfile(): void {
     if (!this.profileForm.valid || !this.user) { return; }
+    if (this.avatarUploadPending) { return; } // see onAvatarUploading() above
+    this.avatarError = '';
     this.profileSaving = true;
     const fv = this.profileForm.getRawValue();
     this.authFacade.updateProfile({
@@ -226,6 +252,25 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
         if (fb && fb.state === 'success') {
           this.pwState = 'success';
           this.clearPwFields();
+
+          // SECURITY-LOGOUT-COUNTDOWN (recruiter/employer side): same
+          // mandatory forced-logout mechanism as the applicant Settings
+          // password-change flow (ApplicantSettingsComponent), applied
+          // here for parity -- only reached after the change-password
+          // request has actually succeeded; a validation/network/provider
+          // failure lands in the `else` branch below and never opens this.
+          // The dialog is non-dismissible and owns the actual logout call
+          // itself (SecurityLogoutCountdownComponent), so there is exactly
+          // one path to logout here.
+          this.dialog.open(SecurityLogoutCountdownComponent, {
+            disableClose: true,
+            data: {
+              title: 'Password changed successfully',
+              message: 'Your GetHired recruiter password has been updated. For your account’s security, we’re signing you out of this session now so the new password takes effect.',
+              nextStepMessage: 'You’ll be returned to the sign-in page automatically -- just log back in with your new password to continue managing your jobs.',
+              seconds: 5,
+            },
+          });
         } else {
           this.pwState = 'server';
           this.pwErrorMessage = (fb && fb.body) ? fb.body : 'Something went wrong. Please try again.';

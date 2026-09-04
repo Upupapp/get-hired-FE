@@ -7,7 +7,11 @@
       style="height: 34px" aria-hidden="true">
 
       <div class="ms-3">
-        <h5 class="title-label">{{ data.action }} Confirmation</h5>
+        <!-- LOGOUT-CONFIRM: data.title lets a caller (e.g. the shared
+             logout confirmation) supply an exact heading instead of the
+             generic "{action} Confirmation" pattern below. Every existing
+             caller leaves data.title unset and is unaffected. -->
+        <h5 class="title-label">{{ data.title ? data.title : (data.action + ' Confirmation') }}</h5>
         <p>
           <!-- P2 FIX: show a caller-supplied message when present (e.g. "This
                action cannot be undone." for delete-job). Falls back to the
@@ -24,7 +28,7 @@
       <button type="button" (click)="submit(2)"
       class="btn btn-default px-2 me-2"
       cdkFocusInitial>
-        {{ 'DELETE_WARNING.CANCEL_BUTTON' | translate }}
+        {{ data.cancelLabel ? data.cancelLabel : ('DELETE_WARNING.CANCEL_BUTTON' | translate) }}
       </button>
 
       <!-- BRAND AUDIT FIX-4: use btn-destructive class when data.destructive=true
@@ -32,7 +36,7 @@
       <button type="button" (click)="submit(1)"
       [ngClass]="data.destructive ? 'btn btn-destructive px-2 me-2' : 'btn btn-primary px-2 me-2'"
       [attr.aria-label]="data.destructive ? 'Confirm permanent deletion' : null">
-        {{ 'DELETE_WARNING.CONTINUE_BUTTON' | translate }}
+        {{ data.confirmLabel ? data.confirmLabel : ('DELETE_WARNING.CONTINUE_BUTTON' | translate) }}
       </button>
     </div>
   </div>

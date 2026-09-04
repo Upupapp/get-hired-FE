@@ -104,6 +104,19 @@
   }
 }
 
+// IMAGE-CONSISTENCY FIX: no-avatar fallback, same box as the real image
+// (width/height/radius/border) so nothing shifts layout when it swaps in.
+.company-logo-image--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #7B61FF;
+  color: #fff;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+}
+
 .green {
   background: #09c986;
 

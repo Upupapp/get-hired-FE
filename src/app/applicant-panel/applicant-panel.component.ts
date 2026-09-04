@@ -4,6 +4,8 @@ import { CoreService } from '@app-core/services/core.service';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-applicant-panel',
@@ -31,7 +33,8 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
   constructor(
     private coreService: CoreService,
     private applicantFacade: ApplicantFacade,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -143,8 +146,28 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
   // applied here.
   logoutInProgress = false;
 
+  // LOGOUT-CONFIRM: normal user-initiated sign-out now asks for
+  // confirmation first (reuses the shared ConfirmationDialogComponent,
+  // same pattern as employer-panel/header). Cancel leaves the session
+  // untouched -- performLogout() below only runs after an explicit
+  // "Proceed to Logout".
   logout(): void {
     if (this.logoutInProgress) return; // duplicate-click guard
+    this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Log out?',
+        message: 'Are you sure you want to log out of your GetHired account?',
+        confirmLabel: 'Proceed to Logout',
+        cancelLabel: 'Cancel',
+      },
+    }).afterClosed().subscribe((result) => {
+      if (result === 1) {
+        this.performLogout();
+      }
+    });
+  }
+
+  private performLogout(): void {
     this.logoutInProgress = true;
     this.closeAvatarMenu();
     this.coreService.logout().subscribe({

@@ -19,6 +19,26 @@ export class BannerComponent implements OnInit {
   @Input() details;
   @Input() cardDetails;
 
+  // IMAGE-CONSISTENCY FIX: this <img> had no *ngIf guard and no error
+  // handling at all -- an applicant with no avatar yet (the default state
+  // for a new account) rendered an <img> with an empty/undefined src
+  // (broken-image icon), and a 404'd photoUrl showed the same broken icon
+  // forever. avatarFailed flips to true on (error) and falls through to
+  // the initials fallback -- never re-attempts the same failed URL.
+  avatarFailed = false;
+
+  onAvatarError(): void { this.avatarFailed = true; }
+
+  get hasAvatar(): boolean {
+    return !this.avatarFailed && !!(this.details?.photoUrl && String(this.details.photoUrl).trim());
+  }
+
+  get avatarInitials(): string {
+    const f = (this.details?.firstName || '').charAt(0).toUpperCase();
+    const l = (this.details?.lastName || '').charAt(0).toUpperCase();
+    return (f + l) || f || '?';
+  }
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private router: Router,

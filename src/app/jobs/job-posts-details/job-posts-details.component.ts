@@ -58,6 +58,18 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   // hidden underneath it instead of at "the correct spot".
   private readonly SNAPSHOT_SCROLL_HEADER_OFFSET = 84;
 
+  // IMAGE-CONSISTENCY FIX: a 404/broken hero banner or company-logo URL
+  // previously left a permanent broken-image icon in the hero (no error
+  // handling existed on either <img>). Flipping to true on (error) falls
+  // through to the existing CSS-gradient banner / generated-initial
+  // fallback templates already used for the "no image at all" case --
+  // never re-attempts the same failed URL, so no retry loop.
+  heroBannerFailed = false;
+  heroLogoFailed = false;
+
+  onHeroBannerError(): void { this.heroBannerFailed = true; }
+  onHeroLogoError(): void { this.heroLogoFailed = true; }
+
   details$ = this.jobFacade.getJobById$;
   // Normalized, defensively-typed view of the same data for the new
   // match panel / signal badges -- read-only, does not change the

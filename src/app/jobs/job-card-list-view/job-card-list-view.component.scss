@@ -81,7 +81,14 @@
 	flex-wrap: wrap;
 }
 
-.title-tags{
+// UI-INTERACTION-SEMANTICS: this variant uses this component's own design
+// tokens (border + var(--gh-*) theming) instead of the shared .gh-tag
+// primitive's fixed colors -- genuinely different enough to keep local
+// rather than force into the shared class. Template uses
+// class="gh-tag gh-tag--card-list" -- .gh-tag supplies the base
+// non-interactive treatment (cursor:default etc.), this overrides its
+// visual tokens.
+.gh-tag--card-list{
 	background: var(--gh-bg, #F6F7FB);
 	border: 1px solid var(--gh-border, #E7EAF3);
 	border-radius: var(--gh-badge-radius, 999px);
@@ -92,10 +99,4 @@
 	line-height: 18px;
 	padding: 4px 10px;
 	color: var(--gh-text-secondary, #667085);
-	cursor: pointer;
-
-	&:hover{
-		border-color: var(--gh-azure, #168BFF);
-		color: var(--gh-azure, #168BFF);
-	}
 }

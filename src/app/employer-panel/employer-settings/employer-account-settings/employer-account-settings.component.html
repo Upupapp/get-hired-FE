@@ -16,6 +16,7 @@
         previewShape="circle"
         (uploaded)="onAvatarUploaded($event)"
         (cleared)="removeAvatar()"
+        (uploading)="onAvatarUploading($event)"
       ></app-gh-image-upload>
     </div>
   </div>
@@ -156,12 +157,26 @@
         </label>
       </div>
 
+      <!-- IMAGE-CONSISTENCY FIX: a failed save previously stopped the
+           spinner with no visible indication anything went wrong. Reuses
+           the same .as-banner treatment as the Change Password state
+           banner below. -->
+      <div *ngIf="avatarError" class="as-banner as-banner--error" role="alert" aria-live="assertive">
+        <svg class="as-banner-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="10" cy="10" r="8"/>
+          <line x1="10" y1="6.5" x2="10" y2="10.5"/>
+          <line x1="10" y1="13.5" x2="10.01" y2="13.5"/>
+        </svg>
+        <span class="as-banner-msg">{{ avatarError }}</span>
+      </div>
+
       <div class="as-card-footer">
         <button class="as-btn as-btn--primary" type="submit"
-          [disabled]="profileSaving || profileForm.invalid"
+          [disabled]="profileSaving || profileForm.invalid || avatarUploadPending"
           [attr.aria-busy]="profileSaving">
           <span class="as-spinner" *ngIf="profileSaving" aria-hidden="true"></span>
-          <span>{{ profileSaving ? 'Saving…' : 'Save profile' }}</span>
+          <span>{{ avatarUploadPending ? 'Waiting for photo upload…' : (profileSaving ? 'Saving…' : 'Save profile') }}</span>
         </button>
       </div>
 
@@ -340,8 +355,18 @@
         </div>
 
         <!-- Submit -->
+        <!-- DEAD-END FIX: previously also disabled on 'rate_limited', but
+             nothing in this component ever transitions pwState back out of
+             'rate_limited' except a fresh submit (impossible while
+             disabled) or resetPwForm() (only wired to the Done button in
+             the success state) -- so hitting a 429 once permanently
+             disabled this form until a full page reload. Only 'saving'
+             (an actual in-flight request) should disable the button; the
+             server's own rate limiter still rejects a too-soon retry with
+             the same message, this just removes the client-side dead end
+             on top of it. -->
         <button type="submit" class="as-btn as-btn--primary as-btn--block"
-          [disabled]="pwState === 'saving' || pwState === 'rate_limited'"
+          [disabled]="pwState === 'saving'"
           [class.as-btn--loading]="pwState === 'saving'"
           [attr.aria-busy]="pwState === 'saving'">
           <span class="as-spinner" *ngIf="pwState === 'saving'" aria-hidden="true"></span>

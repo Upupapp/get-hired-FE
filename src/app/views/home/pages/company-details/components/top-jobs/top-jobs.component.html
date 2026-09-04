@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="tags mt-2">
-			<div class="title-tags me-2 mb-2" *ngFor="let tag of data?.tags">{{tag}}</div>
+			<div class="gh-tag me-2 mb-2" *ngFor="let tag of data?.tags">{{tag}}</div>
 		</div>
 
 		<div class="w-100"  [ngClass]="data?.tags?.length < 3 ? 'mt-2' : 'mt-2'">

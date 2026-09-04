@@ -47,14 +47,19 @@ export class ApplicantApplicationsComponent implements OnInit, OnDestroy {
   // status-chip color language (see job-create.component.scss's
   // .gh-jc-status-chip -- same neutral/negative/positive palette, applied
   // here as a distinct class so this file never depends on that one).
+  // UI-INTERACTION-SEMANTICS: consolidated onto the shared .gh-badge
+  // primitive's modifiers (styles.scss) instead of this component's own
+  // .gh-ap-status-chip--* duplicate set -- same semantic mapping (hired ->
+  // success, rejected -> error, review -> warning, applied -> info,
+  // pending -> muted), one shared color system.
   statusChipClass(statusName: string): string {
     const s = (statusName || '').toLowerCase();
-    if (s.includes('hire')) return 'gh-ap-status-chip--hired';
-    if (s.includes('shortlist')) return 'gh-ap-status-chip--shortlisted';
-    if (s.includes('reject')) return 'gh-ap-status-chip--rejected';
-    if (s.includes('under review')) return 'gh-ap-status-chip--review';
-    if (s.includes('pending')) return 'gh-ap-status-chip--pending';
-    return 'gh-ap-status-chip--applied';
+    if (s.includes('hire')) return 'gh-badge--success';
+    if (s.includes('shortlist')) return 'gh-badge--success';
+    if (s.includes('reject')) return 'gh-badge--error';
+    if (s.includes('under review')) return 'gh-badge--warning';
+    if (s.includes('pending')) return 'gh-badge--muted';
+    return 'gh-badge--info';
   }
 
   trackByTipReason(_index: number, tip: any): string {

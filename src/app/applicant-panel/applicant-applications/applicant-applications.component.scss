@@ -62,26 +62,9 @@
   p  { margin: 0 0 6px 0; color: var(--gh-text-secondary); font-size: 13px; }
 }
 
-// Status chip — semantic variants mapped in the component's
-// statusChipClass() from the real gethired.job_applicant_status values.
-.gh-ap-status-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-family: var(--gh-font-base);
-  font-size: 12px;
-  font-weight: 600;
-  background: #f0edf8;
-  color: #6b6887;
-
-  &--pending     { background: #f5f5f5; color: #6b6887; }
-  &--applied     { background: #EFF6FF; color: #1D4ED8; }
-  &--review      { background: #FFF7ED; color: #C2410C; }
-  &--shortlisted { background: #F0FDF4; color: #15803D; }
-  &--hired       { background: #F0FDF4; color: #15803D; font-weight: 700; }
-  &--rejected    { background: #FEF2F2; color: #B91C1C; }
-}
+// UI-INTERACTION-SEMANTICS: .gh-ap-status-chip consolidated onto the
+// shared .gh-badge primitive (styles.scss) -- statusChipClass() now
+// returns .gh-badge--success/--error/--warning/--info/--muted directly.
 
 // ── Employer contact status pill ─────────────────────────────────────────
 // Replaces the old completeness badge -- that feature depended on a
@@ -161,7 +144,7 @@
     }
   }
 
-  .gh-ap-status-chip {
+  .gh-badge {
     font-size: 12.5px;
     padding: 4px 12px;
   }

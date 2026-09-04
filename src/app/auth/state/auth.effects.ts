@@ -87,7 +87,16 @@ export class AuthEffects {
             return AuthActions.getUserProfileSuccess({ profile });
           }),
           catchError((err) => {
-            const { error } = err.error;
+            // Safely extract message -- err.error may be null (network error)
+            // or a plain string (non-JSON response); never destructure blindly
+            // (same fix as signInAuth$/signUp$ above -- this effect stream
+            // previously threw synchronously on a network error instead of
+            // emitting a Fail action, killing the stream for the rest of the
+            // session).
+            const body = err && err.error;
+            const error = (body && body.error) || (body && body.message)
+              || (typeof body === 'string' ? body : null)
+              || 'Failed to load profile. Please try again.';
             return of(AuthActions.getUserProfileFail({payload: error}))
           })
         ))
@@ -104,7 +113,12 @@ export class AuthEffects {
             return AuthActions.updateUserProfileSuccess({ profile });
           }),
           catchError((err) => {
-            const { error } = err.error;
+            // Safely extract message -- see profile$'s catchError above for
+            // the full rationale (same crash-the-stream bug, same fix).
+            const body = err && err.error;
+            const error = (body && body.error) || (body && body.message)
+              || (typeof body === 'string' ? body : null)
+              || 'Failed to update profile. Please try again.';
             return of(AuthActions.updateUserProfileFail({payload: error}))
           })
         ))

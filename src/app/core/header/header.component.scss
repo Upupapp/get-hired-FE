@@ -647,6 +647,7 @@
 
 .gh-nav-dropdown-item {
   display: block;
+  width: 100%;
   padding: 10px 16px;
   font-family: 'Manrope', sans-serif;
   font-size: 14px;
@@ -654,6 +655,13 @@
   color: #888;
   cursor: pointer;
   transition: background 100ms ease, color 100ms ease;
+  // A11Y FIX: this class now also renders on a real <button> (Log out) --
+  // resets the button's default browser chrome so it matches the existing
+  // <a>-based dropdown items exactly.
+  background: none;
+  border: none;
+  text-align: left;
+  font: inherit;
 
   &:hover { background: rgba(0, 0, 0, 0.03); color: #1a1a2e; }
 }

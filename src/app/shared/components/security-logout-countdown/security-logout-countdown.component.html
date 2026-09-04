@@ -1,0 +1,22 @@
+<div class="gh-security-logout" role="alertdialog" aria-labelledby="security-logout-title">
+  <div class="gh-security-logout__icon-wrap" aria-hidden="true">
+    <i class="bi bi-shield-check gh-security-logout__icon"></i>
+  </div>
+
+  <h2 class="gh-security-logout__title" id="security-logout-title">{{ title }}</h2>
+  <p class="gh-security-logout__message">{{ message }}</p>
+  <p class="gh-security-logout__next-step">{{ nextStepMessage }}</p>
+
+  <div class="gh-security-logout__progress-track" aria-hidden="true">
+    <div class="gh-security-logout__progress-fill" [style.width.%]="progressPercent"></div>
+  </div>
+
+  <!-- aria-live="polite" + role="status": the countdown text updates every
+       second and must not rely on the number's color/position alone --
+       screen readers get the same "Signing out in N..." text sighted users
+       see. Not "assertive" -- a per-second interruption would be worse
+       than helpful for a 5-second window. -->
+  <p class="gh-security-logout__countdown" role="status" aria-live="polite">
+    Signing out in {{ secondsLeft }} second<span *ngIf="secondsLeft !== 1">s</span>…
+  </p>
+</div>
