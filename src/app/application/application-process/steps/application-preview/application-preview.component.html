@@ -1,7 +1,16 @@
 <div style="overflow: hidden; position: relative;" [ngStyle]="{
 	'height': profileSummary ? '650px' : ''
 }">
-  <app-applicant-details [user]="profile"></app-applicant-details>
+  <!-- APP-010 / EMP-021 fix: `resume` (below) is already the correctly
+       authorized/scoped document for whichever profile is being shown
+       here (the applicant's own during apply, or -- via candidate-list's
+       getJobApplicantDetails -- a job/application-ownership-checked
+       candidate view for an employer). Passing it as cvOverride stops
+       app-applicant-details from separately calling the self-scoped
+       GET /cv-builder/current, which resolved against the wrong identity
+       whenever this component is used for someone other than the
+       currently logged-in user. -->
+  <app-applicant-details [user]="profile" [cvOverride]="resume && resume[0] || null"></app-applicant-details>
 
   <!-- <app-profile-preview></app-profile-preview> -->
   <div class="bg-opacity" *ngIf="profileSummary"></div>

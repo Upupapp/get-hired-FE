@@ -26,6 +26,22 @@ interface CurrentCv {
 export class DetailsComponent implements OnInit {
   @Input() user: Model.Applicant;
   @Input() isApplicantView: boolean;
+  // APP-010 / EMP-021 fix: when a caller already has an authorized,
+  // correctly-scoped CV/document object for the profile being displayed
+  // (e.g. application-preview.component's `docs` input, sourced from the
+  // job/application-ownership-checked getJobApplicantDetails endpoint),
+  // pass it here instead of letting this component fetch its own. The
+  // component's own fetch (below) always calls GET /cv-builder/current,
+  // which is scoped to whoever is CURRENTLY LOGGED IN -- correct only when
+  // this component is genuinely showing that same person's own profile
+  // (applicant-profile-details.component's usage). When an employer views
+  // a candidate through application-preview, that self-scoped call
+  // resolved against the EMPLOYER's identity instead, so a candidate's
+  // real CV never appeared here even though it existed and was already
+  // being shown correctly, separately, further down the same page.
+  // undefined = not provided by caller -> fall back to self-scoped fetch.
+  // null/object = caller already resolved it (even if null = genuinely none).
+  @Input() cvOverride: CurrentCv | null | undefined = undefined;
 
   months = month;
   userRole: string;
@@ -52,6 +68,15 @@ export class DetailsComponent implements OnInit {
   ngOnInit(): void {
     this.coreService.getRole()
       .then(role => this.userRole = role);
+
+    if (this.cvOverride !== undefined) {
+      // Caller already resolved the correct, authorized CV for the
+      // profile being shown (or confirmed there isn't one) -- never call
+      // the self-scoped endpoint in this mode.
+      this.currentCv = this.cvOverride;
+      this.loadingCurrentCv = false;
+      return;
+    }
 
     this.cvBuilderService.getCurrentCv().subscribe({
       next: (res: any) => {
