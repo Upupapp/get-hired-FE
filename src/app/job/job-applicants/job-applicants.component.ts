@@ -10,6 +10,7 @@ import { VideoPreviewComponent } from '@app-shared/components/video-preview/vide
 import { ApplicantActionModalComponent } from './applicant-action-modal/applicant-action-modal.component';
 import * as InterviewModel from '@main/interview/interview.model';
 import * as ApplicantModel from '@main/applicant/applicant.model';
+import { hasSalaryRange, formatSalaryPeriodSuffix } from '@app-job/utils/job-salary-display';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { JobService } from '@app-job/job.service';
 
@@ -301,12 +302,17 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
   }
 
   formatSalary(salaryMin, salaryMax, rate) {
-    if (salaryMin && salaryMax) {
+    // EMP-019 fix: see job-list.component.ts's formatSalary() for the full
+    // reasoning -- same defect class, same fix (this call site currently
+    // always passes the literal 'Monthly', so "(null)" can't occur here
+    // today, but this stays consistent/defensive with the other two
+    // surfaces sharing this exact pattern).
+    if (hasSalaryRange(salaryMin, salaryMax)) {
       return `₱${salaryMin
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} - ₱${salaryMax
         .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (${rate})`;
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${formatSalaryPeriodSuffix(rate)}`;
     } else {
       return '-';
     }

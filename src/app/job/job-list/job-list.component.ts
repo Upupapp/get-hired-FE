@@ -13,6 +13,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
+import { hasSalaryRange, formatSalaryPeriodSuffix } from '@app-job/utils/job-salary-display';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { JobFacade } from '@app-job/state/job.facade';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -191,14 +192,20 @@ export class JobListComponent implements OnInit, OnDestroy {
   }
 
   formatSalary(salaryMin, salaryMax, rate, currency) {
-    if (salaryMin && salaryMax) {
+    // EMP-019 fix: `(${rate})` was interpolated unconditionally -- a real
+    // published job with a genuine salary range but no rate/period set
+    // (confirmed present in real data; period is legitimately optional)
+    // rendered literal "(null)". hasSalaryRange() also replaces the old
+    // truthy check so a legitimate salary of exactly 0 isn't treated as
+    // "no salary".
+    if (hasSalaryRange(salaryMin, salaryMax)) {
       const min = this.currencyPipe.transform(salaryMin, currency, 'symbol');
       const max = this.currencyPipe.transform(salaryMax, currency, 'symbol');
       return `${min
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} - ${max
           .toString()
-          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} (${rate})`;
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${formatSalaryPeriodSuffix(rate)}`;
     } else {
       return '-';
     }

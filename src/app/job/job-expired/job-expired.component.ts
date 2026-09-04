@@ -8,6 +8,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, map, Subject } from 'rxjs';
+import { hasSalaryRange, formatSalaryPeriodSuffix } from '@app-job/utils/job-salary-display';
 
 @Component({
   selector: 'app-job-expired',
@@ -97,8 +98,10 @@ export class JobExpiredComponent implements OnInit {
   }
 
   formatSalary(salaryMin, salaryMax, rate) {
-    if (salaryMin && salaryMax) {
-      return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} (${rate})`
+    // EMP-019 fix: see job-list.component.ts's formatSalary() for the full
+    // reasoning -- same defect, same fix.
+    if (hasSalaryRange(salaryMin, salaryMax)) {
+      return `₱${salaryMin.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ₱${salaryMax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}${formatSalaryPeriodSuffix(rate)}`
     } else {
       return '-';
     }
