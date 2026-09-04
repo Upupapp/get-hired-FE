@@ -1,30 +1,43 @@
-<div class="container-fluid bg-light-green-transparent">
-	<div class="row" style="min-height: 650px; position: relative; overflow: hidden;">
+<div class="gh-404">
+  <div class="gh-404__card">
 
-		<div class="col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3 text-center mt-5 pt-5">
-			<h1 class="title-main" style="font-size: 1.75rem;">Page Not Found</h1>
-			<p class="title-description px-lg-5">
-				The page you are looking for doesn't seem to be available.
-				Try browsing open jobs or return to the homepage.
-			</p>
+    <div class="gh-404__brandbar">
+      <span class="gh-404__brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2C8 6 5 9 5 14a7 7 0 0014 0c0-5-3-8-7-12z" fill="#FF5A36"/>
+        </svg>
+        <span class="gh-404__brand-text">GET<span class="gh-404__brand-accent">HIRED</span></span>
+      </span>
+    </div>
 
-			<!-- Desktop CTAs -->
-			<div class="text-center py-5 d-none d-lg-block">
-				<button class="btn btn-primary me-4 hvr-grow" (click)="goToJobs()">Browse Jobs</button>
-				<button class="btn back-home ms-2 hvr-grow" (click)="goHome()">Go to Homepage</button>
-			</div>
+    <div class="gh-404__body">
+      <p class="gh-404__code">404</p>
+      <h1 class="gh-404__title">Page Not Found</h1>
+      <p class="gh-404__description">
+        The page you are looking for doesn't seem to be available.
+        Try browsing open jobs or return to the homepage.
+      </p>
 
-			<!-- Mobile CTAs -->
-			<div class="text-center py-3 d-block d-lg-none">
-				<button class="btn btn-primary btn-block w-100 mb-3 hvr-grow" (click)="goToJobs()">Browse Jobs</button>
-				<button class="btn back-home btn-block w-100 hvr-grow" (click)="goHome()">Go to Homepage</button>
-			</div>
+      <div class="gh-404__illustration">
+        <img
+          src="/assets/images/404_3d_img.png"
+          alt=""
+          aria-hidden="true"
+          width="420"
+          height="252"
+        />
+      </div>
 
-			<!-- Fallback text links for crawlers -->
-			<nav aria-label="Recovery navigation" class="mt-3" style="font-size: 0.9rem;">
-				<a href="/home" class="me-3 text-muted">Homepage</a>
-				<a href="/jobs" class="text-muted">Browse Jobs</a>
-			</nav>
-		</div>
-	</div>
+      <div class="gh-404__actions">
+        <button type="button" class="gh-404__btn gh-404__btn--primary hvr-grow" (click)="goToJobs()">Browse Jobs</button>
+        <button type="button" class="gh-404__btn gh-404__btn--secondary hvr-grow" (click)="goHome()">Go to Homepage</button>
+      </div>
+
+      <nav aria-label="Recovery navigation" class="gh-404__links">
+        <a href="/home">Homepage</a>
+        <a href="/jobs">Browse Jobs</a>
+      </nav>
+    </div>
+
+  </div>
 </div>

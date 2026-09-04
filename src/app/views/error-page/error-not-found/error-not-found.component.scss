@@ -1,146 +1,232 @@
-@import "src/assets/styles/colors";
+// ── GetHired brand tokens (mirrors employer-company-setup-success-modal) ──────
+$gh-navy:      #0D1024;
+$gh-coral:     #FF5A36;
+$gh-surface:   #F8F9FF;
+$gh-border:    #E5E7EB;
+$gh-text-muted:#6B7280;
 
-.dog-not-found{
-
-	&-left{
-		position: absolute;
-		width: 450px;
-		left: 0;
-		bottom: 0;
-		z-index: 9 !important;
-
-		@media (max-width: 899px){
-			position: inherit;
-		}
-	}
-
-	&-right{
-		position: absolute;
-		width: 380px;
-		right: -0px;
-		bottom: -120px;
-		z-index: 9 !important;
-
-		@media (max-width: 899px){
-			position: inherit;
-			display: none
-		}
-	}
+.gh-404 {
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $gh-surface;
+  padding: 40px 20px;
+  box-sizing: border-box;
 }
 
-.btn-primary{
-	border: none;
-	padding: 12px 30px !important;
-	background: $color-blue-primary !important;
-	border-radius: 2px !important;
+.gh-404__card {
+  width: 100%;
+  max-width: 980px;
+  background: #fff;
+  border: 1px solid $gh-border;
+  border-radius: 18px;
+  padding: 28px 28px 36px;
+  box-sizing: border-box;
+
+  @media (min-width: 900px) {
+    padding: 32px 48px 48px;
+  }
 }
 
-.back-home{
-	@extend .btn-primary;
-	background: white !important;
-	color: #939393 !important;
-	border: 2px solid #E1E1E1 !important;
+.gh-404__brandbar {
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid $gh-border;
 }
 
-.bg-dark{
-	background: $color-black !important;
+.gh-404__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.title-sub{
-	font-family: 'Manrope';
-	font-weight: 100;
-	font-style: normal;
-	font-size: 18px;
-	line-height: 24px;
-	color: #939393;
+.gh-404__brand-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: $gh-navy;
 }
 
-.title-main{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 600;
-	font-size: 45px;
-	line-height: 49px;
-	margin-bottom: 15px;
+.gh-404__brand-accent {
+  color: $gh-coral;
 }
 
-.title-about{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 600;
-	font-size: 20px;
-	line-height: 28px;
-	margin-bottom: 7px;
-	cursor: pointer;
-	color: #404040;
+// ── Responsive body: CSS Grid reflows the illustration between the
+// desktop two-column layout (image left, text stacked right) and the
+// mobile single-column reading order (code -> title -> description ->
+// illustration -> actions -> links) with no JS involved. ─────────────────
+.gh-404__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "code"
+    "title"
+    "description"
+    "illustration"
+    "actions"
+    "links";
+  row-gap: 14px;
+  text-align: center;
+  justify-items: center;
+
+  @media (min-width: 900px) {
+    grid-template-columns: minmax(280px, 420px) 1fr;
+    column-gap: 56px;
+    row-gap: 12px;
+    text-align: left;
+    justify-items: start;
+    align-items: start;
+    grid-template-areas:
+      "illustration code"
+      "illustration title"
+      "illustration description"
+      "illustration actions"
+      "illustration links";
+  }
 }
 
-.title-description{
-	font-family: 'Manrope';
-	font-style: normal;
-	font-weight: 100;
-	font-size: 20px;
-	line-height: 28px;
-	color: #8D8D8D;
-	margin-bottom: 10px;
-	font-feature-settings: 'ss04' on, 'ss03' on, 'ss02' on;
+.gh-404__illustration {
+  grid-area: illustration;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 900px) {
+    max-width: none;
+    align-self: center;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    max-width: 320px;
+
+    @media (min-width: 900px) {
+      max-width: 100%;
+    }
+  }
 }
 
-.learn-more{
-	font-family: 'Manrope';
-	color: $color-blue-primary;
-	text-decoration: none;
-	font-style: normal;
-	font-weight: normal;
-	font-size: 15px;
-	line-height: 24px;
-	cursor: pointer;
+.gh-404__code {
+  grid-area: code;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 1;
+  color: $gh-navy;
+
+  @media (min-width: 900px) {
+    font-size: 64px;
+  }
 }
 
-.banner-image{
-	width: 85%;
-	//margin-left: -70px;
+.gh-404__title {
+  grid-area: title;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.3;
+  color: $gh-navy;
 
-	@media(max-width: 999px){
-		width: 100%;
-		margin-left: 0;
-	}
+  @media (min-width: 900px) {
+    font-size: 26px;
+  }
 }
 
-.icon-holder-main{
-	border-radius: 50%;
-	max-width: 70px;
-	max-height: 70px;
-	padding: 23px 20px 20px 20px;
-
-	.icon-image{
-		width: 100%;
-		cursor: pointer;
-	}
+.gh-404__description {
+  grid-area: description;
+  margin: 0;
+  max-width: 420px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: $gh-text-muted;
 }
 
-.icon-holder{
-	@extend .icon-holder-main;
+.gh-404__actions {
+  grid-area: actions;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 6px;
+
+  @media (min-width: 560px) {
+    flex-direction: row;
+    max-width: none;
+  }
 }
 
-.icon-holder-notification{
-	@extend .icon-holder-main;
-	padding: 17px 20px 20px 20px;
+.gh-404__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 26px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+
+  &:focus-visible {
+    outline: 2px solid $gh-coral;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.978);
+  }
 }
 
-.icon-holder-lifestyle{
-	@extend .icon-holder-main;
-	padding: 20px 20px 20px 20px;
+.gh-404__btn--primary {
+  background: $gh-navy;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(13, 16, 36, 0.22);
+
+  &:hover {
+    background: lighten($gh-navy, 8%);
+  }
 }
 
-.bg-light-green{
-	background: $color-blue-primary
+.gh-404__btn--secondary {
+  background: #fff;
+  color: $gh-navy;
+  border: 1.5px solid $gh-border;
+
+  &:hover {
+    border-color: $gh-coral;
+    color: $gh-coral;
+  }
 }
 
-.bg-dark-blue{
-	background: $color-blue-dark;
-}
+.gh-404__links {
+  grid-area: links;
+  margin-top: 4px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
 
-.bg-light-green-transparent{
-	background: #EFFFFD;
+  a {
+    color: $gh-text-muted;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+
+    &:hover {
+      color: $gh-navy;
+    }
+  }
 }

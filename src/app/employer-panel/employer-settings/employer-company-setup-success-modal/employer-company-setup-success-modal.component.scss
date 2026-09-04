@@ -35,6 +35,57 @@ $gh-radius-sm: 10px;
   }
 }
 
+// ── Brand bar ─────────────────────────────────────────────────────────────────
+.gh-setup-modal__brandbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.gh-setup-modal__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gh-setup-modal__brand-text {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: $gh-navy;
+}
+
+.gh-setup-modal__brand-accent {
+  color: $gh-coral;
+}
+
+.gh-setup-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: $gh-text-muted;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: $gh-surface;
+    color: $gh-navy;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $gh-azure;
+    outline-offset: 2px;
+  }
+}
+
 // ── Header ────────────────────────────────────────────────────────────────────
 .gh-setup-modal__header {
   display: flex;
@@ -93,14 +144,15 @@ $gh-radius-sm: 10px;
 .gh-setup-modal__trial-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  background: rgba(245, 158, 11, 0.10);
-  border: 1px solid rgba(245, 158, 11, 0.28);
+  gap: 6px;
+  padding: 7px 16px;
+  background: $gh-coral;
+  border: none;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 600;
-  color: #92400E;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(255, 90, 54, 0.30);
   animation: gh-fade-up 0.35s 0.25s both;
 }
 

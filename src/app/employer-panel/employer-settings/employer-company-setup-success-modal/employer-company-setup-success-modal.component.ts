@@ -63,12 +63,19 @@ export class EmployerCompanySetupSuccessModalComponent implements OnInit {
   viewPublicProfile(): void {
     if (this.companySlug) {
       this.dialogRef.close('view_profile');
-      window.open('/company/' + this.companySlug, '_blank', 'noopener');
+      // BUG FIX: the real public company profile route is plural
+      // (public.module.ts: 'companies/:slug') -- the singular '/company/'
+      // used here matched nothing and fell through to the wildcard 404 route.
+      window.open('/companies/' + this.companySlug, '_blank', 'noopener');
     }
   }
 
   goToDashboard(): void {
     this.dialogRef.close('dashboard');
     this.router.navigate(['/recruiter/dashboard']);
+  }
+
+  close(): void {
+    this.dialogRef.close('dismissed');
   }
 }
