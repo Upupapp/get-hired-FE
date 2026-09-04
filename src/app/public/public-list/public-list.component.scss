@@ -427,86 +427,143 @@
   @media (prefers-reduced-motion: reduce) { transition: none; }
 }
 
-// ── Browse-mode split-view preview panel ──────────────────────────────────────
+// ── Job preview popup ──────────────────────────────────────────────────────
+// JOB-PREVIEW-REDESIGN: was an inline sidebar (position:sticky, 55% width)
+// that squeezed the job list down to 45% width whenever open, and was
+// hidden outright below 991px. Now a centered, backdrop-covered popup at
+// every viewport size -- .jb-browse-list no longer needs a shrink variant.
 
 .jb-browse-split {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
   position: relative;
 }
 
 .jb-browse-list {
-  flex: 1;
   min-width: 0;
 }
 
-.jb-browse-split--active {
-  .jb-browse-list {
-    max-width: 45%;
+.jb-preview-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 40, 0.55);
+  z-index: 1050;
+  animation: jb-backdrop-in 0.15s ease;
 
-    @media (max-width: 991px) {
-      max-width: 100%;
-    }
-  }
+  @media (prefers-reduced-motion: reduce) { animation: none; }
 }
 
 .jb-preview-panel {
-  width: 55%;
-  min-width: 320px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1051;
+  width: min(560px, 92vw);
+  max-height: min(680px, 88vh);
   background: #fff;
-  border: 1.5px solid #DDD8F0;
   border-radius: 18px;
-  padding: 20px 24px 24px;
-  position: sticky;
-  top: calc(68px + 16px);
-  max-height: calc(100vh - 120px);
+  padding: 0 24px 24px;
   overflow-y: auto;
-  box-shadow: 0 4px 24px rgba(108, 107, 173, 0.12);
-  animation: jb-panel-in 0.2s ease;
+  box-shadow: 0 12px 48px rgba(20, 18, 40, 0.28);
+  animation: jb-panel-in 0.18s ease;
 
   @media (prefers-reduced-motion: reduce) { animation: none; }
 
-  // Hidden on tablet/mobile — card click navigates to full detail page instead
-  @media (max-width: 991px) {
-    display: none;
+  // Full-screen sheet on very narrow viewports -- own (non-translating)
+  // animation so it doesn't fight the desktop keyframes' transform values.
+  @media (max-width: 480px) {
+    width: 100vw;
+    max-height: 100vh;
+    height: 100vh;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    transform: none;
+    animation: jb-panel-in-mobile 0.18s ease;
+
+    @media (prefers-reduced-motion: reduce) { animation: none; }
   }
 }
 
-@keyframes jb-panel-in {
-  from { opacity: 0; transform: translateX(12px); }
-  to   { opacity: 1; transform: translateX(0); }
+@keyframes jb-panel-in-mobile {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes jb-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes jb-panel-in {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+// Close button floats over the banner (top-right corner) since the banner
+// now sits flush against the panel's top edge -- .jb-preview-header no
+// longer takes up its own row in normal flow.
 .jb-preview-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 4px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
 }
 
 .jb-preview-close {
-  background: none;
+  background: rgba(20, 18, 40, 0.45);
   border: none;
   cursor: pointer;
-  color: #9CA3AF;
+  color: #fff;
   padding: 0;
-  border-radius: 8px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  transition: color 0.15s, background 0.15s;
+  min-width: 40px;
+  min-height: 40px;
+  backdrop-filter: blur(2px);
+  transition: background 0.15s;
 
-  &:hover { color: #FF7062; background: rgba(255, 112, 98, 0.1); }
-  &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
+  &:hover { background: rgba(255, 112, 98, 0.85); }
+  &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { transition: none; }
+}
+
+// JOB-PREVIEW-REDESIGN: real banner strip, distinct from the company logo
+// below -- flush with the panel's top corners (border-radius matches).
+.jb-preview-banner {
+  margin: 0 -24px 16px;
+}
+
+.jb-preview-banner-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 18px 18px 0 0;
+
+  &--fallback {
+    background: linear-gradient(135deg, #6C6BAD 0%, #9C8EE6 100%);
+  }
+}
+
+@media (max-width: 480px) {
+  .jb-preview-banner {
+    margin: 0 0 16px;
+  }
+  .jb-preview-banner-img {
+    border-radius: 0;
+  }
 }
 
 .jb-preview-company {
   display: flex;
   justify-content: center;
+  margin-top: -44px; // overlaps the banner, standard avatar-over-hero treatment
   margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
 }
 
 .jb-preview-logo {
@@ -514,7 +571,9 @@
   height: 72px;
   border-radius: 16px;
   object-fit: cover;
-  border: 1.5px solid #DDD8F0;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 10px rgba(20, 18, 40, 0.15);
 
   &--fallback {
     display: flex;
@@ -610,21 +669,5 @@
   @media (prefers-reduced-motion: reduce) { transition: none; }
 }
 
-.jb-preview-full {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #6C6BAD;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: center;
-  padding: 6px;
-  min-height: 44px;
-  text-decoration: underline;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover { color: #1a1830; }
-  &:focus-visible { outline: 2px solid #6C6BAD; outline-offset: 2px; }
-}
+// .jb-preview-full removed -- "View full job details" button deleted per
+// explicit request (View & Apply already goes to the same detail page).

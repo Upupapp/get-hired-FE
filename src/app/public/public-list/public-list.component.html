@@ -251,7 +251,7 @@
     <div class="mt-5 px-lg-5">
       <app-job-board-employer-cta></app-job-board-employer-cta>
 
-      <div class="jb-browse-split" [class.jb-browse-split--active]="!!previewJob">
+      <div class="jb-browse-split">
         <div class="jb-browse-list">
           <app-job-posts-list
             label="{{ 'PUBLIC_PAGE.JOB_POST_SECTION_MESSAGE' | translate }}"
@@ -259,58 +259,79 @@
             (jobSelected)="onJobSelected($event)">
           </app-job-posts-list>
         </div>
-
-        <aside class="jb-preview-panel" *ngIf="previewJob" role="complementary" aria-label="Job preview">
-          <div class="jb-preview-header">
-            <button type="button" class="jb-preview-close" (click)="closePreview()" aria-label="Close preview">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-          </div>
-
-          <div class="jb-preview-company">
-            <img *ngIf="previewJob.jobBanner" [src]="previewJob.jobBanner"
-              [alt]="previewJob.companyName + ' logo'" class="jb-preview-logo">
-            <div *ngIf="!previewJob.jobBanner" class="jb-preview-logo jb-preview-logo--fallback" aria-hidden="true">
-              {{ (previewJob.companyName || '?').charAt(0) }}
-            </div>
-          </div>
-
-          <h2 class="jb-preview-title">{{ previewJob.jobTitle }}</h2>
-          <p class="jb-preview-company-name">{{ previewJob.companyName }}</p>
-
-          <div class="jb-preview-facts">
-            <span class="jb-preview-fact" *ngIf="previewJob.jobTypeName">
-              <i class="bi bi-briefcase" aria-hidden="true"></i> {{ previewJob.jobTypeName }}
-            </span>
-            <span class="jb-preview-fact" *ngIf="previewJob.workSetupName">
-              <i class="bi bi-laptop" aria-hidden="true"></i> {{ previewJob.workSetupName }}
-            </span>
-            <span class="jb-preview-fact">
-              <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ previewLocation(previewJob) }}
-            </span>
-            <span class="jb-preview-fact">
-              <i class="bi bi-cash" aria-hidden="true"></i> {{ previewSalary(previewJob) }}
-            </span>
-          </div>
-
-          <div class="jb-preview-tags" *ngIf="previewJob.tags && previewJob.tags.length > 0">
-            <span class="jb-preview-tag" *ngFor="let tag of previewJob.tags.slice(0, 6)">
-              {{ tag.name }}
-            </span>
-          </div>
-
-          <div class="jb-preview-ctas">
-            <button type="button" class="jb-preview-apply" (click)="navigateToDetail(previewJob.jobId)">
-              View &amp; Apply
-            </button>
-            <button type="button" class="jb-preview-full" (click)="navigateToDetail(previewJob.jobId)">
-              View full job details &rarr;
-            </button>
-          </div>
-        </aside>
       </div>
+
+      <!-- JOB-PREVIEW-REDESIGN: was an inline sidebar that squeezed the job
+           list to 45% width when open -- now a centered, initially-hidden
+           popup with its own backdrop, consistent with every other dialog
+           in the app. Backdrop click closes it, same as Escape. -->
+      <div class="jb-preview-backdrop" *ngIf="previewJob" (click)="closePreview()"></div>
+
+      <aside class="jb-preview-panel" *ngIf="previewJob" role="dialog" aria-modal="true" cdkTrapFocus cdkTrapFocusAutoCapture
+        [attr.aria-label]="'Preview: ' + previewJob.jobTitle" (keydown.escape)="closePreview()">
+        <div class="jb-preview-header">
+          <button type="button" class="jb-preview-close" (click)="closePreview()" aria-label="Close preview">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- JOB-PREVIEW-REDESIGN: two distinct, correctly-sourced images --
+             the job banner (previewJob.jobBanner) as a real banner strip,
+             and the company logo (previewJob.companyLogoUrl -- the raw
+             Job model's actual field, see job.model.ts) as its own avatar.
+             The old markup showed jobBanner alone, mislabeled as the
+             company "logo" -- exactly the image-role-mixing bug fixed
+             elsewhere on job-posts-details.component.html; same fix here. -->
+        <div class="jb-preview-banner">
+          <img *ngIf="previewJob.jobBanner && !previewBannerFailed" [src]="previewJob.jobBanner"
+            [alt]="previewJob.jobTitle + ' banner'" class="jb-preview-banner-img"
+            (error)="previewBannerFailed = true">
+          <div *ngIf="!previewJob.jobBanner || previewBannerFailed" class="jb-preview-banner-img jb-preview-banner-img--fallback" aria-hidden="true"></div>
+        </div>
+
+        <div class="jb-preview-company">
+          <img *ngIf="previewJob.companyLogoUrl && !previewLogoFailed" [src]="previewJob.companyLogoUrl"
+            [alt]="previewJob.companyName + ' logo'" class="jb-preview-logo"
+            (error)="previewLogoFailed = true">
+          <div *ngIf="!previewJob.companyLogoUrl || previewLogoFailed" class="jb-preview-logo jb-preview-logo--fallback" aria-hidden="true">
+            {{ (previewJob.companyName || '?').charAt(0) }}
+          </div>
+        </div>
+
+        <h2 class="jb-preview-title">{{ previewJob.jobTitle }}</h2>
+        <p class="jb-preview-company-name">{{ previewJob.companyName }}</p>
+
+        <div class="jb-preview-facts">
+          <span class="jb-preview-fact" *ngIf="previewJob.jobTypeName">
+            <i class="bi bi-briefcase" aria-hidden="true"></i> {{ previewJob.jobTypeName }}
+          </span>
+          <span class="jb-preview-fact" *ngIf="previewJob.workSetupName">
+            <i class="bi bi-laptop" aria-hidden="true"></i> {{ previewJob.workSetupName }}
+          </span>
+          <span class="jb-preview-fact">
+            <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ previewLocation(previewJob) }}
+          </span>
+          <span class="jb-preview-fact">
+            <i class="bi bi-cash" aria-hidden="true"></i> {{ previewSalary(previewJob) }}
+          </span>
+        </div>
+
+        <div class="jb-preview-tags" *ngIf="previewJob.tags && previewJob.tags.length > 0">
+          <span class="jb-preview-tag" *ngFor="let tag of previewJob.tags.slice(0, 6)">
+            {{ tag.name }}
+          </span>
+        </div>
+
+        <!-- REDESIGN: "View full job details" removed per explicit
+             request -- View & Apply already goes to the same detail page. -->
+        <div class="jb-preview-ctas">
+          <button type="button" class="jb-preview-apply" (click)="navigateToDetail(previewJob.jobId)">
+            View &amp; Apply
+          </button>
+        </div>
+      </aside>
     </div>
   </div>
 

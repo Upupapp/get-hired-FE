@@ -231,22 +231,30 @@ export class PublicListComponent implements OnInit, OnDestroy {
     this.applyFilter(chip.key, null);
   }
 
-  // ── Browse-mode split preview ──────────────────────────────────────────────
+  // ── Job preview popup ────────────────────────────────────────────────────
+  // JOB-PREVIEW-REDESIGN: now a centered popup (see .jb-preview-panel in the
+  // template/scss) instead of an inline sidebar that only fit on wide
+  // viewports -- works the same way at every screen size, so the old
+  // "navigate straight to the detail page on mobile/tablet instead" branch
+  // is no longer needed.
   previewJob: any = null;
+  previewBannerFailed = false;
+  previewLogoFailed = false;
 
   onJobSelected(job: any): void {
     if (!job) return;
-    // On mobile/tablet (≤991px) the preview panel is hidden — navigate directly
-    if (this.screenSize <= 991) {
-      this.navigateToDetail(job.jobId);
-      return;
-    }
+    this.previewBannerFailed = false;
+    this.previewLogoFailed = false;
     this.previewJob = job;
     this.vibrate(5);
+    // Standard modal behavior -- don't let the page behind the backdrop
+    // scroll while the popup is open.
+    if (isPlatformBrowser(this.platformId)) { document.body.style.overflow = 'hidden'; }
   }
 
   closePreview(): void {
     this.previewJob = null;
+    if (isPlatformBrowser(this.platformId)) { document.body.style.overflow = ''; }
   }
 
   navigateToDetail(jobId: string): void {
@@ -342,6 +350,9 @@ export class PublicListComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.seoService.clearBreadcrumbJsonLd();
+    // Release the scroll lock if this component is torn down (e.g.
+    // navigating away via "View & Apply") while the preview popup was open.
+    if (isPlatformBrowser(this.platformId)) { document.body.style.overflow = ''; }
   }
 
   @HostListener('window:resize', ['$event'])
