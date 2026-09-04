@@ -47,6 +47,25 @@ export class CoreService {
   roleAs: string;
 
   /**
+   * SECURITY-LOGOUT-COUNTDOWN RACE FIX: a password change invalidates the
+   * session token on the BACKEND the instant it succeeds -- but
+   * SecurityLogoutCountdownComponent intentionally keeps the app locally
+   * "logged in" for a few more seconds (a graceful, explained countdown
+   * instead of an abrupt logout). In that window, any other in-flight or
+   * newly-fired request (background polling, e.g. the dashboard's profile-
+   * readiness check / job recommendations) hits the backend with the now-
+   * dead token, gets a 401, and UnAuthorizedInterceptor -- unaware the
+   * countdown modal already has this covered -- independently force-logs-
+   * out, shows its own "Your session has expired" toast, and redirects,
+   * stomping on the countdown modal mid-animation. Set true for the
+   * duration of that countdown (see SecurityLogoutCountdownComponent) so
+   * the interceptor defers entirely to the modal's own logout() call at
+   * zero; reset unconditionally in logout() below so it can never leak
+   * into a later, genuinely new session.
+   */
+  suppressExpiryHandling = false;
+
+  /**
    * AUTH LIFECYCLE SYNC: a single reactive source of truth for "is this
    * browser tab currently authenticated", so components that render
    * auth-dependent UI (e.g. the public site header's Sign In vs Account
@@ -149,6 +168,7 @@ export class CoreService {
 
     this.isLogin = false;
     this.roleAs = '';
+    this.suppressExpiryHandling = false;
     for (const key of AUTH_SESSION_STORAGE_KEYS) {
       try { localStorage.removeItem(key); } catch (_) {}
     }

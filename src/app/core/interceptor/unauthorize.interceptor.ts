@@ -73,7 +73,14 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
             // redirect/toast entirely and let the error propagate to the
             // calling component's own handler, which is better positioned
             // to show an accurate, contextual message.
-            if (this.coreService.isLoggedIn() && !this.handlingExpiry) {
+            // SECURITY-LOGOUT-COUNTDOWN RACE FIX: while a
+            // SecurityLogoutCountdownComponent is running (e.g. right after
+            // a password change, which invalidates the token on the
+            // backend immediately), this interceptor must not race it with
+            // its own logout+toast+redirect -- the modal already owns a
+            // graceful, explained logout at the end of its countdown. See
+            // CoreService.suppressExpiryHandling for the full rationale.
+            if (this.coreService.isLoggedIn() && !this.handlingExpiry && !this.coreService.suppressExpiryHandling) {
               this.handlingExpiry = true;
               this.coreService.logout();
               this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');

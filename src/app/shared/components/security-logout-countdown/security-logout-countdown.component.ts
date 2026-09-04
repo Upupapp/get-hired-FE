@@ -13,7 +13,7 @@ export interface SecurityLogoutCountdownData {
   /** Second line of explanation -- what the user should do next. Defaults
    *  to a generic "sign back in" instruction. */
   nextStepMessage?: string;
-  /** Seconds to count down from. Defaults to 5. */
+  /** Seconds to count down from. Defaults to 3. */
   seconds?: number;
 }
 
@@ -49,8 +49,17 @@ export class SecurityLogoutCountdownComponent implements OnInit, OnDestroy {
       || 'Your password has been updated. For your account’s security, we’re signing you out of this session now so the new password takes effect everywhere.';
     this.nextStepMessage = (data && data.nextStepMessage)
       || 'You’ll be returned to the sign-in page automatically -- just log back in with your new password.';
-    this.totalSeconds = (data && data.seconds) || 5;
+    this.totalSeconds = (data && data.seconds) || 3;
     this.secondsLeft = this.totalSeconds;
+
+    // RACE FIX: the backend already invalidated the session token the
+    // instant the password change succeeded (before this dialog even
+    // opened) -- set this the moment the dialog is constructed, not at the
+    // end of the countdown, so no background request fired during the
+    // countdown window can trigger UnAuthorizedInterceptor's own
+    // logout+toast+redirect out from under this modal. See
+    // CoreService.suppressExpiryHandling.
+    this.coreService.suppressExpiryHandling = true;
   }
 
   /** 0-100, counts UP as time passes -- drives the progress bar so the

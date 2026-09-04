@@ -202,7 +202,7 @@ export class ApplicantSettingsComponent implements OnInit {
               title: 'Password changed successfully',
               message: 'Your GetHired password has been updated. For your account’s security, we’re signing you out of this session now so the new password takes effect.',
               nextStepMessage: 'You’ll be returned to the sign-in page automatically -- just log back in with your new password to continue.',
-              seconds: 5,
+              seconds: 3,
             },
           });
         } else {
