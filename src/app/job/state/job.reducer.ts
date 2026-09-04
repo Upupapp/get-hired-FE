@@ -119,6 +119,17 @@ export const jobReducer = createReducer<JobState>(
   on(JobActions.saveJobSuccess, (state, action): JobState => {
     return {
       ...state,
+      // EMP-017 fix: state.job (read by getJobById$ -- what
+      // employer-job-dashboard.component.ts, "reached immediately after a
+      // recruiter publishes a job post", actually renders its status
+      // badge from) was never updated here, only state.selected (used by
+      // the create/edit form). A job published from the edit form and
+      // immediately routed to its own dashboard could show stale "Draft"
+      // because state.job still held whatever value an earlier getJob
+      // fetch had left there. action.job is the same fresh, authoritative
+      // record already being written to `selected` below -- writing it to
+      // both keeps them from ever disagreeing about the same job.
+      job: action.job,
       selected: action.job,
       loading: false,
       succesMsg: action.job.jobStatusId == 1 ? 'asDraft' : 'published'
