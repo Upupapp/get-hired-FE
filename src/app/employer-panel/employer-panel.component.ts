@@ -197,6 +197,26 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
   // yet -> Business Setup first (same sequencing as before, draft
   // untouched); has company -> open AI Create directly instead of
   // navigating anywhere, so the panel's own restore/resume UX takes over.
+  // EMP-011 fix: this whole check runs exactly once, from the shell every
+  // Employer route lives under (see employer-panel.module.ts -- dashboard/
+  // jobs/company/contacts/interview/subscription/messages are all child
+  // routes of THIS component, which the router never destroys/recreates
+  // between them). Previously it unconditionally opened either the
+  // reconciliation dialog or the full AI Create modal the moment the
+  // async employee-profile load resolved -- with no regard for which
+  // child route the Employer actually landed on or had since navigated to
+  // (e.g. Company Settings), hijacking an unrelated page. Restoration UI
+  // now only auto-opens when the CURRENT route is one where job creation
+  // already lives (Dashboard's "Create a Job" button, or the Jobs area
+  // itself) -- anywhere else, the draft stays exactly as pending as
+  // before, surfaced through the always-visible, non-blocking
+  // "Continue unfinished job" topbar button (postJobButtonLabel /
+  // hasPendingAiCreateRecovery(), unchanged) instead of a forced dialog.
+  private isJobCreationRelevantRoute(): boolean {
+    const url = this.router.url || '';
+    return url.includes('/recruiter/dashboard') || url.includes('/recruiter/jobs');
+  }
+
   private checkAndRouteToAiCreateDraft(): void {
     const ownerScope = this.user && this.user._id;
     if (!ownerScope) return;
@@ -209,8 +229,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     // RECONCILIATION: this Employer already has their own AI Create
     // recovery AND a still-valid guest recovery from their own Start-Hiring
     // resume journey both exist -- never silently pick one. Exactly one
-    // explicit user decision, never a second AI Create panel.
-    const collision = this.aiCreateDraft.detectReconciliation(ownerScope);
+    // explicit user decision, never a second AI Create panel. detectReconciliation()
+    // is a pure read (no side effects) -- skipping the dialog here on an
+    // unrelated route just means it's detected again next time the
+    // Employer is actually on a job-creation-relevant route, not lost.
+    const collision = this.isJobCreationRelevantRoute() ? this.aiCreateDraft.detectReconciliation(ownerScope) : null;
     if (collision) {
       const dialogRef = this.dialog.open(AiRecoveryReconciliationDialogComponent, {
         ariaLabel: 'Unfinished AI job post reconciliation',
@@ -247,11 +270,21 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
 
     const hasCompany = !!this.user.companyId;
     if (!hasCompany) {
+      // Unrelated, pre-existing requirement (mandatory Business Setup for
+      // an Employer with no company yet at all) -- not the EMP-011 leak,
+      // left untouched. The draft itself is untouched by this redirect.
       this.router.navigate(['/recruiter/company/settings']);
       return;
     }
 
-    this.goToCreateJob();
+    // EMP-011 fix: only auto-open the AI Create modal when the Employer is
+    // already somewhere job-creation-relevant (Dashboard or the Jobs
+    // area). On any other route the draft stays pending and reachable via
+    // the topbar's "Continue unfinished job" button instead of hijacking
+    // whatever page they're actually on.
+    if (this.isJobCreationRelevantRoute()) {
+      this.goToCreateJob();
+    }
   }
 
   /** Called from the "sign in again" button on the profile-load-error fallback.
