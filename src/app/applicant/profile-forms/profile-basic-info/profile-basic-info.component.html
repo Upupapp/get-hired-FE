@@ -267,50 +267,25 @@
     </div>
 
     <div class="col-12 mb-3">
-      <!-- Google Places autocomplete: same shared component already used on
-           the employer's company-address form (company-details-form.html).
-           Typing an address suggests matching places; selecting one
-           auto-fills Address/City/Country below via onAddressAutocomplete().
-           The plain fields stay visible (and stay the source of truth for
-           profileDetailsForm) so the applicant can still see/edit the final
-           values, same as the employer form's pattern. -->
+      <!-- APP-015 fix: this used to be followed by a second, fully
+           redundant plain Address/City/Country block below -- the
+           applicant saw two complete address-entry surfaces at once (this
+           widget's own Address 1/Town/City/State/Country/Zip fields, plus
+           a near-identical Address/City/Municipality/Country block),
+           asking them to maintain the same location twice. This widget
+           already IS the structured, editable, source-of-truth address
+           form (search-to-autofill OR type directly into any field, same
+           as the employer's company-address form, which never had a
+           duplicate block to begin with) -- onAddressAutocomplete() maps
+           its emitted value into profileDetailsForm's address/city/country
+           controls on every change now (see google-address-search.
+           component.ts's valueChanges fix), not only on an actual Google
+           autocomplete selection, so removing the duplicate below doesn't
+           lose manual-entry support. -->
       <app-google-address-search
         [rawAddress]="rawAddress"
         (addressChange)="onAddressAutocomplete($event)"
       ></app-google-address-search>
-    </div>
-
-    <div class="col-12 col-lg-6 mb-3">
-      <div class="title-container mb-3">
-        <label>Address</label>
-
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Subdivision, Street No, Building No, Barangay"
-            formControlName="address">
-        </div>
-      </div>
-
-      <div class="title-container mb-3">
-        <label>City/Municipality</label>
-
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Manila" formControlName="city" [class.is-invalid]="city_validators?.invalid && city_validators?.touched">
-          <div class="px-3" *ngIf="city_validators?.invalid && city_validators?.touched">
-            <small class="invalid-feedback">City is required</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="title-container mb-3">
-        <label>Country</label>
-
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="ex. Philippines" formControlName="country" [class.is-invalid]="country_validators?.invalid && country_validators?.touched">
-          <div class="px-3" *ngIf="country_validators?.invalid && country_validators?.touched">
-            <small class="invalid-feedback">Country is required</small>
-          </div>
-        </div>
-      </div>
     </div>
   </form>
 </div>

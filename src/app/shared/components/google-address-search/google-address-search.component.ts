@@ -49,6 +49,21 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       }
     })
 
+    // APP-015 fix: addressChange previously only emitted from the Google
+    // Places `place_changed` listener (ngAfterViewInit below) -- a caller
+    // relying solely on that event (as profile-basic-info.component.ts now
+    // does, having removed its own duplicate plain Address/City/Country
+    // fields) never saw a manually-typed edit to this widget's own
+    // State/Country/Address 1/Town/City/Zip fields, since typing directly
+    // into them never touched the search box's autocomplete listener at
+    // all. Subscribing to the form's own valueChanges makes every edit --
+    // autocomplete-selected or hand-typed -- reach the same output,
+    // matching what a caller reasonably expects from an @Output() named
+    // addressChange.
+    this.addressFormGroup.valueChanges.subscribe(() => {
+      this.addressChange.emit(this.addressFormGroup.value);
+    });
+
   }
 
   ngAfterViewInit(): void {
@@ -91,7 +106,16 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       this.addressChange.emit(this.addressFormGroup.value);
     });
 
-    this.addressFormGroup.get('address').reset();
+    // APP-015 fix: emitEvent:false -- without it, this reset (pre-existing,
+    // unrelated to the search-box's own value at this point) now also
+    // fires the valueChanges subscription added above, synchronously
+    // during Angular's initial change-detection pass. A caller whose
+    // bound template expression depends on state that subscription
+    // updates (e.g. profile-forms.component.html's Next button
+    // [disabled]) then throws ExpressionChangedAfterItHasBeenCheckedError,
+    // since this reset happens inside ngAfterViewInit, after that
+    // expression was already checked once this cycle.
+    this.addressFormGroup.get('address').reset(null, { emitEvent: false });
 
   }
 
