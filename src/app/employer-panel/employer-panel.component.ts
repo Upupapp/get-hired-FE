@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
-import { SignOutConfirmDialogComponent } from '@app-shared/components/sign-out-confirm-dialog/sign-out-confirm-dialog.component';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { CoreService } from '@main/core/services/core.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
@@ -391,71 +390,33 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     this.router.navigate(['/recruiter/contacts/candidates']);
   }
 
-  /** GETHIRED_EMPLOYER_PORTAL_SIGNOUT_FIX: confirm before signing out via a
-   *  purpose-built SignOutConfirmDialogComponent (title, message, an X close
-   *  button in the corner, plus Cancel/Sign Out). `onConfirm` doesn't close
-   *  the dialog itself -- that lets the Sign Out button show a disabled/
-   *  loading state while the canonical coreService.logout() call runs.
-   *  Cancel, the X button, and Escape/backdrop-click (MatDialog's own
-   *  default -- disableClose is deliberately left false) are all equivalent:
-   *  they just close the dialog with zero auth/session side effects. */
+  /** APP-018/EMP-020 fix: Employer sign-out previously required an extra
+   *  confirmation dialog click that Job Seeker sign-out never did --
+   *  accidental role-specific friction, not a deliberate product policy.
+   *  Standardized on Job Seeker's existing immediate-sign-out model (same
+   *  pattern as applicant-panel.component.ts's logout(): duplicate-click
+   *  guard, coreService.logout() -- the canonical Firebase/session
+   *  cleanup, unchanged and un-duplicated -- then a full window.location
+   *  reload to Home, never an in-SPA navigation, for the same "truly clean
+   *  slate at a security-sensitive boundary" reasoning documented there).
+   *
+   *  The removed confirmation dialog's "also delete my local unsaved AI
+   *  Create draft recovery" checkbox goes with it -- that recovery already
+   *  expires on its own via its existing 7-day TTL (ai-create-draft.
+   *  service.ts) regardless of how sign-out happens, so nothing is left
+   *  permanently dangling; it's simply no longer purged immediately as an
+   *  explicit opt-in at this moment. Per this cluster's own instruction:
+   *  sign-out is not the place for unsaved-work protection UI. */
   logout(): void {
-    // FINAL SIGN-OUT POLICY: normal sign-out preserves local AI recovery --
-    // the checkbox (an explicit opt-in to delete it) is only offered when
-    // this Employer actually has removable local recovery on this device.
-    // This answers "does LOCAL recovery exist", never "does a server Draft
-    // exist" -- a synced server Draft is never affected either way.
-    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-    const hasLocalRecovery = !!(currentUser && currentUser._id && this.aiCreateDraft.hasPending(currentUser._id));
-    const hasUnsyncedLocalEdits = hasLocalRecovery && this.aiCreateDraft.hasUnsyncedLocalEdits(currentUser._id);
-
-    const dialogRef = this.dialog.open(SignOutConfirmDialogComponent, {
-      ariaLabel: 'Sign out confirmation',
-      autoFocus: 'first-tabbable',
-      data: {
-        showRemoveLocalRecoveryOption: hasLocalRecovery,
-        hasUnsyncedLocalEdits,
-        onConfirm: () => this.confirmSignOut(dialogRef),
-      },
-    });
-  }
-
-  private confirmSignOut(dialogRef: MatDialogRef<SignOutConfirmDialogComponent>): void {
     if (this.logoutInProgress) return; // duplicate-click guard
     this.logoutInProgress = true;
-
-    const instance = dialogRef.componentInstance;
-    // Read the checkbox and capture the current user's id before logout
-    // wipes `user` from localStorage -- removal only happens if explicitly
-    // requested, and even then only the LOCAL recovery key
-    // (aiCreateDraft.clear() never touches a canonical server Draft job).
-    const removeLocalRecovery = instance.removeLocalRecovery;
-    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
-    instance.confirmDisabled = true;
-    instance.confirmLabel = 'Signing out...';
-
-    // Remove the local AI Create recovery BEFORE signing out, not after --
-    // it depends on `currentUser` (read from the `user` key that
-    // coreService.logout() is about to delete) and on nothing logout()
-    // does, so there's no reason to run it downstream of the session
-    // teardown. Doing it first also means a slow/failed backend revoke
-    // call can never leave the opted-in-to-delete recovery sitting around.
-    if (removeLocalRecovery && currentUser && currentUser._id) {
-      this.aiCreateDraft.clear(currentUser._id);
-    }
-
     this.coreService.logout().subscribe({
       next: () => {
         this.logoutInProgress = false;
-        // Redirect ONLY after logout has actually completed, and only Home --
-        // never dashboard/signin/register/the previous protected page.
-        dialogRef.close();
-        // HARD-RELOAD SIGNOUT FIX: was router.navigateByUrl('/') -- see the
-        // matching comment in applicant-panel.component.ts's logout() for
-        // the full reasoning. window.location.href forces a true full
-        // browser reload (fresh bundle fetch, fresh Angular bootstrap,
-        // nothing carried over in memory) instead of an in-SPA transition
-        // that keeps every singleton/store slice/subscription alive.
+        // HARD-RELOAD SIGNOUT FIX: window.location.href (not router
+        // navigation) forces a true full browser reload -- fresh bundle
+        // fetch, fresh Angular bootstrap, nothing carried over in memory --
+        // matching applicant-panel.component.ts's logout() exactly.
         window.location.href = '/';
       },
       error: () => {
@@ -463,10 +424,8 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
         // (synchronous localStorage writes; the backend revoke call is
         // already caught internally and never surfaces here) -- this branch
         // exists so a future failure mode is handled truthfully rather than
-        // silently, per the "never fabricate success" requirement.
+        // silently, matching applicant-panel's own logout().
         this.logoutInProgress = false;
-        instance.confirmDisabled = false;
-        instance.confirmLabel = 'Sign Out';
       },
     });
   }
