@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -127,6 +127,21 @@ export class ProfileBasicInfoComponent implements OnInit {
     });
   }
 
+  // APP-013 fix: mirrors job-create.component.ts's own salaryRangeValidator
+  // (QA EM-21) -- min>max was never checked anywhere on this form. Only
+  // flags the FormGroup's own errors (not either individual control) so it
+  // doesn't fight with each field's own required/min(0) errors, and only
+  // fires once both values are actually present.
+  salaryRangeValidator = (group: AbstractControl): ValidationErrors | null => {
+    const min = group.get('salaryMinimum')?.value;
+    const max = group.get('salaryMaximum')?.value;
+    if (min === null || min === undefined || min === '' ||
+        max === null || max === undefined || max === '') {
+      return null;
+    }
+    return Number(max) < Number(min) ? { maxLessThanMin: true } : null;
+  };
+
   formInitialized() {
     this.profileDetailsForm = this.fb.group({
       photoUrl: [null],
@@ -137,8 +152,8 @@ export class ProfileBasicInfoComponent implements OnInit {
       jobTypeId: [null, Validators.required],
       jobLevelId: [null, Validators.required],
       workSetupId: [null, Validators.required],
-      salaryMinimum: [null, Validators.required],
-      salaryMaximum: [null, Validators.required],
+      salaryMinimum: [null, [Validators.required, Validators.min(0)]],
+      salaryMaximum: [null, [Validators.required, Validators.min(0)]],
       salaryCurrency: [null, Validators.required],
       firstName: [this.user ? this.user.firstName : this.user.firstName, Validators.required],
       lastName: [this.user ? this.user.lastName : this.user.lastName, Validators.required],
@@ -146,7 +161,7 @@ export class ProfileBasicInfoComponent implements OnInit {
       contactNumber: [null, Validators.required],
       city: [null, Validators.required],
       country: [null, Validators.required]
-    });
+    }, { validators: this.salaryRangeValidator });
 
   }
 

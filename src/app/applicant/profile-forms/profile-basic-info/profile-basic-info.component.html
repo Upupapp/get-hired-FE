@@ -216,9 +216,14 @@
 
           <div class="col-4 form-group pe-0">
             <input type="number" name="search" class="form-control form-control-main" formControlName="salaryMaximum"
-              placeholder="ex. Php 35,500" [class.is-invalid]="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
+              placeholder="ex. Php 35,500"
+              [class.is-invalid]="(salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched) || (profileDetailsForm.errors?.maxLessThanMin && salaryMaximum_validators?.touched)">
               <div class="px-3" *ngIf="salaryMaximum_validators?.invalid && salaryMaximum_validators?.touched">
                 <small class="invalid-feedback">Minimum salary is required</small>
+              </div>
+              <!-- APP-013 fix: min>max previously had no feedback at all. -->
+              <div class="px-3" *ngIf="profileDetailsForm.errors?.maxLessThanMin && salaryMinimum_validators?.touched && salaryMaximum_validators?.touched">
+                <small class="invalid-feedback">Maximum salary must be greater than or equal to minimum salary.</small>
               </div>
           </div>
         </div>
