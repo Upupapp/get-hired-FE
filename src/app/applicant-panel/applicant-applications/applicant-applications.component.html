@@ -27,9 +27,21 @@
                time, so it read "Unavailable" for every application that
                predated it (in practice, always). Message threads are
                already covered by the dedicated Messages section, not
-               duplicated here. -->
+               duplicated here.
+
+               APP-009 fix: this used to read "Reviewed"/"Pending" -- the
+               SAME words the lifecycle-status chip above it uses for a
+               completely different concept (gethired.job_applicant_status:
+               Pending Review/Applied/Under Review/Shortlisted/Rejected/
+               Hired, already the one authoritative status and already
+               correct). A card could legitimately show lifecycle "Pending
+               Review" next to contact "Reviewed" and read as flatly
+               contradictory, even though both values were individually
+               correct. No status data was wrong -- only the vocabulary
+               collided. Distinct wording removes the collision without
+               touching either underlying field. -->
           <span class="gh-ap-contact-chip" [ngClass]="app.hasEmployerMessage ? 'gh-ap-contact-chip--reviewed' : 'gh-ap-contact-chip--pending'">
-            {{ app.hasEmployerMessage ? 'Reviewed' : 'Pending' }}
+            {{ app.hasEmployerMessage ? 'Employer replied' : 'Awaiting employer response' }}
           </span>
         </div>
 

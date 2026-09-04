@@ -9,8 +9,11 @@
   <div class="aad-header" *ngIf="jobTitle || companyName">
     <div class="aad-header-row">
       <h1 class="aad-job-title">{{ jobTitle || 'Application' }}</h1>
+      <!-- APP-009 fix: matches applicant-applications.component.html --
+           "Reviewed"/"Pending" collided with the lifecycle-status
+           vocabulary shown elsewhere on this same page. -->
       <span class="gh-ap-contact-chip" [ngClass]="hasEmployerMessage ? 'gh-ap-contact-chip--reviewed' : 'gh-ap-contact-chip--pending'">
-        {{ hasEmployerMessage ? 'Reviewed' : 'Pending' }}
+        {{ hasEmployerMessage ? 'Employer replied' : 'Awaiting employer response' }}
       </span>
     </div>
     <p class="aad-company" *ngIf="companyName">{{ companyName }}</p>
