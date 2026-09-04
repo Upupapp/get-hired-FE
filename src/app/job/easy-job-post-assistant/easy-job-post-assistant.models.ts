@@ -18,6 +18,7 @@ export interface AssistantExtractionResult {
   warnings: string[];
   jobRoleId?: number | null;
   industryId?: number | null;
+  categoryId?: number | null;
   interviewQuestions?: Array<{ question: string; answerDuration: number; retakes: number; sequence: number }> | null;
 }
 

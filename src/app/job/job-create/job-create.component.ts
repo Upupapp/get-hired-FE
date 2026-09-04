@@ -588,6 +588,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       // fillFromGenerated(), which now resolves this against the same live
       // options list this dropdown itself uses.
       industryId: (data.industryId !== undefined && data.industryId !== null) ? data.industryId : null,
+      // EMP-014 fix: same reasoning as industryId above -- resolved once,
+      // in easy-job-post-assistant-modal.component.ts, against the same
+      // live category options Step 2's own Job Category dropdown uses.
+      // null (not a guess) when no deterministic match exists.
+      jobCategoryId: (data.categoryId !== undefined && data.categoryId !== null) ? data.categoryId : null,
     };
 
     this.setFormGroup(prefillData);

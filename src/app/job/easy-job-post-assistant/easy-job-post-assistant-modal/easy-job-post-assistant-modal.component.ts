@@ -34,6 +34,7 @@ import { JobFacade } from '@app-job/state/job.facade';
 import * as Model from '@app-job/job.model';
 import { Options } from '@app-job/job.model';
 import { suggestIndustryName, matchSuggestedIndustry } from '@app-job/utils/job-industry-suggester';
+import { suggestCategoryName } from '@app-job/utils/job-category-suggester';
 import { JobPostModeDialogComponent, JobPostMode } from '@app-job/job-create/components/job-post-mode-dialog/job-post-mode-dialog.component';
 import { resolveJobLevelId, LevelOption } from '@app-job/utils/job-level-resolver';
 import { resolveWorkSetupId, resolveJobTypeId, FREELANCE_JOB_TYPE_SENTINEL } from '@app-job/utils/job-field-resolvers';
@@ -86,6 +87,10 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
   // unfinished-job workspace. Start From Scratch (chooseManual(), below)
   // deliberately never touches any of this.
   industryOptions: Options[] = [];
+  // EMP-014 fix: same reasoning/pattern as industryOptions -- live category
+  // list, matched against a deterministic keyword-based suggestion rather
+  // than left unset or guessed.
+  categoryOptions: Options[] = [];
   // DRAFT-SAVE FIX: was a hardcoded list including "Freelance", which has no
   // matching gethired.job_type row (only Full time/Part time/Contractor are
   // seeded) -- selecting it made the background persistAssistantDraft() save
@@ -167,6 +172,21 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         }
       },
       error: () => { /* non-fatal -- Industry select just stays empty */ },
+    });
+
+    // EMP-014 fix: live Job Category list, same source Step 2's real Job
+    // Category dropdown uses (job.service.ts's getCategoryList()). Unlike
+    // Industry there's no user-facing category input in this Generate step
+    // to restore/re-suggest on -- categoryOptions is only consulted later,
+    // on demand, in fillFromGenerated()/postJobNow() (both user-triggered,
+    // well after this fetch has had time to resolve); an empty list at
+    // that point is handled safely (suggestion simply doesn't match), not
+    // a race that needs its own retry path.
+    this.jobService.getCategoryList().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res: any) => {
+        this.categoryOptions = (res && res.data) || res || [];
+      },
+      error: () => { /* non-fatal -- Job Category select just stays empty */ },
     });
 
     this.jobService.getTypeList().pipe(takeUntil(this.destroy$)).subscribe({
@@ -592,6 +612,13 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
       // provided it. Resolve the real live option id here, once, rather
       // than re-matching a name string every time Step 2 renders.
       industryId: (matchSuggestedIndustry(this.generateInputs.industry, this.industryOptions) || {}).id ?? null,
+      // EMP-014 fix: Job Category was never resolved from the generated
+      // draft at all -- unlike Industry, there's no user-provided category
+      // signal to match verbatim, so this suggests a category NAME from the
+      // generated job title's keywords, then resolves it against the real,
+      // currently-loaded category options (same matcher Industry uses).
+      // null (left for manual selection) when no deterministic match exists.
+      categoryId: (matchSuggestedIndustry(suggestCategoryName(draft.basics.jobTitle), this.categoryOptions) || {}).id ?? null,
       interviewQuestions: (draft.application.interviewQuestionSuggestions || []).map((q, i) => ({
         question: q,
         answerDuration: 5,
@@ -657,6 +684,11 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         // send it as a fabricated jobTypeId (mirrors JobCreateComponent.formatJob()).
         const jobTypeId = rawJobTypeId === FREELANCE_JOB_TYPE_SENTINEL ? null : (rawJobTypeId as number | null);
         const industryMatch = matchSuggestedIndustry(this.generateInputs.industry, this.industryOptions);
+        // EMP-014 fix: same reasoning as fillFromGenerated() above -- the
+        // direct-publish path had the identical gap (jobCategoryId never
+        // set), so a job published straight from this modal (skipping the
+        // manual review step entirely) always went live with no category.
+        const categoryMatch = matchSuggestedIndustry(suggestCategoryName(draft.basics.jobTitle), this.categoryOptions);
 
         // BUGFIX (production 422 on POST /job/create): this only accepted
         // 'high' confidence for job level, and left jobLevelId/workSetupId/
@@ -688,6 +720,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
           jobTitle: draft.basics.jobTitle || '',
           companyId,
           industryId: industryMatch ? industryMatch.id : undefined,
+          jobCategoryId: categoryMatch ? categoryMatch.id : undefined,
           jobRoleId: this.generatedJobRoleId ?? undefined,
           jobTypeId: jobTypeId,
           jobLevelId: resolvedJobLevelId,
