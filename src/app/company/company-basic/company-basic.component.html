@@ -1,6 +1,16 @@
 <div class="text-center p-3 position-relative">
-  <button type="button" class="btn-close position-absolute" style="top: 8px; right: 8px;"
-    aria-label="Close" (click)="dialogRef.close()"></button>
+  <!-- EMP-009 fix: this dialog is only ever opened via
+       employer-settings.component.ts's promptCreateCompany(), which sets
+       disableClose:true because company setup is mandatory for a brand-new
+       employer -- but this button called dialogRef.close() directly,
+       bypassing that entirely. Its afterClosed() handler only reacts to
+       res===1 (successful creation), so dismissing via this X left the
+       employer on the underlying page's "Setting up your company
+       profile..." text with no company, no dialog, and no way to reopen
+       it short of a full reload -- a genuine dead end. Removed rather than
+       wired to a "reopen" affordance: this is the only place
+       CompanyBasicComponent is ever opened, so there is no legitimate
+       "close and come back later" case to preserve here. -->
 
   <h1 class="fs-3 mb-0">
     Welcome to Get<span class="text-primary-red fw-bold">Hired</span>!
