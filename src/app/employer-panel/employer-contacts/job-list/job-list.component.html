@@ -1,14 +1,19 @@
 <div class="mt-4 ps-4 pe-4" id="job-order-main-container">
     <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+      <!-- TALENT-WORKSPACE-REDESIGN: was titled "Job Lists", which didn't
+           convey that this is the entry point into Applicants (pick a job
+           to see who applied to it) -- retitled to match the Talent nav
+           item it belongs to. Route/component/data unchanged. -->
       <div class="card card-body py-3">
         <div class="w-100">
-          <span class="main-title mt-3">Job Lists</span>
+          <span class="main-title mt-3">Applicants</span>
+          <p class="gh-field-helper mb-0">Review and manage candidates who have applied to your jobs. Select a job to see its applicants.</p>
         </div>
       </div>
       <br>
       <div class="card card-body" *ngIf="listView && !loading">
         <app-reusable-table [loading]="loading"
-          [componentTitle]="'Job Lists'"
+          [componentTitle]="'jobs'"
           [displayedColumns]="displayedColumns"
           [selectedColumns]="selectedColumns" 
           [selectedColumnsMobile]="selectedColumns"

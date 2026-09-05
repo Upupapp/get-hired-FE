@@ -42,13 +42,16 @@ export interface TableHeader {
 }
 
 const displayedColumns: TableHeader[] = [
-  { col_name: 'full_name', title: 'Full Name' },
+  // TALENT-WORKSPACE-REDESIGN: removed job_id/job_title columns -- this
+  // list is already filtered to one specific job (candidate-list.
+  // component.ts's applyCandidateListFilter), so every row repeated the
+  // exact same job_id/job_title; that's now shown once in the page header
+  // instead (see candidate-list.component.html) rather than per row.
+  { col_name: 'full_name', title: 'Candidate' },
   { col_name: 'email', title: 'Email Address' },
   { col_name: 'mobile_number', title: 'Mobile Number' },
   { col_name: 'address', title: 'Address' },
-  { col_name: 'job_id', title: 'Job ID' },
-  { col_name: 'job_title', title: 'Job Title' },
-  { col_name: 'created_at', title: 'Date Created', type: 'date' },
+  { col_name: 'created_at', title: 'Applied Date', type: 'date' },
   { col_name: 'action', title: 'Action' , type: 'menu' },
 ];
 
@@ -57,8 +60,6 @@ const selectedColumns: string[] =  [
   'email',
   'mobile_number',
   'address',
-  'job_id',
-  'job_title',
   'created_at',
   'action'
 ];

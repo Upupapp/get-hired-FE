@@ -49,6 +49,17 @@ export class GroupService {
       );
     }
 
+    // GETHIRED_TALENT_CANDIDATE_GROUP_MEMBER_REMOVAL_V1: removes one
+    // candidate from a group. Only deletes the group_list membership row —
+    // the candidate/contact/applicant record is untouched.
+    removeGroupMember(groupId: string, email: string): Observable<any> {
+      return this.http.delete<any>(`${this.server}/groups/removemember?groupId=${encodeURIComponent(groupId)}&email=${encodeURIComponent(email)}`)
+      .pipe(
+        map((res) => <any>res),
+        catchError(this.handleError)
+      );
+    }
+
     // error handler
     private handleError(error: any, caught: any): any {
         throw error;

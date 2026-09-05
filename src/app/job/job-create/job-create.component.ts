@@ -22,7 +22,10 @@ import { CreateInterviewComponent } from './components/create-interview/create-i
 import { resolveJobLevelId } from '../utils/job-level-resolver';
 import { resolveWorkSetupId, resolveJobTypeId, FREELANCE_JOB_TYPE_SENTINEL } from '../utils/job-field-resolvers';
 import { AiCreateDraftService } from '../services/ai-create-draft.service';
+import { JobCreateRecoveryService } from '../services/job-create-recovery.service';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
+import { CoreService } from '@app-core/services/core.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -340,6 +343,9 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private assistantService: EasyJobPostAssistantService,
     private jobService: JobService,
     private aiCreateDraft: AiCreateDraftService,
+    private jobCreateRecovery: JobCreateRecoveryService,
+    private coreService: CoreService,
+    private snackBar: MatSnackBar,
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -354,6 +360,21 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.asyncLocalStorage.getItem('user')
       .then(user => {
         this.companyId = JSON.parse(user).companyId;
+
+        // SESSION-SILENT-REFRESH (last-resort work protection): if an
+        // earlier visit ended in an involuntary session loss (silent
+        // refresh failed -- see TokenLifecycleService/
+        // UnAuthorizedInterceptor) while this exact job (or, for a new
+        // job, this exact "no job yet" context) was mid-edit, a local
+        // recovery snapshot exists. Offer it back rather than silently
+        // discarding it. Deliberately conservative: only offered when the
+        // saved jobId matches the one this page instance is actually
+        // editing (or both are "new job"), so a draft never bleeds into
+        // the wrong job's form.
+        const parsedUser = JSON.parse(user);
+        if (parsedUser && parsedUser._id) {
+          this.offerJobCreateRecovery(parsedUser._id);
+        }
 
         // SEQUENCING FIX (2026-08-20): Create a Job must not proceed for an
         // Employer with no company yet -- job creation requires companyId
@@ -379,6 +400,24 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           this.persistAssistantDraft(this.formatJob(1));
         }
       });
+
+    // SESSION-SILENT-REFRESH (last-resort work protection): authState$
+    // flips to false both on a deliberate sign-out and on
+    // UnAuthorizedInterceptor's hard-logout fallback (silent refresh
+    // failed) -- either way, if this form has unsaved edits at that exact
+    // moment, snapshot it locally before this page gets torn down by the
+    // resulting navigation to /signin. Harmless overhead on a deliberate
+    // sign-out (the snapshot just sits unused behind its own 24h TTL if
+    // never restored); the involuntary case is the one this exists for.
+    this.subscriptions.add(
+      this.coreService.authState$.subscribe((loggedIn) => {
+        if (loggedIn) return;
+        if (!this.jobForm || !this.jobForm.dirty) return;
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        if (!user || !user._id) return;
+        this.jobCreateRecovery.save(user._id, this.jobId || null, this.jobForm.getRawValue());
+      })
+    );
 
     // B15: eagerly fetch the live job level list here (normally only dispatched by
     // the Step-1 child component) so AI hint resolution can run before Step 1 mounts.
@@ -1858,6 +1897,50 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         );
       },
     });
+  }
+
+  /**
+   * SESSION-SILENT-REFRESH (last-resort work protection): checks for a
+   * local recovery snapshot left by an earlier visit that ended in an
+   * involuntary session loss, and offers it back via a snackbar action
+   * rather than silently discarding it. Only offered when the saved
+   * jobId matches what THIS page instance is editing (both null/undefined
+   * counts as a match -- "new job" context), so a draft never gets
+   * applied to the wrong job. jobForm may not exist yet at this point
+   * (it's built by setFormGroup(), reached via an async chain) -- polls
+   * briefly and gives up quietly if it never appears, rather than risk
+   * silently clobbering a form that loaded valid persisted data in the
+   * meantime.
+   */
+  private offerJobCreateRecovery(userId: string): void {
+    const envelope = this.jobCreateRecovery.load(userId);
+    if (!envelope) return;
+
+    const sameContext = (envelope.jobId || null) === (this.jobId || null);
+    if (!sameContext) {
+      // Belongs to a different job -- not offered here, but also not
+      // cleared, in case the employer navigates to THAT job next.
+      return;
+    }
+
+    let attemptsLeft = 20; // ~10s at 500ms, then give up quietly
+    const tryOffer = () => {
+      if (!this.jobForm) {
+        if (--attemptsLeft > 0) { setTimeout(tryOffer, 500); }
+        return;
+      }
+      const ref = this.snackBar.open(
+        'We found unsaved job post changes from your last session.',
+        'Restore',
+        { duration: 12000 },
+      );
+      ref.onAction().subscribe(() => {
+        this.jobForm.patchValue(envelope.formValue);
+        this.jobCreateRecovery.clear(userId);
+        this.snackBar.open('Draft restored.', '', { duration: 3000 });
+      });
+    };
+    tryOffer();
   }
 
   /**

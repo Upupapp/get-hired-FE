@@ -1,14 +1,23 @@
   <div class="mt-4 ps-4 pe-4" id="job-order-main-container">
   <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+    <!-- TALENT-WORKSPACE-REDESIGN: page previously had no heading/description
+         at all, just the Add button -- added a title + explanatory subtitle
+         matching contact-group.component.html's existing .main-title
+         pattern, and the CTA copy is now candidate-oriented. Route/component/
+         API all unchanged. -->
     <div class="gh-contact-list-topbar">
-      <button class="gh-btn-primary" (click)="addContacts()" aria-label="Add a new contact">
+      <div>
+        <span class="main-title mt-3">Talent Pool</span>
+        <p class="gh-field-helper mb-0">Manage candidates and prospects your company may want to hire now or in the future.</p>
+      </div>
+      <button class="gh-btn-primary" (click)="addContacts()" aria-label="Add a candidate to your Talent Pool">
         <i class="bi bi-plus-lg" aria-hidden="true"></i>
-        Add Contact
+        Add Candidate
       </button>
     </div>
     <div class="card card-body" *ngIf="listView && !loading">
       <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="editContact($event)"
-        (viewDetails)="editContact($event)" [componentTitle]="'Contacts'" [displayedColumns]="displayedColumns"
+        (viewDetails)="editContact($event)" [componentTitle]="'Talent Pool candidates'" [displayedColumns]="displayedColumns"
         [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
         [maxRows]="10" [listDataSource]="contactList"
         (deleteSelectedRow)="deleteRow($event)" 

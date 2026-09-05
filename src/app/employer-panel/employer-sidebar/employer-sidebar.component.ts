@@ -154,13 +154,18 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
         // groupings (contacts/groups) -- without colliding with any one of
         // them. Sub-routes/URLs unchanged so existing /recruiter/
         // contacts/** links and deep links still work.
+        // TALENT-WORKSPACE-REDESIGN: "Contacts"/"Contact Groups" reframed as
+        // "Talent Pool"/"Candidate Groups" -- routes unchanged (still
+        // contacts/list, contacts/groups) so existing deep links keep
+        // working; only the user-facing labels changed, matching the
+        // on-page titles updated in the same pass.
         title: 'Talent', icon: 'applicants.png', class: 'applicants', route: 'contacts',
         sub_routes: [
           {
-            title: 'Contacts', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
+            title: 'Talent Pool', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
           },
           {
-            title: 'Contact Groups', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
+            title: 'Candidate Groups', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
           },
           {
             title: this.translate.instant('CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE'), icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',

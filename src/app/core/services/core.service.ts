@@ -5,6 +5,7 @@ import { BaseService } from './base.service';
 import { environment } from "@environments/environment";
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthFacade } from '@main/auth/state/auth.facade';
+import { TokenLifecycleService } from './token-lifecycle.service';
 
 // TARGETED LOCAL-STORAGE CLEANUP: the complete set of keys this app itself
 // ever writes as part of establishing an authenticated session (signin.
@@ -84,6 +85,7 @@ export class CoreService {
     private baseService: BaseService,
     private router: Router,
     private authFacade: AuthFacade,
+    private tokenLifecycle: TokenLifecycleService,
   ) {
     // Re-sync on every completed navigation. This is what actually keeps
     // authState$ correct after a successful sign-in (email/password,
@@ -93,9 +95,26 @@ export class CoreService {
     // logout() below still pushes immediately too, since a logout action
     // doesn't always trigger a navigation on its own (e.g. a stale-session
     // guard that clears state without redirecting the current tab).
+    //
+    // SESSION-SILENT-REFRESH: the exact same reasoning covers scheduling
+    // the proactive token refresh -- every real sign-in path navigates
+    // away on success, so re-deriving the refresh schedule from whatever
+    // token now sits in localStorage on every completed navigation covers
+    // "just signed in" without touching those three call sites, AND covers
+    // "already signed in, hard-refreshed the browser" the moment the first
+    // route finishes resolving after bootstrap.
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
-      .subscribe(() => this.authStateSubject.next(this.isLoggedInSnapshot()));
+      .subscribe(() => {
+        this.authStateSubject.next(this.isLoggedInSnapshot());
+        this.tokenLifecycle.scheduleFromCurrentToken();
+      });
+
+    // Covers the case where the app never actually navigates again after
+    // bootstrap while already logged in (e.g. deep-linking straight into a
+    // page with no redirect) -- NavigationEnd may not fire at all in that
+    // exact scenario before the first proactive check should happen.
+    this.tokenLifecycle.scheduleFromCurrentToken();
   }
 
   private isLoggedInSnapshot(): boolean {
@@ -169,6 +188,11 @@ export class CoreService {
     this.isLogin = false;
     this.roleAs = '';
     this.suppressExpiryHandling = false;
+    // SESSION-SILENT-REFRESH: no reason to keep a proactive refresh timer
+    // alive (or let an in-flight refresh silently repopulate localStorage
+    // with a live session right after we just cleared it) once the user
+    // has actually signed out.
+    this.tokenLifecycle.stop();
     for (const key of AUTH_SESSION_STORAGE_KEYS) {
       try { localStorage.removeItem(key); } catch (_) {}
     }

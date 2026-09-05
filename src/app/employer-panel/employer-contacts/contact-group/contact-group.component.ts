@@ -166,10 +166,21 @@ export class ContactGroupComponent implements OnInit {
     this.addCandidate(data);
   }
   deleteRow(data: any) {
+    // TALENT-WORKSPACE-REDESIGN BUGFIX: was `data: { action: 'Delete' }`,
+    // which rendered the dialog's generic fallback copy -- "Would you like
+    // to save your progress in Delete ?" -- nonsensical for a delete
+    // confirmation. Explicit title/message instead, confirmed accurate:
+    // deleteGroup only removes the group/membership rows (contact.
+    // service.js), never the underlying contact/candidate/applicant
+    // records those members reference.
+    const groupName = data?.data?.group_name || 'this group';
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
-        action: 'Delete',
+        title: `Delete "${groupName}"?`,
+        message: 'Candidates in this group will remain in your Talent Pool. Only the group itself will be deleted.',
+        confirmLabel: 'Delete Group',
+        cancelLabel: 'Cancel',
       },
     });
 
