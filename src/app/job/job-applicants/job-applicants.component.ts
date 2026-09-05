@@ -7,12 +7,14 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { MatDialog } from '@angular/material/dialog';
 import { map, takeUntil, tap, BehaviorSubject, Subject, combineLatest, catchError, of, Observable, switchMap } from 'rxjs';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
+import { FileViewerComponent } from '@app-shared/components/file-viewer/file-viewer.component';
 import { ApplicantActionModalComponent } from './applicant-action-modal/applicant-action-modal.component';
 import * as InterviewModel from '@main/interview/interview.model';
 import * as ApplicantModel from '@main/applicant/applicant.model';
 import { hasSalaryRange, formatSalaryPeriodSuffix } from '@app-job/utils/job-salary-display';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { JobService } from '@app-job/job.service';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 export interface TableHeader {
   col_name: string;
@@ -37,6 +39,12 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
   // interviewQuestions: InterviewModel.InterviewQuestion[];
   showProfile: boolean = false;
   applicantProfileId: string;
+
+  // BUGFIX: the "View CV" column button. Tracks which row's resume is
+  // currently being fetched so the clicked button can show a loading
+  // state instead of appearing to do nothing while the request is in
+  // flight (see viewResume() below).
+  loadingResumeForUserId: string | null = null;
 
   // profile:ApplicantModel.Applicant;
   // profileDocs = [];
@@ -153,7 +161,8 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private dialog: MatDialog,
     private applicantFacade: ApplicantFacade,
-    private jobService: JobService
+    private jobService: JobService,
+    private snackbarService: SnackbarService
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id
@@ -237,6 +246,10 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Video CV preview (the applicant's recorded introduction) -- called
+  // from ApplicantActionModalComponent's "Video CV" menu action with a
+  // plain URL string. Unrelated to viewResume() below (the actual CV/
+  // Resume document) -- left untouched.
   viewCv(event) {
     if(event) {
       let dialog = this.dialog.open(VideoPreviewComponent, {
@@ -248,6 +261,54 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  // BUGFIX: the "View CV" column button was wired to (actionOfButton),
+  // an EventEmitter reusable-table.component.ts's btnAction() would emit
+  // it from -- but btnAction() is never called anywhere in that
+  // component's own template. The action_button click actually emits
+  // customButtonEvent (via customButtonFunction()), which nothing in
+  // this component was listening for -- so the button did nothing at
+  // all, for every applicant, regardless of whether they had a CV.
+  //
+  // Separately, even correctly wired, this button was bound to
+  // videoCVUrl and opened VideoPreviewComponent -- a <video> player --
+  // for what's actually a PDF/DOCX resume, which doesn't play as a
+  // video and would have looked broken for any applicant who *did* have
+  // a real CV on file.
+  //
+  // Now: fetches the applicant's real Resume document (already exposed
+  // by GET /job/applicantdetails, the same endpoint the "View profile"
+  // detail panel below already calls) and opens it in FileViewerComponent
+  // -- the same PDF/DOCX/image preview-with-download panel already
+  // shipped for the applicant's own document view and the employer's
+  // "View profile" panel (app-application-preview's viewDoc()).
+  viewResume(event): void {
+    const row = event?.data;
+    if (!row?.userId || this.loadingResumeForUserId) {
+      return;
+    }
+
+    this.loadingResumeForUserId = row.userId;
+    this.jobService.getJobApplicantDetails(this.jobId, row.userId).subscribe({
+      next: (res: any) => {
+        this.loadingResumeForUserId = null;
+        const resume = res?.data?.profileDocs?.resume?.[0];
+        if (!resume?.fileurl) {
+          this.snackbarService.info('This candidate hasn\'t uploaded a CV/Resume yet.', '', 4000);
+          return;
+        }
+        this.dialog.open(FileViewerComponent, {
+          width: '60vw',
+          height: '80vh',
+          data: resume,
+        });
+      },
+      error: () => {
+        this.loadingResumeForUserId = null;
+        this.snackbarService.error('We couldn\'t load this candidate\'s CV right now. Please try again.', '');
+      },
+    });
   }
 
   viewMenu(event): void {

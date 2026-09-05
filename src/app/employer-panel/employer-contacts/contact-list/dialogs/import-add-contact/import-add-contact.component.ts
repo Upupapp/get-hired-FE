@@ -159,7 +159,36 @@ export class ImportAddContactComponent implements OnInit {
             payload: null
           });
         }
-        this.close();
+        // BUGFIX: this used to call close() -- the same method the X
+        // button and the footer Close button call, which closes with
+        // `null`/`undefined`. The parent (contact-list.component.ts)
+        // couldn't tell a genuine save apart from the applicant just
+        // dismissing the dialog, so it refreshed the contact list
+        // unconditionally on EVERY close, including Cancel/X -- an
+        // informal, surprising side effect for a button that's supposed
+        // to just dismiss. Closing with a truthy result here (and only
+        // here, on an actual successful save) lets the parent refresh
+        // only when there's genuinely new data to show.
+        this.closeWithSuccess();
+      }
+
+      // BUGFIX (root cause of the dialog never auto-closing after a real
+      // edit): editing an existing contact dispatches EDIT_CONTACT, whose
+      // success case (contact.reducer.ts) populates `editContactRes` --
+      // a completely different state field from `contactRes` above, which
+      // only ever gets set by the New Contact / Import Contact save
+      // flows. This block above never ran for an edit at all, so the
+      // dialog just sat there indefinitely with no way to know the save
+      // had actually succeeded.
+      // contact-list.component.ts already shows the "Successfully Edited
+      // Contact!" toast and resets `editContactRes` back to null from its
+      // own subscription to this same state -- deliberately not duplicated
+      // here to avoid a double toast/double dispatch. This only needs to
+      // close the dialog (with a truthy result, so the parent's
+      // afterClosed() refreshes the list) once the edit is confirmed done.
+      if (onboard.editContactRes) {
+        this.isLoading = false;
+        this.closeWithSuccess();
       }
 
       if(onboard.jobId){
@@ -212,6 +241,16 @@ export class ImportAddContactComponent implements OnInit {
 
   close() {
     this.dialogRef.close(null);
+    this.submitting = false;
+  }
+
+  // See the BUGFIX note above where this is called: a truthy close result
+  // is the parent's only signal that a real save happened, as opposed to
+  // Cancel/X (dialogRef.close() with no args, in the template) or a failed
+  // submit (close() above, still null) -- neither of which should trigger
+  // a list refresh.
+  private closeWithSuccess(): void {
+    this.dialogRef.close({ success: true });
     this.submitting = false;
   }
 

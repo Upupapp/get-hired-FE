@@ -160,10 +160,16 @@ export class ContactListComponent implements OnInit {
     .afterClosed()
     .pipe(takeUntil(this.unsubscribe$))
     .subscribe(result => {
-      // console.log("test if parent function will be called affter closing modal");
-      this.getContactList();
-      if(result){
-        // console.log(result, "test")
+      // BUGFIX: previously called getContactList() unconditionally here,
+      // so the X button / footer Close button on the Edit Contact dialog
+      // (which close with no result) triggered the exact same list
+      // refresh as a genuine successful save. A close action shouldn't
+      // have side effects -- only refresh when the dialog actually closed
+      // after a successful save (see closeWithSuccess() in
+      // import-add-contact.component.ts, the only place that closes with
+      // a truthy result).
+      if (result) {
+        this.getContactList();
       }
     });
   }
