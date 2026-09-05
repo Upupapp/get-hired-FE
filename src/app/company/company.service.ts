@@ -49,6 +49,16 @@ export class CompanyService {
     return this.baseService.get<Model.CompanyUser[]>(`${this.companyUrl}/getallcompanyuser?id=${companyId}`);
   }
 
+  // Team & Access: removes one member's access to the company. Only ever
+  // deletes the company_employees membership row (BE-side, already
+  // RBAC-gated behind "team.manage" and last-owner protected) -- never the
+  // underlying user account.
+  removeCompanyUser(userId: string, companyId: string) {
+    return this.baseService.delete<any>(`${this.companyUrl}/removecompanyuser`, {
+      body: { userId, companyId }
+    });
+  }
+
   getDashboardDetails() {
     return this.baseService.get<Model.Dashboard>(`${this.companyUrl}/dashboard`);
   }

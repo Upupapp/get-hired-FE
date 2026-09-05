@@ -227,6 +227,14 @@ $self-bg: rgba(#FF675D, 0.035);
   }
 
   &--block { width: 100%; }
+
+  &--danger {
+    background: rgba(#D92D20, 0.06);
+    border-color: rgba(#D92D20, 0.3);
+    color: #D92D20;
+    &:hover { background: rgba(#D92D20, 0.12); border-color: #D92D20; color: #D92D20; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
 }
 
 // ── Mobile cards ───────────────────────────────────────────────────────────────
