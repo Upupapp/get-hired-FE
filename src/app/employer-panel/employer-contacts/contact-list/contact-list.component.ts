@@ -137,13 +137,16 @@ export class ContactListComponent implements OnInit {
   }
 
 
+  // BUGFIX: "View Candidate Group" previously did nothing at all -- no
+  // navigation, no feedback -- for a candidate in zero groups (the button
+  // renders identically regardless of group count, so there was no way to
+  // tell beforehand). Now explains why, instead of a silent dead click.
   viewContactGroup(event): void {
-
     if(Array.isArray(event.data?.groups) && event.data?.groups.length > 0 ){
       this.router.navigate([`/recruiter/contacts/group-list/${event.data?.groups[0].group_id}`]);
+    } else {
+      this.snackbarService.info('This candidate is not currently in any Candidate Group.', '', 4000);
     }
-    console.log(event)
-    //this.router.navigate(['/onboarding/contacts/details'], {queryParams: {userId: `${event?.data?.owner_id}`}});
   }
 
   addContacts(data?: any){

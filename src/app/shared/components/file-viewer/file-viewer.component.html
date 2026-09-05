@@ -1,2 +1,24 @@
-<iframe allow="fullscreen;" [src]="sanitize" style="width: 100%; height: 100%;">
-</iframe>
+<div class="gh-file-viewer">
+  <div class="gh-file-viewer__header">
+    <span class="gh-file-viewer__filename" [title]="filename">{{ filename }}</span>
+    <div class="gh-file-viewer__actions">
+      <button type="button" class="gh-file-viewer__download" (click)="downloadFile()" aria-label="Download">
+        <img src="/assets/images/placeholder/icons/download.png" alt="" class="download-img">
+        Download
+      </button>
+      <button type="button" class="gh-file-viewer__close" (click)="dialogRef.close()" aria-label="Close">
+        <i class="bi bi-x-lg" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="gh-file-viewer__body">
+    <iframe *ngIf="previewMode === 'pdf' || previewMode === 'office'" allow="fullscreen;" [src]="sanitize"
+      class="gh-file-viewer__frame"></iframe>
+    <img *ngIf="previewMode === 'image'" [src]="sanitize" class="gh-file-viewer__image" [alt]="filename">
+    <div *ngIf="previewMode === 'unsupported'" class="gh-file-viewer__unsupported">
+      <p>Preview isn't available for this file type.</p>
+      <p>Use the Download button above to save it.</p>
+    </div>
+  </div>
+</div>

@@ -102,16 +102,19 @@ export class DetailsComponent implements OnInit {
   // Mirrors avatar.component.ts's own viewDocs()/downloadFile() exactly,
   // so "My Profile"'s two document surfaces (the identity header's compact
   // list and this new dedicated section) behave identically.
+  // BUGFIX: previously fell straight to downloadFile() for anything that
+  // wasn't a PDF, so a docx CV (a very common case) could never be
+  // previewed at all -- only force-downloaded. FileViewerComponent now
+  // handles docx (Office Online embed), images, and unsupported types
+  // gracefully, and always offers its own working Download button, so
+  // every file type opens the same modal -- preview and download are both
+  // available, not one instead of the other.
   viewDocs(file: any) {
-    if (this.checkFileType(file.filename).toLowerCase() === 'pdf') {
-      this.dialog.open(FileViewerComponent, {
-        width: '50vw',
-        height: '40vw',
-        data: file
-      });
-    } else {
-      this.downloadFile(file);
-    }
+    this.dialog.open(FileViewerComponent, {
+      width: '60vw',
+      height: '80vh',
+      data: file
+    });
   }
 
   downloadFile(file: any) {
@@ -130,10 +133,6 @@ export class DetailsComponent implements OnInit {
     xmlHttp.responseType = 'blob';
     xmlHttp.open('GET', file.fileurl, true);
     xmlHttp.send(null);
-  }
-
-  checkFileType(file: string): string {
-    return (file || '').split('.').pop();
   }
 
 }

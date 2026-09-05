@@ -20,16 +20,16 @@ export class AvatarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // BUGFIX: previously force-downloaded anything that wasn't a PDF instead
+  // of previewing it. FileViewerComponent now handles docx (Office Online
+  // embed), images, and unsupported types gracefully and always has its
+  // own working Download button, so every file type opens the same modal.
   viewDocs(file) {
-    if(this.checkFileType(file.filename).toLowerCase() == 'pdf'){
-      let dialog = this.dialog.open(FileViewerComponent, {
-        width: '50vw',
-        height: '40vw',
-        data: file
-      });
-    } else {
-      this.downloadFile(file);
-    }
+    this.dialog.open(FileViewerComponent, {
+      width: '60vw',
+      height: '80vh',
+      data: file
+    });
   }
 
   downloadFile(file){
@@ -48,9 +48,5 @@ export class AvatarComponent implements OnInit {
     xmlHttp.responseType = 'blob';
     xmlHttp.open('GET', file.fileurl, true);
     xmlHttp.send(null);
-  }
-
-  checkFileType(file): string {
-    return file.split('.').pop();
   }
 }
