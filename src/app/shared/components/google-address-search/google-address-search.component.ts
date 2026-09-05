@@ -27,9 +27,6 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-
-    console.log(this.rawAddress);
-
     this.addressFormGroup = this.formBuilder.group({
       address: [this.rawAddress ? this.rawAddress.address : null],
       state: [this.rawAddress ? this.rawAddress.state : null],
@@ -87,7 +84,6 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
 
     autocomplete.addListener('place_changed', () => {
       const result = autocomplete.getPlace();
-      console.log(result)
 
       const state = this.googleAddressService.getState(result);
       const country = this.googleAddressService.getCountry(result);
@@ -97,7 +93,11 @@ export class GoogleAddressSearchComponent implements OnInit, AfterViewInit {
       const town = sublocal ? sublocal : neighborhood;
       const city = this.googleAddressService.getLocality(result);
       const zipcode = this.googleAddressService.getPostCode(result);
-      const mapUrl = this.googleAddressService.getPostCode(result);
+      // BUGFIX: was `getPostCode(result)` -- a copy-paste mistake that put
+      // the zip code into mapUrl too, so this field never actually held a
+      // map link. getGoogleMapUrl() (place.url, Google's own real map link
+      // for this result) already existed on the service, unused.
+      const mapUrl = this.googleAddressService.getGoogleMapUrl(result);
 
       this.populateForm({
         state, country, addressOne, town, city, zipcode, mapUrl

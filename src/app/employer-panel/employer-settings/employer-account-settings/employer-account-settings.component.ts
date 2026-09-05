@@ -76,35 +76,7 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
       confirmPassword: ['', Validators.required],
     }, { validators: this.matchValidator('newPassword', 'confirmPassword') });
 
-    this.authFacade.getUserProfile();
-
-    this.subs.push(
-      this.authFacade.profile$.subscribe((u: any) => {
-        if (u && this.profileForm) {
-          this.user = u;
-          this.profileForm.patchValue({
-            firstName: u.firstName || '',
-            lastName: u.lastName || '',
-            email: u.email || '',
-            roleTitle: u.roleTitle || '',
-            department: u.department || '',
-            shortBio: u.shortBio || '',
-            linkedinUrl: u.linkedinUrl || '',
-            publicProfileEnabled: u.publicProfileEnabled || false,
-            showPhotoPublicly: u.showPhotoPublicly || false,
-            showTitlePublicly: u.showTitlePublicly || false,
-            showBioPublicly: u.showBioPublicly || false,
-            showLinkedinPublicly: u.showLinkedinPublicly || false,
-            showEmailPublicly: u.showEmailPublicly || false,
-            showPhonePublicly: u.showPhonePublicly || false,
-          });
-          // Show existing photo if no pending preview
-          if (!this.pendingAvatarBase64) {
-            this.avatarPreviewUrl = u.photoUrl || u.photoURL || '';
-          }
-        }
-      })
-    );
+    this.loadProfile();
 
     this.subs.push(
       this.authFacade.error$.subscribe((err: any) => {
@@ -135,8 +107,8 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
               if (uid) { this.employeeFacade.getEmployeeProfile(uid); }
             }
           } catch (_) {}
-          // Refresh profile$ stream so the form shows saved values (authFacade fix)
-          this.authFacade.getUserProfile();
+          // Refresh so the form shows saved values.
+          this.loadProfile();
           this.dialog.open(UpdatedDialogComponent, {
             disableClose: false,
             data: 'Profile saved.',
@@ -144,6 +116,51 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
         }
       })
     );
+  }
+
+  // BUGFIX: this used to dispatch `authFacade.getUserProfile()` (an NgRx
+  // action) and rely on `authFacade.profile$` emitting the result -- but
+  // that action's effect (AuthEffects.getUserProfile$) and its 'status'
+  // feature store are only registered when AuthModule loads (lazy-loaded
+  // for the /signin route). Confirmed live in production: after signing in
+  // and navigating to this tab, GET /auth/getprofile never fires at all --
+  // the Identity fields (First Name/Last Name/Email) and the current
+  // profile photo rendered blank even though the account clearly has real
+  // values (visible in the header/sidebar). Calling AuthService directly
+  // here bypasses the store/effects round-trip entirely, so this load no
+  // longer depends on which module happened to register the 'status'
+  // feature state or when.
+  private loadProfile(): void {
+    this.authService.getUserProfile().subscribe({
+      next: (res: any) => {
+        const u = res?.data;
+        if (!u || !this.profileForm) { return; }
+        this.user = u;
+        this.profileForm.patchValue({
+          firstName: u.firstName || '',
+          lastName: u.lastName || '',
+          email: u.email || '',
+          roleTitle: u.roleTitle || '',
+          department: u.department || '',
+          shortBio: u.shortBio || '',
+          linkedinUrl: u.linkedinUrl || '',
+          publicProfileEnabled: u.publicProfileEnabled || false,
+          showPhotoPublicly: u.showPhotoPublicly || false,
+          showTitlePublicly: u.showTitlePublicly || false,
+          showBioPublicly: u.showBioPublicly || false,
+          showLinkedinPublicly: u.showLinkedinPublicly || false,
+          showEmailPublicly: u.showEmailPublicly || false,
+          showPhonePublicly: u.showPhonePublicly || false,
+        });
+        // Show existing photo if no pending preview
+        if (!this.pendingAvatarBase64) {
+          this.avatarPreviewUrl = u.photoUrl || u.photoURL || '';
+        }
+      },
+      error: () => {
+        this.avatarError = 'We couldn’t load your profile. Please refresh and try again.';
+      },
+    });
   }
 
   // ── Avatar ──────────────────────────────────────────────────────────────────

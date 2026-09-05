@@ -71,6 +71,11 @@
                 [attr.aria-label]="'Edit your profile'">
                 Edit my profile
               </button>
+              <button *ngIf="member.uid !== currentUserUid" class="cu-action-btn cu-action-btn--danger"
+                type="button" (click)="removeMember(member)" [disabled]="removingUid === member.uid"
+                [attr.aria-label]="'Remove ' + member.fullName">
+                {{ removingUid === member.uid ? 'Removing…' : 'Remove access' }}
+              </button>
             </td>
 
           </tr>
@@ -114,6 +119,12 @@
           <button class="cu-action-btn cu-action-btn--primary cu-action-btn--block"
             type="button" (click)="openProfile(member)">
             Edit my profile
+          </button>
+        </div>
+        <div class="cu-card-actions" *ngIf="member.uid !== currentUserUid">
+          <button class="cu-action-btn cu-action-btn--danger cu-action-btn--block"
+            type="button" (click)="removeMember(member)" [disabled]="removingUid === member.uid">
+            {{ removingUid === member.uid ? 'Removing…' : 'Remove access' }}
           </button>
         </div>
       </div>
