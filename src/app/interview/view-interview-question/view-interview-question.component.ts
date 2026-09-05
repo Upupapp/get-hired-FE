@@ -22,6 +22,11 @@ export class ViewInterviewQuestionComponent implements OnInit {
   // needed a video versus which already had one recorded.
   @Input() isAnswered: boolean = false;
   @Input() answerSizeMb: number = 0;
+  // BUGFIX: while a different question's video is actively recording, this
+  // row's "Record / Upload Interview" / "Change Video" button used to
+  // switch straight to this question with no guard at all -- silently
+  // abandoning the take in progress. Parent sets this while recording.
+  @Input() disabled: boolean = false;
 
   constructor() { }
 
@@ -32,7 +37,9 @@ export class ViewInterviewQuestionComponent implements OnInit {
   }
 
   recordItem(index) {
-    console.log(index);
+    if (this.disabled) {
+      return;
+    }
     this.record.emit(index)
   }
 

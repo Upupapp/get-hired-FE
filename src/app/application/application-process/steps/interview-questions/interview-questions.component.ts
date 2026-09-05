@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import * as InterviewModel from '@main/interview/interview.model';
 
 @Component({
@@ -20,12 +21,20 @@ export class InterviewQuestionsComponent implements OnInit {
 
   selectedIndex: number = 0;
   answers = [];
+  // BUGFIX: mirrors app-record-interview's isVideoRecording, via its
+  // recordingStateChange output. Every way to switch away from the
+  // question currently being recorded -- clicking another question in
+  // the Questions tab, "Change Video" from the Answers tab, and the
+  // top-level "Skip Interview" escape hatch -- is guarded against this,
+  // so an in-progress take can no longer be silently abandoned.
+  isRecording = false;
 
   constructor(
     private rootFormGroup: FormGroupDirective,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -37,8 +46,16 @@ export class InterviewQuestionsComponent implements OnInit {
     return this.rootFormGroup.control.get('interviewAnswers') as FormArray;
   }
 
+  // BUGFIX: this had no awareness at all of an in-progress recording --
+  // it's the handler behind clicking a different question in the
+  // Questions tab (and the natural Next/Skip flow), so that click alone
+  // could silently abandon a take mid-recording. Now blocked while
+  // isRecording is true (kept in sync via onRecordingStateChange()).
   changeQuestion(index) {
-    console.log(index);
+    if (this.isRecording) {
+      this.snackbarService.info('Please stop or finish your current recording before switching questions.', '', 4000);
+      return;
+    }
     if (index < this.interviews.length) {
       this.selectedIndex = index;
     } else {
@@ -52,7 +69,17 @@ export class InterviewQuestionsComponent implements OnInit {
   // one-time entry dialog and skipping questions one at a time via
   // record-interview's per-question Skip button.
   skipToSummary() {
+    if (this.isRecording) {
+      this.snackbarService.info('Please stop or finish your current recording first.', '', 4000);
+      return;
+    }
     this.nextStep.emit(4);
+  }
+
+  // Kept in sync with app-record-interview's isVideoRecording via its
+  // recordingStateChange output.
+  onRecordingStateChange(recording: boolean): void {
+    this.isRecording = recording;
   }
 
   submitAnswer(event) {
@@ -113,6 +140,10 @@ export class InterviewQuestionsComponent implements OnInit {
   // replaces the existing entry for this index rather than duplicating it.
   changeVideo(index: number, event: Event): void {
     event.stopPropagation();
+    if (this.isRecording) {
+      this.snackbarService.info('Please stop or finish your current recording before switching questions.', '', 4000);
+      return;
+    }
     this.selectedIndex = index;
     this.interviewTab = 'questions';
     // The recorder is always rendered above the tabs, so "Change Video"

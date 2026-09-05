@@ -1,11 +1,15 @@
 <!-- RECORD INTERVIEW -->
 <app-record-interview [interviews]="interviews" [index]="selectedIndex" [existingAnswers]="existingAnswersByIndex"
-  (next)="changeQuestion($event)" (submitRecord)="submitAnswer($event)"></app-record-interview>
+  (next)="changeQuestion($event)" (submitRecord)="submitAnswer($event)"
+  (recordingStateChange)="onRecordingStateChange($event)"></app-record-interview>
 
 <!-- Always-available escape hatch: skip the entire screening interview
-     section and proceed directly to Summary & Submit for Evaluation. -->
+     section and proceed directly to Summary & Submit for Evaluation.
+     BUGFIX: disabled while a recording is in progress -- previously this
+     could jump straight to Summary and abandon an active take. -->
 <div class="d-flex justify-content-end mb-3">
-  <button class="btn btn-outline-secondary" type="button" (click)="skipToSummary()">
+  <button class="btn btn-outline-secondary" type="button" (click)="skipToSummary()" [disabled]="isRecording"
+    [attr.title]="isRecording ? 'Stop your current recording first' : null">
     {{ 'INTERVIEW_PAGE_SECTION.SKIP_INTERVIEW_BUTTON' | translate }}
   </button>
 </div>
@@ -29,6 +33,7 @@
         <div *ngFor="let item of interviews; let i = index">
           <app-view-interview-question [index]="i" [item]="item" *ngIf="i != selectedIndex"
             [isAnswered]="answeredIndices.has(i)" [answerSizeMb]="answerSizeMbForIndex(i)"
+            [disabled]="isRecording"
             (record)="changeQuestion($event)">
           </app-view-interview-question>
         </div>
@@ -60,6 +65,7 @@
                 </span>
                 <div class="gh-answer-row__buttons">
                   <button type="button" class="btn btn-outline-secondary btn-sm"
+                    [disabled]="isRecording" [attr.title]="isRecording ? 'Stop your current recording first' : null"
                     (click)="changeVideo(item.value.index, $event)">
                     Change Video
                   </button>
