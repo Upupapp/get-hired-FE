@@ -66,10 +66,17 @@
         </div>
       </ng-container>
       <ng-template #applicantTable>
+        <!-- BUGFIX: "View CV" (the cv_link action_button column) previously
+             bound to (actionOfButton), which reusable-table.component.ts
+             never actually emits from its action_button click handler
+             (that's customButtonEvent, via customButtonFunction()) -- the
+             button did nothing at all. See viewResume() for the second,
+             separate fix (it was also opening a video player for what's
+             really a PDF/DOCX resume). -->
         <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewMenu($event)"
           (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'" [displayedColumns]="displayedColumns"
           [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
-          [maxRows]="10" [listDataSource]="applicants" (actionOfButton)="viewCv($event)">
+          [maxRows]="10" [listDataSource]="applicants" (customButtonEvent)="viewResume($event)">
         </app-reusable-table>
       </ng-template>
     </div>
