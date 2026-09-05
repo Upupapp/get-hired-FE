@@ -3,6 +3,7 @@ import { FormGroupDirective, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
+import { FileViewerComponent } from '@app-shared/components/file-viewer/file-viewer.component';
 import * as InterviewModel from '@main/interview/interview.model';
 
 @Component({
@@ -76,8 +77,6 @@ export class ApplicationPreviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.docs);
-
     if (this.rootFormGroup.control) {
       this.govFiles = this.docGovFile.value;
       this.resume = this.docResume.value;
@@ -144,5 +143,41 @@ export class ApplicationPreviewComponent implements OnInit {
         startIndex,
       }
     });
+  }
+
+  // BUGFIX: this Resume/Cover Letter/Government Files section previously
+  // had no click handler at all -- every row was static text, so a
+  // recruiter viewing a candidate's application had no way to actually
+  // open or download any of these documents (only the separate, lower
+  // "DOCUMENTS" section further down the page, rendered by
+  // app-applicant-details, was interactive). Reuses the same
+  // FileViewerComponent/blob-download pattern already used there.
+  viewDoc(item: any): void {
+    if (!item?.fileurl) return;
+    this.dialog.open(FileViewerComponent, {
+      width: '60vw',
+      height: '80vh',
+      data: item
+    });
+  }
+
+  downloadDoc(item: any): void {
+    if (!item?.fileurl) return;
+    const xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = () => {
+      if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+        const blobUrl = window.URL.createObjectURL(xmlHttp.response);
+        const e = document.createElement('a');
+        e.href = blobUrl;
+        e.download = item.filename;
+        document.body.appendChild(e);
+        e.click();
+        document.body.removeChild(e);
+        window.URL.revokeObjectURL(blobUrl);
+      }
+    };
+    xmlHttp.responseType = 'blob';
+    xmlHttp.open('GET', item.fileurl, true);
+    xmlHttp.send(null);
   }
 }

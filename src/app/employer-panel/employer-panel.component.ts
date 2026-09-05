@@ -310,11 +310,18 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (url.includes('/jobs/view'))           return 'Job Preview';
     if (url.includes('/jobs/dashboard'))      return 'Job Overview';
     if (url.includes('/jobs'))                return 'Jobs';
-    if (url.includes('/contacts/list'))       return 'Contacts';
+    // TALENT-WORKSPACE-REDESIGN BUGFIX: this getter is a third, independent
+    // route->label mapping (separate from the sidebar nav and each page's
+    // own on-page title, both already renamed) that was missed during the
+    // redesign -- it kept showing the old "Contacts"/"Contact Groups"
+    // names in the persistent top header while the page below it already
+    // said "Talent Pool"/"Candidate Groups", contradicting itself on the
+    // same screen.
+    if (url.includes('/contacts/list'))       return 'Talent Pool';
     if (url.includes('/contacts/candidates')) return 'Applicants';
     if (url.includes('/contacts/candidate-list')) return 'Candidate Profile';
-    if (url.includes('/contacts/groups'))     return 'Contact Groups';
-    if (url.includes('/contacts/group-list')) return 'Contact Group';
+    if (url.includes('/contacts/groups'))     return 'Candidate Groups';
+    if (url.includes('/contacts/group-list')) return 'Candidate Group';
     if (url.includes('/contacts'))            return 'Talent';
     if (url.includes('/interview'))           return 'Interviews';
     if (url.includes('/messages'))            return 'Messages';
@@ -347,10 +354,13 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (url.includes('/jobs/create'))             return 'Build and publish your job post step by step.';
     if (url.includes('/jobs/edit'))               return 'Update this job post and republish changes.';
     if (url.includes('/jobs/applicants'))         return 'Review candidates who applied to this job.';
-    if (url.includes('/contacts/list'))           return 'Manage your contacts and outreach records.';
+    // TALENT-WORKSPACE-REDESIGN BUGFIX: same stale-copy issue as pageTitle
+    // above -- these duplicated the pre-redesign subtitles instead of the
+    // ones already shown on the Talent Pool/Candidate Groups pages themselves.
+    if (url.includes('/contacts/list'))           return 'Manage candidates and prospects your company may want to hire now or in the future.';
     if (url.includes('/contacts/candidates'))     return 'Review all candidates who applied to your jobs.';
     if (url.includes('/contacts/candidate-list')) return 'Review this candidate\'s application and profile.';
-    if (url.includes('/contacts/groups'))         return 'Organise contacts into groups for hiring campaigns.';
+    if (url.includes('/contacts/groups'))         return 'Organize candidates into reusable groups for sourcing, hiring, and follow-up.';
     if (url.includes('/interview'))               return 'Review interview activity and candidate video responses.';
     if (url.includes('/messages'))                return 'Manage candidate conversations across your jobs.';
     if (url.includes('/company'))                 return 'Manage your employer brand and public company profile.';

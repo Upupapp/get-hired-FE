@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
@@ -387,16 +387,29 @@ export class ProfileBasicInfoComponent implements OnInit {
     }
   }
 
+  // BUGFIX: this used `this.loadingDialog.closeAll()` on a 3s delay to clean
+  // up the loading spinner. MatDialog is Angular Material's root-singleton
+  // service (no override anywhere in this module), so it's the SAME
+  // instance ProfileFormsComponent uses to open the profile-setup-choice
+  // dialog right after a successful save -- closeAll() force-closes that
+  // dialog too, ignoring its own `disableClose: true`, if it's still open
+  // when this 3s timer fires. That's exactly what made the choice dialog
+  // "vanish before I could choose": the user just hadn't clicked yet.
+  // Fixed to track and close only this component's own loading dialog ref,
+  // immediately once loading clears -- never touches any other dialog.
+  private loadingDialogRef: MatDialogRef<LoadingComponent> | null = null;
+
   formLoading(loading: boolean) {
     if (loading) {
-      const ref = this.loadingDialog.open(LoadingComponent, {
+      this.loadingDialogRef = this.loadingDialog.open(LoadingComponent, {
         disableClose: true,
         data: {
           selfClose: false
         }
       });
-    } else {
-      setTimeout(() => this.loadingDialog.closeAll(), 3000);
+    } else if (this.loadingDialogRef) {
+      this.loadingDialogRef.close();
+      this.loadingDialogRef = null;
     }
   }
 

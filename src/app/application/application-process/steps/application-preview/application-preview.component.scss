@@ -399,6 +399,37 @@
 				white-space: nowrap;
 			}
 		}
+
+		// BUGFIX: this row previously had no click handler at all -- now
+		// opens the document preview modal, so it needs to read as clickable.
+		&.doc-file-row--clickable {
+			cursor: pointer;
+
+			&:hover {
+				border-color: var(--gh-primary, #FF6A5A);
+			}
+		}
+
+		.doc-file-row__uploaded {
+			font-size: 11px;
+			color: var(--gh-text-secondary, #667085);
+			font-weight: 400;
+		}
+
+		.doc-file-row__download {
+			flex: 0 0 auto;
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			padding: 4px;
+			display: flex;
+			align-items: center;
+
+			img {
+				width: 18px !important;
+				height: 18px !important;
+			}
+		}
 	}
 
 	.interview-card {

@@ -48,63 +48,66 @@
       <div class="col-md-4">
         <h5 class="title-main mb-3">Resume</h5>
         <ng-container *ngFor="let item of resume; let i = index">
-          <div class="doc-file-row">
+          <div class="doc-file-row doc-file-row--clickable" (click)="viewDoc(item)">
           <img src="assets/images/file-icon.png" class="col-md-2" />
 
           <div class="row w-100">
 
-            <div class="col-12 col-md-9" *ngIf="!item.createdAt">
+            <div class="col-12 col-md-9">
               {{ item.filename }}
-            </div>
-            <div class="col-12 col-md-9" *ngIf="item.createdAt">
-             Uploaded At: {{ item.createdAt | date: 'short' }}
+              <div class="doc-file-row__uploaded" *ngIf="item.createdAt">Uploaded {{ item.createdAt | date: 'short' }}</div>
             </div>
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
           </div>
+          <button type="button" class="doc-file-row__download" (click)="downloadDoc(item); $event.stopPropagation()" [attr.aria-label]="'Download ' + item.filename">
+            <img src="/assets/images/placeholder/icons/download.png" alt="">
+          </button>
           </div>
         </ng-container>
       </div>
       <div class="col-md-4">
         <h5 class="title-main mb-3">Cover Letter</h5>
         <ng-container *ngFor="let item of coverLetter; let i = index">
-          <div class="doc-file-row">
+          <div class="doc-file-row doc-file-row--clickable" (click)="viewDoc(item)">
           <img src="assets/images/file-icon.png" class="col-md-2" />
 
           <div class="row w-100">
 
-            <div class="col-12 col-md-9" *ngIf="!item.createdAt">
+            <div class="col-12 col-md-9">
               {{ item.filename }}
-            </div>
-            <div class="col-12 col-md-9" *ngIf="item.createdAt">
-             Uploaded At: {{ item.createdAt | date: 'short' }}
+              <div class="doc-file-row__uploaded" *ngIf="item.createdAt">Uploaded {{ item.createdAt | date: 'short' }}</div>
             </div>
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
           </div>
+          <button type="button" class="doc-file-row__download" (click)="downloadDoc(item); $event.stopPropagation()" [attr.aria-label]="'Download ' + item.filename">
+            <img src="/assets/images/placeholder/icons/download.png" alt="">
+          </button>
           </div>
         </ng-container>
       </div>
       <div class="col-md-4">
         <h5 class="title-main mb-3">Government Files</h5>
         <ng-container *ngFor="let item of govFiles; let i = index">
-          <div class="doc-file-row">
+          <div class="doc-file-row doc-file-row--clickable" (click)="viewDoc(item)">
           <img src="assets/images/file-icon.png" class="col-md-2" />
 
           <div class="row w-100">
 
-            <div class="col-12 col-md-9" *ngIf="!item.createdAt">
+            <div class="col-12 col-md-9">
               {{ item.filename }}
-            </div>
-            <div class="col-12 col-md-9" *ngIf="item.createdAt">
-             Uploaded At: {{ item.createdAt | date: 'short' }}
+              <div class="doc-file-row__uploaded" *ngIf="item.createdAt">Uploaded {{ item.createdAt | date: 'short' }}</div>
             </div>
             <div classs="col-12 col-md-2">
               {{(item.size * 0.000001)?.toFixed(2) }} MB
             </div>
           </div>
+          <button type="button" class="doc-file-row__download" (click)="downloadDoc(item); $event.stopPropagation()" [attr.aria-label]="'Download ' + item.filename">
+            <img src="/assets/images/placeholder/icons/download.png" alt="">
+          </button>
           </div>
         </ng-container>
       </div>
