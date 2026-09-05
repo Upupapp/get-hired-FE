@@ -15,6 +15,7 @@ import { CoreService } from '@app-core/services/core.service';
 import { SettingsModalComponent } from '../settings-modal/settings-modal.component';
 import { RecordService } from '@main/recorder/recorder.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 @Component({
   selector: 'app-record-interview',
@@ -39,6 +40,16 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
 
   @Output() next = new EventEmitter();
   @Output() submitRecord = new EventEmitter();
+  // BUGFIX: lets the parent (InterviewQuestionsComponent) know whenever a
+  // recording actually starts/stops, so it can block every other way of
+  // switching questions -- clicking a different question in the Questions
+  // tab, "Change Video" on an already-answered question, and the top-level
+  // "Skip Interview" escape hatch -- none of which the parent could
+  // previously see was unsafe. Only this component's own mobile question
+  // strip (goToQuestion()) checked isVideoRecording; every other path went
+  // straight through the parent's changeQuestion()/changeVideo()/
+  // skipToSummary(), silently abandoning an in-progress take.
+  @Output() recordingStateChange = new EventEmitter<boolean>();
 
   photoUrl: string;
   video: any;
@@ -74,10 +85,11 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
     private coreService: CoreService,
     private recordService: RecordService,
     private ref: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private snackbarService: SnackbarService
   ) {
     this.recordService.recordingFailed().subscribe(() => {
-      this.isVideoRecording = false;
+      this.setRecording(false);
       this.ref.detectChanges();
     });
 
@@ -129,10 +141,27 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
     this.previewBlob = existing ? existing.answerBlob : null;
     this.videoFile = existing ? existing.answerFile : null;
     this.videoBlob = null;
-    this.isVideoRecording = false;
+    this.setRecording(false);
   }
 
+  // Single choke point for isVideoRecording changes -- keeps the parent's
+  // copy of the flag (via recordingStateChange) always in sync with this
+  // component's own, so every question-switching action anywhere in the
+  // step can rely on it.
+  private setRecording(value: boolean): void {
+    this.isVideoRecording = value;
+    this.recordingStateChange.emit(value);
+  }
+
+  // BUGFIX: had no guard at all -- clicking "Skip" while a take was
+  // actively recording silently abandoned the recording and advanced to
+  // the next question. That's the exact reported bug: this was one of the
+  // ways an applicant could switch questions mid-recording.
   skipInterview() {
+    if (this.isVideoRecording) {
+      this.snackbarService.info('Please stop or finish your current recording before skipping.', '', 4000);
+      return;
+    }
     this.next.emit(this.index + 1);
   }
 
@@ -148,7 +177,7 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
   }
 
   startRecorder() {
-    this.isVideoRecording = true;
+    this.setRecording(true);
     this.ref.detectChanges();
 
     this.video = this.videoElement.nativeElement;
@@ -176,19 +205,28 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
 
   abortVideoRecording() {
     if (this.isVideoRecording) {
-      this.isVideoRecording = false;
+      this.setRecording(false);
       this.recordService.abortRecording();
       this.video.controls = false;
     }
   }
 
+  // BUGFIX: uploading a file while a recording was actively in progress
+  // silently overwrote it -- the recorder's own MediaRecorder stream kept
+  // running in the background with no way to stop it cleanly. Require the
+  // applicant to stop the current recording first.
   uploadVideo(item) {
+    if (this.isVideoRecording) {
+      this.snackbarService.info('Please stop your current recording before uploading a video.', '', 4000);
+      item.target.value = '';
+      return;
+    }
+
     const file = item.target.files[0];
     this.recordService.blobToBase64(file)
       .then(vid => this.videoFile = vid)
       .catch(err => console.log(err));
 
-    this.isVideoRecording = false;
     this.videoFile = file;
     this.previewBlob = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(file));
     this.ref.detectChanges();
@@ -217,7 +255,7 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
         this.video.load();
         this.ref.detectChanges();
 
-        this.isVideoRecording = false;
+        this.setRecording(false);
         this.video.controls = true;
       }, 3000);
     }
@@ -232,7 +270,7 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
       answerBlob: this.previewBlob
     });
 
-    this.isVideoRecording = false;
+    this.setRecording(false);
     this.previewBlob = null;
     this.videoBlob = null;
     this.stopRecorderTimer();
@@ -287,10 +325,23 @@ export class RecordInterviewComponent implements OnInit, OnChanges {
       .afterClosed()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(result => {
-        // TODO record setting
-        // audioId: this.audioIn,
-        //   audioOut: this.audioSrc,
-        //     videoSrc: this.videoSrc
+        // BUGFIX: this subscribe was left completely empty -- the modal's
+        // Save button (also fixed to actually call save() rather than
+        // close(), see settings-modal.component.html) returns the chosen
+        // camera/mic here, but it was never applied. startRecorder() below
+        // already reads this.videoSrc/this.audioSrc as the device IDs for
+        // the next recording -- they just needed to actually be set from
+        // what the applicant picked in Settings, instead of staying
+        // permanently undefined (silently falling back to whatever
+        // device the browser defaults to).
+        // NOTE: settings-modal's result.audioId is the microphone (audio
+        // INPUT) device -- what startRecorder() actually needs for
+        // videoConf.audio.deviceId. result.audioOut is the speaker/audio
+        // OUTPUT device chosen for playback, not relevant to recording.
+        if (result) {
+          this.videoSrc = result.videoSrc;
+          this.audioSrc = result.audioId;
+        }
       });
   }
 

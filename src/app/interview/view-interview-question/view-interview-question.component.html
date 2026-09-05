@@ -9,6 +9,7 @@
 
       <div class="mt-2 gh-vq__record-wrap">
         <button class="btn gh-vq__record-btn" [class.btn-record]="!isAnswered" [class.btn-outline-secondary]="isAnswered"
+          [disabled]="disabled" [attr.title]="disabled ? 'Stop your current recording first' : null"
           (click)="recordItem(index)">
           <img src="/assets/images/placeholder/icons/make-video.png" style="height: 10px" class="me-2">{{ isAnswered ? 'Change Video' : 'Record / Upload Interview' }}
         </button>

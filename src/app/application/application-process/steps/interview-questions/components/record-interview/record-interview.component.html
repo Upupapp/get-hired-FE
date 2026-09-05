@@ -150,14 +150,21 @@
           <div class="col-12 col-lg-6">
             <input #uploadFile hidden type="file" (change)="uploadVideo($event)"
               accept="video/mp4,video/x-m4v,video/*" />
-            <button class="btn btn-upload w-100 text-truncate gh-recorder-btn-secondary" (click)="uploadFile.click()" type="button">
+            <button class="btn btn-upload w-100 text-truncate gh-recorder-btn-secondary" (click)="uploadFile.click()"
+              type="button" [disabled]="isVideoRecording"
+              [attr.title]="isVideoRecording ? 'Stop your current recording first' : null">
               {{ 'INTERVIEW_PAGE_SECTION.UPLOAD_VIDEO_BUTTON' | translate }}
               <img src="/assets/images/placeholder/icons/interview-upload.png" style="height: 10px" class="ms-2">
             </button>
           </div>
 
           <div class="col-12 col-lg-6">
-            <button class="btn btn-skip w-100 text-truncate gh-recorder-btn-secondary" (click)="skipInterview()" type="button">
+            <!-- BUGFIX: Skip previously had no guard and silently abandoned
+                 an in-progress recording. Disabled (and blocked in
+                 skipInterview() itself) while isVideoRecording is true. -->
+            <button class="btn btn-skip w-100 text-truncate gh-recorder-btn-secondary" (click)="skipInterview()"
+              type="button" [disabled]="isVideoRecording"
+              [attr.title]="isVideoRecording ? 'Stop your current recording first' : null">
               {{ 'INTERVIEW_PAGE_SECTION.SKIP_INTERVIEW_BUTTON' | translate }}
               <img src="/assets/images/placeholder/icons/next-interview.png" style="height: 10px" class="ms-2">
             </button>

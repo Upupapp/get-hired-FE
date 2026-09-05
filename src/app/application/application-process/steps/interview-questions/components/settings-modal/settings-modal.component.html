@@ -8,7 +8,11 @@
         (chosenVideo)="videoSrc = $event"></app-recorder-setting>
 			<div class="justify-content-center align-self-center d-flex mt-2">
 				<button class="btn btn-cancel me-2" (click)="close()">Cancel</button>
-				<button class="btn btn-save" (click)="close()">Save</button>
+				<!-- BUGFIX: this was wired to close() (same as Cancel), so the
+				     camera/mic chosen above via app-recorder-setting was always
+				     discarded -- save() (which actually packages the selection
+				     into the dialog result) was dead code, never called. -->
+				<button class="btn btn-save" (click)="save()">Save</button>
 			</div>
 	</div>
 </div>
