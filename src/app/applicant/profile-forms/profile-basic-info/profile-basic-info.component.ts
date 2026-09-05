@@ -76,6 +76,23 @@ export class ProfileBasicInfoComponent implements OnInit {
   // save is already in flight (QA JS-14 fix -- see that template's [disabled]).
   submitting = false;
 
+  // BUGFIX: these two MUST be declared (and thus initialized) before
+  // `loading$` below -- class field initializers run in declaration
+  // order, and `loading$`'s subscribe() call fires formLoading()
+  // SYNCHRONOUSLY and IMMEDIATELY (NgRx Store selectors replay the
+  // current state value right away), often already `true` at
+  // construction time since the parent ProfileFormsComponent dispatches
+  // its own getApplicantById before this child even exists. When these
+  // two fields were declared further down the class body, that first,
+  // immediate call ran against `loadingOutstanding === undefined`,
+  // and `undefined++` produces `NaN` -- permanently, since `NaN - 1` and
+  // `Math.max(0, NaN)` are both still `NaN`. From that point on,
+  // `loadingOutstanding === 0` could never be true again, so the loading
+  // dialog opened exactly once and could never close: reported live as
+  // "Update Profile redirects here and the loading panel never goes off."
+  private loadingDialogRef: MatDialogRef<LoadingComponent> | null = null;
+  private loadingOutstanding = 0;
+
   loading$ = this.applicantFacade.loading$
     .pipe().subscribe(this.formLoading.bind(this));
 
@@ -387,29 +404,42 @@ export class ProfileBasicInfoComponent implements OnInit {
     }
   }
 
-  // BUGFIX: this used `this.loadingDialog.closeAll()` on a 3s delay to clean
-  // up the loading spinner. MatDialog is Angular Material's root-singleton
-  // service (no override anywhere in this module), so it's the SAME
-  // instance ProfileFormsComponent uses to open the profile-setup-choice
-  // dialog right after a successful save -- closeAll() force-closes that
-  // dialog too, ignoring its own `disableClose: true`, if it's still open
-  // when this 3s timer fires. That's exactly what made the choice dialog
-  // "vanish before I could choose": the user just hadn't clicked yet.
-  // Fixed to track and close only this component's own loading dialog ref,
-  // immediately once loading clears -- never touches any other dialog.
-  private loadingDialogRef: MatDialogRef<LoadingComponent> | null = null;
-
+  // BUGFIX (original): this used `this.loadingDialog.closeAll()` on a 3s
+  // delay to clean up the loading spinner. MatDialog is Angular Material's
+  // root-singleton service (no override anywhere in this module), so it's
+  // the SAME instance ProfileFormsComponent uses to open the
+  // profile-setup-choice dialog right after a successful save --
+  // closeAll() force-closes that dialog too, ignoring its own
+  // `disableClose: true`, if it's still open when this 3s timer fires.
+  // That's exactly what made the choice dialog "vanish before I could
+  // choose": the user just hadn't clicked yet.
+  //
+  // BUGFIX (production, reported live): the first fix above (a single
+  // tracked ref, opened on every `true` and closed on every `false`)
+  // introduced its OWN regression -- this component's ngOnInit fires FOUR
+  // concurrent dispatches (getApplicantById/getType/getLevel/getSetup),
+  // all sharing one `loading` boolean in the store, and a second fix
+  // (reference-counting instead of a single toggle, see loadingOutstanding
+  // above) was needed for that. Both are now correct: `true` only opens a
+  // dialog if none is already open (idempotent), and `false` only actually
+  // closes it once every outstanding `true` has been matched by a `false`.
   formLoading(loading: boolean) {
     if (loading) {
-      this.loadingDialogRef = this.loadingDialog.open(LoadingComponent, {
-        disableClose: true,
-        data: {
-          selfClose: false
-        }
-      });
-    } else if (this.loadingDialogRef) {
-      this.loadingDialogRef.close();
-      this.loadingDialogRef = null;
+      this.loadingOutstanding++;
+      if (!this.loadingDialogRef) {
+        this.loadingDialogRef = this.loadingDialog.open(LoadingComponent, {
+          disableClose: true,
+          data: {
+            selfClose: false
+          }
+        });
+      }
+    } else {
+      this.loadingOutstanding = Math.max(0, this.loadingOutstanding - 1);
+      if (this.loadingOutstanding === 0 && this.loadingDialogRef) {
+        this.loadingDialogRef.close();
+        this.loadingDialogRef = null;
+      }
     }
   }
 
