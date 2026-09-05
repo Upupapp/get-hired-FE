@@ -60,6 +60,18 @@ export class PrivacyComponent implements OnInit, OnDestroy {
     { id: 'minors', label: 'Children & Minors' },
     { id: 'third-party', label: 'Third-Party Links' },
     { id: 'user-responsibilities', label: 'User Responsibilities' },
+    { id: 'terms-intro', label: 'Acceptance of These Terms' },
+    { id: 'terms-eligibility', label: 'Eligibility & Accounts' },
+    { id: 'terms-acceptable-use', label: 'Acceptable Use' },
+    { id: 'terms-ip', label: 'Intellectual Property' },
+    { id: 'terms-content-disclaimer', label: 'Job Postings & Content' },
+    { id: 'terms-third-party', label: 'Third-Party Services & Payments' },
+    { id: 'terms-disclaimers', label: 'Disclaimers' },
+    { id: 'terms-liability', label: 'Limitation of Liability' },
+    { id: 'terms-indemnification', label: 'Indemnification' },
+    { id: 'terms-termination', label: 'Term & Termination' },
+    { id: 'terms-governing-law', label: 'Governing Law & Disputes' },
+    { id: 'terms-general', label: 'General Provisions' },
     { id: 'changes', label: 'Changes to This Policy' },
     { id: 'contact', label: 'Contact Us' },
   ];
@@ -76,8 +88,8 @@ export class PrivacyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.seoService.setPageMeta({
-      title: 'Privacy Policy | GetHired Online',
-      description: 'Read how GetHired collects, uses, shares, protects, and retains personal data for job seekers, employers, applications, CV Health, match signals, messaging, and hiring services.',
+      title: 'Privacy Policy & Terms of Use | GetHired Online',
+      description: 'GetHired\'s Privacy Policy and Terms of Use: how we collect, use, share, protect, and retain personal data, and the terms that apply when you use the platform as a job seeker or employer.',
       canonical: 'https://gethiredonline.app/privacy',
       robots: 'index, follow',
     });

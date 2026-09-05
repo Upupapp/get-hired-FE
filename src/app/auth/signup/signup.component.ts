@@ -156,6 +156,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
   // 304px. Runs once after view init, then on every real resize/orientation
   // change via ResizeObserver -- so it's correct on load and stays correct,
   // not a one-time guess for a single assumed viewport width.
+  private recaptchaTargetObserved = false;
+
   private setupRecaptchaScale(): void {
     const wrap = this.captchaWrapRef && this.captchaWrapRef.nativeElement;
     if (!wrap || typeof ResizeObserver === 'undefined') return;
@@ -181,6 +183,22 @@ export class SignupComponent implements OnInit, AfterViewInit {
     const target = wrap.querySelector('re-captcha') as HTMLElement | null;
     if (!target) return;
 
+    // GAP FIX: also watch the widget itself (not just the wrapper) for size
+    // changes -- Google's v2 checkbox iframe genuinely grows from its ~78px
+    // resting height to as much as ~150px during its own inline verify/
+    // retry states, and that's a change in the TARGET's content size, which
+    // the wrapper's own ResizeObserver never sees on its own (the wrapper's
+    // box is driven by the height *we* set below, not by its content).
+    // Observing it here means growth is caught and reserved for the moment
+    // it happens, instead of a fixed 160px permanently reserved "just in
+    // case" -- that guess is exactly what was leaving a large empty gap
+    // between the widget and the Terms checkbox below it at every normal
+    // (resting) state.
+    if (!this.recaptchaTargetObserved && this.recaptchaResizeObserver) {
+      this.recaptchaResizeObserver.observe(target);
+      this.recaptchaTargetObserved = true;
+    }
+
     const availableWidth = wrap.clientWidth;
     if (!availableWidth) return;
 
@@ -192,9 +210,13 @@ export class SignupComponent implements OnInit, AfterViewInit {
     target.style.transform = `scale(${scale})`;
     target.style.marginLeft = `${leftOffset}px`;
     // transform doesn't affect layout, so the wrapper still reserves the
-    // widget's full unscaled height unless told otherwise -- reserving the
-    // real scaled height here avoids leftover empty space below it.
-    wrap.style.height = `${SignupComponent.RECAPTCHA_NATIVE_HEIGHT * scale}px`;
+    // widget's full unscaled height unless told otherwise. Uses the
+    // widget's REAL current content height (offsetHeight, unaffected by
+    // the transform above) rather than the hardcoded resting-state
+    // constant, so the reserved space tracks the widget's actual state --
+    // tight normally, genuinely large only while the widget itself is.
+    const realHeight = target.offsetHeight || SignupComponent.RECAPTCHA_NATIVE_HEIGHT;
+    wrap.style.height = `${realHeight * scale}px`;
   }
 
   computePasswordStrength(value: string): 'empty' | 'weak' | 'medium' | 'strong' {

@@ -972,24 +972,21 @@ select.gh-input {
 // height apply predictably -- no flex-centering needed here, the TS owns
 // centering entirely.
 .gh-captcha-wrap {
-  margin: 32px 0;
+  margin: 12px 0;
   width: 100%;
-  // BUGFIX (Terms checkbox / reCAPTCHA overlap): Google's v2 checkbox
-  // widget is NOT a fixed 78px tall in every state -- verified in a real
-  // browser, its iframe grows to ~150px during its own inline
-  // verify/retry transitions (confirmed via getBoundingClientRect() on the
-  // live widget, independent of this wrapper's own CSS). This div had no
-  // min-height, so its layout box only ever reserved space for the
-  // widget's small resting size; the moment the iframe grew taller than
-  // that, it visually extended past this wrapper and into the Terms row
-  // that follows in normal flow, with nothing forcing a hit-testable
-  // overlap notice until a real click landed on the iframe instead of the
-  // checkbox beneath it. Reserving the widget's own larger real-world
-  // height up front (rather than clipping or margin-hacking around it)
-  // means the Terms row is always pushed down far enough, in every widget
-  // state, without depending on exactly which state happens to be active
-  // when the page renders.
-  min-height: 160px;
+  // GAP FIX: the widget's growth to ~150px during its own inline verify/
+  // retry states (see the original overlap bug this used to guard against)
+  // is now handled live by signup.component.ts's applyRecaptchaScale() --
+  // it measures the widget's real current height every time it changes
+  // (via ResizeObserver on the widget itself) and sets this wrapper's
+  // height to match, so the reserved space always matches reality instead
+  // of permanently reserving the worst case. This min-height is only the
+  // floor for the brief moment before the widget/script has finished
+  // mounting (when its real height briefly reads as 0) -- matches
+  // RECAPTCHA_NATIVE_HEIGHT (78px, its normal resting height) so there's
+  // no visible collapse/flash before the JS measurement takes over, and no
+  // longer creates a large empty gap below it at rest.
+  min-height: 78px;
 
   re-captcha {
     display: block;
