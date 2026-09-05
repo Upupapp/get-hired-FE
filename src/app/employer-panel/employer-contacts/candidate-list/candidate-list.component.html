@@ -1,10 +1,16 @@
 <section >
 <div *ngIf="!showProfile" class="mt-4 ps-4 pe-4" id="job-order-main-container">
     <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+      <!-- TALENT-WORKSPACE-REDESIGN: this list is already filtered to one
+           specific job (candidateList$'s own job_id filter), so every row
+           shares the same job_id/job_title -- showing the job name once
+           here (instead of repeated identically in every table row) is
+           what let those two columns be removed from the table below. -->
       <div class="card card-body py-3">
         <div class="w-100">
           <span class="main-title mt-3">{{ 'CANDIDATE_APPLIED_ON_JOB_TABLE.CANDIDATE_MANAGEMENT' | translate }}</span>
-  
+          <p class="gh-field-helper mb-0" *ngIf="candidateList?.length">Applicants for: <strong>{{ candidateList[0]?.job_title }}</strong></p>
+
           <div class="float-end">
             <button class="gh-btn-primary" (click)="addCandidate()">
               <i class="bi bi-plus-lg" aria-hidden="true"></i>

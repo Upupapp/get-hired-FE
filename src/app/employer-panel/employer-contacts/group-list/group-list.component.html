@@ -1,26 +1,40 @@
 <div class="mt-4 ps-4 pe-4" id="job-order-main-container">
     <div [@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+      <!-- TALENT-WORKSPACE-REDESIGN / GETHIRED_TALENT_CANDIDATE_GROUP_MEMBER_REMOVAL_V1:
+           retitled to match the renamed Candidate Groups section. Members can
+           now be individually removed via the "Remove from Group" action
+           below (customButtonEvent) -- this only deletes the group_list
+           membership row; the candidate/contact/applicant record and their
+           applications are never touched. -->
       <div class="card card-body py-3">
         <div class="w-100">
-          <span class="main-title mt-3">Contact Group List</span>
+          <span class="main-title mt-3">Candidate Group Members</span>
         </div>
       </div>
       <br>
       <div class="card card-body" *ngIf="listView && !loading">
-        <app-reusable-table [loading]="loading"
-          [componentTitle]="'Groups'" [displayedColumns]="displayedColumns"
+        <app-reusable-table *ngIf="groupList?.length" [loading]="loading"
+          [componentTitle]="'group members'" [displayedColumns]="displayedColumns"
           [selectedColumns]="selectedColumns"
           [selectedColumnsMobile]="selectedColumns"
           [searchSource]="searchSource"
           [maxRows]="10"
-          [listDataSource]="groupList">
+          [listDataSource]="groupList"
+          (customButtonEvent)="removeMember($event)">
         </app-reusable-table>
+
+        <!-- GETHIRED_TALENT_CANDIDATE_GROUP_MEMBER_REMOVAL_V1: meaningful empty
+             state once the last member has been removed -- the group itself
+             remains a valid, empty Candidate Group, not an error state. -->
+        <div class="text-center py-4" *ngIf="!groupList?.length">
+          <p class="gh-field-helper mb-3">No candidates in this group yet.</p>
+          <a [routerLink]="['/recruiter/contacts/groups']" class="btn btn-primary">Add Candidates</a>
+        </div>
       </div>
-  
-  
+
+
       <!-- LOADING ANIMATION SCREEN -->
       <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
       </custom-profile-loader>
     </div>
 </div>
-  

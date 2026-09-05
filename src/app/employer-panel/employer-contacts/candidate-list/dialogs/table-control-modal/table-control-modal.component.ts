@@ -10,10 +10,18 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class TableControlModalComponent implements OnInit {
 
+  // TALENT-WORKSPACE-REDESIGN: relabeled from "View Candidate Detail" --
+  // this modal opens from a job-scoped Applicants list (candidate-list.
+  // component.ts filters strictly to one job_id) and its target view
+  // (getJobApplicantDetails -- see JobService) returns this job's
+  // application data (screening answers, CV, this application's status),
+  // not a cross-job candidate profile. "View Application" states what's
+  // actually being opened; the app has no separate cross-job "Candidate
+  // Profile" view to distinguish this from today.
   public tableControls: any[] = [
     {
       id: "view-details",
-      title: "View Candidate Detail",
+      title: "View Application",
       icon: "/assets/images/icons/client-menu/service-templates.png",
       background: "#f7f2e4"
     },

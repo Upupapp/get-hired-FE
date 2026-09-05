@@ -54,7 +54,8 @@ export class ContactListComponent implements OnInit {
     { col_name: 'job_id', title: 'Job ID' },
     { col_name: 'job_title', title: 'Job Title' },
     { col_name: 'created_at', title: this.translate.instant("CONTACT_LIST_PAGE.TABLE_COLUMN_CREATION_DATE"), type: 'date' },
-    { col_name: 'view_group', title: this.translate.instant("CONTACT_LIST_PAGE.TABLE_COLUMN_GROUP_NAME"), type: 'action_button', button_title: 'View Group', button_class: 'view-group'  },
+    // TALENT-WORKSPACE-REDESIGN: "View Group" -> "View Candidate Group" to match the renamed Candidate Groups section.
+    { col_name: 'view_group', title: this.translate.instant("CONTACT_LIST_PAGE.TABLE_COLUMN_GROUP_NAME"), type: 'action_button', button_title: 'View Candidate Group', button_class: 'view-group'  },
     { col_name: 'action', title: 'Action' , type: 'menu' },
   ];
   public contactList: Contact[] = [];
@@ -208,10 +209,22 @@ export class ContactListComponent implements OnInit {
       return;
     }
 
+    // TALENT-WORKSPACE-REDESIGN BUGFIX: was `data: { action: 'Delete' }`,
+    // which rendered the dialog's generic fallback copy -- "Would you like
+    // to save your progress in Delete ?" -- nonsensical for a delete
+    // confirmation. The backend only supports a real, permanent delete
+    // here (no archive/status field on `contact` rows per contactsController.
+    // deleteContact) -- the confirmation says so honestly rather than
+    // implying a soft "archive."
+    const candidateName = row?.full_name || 'this candidate';
     const ref = this.dialog.open(ConfirmationDialogComponent, {
       disableClose: true,
       data: {
-        action: 'Delete',
+        title: `Remove ${candidateName} from your Talent Pool?`,
+        message: 'This permanently deletes this candidate record. This cannot be undone.',
+        confirmLabel: 'Remove Candidate',
+        cancelLabel: 'Cancel',
+        destructive: true,
       },
     });
 

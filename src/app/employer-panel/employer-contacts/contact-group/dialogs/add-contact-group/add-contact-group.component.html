@@ -53,9 +53,12 @@
 								class="btn me-3 btn-default "
 								(click)="dialogRef.close()">{{ 'EDIT_CONTACT_GROUP_FORM.CLOSE_BUTTON' | translate }} </button>
 
+								<!-- TALENT-WORKSPACE-REDESIGN: was the generic translated "Submit" --
+								     states the actual outcome, including how many candidates are
+								     selected, instead of a vague action label. -->
 								<button type="button"
 								class="btn me-1 btn-primary"
-								(click)="submitForm()" [disabled]="!contactGroupForm.valid">{{ 'EDIT_CONTACT_GROUP_FORM.SUBMIT_BUTTON' | translate }}
+								(click)="submitForm()" [disabled]="!contactGroupForm.valid">{{ isLoading ? 'Saving…' : ((contactGroupForm.get('emails')?.value?.length || 0) > 0 ? 'Add ' + contactGroupForm.get('emails')?.value?.length + ' Candidate' + (contactGroupForm.get('emails')?.value?.length === 1 ? '' : 's') : (data ? 'Save Changes' : 'Create Group')) }}
 								<img *ngIf="isLoading" src="/assets/images/placeholder/loading-login.gif" width="20px" class="img-fluid float-end mt-1 me-2"></button>
 							</div>
 						</div>
