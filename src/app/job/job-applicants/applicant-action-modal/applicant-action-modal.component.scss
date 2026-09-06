@@ -76,39 +76,11 @@
     }
 }
 
-// ── MV4: Status picker mobile touch fixes ────────────────────────────────
-// Bootstrap btn-sm is ~30px tall — below the 44px iOS guideline.
-// These rules raise status-picker buttons to 44px and add press feedback.
-
-.status-options .btn {
-  // MV4-S1: raise from Bootstrap btn-sm (~30px) to 44px touch target
-  min-height: 44px;
-  // MV4-S2: prevent iOS double-tap zoom
-  touch-action: manipulation;
-  // MV4-S3: press feedback for touch users
-  &:active {
-    opacity: 0.75;
-    transform: scale(0.98);
-  }
-}
-
-// Visual indicator for the applicant's current status in the picker
-.status-btn--current {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  font-weight: 600;
-}
-
-// MV4-S4: Back button in status picker — btn-sm btn-link is ~30px
-.status-picker-view .btn-link {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  touch-action: manipulation;
-  &:active {
-    opacity: 0.65;
-  }
-}
+// MV4-S1/S2/S3 (44px touch target, no double-tap zoom, press feedback)
+// and MV4-S4 (44px Back button) are now handled directly in .sam-option/
+// .sam-back below, as part of the panel redesign -- .status-options/
+// .status-picker-view/.status-btn--current no longer exist in the
+// template.
 
 // MV4-S5: Close icon hit area — 13px image is far below 44px
 .side-sub-menu > .close img {
@@ -116,4 +88,220 @@
   padding: 16px;
   margin: -16px;
   touch-action: manipulation;
+}
+
+// ── REDESIGN: Change Status panel ───────────────────────────────────────
+// Was Bootstrap btn-outline-secondary (a colorful hover fill that could
+// leave text hard to read against it) + a yellow alert-warning confirm
+// step. Replaced with this app's own formal, neutral token set --
+// consistent with the Applicant Details page and Candidate Group cards.
+// Every hover/current state below is a light neutral tint with the SAME
+// dark text color throughout -- never a filled/inverted color, so text
+// can't visually disappear into its own background.
+$sam-coral: #FF675D;
+$sam-navy: #0D1024;
+$sam-azure: #5B7CFF;
+$sam-border: #E8EBF0;
+$sam-surface: #F8F9FC;
+$sam-text: #1A1D2E;
+$sam-muted: #667085;
+$sam-amber: #F79009;
+
+.sam-panel {
+  padding-top: 4px;
+}
+
+.sam-back {
+  // MV4-S4 parity: real 44px touch target, not just visual text height.
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $sam-text;
+  cursor: pointer;
+  touch-action: manipulation;
+
+  &:hover:not(:disabled) { color: $sam-coral; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid $sam-azure; outline-offset: 2px; border-radius: 4px; }
+  &:active:not(:disabled) { opacity: 0.7; }
+}
+
+.sam-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $sam-surface;
+  border: 1.5px solid $sam-border;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.sam-current-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  color: $sam-muted;
+  font-weight: 600;
+}
+
+.sam-current-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 100px;
+  background: #fff;
+  border: 1.5px solid $sam-border;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $sam-text;
+}
+
+.sam-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// BUGFIX: this is the exact control the user flagged -- Bootstrap's
+// default outline-secondary hover filled the button with a dark gray
+// that sat close to the (also dark) text color, and the "colorful"
+// per-status coloring elsewhere in this dialog made the whole panel feel
+// informal for what's meant to be a deliberate, consequential action.
+// Base/hover/current below are three clearly distinct but all-neutral
+// states -- text stays the same dark color in every one of them, only
+// the background/border shift, so contrast is never at risk.
+.sam-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1.5px solid $sam-border;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  touch-action: manipulation;
+
+  &:hover:not(:disabled), &:focus-visible {
+    background: $sam-surface;
+    border-color: #D0D5DD;
+  }
+  &:focus-visible { outline: 2px solid $sam-azure; outline-offset: 2px; }
+  &:active:not(:disabled) { opacity: 0.85; transform: scale(0.995); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  &--current {
+    border-color: $sam-azure;
+    background: rgba($sam-azure, 0.05);
+
+    &:hover:not(:disabled) { background: rgba($sam-azure, 0.08); }
+  }
+}
+
+.sam-option-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: $sam-text;
+}
+
+.sam-option-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 100px;
+  background: rgba($sam-azure, 0.12);
+  color: $sam-azure;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sam-loading {
+  text-align: center;
+  color: $sam-muted;
+  font-size: 0.85rem;
+  margin: 12px 0;
+}
+
+.sam-error {
+  color: #D92D20;
+  font-size: 0.85rem;
+  margin: 0 0 8px;
+}
+
+// ── Confirmation step ────────────────────────────────────────────────────
+
+.sam-warning {
+  background: rgba($sam-amber, 0.08);
+  border: 1.5px solid rgba($sam-amber, 0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+
+  strong {
+    display: block;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.92rem;
+    color: $sam-text;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 0.82rem;
+    color: $sam-muted;
+    margin: 0;
+  }
+}
+
+.sam-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.sam-btn {
+  height: 42px;
+  border-radius: 9px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s, opacity 0.12s;
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid $sam-azure; outline-offset: 2px; }
+
+  &--secondary {
+    flex: 0 0 auto;
+    padding: 0 18px;
+    background: #fff;
+    border: 1.5px solid $sam-border;
+    color: $sam-text;
+    &:hover:not(:disabled) { border-color: $sam-coral; color: $sam-coral; }
+  }
+
+  &--primary {
+    flex: 1;
+    padding: 0 16px;
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+    border: none;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba($sam-coral, 0.25);
+    &:hover:not(:disabled) { opacity: 0.92; }
+  }
 }

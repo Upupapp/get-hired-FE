@@ -18,23 +18,35 @@
 	</h6>
 
 	<!-- Status picker view -->
-	<div *ngIf="statusView" class="status-picker-view pt-2">
+	<!-- REDESIGN: was Bootstrap btn-outline-secondary buttons whose hover
+	     state (dark gray fill + inherited dark text) could read as the
+	     text nearly vanishing against its own hover background, plus a
+	     yellow alert-warning confirm step and ad-hoc spacing -- replaced
+	     with this app's own formal, neutral design tokens (coral/navy/
+	     border/surface/muted) throughout, matching the Applicant Details
+	     page and Candidate Group cards built this session. Hover state
+	     never fills with a color close to the text color -- see .sam-*
+	     rules in the stylesheet. -->
+	<div *ngIf="statusView" class="sam-panel">
 
 		<!-- Confirmation step for Rejected / Hired (email sends on change) -->
-		<div *ngIf="confirmingStatus" class="status-confirm-view">
-			<div class="d-flex align-items-center mb-3">
-				<button class="btn btn-sm btn-link p-0 me-2" (click)="cancelConfirm()" [disabled]="statusUpdating">&#8592; Back</button>
-				<span class="fw-semibold small">Confirm status change</span>
+		<div *ngIf="confirmingStatus" class="sam-confirm">
+			<button type="button" class="sam-back" (click)="cancelConfirm()" [disabled]="statusUpdating">
+				<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+					width="13" height="13" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M10 3L5 8l5 5"/>
+				</svg>
+				Confirm status change
+			</button>
+			<div class="sam-warning">
+				<strong>Set status to &ldquo;{{confirmingStatus.name}}&rdquo;?</strong>
+				<p>An email notification will be sent to the applicant. This action cannot be undone.</p>
 			</div>
-			<div class="alert alert-warning small p-3 mb-3">
-				<strong>Set status to "{{confirmingStatus.name}}"?</strong><br>
-				An email notification will be sent to the applicant. This action cannot be undone.
-			</div>
-			<div class="d-flex gap-2">
-				<button class="btn btn-sm btn-outline-secondary flex-shrink-0"
-					(click)="cancelConfirm()" [disabled]="statusUpdating">Cancel</button>
-				<button class="btn btn-sm btn-danger flex-grow-1"
-					(click)="confirmStatusChange()" [disabled]="statusUpdating">
+			<div class="sam-confirm-actions">
+				<button type="button" class="sam-btn sam-btn--secondary" (click)="cancelConfirm()" [disabled]="statusUpdating">
+					Cancel
+				</button>
+				<button type="button" class="sam-btn sam-btn--primary" (click)="confirmStatusChange()" [disabled]="statusUpdating">
 					<span *ngIf="!statusUpdating">Confirm — {{confirmingStatus.name}}</span>
 					<span *ngIf="statusUpdating" role="status">
 						<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
@@ -46,39 +58,47 @@
 
 		<!-- Status list -->
 		<ng-container *ngIf="!confirmingStatus">
-			<div class="d-flex align-items-center mb-2">
-				<!-- BRAND-FIX-2: disable Back while update is in-flight so the user
-				     cannot navigate away and lose the pending result feedback. -->
-				<button class="btn btn-sm btn-link p-0 me-2" (click)="statusView = false" [disabled]="statusUpdating">&#8592; Back</button>
-				<span class="fw-semibold small">Update Application Status</span>
+			<!-- BRAND-FIX-2: disable Back while update is in-flight so the user
+			     cannot navigate away and lose the pending result feedback. -->
+			<button type="button" class="sam-back" (click)="statusView = false" [disabled]="statusUpdating">
+				<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+					width="13" height="13" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M10 3L5 8l5 5"/>
+				</svg>
+				Update Application Status
+			</button>
+
+			<div class="sam-current">
+				<span class="sam-current-label">Current status</span>
+				<span class="sam-current-pill">{{data?.data?.jobApplicationStatusName || 'Unknown'}}</span>
 			</div>
-			<p class="text-muted small mb-3">
-				Current: <strong>{{data?.data?.jobApplicationStatusName || 'Unknown'}}</strong>
-			</p>
+
 			<!-- BUGFIX: statusOptions is now resolved dynamically from the
 			     backend's live status table (see loadStatusOptions()) rather
 			     than assumed -- these states cover the fetch itself. -->
-			<div *ngIf="loadingStatusOptions" class="text-center text-muted small my-2" role="status">
+			<div *ngIf="loadingStatusOptions" class="sam-loading" role="status">
 				<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
 				Loading status options&hellip;
 			</div>
-			<p *ngIf="statusOptionsError" class="text-danger small">{{ statusOptionsError }}</p>
-			<div class="status-options" *ngIf="!loadingStatusOptions && !statusOptionsError">
+			<p *ngIf="statusOptionsError" class="sam-error">{{ statusOptionsError }}</p>
+
+			<div class="sam-options" *ngIf="!loadingStatusOptions && !statusOptionsError">
 				<button
+					type="button"
 					*ngFor="let s of statusOptions; trackBy: trackById"
-					class="btn btn-outline-secondary btn-sm w-100 mb-2 text-start d-flex justify-content-between align-items-center"
-					[class.status-btn--current]="isCurrentStatus(s.id)"
+					class="sam-option"
+					[class.sam-option--current]="isCurrentStatus(s.id)"
 					[disabled]="statusUpdating"
 					(click)="selectStatus(s.id, s.name)"
 				>
-					<span>{{s.name}}</span>
-					<span *ngIf="isCurrentStatus(s.id)" class="badge bg-light text-muted ms-2 small fw-normal">current</span>
+					<span class="sam-option-name">{{s.name}}</span>
+					<span *ngIf="isCurrentStatus(s.id)" class="sam-option-tag">Current</span>
 				</button>
 			</div>
 			<!-- BRAND-FIX-3: spinner + text for a richer loading state. The
 			     role="status" + sr-only text ensures screen readers announce it.
 			     Bootstrap's border-spinner is already available project-wide. -->
-			<div *ngIf="statusUpdating" class="text-center text-muted small mt-2" role="status">
+			<div *ngIf="statusUpdating" class="sam-loading" role="status">
 				<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
 				Updating&hellip;
 			</div>
