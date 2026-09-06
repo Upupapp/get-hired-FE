@@ -1,0 +1,161 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$surface: #F8F9FC;
+$text: #1A1D2E;
+$muted: #667085;
+$green: #12B76A;
+$red: #D92D20;
+
+.cgd-wrap { padding: 0; }
+
+.cgd-header { margin-bottom: 20px; }
+
+.cgd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 12px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $muted;
+  cursor: pointer;
+
+  &:hover { color: $coral; }
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
+}
+
+.cgd-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 4px;
+}
+
+.cgd-subtitle {
+  font-size: 0.85rem;
+  color: $muted;
+  margin: 0;
+}
+
+.cgd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.cgd-card {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cgd-card-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cgd-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E8EBF0 0%, #D0D5E8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cgd-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cgd-avatar-initials {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $muted;
+}
+
+.cgd-status-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: $surface;
+  color: $muted;
+
+  &--hired { background: rgba($green, 0.1); color: $green; }
+  &--rejected { background: rgba($red, 0.08); color: $red; }
+}
+
+.cgd-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $text;
+  margin: 4px 0 2px;
+}
+
+.cgd-card-location {
+  font-size: 0.78rem;
+  color: $muted;
+  margin: 0 0 14px;
+}
+
+.cgd-cv-btn {
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid $border;
+  background: rgba($coral, 0.06);
+  color: $coral;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  margin-top: auto;
+
+  &:hover:not(:disabled) { background: rgba($coral, 0.12); border-color: rgba($coral, 0.3); }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
+}
+
+.cgd-empty {
+  padding: 48px 16px;
+  text-align: center;
+}
+
+.cgd-empty-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 6px;
+}
+
+.cgd-empty-body {
+  font-size: 0.85rem;
+  color: $muted;
+  max-width: 420px;
+  margin: 0 auto;
+}

@@ -16,6 +16,8 @@ import { TableControlModalComponent } from './candidate-list/dialogs/table-contr
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicationModule } from '@app-application/application.module';
 import { GroupListComponent } from './group-list/group-list.component';
+import { CandidateGroupOverviewComponent } from './candidate-group/candidate-group-overview.component';
+import { CandidateGroupDetailComponent } from './candidate-group/candidate-group-detail.component';
 
 const routes: Routes = [
   {
@@ -27,7 +29,14 @@ const routes: Routes = [
       { path: 'candidate-list/:id', component: CandidateListComponent },
       { path: 'groups', component: ContactGroupComponent },
       { path: 'group-list/:id', component: GroupListComponent },
-      { path: '', redirectTo: 'list', pathMatch: 'full' }
+      // CANDIDATE-GROUP-V1: new job-derived Candidate Group feature --
+      // replaces Talent Pool/old Applicants/old manual Candidate Groups
+      // in the sidebar (all three routes above are left registered,
+      // unlinked, not deleted). See candidate-group-overview/-detail
+      // components.
+      { path: 'job-groups', component: CandidateGroupOverviewComponent },
+      { path: 'job-groups/:id', component: CandidateGroupDetailComponent },
+      { path: '', redirectTo: 'job-groups', pathMatch: 'full' }
     ]
   }
 
@@ -46,7 +55,9 @@ const routes: Routes = [
     CheckboxGroupComponent,
     JobListComponent,
     TableControlModalComponent,
-    GroupListComponent
+    GroupListComponent,
+    CandidateGroupOverviewComponent,
+    CandidateGroupDetailComponent
   ],
   imports: [
     CommonModule,

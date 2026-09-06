@@ -85,6 +85,21 @@ export class JobService {
     return this.baseService.put<any>(`${environment.api_url}/application/status`, { applicationId, newStatusId });
   }
 
+  // CANDIDATE-GROUP-V1: per-job applicant count summary (total/hired/
+  // rejected), company + RBAC scoped. Powers the new Candidate Group
+  // job-cards and the new standalone Applicants job-picker landing page.
+  getJobApplicantSummary() {
+    return this.baseService.get<any>(`${environment.api_url}/job/applicant-summary`);
+  }
+
+  // CANDIDATE-GROUP-V1: read-only global status lookup, used to resolve
+  // "Hired"/"Rejected" to their real ids (see applicant-action-modal.
+  // component.ts) rather than assuming ids from the seed migration, which
+  // live data proved wrong.
+  getApplicantStatusOptions() {
+    return this.baseService.get<any>(`${environment.api_url}/job/applicant-status-options`);
+  }
+
   // P2-01 FIX: removed dead ?id= param — BE now derives company from the
   // authenticated caller's JWT (getUserCompany(req.user.uid)) and ignores
   // any caller-supplied id. Sending it was harmless but misleading.

@@ -15,6 +15,10 @@ import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { CompanyModule } from '@main/company/company.module';
 // B01: Global recruiter messages inbox
 import { RecruiterMessagesComponent } from './recruiter-messages/recruiter-messages.component';
+// CANDIDATE-GROUP-V1: standalone Applicants section (job picker -> existing
+// per-job applicant table), promoted out of the Jobs section per its own
+// sidebar item.
+import { EmployerApplicantsHubComponent } from './employer-applicants-hub/employer-applicants-hub.component';
 
 const routes: Routes = [
   {
@@ -53,6 +57,11 @@ const routes: Routes = [
         path: 'messages',
         component: RecruiterMessagesComponent,
       },
+      // CANDIDATE-GROUP-V1: new standalone Applicants section landing page.
+      {
+        path: 'applicants',
+        component: EmployerApplicantsHubComponent,
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
@@ -65,6 +74,8 @@ const routes: Routes = [
     EmployerSidebarComponent,
     // B01
     RecruiterMessagesComponent,
+    // CANDIDATE-GROUP-V1
+    EmployerApplicantsHubComponent,
   ],
   imports: [
     CommonModule,

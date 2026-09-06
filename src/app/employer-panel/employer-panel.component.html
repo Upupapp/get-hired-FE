@@ -156,7 +156,8 @@
         </a>
       </li>
 
-      <!-- Talent (see employer-sidebar.component.ts for the naming rationale) -->
+      <!-- CANDIDATE-GROUP-V1: "Talent" -> "Candidate Group" (job-derived
+           view; see employer-sidebar.component.ts for the full rationale). -->
       <li role="listitem">
         <a routerLink="/recruiter/contacts"
            routerLinkActive="gh-drawer-nav-item--active"
@@ -173,7 +174,28 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             <path d="M21 21v-2a4 4 0 0 0-3-3.87"/>
           </svg>
-          <span class="gh-drawer-nav-label">Talent</span>
+          <span class="gh-drawer-nav-label">Candidate Group</span>
+        </a>
+      </li>
+
+      <!-- CANDIDATE-GROUP-V1: new standalone Applicants section. -->
+      <li role="listitem">
+        <a routerLink="/recruiter/applicants"
+           routerLinkActive="gh-drawer-nav-item--active"
+           [routerLinkActiveOptions]="{exact: false}"
+           #rla2b="routerLinkActive"
+           [attr.aria-current]="rla2b.isActive ? 'page' : null"
+           class="gh-drawer-nav-item"
+           (click)="closeMobileNav()">
+          <svg class="gh-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2"
+               aria-hidden="true" focusable="false">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            <line x1="7" y1="12" x2="17" y2="12"/>
+            <line x1="7" y1="16" x2="13" y2="16"/>
+          </svg>
+          <span class="gh-drawer-nav-label">Applicants</span>
         </a>
       </li>
 
@@ -368,8 +390,12 @@
       </svg>
       <span class="gh-mobile-nav-label">Jobs</span>
     </a>
+    <!-- CANDIDATE-GROUP-V1: "Talent" -> "Candidate Group". Bottom nav stays
+         capped at 5 slots (see header comment above) -- the new standalone
+         Applicants section is reached via the fuller mobile drawer menu
+         above instead of a 6th slot here. -->
     <a routerLink="/recruiter/contacts" routerLinkActive="gh-mobile-nav-item--active"
-      class="gh-mobile-nav-item" aria-label="Talent">
+      class="gh-mobile-nav-item" aria-label="Candidate Group">
       <svg class="gh-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         stroke-width="2" aria-hidden="true" focusable="false">
         <circle cx="9" cy="7" r="4"/>
@@ -377,7 +403,7 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
         <path d="M21 21v-2a4 4 0 0 0-3-3.87"/>
       </svg>
-      <span class="gh-mobile-nav-label">Talent</span>
+      <span class="gh-mobile-nav-label">Candidate Group</span>
     </a>
     <!-- B01: Messages tab replaces Post Job in bottom nav.
          Post Job remains accessible via dashboard CTA and Jobs > Job Posts. -->

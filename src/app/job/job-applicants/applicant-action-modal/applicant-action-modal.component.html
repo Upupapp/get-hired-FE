@@ -55,7 +55,15 @@
 			<p class="text-muted small mb-3">
 				Current: <strong>{{data?.data?.jobApplicationStatusName || 'Unknown'}}</strong>
 			</p>
-			<div class="status-options">
+			<!-- BUGFIX: statusOptions is now resolved dynamically from the
+			     backend's live status table (see loadStatusOptions()) rather
+			     than assumed -- these states cover the fetch itself. -->
+			<div *ngIf="loadingStatusOptions" class="text-center text-muted small my-2" role="status">
+				<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+				Loading status options&hellip;
+			</div>
+			<p *ngIf="statusOptionsError" class="text-danger small">{{ statusOptionsError }}</p>
+			<div class="status-options" *ngIf="!loadingStatusOptions && !statusOptionsError">
 				<button
 					*ngFor="let s of statusOptions; trackBy: trackById"
 					class="btn btn-outline-secondary btn-sm w-100 mb-2 text-start d-flex justify-content-between align-items-center"
