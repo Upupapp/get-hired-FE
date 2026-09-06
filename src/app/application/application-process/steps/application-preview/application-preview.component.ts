@@ -161,23 +161,23 @@ export class ApplicationPreviewComponent implements OnInit {
     });
   }
 
+  // BUGFIX: the previous XHR-blob approach silently did nothing on click --
+  // confirmed live that Firebase Storage's Applicant-Documents bucket path
+  // has no Access-Control-Allow-Origin header, so the XHR to fetch the file
+  // as a blob is blocked by CORS and its onreadystatechange callback never
+  // fires. A plain anchor navigation to the file's own (already-authorized,
+  // tokenized) URL isn't subject to that same-origin XHR restriction -- the
+  // browser downloads or opens the file exactly as clicking the link
+  // directly would.
   downloadDoc(item: any): void {
     if (!item?.fileurl) return;
-    const xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = () => {
-      if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-        const blobUrl = window.URL.createObjectURL(xmlHttp.response);
-        const e = document.createElement('a');
-        e.href = blobUrl;
-        e.download = item.filename;
-        document.body.appendChild(e);
-        e.click();
-        document.body.removeChild(e);
-        window.URL.revokeObjectURL(blobUrl);
-      }
-    };
-    xmlHttp.responseType = 'blob';
-    xmlHttp.open('GET', item.fileurl, true);
-    xmlHttp.send(null);
+    const a = document.createElement('a');
+    a.href = item.fileurl;
+    a.download = item.filename || '';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }
