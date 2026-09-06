@@ -181,7 +181,7 @@
               [attr.aria-label]="savingDraft ? 'Saving draft...' : 'Save draft'"
             >
               <span *ngIf="!savingDraft">
-                <i class="bi bi-floppy me-1" aria-hidden="true"></i>Save draft
+                <i class="bi bi-save2 me-1" aria-hidden="true"></i>Save draft
               </span>
               <span *ngIf="savingDraft" class="d-inline-flex align-items-center gap-2">
                 <span class="gh-spinner-sm" aria-hidden="true"></span>Saving...
@@ -504,7 +504,7 @@
       (click)="saveAsDraft()"
       [disabled]="savingDraft"
     >
-      <i class="bi bi-floppy" aria-hidden="true"></i>
+      <i class="bi bi-save2" aria-hidden="true"></i>
     </button>
 
     <button
