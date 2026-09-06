@@ -260,6 +260,26 @@
         </div>
       </section>
 
+      <!-- BUGFIX: an employer/recruiter viewing a candidate's profile
+           (userRole == '2') fell through BOTH video branches above --
+           the recorded-video branch needs user.videoCVUrl, and the
+           placeholder branch explicitly excluded userRole == '2' (its
+           "Record your intro" CTA only makes sense for the profile
+           owner, not someone viewing it). The result: nothing rendered
+           at all for an employer viewing a candidate with no recorded
+           intro -- a blank gap between "Provided Services" and the
+           "View More" toggle, easy to mistake for a rendering bug.
+           Mirrors the Documents section's own userRole == '2' text-only
+           fallback a few sections up (same classes, no CTA -- there's
+           nothing actionable for an employer here). -->
+      <section class="np-card np-card-raised" *ngIf="!user?.videoCVUrl && userRole == '2'">
+        <h5 class="np-heading">
+          <span class="np-heading-icon" aria-hidden="true">&#127909;</span>
+          Video Introduction
+        </h5>
+        <p class="np-empty-hint mb-0">This applicant hasn't recorded a Video Introduction yet.</p>
+      </section>
+
     </div>
   </div>
 </div>
