@@ -185,7 +185,16 @@ export class ApplicationPreviewComponent implements OnInit {
     if (!item?.fileurl) return;
     const filename = item.filename || 'document';
     const proxyUrl = `${environment.api_url}/files/download?url=${encodeURIComponent(item.fileurl)}&filename=${encodeURIComponent(filename)}`;
-    this.http.get(proxyUrl, { responseType: 'blob' }).subscribe({
+    // BUGFIX: AuthInterceptor (root-provided, attaches the Bearer token to
+    // every HttpClient request app-wide) confirmed NOT firing for this
+    // call -- the proxy returned 401 through the normal component call
+    // path, but succeeded when the exact same token was attached manually.
+    // Setting the header directly here sidesteps whatever lazy-module
+    // injector quirk is dropping the interceptor for this component,
+    // without touching the global interceptor wiring other routes depend on.
+    const token = localStorage.getItem('token');
+    const headers = token ? { Authorization: token } : {};
+    this.http.get(proxyUrl, { responseType: 'blob', headers }).subscribe({
       next: (blob) => {
         const blobUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
