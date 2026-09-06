@@ -255,8 +255,8 @@
   </div>
 
   <!-- Video answers this month -->
-  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToJobsList()"
-    [attr.aria-label]="'Video answers this month: ' + (dashboard.charts?.interviews || 0)">
+  <button type="button" class="gh-kpi-card gh-pressable" (click)="goToVideoAnswers()"
+    [attr.aria-label]="'Video answers this month: ' + (dashboard.charts?.interviews || 0) + '. Go to video answers.'">
     <span class="gh-kpi-icon gh-kpi-icon--purple" aria-hidden="true">
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="2" y="4" width="11" height="12" rx="2"/><path d="M13 8l5-3v10l-5-3V8z"/></svg>
     </span>
