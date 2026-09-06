@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 })
 export class PublicComponent implements OnInit, OnDestroy {
   isUserLoggedIn: boolean;
-  user = PublicComponent.safeParseUser();
+  user: any = null;
   // AUTH LIFECYCLE SYNC: subscribed instead of read once in ngOnInit --
   // this component is a persistent shell around every public-site route
   // (<router-outlet> nested underneath it), so it does NOT get torn down
@@ -21,41 +21,41 @@ export class PublicComponent implements OnInit, OnDestroy {
   // requiring a reload.
   private authStateSubscription: Subscription;
 
-  /** Defensive against corrupted/non-JSON localStorage['user'] -- a
-   * field initializer throwing here would have blocked this component
-   * (and everything nested under its <router-outlet>) from ever
-   * constructing, with no clear top-level error.
-   * MV3-F3: also guards against SSR (server-side rendering) where
-   * localStorage is not defined at all. The try/catch prevented a hard
-   * crash but still logged a ReferenceError on every SSR render because
-   * `localStorage` is an unresolvable identifier on the server, not an
-   * exception thrown by the API. The `typeof` check avoids the throw
-   * entirely and keeps the server log clean. */
-  private static safeParseUser(): any {
-    if (typeof localStorage === 'undefined') {
-      return null;
-    }
-    try {
-      const raw = localStorage.getItem('user');
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }
+  // BUGFIX: `user` used to be a ONE-TIME snapshot, re-read only on
+  // authState$ emissions (login/logout/navigation) -- so changing your
+  // avatar or name elsewhere in the app (applicant or employer settings,
+  // neither of which ever touched localStorage['user'] or this
+  // component) left the header showing the old photo/name indefinitely
+  // until a hard refresh. CoreService.currentUser$ is a real, continuously
+  // -reactive stream those save flows now push into (see
+  // CoreService.patchCurrentUser()) -- subscribing to it instead means an
+  // avatar/name change reaches this header immediately, no navigation or
+  // refresh required.
+  private userSubscription: Subscription;
 
   constructor(
     private coreService: CoreService
   ) {}
   ngOnInit(): void {
+    this.userSubscription = this.coreService.currentUser$.subscribe((user) => {
+      this.user = user;
+    });
     this.authStateSubscription = this.coreService.authState$.subscribe((loggedIn) => {
       this.isUserLoggedIn = loggedIn;
-      this.user = PublicComponent.safeParseUser();
+      // Re-syncs currentUser$ from localStorage on every auth-state
+      // transition (a fresh sign-in/out writes localStorage directly,
+      // outside of patchCurrentUser()) -- ongoing profile/avatar edits in
+      // between are covered by the subscription above instead.
+      this.coreService.refreshCurrentUserFromStorage();
     });
   }
 
   ngOnDestroy(): void {
     if (this.authStateSubscription) {
       this.authStateSubscription.unsubscribe();
+    }
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
     }
   }
 }

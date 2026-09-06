@@ -439,13 +439,8 @@
             *ngIf="userRole == '3' && !selectedJobPost.isApplied">Apply Now</button>
           <button class="btn btn-apply-now gh-mobile-sticky-bar__cta" (click)="toLogin()"
             *ngIf="!userRole">Sign In to Apply</button>
-          <button type="button" class="gh-mobile-action-btn ms-2"
-            [class.gh-mobile-action-btn--active]="savedStatus === 'saved'"
-            [disabled]="saveLoading"
-            (click)="toggleSave(selectedJobPost.jobId)"
-            [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save job'">
-            <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
-          </button>
+          <!-- HIDDEN (per request): mobile Save-job button, same removal
+               as the reading companion panel's Save/Share block above. -->
         </div>
       </div>
     </div>
@@ -514,22 +509,10 @@
           </button>
         </nav>
 
-        <div class="gh-reading-companion__divider"></div>
-
-        <div class="gh-reading-companion__actions">
-          <button type="button" class="gh-action-btn gh-reading-companion__save"
-            [class.gh-action-btn--active]="savedStatus === 'saved'"
-            [disabled]="saveLoading"
-            (click)="toggleSave(selectedJobPost.jobId)"
-            [attr.aria-label]="savedStatus === 'saved' ? 'Remove from saved jobs' : 'Save this job'">
-            <i class="bi" [class.bi-bookmark-fill]="savedStatus === 'saved'" [class.bi-bookmark]="savedStatus !== 'saved'" aria-hidden="true"></i>
-            {{ savedStatus === 'saved' ? 'Saved' : 'Save job' }}
-          </button>
-          <button type="button" class="gh-action-btn" (click)="getShareableLink(selectedJobPost.jobId)" aria-label="Share this job">
-            <i class="bi bi-share" aria-hidden="true"></i>
-            Share
-          </button>
-        </div>
+        <!-- HIDDEN (per request): Save job / Share -- removed from the
+             reading companion panel for now. Handlers/state
+             (toggleSave()/getShareableLink()/savedStatus/saveLoading) left
+             in the component untouched in case this needs to come back. -->
       </div>
     </div>
   </ng-container>

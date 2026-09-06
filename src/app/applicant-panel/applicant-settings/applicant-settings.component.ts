@@ -8,6 +8,7 @@ import { AuthService } from '@main/auth/auth.service';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
+import { CoreService } from '@app-core/services/core.service';
 
 // REDESIGN (GETHIRED_JOBSEEKER_SETTINGS_PROFILE_AUTH_REMEDIATION_V1):
 // the previous single, unbound, decorative "Password" field is replaced
@@ -78,6 +79,7 @@ export class ApplicantSettingsComponent implements OnInit {
     private applicantFacade: ApplicantFacade,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
+    private coreService: CoreService,
   ) {}
 
   ngOnInit(): void {
@@ -226,6 +228,27 @@ export class ApplicantSettingsComponent implements OnInit {
   afterChange(event) {
     if (event == 'updated') {
       this.savingAccount = false;
+      // BUGFIX: onSubmitAccount() saves through AuthFacade.updateProfile(),
+      // which only writes into the `auth` NgRx slice -- never into the
+      // `applicant` slice's `state.user`, which is what the topbar/sidebar
+      // actually render (ApplicantFacade.user$). The save succeeded and
+      // this success dialog opened, but every other visible surface kept
+      // showing the pre-edit name until a manual page refresh. Refetching
+      // here pushes a fresh applicant/userprofile response into
+      // ApplicantFacade.user$, the same reactive source those consumers
+      // already subscribe to -- no new plumbing needed, just actually
+      // telling it to refresh (mirrors the existing pattern of the
+      // employer-settings equivalent, which already re-fetches its own
+      // facade's profile after a successful auth update).
+      this.applicantFacade.getUser();
+      // Same cross-app sync as profile-basic-info.component.ts's
+      // pushCurrentUserPatch() -- keeps the public site's shared header
+      // (shown on /jobs for both roles) from showing the pre-edit name
+      // until a hard refresh.
+      this.coreService.patchCurrentUser({
+        firstName: this.profileDetailsForm.controls.firstName.value,
+        lastName: this.profileDetailsForm.controls.lastName.value,
+      });
       this.dialog.open(UpdatedDialogComponent, {
         disableClose: false,
         data: 'Profile successfully updated',

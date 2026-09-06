@@ -39,7 +39,7 @@
     <div class="gh-nav-desktop-list d-none d-lg-flex">
       <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
 
-        <li class="nav-item" *ngIf="isPublic">
+        <li class="nav-item" *ngIf="isPublic && !isOnJobsSection">
           <a routerLink="/jobs" class="gh-nav-btn-primary gh-pressable">Browse jobs</a>
         </li>
 
@@ -174,7 +174,7 @@
 
   <ul class="gh-float-menu-list" role="list">
 
-    <li role="listitem" *ngIf="isPublic">
+    <li role="listitem" *ngIf="isPublic && !isOnJobsSection">
       <a routerLink="/jobs" class="gh-float-menu-item" (click)="closeMobileNav()">
         <span class="gh-float-menu-label">Browse jobs</span>
       </a>

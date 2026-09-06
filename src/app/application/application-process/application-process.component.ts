@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, HostListener, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { CoreService } from '@app-core/services/core.service';
 import { mainAnimations } from '@app-shared/animations/main-animations';
@@ -37,6 +37,18 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
   // LAUNCH-01: tracks submission lifecycle for inline feedback panels
   submitStatus: string = 'idle'; // idle | submitting | success | error | duplicate
   submitError: string = '';
+  // BUGFIX: submission previously only disabled the Submit button itself
+  // (spinner inside it) -- every other control on the page (nav, other
+  // step buttons, Back) stayed fully clickable while the request was in
+  // flight, with no visual indication anything was happening beyond that
+  // one button. A MatDialog-based blocking overlay (LoadingComponent,
+  // already centered/responsive -- see its own OVERLAY-AUDIT panelClass)
+  // covers the whole viewport with its backdrop and disableClose:true, so
+  // nothing behind it can be clicked until this is explicitly closed in
+  // afterSubmit() (every branch, success and error alike) -- never a
+  // fixed setTimeout close, which is exactly the race condition already
+  // fixed elsewhere this session (profile-basic-info.component.ts).
+  private submitLoadingRef: MatDialogRef<LoadingComponent> | null = null;
   // Forces app-interview-questions to the Answers tab after a
   // PAYLOAD_TOO_LARGE submit failure, so the flagged oversized video is
   // immediately visible rather than the default Questions tab.
@@ -199,6 +211,11 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
     this.submitError = '';
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
+    this.submitLoadingRef = this.loadingDialog.open(LoadingComponent, {
+      disableClose: true,
+      data: { selfClose: false },
+    });
+
     const application = {
       ...this.applicationForm.controls.profileDocs.value,
       interviewAnswers: [...this.applicationForm.controls.interviewAnswers.value],
@@ -213,6 +230,15 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
   // LAUNCH-01: handles the combined submitResult$ emission (success + error + errorCode)
   afterSubmit(result: any) {
     if (!result || (!result.success && !result.error && !result.errorCode)) return;
+
+    // Every branch below is a real, settled result (success or one of the
+    // error paths) -- close the blocking overlay opened in
+    // submitApplication() exactly once, here, rather than duplicating a
+    // close() call in each branch or falling back to a timer.
+    if (this.submitLoadingRef) {
+      this.submitLoadingRef.close();
+      this.submitLoadingRef = null;
+    }
 
     if (result.success === 'submitted') {
       this.submitStatus = 'success';

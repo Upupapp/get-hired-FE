@@ -81,6 +81,69 @@ export class CoreService {
   private authStateSubject = new BehaviorSubject<boolean>(this.isLoggedInSnapshot());
   authState$ = this.authStateSubject.asObservable();
 
+  /**
+   * BUGFIX (public-site header avatar/name staleness): the public site's
+   * shared header (header.component.html, hosted by public.component.ts)
+   * previously only ever re-read localStorage['user'] once per
+   * authState$ emission (login/logout/navigation) -- but NOTHING ever
+   * rewrote localStorage['user'] when the applicant or employer changed
+   * their avatar or name from their own settings pages (those flows only
+   * pushed into their own portal's NgRx slice, e.g. ApplicantFacade/
+   * EmployeeFacade, which the public header has no connection to at all).
+   * So navigating to /jobs after changing your avatar showed the old one
+   * indefinitely, for both roles, until a hard refresh.
+   *
+   * This is a real, continuously-reactive "current user" stream (not a
+   * one-time snapshot) that both the applicant's and employer's own
+   * save-success handlers now push into via patchCurrentUser() below,
+   * and that the public header subscribes to instead of a bare property
+   * read -- so an avatar/name change anywhere in the app reaches it
+   * immediately, no navigation/refresh required.
+   */
+  private currentUserSubject = new BehaviorSubject<any>(CoreService.safeParseUserSnapshot());
+  currentUser$ = this.currentUserSubject.asObservable();
+
+  private static safeParseUserSnapshot(): any {
+    if (typeof localStorage === 'undefined') {
+      return null;
+    }
+    try {
+      const raw = localStorage.getItem('user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** Re-syncs currentUser$ from localStorage['user'] -- call this on every
+   * auth-state transition (login/logout/navigation), the same points
+   * that already needed a fresh read before this observable existed. */
+  refreshCurrentUserFromStorage(): void {
+    this.currentUserSubject.next(CoreService.safeParseUserSnapshot());
+  }
+
+  /** Merges a partial patch (e.g. `{ photoUrl }` or `{ firstName,
+   * lastName }`) into both the in-memory current-user snapshot AND
+   * localStorage['user'], then pushes the merged result to every
+   * currentUser$ subscriber. Writing back to localStorage keeps this in
+   * sync with the many other places in the app that still read
+   * localStorage['user'] as a one-time snapshot, rather than creating a
+   * second, divergent source of truth. */
+  patchCurrentUser(patch: Record<string, any>): void {
+    const current = this.currentUserSubject.getValue() || {};
+    const merged = { ...current, ...patch };
+    this.currentUserSubject.next(merged);
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(merged));
+      }
+    } catch {
+      // Storage unavailable/full -- the in-memory stream still updated,
+      // which is what every live subscriber (the public header) actually
+      // renders from; localStorage is a best-effort persistence layer here.
+    }
+  }
+
   constructor(
     private baseService: BaseService,
     private router: Router,
@@ -107,6 +170,7 @@ export class CoreService {
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe(() => {
         this.authStateSubject.next(this.isLoggedInSnapshot());
+        this.currentUserSubject.next(CoreService.safeParseUserSnapshot());
         this.tokenLifecycle.scheduleFromCurrentToken();
       });
 
@@ -231,6 +295,7 @@ export class CoreService {
     // (public header, etc.) must reflect "signed out" the instant this
     // method returns, not on some later, possibly-nonexistent navigation.
     this.authStateSubject.next(false);
+    this.currentUserSubject.next(CoreService.safeParseUserSnapshot());
 
     // NAVIGATION-ABORTS-IN-FLIGHT-REQUEST FIX: this used to fire the
     // backend's session-revoke call (POST /auth/logout ->
