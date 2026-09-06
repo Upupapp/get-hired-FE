@@ -30,7 +30,7 @@
            DetailsComponent's own doc comment); user.documents already
            excludes it by design, so both are combined here rather than
            user.documents alone missing the CV entirely. -->
-      <section class="np-card np-card-raised" *ngIf="!loadingCurrentCv && hasAnyDocuments">
+      <section class="np-card np-card-raised" *ngIf="showDocuments && !loadingCurrentCv && hasAnyDocuments">
         <h5 class="np-heading np-heading--flush mb-3">
           <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
           {{ 'PROFILE.DOCUMENTS_TEXT' | translate }}
@@ -66,7 +66,7 @@
            the Video Introduction empty state below, instead of a plain
            inline text hint that read as "nothing rendered" rather than
            "this section is empty." -->
-      <section class="np-card np-card-raised np-card-video" *ngIf="!loadingCurrentCv && !hasAnyDocuments && userRole != '2'">
+      <section class="np-card np-card-raised np-card-video" *ngIf="showDocuments && !loadingCurrentCv && !hasAnyDocuments && userRole != '2'">
         <div class="np-video-head">
           <h5 class="np-heading np-heading--flush">
             <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
@@ -88,7 +88,7 @@
         </div>
       </section>
 
-      <section class="np-card np-card-raised" *ngIf="!loadingCurrentCv && !hasAnyDocuments && userRole == '2'">
+      <section class="np-card np-card-raised" *ngIf="showDocuments && !loadingCurrentCv && !hasAnyDocuments && userRole == '2'">
         <h5 class="np-heading">
           <span class="np-heading-icon" aria-hidden="true">&#128196;</span>
           {{ 'PROFILE.DOCUMENTS_TEXT' | translate }}

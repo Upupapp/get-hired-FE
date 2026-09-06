@@ -7,7 +7,6 @@ import { LoadingComponent } from '@app-shared/components/loading/loading.compone
 import { MatDialog } from '@angular/material/dialog';
 import { map, takeUntil, tap, BehaviorSubject, Subject, combineLatest, catchError, of, Observable, switchMap } from 'rxjs';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
-import { FileViewerComponent } from '@app-shared/components/file-viewer/file-viewer.component';
 import { ApplicantActionModalComponent } from './applicant-action-modal/applicant-action-modal.component';
 import * as InterviewModel from '@main/interview/interview.model';
 import * as ApplicantModel from '@main/applicant/applicant.model';
@@ -36,54 +35,18 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   jobId: string;
   loading: boolean = true;
-  // interviewQuestions: InterviewModel.InterviewQuestion[];
-  showProfile: boolean = false;
-  applicantProfileId: string;
-
-  // BUGFIX: the "View CV" column button. Tracks which row's resume is
-  // currently being fetched so the clicked button can show a loading
-  // state instead of appearing to do nothing while the request is in
-  // flight (see viewResume() below).
-  loadingResumeForUserId: string | null = null;
-
-  // profile:ApplicantModel.Applicant;
-  // profileDocs = [];
-  // answers = [];
-
-  /** GH-EMP-B01 -- tracks which applicant's detail is open so the detail
-   * view can look up the same already-fetched signals the list column
-   * uses, without a second HTTP call. Public: also read directly from the
-   * template by the message-thread panel (GH-EMP-B04 frontend). */
-  selectedApplicantUserId: string | null = null;
-
-  /** Application snapshot summary for the currently viewed applicant.
-   * Loaded best-effort when the employer opens an applicant detail panel. */
-  snapshotSummary: any = null;
-  snapshotSummaryLoading: boolean = false;
 
   /** Employer Portal v3 -- MATCH v5 Employer Applicant Fit Signals.
-   * Fetched separately from the existing applicants$/details$ streams,
-   * never replacing them -- if this call fails or is slow, the existing
-   * applicant list/detail still works exactly as it did before. Keyed by
-   * userId, matching the field job.service.js's mappedBasicApplicantDetails
-   * actually returns (not candidate_id -- see the backend fix logged in
+   * Fetched separately from the existing applicants$ stream, never
+   * replacing it -- if this call fails or is slow, the existing applicant
+   * list still works exactly as it did before. Keyed by userId, matching
+   * the field job.service.js's mappedBasicApplicantDetails actually
+   * returns (not candidate_id -- see the backend fix logged in
    * GETHIRED_EMPLOYER_PORTAL_V3_IMPLEMENTATION_LOG.md). Declared before
-   * details$/applicants$ below, which both reference it in their own
-   * field initializers -- class fields run in declaration order. */
+   * applicants$ below, which references it in its own field initializer --
+   * class fields run in declaration order. */
   private matchSignalsByUserId$ = new BehaviorSubject<Record<string, any>>({});
   private statusOverrides$ = new BehaviorSubject<Record<string, { statusId: number; statusName: string }>>({});
-
-  // profile$ = this.applicantFacade.applicantDetails$;
-  details$: Observable<any> = combineLatest([this.jobFacade.details$, this.matchSignalsByUserId$])
-    .pipe(
-      map(([appl, signalsByUserId]) => {
-        if (appl) {
-          this.applicantProfileId = appl.profile.applicantProfileId;
-        }
-        const matchSignals = this.selectedApplicantUserId ? signalsByUserId[this.selectedApplicantUserId] : null;
-        return appl ? { ...appl, matchSignals } as any : appl;
-      })
-    );
 
   job$ = this.jobFacade.getJobById$;
 
@@ -118,15 +81,11 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
     { col_name: 'workSetupName', title: 'Work Setup' },
     { col_name: 'jobTypeName', title: 'Type' },
     { col_name: 'salary', title: 'Expected Salary', type: 'salary' },
-    {
-      col_name: 'cv_link',
-      title: 'CV',
-      button_title: 'View CV',
-      button_class: 'cv-link',
-      button_logo: '/assets/images/placeholder/icons/cv.png',
-      type: 'action_button',
-      params: 'videoCVUrl'
-    },
+    // BUGFIX: the "View CV" column opened a document preview modal
+    // directly from the list. Documents (Resume/Cover Letter/Government
+    // Files, each downloadable) now live only on the dedicated Applicant
+    // Details page -- reachable via the row's "Applicant Details" menu
+    // action -- so this column is removed rather than repointed.
     { col_name: 'jobApplicationStatusName', title: 'Status' },
     { col_name: 'matchSignalLabel', title: 'Match Signal' },
     { col_name: 'action', title: 'Action', type: 'menu' },
@@ -138,7 +97,6 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
     'dateApplied',
     'address',
     'salary',
-    'cv_link',
     'jobApplicationStatusName',
     'matchSignalLabel',
     'action'
@@ -198,21 +156,6 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadSnapshotSummary(applicationId: string): void {
-    this.snapshotSummary = null;
-    this.snapshotSummaryLoading = true;
-    this.jobService.getApplicantSnapshotSummary(applicationId)
-      .pipe(
-        map((res: any) => res?.data),
-        catchError(() => of(null))
-      )
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        this.snapshotSummary = data;
-        this.snapshotSummaryLoading = false;
-      });
-  }
-
   /** GH-EMP-B02 -- only show the disclaimer when there's an actual signal
    * to disclaim; a row's fallback label ("No signal data") has
    * nothing for the disclaimer to apply to. */
@@ -225,11 +168,7 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    if(this.showProfile) {
-      this.showProfile = false;
-    } else {
-      this.location.back()
-    }
+    this.location.back();
   }
 
   formLoading(loading: boolean) {
@@ -263,54 +202,6 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // BUGFIX: the "View CV" column button was wired to (actionOfButton),
-  // an EventEmitter reusable-table.component.ts's btnAction() would emit
-  // it from -- but btnAction() is never called anywhere in that
-  // component's own template. The action_button click actually emits
-  // customButtonEvent (via customButtonFunction()), which nothing in
-  // this component was listening for -- so the button did nothing at
-  // all, for every applicant, regardless of whether they had a CV.
-  //
-  // Separately, even correctly wired, this button was bound to
-  // videoCVUrl and opened VideoPreviewComponent -- a <video> player --
-  // for what's actually a PDF/DOCX resume, which doesn't play as a
-  // video and would have looked broken for any applicant who *did* have
-  // a real CV on file.
-  //
-  // Now: fetches the applicant's real Resume document (already exposed
-  // by GET /job/applicantdetails, the same endpoint the "View profile"
-  // detail panel below already calls) and opens it in FileViewerComponent
-  // -- the same PDF/DOCX/image preview-with-download panel already
-  // shipped for the applicant's own document view and the employer's
-  // "View profile" panel (app-application-preview's viewDoc()).
-  viewResume(event): void {
-    const row = event?.data;
-    if (!row?.userId || this.loadingResumeForUserId) {
-      return;
-    }
-
-    this.loadingResumeForUserId = row.userId;
-    this.jobService.getJobApplicantDetails(this.jobId, row.userId).subscribe({
-      next: (res: any) => {
-        this.loadingResumeForUserId = null;
-        const resume = res?.data?.profileDocs?.resume?.[0];
-        if (!resume?.fileurl) {
-          this.snackbarService.info('This candidate hasn\'t uploaded a CV/Resume yet.', '', 4000);
-          return;
-        }
-        this.dialog.open(FileViewerComponent, {
-          width: '60vw',
-          height: '80vh',
-          data: resume,
-        });
-      },
-      error: () => {
-        this.loadingResumeForUserId = null;
-        this.snackbarService.error('We couldn\'t load this candidate\'s CV right now. Please try again.', '');
-      },
-    });
-  }
-
   viewMenu(event): void {
     let openDialog = this.dialog.open(
       ApplicantActionModalComponent,
@@ -331,20 +222,14 @@ export class JobApplicantsComponent implements OnInit, OnDestroy {
         this.viewCv(result.data.data.videoCVUrl)
       }
 
+      // CANDIDATE-GROUP-V2: was an in-page toggle (showProfile = true)
+      // that never changed the URL -- no back-button support, no way to
+      // bookmark/share a specific applicant. Now navigates to the
+      // dedicated, URL-addressable Applicant Details page instead.
       if(result && result.profile) {
-        this.selectedApplicantUserId = result.data.data.userId;
-        this.jobFacade.getApplicantsDetails(this.jobId, result.data.data.userId);
-        this.showProfile = true;
-
-        // Always clear the previous applicant's snapshot card before loading
-        // the next one. Without this reset, a previously loaded snapshot
-        // persists if the next applicant has no applicationId (STITCH Fix F2).
-        this.snapshotSummary = null;
-        this.snapshotSummaryLoading = false;
-        const appId = result.data.data.applicationId;
-        if (appId) {
-          this.loadSnapshotSummary(appId);
-        }
+        this.router.navigate(['/recruiter/jobs/applicants/candidate', result.data.data.userId], {
+          queryParams: { jobId: this.jobId },
+        });
       }
 
       if (result && result.statusUpdated && result.applicationId) {

@@ -10,7 +10,15 @@
        GET /cv-builder/current, which resolved against the wrong identity
        whenever this component is used for someone other than the
        currently logged-in user. -->
-  <app-applicant-details [user]="profile" [cvOverride]="resume && resume[0] || null"></app-applicant-details>
+  <!-- CANDIDATE-GROUP-V2: app-applicant-details's own compact CV/Documents
+       card duplicated the fuller, clearly-labeled Resume/Cover Letter/
+       Government Files section further down this same page (the one
+       right below, with viewDoc()/downloadDoc()) -- redundant for a
+       recruiter reviewing an application, so it's suppressed for the
+       employer read-only view specifically. Unchanged (still shown) for
+       the applicant's own Step 4 review. -->
+  <app-applicant-details [user]="profile" [cvOverride]="resume && resume[0] || null"
+    [showDocuments]="isApplicantOwnFlow"></app-applicant-details>
 
   <!-- <app-profile-preview></app-profile-preview> -->
   <div class="bg-opacity" *ngIf="profileSummary"></div>

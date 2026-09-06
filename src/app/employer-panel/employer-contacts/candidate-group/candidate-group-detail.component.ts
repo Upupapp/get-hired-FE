@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { JobService } from '@app-job/job.service';
 import { SnackbarService } from '@app-core/services/snackbar.service';
-import { FileViewerComponent } from '@app-shared/components/file-viewer/file-viewer.component';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 
 interface GroupApplicant {
@@ -37,12 +35,10 @@ export class CandidateGroupDetailComponent implements OnInit {
   jobId: string;
   jobTitle = '';
   applicants: GroupApplicant[] = [];
-  loadingResumeForUserId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
     private jobService: JobService,
     private snackbarService: SnackbarService,
   ) {}
@@ -96,32 +92,17 @@ export class CandidateGroupDetailComponent implements OnInit {
     (event.target as HTMLImageElement).src = '/assets/images/placeholder/job-post-banner-person.png';
   }
 
-  // Same fetch-then-open pattern as job-applicants.component.ts's
-  // viewResume() -- the CV/Resume document isn't on the list response,
-  // it needs the per-applicant detail endpoint.
-  viewResume(applicant: GroupApplicant): void {
-    if (!applicant?.userId || this.loadingResumeForUserId) {
+  // BUGFIX: this used to fetch-then-open the resume directly in a modal
+  // (FileViewerComponent), bypassing the full applicant record entirely.
+  // Now navigates to the dedicated Applicant Details page, which is the
+  // only place in the employer/recruiter panel that shows an applicant's
+  // documents (Resume/Cover Letter/Government Files, each downloadable).
+  viewDetails(applicant: GroupApplicant): void {
+    if (!applicant?.userId) {
       return;
     }
-    this.loadingResumeForUserId = applicant.userId;
-    this.jobService.getJobApplicantDetails(this.jobId, applicant.userId).subscribe({
-      next: (res: any) => {
-        this.loadingResumeForUserId = null;
-        const resume = res?.data?.profileDocs?.resume?.[0];
-        if (!resume?.fileurl) {
-          this.snackbarService.info("This candidate hasn't uploaded a CV/Resume yet.", '', 4000);
-          return;
-        }
-        this.dialog.open(FileViewerComponent, {
-          width: '60vw',
-          height: '80vh',
-          data: resume,
-        });
-      },
-      error: () => {
-        this.loadingResumeForUserId = null;
-        this.snackbarService.error("We couldn't load this candidate's CV right now. Please try again.", '');
-      },
+    this.router.navigate(['/recruiter/jobs/applicants/candidate', applicant.userId], {
+      queryParams: { jobId: this.jobId },
     });
   }
 }

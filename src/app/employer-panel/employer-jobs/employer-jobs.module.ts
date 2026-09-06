@@ -9,6 +9,7 @@ import { EmployerJobexpiredComponent } from './employer-jobexpired/employer-jobe
 import { EmployerJobcreateComponent } from './employer-jobcreate/employer-jobcreate.component';
 import { EmployerJobviewComponent } from './employer-jobview/employer-jobview.component';
 import { EmployerApplicantsComponent } from '../employer-applicants/employer-applicants.component';
+import { JobApplicantDetailsComponent } from '@app-job/job-applicant-details/job-applicant-details.component';
 // B05 V1: Job-level dashboard — post-publish landing page
 import { EmployerJobDashboardComponent } from './employer-job-dashboard/employer-job-dashboard.component';
 
@@ -18,6 +19,10 @@ const routes: Routes = [
   { path: 'create', component: EmployerJobcreateComponent },
   { path: 'edit', component: EmployerJobcreateComponent },
   { path: 'applicants', component: EmployerApplicantsComponent },
+  // CANDIDATE-GROUP-V2: dedicated Applicant Details page, replacing the
+  // old inline showProfile-toggle panel. jobId stays a query param to
+  // match this section's existing convention (jobs/applicants?id=X).
+  { path: 'applicants/candidate/:userId', component: JobApplicantDetailsComponent },
   { path: 'view', component: EmployerJobviewComponent },
   // B05 V1: Post-publish job-level dashboard
   { path: 'dashboard', component: EmployerJobDashboardComponent },

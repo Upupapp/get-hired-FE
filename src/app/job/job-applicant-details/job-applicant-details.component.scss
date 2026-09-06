@@ -1,0 +1,314 @@
+$coral: #FF675D;
+$navy: #0D1024;
+$azure: #5B7CFF;
+$border: #E8EBF0;
+$surface: #F8F9FC;
+$text: #1A1D2E;
+$muted: #667085;
+$green: #12B76A;
+$amber: #F79009;
+
+// CANDIDATE-GROUP-V2: this page's own container padding -- the parent
+// shell (employer-panel.component.scss's #sub-company-component) applies
+// none at all, and every sibling employer-panel page was independently
+// zeroing its own padding (see the audit that led to this redesign).
+// Fluid padding here guarantees content never touches any edge at any
+// screen size, from small phones up through large desktop.
+.jad-page {
+  padding: 16px 16px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  @media (min-width: 576px) {
+    padding: 20px 24px 48px;
+  }
+  @media (min-width: 992px) {
+    padding: 28px 32px 56px;
+  }
+}
+
+.jad-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  margin-bottom: 16px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $muted;
+  cursor: pointer;
+
+  &:hover { color: $coral; }
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; border-radius: 4px; }
+}
+
+.jad-loading {
+  padding: 60px 0;
+}
+
+.jad-error {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 14px;
+  padding: 48px 24px;
+  text-align: center;
+}
+.jad-error-title { font-size: 1.05rem; font-weight: 700; color: $text; margin: 0 0 6px; }
+.jad-error-body { font-size: 0.88rem; color: $muted; margin: 0 0 20px; }
+
+// ── Header ───────────────────────────────────────────────────────────────
+
+.jad-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+
+  @media (max-width: 575px) {
+    padding: 18px;
+  }
+}
+
+.jad-header-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.jad-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E8EBF0 0%, #D0D5E8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  @media (max-width: 575px) {
+    width: 56px;
+    height: 56px;
+  }
+}
+.jad-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.jad-avatar-initials {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $muted;
+}
+
+.jad-header-text {
+  min-width: 0;
+}
+
+.jad-name {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: $text;
+  margin: 0 0 2px;
+  text-wrap: balance;
+
+  @media (max-width: 575px) {
+    font-size: 1.15rem;
+  }
+}
+
+.jad-meta {
+  font-size: 0.88rem;
+  color: $muted;
+  margin: 0 0 10px;
+}
+
+.jad-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.jad-meta-item {
+  font-size: 0.82rem;
+  color: $muted;
+}
+
+.jad-status-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 100px;
+  background: $surface;
+  color: $text;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.jad-header-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+
+  @media (max-width: 575px) {
+    width: 100%;
+  }
+}
+
+.jad-btn {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 9px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, opacity 0.12s;
+  white-space: nowrap;
+
+  @media (max-width: 575px) {
+    flex: 1;
+  }
+
+  &--primary {
+    background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 6px rgba($coral, 0.25);
+    &:hover { opacity: 0.92; }
+  }
+
+  &--secondary {
+    background: #fff;
+    border: 1.5px solid $border;
+    color: $text;
+    &:hover { border-color: $coral; color: $coral; }
+  }
+
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
+}
+
+// ── Cards ────────────────────────────────────────────────────────────────
+
+.jad-card {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+
+  @media (max-width: 575px) {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  // The Documents/Profile/Interview cards inside <app-application-preview>
+  // already render their own bordered cards -- this wrapper only adds
+  // vertical rhythm between them and the rest of the page, not another
+  // border/shadow layer on top.
+  &--flush {
+    padding: 0;
+    border: none;
+    background: transparent;
+  }
+}
+
+.jad-card-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 14px;
+}
+
+.jad-muted-note {
+  font-size: 0.85rem;
+  color: $muted;
+  margin: 0;
+}
+
+.jad-disclaimer {
+  font-size: 0.75rem;
+  color: $muted;
+  margin: 10px 0 0;
+}
+
+.jad-snapshot-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.jad-snapshot-label {
+  display: block;
+  font-size: 0.78rem;
+  color: $muted;
+  margin-bottom: 4px;
+}
+
+.jad-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 10px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-left: 6px;
+  background: $surface;
+  color: $muted;
+
+  &--good { background: rgba($green, 0.1); color: $green; }
+  &--warn { background: rgba($amber, 0.12); color: $amber; }
+  &--info { background: rgba($azure, 0.1); color: $azure; }
+  &--muted { background: $surface; color: $muted; }
+}
+
+// ── Skeleton loading ───────────────────────────────────────────────────
+
+.jad-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, $surface 25%, #eef0f5 37%, $surface 63%);
+  background-size: 400% 100%;
+  animation: jad-shimmer 1.4s ease infinite;
+
+  &--short { width: 40%; }
+}
+
+.jad-skeleton-badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.jad-skeleton-badge {
+  width: 80px;
+  height: 20px;
+  border-radius: 100px;
+  background: linear-gradient(90deg, $surface 25%, #eef0f5 37%, $surface 63%);
+  background-size: 400% 100%;
+  animation: jad-shimmer 1.4s ease infinite;
+}
+
+@keyframes jad-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jad-skeleton-line, .jad-skeleton-badge { animation: none; }
+}

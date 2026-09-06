@@ -6,31 +6,50 @@
     </p>
   </div>
 
-  <div class="ea-table-wrap" *ngIf="jobSummaries.length > 0; else eaEmpty">
-    <table class="ea-table">
-      <thead>
-        <tr>
-          <th scope="col">Job Title</th>
-          <th scope="col">Job Id</th>
-          <th scope="col">Applicants</th>
-          <th scope="col" class="ea-th--action"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let job of jobSummaries" class="ea-row" (click)="openJobApplicants(job)"
-          role="button" tabindex="0" (keyup.enter)="openJobApplicants(job)">
-          <td class="ea-td ea-td--title">{{ job.jobTitle }}</td>
-          <td class="ea-td ea-td--mono">{{ job.jobId }}</td>
-          <td class="ea-td">{{ job.totalApplicants }}</td>
-          <td class="ea-td ea-td--action">
-            <button type="button" class="ea-review-btn" (click)="openJobApplicants(job); $event.stopPropagation()">
-              Review Applicants
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <ng-container *ngIf="jobSummaries.length > 0; else eaEmpty">
+    <!-- Desktop table -->
+    <div class="ea-table-wrap d-none d-md-block">
+      <table class="ea-table">
+        <thead>
+          <tr>
+            <th scope="col">Job Title</th>
+            <th scope="col">Job Id</th>
+            <th scope="col">Applicants</th>
+            <th scope="col" class="ea-th--action"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let job of jobSummaries" class="ea-row" (click)="openJobApplicants(job)"
+            role="button" tabindex="0" (keyup.enter)="openJobApplicants(job)">
+            <td class="ea-td ea-td--title">{{ job.jobTitle }}</td>
+            <td class="ea-td ea-td--mono">{{ job.jobId }}</td>
+            <td class="ea-td">{{ job.totalApplicants }}</td>
+            <td class="ea-td ea-td--action">
+              <button type="button" class="ea-review-btn" (click)="openJobApplicants(job); $event.stopPropagation()">
+                Review Applicants
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="ea-cards d-block d-md-none">
+      <div *ngFor="let job of jobSummaries" class="ea-card" (click)="openJobApplicants(job)"
+        role="button" tabindex="0" (keyup.enter)="openJobApplicants(job)">
+        <div class="ea-card-info">
+          <h5 class="ea-card-title">{{ job.jobTitle }}</h5>
+          <p class="ea-card-jobid">{{ job.jobId }}</p>
+          <p class="ea-card-count">{{ job.totalApplicants }} applicant{{ job.totalApplicants !== 1 ? 's' : '' }}</p>
+        </div>
+        <button type="button" class="ea-review-btn ea-review-btn--block"
+          (click)="openJobApplicants(job); $event.stopPropagation()">
+          Review Applicants
+        </button>
+      </div>
+    </div>
+  </ng-container>
 
   <ng-template #eaEmpty>
     <div class="ea-empty">

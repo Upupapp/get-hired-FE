@@ -6,7 +6,18 @@ $surface: #F8F9FC;
 $text: #1A1D2E;
 $muted: #667085;
 
-.ea-wrap { padding: 0; }
+// BUGFIX: see candidate-group-overview.component.scss's .cg-wrap for the
+// full explanation -- same root cause, same fix.
+.ea-wrap {
+  padding: 16px 16px 32px;
+
+  @media (min-width: 576px) {
+    padding: 20px 24px 40px;
+  }
+  @media (min-width: 992px) {
+    padding: 28px 32px 48px;
+  }
+}
 
 .ea-header { margin-bottom: 16px; }
 
@@ -80,6 +91,48 @@ $muted: #667085;
 
   &:hover { background: rgba($coral, 0.12); }
   &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
+  &--block { width: 100%; height: 36px; margin-top: 12px; }
+}
+
+// Mobile cards -- same "always-visible, toggled by d-none/d-block"
+// pattern as company-users.component.html's .cu-cards, so the table
+// never gets clipped or forced into horizontal scroll on narrow screens.
+.ea-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ea-card {
+  background: #fff;
+  border: 1.5px solid $border;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.12s;
+
+  &:hover, &:focus-visible { border-color: $coral; }
+  &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
+}
+
+.ea-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 2px;
+}
+
+.ea-card-jobid {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: $muted;
+  margin: 0 0 6px;
+}
+
+.ea-card-count {
+  font-size: 0.82rem;
+  color: $text;
+  margin: 0;
 }
 
 .ea-empty {
