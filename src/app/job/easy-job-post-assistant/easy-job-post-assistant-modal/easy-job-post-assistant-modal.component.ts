@@ -423,6 +423,79 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TEMPLATE-DOWNLOAD: the uploader is a heuristic text extractor (see
+  // easyJobPostExtractionService.js on the backend), not a spreadsheet
+  // parser -- it reads labeled lines ("Job Title:", "Location:", …) and
+  // section headers ("Responsibilities", "Requirements", "Nice to Have",
+  // "Skills", "Benefits", "About the Role") out of a plain document. A
+  // .txt file (also valid as one of the 5 already-supported upload
+  // extensions) is the one template format that's guaranteed to round-trip
+  // through that exact contract with no spreadsheet-to-text conversion
+  // step in between. Built and downloaded entirely client-side -- no new
+  // dependency, no server call, and plain text carries none of the
+  // macro/formula-injection risk a real .xlsx/.csv template would need to
+  // guard against.
+  downloadTemplate(): void {
+    if (!isPlatformBrowser(this.platformId)) { return; }
+    const content = this.buildTemplateContent();
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'GetHired-Job-Import-Template.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    this.haptics.selection();
+  }
+
+  // TEMPLATE CONTENT: intentionally has NO surrounding prose (no title
+  // banner, no leading/trailing instructions) -- confirmed via a direct
+  // round-trip test against the real backend extraction function
+  // (mapTextToJobFields) that any extra sentence placed before the "Job
+  // Title:" line gets misread as the job title itself (the extractor
+  // greedily accepts the first short, non-header line in a document as a
+  // title fallback), and any extra prose placed after "Benefits" bleeds
+  // into that section's content. Field-by-field guidance instead lives in
+  // the bracketed placeholder text itself (e.g. "[e.g. Senior Software
+  // Engineer]") and in the supporting copy shown next to the download
+  // link in the modal -- both stay outside the parsed document entirely.
+  private buildTemplateContent(): string {
+    return [
+      'Job Title: [e.g. Senior Software Engineer]',
+      'Location: [e.g. Makati]',
+      'Work Setup: [Remote / Hybrid / On-site]',
+      'Job Type: [Full-time / Part-time / Contract / Freelance / Internship / Temporary]',
+      'Job Level: [Entry Level / Junior / Mid-level / Senior / Lead / Manager / Director / Executive]',
+      'Salary: PHP [e.g. 40,000 - 60,000]',
+      '',
+      'About the Role',
+      '[Write 2-4 sentences describing the role and what the company does. Required.]',
+      '',
+      'Responsibilities',
+      '- [Responsibility 1]',
+      '- [Responsibility 2]',
+      '- [Responsibility 3]',
+      '',
+      'Requirements',
+      '- [Requirement 1]',
+      '- [Requirement 2]',
+      '',
+      'Nice to Have',
+      '- [Optional skill or qualification]',
+      '',
+      'Skills',
+      '- [Skill 1]',
+      '- [Skill 2]',
+      '',
+      'Benefits',
+      '- [Benefit 1]',
+      '- [Benefit 2]',
+      '',
+    ].join('\r\n');
+  }
+
   private selectFile(file: File): void {
     const allowed = ['application/pdf', 'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
