@@ -67,6 +67,14 @@ export class ApplicantActionModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Lets a caller (e.g. the dedicated Applicant Details page's own
+    // "Change Status" button) skip straight to the status list instead
+    // of the generic action menu, since that menu's other two actions
+    // (Video CV / Applicant Details) don't make sense as options when
+    // you're already on the details page that opened this.
+    if (this.data?.openToStatus) {
+      this.statusView = true;
+    }
     this.loadStatusOptions();
   }
 

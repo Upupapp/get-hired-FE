@@ -20,6 +20,7 @@ import { TableControlModalComponent } from './job-list/dialogs/table-control-mod
 import { JobViewComponent } from './job-view/job-view.component';
 import { JobApplicantsComponent } from './job-applicants/job-applicants.component';
 import { ApplicantActionModalComponent } from './job-applicants/applicant-action-modal/applicant-action-modal.component';
+import { JobApplicantDetailsComponent } from './job-applicant-details/job-applicant-details.component';
 import { ApplicationModule } from '@main/application/application.module';
 import { ApplicantModule } from '@app-applicant/applicant.module';
 import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
@@ -50,6 +51,7 @@ const exportedComponents = [
   JobViewComponent,
   JobApplicantsComponent,
   ApplicantActionModalComponent,
+  JobApplicantDetailsComponent,
   // B13: Job Readiness
   JobReadinessBarComponent,
   JobReadinessChipsComponent,

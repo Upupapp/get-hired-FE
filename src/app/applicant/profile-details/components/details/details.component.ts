@@ -43,6 +43,17 @@ export class DetailsComponent implements OnInit {
   // null/object = caller already resolved it (even if null = genuinely none).
   @Input() cvOverride: CurrentCv | null | undefined = undefined;
 
+  // CANDIDATE-GROUP-V2: this component's own compact "Documents" card
+  // (the CV/resume quick-preview row below) duplicates the fuller,
+  // clearly-labeled Resume/Cover Letter/Government Files section that
+  // application-preview.component.html renders separately, further down
+  // the same page. Harmless duplication in the applicant's own "My
+  // Profile" view (default, unchanged), but the employer/recruiter
+  // Applicant Details page is meant to have exactly one clear documents
+  // section -- application-preview.component.html sets this to `false`
+  // only for that read-only employer view.
+  @Input() showDocuments: boolean = true;
+
   months = month;
   userRole: string;
 

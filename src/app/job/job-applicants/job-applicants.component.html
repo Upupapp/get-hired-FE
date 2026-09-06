@@ -8,7 +8,7 @@
         (keydown.space)="redirectTo('recruiter/jobs/list')"
         aria-label="Back to jobs list">Jobs</span> /
       <span>{{job?.jobId}}</span> /
-      Applicants  <span *ngIf="applicantProfileId"> / {{applicantProfileId}} </span>
+      Applicants
     </p>
   </div>
 
@@ -35,7 +35,7 @@
   </div>
 
   <!-- TODO add status -->
-  <div *ngIf="!showProfile && applicants$ | async as applicants" class="px-4 mt-2">
+  <div *ngIf="applicants$ | async as applicants" class="px-4 mt-2">
     <!-- GH-EMP-B02: Match Signals disclaimer. Shown whenever at least one
          row has a real signal, so it's never displayed for a job with no
          applicants or where signals are entirely unavailable. -->
@@ -66,98 +66,18 @@
         </div>
       </ng-container>
       <ng-template #applicantTable>
-        <!-- BUGFIX: "View CV" (the cv_link action_button column) previously
-             bound to (actionOfButton), which reusable-table.component.ts
-             never actually emits from its action_button click handler
-             (that's customButtonEvent, via customButtonFunction()) -- the
-             button did nothing at all. See viewResume() for the second,
-             separate fix (it was also opening a video player for what's
-             really a PDF/DOCX resume). -->
+        <!-- BUGFIX: "View CV" column removed -- documents now live only on
+             the dedicated Applicant Details page (see viewMenu()'s
+             result.profile branch, which navigates there). -->
         <app-reusable-table [loading]="loading" (updateSelectedRowDialog)="viewMenu($event)"
           (viewDetails)="viewMenu($event)" [componentTitle]="'Applicants'" [displayedColumns]="displayedColumns"
           [selectedColumns]="selectedColumns" [selectedColumnsMobile]="selectedColumns" [searchSource]="searchSource"
-          [maxRows]="10" [listDataSource]="applicants" (customButtonEvent)="viewResume($event)">
+          [maxRows]="10" [listDataSource]="applicants">
         </app-reusable-table>
       </ng-template>
     </div>
 
     <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="loading">
     </custom-profile-loader>
-  </div>
-
-  <div *ngIf="showProfile && details$ | async as details" class="px-4 mt-2">
-    <app-applicant-avatar [user]="details.profile"></app-applicant-avatar>
-
-    <!-- Application snapshot summary: completeness + match level at submission time -->
-    <div class="card card-body mt-3 gh-snapshot-card" *ngIf="snapshotSummaryLoading || snapshotSummary" role="region" aria-label="Application snapshot summary">
-      <h6 class="mb-2" style="font-weight:600;">Application Snapshot</h6>
-      <!-- aria-live wraps ALL snapshot content so screen readers announce both
-           the loading state and the final revealed content atomically. -->
-      <div aria-live="polite" aria-atomic="true">
-        <!-- Skeleton loading state (replaces plain text spinner) -->
-        <div *ngIf="snapshotSummaryLoading" class="gh-snapshot-skeleton" role="status" aria-label="Loading application snapshot">
-          <div class="gh-skeleton-line gh-skeleton-line--short"></div>
-          <div class="gh-skeleton-badges d-flex gap-2 mt-2">
-            <div class="gh-skeleton-badge"></div>
-            <div class="gh-skeleton-badge"></div>
-          </div>
-          <div class="gh-skeleton-line gh-skeleton-line--long mt-2"></div>
-        </div>
-
-        <ng-container *ngIf="!snapshotSummaryLoading && snapshotSummary">
-          <div *ngIf="!snapshotSummary.hasSnapshot" class="text-muted small gh-snapshot-empty">
-            No snapshot was captured for this application. Snapshots are recorded at submission time.
-          </div>
-          <ng-container *ngIf="snapshotSummary.hasSnapshot">
-            <div class="d-flex flex-wrap gap-3 mb-2 gh-snapshot-reveal">
-              <div *ngIf="snapshotSummary.completenessScore != null">
-                <span class="text-muted small">Completeness</span>
-                <div>
-                  <strong>{{ snapshotSummary.completenessScore }}%</strong>
-                  <span class="ms-1 badge gh-snapshot-badge"
-                    [attr.aria-label]="'Completeness level: ' + snapshotSummary.completenessLevel"
-                    [ngClass]="{
-                      'bg-success': snapshotSummary.completenessLevel === 'excellent' || snapshotSummary.completenessLevel === 'strong',
-                      'bg-warning text-dark': snapshotSummary.completenessLevel === 'basic',
-                      'bg-secondary': snapshotSummary.completenessLevel === 'incomplete'
-                    }">{{ snapshotSummary.completenessLevel }}</span>
-                </div>
-              </div>
-              <div *ngIf="snapshotSummary.matchLevel">
-                <span class="text-muted small">Signal strength at submission</span>
-                <div>
-                  <span class="badge gh-snapshot-badge"
-                    [attr.aria-label]="'Match signal strength: ' + (snapshotSummary.matchLevel === 'strong' ? 'Strong' : snapshotSummary.matchLevel === 'possible' ? 'Partial' : snapshotSummary.matchLevel === 'low' ? 'Limited' : 'Limited data')"
-                    [ngClass]="{
-                      'bg-success': snapshotSummary.matchLevel === 'strong',
-                      'bg-info text-dark': snapshotSummary.matchLevel === 'possible',
-                      'bg-secondary': snapshotSummary.matchLevel === 'low' || !snapshotSummary.matchLevel
-                    }">{{ snapshotSummary.matchLevel === 'strong' ? 'Strong' : snapshotSummary.matchLevel === 'possible' ? 'Partial' : snapshotSummary.matchLevel === 'low' ? 'Limited' : 'Limited data' }}</span>
-                </div>
-              </div>
-            </div>
-            <p class="text-muted gh-snapshot-disclaimer" style="font-size:0.75rem; margin-bottom:0;">
-              {{ snapshotSummary.matchDisclaimer }}
-            </p>
-          </ng-container>
-        </ng-container>
-      </div>
-    </div>
-
-    <app-application-preview
-    [applicantAnswers]="details.answers"
-    [docs]="details.profileDocs"
-    [profile]="details.profile"
-    [interviews]="details.interviewQuestions"
-    [matchSignals]="details.matchSignals"></app-application-preview>
-
-    <div class="card card-body mt-3" *ngIf="selectedApplicantUserId">
-      <app-message-thread
-        [jobId]="jobId"
-        [applicantUid]="selectedApplicantUserId"
-        [otherPartyLabel]="(details.profile?.firstName || '') + ' ' + (details.profile?.lastName || '')"
-        currentUserRole="employer">
-      </app-message-thread>
-    </div>
   </div>
 </section>

@@ -1,0 +1,126 @@
+<div class="jad-page">
+
+  <button type="button" class="jad-back" (click)="goBack()" aria-label="Back to applicants">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+      width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 3L5 8l5 5"/>
+    </svg>
+    Back to Applicants
+  </button>
+
+  <div *ngIf="loading" class="jad-loading" role="status" aria-label="Loading applicant details">
+    <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="true"></custom-profile-loader>
+  </div>
+
+  <div *ngIf="!loading && loadError" class="jad-error">
+    <p class="jad-error-title">We couldn't load this applicant</p>
+    <p class="jad-error-body">Something went wrong, or this application no longer exists.</p>
+    <button type="button" class="jad-btn jad-btn--primary" (click)="goBack()">Go back</button>
+  </div>
+
+  <ng-container *ngIf="!loading && !loadError && profile">
+
+    <!-- Header -->
+    <header class="jad-header">
+      <div class="jad-header-identity">
+        <div class="jad-avatar">
+          <img *ngIf="profile.photoUrl" [src]="profile.photoUrl" [alt]="fullName" (error)="onAvatarError($event)" class="jad-avatar-img">
+          <span *ngIf="!profile.photoUrl" class="jad-avatar-initials" aria-hidden="true">{{ fullName.charAt(0) }}</span>
+        </div>
+        <div class="jad-header-text">
+          <h1 class="jad-name">{{ fullName }}</h1>
+          <p class="jad-meta" *ngIf="applicantRow?.jobTitle">
+            Applied for <strong>{{ applicantRow.jobTitle }}</strong>
+          </p>
+          <div class="jad-meta-row">
+            <span class="jad-status-badge">{{ applicantRow?.jobApplicationStatusName || 'Unknown' }}</span>
+            <span class="jad-meta-item" *ngIf="appliedDateLabel">Applied {{ appliedDateLabel }}</span>
+            <span class="jad-meta-item" *ngIf="applicantRow?.city || applicantRow?.country">
+              {{ applicantRow.city }}{{ applicantRow.city && applicantRow.country ? ', ' : '' }}{{ applicantRow.country }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="jad-header-actions">
+        <button type="button" class="jad-btn jad-btn--secondary" (click)="toggleMessageThread()">
+          {{ showMessageThread ? 'Hide Messages' : 'Message' }}
+        </button>
+        <button type="button" class="jad-btn jad-btn--primary" [disabled]="!applicantRow?.applicationId"
+          (click)="openChangeStatus()">
+          Change Status
+        </button>
+      </div>
+    </header>
+
+    <!-- Application snapshot -->
+    <section class="jad-card" *ngIf="snapshotSummaryLoading || snapshotSummary" role="region" aria-label="Application snapshot summary">
+      <h2 class="jad-card-title">Application Snapshot</h2>
+      <div aria-live="polite" aria-atomic="true">
+        <div *ngIf="snapshotSummaryLoading" class="jad-skeleton" role="status" aria-label="Loading application snapshot">
+          <div class="jad-skeleton-line jad-skeleton-line--short"></div>
+          <div class="jad-skeleton-badges">
+            <div class="jad-skeleton-badge"></div>
+            <div class="jad-skeleton-badge"></div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="!snapshotSummaryLoading && snapshotSummary">
+          <p *ngIf="!snapshotSummary.hasSnapshot" class="jad-muted-note">
+            No snapshot was captured for this application. Snapshots are recorded at submission time.
+          </p>
+          <ng-container *ngIf="snapshotSummary.hasSnapshot">
+            <div class="jad-snapshot-stats">
+              <div class="jad-snapshot-stat" *ngIf="snapshotSummary.completenessScore != null">
+                <span class="jad-snapshot-label">Completeness</span>
+                <div>
+                  <strong>{{ snapshotSummary.completenessScore }}%</strong>
+                  <span class="jad-pill"
+                    [class.jad-pill--good]="snapshotSummary.completenessLevel === 'excellent' || snapshotSummary.completenessLevel === 'strong'"
+                    [class.jad-pill--warn]="snapshotSummary.completenessLevel === 'basic'"
+                    [class.jad-pill--muted]="snapshotSummary.completenessLevel === 'incomplete'">
+                    {{ snapshotSummary.completenessLevel }}
+                  </span>
+                </div>
+              </div>
+              <div class="jad-snapshot-stat" *ngIf="snapshotSummary.matchLevel">
+                <span class="jad-snapshot-label">Signal strength at submission</span>
+                <div>
+                  <span class="jad-pill"
+                    [class.jad-pill--good]="snapshotSummary.matchLevel === 'strong'"
+                    [class.jad-pill--info]="snapshotSummary.matchLevel === 'possible'"
+                    [class.jad-pill--muted]="snapshotSummary.matchLevel === 'low' || !snapshotSummary.matchLevel">
+                    {{ snapshotSummary.matchLevel === 'strong' ? 'Strong' : snapshotSummary.matchLevel === 'possible' ? 'Partial' : snapshotSummary.matchLevel === 'low' ? 'Limited' : 'Limited data' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <p class="jad-disclaimer">{{ snapshotSummary.matchDisclaimer }}</p>
+          </ng-container>
+        </ng-container>
+      </div>
+    </section>
+
+    <!-- Profile, match signals, documents, interview answers -->
+    <section class="jad-card jad-card--flush">
+      <app-application-preview
+        [applicantAnswers]="applicantAnswers"
+        [docs]="profileDocs"
+        [profile]="profile"
+        [interviews]="interviewQuestions"
+        [matchSignals]="matchSignals"></app-application-preview>
+    </section>
+
+    <!-- Messages -->
+    <section class="jad-card" *ngIf="showMessageThread">
+      <h2 class="jad-card-title">Messages</h2>
+      <app-message-thread
+        [jobId]="jobId"
+        [applicantUid]="userId"
+        [otherPartyLabel]="fullName"
+        currentUserRole="employer">
+      </app-message-thread>
+    </section>
+
+  </ng-container>
+</div>

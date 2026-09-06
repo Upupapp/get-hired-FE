@@ -34,9 +34,8 @@
         {{ applicant.city }}{{ applicant.city && applicant.country ? ', ' : '' }}{{ applicant.country }}
       </p>
 
-      <button type="button" class="cgd-cv-btn" [disabled]="loadingResumeForUserId === applicant.userId"
-        (click)="viewResume(applicant)">
-        {{ loadingResumeForUserId === applicant.userId ? 'Loading…' : 'View CV' }}
+      <button type="button" class="cgd-cv-btn" (click)="viewDetails(applicant)">
+        View Details
       </button>
     </div>
   </div>

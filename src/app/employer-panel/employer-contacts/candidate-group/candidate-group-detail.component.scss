@@ -8,7 +8,18 @@ $muted: #667085;
 $green: #12B76A;
 $red: #D92D20;
 
-.cgd-wrap { padding: 0; }
+// BUGFIX: see candidate-group-overview.component.scss's .cg-wrap for the
+// full explanation -- same root cause, same fix.
+.cgd-wrap {
+  padding: 16px 16px 32px;
+
+  @media (min-width: 576px) {
+    padding: 20px 24px 40px;
+  }
+  @media (min-width: 992px) {
+    padding: 28px 32px 48px;
+  }
+}
 
 .cgd-header { margin-bottom: 20px; }
 
@@ -47,6 +58,10 @@ $red: #D92D20;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
+
+  @media (max-width: 359px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cgd-card {
@@ -58,6 +73,10 @@ $red: #D92D20;
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  @media (max-width: 575px) {
+    padding: 16px;
+  }
 }
 
 .cgd-card-top {
