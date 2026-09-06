@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {
   RecruiterInterviewHubService,
@@ -45,9 +46,19 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
 
   private sub: Subscription | null = null;
 
-  constructor(private hubService: RecruiterInterviewHubService) {}
+  constructor(
+    private hubService: RecruiterInterviewHubService,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
+    // DEEP-LINK: dashboard "Video answers" action-inbox cards/KPI link here
+    // with ?filter=has-video so clicking them lands directly on that tab
+    // instead of always opening on "All applicants".
+    const requestedFilter = this.route.snapshot.queryParamMap.get('filter');
+    if (requestedFilter === 'has-video' || requestedFilter === 'review-stage') {
+      this.activeFilter = requestedFilter;
+    }
     this.loadHub();
   }
 

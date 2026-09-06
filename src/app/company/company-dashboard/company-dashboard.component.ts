@@ -388,7 +388,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         type: 'review_video_answers', priority: 'medium',
         title: 'Review video answers',
         reason: 'Candidates have submitted video answers to your interview questions.',
-        ctaLabel: 'Review videos', route: '/recruiter/jobs/list', count: interviews
+        ctaLabel: 'Review videos', route: '/recruiter/interview?filter=has-video', count: interviews
       };
     } else if (score < 80) {
       this.cachedRecommendedStep = {
@@ -425,7 +425,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         type: 'review_videos', priority: 'high', count: interviews,
         label: 'Review video answers',
         desc: interviews + ' video answer' + (interviews === 1 ? '' : 's') + ' need review.',
-        cta: 'Review videos', route: '/recruiter/jobs/list'
+        cta: 'Review videos', route: '/recruiter/interview?filter=has-video'
       });
     }
     actions.push({
@@ -492,6 +492,12 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
 
   goToJobsList(): void {
     this.router.navigate(['/recruiter/jobs/list']);
+  }
+
+  /** Video answers KPI card -- deep-links straight to the Interviews page's
+   * "Video answers" filter tab instead of the generic jobs list. */
+  goToVideoAnswers(): void {
+    this.router.navigateByUrl('/recruiter/interview?filter=has-video');
   }
 
   goToCompanyProfile(): void {
