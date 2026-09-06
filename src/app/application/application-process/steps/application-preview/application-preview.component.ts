@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroupDirective, FormArray } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { VideoPreviewComponent } from '@app-shared/components/video-preview/video-preview.component';
 import { FileViewerComponent } from '@app-shared/components/file-viewer/file-viewer.component';
 import * as InterviewModel from '@main/interview/interview.model';
+import { environment } from '@environments/environment';
 
 @Component({
   selector: 'app-application-preview',
@@ -48,7 +50,8 @@ export class ApplicationPreviewComponent implements OnInit {
 
   constructor(
     private rootFormGroup: FormGroupDirective,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private http: HttpClient
   ) { }
 
   get docGovFile() {
@@ -161,23 +164,43 @@ export class ApplicationPreviewComponent implements OnInit {
     });
   }
 
-  // BUGFIX: the previous XHR-blob approach silently did nothing on click --
-  // confirmed live that Firebase Storage's Applicant-Documents bucket path
-  // has no Access-Control-Allow-Origin header, so the XHR to fetch the file
-  // as a blob is blocked by CORS and its onreadystatechange callback never
-  // fires. A plain anchor navigation to the file's own (already-authorized,
-  // tokenized) URL isn't subject to that same-origin XHR restriction -- the
-  // browser downloads or opens the file exactly as clicking the link
-  // directly would.
+  // BUGFIX (round 2): two things confirmed broken live, in order.
+  // (1) A direct XHR-blob fetch of the Firebase Storage URL is blocked by
+  //     CORS -- that bucket path sends no Access-Control-Allow-Origin
+  //     header, so the request never completes.
+  // (2) A plain <a target="_blank"> navigation to the same URL only
+  //     "worked" for file types the browser can't render (docx forced a
+  //     real download) -- for a PDF or image (Cover Letter/Government
+  //     Files are very often one of these) the new tab just DISPLAYED the
+  //     file (Firebase serves it as Content-Disposition: inline), which
+  //     looks identical to "nothing happened" since no save dialog ever
+  //     appears.
+  //
+  // Fix: fetch through our own backend (GET /files/download), which
+  // streams the file server-side (no CORS restriction -- our API already
+  // allows this app's own origin) and sets Content-Disposition: attachment
+  // itself, so every file type downloads correctly regardless of what
+  // Firebase's object metadata declares.
   downloadDoc(item: any): void {
     if (!item?.fileurl) return;
-    const a = document.createElement('a');
-    a.href = item.fileurl;
-    a.download = item.filename || '';
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const filename = item.filename || 'document';
+    const proxyUrl = `${environment.api_url}/files/download?url=${encodeURIComponent(item.fileurl)}&filename=${encodeURIComponent(filename)}`;
+    this.http.get(proxyUrl, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+      },
+      error: () => {
+        // Last-resort fallback: at minimum let the user open/save the file
+        // manually rather than the click doing nothing at all.
+        window.open(item.fileurl, '_blank', 'noopener');
+      },
+    });
   }
 }
