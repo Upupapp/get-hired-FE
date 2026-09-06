@@ -56,6 +56,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public req: Subscription;
   public location: any;
 
+  // BUGFIX: "Browse jobs" rendered unconditionally whenever isPublic was
+  // true, including while the visitor was already ON the jobs browse/
+  // detail pages -- a redundant nav action back to where they already
+  // are. Hides it for any /jobs* route (browse listing and job detail
+  // sub-pages alike); everywhere else on the public site, unaffected.
+  get isOnJobsSection(): boolean {
+    return !!this.location && this.location.startsWith('/jobs');
+  }
+
   constructor(
     private coreService: CoreService,
     private router: Router,

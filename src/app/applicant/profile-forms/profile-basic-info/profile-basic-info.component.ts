@@ -11,6 +11,7 @@ import { startWith, pairwise, debounceTime, distinctUntilChanged } from 'rxjs';
 import * as Model from '../../applicant.model';
 import { generateProfileSuggestion, ProfileSuggestion } from './profile-ai-suggestion.util';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
+import { CoreService } from '@app-core/services/core.service';
 
 @Component({
   selector: 'app-profile-basic-info',
@@ -119,6 +120,7 @@ export class ProfileBasicInfoComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private loadingDialog: MatDialog,
+    private coreService: CoreService,
   ) { }
 
   ngOnInit(): void {
@@ -377,14 +379,33 @@ export class ProfileBasicInfoComponent implements OnInit {
     if (event == 'created') {
       this.submitting = false;
       this.snackbarService.success(`Your profile has been created`, '');
+      this.pushCurrentUserPatch();
       this.submitBasicInfo.emit('VALID');
       this.saveResult.emit('success');
     } else if (event == 'updated') {
       this.submitting = false;
       this.snackbarService.success(`Profile successfully updated`, '');
+      this.pushCurrentUserPatch();
       this.submitBasicInfo.emit('VALID');
       this.saveResult.emit('success');
     }
+  }
+
+  // BUGFIX: an avatar/name change saved here only ever reached this
+  // portal's own NgRx slice (ApplicantFacade) -- correctly updating the
+  // dashboard/topbar/sidebar, but leaving the public site's shared header
+  // (the one shown on /jobs, used by both signed-in roles) showing the
+  // stale photo/name indefinitely, since it has no connection to this
+  // portal's store at all. Pushes the just-saved fields into
+  // CoreService's cross-app currentUser$ stream, which that header
+  // subscribes to -- see CoreService.patchCurrentUser().
+  private pushCurrentUserPatch(): void {
+    const v = this.profileDetailsForm.value;
+    this.coreService.patchCurrentUser({
+      firstName: v.firstName,
+      lastName: v.lastName,
+      photoUrl: v.photoUrl,
+    });
   }
 
   // BUGFIX: previously nothing in this component reacted to a save

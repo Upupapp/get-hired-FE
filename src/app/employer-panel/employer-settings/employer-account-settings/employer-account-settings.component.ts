@@ -7,6 +7,7 @@ import { SecurityLogoutCountdownComponent } from '@app-shared/components/securit
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { AuthService } from '@main/auth/auth.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
+import { CoreService } from '@app-core/services/core.service';
 import { Subscription } from 'rxjs';
 
 type PwState = 'idle' | 'saving' | 'success' | 'wrong_current' | 'weak' | 'same_as_old' | 'rate_limited' | 'network' | 'server';
@@ -49,7 +50,8 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
     private authFacade: AuthFacade,
     private authService: AuthService,
     private employeeFacade: EmployeeFacade,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private coreService: CoreService,
   ) {}
 
   ngOnInit(): void {
@@ -156,6 +158,24 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
         if (!this.pendingAvatarBase64) {
           this.avatarPreviewUrl = u.photoUrl || u.photoURL || '';
         }
+        // BUGFIX: this refresh already correctly updates the employer
+        // panel's own sidebar/topbar (via employeeFacade.getEmployeeProfile()
+        // above), but the public site's shared header (shown on /jobs for
+        // both roles) has no connection to EmployeeFacade at all -- it
+        // kept showing the pre-upload avatar indefinitely. Pushes the
+        // freshly-fetched, authoritative values (not the pre-save preview
+        // URL, which may not match what the server actually persisted)
+        // into CoreService's cross-app currentUser$ stream. See
+        // CoreService.patchCurrentUser().
+        // patchCurrentUser() merges into the existing snapshot, so a
+        // field this response doesn't carry (e.g. companyName, which
+        // GET /auth/getprofile may not return) simply stays whatever it
+        // already was rather than being wiped out.
+        this.coreService.patchCurrentUser({
+          firstName: u.firstName,
+          lastName: u.lastName,
+          photoUrl: u.photoUrl || u.photoURL || '',
+        });
       },
       error: () => {
         this.avatarError = 'We couldn’t load your profile. Please refresh and try again.';

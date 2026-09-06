@@ -137,8 +137,6 @@ export class JobReadinessService {
     const hasJobDuties          = !!(input.jobDuties?.trim());
     const hasSkills             = (input.skills?.length ?? 0) > 0;
     const hasRequirements       = (input.requirements?.length ?? 0) > 0;
-    const hasCompanyLogo        = !!(input.companyLogoUrl?.trim());
-    const hasCompanyOverview    = !!(input.companyDetails?.trim());
     const hasInterviewQuestions = (input.interviewQuestions?.length ?? 0) > 0;
     const hasJobTypeDetail      = !!(input.jobTypeId || input.jobLevelId);
     const hasEducation          = (input.educationalBackground?.length ?? 0) > 0;
@@ -165,8 +163,15 @@ export class JobReadinessService {
     pushRec('duties',           'Responsibilities section',   hasJobDuties,        'section-duties',        'list-task');
     pushRec('skills',           'Skills',                     hasSkills,           'section-skills',        'tools');
     pushRec('requirements',     'Required qualifications',    hasRequirements,     'section-requirements',  'check2-square');
-    pushRec('companyLogo',      'Company logo',               hasCompanyLogo,      'section-company',       'image');
-    pushRec('companyOverview',  'Company overview',           hasCompanyOverview,  'section-company',       'info-circle');
+    // BUGFIX: "Company logo"/"Company overview" removed -- companyLogoUrl/
+    // companyDetails were never actually populated by either job-create.
+    // component.ts call site (never wired into initialData/jobInfo), so
+    // hasCompanyLogo/hasCompanyOverview were always false regardless of
+    // whether the company genuinely had a logo or overview. These two
+    // suggestions showed as "incomplete" unconditionally for every job
+    // post -- not a real signal, just permanently-stuck noise. Company
+    // logo also already has a default fallback image shown elsewhere, so
+    // there was nothing actionable here even if the check did work.
     pushRec('interview',        'Interview questions',        hasInterviewQuestions,'section-interview',    'mic');
     pushRec('education',        'Educational background',     hasEducation,        'section-education',     'mortarboard');
 
