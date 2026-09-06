@@ -193,8 +193,11 @@ export class RecruiterMessagesComponent implements OnInit, OnDestroy {
       : t.lastMessageSnippet;
   }
 
+  // CANDIDATE-GROUP-V1: repointed from the now-unlinked "Talent" section
+  // (contacts, which previously defaulted to Talent Pool) to the new
+  // standalone Applicants section.
   goToApplicants(): void {
-    this.router.navigate(['/recruiter/contacts']);
+    this.router.navigate(['/recruiter/applicants']);
   }
 
   goToJobs(): void {

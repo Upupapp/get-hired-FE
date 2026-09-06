@@ -310,19 +310,16 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (url.includes('/jobs/view'))           return 'Job Preview';
     if (url.includes('/jobs/dashboard'))      return 'Job Overview';
     if (url.includes('/jobs'))                return 'Jobs';
-    // TALENT-WORKSPACE-REDESIGN BUGFIX: this getter is a third, independent
-    // route->label mapping (separate from the sidebar nav and each page's
-    // own on-page title, both already renamed) that was missed during the
-    // redesign -- it kept showing the old "Contacts"/"Contact Groups"
-    // names in the persistent top header while the page below it already
-    // said "Talent Pool"/"Candidate Groups", contradicting itself on the
-    // same screen.
-    if (url.includes('/contacts/list'))       return 'Talent Pool';
-    if (url.includes('/contacts/candidates')) return 'Applicants';
+    // CANDIDATE-GROUP-V1: "Talent" retired in favor of a single, purely
+    // job-derived "Candidate Group" section, plus a new standalone
+    // "Applicants" section (previously buried under Jobs). The old
+    // Talent Pool/old Applicants/old manual Candidate Groups routes are
+    // left registered (unlinked from nav) -- their branches below are
+    // kept only for contacts/candidate-list, still reachable via the
+    // Interview hub's deep links.
+    if (url.includes('/contacts/job-groups')) return 'Candidate Group';
     if (url.includes('/contacts/candidate-list')) return 'Candidate Profile';
-    if (url.includes('/contacts/groups'))     return 'Candidate Groups';
-    if (url.includes('/contacts/group-list')) return 'Candidate Group';
-    if (url.includes('/contacts'))            return 'Talent';
+    if (url.includes('/applicants'))          return 'Applicants';
     if (url.includes('/interview'))           return 'Interviews';
     if (url.includes('/messages'))            return 'Messages';
     if (url.includes('/company'))             return 'Company';
@@ -337,9 +334,13 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
         url.includes('/jobs/create') || url.includes('/jobs/edit') ||
         url.includes('/jobs/applicants') || url.includes('/jobs/view') ||
         url.includes('/jobs/dashboard'))      return 'Jobs';
-    if (url.includes('/contacts/list') || url.includes('/contacts/candidates') ||
-        url.includes('/contacts/candidate-list') || url.includes('/contacts/groups') ||
-        url.includes('/contacts/group-list')) return 'Talent';
+    // CANDIDATE-GROUP-V1: contacts/candidate-list stays under "Talent" as
+    // a label only (still reachable via Interview hub deep links); the
+    // new Candidate Group and Applicants sections are each their own
+    // top-level parent, matching their promoted sidebar position.
+    if (url.includes('/contacts/candidate-list')) return 'Talent';
+    if (url.includes('/contacts/job-groups')) return 'Candidate Group';
+    if (url.includes('/applicants'))          return 'Applicants';
     if (url.includes('/interview') || url.includes('/messages')) return 'Hiring Workspace';
     if (url.includes('/company'))             return 'Company';
     if (url.includes('/subscription'))        return 'Account';
@@ -354,13 +355,13 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     if (url.includes('/jobs/create'))             return 'Build and publish your job post step by step.';
     if (url.includes('/jobs/edit'))               return 'Update this job post and republish changes.';
     if (url.includes('/jobs/applicants'))         return 'Review candidates who applied to this job.';
-    // TALENT-WORKSPACE-REDESIGN BUGFIX: same stale-copy issue as pageTitle
-    // above -- these duplicated the pre-redesign subtitles instead of the
-    // ones already shown on the Talent Pool/Candidate Groups pages themselves.
-    if (url.includes('/contacts/list'))           return 'Manage candidates and prospects your company may want to hire now or in the future.';
-    if (url.includes('/contacts/candidates'))     return 'Review all candidates who applied to your jobs.';
+    // CANDIDATE-GROUP-V1: new sections' subtitles. Old Talent Pool/old
+    // Applicants/old manual Candidate Groups subtitles removed along with
+    // their nav links (routes still work if visited directly, they just
+    // fall back to no subtitle, same as any other unlisted route).
+    if (url.includes('/contacts/job-groups'))     return 'Applicants grouped by job, once marked Hired or Rejected.';
     if (url.includes('/contacts/candidate-list')) return 'Review this candidate\'s application and profile.';
-    if (url.includes('/contacts/groups'))         return 'Organize candidates into reusable groups for sourcing, hiring, and follow-up.';
+    if (url.includes('/applicants'))              return 'Review candidates who applied to your jobs.';
     if (url.includes('/interview'))               return 'Review interview activity and candidate video responses.';
     if (url.includes('/messages'))                return 'Manage candidate conversations across your jobs.';
     if (url.includes('/company'))                 return 'Manage your employer brand and public company profile.';
@@ -397,8 +398,12 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     return !!(this.user && this.user._id && this.aiCreateDraft.hasPending(this.user._id));
   }
 
+  // CANDIDATE-GROUP-V1: this is the topbar "Review applicants" button
+  // (visible on every employer page). Repointed from the now-unlinked
+  // old "Talent > Applicants" job-picker (contacts/candidates) to the
+  // new standalone Applicants section's job-picker.
   goToJobsList(): void {
-    this.router.navigate(['/recruiter/contacts/candidates']);
+    this.router.navigate(['/recruiter/applicants']);
   }
 
   /** APP-018/EMP-020 fix: Employer sign-out previously required an extra

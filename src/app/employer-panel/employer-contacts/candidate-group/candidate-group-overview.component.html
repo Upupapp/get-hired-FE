@@ -1,0 +1,54 @@
+<div class="cg-wrap" *ngIf="!loading; else cgLoading" [@animate]="{value:'*', params:{y:'20px', delay:'0ms'}}">
+
+  <div class="cg-header">
+    <div>
+      <p class="cg-header-count">
+        {{ jobSummaries.length }} job{{ jobSummaries.length !== 1 ? 's' : '' }} with applicants
+      </p>
+    </div>
+  </div>
+
+  <div class="cg-grid" *ngIf="jobSummaries.length > 0; else cgEmpty">
+    <div class="cg-card" *ngFor="let job of jobSummaries" role="button" tabindex="0"
+      (click)="openGroup(job)" (keyup.enter)="openGroup(job)"
+      [attr.aria-label]="'Open candidate group for ' + job.jobTitle">
+      <h5 class="cg-card-title">{{ job.jobTitle }}</h5>
+      <p class="cg-card-jobid">{{ job.jobId }}</p>
+
+      <div class="cg-card-stats">
+        <div class="cg-stat">
+          <span class="cg-stat-value">{{ job.totalApplicants }}</span>
+          <span class="cg-stat-label">Applicants</span>
+        </div>
+        <div class="cg-stat cg-stat--hired">
+          <span class="cg-stat-value">{{ job.hiredCount }}</span>
+          <span class="cg-stat-label">Hired</span>
+        </div>
+        <div class="cg-stat cg-stat--rejected">
+          <span class="cg-stat-value">{{ job.rejectedCount }}</span>
+          <span class="cg-stat-label">Rejected</span>
+        </div>
+      </div>
+
+      <div class="cg-card-cta">
+        View candidate group
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+          width="12" height="12" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 3l5 5-5 5"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #cgEmpty>
+    <div class="cg-empty">
+      <p class="cg-empty-title">No candidate groups yet</p>
+      <p class="cg-empty-body">Candidate groups appear here automatically once applicants start applying to your jobs.</p>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #cgLoading>
+  <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="true">
+  </custom-profile-loader>
+</ng-template>

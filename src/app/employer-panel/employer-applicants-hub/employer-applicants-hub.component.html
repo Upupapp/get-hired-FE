@@ -1,0 +1,46 @@
+<div class="ea-wrap" *ngIf="!loading; else eaLoading" [@animate]="{value:'*', params:{y:'20px', delay:'0ms'}}">
+
+  <div class="ea-header">
+    <p class="ea-header-count">
+      {{ jobSummaries.length }} job{{ jobSummaries.length !== 1 ? 's' : '' }} with applicants
+    </p>
+  </div>
+
+  <div class="ea-table-wrap" *ngIf="jobSummaries.length > 0; else eaEmpty">
+    <table class="ea-table">
+      <thead>
+        <tr>
+          <th scope="col">Job Title</th>
+          <th scope="col">Job Id</th>
+          <th scope="col">Applicants</th>
+          <th scope="col" class="ea-th--action"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let job of jobSummaries" class="ea-row" (click)="openJobApplicants(job)"
+          role="button" tabindex="0" (keyup.enter)="openJobApplicants(job)">
+          <td class="ea-td ea-td--title">{{ job.jobTitle }}</td>
+          <td class="ea-td ea-td--mono">{{ job.jobId }}</td>
+          <td class="ea-td">{{ job.totalApplicants }}</td>
+          <td class="ea-td ea-td--action">
+            <button type="button" class="ea-review-btn" (click)="openJobApplicants(job); $event.stopPropagation()">
+              Review Applicants
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #eaEmpty>
+    <div class="ea-empty">
+      <p class="ea-empty-title">No applicants yet</p>
+      <p class="ea-empty-body">Once candidates apply to your jobs, they'll show up here grouped by job.</p>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #eaLoading>
+  <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="true">
+  </custom-profile-loader>
+</ng-template>

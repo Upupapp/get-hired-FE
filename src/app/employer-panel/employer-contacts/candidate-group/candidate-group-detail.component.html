@@ -1,0 +1,55 @@
+<div class="cgd-wrap" *ngIf="!loading; else cgdLoading" [@animate]="{value:'*', params:{y:'20px', delay:'0ms'}}">
+
+  <div class="cgd-header">
+    <button type="button" class="cgd-back" (click)="goBack()" aria-label="Back to candidate groups">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
+        width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 3L5 8l5 5"/>
+      </svg>
+      Candidate Groups
+    </button>
+    <h4 class="cgd-title">{{ jobTitle || jobId }}</h4>
+    <p class="cgd-subtitle">Hired and Rejected applicants for this job.</p>
+  </div>
+
+  <div class="cgd-grid" *ngIf="applicants.length > 0; else cgdEmpty">
+    <div class="cgd-card" *ngFor="let applicant of applicants">
+      <div class="cgd-card-top">
+        <div class="cgd-avatar">
+          <img *ngIf="applicant.photoUrl" [src]="applicant.photoUrl" [alt]="applicant.fullName"
+            (error)="onAvatarError($event)" class="cgd-avatar-img">
+          <span *ngIf="!applicant.photoUrl" class="cgd-avatar-initials" aria-hidden="true">
+            {{ applicant.fullName.charAt(0) }}
+          </span>
+        </div>
+        <span class="cgd-status-badge"
+          [class.cgd-status-badge--hired]="applicant.isHired"
+          [class.cgd-status-badge--rejected]="applicant.isRejected">
+          {{ applicant.jobApplicationStatusName }}
+        </span>
+      </div>
+
+      <h5 class="cgd-card-name">{{ applicant.fullName }}</h5>
+      <p class="cgd-card-location" *ngIf="applicant.city || applicant.country">
+        {{ applicant.city }}{{ applicant.city && applicant.country ? ', ' : '' }}{{ applicant.country }}
+      </p>
+
+      <button type="button" class="cgd-cv-btn" [disabled]="loadingResumeForUserId === applicant.userId"
+        (click)="viewResume(applicant)">
+        {{ loadingResumeForUserId === applicant.userId ? 'Loading…' : 'View CV' }}
+      </button>
+    </div>
+  </div>
+
+  <ng-template #cgdEmpty>
+    <div class="cgd-empty">
+      <p class="cgd-empty-title">No Hired or Rejected applicants yet</p>
+      <p class="cgd-empty-body">Once you mark an applicant as Hired or Rejected from the Applicants section, they'll appear here.</p>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #cgdLoading>
+  <custom-profile-loader [withSideBar]="false" [fromDetailTab]="true" [loading]="true">
+  </custom-profile-loader>
+</ng-template>

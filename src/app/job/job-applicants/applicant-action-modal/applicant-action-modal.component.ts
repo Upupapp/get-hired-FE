@@ -4,14 +4,6 @@ import { SnackbarService } from '@app-core/services/snackbar.service';
 import { Router } from '@angular/router';
 import { JobService } from '@app-job/job.service';
 
-const STATUS_OPTIONS = [
-  { id: 2, name: 'Applied' },
-  { id: 3, name: 'Under Review' },
-  { id: 4, name: 'Shortlisted' },
-  { id: 5, name: 'Rejected' },
-  { id: 6, name: 'Hired' },
-];
-
 @Component({
   selector: 'app-applicant-action-modal',
   templateUrl: './applicant-action-modal.component.html',
@@ -21,7 +13,29 @@ export class ApplicantActionModalComponent implements OnInit {
   statusView = false;
   statusUpdating = false;
   confirmingStatus: { id: number; name: string } | null = null;
-  readonly statusOptions = STATUS_OPTIONS;
+
+  // BUGFIX: trimmed from 5 hardcoded options (Applied/Under Review/
+  // Shortlisted/Rejected/Hired, with hardcoded ids 2-6 from the seed
+  // migration) to just the two terminal statuses this action is meant
+  // for -- Applied/Under Review/Shortlisted are still real statuses (set
+  // automatically elsewhere, e.g. Under Review on interview submission)
+  // and still display correctly wherever an applicant's status is shown,
+  // they're just no longer manually selectable here.
+  //
+  // ROOT-CAUSE FIX: the hardcoded ids (5=Rejected, 6=Hired) from the seed
+  // migration do NOT match live production data -- confirmed via the
+  // existing per-applicant endpoint that application_status_id=6 is
+  // actually named "Rejected" live, not "Hired" (the seed's
+  // `ON CONFLICT DO NOTHING` silently skipped correcting whatever
+  // id->name mapping already existed). Hardcoding ids here would have
+  // meant clicking "Hired" actually set an applicant to whatever id 6
+  // really means in production, and the automatic status-change email
+  // would tell them the wrong thing. Instead, this fetches the REAL
+  // id->name mapping from the backend and resolves "Hired"/"Rejected" by
+  // name -- correct regardless of the real numbering.
+  statusOptions: { id: number; name: string }[] = [];
+  loadingStatusOptions = false;
+  statusOptionsError: string | null = null;
 
   public tableControls: any[] = [
     {
@@ -52,7 +66,38 @@ export class ApplicantActionModalComponent implements OnInit {
     private jobService: JobService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadStatusOptions();
+  }
+
+  // Resolves "Hired"/"Rejected" to their real ids from the backend's live
+  // job_applicant_status table, instead of assuming ids. If either name
+  // is genuinely missing from that table (a real data problem, not
+  // expected), the action fails loudly with a clear message rather than
+  // silently offering nothing or guessing an id.
+  private loadStatusOptions(): void {
+    this.loadingStatusOptions = true;
+    this.statusOptionsError = null;
+    this.jobService.getApplicantStatusOptions().subscribe({
+      next: (res: any) => {
+        this.loadingStatusOptions = false;
+        const all = (res?.data || []) as { id: number; name: string }[];
+        const hired = all.find((s) => s.name === 'Hired');
+        const rejected = all.find((s) => s.name === 'Rejected');
+        if (!hired || !rejected) {
+          this.statusOptionsError = "Couldn't find the Hired/Rejected statuses. Please contact support.";
+          this.statusOptions = [];
+          return;
+        }
+        this.statusOptions = [rejected, hired];
+      },
+      error: () => {
+        this.loadingStatusOptions = false;
+        this.statusOptionsError = "We couldn't load status options right now. Please try again.";
+        this.statusOptions = [];
+      },
+    });
+  }
 
   onAvatarError(event: Event): void {
     (event.target as HTMLImageElement).src = '/assets/images/placeholder/job-post-banner-person.png';
@@ -114,12 +159,11 @@ export class ApplicantActionModalComponent implements OnInit {
       this.dialogRef.close(null);
       return;
     }
-    // Rejected (5) and Hired (6) trigger an email to the applicant — require confirmation
-    if (statusId === 5 || statusId === 6) {
-      this.confirmingStatus = { id: statusId, name: statusName };
-      return;
-    }
-    this.applyStatusUpdate(statusId, statusName);
+    // Every remaining option (Hired/Rejected, resolved dynamically in
+    // loadStatusOptions()) triggers an email to the applicant -- always
+    // require confirmation. Previously branched on hardcoded ids (5/6);
+    // no longer needed since those are now the only two options at all.
+    this.confirmingStatus = { id: statusId, name: statusName };
   }
 
   confirmStatusChange(): void {

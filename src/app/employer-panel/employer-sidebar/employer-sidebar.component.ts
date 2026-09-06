@@ -138,39 +138,23 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
           },
         ]
       },
+      // CANDIDATE-GROUP-V1: "Talent" (Talent Pool / old manual Candidate
+      // Groups / old Applicants job-picker, 3 sub-routes) replaced by a
+      // single "Candidate Group" item -- a purely job-derived view (one
+      // card per job with applicants, expanding to that job's Hired/
+      // Rejected applicants). The three old routes (contacts/list,
+      // contacts/groups, contacts/candidates) are left registered in
+      // employer-contacts.module.ts, just unlinked from nav here -- no
+      // data or component was removed.
       {
-        // BUGFIX (parent/child naming collision -- confirmed via audit):
-        // was "Contacts", then "Candidates" for employer clarity, but its
-        // own child route at contacts/candidates is ALSO titled
-        // "Candidates" (CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE below), so
-        // the sidebar read "Candidates > Candidates" with no way to tell
-        // that child apart from "Contact List"/"Contact Group" without
-        // opening each one. "Talent" covers what this section actually is
-        // -- job applicants (contacts/candidates, real ApplicantModel/
-        // job_id data per candidate-list.component.ts), general contacts
-        // (contacts/list -- itself already titled "Contacts" on-page, per
-        // contact-list.component.html's componentTitle, so this also fixes
-        // a pre-existing sidebar/page-title mismatch), and saved contact
-        // groupings (contacts/groups) -- without colliding with any one of
-        // them. Sub-routes/URLs unchanged so existing /recruiter/
-        // contacts/** links and deep links still work.
-        // TALENT-WORKSPACE-REDESIGN: "Contacts"/"Contact Groups" reframed as
-        // "Talent Pool"/"Candidate Groups" -- routes unchanged (still
-        // contacts/list, contacts/groups) so existing deep links keep
-        // working; only the user-facing labels changed, matching the
-        // on-page titles updated in the same pass.
-        title: 'Talent', icon: 'applicants.png', class: 'applicants', route: 'contacts',
-        sub_routes: [
-          {
-            title: 'Talent Pool', icon: 'contact-list.png', class: 'contact-list', route: 'contacts/list'
-          },
-          {
-            title: 'Candidate Groups', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups',
-          },
-          {
-            title: this.translate.instant('CONTACTS_CANDIDATES.SIDEBAR_CANDIDATE'), icon: 'applicants.png', class: 'applicants', route: 'contacts/candidates',
-          },
-        ]
+        title: 'Candidate Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/job-groups'
+      },
+      // CANDIDATE-GROUP-V1: the per-job Applicants table (previously only
+      // reachable via "Review Applicants" buttons inside Jobs) promoted to
+      // its own sidebar section. Lands on a job-picker; picking a job goes
+      // to the existing, unchanged jobs/applicants route.
+      {
+        title: 'Applicants', icon: 'applicants.png', class: 'applicants', route: 'applicants'
       },
       // B03: Interviews hub — links to /recruiter/interview.
       // Added after Candidates so the recruiter pipeline flows naturally:
