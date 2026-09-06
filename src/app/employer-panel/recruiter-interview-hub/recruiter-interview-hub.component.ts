@@ -107,17 +107,21 @@ export class RecruiterInterviewHubComponent implements OnInit, OnDestroy {
     return this.filteredItems;
   }
 
-  /** Returns the correct candidate detail route for this application. */
+  /** BUGFIX: "View applicants" previously landed on the job's full
+   *  candidate-list TABLE (pre-filled search box, but still every other
+   *  applicant's row visible) instead of this one candidate -- confirmed
+   *  live in production. JobApplicantDetailsComponent (already used by
+   *  "Review Applicants" elsewhere in the app) is the real single-candidate
+   *  profile page: avatar, application snapshot, resume/documents, and
+   *  Change Status, scoped to exactly this applicant. */
   getCandidateRoute(item: InterviewHubItem): string[] {
-    return ['/recruiter/contacts/candidate-list', item.jobId];
+    return ['/recruiter/jobs/applicants/candidate', item.applicantId];
   }
 
-  /** Deep-link query params for "View applicants" -- candidate-list.component.ts
-   *  reads q to pre-fill its own search box with this applicant's name, so
-   *  the recruiter lands on this one candidate already filtered out of the
-   *  job's full list instead of having to search for them manually. */
-  getCandidateQueryParams(item: InterviewHubItem): { q: string } | undefined {
-    return item.applicantName ? { q: item.applicantName } : undefined;
+  /** JobApplicantDetailsComponent reads jobId as a query param (userId comes
+   *  from the route's own :userId segment above). */
+  getCandidateQueryParams(item: InterviewHubItem): { jobId: string } {
+    return { jobId: item.jobId };
   }
 
   /** Returns the job applicants route for drilling into video review. */
