@@ -1,1 +1,21 @@
 @import "src/assets/styles/colors";
+
+// STICKY FOOTER: this shell previously stacked header/content/footer as
+// plain blocks with no minimum height, so on any page shorter than the
+// viewport (e.g. Browse Companies with a single result) the footer sat
+// right under the content instead of anchoring to the bottom of the
+// screen -- a large blank gap below it read as unfinished/informal.
+// Standard flex sticky-footer pattern: the shell is a full-viewport-height
+// column, the routed content is the one flexible child that grows to fill
+// whatever space is left, so the footer always lands at the bottom of the
+// viewport on short pages while still pushing down naturally on tall ones.
+.gh-public-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.gh-public-content {
+  flex: 1 0 auto;
+  margin-top: 80px;
+}
