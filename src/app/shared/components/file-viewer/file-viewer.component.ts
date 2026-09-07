@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@environments/environment';
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
 const OFFICE_EXTENSIONS = ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx'];
@@ -32,7 +34,8 @@ export class FileViewerComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<FileViewerComponent>,
     @Inject(MAT_DIALOG_DATA) public data,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -64,24 +67,40 @@ export class FileViewerComponent implements OnInit {
     }
   }
 
+  // BUGFIX: the previous XHR-blob fetch straight to Firebase Storage was
+  // blocked by CORS (no Access-Control-Allow-Origin header on that bucket
+  // path) -- confirmed live, this Download button silently did nothing.
+  // Routes through the same backend proxy (GET /files/download) already
+  // fixed and deployed for the candidate-documents Download button, which
+  // streams the file server-side and sets Content-Disposition: attachment
+  // itself -- works for every file type, no CORS issue since the request
+  // goes to our own API origin. The Authorization header is attached
+  // explicitly rather than relying on the app-wide HTTP interceptor,
+  // matching the fix already proven necessary for this exact endpoint
+  // (confirmed live: the interceptor doesn't reliably fire for every
+  // lazy-loaded module's HttpClient instance).
   downloadFile(): void {
     const file = this.data;
-    const xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = () => {
-      if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-        const blobUrl = window.URL.createObjectURL(xmlHttp.response);
+    if (!file?.fileurl) return;
+    const filename = file.filename || 'document';
+    const proxyUrl = `${environment.api_url}/files/download?url=${encodeURIComponent(file.fileurl)}&filename=${encodeURIComponent(filename)}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? { Authorization: token } : {};
+    this.http.get(proxyUrl, { responseType: 'blob', headers }).subscribe({
+      next: (blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
         const e = document.createElement('a');
         e.href = blobUrl;
-        e.download = file.filename;
+        e.download = filename;
         document.body.appendChild(e);
         e.click();
         document.body.removeChild(e);
         window.URL.revokeObjectURL(blobUrl);
-      }
-    };
-    xmlHttp.responseType = 'blob';
-    xmlHttp.open('GET', file.fileurl, true);
-    xmlHttp.send(null);
+      },
+      error: () => {
+        window.open(file.fileurl, '_blank', 'noopener');
+      },
+    });
   }
 
 }
