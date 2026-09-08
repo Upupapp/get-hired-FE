@@ -38,19 +38,19 @@ $gh-text-muted:#6B7280;
 .gh-404__brand {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  text-decoration: none;
 }
 
-.gh-404__brand-text {
-  font-family: 'Manrope', sans-serif;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  color: $gh-navy;
-}
-
-.gh-404__brand-accent {
-  color: $gh-coral;
+// BUGFIX (real logo): this was a hand-drawn placeholder flame SVG + "GET
+// HIRED" text -- never the actual GetHired brand mark used everywhere
+// else (header, footer). Swapped for the same horizontal logo asset the
+// header uses (assets/brand/Gethired-horizontal-logo.png), sized to sit
+// comfortably in this card's brandbar.
+.gh-404__brand-logo {
+  height: 28px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
 }
 
 // ── Responsive body: CSS Grid reflows the illustration between the
