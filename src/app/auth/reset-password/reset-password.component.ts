@@ -69,27 +69,42 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
 
+    if (this.loading) {
+      // Guards against a rapid double-click/double-Enter firing a second
+      // request while the first is still in flight -- the button is
+      // already [disabled]="loading" for the same reason, but this covers
+      // the (submit) handler being invoked directly.
+      return;
+    }
+
     this.email = this.pwForm?.get('email')?.value;
     this.loading = true;
     this.authService.getEmailPwLink(this.email)
       .pipe(
-        map((result: any) => {
-          if (result?.data) {
-            // TODO add alert
-            localStorage.removeItem('loginError');
-            localStorage.removeItem('loginMessage');
-            this.instructionSent = true;
-            this.loading = false;
-
-          }
+        map(() => {
+          // BUGFIX (account enumeration): the backend's /auth/getpwresetlink
+          // already always responds 200 with one generic message regardless
+          // of whether the account exists (see passwordResetLink in
+          // userController.js), so the success branch never needs to -- and
+          // must not -- inspect the response body for anything
+          // existence-revealing. Show the same confirmation state
+          // unconditionally on any successful HTTP response.
+          localStorage.removeItem('loginError');
+          localStorage.removeItem('loginMessage');
+          this.instructionSent = true;
+          this.loading = false;
         }),
-        catchError((err: any) => {
-          const { error } = err;
-          localStorage.setItem('loginError', error.error);
-          this.error = localStorage.getItem('loginError');
+        catchError(() => {
+          // BUGFIX (account enumeration): this previously surfaced the raw
+          // backend/Firebase error text verbatim (e.g. "auth/user-not-found"
+          // or similar), which is exactly the enumeration signal the
+          // generic success response above is designed to avoid -- a
+          // network/5xx failure must show only a generic, non-revealing
+          // system-error message, never the underlying error body.
+          this.error = "We couldn't process your request right now. Please try again.";
           this.loading = false;
 
-          return of(err);
+          return of(null);
         })
       ).subscribe();
   }
