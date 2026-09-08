@@ -13,13 +13,15 @@ interface GroupApplicant {
   jobApplicationStatusName: string;
   isHired: boolean;
   isRejected: boolean;
+  isShortlisted: boolean;
   city: string;
   country: string;
 }
 
-// CANDIDATE-GROUP-V1: the "expand a job's candidate group" view -- shows
-// ONLY that job's Hired/Rejected applicants (both are terminal statuses;
-// anyone still Pending/Under Review/Shortlisted belongs to the live
+// CANDIDATE-GROUP-V1/SHORTLIST-01: the "expand a job's candidate group"
+// view -- shows Hired, Rejected, and Shortlisted applicants for that job
+// (the three statuses an employer explicitly sets via Change Status;
+// anyone still Applied/Reviewed/Interview/Offer belongs to the live
 // pipeline in the standalone Applicants section, not here) as avatar
 // cards with a working CV download. Read-only by design -- status
 // changes happen from the standalone Applicants section's Change Status
@@ -60,7 +62,7 @@ export class CandidateGroupDetailComponent implements OnInit {
         // the real numbering.
         const all = (res?.data || []) as any[];
         this.applicants = all
-          .filter((a) => a.jobApplicationStatusName === 'Hired' || a.jobApplicationStatusName === 'Rejected')
+          .filter((a) => a.jobApplicationStatusName === 'Hired' || a.jobApplicationStatusName === 'Rejected' || a.jobApplicationStatusName === 'Shortlisted')
           .map((a) => ({
             userId: a.userId,
             applicationId: a.applicationId,
@@ -70,6 +72,7 @@ export class CandidateGroupDetailComponent implements OnInit {
             jobApplicationStatusName: a.jobApplicationStatusName,
             isHired: a.jobApplicationStatusName === 'Hired',
             isRejected: a.jobApplicationStatusName === 'Rejected',
+            isShortlisted: a.jobApplicationStatusName === 'Shortlisted',
             city: a.city,
             country: a.country,
           }));
