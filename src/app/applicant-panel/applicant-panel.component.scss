@@ -717,11 +717,12 @@
 }
 
 .gh-ap-notif-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
   text-align: left;
-  padding: 12px 16px;
+  padding: 12px 40px 12px 16px;
   border: none;
   border-bottom: 1px solid var(--gh-border);
   background: var(--gh-color-bg-card);
@@ -729,12 +730,34 @@
   transition: background 120ms ease;
 
   &:hover { background: var(--gh-coral-soft); }
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: -2px; }
 
   &--unread {
     background: rgba(255, 90, 54, 0.06);
 
     &:hover { background: rgba(255, 90, 54, 0.1); }
   }
+}
+
+.gh-ap-notif-item-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gh-text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover { background: rgba(0, 0, 0, 0.08); color: var(--gh-text); }
+  &:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 1px; }
 }
 
 .gh-ap-notif-item-title {
