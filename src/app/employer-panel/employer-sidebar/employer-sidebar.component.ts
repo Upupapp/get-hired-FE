@@ -138,16 +138,19 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
           },
         ]
       },
-      // CANDIDATE-GROUP-V1: "Talent" (Talent Pool / old manual Candidate
-      // Groups / old Applicants job-picker, 3 sub-routes) replaced by a
-      // single "Candidate Group" item -- a purely job-derived view (one
-      // card per job with applicants, expanding to that job's Hired/
-      // Rejected applicants). The three old routes (contacts/list,
-      // contacts/groups, contacts/candidates) are left registered in
-      // employer-contacts.module.ts, just unlinked from nav here -- no
-      // data or component was removed.
+      // CANDIDATE-GROUP-V2: the job-derived view (CANDIDATE-GROUP-V1) is
+      // relabeled "Hiring Decisions" and kept reachable at its same route,
+      // since "Candidate Group" is restored below to its original meaning
+      // (the old manual add-candidates-by-hand feature, contacts/groups).
       {
-        title: 'Candidate Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/job-groups'
+        title: 'Hiring Decisions', icon: 'applicants.png', class: 'applicants', route: 'contacts/job-groups'
+      },
+      // CANDIDATE-GROUP-V2: restores the original manual "Candidate Group"
+      // nav link (add candidates manually / group applicants by hand) that
+      // CANDIDATE-GROUP-V1 had unlinked. Route/component were never removed
+      // -- ContactGroupComponent, contacts/groups -- just relinked here.
+      {
+        title: 'Candidate Group', icon: 'applicants.png', class: 'applicants', route: 'contacts/groups'
       },
       // CANDIDATE-GROUP-V1: the per-job Applicants table (previously only
       // reachable via "Review Applicants" buttons inside Jobs) promoted to
