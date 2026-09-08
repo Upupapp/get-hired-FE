@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JobService } from '@app-job/job.service';
+import { ApplicationService } from '@app-application/application.service';
 
 @Component({
   selector: 'app-applicant-application-detail',
@@ -33,11 +34,13 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
   error = false;
 
   private sub: Subscription | null = null;
+  private statusSub: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private jobService: JobService,
+    private applicationService: ApplicationService,
   ) {
     // router.getCurrentNavigation() is only valid synchronously during
     // construction — it returns null in ngOnInit (navigation is already
@@ -62,6 +65,22 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // BUGFIX: statusName previously came ONLY from router state, which is
+    // empty whenever this page is reached any other way than the
+    // applications list link (a notification click, a direct link, a
+    // refresh) -- the status badge silently never rendered in those cases.
+    // Fetch the authoritative status from the backend regardless, using it
+    // to fill in (or correct) whatever router state provided.
+    this.statusSub = this.applicationService.getApplicationSnapshot(this.applicationId).subscribe({
+      next: (res: any) => {
+        const label = res?.data?.statusLabel;
+        if (label) { this.statusName = label; }
+      },
+      error: () => {
+        // Non-fatal -- the page still works without the badge.
+      },
+    });
+
     this.load();
   }
 
@@ -79,6 +98,12 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
         this.job = (res && res.data) || res || null;
         this.loading = false;
         this.error = !this.job;
+        // Fall back to the fetched job's own title/company when router
+        // state didn't carry them (e.g. arriving via a notification click).
+        if (this.job) {
+          this.jobTitle = this.jobTitle || this.job.jobTitle || '';
+          this.companyName = this.companyName || this.job.companyName || '';
+        }
       },
       error: () => {
         this.job = null;
@@ -120,5 +145,6 @@ export class ApplicantApplicationDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
+    this.statusSub?.unsubscribe();
   }
 }
