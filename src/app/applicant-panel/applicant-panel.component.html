@@ -20,6 +20,43 @@
         <line class="gh-ap-menu-line gh-ap-menu-line--bot" x1="3" y1="18" x2="21" y2="18"/>
       </svg>
     </button>
+
+    <div class="gh-ap-notif-wrap gh-ap-mobile-notif-wrap">
+      <button class="gh-ap-notif-btn gh-pressable" type="button"
+        (click)="toggleNotifPanel()"
+        [attr.aria-expanded]="notifPanelOpen"
+        aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" width="20" height="20"
+             aria-hidden="true" focusable="false">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="gh-ap-notif-badge" *ngIf="unreadCount > 0">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+      </button>
+
+      <div class="gh-ap-notif-catcher"
+           *ngIf="notifPanelOpen" (click)="closeNotifPanel()" aria-hidden="true"></div>
+
+      <div class="gh-ap-notif-panel gh-ap-notif-panel--mobile" *ngIf="notifPanelOpen" role="dialog" aria-label="Notifications">
+        <div class="gh-ap-notif-panel-header">
+          <span>Notifications</span>
+          <button type="button" class="gh-ap-notif-mark-all" *ngIf="unreadCount > 0"
+            (click)="markAllNotificationsRead()">Mark all read</button>
+        </div>
+        <div class="gh-ap-notif-list">
+          <p class="gh-ap-notif-empty" *ngIf="notifications.length === 0">No notifications yet.</p>
+          <button type="button" class="gh-ap-notif-item" *ngFor="let n of notifications"
+            [class.gh-ap-notif-item--unread]="!n.isRead"
+            (click)="onNotificationClick(n)">
+            <span class="gh-ap-notif-item-title">{{ n.title }}</span>
+            <span class="gh-ap-notif-item-body">{{ n.body }}</span>
+            <span class="gh-ap-notif-item-time">{{ n.createdAt | date:'MMM d, h:mm a' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <span class="gh-ap-mobile-topbar-title" aria-hidden="true">GetHired</span>
 
     <!-- Mobile account entry point: the desktop topbar (avatar + its
@@ -206,6 +243,45 @@
            md+). Matches employer-panel's own .gh-employer-topbar structure. -->
       <header class="gh-ap-topbar d-none d-md-flex" role="banner" aria-label="Job seeker panel">
         <div class="gh-ap-topbar-left">
+          <!-- Notification bell + center -- same NotificationService/
+               backend the employer panel's bell already uses; the job
+               seeker portal never had one wired up until now. -->
+          <div class="gh-ap-notif-wrap">
+            <button class="gh-ap-notif-btn gh-pressable" type="button"
+              (click)="toggleNotifPanel()"
+              [attr.aria-expanded]="notifPanelOpen"
+              aria-label="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" width="20" height="20"
+                   aria-hidden="true" focusable="false">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="gh-ap-notif-badge" *ngIf="unreadCount > 0">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+            </button>
+
+            <div class="gh-ap-notif-catcher"
+                 *ngIf="notifPanelOpen" (click)="closeNotifPanel()" aria-hidden="true"></div>
+
+            <div class="gh-ap-notif-panel" *ngIf="notifPanelOpen" role="dialog" aria-label="Notifications">
+              <div class="gh-ap-notif-panel-header">
+                <span>Notifications</span>
+                <button type="button" class="gh-ap-notif-mark-all" *ngIf="unreadCount > 0"
+                  (click)="markAllNotificationsRead()">Mark all read</button>
+              </div>
+              <div class="gh-ap-notif-list">
+                <p class="gh-ap-notif-empty" *ngIf="notifications.length === 0">No notifications yet.</p>
+                <button type="button" class="gh-ap-notif-item" *ngFor="let n of notifications"
+                  [class.gh-ap-notif-item--unread]="!n.isRead"
+                  (click)="onNotificationClick(n)">
+                  <span class="gh-ap-notif-item-title">{{ n.title }}</span>
+                  <span class="gh-ap-notif-item-body">{{ n.body }}</span>
+                  <span class="gh-ap-notif-item-time">{{ n.createdAt | date:'MMM d, h:mm a' }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="gh-ap-topbar-context">
             <span class="gh-ap-topbar-eyebrow" *ngIf="parentLabel" aria-hidden="true">{{ parentLabel }}</span>
             <h1 class="gh-ap-topbar-title">{{ pageTitle }}</h1>

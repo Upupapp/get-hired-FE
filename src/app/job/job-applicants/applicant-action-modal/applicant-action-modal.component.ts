@@ -16,11 +16,20 @@ export class ApplicantActionModalComponent implements OnInit {
 
   // BUGFIX: trimmed from 5 hardcoded options (Applied/Under Review/
   // Shortlisted/Rejected/Hired, with hardcoded ids 2-6 from the seed
-  // migration) to just the two terminal statuses this action is meant
-  // for -- Applied/Under Review/Shortlisted are still real statuses (set
-  // automatically elsewhere, e.g. Under Review on interview submission)
-  // and still display correctly wherever an applicant's status is shown,
-  // they're just no longer manually selectable here.
+  // migration) to just the two terminal statuses this action was
+  // originally meant for. Applied/Under Review stay excluded -- they're
+  // genuinely automatic lifecycle states other code assumes happen in a
+  // specific sequence (e.g. Under Review is set automatically on
+  // interview submission), and letting an employer manually set them
+  // back risks real state-integrity bugs (an accidental revert past an
+  // already-completed step).
+  //
+  // BUGFIX (restored): Shortlisted was swept out along with those two as
+  // collateral, even though it's a genuine manual employer decision (not
+  // an automatic side effect of anything else) with its own dedicated
+  // applicant-facing notification already built and working
+  // server-side (application.service.js). Restored as a third option,
+  // resolved by name exactly like Hired/Rejected below.
   //
   // ROOT-CAUSE FIX: the hardcoded ids (5=Rejected, 6=Hired) from the seed
   // migration do NOT match live production data -- confirmed via the
@@ -31,8 +40,8 @@ export class ApplicantActionModalComponent implements OnInit {
   // meant clicking "Hired" actually set an applicant to whatever id 6
   // really means in production, and the automatic status-change email
   // would tell them the wrong thing. Instead, this fetches the REAL
-  // id->name mapping from the backend and resolves "Hired"/"Rejected" by
-  // name -- correct regardless of the real numbering.
+  // id->name mapping from the backend and resolves each status by name
+  // -- correct regardless of the real numbering.
   statusOptions: { id: number; name: string }[] = [];
   loadingStatusOptions = false;
   statusOptionsError: string | null = null;
@@ -78,11 +87,13 @@ export class ApplicantActionModalComponent implements OnInit {
     this.loadStatusOptions();
   }
 
-  // Resolves "Hired"/"Rejected" to their real ids from the backend's live
-  // job_applicant_status table, instead of assuming ids. If either name
-  // is genuinely missing from that table (a real data problem, not
-  // expected), the action fails loudly with a clear message rather than
-  // silently offering nothing or guessing an id.
+  // Resolves "Rejected"/"Shortlisted"/"Hired" to their real ids from the
+  // backend's live job_applicant_status table, instead of assuming ids.
+  // If Hired or Rejected is genuinely missing from that table (a real
+  // data problem, not expected), the action fails loudly with a clear
+  // message rather than silently offering nothing or guessing an id.
+  // Shortlisted is treated as optional here -- if it's ever missing, the
+  // other two still work rather than blocking the whole action on it.
   private loadStatusOptions(): void {
     this.loadingStatusOptions = true;
     this.statusOptionsError = null;
@@ -92,12 +103,13 @@ export class ApplicantActionModalComponent implements OnInit {
         const all = (res?.data || []) as { id: number; name: string }[];
         const hired = all.find((s) => s.name === 'Hired');
         const rejected = all.find((s) => s.name === 'Rejected');
+        const shortlisted = all.find((s) => s.name === 'Shortlisted');
         if (!hired || !rejected) {
           this.statusOptionsError = "Couldn't find the Hired/Rejected statuses. Please contact support.";
           this.statusOptions = [];
           return;
         }
-        this.statusOptions = [rejected, hired];
+        this.statusOptions = shortlisted ? [rejected, shortlisted, hired] : [rejected, hired];
       },
       error: () => {
         this.loadingStatusOptions = false;
