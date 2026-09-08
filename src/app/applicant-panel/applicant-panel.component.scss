@@ -783,6 +783,11 @@
 
 // ─── MOBILEVIEW: bell placement + panel positioning ────────────────────────
 .gh-ap-mobile-notif-wrap {
+  // BUGFIX: missing `position: relative` meant the panel's `position:
+  // absolute` (set on .gh-ap-notif-panel) resolved against the wrong
+  // positioned ancestor instead of this wrap -- the panel rendered
+  // detached from the bell, misaligned/overflowing on narrow viewports.
+  position: relative;
   flex-shrink: 0;
 
   .gh-ap-notif-btn { color: #ffffff; }
@@ -790,8 +795,16 @@
 }
 
 .gh-ap-notif-panel--mobile {
+  // Anchored to the viewport (fixed), not the bell's position within the
+  // topbar -- `left`/`max-width` relative to the wrap could still push
+  // the panel past the right edge on narrow screens depending on where
+  // the bell sits. Fixed positioning keeps it fully on-screen regardless.
+  position: fixed;
+  top: 56px;
   left: 12px;
-  max-width: calc(100vw - 24px);
+  right: 12px;
+  width: auto;
+  max-width: none;
 }
 
 .gh-ap-avatar-menu-item {
