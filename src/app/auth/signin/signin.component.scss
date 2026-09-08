@@ -169,6 +169,21 @@
 		background-clip: text;
 		text-fill-color: transparent;
 	}
+
+	// BUGFIX: the original round-dot indicator styling lived in a
+	// .img-banner block -- a class that does not exist anywhere in
+	// signin.component.html (dead CSS from an earlier redesign that
+	// renamed this wrapper to .bg-left without updating it), so Bootstrap's
+	// raw default rectangular-dash indicators rendered instead. Re-added
+	// here, scoped to the real wrapper, without touching anything else
+	// from that dead block.
+	.carousel-indicators button {
+		border-radius: 50% !important;
+		height: 10px;
+		width: 10px;
+		margin-right: 10px;
+		background-color: $color-blue-primary;
+	}
 }
 
 .bg-light-green{

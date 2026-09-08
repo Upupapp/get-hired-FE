@@ -282,18 +282,17 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   // dependency on Bootstrap's own click delegation entirely.
   ngAfterViewInit(): void {
     if (typeof bootstrap === 'undefined') { return; }
+    // No explicit `interval`/`pause` -- these match Bootstrap's own
+    // defaults (5000ms, pause on hover), i.e. exactly what
+    // data-bs-ride="carousel" auto-init already used.
     if (this.adminCarouselEl) {
       this.adminCarousel = new bootstrap.Carousel(this.adminCarouselEl.nativeElement, {
-        interval: 5000,
         ride: 'carousel',
-        pause: false,
       });
     }
     if (this.mobileCarouselEl) {
       this.mobileCarousel = new bootstrap.Carousel(this.mobileCarouselEl.nativeElement, {
-        interval: 5000,
         ride: 'carousel',
-        pause: false,
       });
     }
   }
