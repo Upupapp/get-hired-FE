@@ -447,19 +447,19 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         .subscribe(err => {
           if (err && (this.savingDraft || this.loading)) {
             this.savingDraft = false;
-            this.setAutoSaveState('failed');
             // Map common error strings to user-safe copy (no security internals exposed)
             const errStr = typeof err === 'string' ? err.toLowerCase() : '';
+            let errMsg: string;
             if (errStr.includes('permission') || errStr.includes('access') || errStr.includes('not found')) {
-              this.saveErrorMsg = "We couldn't update this job. It may no longer exist or you may not have access.";
+              errMsg = "We couldn't update this job. It may no longer exist or you may not have access.";
             } else if (errStr.includes('review') || errStr.includes('missing') || errStr.includes('required') || errStr.includes('field')) {
-              this.saveErrorMsg = "Please review the highlighted fields.";
+              errMsg = "Please review the highlighted fields.";
             } else if (errStr.includes('session') || errStr.includes('token') || errStr.includes('expired') || errStr.includes('unauthorized') || errStr.includes('401')) {
-              this.saveErrorMsg = "Your session has expired. Please sign in again.";
+              errMsg = "Your session has expired. Please sign in again.";
             } else {
-              this.saveErrorMsg = "We couldn't update this job. Try again.";
+              errMsg = "We couldn't update this job. Try again.";
             }
-            this.cd.markForCheck();
+            this.setAutoSaveState('failed', errMsg);
           } else if (!err) {
             // Error cleared — reset message only if not still showing success
             if (!this.saveSuccessPulse) {
@@ -1103,19 +1103,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // joining the soft confirm-dialog for merely-empty recommended fields.
     const jobInfoGroup = this.jobForm.get('jobInfo');
     if (jobInfoGroup && jobInfoGroup.invalid) {
-      this.haptics.warning();
-      const salaryMessage = jobInfoGroup.errors?.maxLessThanMin
-        ? 'Maximum salary cannot be less than minimum salary.'
-        : 'Salary values cannot be negative.';
-      this.dialog.open(UpdatedDialogComponent, {
-        data: {
-          icon: 'exclamation-circle',
-          message: salaryMessage,
-          actions: [{ label: 'Fix compensation', value: 'fix', primary: true }],
-        },
-      }).afterClosed().subscribe((action: string) => {
-        if (action === 'fix' && this.stepper !== 2) this.changeStep(2);
-      });
+      this.openSalaryValidationDialog(jobInfoGroup);
       return;
     }
 
@@ -1601,6 +1589,27 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     }
     if (this.stepper === 2 && !this.jobInfoValid) {
       this.jobForm.controls['jobInfo'].markAllAsTouched();
+      // BUGFIX (QA #7): buildStepErrorSummary('jobInfo') only ever mapped
+      // jobTitle/jobCity/jobCountry -- none of which are actual controls in
+      // the jobInfo group (they live in 'initialData') -- so this dialog
+      // showed "fill in the required fields" with an ALWAYS-EMPTY action
+      // list whenever step 2 was invalid, regardless of cause. The only
+      // thing that can make jobInfo invalid today is the salary group
+      // (negative values or max < min, per salaryRangeValidator/
+      // Validators.min(0) above) -- an invalid VALUE in an optional field,
+      // not a missing required one, so it needs its own message and
+      // action, not the generic missing-fields dialog. Checked first;
+      // falls through to the generic dialog for any other future jobInfo
+      // control that genuinely has a presence requirement.
+      const jobInfoGroup = this.jobForm.get('jobInfo');
+      if (jobInfoGroup && (
+        jobInfoGroup.errors?.maxLessThanMin ||
+        jobInfoGroup.get('salaryMinimum')?.errors?.min ||
+        jobInfoGroup.get('salaryMaximum')?.errors?.min
+      )) {
+        this.openSalaryValidationDialog(jobInfoGroup);
+        return;
+      }
       this.buildStepErrorSummary('jobInfo');
       this.haptics.warning();
       this.openStepErrorDialog();
@@ -1650,6 +1659,25 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       return;
     }
     this.changeStep(this.stepper - 1);
+  }
+
+  /** Shared by publishJobPost() and onNextStep(): shows the dedicated
+   *  compensation-error dialog (invalid VALUE, not a missing field) and
+   *  routes "Fix compensation" to Step 2 where the salary inputs live. */
+  private openSalaryValidationDialog(jobInfoGroup: AbstractControl): void {
+    this.haptics.warning();
+    const salaryMessage = jobInfoGroup.errors?.maxLessThanMin
+      ? 'Maximum salary cannot be less than minimum salary.'
+      : 'Salary values cannot be negative.';
+    this.dialog.open(UpdatedDialogComponent, {
+      data: {
+        icon: 'exclamation-circle',
+        message: salaryMessage,
+        actions: [{ label: 'Fix compensation', value: 'fix', primary: true }],
+      },
+    }).afterClosed().subscribe((action: string) => {
+      if (action === 'fix' && this.stepper !== 2) this.changeStep(2);
+    });
   }
 
   /** Show a dialog listing missing required fields; clicking a field scrolls to it in the current step. */
@@ -1786,8 +1814,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         // should move this state off 'saved'.
         this.setAutoSaveState('saved');
       },
-      error: () => {
-        this.setAutoSaveState('failed');
+      error: (err: any) => {
+        const status = err && err.status;
+        let msg = "Your changes weren't saved automatically. Check your connection and try again.";
+        if (status === 401 || status === 403) {
+          msg = "Your session may have expired. Please sign in again to keep saving.";
+        } else if (status === 404) {
+          msg = "This job may no longer exist. Refresh the page before continuing.";
+        }
+        this.setAutoSaveState('failed', msg);
       },
     });
   }
@@ -1841,9 +1876,18 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** Update autosave indicator state */
-  private setAutoSaveState(state: 'unsaved' | 'saving' | 'saved' | 'failed'): void {
+  /** Update autosave indicator state.
+   *  BUGFIX (QA #3): the "Save failed" pill previously had no detail
+   *  anywhere -- setAutoSaveState() only ever stored the bare enum, and
+   *  the existing saveErrorMsg field (computed by the jobError$
+   *  subscription below) was never actually rendered in the template.
+   *  Wired here so every failure path can attach a safe, user-facing
+   *  reason, surfaced as a tooltip/aria-label on the pill itself. */
+  private setAutoSaveState(state: 'unsaved' | 'saving' | 'saved' | 'failed', errorMessage?: string): void {
     this.autoSaveState = state;
+    this.saveErrorMsg = state === 'failed'
+      ? (errorMessage || this.saveErrorMsg || "We couldn't save your changes. Try again.")
+      : null;
     this.cd.markForCheck();
   }
 
@@ -1887,14 +1931,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           this.setAutoSaveState('unsaved');
         }
       },
-      error: () => {
+      error: (err: any) => {
         // Never block the manual wizard path — the employer can still complete
         // and save/publish normally even if this background save failed.
-        this.setAutoSaveState('failed');
-        this.snackbarService.error(
-          "Couldn't auto-save your AI draft. Your data is still here — save manually when ready.",
-          '', 5000
-        );
+        const status = err && err.status;
+        const msg = (status === 401 || status === 403)
+          ? "Your session may have expired. Please sign in again to keep saving."
+          : "Couldn't auto-save your AI draft. Your data is still here — save manually when ready.";
+        this.setAutoSaveState('failed', msg);
+        this.snackbarService.error(msg, '', 5000);
       },
     });
   }
