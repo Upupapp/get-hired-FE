@@ -724,10 +724,17 @@
   outline: none;
   overflow: hidden;
   padding: 0;
-  transition: opacity 120ms $motion-ease-standard, transform 100ms $motion-ease-standard;
+  // Ring: a small white gap then a colored ring, so it reads as a ring
+  // around the avatar rather than a flush-edge outline. Orange at rest,
+  // green on hover.
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px $color-global-red-buttons;
+  transition: opacity 120ms $motion-ease-standard, transform 100ms $motion-ease-standard, box-shadow 150ms $motion-ease-standard;
   @include motion-safe;
 
-  &:hover { opacity: 0.85; }
+  &:hover {
+    opacity: 0.85;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px $color-green-secondary;
+  }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.95); }
 }
