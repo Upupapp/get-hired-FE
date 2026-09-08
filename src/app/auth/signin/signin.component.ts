@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { routes } from '@main/app.routing.module';
@@ -11,13 +11,23 @@ import { GoogleAuthService } from '../services/google-auth.service';
 import { take } from 'rxjs/operators';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
+// Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
+// not as an ES module -- referencing the global here avoids bundling a
+// second copy of the library.
+declare const bootstrap: any;
+
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss'],
   animations: [mainAnimations],
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('adminCarouselEl') adminCarouselEl?: ElementRef<HTMLElement>;
+  @ViewChild('mobileCarouselEl') mobileCarouselEl?: ElementRef<HTMLElement>;
+  private adminCarousel: any;
+  private mobileCarousel: any;
+
   loginForm: FormGroup;
   inputType: string = 'password';
   submitting: boolean = false;
@@ -259,11 +269,49 @@ export class SigninComponent implements OnInit {
     this.message = undefined;
   }
 
+  // BUGFIX (carousel not sliding on manual dot click): both brand carousels
+  // relied entirely on Bootstrap's data-bs-ride="carousel" auto-init and
+  // its own DOM click delegation for the indicator dots. Confirmed live
+  // that auto-play worked but clicking a dot did nothing -- Bootstrap's
+  // click listeners never reliably attach to indicator buttons living
+  // inside Angular-managed/animated DOM, since Angular can touch that
+  // subtree after Bootstrap's one-time init pass. Also confirmed live that
+  // calling the underlying Carousel instance's own .to() method directly
+  // works every time. Manually instantiating here and wiring the
+  // indicators to Angular (click) handlers that call .to() removes the
+  // dependency on Bootstrap's own click delegation entirely.
+  ngAfterViewInit(): void {
+    if (typeof bootstrap === 'undefined') { return; }
+    if (this.adminCarouselEl) {
+      this.adminCarousel = new bootstrap.Carousel(this.adminCarouselEl.nativeElement, {
+        interval: 5000,
+        ride: 'carousel',
+        pause: false,
+      });
+    }
+    if (this.mobileCarouselEl) {
+      this.mobileCarousel = new bootstrap.Carousel(this.mobileCarouselEl.nativeElement, {
+        interval: 5000,
+        ride: 'carousel',
+        pause: false,
+      });
+    }
+  }
+
+  goToSlide(which: 'admin' | 'mobile', index: number): void {
+    const instance = which === 'admin' ? this.adminCarousel : this.mobileCarousel;
+    if (instance) {
+      instance.to(index);
+    }
+  }
+
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
     if (this.credentials$) {
       this.credentials$.unsubscribe();
     }
+    this.adminCarousel?.dispose();
+    this.mobileCarousel?.dispose();
   }
 }

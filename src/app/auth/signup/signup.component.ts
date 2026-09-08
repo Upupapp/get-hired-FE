@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,13 +13,23 @@ import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 
+// Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
+// not as an ES module -- referencing the global here avoids bundling a
+// second copy of the library.
+declare const bootstrap: any;
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss'],
   animations: [mainAnimations]
 })
-export class SignupComponent implements OnInit, AfterViewInit {
+export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('adminCarouselEl') adminCarouselEl?: ElementRef<HTMLElement>;
+  @ViewChild('mobileCarouselEl') mobileCarouselEl?: ElementRef<HTMLElement>;
+  private adminCarousel: any;
+  private mobileCarousel: any;
+
   unsubscribe$ = new Subject<void>();
   req$: Subscription;
 
@@ -148,6 +158,38 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.setupRecaptchaScale();
+    this.setupCarousels();
+  }
+
+  // BUGFIX (carousel not sliding on manual dot click): same fix as
+  // SigninComponent -- see its ngAfterViewInit for the full root-cause
+  // writeup. Bootstrap's data-bs-ride auto-init's own click delegation for
+  // the indicator dots doesn't reliably attach inside Angular-managed DOM;
+  // manually instantiating and wiring indicators to call the instance's
+  // .to() directly removes that dependency entirely.
+  private setupCarousels(): void {
+    if (typeof bootstrap === 'undefined') { return; }
+    if (this.adminCarouselEl) {
+      this.adminCarousel = new bootstrap.Carousel(this.adminCarouselEl.nativeElement, {
+        interval: 5000,
+        ride: 'carousel',
+        pause: false,
+      });
+    }
+    if (this.mobileCarouselEl) {
+      this.mobileCarousel = new bootstrap.Carousel(this.mobileCarouselEl.nativeElement, {
+        interval: 5000,
+        ride: 'carousel',
+        pause: false,
+      });
+    }
+  }
+
+  goToSlide(which: 'admin' | 'mobile', index: number): void {
+    const instance = which === 'admin' ? this.adminCarousel : this.mobileCarousel;
+    if (instance) {
+      instance.to(index);
+    }
   }
 
   // Scales the reCAPTCHA widget so its rendered width matches the actual
@@ -407,6 +449,8 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
     if (this.req$) this.req$.unsubscribe();
     if (this.recaptchaResizeObserver) this.recaptchaResizeObserver.disconnect();
+    this.adminCarousel?.dispose();
+    this.mobileCarousel?.dispose();
 
   }
 

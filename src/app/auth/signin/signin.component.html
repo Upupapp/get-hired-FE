@@ -14,7 +14,7 @@
          min-height:100vh) so it can never push the form off-screen. Shown
          only below lg via d-lg-none; desktop .bg-left is completely untouched. -->
     <div class="col-12 gh-mobile-carousel d-lg-none order-first" aria-hidden="true">
-      <div class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel slide" #mobileCarouselEl>
         <div class="carousel-inner" id="signin-mobile-welcome-screens">
           <div class="carousel-item active text-center">
             <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
@@ -33,9 +33,9 @@
           </div>
         </div>
         <div class="carousel-indicators">
-          <button data-bs-target="#signin-mobile-welcome-screens" data-bs-slide-to="0" class="active" aria-current="true"></button>
-          <button data-bs-target="#signin-mobile-welcome-screens" data-bs-slide-to="1"></button>
-          <button data-bs-target="#signin-mobile-welcome-screens" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-slide-to="0" class="active" aria-current="true" (click)="goToSlide('mobile', 0)"></button>
+          <button type="button" data-bs-slide-to="1" (click)="goToSlide('mobile', 1)"></button>
+          <button type="button" data-bs-slide-to="2" (click)="goToSlide('mobile', 2)"></button>
         </div>
       </div>
     </div>
@@ -205,14 +205,14 @@
     <!-- CAROUSEL column: decorative only. Hidden below lg to prevent form push-down.
          aria-hidden ensures screen readers skip decorative slides. -->
     <div class="col-lg-6 px-5 pb-2 bg-left d-none d-lg-block order-lg-first" aria-hidden="true">
-      <div class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel slide" #adminCarouselEl>
         <div class="carousel-indicators">
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="0" class="active"
-            aria-current="true"></button>
+          <button type="button" data-bs-slide-to="0" class="active"
+            aria-current="true" (click)="goToSlide('admin', 0)"></button>
 
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="1"></button>
+          <button type="button" data-bs-slide-to="1" (click)="goToSlide('admin', 1)"></button>
 
-          <button data-bs-target="#admin-welcome-screens" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-slide-to="2" (click)="goToSlide('admin', 2)"></button>
         </div>
         <div class="carousel-inner pb-5" id="admin-welcome-screens">
           <div class="carousel-item active text-center">
