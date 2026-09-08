@@ -27,7 +27,13 @@
       </span>
 
       <!-- Autosave indicator -->
-      <span class="gh-jc-autosave" [ngClass]="autoSaveState" role="status" aria-live="polite" aria-atomic="true">
+      <!-- BUGFIX (QA #3): "Save failed" previously gave no detail on what
+           failed or how to fix it. saveErrorMsg (set by setAutoSaveState())
+           now surfaces as a native hover tooltip and a fuller screen-reader
+           announcement, without changing the pill's visible label/layout. -->
+      <span class="gh-jc-autosave" [ngClass]="autoSaveState" role="status" aria-live="polite" aria-atomic="true"
+        [title]="autoSaveState === 'failed' ? saveErrorMsg : null"
+        [attr.aria-label]="autoSaveState === 'failed' && saveErrorMsg ? ('Save failed: ' + saveErrorMsg) : null">
         <ng-container *ngIf="autoSaveState === 'saved'">
           <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Saved
         </ng-container>
