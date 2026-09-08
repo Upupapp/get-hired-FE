@@ -17,5 +17,9 @@
 
 .gh-public-content {
   flex: 1 0 auto;
-  margin-top: 80px;
+  // BUGFIX (header gap): was 80px, plus a now-removed 48px Bootstrap `mb-5`
+  // on the fixed header's wrapper div, leaving ~128px of dead space above
+  // the content on every public page. The header (.gh-public-nav) is a
+  // fixed 68px bar, so this only needs to clear that height.
+  margin-top: 68px;
 }
