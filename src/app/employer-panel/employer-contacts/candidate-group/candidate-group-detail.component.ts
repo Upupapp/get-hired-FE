@@ -82,7 +82,7 @@ export class CandidateGroupDetailComponent implements OnInit {
       error: () => {
         this.applicants = [];
         this.loading = false;
-        this.snackbarService.error("We couldn't load this candidate group right now. Please try again.", '');
+        this.snackbarService.error("We couldn't load these hiring decisions right now. Please try again.", '');
       },
     });
   }

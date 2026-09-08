@@ -1,12 +1,12 @@
 <div class="cgd-wrap" *ngIf="!loading; else cgdLoading" [@animate]="{value:'*', params:{y:'20px', delay:'0ms'}}">
 
   <div class="cgd-header">
-    <button type="button" class="cgd-back" (click)="goBack()" aria-label="Back to candidate groups">
+    <button type="button" class="cgd-back" (click)="goBack()" aria-label="Back to hiring decisions">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"
         width="14" height="14" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M10 3L5 8l5 5"/>
       </svg>
-      Candidate Groups
+      Hiring Decisions
     </button>
     <h4 class="cgd-title">{{ jobTitle || jobId }}</h4>
     <p class="cgd-subtitle">Shortlisted, Hired, and Rejected applicants for this job.</p>
