@@ -37,7 +37,7 @@ import { suggestIndustryName, matchSuggestedIndustry } from '@app-job/utils/job-
 import { suggestCategoryName } from '@app-job/utils/job-category-suggester';
 import { JobPostModeDialogComponent, JobPostMode } from '@app-job/job-create/components/job-post-mode-dialog/job-post-mode-dialog.component';
 import { resolveJobLevelId, LevelOption } from '@app-job/utils/job-level-resolver';
-import { resolveWorkSetupId, resolveJobTypeId, FREELANCE_JOB_TYPE_SENTINEL } from '@app-job/utils/job-field-resolvers';
+import { resolveWorkSetupId, resolveJobTypeId } from '@app-job/utils/job-field-resolvers';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 
 @Component({
@@ -752,10 +752,10 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
         const levels: LevelOption[] = (res && res.data) || res || [];
         const levelMatch = resolveJobLevelId(draft.basics.seniority, levels);
         const workSetupId = resolveWorkSetupId(draft.basics.workSetup);
-        const rawJobTypeId = resolveJobTypeId(draft.basics.employmentType);
-        // FREELANCE_JOB_TYPE_SENTINEL has no backend job_type row -- never
-        // send it as a fabricated jobTypeId (mirrors JobCreateComponent.formatJob()).
-        const jobTypeId = rawJobTypeId === FREELANCE_JOB_TYPE_SENTINEL ? null : (rawJobTypeId as number | null);
+        // Freelance/Internship are real job_type rows now (see
+        // job-field-resolvers.ts) -- resolveJobTypeId() already returns their
+        // real ids, no conversion needed here.
+        const jobTypeId = resolveJobTypeId(draft.basics.employmentType);
         const industryMatch = matchSuggestedIndustry(this.generateInputs.industry, this.industryOptions);
         // EMP-014 fix: same reasoning as fillFromGenerated() above -- the
         // direct-publish path had the identical gap (jobCategoryId never
