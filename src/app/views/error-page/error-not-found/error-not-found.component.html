@@ -1,35 +1,52 @@
-<div class="gh-404">
-  <div class="gh-404__card">
+<!-- BUGFIX (header/footer): this page previously rendered with just its
+     own in-card mini brandbar and nothing else -- no real site
+     navigation, no footer -- unlike every other public page (including
+     the "Job Not Found" state, nested under PublicComponent's shell),
+     which surrounds its content with the real app-header/app-footer.
+     This route sits outside PublicComponent (registered as the root
+     wildcard '**' route, which the routing config's own comments flag as
+     high-risk to move), so the shell is reproduced directly here instead
+     of nesting under PublicComponent. -->
+<div class="gh-404-shell">
+  <app-header [isPublic]="true" [isUserLoggedIn]="isUserLoggedIn" [user]="user"></app-header>
 
-    <div class="gh-404__brandbar">
-      <a routerLink="/home" class="gh-404__brand" aria-label="GetHired — go to home">
-        <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-404__brand-logo" alt="GetHired Online">
-      </a>
-    </div>
+  <div class="gh-404-content">
+    <div class="gh-404">
+      <div class="gh-404__card">
 
-    <div class="gh-404__body">
-      <p class="gh-404__code">404</p>
-      <h1 class="gh-404__title">Page Not Found</h1>
-      <p class="gh-404__description">
-        The page you are looking for doesn't seem to be available.
-        Try browsing open jobs or return to the homepage.
-      </p>
+        <div class="gh-404__brandbar">
+          <a routerLink="/home" class="gh-404__brand" aria-label="GetHired — go to home">
+            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-404__brand-logo" alt="GetHired Online">
+          </a>
+        </div>
 
-      <div class="gh-404__illustration">
-        <img
-          src="/assets/images/404_3d_img.png"
-          alt=""
-          aria-hidden="true"
-          width="420"
-          height="252"
-        />
+        <div class="gh-404__body">
+          <p class="gh-404__code">404</p>
+          <h1 class="gh-404__title">Page Not Found</h1>
+          <p class="gh-404__description">
+            The page you are looking for doesn't seem to be available.
+            Try browsing open jobs or return to the homepage.
+          </p>
+
+          <div class="gh-404__illustration">
+            <img
+              src="/assets/images/404_3d_img.png"
+              alt=""
+              aria-hidden="true"
+              width="420"
+              height="252"
+            />
+          </div>
+
+          <div class="gh-404__actions">
+            <button type="button" class="gh-404__btn gh-404__btn--primary hvr-grow" (click)="goToJobs()">Browse Jobs</button>
+            <button type="button" class="gh-404__btn gh-404__btn--secondary hvr-grow" (click)="goHome()">Go to Homepage</button>
+          </div>
+        </div>
+
       </div>
-
-      <div class="gh-404__actions">
-        <button type="button" class="gh-404__btn gh-404__btn--primary hvr-grow" (click)="goToJobs()">Browse Jobs</button>
-        <button type="button" class="gh-404__btn gh-404__btn--secondary hvr-grow" (click)="goHome()">Go to Homepage</button>
-      </div>
     </div>
-
   </div>
+
+  <app-footer></app-footer>
 </div>

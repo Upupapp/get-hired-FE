@@ -5,6 +5,20 @@ $gh-surface:   #F8F9FF;
 $gh-border:    #E5E7EB;
 $gh-text-muted:#6B7280;
 
+// ── Page shell (header/footer) -- mirrors public.component.scss's sticky
+// -footer flex pattern exactly (this route sits outside PublicComponent,
+// so its shell can't be inherited and is reproduced here instead).
+.gh-404-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.gh-404-content {
+  flex: 1 0 auto;
+  margin-top: 68px; // clears the fixed 68px app-header
+}
+
 .gh-404 {
   min-height: 650px;
   display: flex;

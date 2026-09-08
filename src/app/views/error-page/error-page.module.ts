@@ -5,6 +5,8 @@ import { ErrorPageRoutes } from './error-page.routing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorNotFoundComponent } from './error-not-found/error-not-found.component';
+import { CoreModule } from '@app-core/core.module';
+import { SharedModule } from '@app-shared/shared.module';
 
 
 @NgModule({
@@ -12,7 +14,13 @@ import { ErrorNotFoundComponent } from './error-not-found/error-not-found.compon
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forChild(ErrorPageRoutes)
+    RouterModule.forChild(ErrorPageRoutes),
+    // Brings in app-header (CoreModule) and app-footer (SharedModule) so
+    // this standalone wildcard-route page can render the real site
+    // header/footer, matching every other public page (see BUGFIX
+    // comment in error-not-found.component.html).
+    CoreModule,
+    SharedModule,
   ],
   declarations: [
     // BRAND fix: this component was imported but never actually declared,
