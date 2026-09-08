@@ -304,6 +304,8 @@
 .eja-input {
   width: 100%;
   height: 46px;
+  // Same flex-shrink fix as .eja-btn above -- see its comment.
+  flex-shrink: 0;
   border: 1.5px solid #D1D5DB;
   border-radius: 10px;
   padding: 0 14px;
@@ -325,6 +327,18 @@
 // ── Buttons ────────────────────────────────────────────────────────
 .eja-btn {
   height: 46px;
+  // BUGFIX: .eja-body (this button's parent) is a scrollable flex column
+  // (overflow-y: auto) -- but flex children default to flex-shrink:1, so
+  // whenever the form's total content exceeded the modal's available
+  // height, the browser shrank every child toward its minimum content
+  // size INSTEAD of letting the intended overflow-y:auto scroll kick in.
+  // This button's minimum (~21px, just its text) is far below its
+  // intended 46px, so it absorbed nearly all of that squeeze -- the
+  // stylesheet always said height:46px, but the actual rendered
+  // (post-flex-shrink) height could end up as little as 21px. flex-shrink:0
+  // takes this out of the shrink algorithm entirely, so it always renders
+  // at its real height and the container scrolls instead, as intended.
+  flex-shrink: 0;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
@@ -427,6 +441,8 @@
 .eja-select {
   width: 100%;
   height: 44px;
+  // Same flex-shrink fix as .eja-btn above -- see its comment.
+  flex-shrink: 0;
   border: 1.5px solid #E5E7EB;
   border-radius: 8px;
   padding: 0 12px;
