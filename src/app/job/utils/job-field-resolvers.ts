@@ -16,25 +16,23 @@ export function resolveWorkSetupId(hint: string | null | undefined): number | nu
   return null;
 }
 
-// STORAGE-SAFETY / DRAFT-SAVE FIX: gethired.job_type only seeds ids 1-3
-// (Full time / Part time / Contractor -- see db/job_ddl.sql). job_type_id
-// is a real FK there, so no id can be invented for "Freelance" -- there is
-// no backend row for it (see get-hired-BE/notes.md for the requested fix).
-// FREELANCE_JOB_TYPE_SENTINEL is a frontend-only placeholder value so
-// "Freelance" can still be selected and carried across every Employment
-// Type dropdown in the app (AI Create's, and the canonical Role Basics
-// step's) without ever being sent to the backend as a fabricated id --
-// every submission path converts it to `null` first (see
-// JobCreateComponent.formatJob()). Never persisted, never a real
-// job_type_id, purely a UI selection marker.
-export const FREELANCE_JOB_TYPE_SENTINEL = 'freelance';
-
-export function resolveJobTypeId(hint: string | null | undefined): number | string | null {
+// BUGFIX (Freelance/Internship silently saved as null): gethired.job_type
+// used to only seed ids 1-3 (Full time / Part time / Contractor), so this
+// resolver mapped "Freelance" to a frontend-only sentinel string that every
+// submission path then converted to `null` before it ever reached the
+// backend, and had no mapping for "Internship" at all (fell through to
+// null). Real rows now exist for both (job_type_id 4 = Freelance,
+// 5 = Internship -- confirmed against gethired.job_type), so both are
+// mapped to their real ids like every other type, and no longer need any
+// special-case handling downstream (formatJob(), the AI assistant's draft
+// persistence, the readiness gate, or the preview step's type lookup).
+export function resolveJobTypeId(hint: string | null | undefined): number | null {
   if (!hint) return null;
   const h = hint.toLowerCase().trim();
   if (h.includes('full') && h.includes('time')) return 1;
   if (h.includes('part') && h.includes('time')) return 2;
   if (h.includes('contract')) return 3;
-  if (h.includes('freelance')) return FREELANCE_JOB_TYPE_SENTINEL;
+  if (h.includes('freelance')) return 4;
+  if (h.includes('intern')) return 5;
   return null;
 }

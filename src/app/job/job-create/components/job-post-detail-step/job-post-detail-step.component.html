@@ -41,18 +41,11 @@
               [class.gh-input--error]="initialDetailsForm.get('jobTypeId').invalid && initialDetailsForm.get('jobTypeId').touched">
               <option [ngValue]="null" disabled selected>Select type</option>
               <option *ngFor="let item of jobType" [ngValue]="item.id">{{ item.name }}</option>
-              <!-- FREELANCE-REMOVAL: no gethired.job_type row exists for
-                   "Freelance" and none is planned -- selecting it always
-                   resolved to null at submission time (see formatJob() /
-                   job-field-resolvers.ts), which made Publish's readiness
-                   check treat Employment Type as empty even though something
-                   was visibly selected. Removed from both selectable pickers
-                   (this one and the "Start Hiring" AI panel's
-                   employmentTypeOptions) rather than working around the
-                   confusion again. The FREELANCE_JOB_TYPE_SENTINEL constant
-                   and formatJob()'s null-conversion stay in place purely as a
-                   safety net for any already-in-progress local guest/AI Create
-                   draft that still holds the old hint value. -->
+              <!-- Sourced live from jobType (backend job_type list) -- no
+                   hardcoded options needed here. Freelance/Internship
+                   (job_type_id 4/5) appear automatically now that real rows
+                   exist for them; see job-field-resolvers.ts for the history
+                   of why they used to need special-casing. -->
             </select>
           </div>
         </div>

@@ -20,7 +20,7 @@ import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job
 import { JobService } from '../job.service';
 import { CreateInterviewComponent } from './components/create-interview/create-interview.component';
 import { resolveJobLevelId } from '../utils/job-level-resolver';
-import { resolveWorkSetupId, resolveJobTypeId, FREELANCE_JOB_TYPE_SENTINEL } from '../utils/job-field-resolvers';
+import { resolveWorkSetupId, resolveJobTypeId } from '../utils/job-field-resolvers';
 import { AiCreateDraftService } from '../services/ai-create-draft.service';
 import { JobCreateRecoveryService } from '../services/job-create-recovery.service';
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
@@ -1055,19 +1055,11 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // rather than changing either pre-existing type, consistent with how the
     // debounced call site already passes untyped form values.
     //
-    // FREELANCE-READINESS FIX: `job.jobTypeId` at this point has already been
-    // converted by formatJob() from FREELANCE_JOB_TYPE_SENTINEL ('freelance')
-    // to `null` -- deliberately, since no backend job_type row exists for it
-    // (see job-field-resolvers.ts). But JobReadinessService.evaluate()'s
-    // hasJobType check is a plain `!!input.jobTypeId`, so that same `null`
-    // makes Employment Type look unfilled here even though Freelance was
-    // genuinely selected -- the Step 4 checklist (which reads the raw,
-    // not-yet-nulled form value) shows it satisfied, so Publish rejecting it
-    // looks like a flat contradiction. Evaluate readiness against the RAW,
-    // pre-conversion jobTypeId so this one field's submission-time
-    // sentinel-to-null mapping never leaks into the readiness gate.
-    const rawJobTypeId = this.jobForm.controls.initialData.value.jobTypeId;
-    this.readinessResult = this.jobReadiness.evaluate({ ...job, jobTypeId: rawJobTypeId, companyId: this.companyId } as any);
+    // Freelance/Internship are real job_type rows now (see
+    // job-field-resolvers.ts) -- formatJob() no longer nulls jobTypeId out
+    // for them, so re-evaluating readiness against `job` directly (rather
+    // than a separately-read "raw" form value) is safe again.
+    this.readinessResult = this.jobReadiness.evaluate({ ...job, companyId: this.companyId } as any);
 
     // PRODUCTION FIX (universal, replacing the earlier AI-only carve-out):
     // Job title is the one true hard requirement, for every mode -- see
@@ -1151,12 +1143,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     return {
       ...initialData.value,
       ...jobInfo.value,
-      // FREELANCE_JOB_TYPE_SENTINEL is a frontend-only selection marker
-      // (no gethired.job_type row exists for it) -- never send it to the
-      // backend as a fabricated jobTypeId. See job-field-resolvers.ts.
-      jobTypeId: initialData.value.jobTypeId === FREELANCE_JOB_TYPE_SENTINEL
-        ? null
-        : initialData.value.jobTypeId,
       badges: initialData.value
         ? this.formatBadgesGetId(initialData.value.badges)
         : [],

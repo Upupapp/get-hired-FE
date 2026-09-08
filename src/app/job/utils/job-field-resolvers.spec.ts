@@ -1,5 +1,4 @@
 import {
-  FREELANCE_JOB_TYPE_SENTINEL,
   resolveJobTypeId,
   resolveWorkSetupId,
 } from './job-field-resolvers';
@@ -70,24 +69,23 @@ describe('job-field-resolvers', () => {
     });
 
     // ---------------------------------------------------------------------
-    // Freelance has no gethired.job_type row. The resolver must return the
-    // frontend-only sentinel, NEVER a fabricated numeric id -- job_type_id is
-    // a real FK and inventing 4 would break the insert. JobCreateComponent
-    // .formatJob() is what converts the sentinel to null on the way out.
+    // Freelance (4) and Internship (5) are real gethired.job_type rows --
+    // see the BUGFIX comment on resolveJobTypeId() for why this used to
+    // return a sentinel/null instead.
     // ---------------------------------------------------------------------
-    it('maps freelance to the sentinel, not a number', () => {
-      expect(resolveJobTypeId('Freelance')).toBe(FREELANCE_JOB_TYPE_SENTINEL);
+    it('maps freelance to 4', () => {
+      expect(resolveJobTypeId('Freelance')).toBe(4);
+      expect(resolveJobTypeId('freelance')).toBe(4);
     });
 
-    it('never invents a numeric id for freelance', () => {
-      const result = resolveJobTypeId('freelance');
-      expect(typeof result).toBe('string');
-      expect(Number.isFinite(Number(result))).toBeFalse();
+    it('maps internship to 5', () => {
+      expect(resolveJobTypeId('Internship')).toBe(5);
+      expect(resolveJobTypeId('paid internship')).toBe(5);
     });
 
     it('prefers contract over freelance when both words appear', () => {
       // 'contract' is checked first; a "freelance contract" is a real job_type
-      // row (3) and should not degrade to the sentinel.
+      // row (3) and should not resolve to freelance instead.
       expect(resolveJobTypeId('freelance contract')).toBe(3);
     });
   });

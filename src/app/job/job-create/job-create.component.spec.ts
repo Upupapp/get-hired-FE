@@ -15,7 +15,6 @@ import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/hap
 import { JobReadinessService } from '../services/job-readiness.service';
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job-post-assistant.service';
 import { AiCreateDraftService } from '../services/ai-create-draft.service';
-import { FREELANCE_JOB_TYPE_SENTINEL } from '../utils/job-field-resolvers';
 
 /**
  * Behavioural specs for the job-create stepper.
@@ -365,9 +364,11 @@ describe('JobCreateComponent -- stepper navigation and save mapping', () => {
   });
 
   // -------------------------------------------------------------------------
-  // formatJob(): the Freelance sentinel must never reach the backend
+  // formatJob(): every real job type id, including Freelance (4) and
+  // Internship (5), passes through untouched -- see job-field-resolvers.ts
+  // for why this used to null Freelance out.
   // -------------------------------------------------------------------------
-  describe('formatJob() Freelance handling', () => {
+  describe('formatJob() job type handling', () => {
 
     beforeEach(() => {
       createWith();
@@ -375,14 +376,9 @@ describe('JobCreateComponent -- stepper navigation and save mapping', () => {
       component.jobId = 'JOB-1';
     });
 
-    it('converts the Freelance sentinel to null', () => {
-      // gethired.job_type has no Freelance row and job_type_id is a real FK --
-      // sending the sentinel string, or any invented number, breaks the insert.
-      component.jobForm.controls['initialData'].patchValue({
-        jobTypeId: FREELANCE_JOB_TYPE_SENTINEL,
-      });
-
-      expect(component.formatJob(1).jobTypeId).toBeNull();
+    it('passes the Freelance job type id (4) through untouched', () => {
+      component.jobForm.controls['initialData'].patchValue({ jobTypeId: 4 });
+      expect(component.formatJob(1).jobTypeId).toBe(4);
     });
 
     it('passes a real job type id through untouched', () => {
