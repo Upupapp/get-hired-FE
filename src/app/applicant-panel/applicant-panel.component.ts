@@ -111,8 +111,15 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
     }
     this.notifPanelOpen = false;
     if (notification.linkRoute) {
+      // BUGFIX: the application-detail page only loads job data when
+      // jobId is passed via router navigation state (normally supplied by
+      // the applications list link) -- a notification click skipped that,
+      // so it always hit "We couldn't load this job's details right now."
+      // regardless of the actual job. relatedJobId already comes back on
+      // every application-status notification; forward it the same way.
       this.router.navigate([notification.linkRoute], {
-        queryParams: notification.linkQuery || {}
+        queryParams: notification.linkQuery || {},
+        state: notification.relatedJobId ? { jobId: notification.relatedJobId } : undefined,
       });
     }
   }
