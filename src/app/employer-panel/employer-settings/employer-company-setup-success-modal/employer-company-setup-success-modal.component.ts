@@ -25,6 +25,17 @@ export class EmployerCompanySetupSuccessModalComponent implements OnInit {
     { label: 'Complete company profile', done: false },
   ];
 
+  // REDESIGN: drives the new compact progress line ("2 of 4 steps done")
+  // above the checklist -- purely derived from the same checklist array
+  // above, no new state to keep in sync.
+  get completedCount(): number {
+    return this.checklist.filter(i => i.done).length;
+  }
+
+  get totalCount(): number {
+    return this.checklist.length;
+  }
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: SetupSuccessModalData,
     private dialogRef: MatDialogRef<EmployerCompanySetupSuccessModalComponent>,
@@ -35,10 +46,6 @@ export class EmployerCompanySetupSuccessModalComponent implements OnInit {
     this.companyName = (this.data && this.data.companyName) ? this.data.companyName : 'Your company';
     this.companySlug = (this.data && this.data.companySlug) ? this.data.companySlug : '';
     this.profileCompleteness = (this.data && this.data.profileCompleteness) ? this.data.profileCompleteness : 0;
-
-    try {
-      sessionStorage.setItem('gh_company_setup_success_seen', '1');
-    } catch (_) {}
   }
 
   /** BUG FIX: this used to navigate straight to /recruiter/jobs/create with
