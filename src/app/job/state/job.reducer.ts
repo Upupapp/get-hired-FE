@@ -257,18 +257,29 @@ export const jobReducer = createReducer<JobState>(
     // dispatched during AI-draft prefill) and reflects the job's real full
     // question list even when `selected` itself is still null -- prefer it
     // over collapsing to a single question.
+    // BUGFIX (production, "editing one question vanishes all the others",
+    // continued): interviewController.js's updateJobInterviewQuestion now
+    // returns the template's full, current question list alongside the
+    // edited question (interviewQuestions) -- genuine backend ground truth,
+    // not a guess reconstructed from whatever this store slice happened to
+    // have cached. Prefer it whenever present; the merge-into-a-cached-
+    // snapshot logic below stays only as a defensive fallback for a legacy/
+    // cached response that predates this field.
+    const freshInterviews = action.interviewQuestion.interviewQuestions;
     const existingInterviews =
       (state.selected && state.selected.interviewQuestions && state.selected.interviewQuestions.length
         ? state.selected.interviewQuestions
         : state.interview) || [];
-    const mappedInterviews = existingInterviews.length
-      ? existingInterviews.map(question => {
-          if (question.questionId == action.interviewQuestion.questionId) {
-            return action.interviewQuestion
-          }
-          return question;
-        })
-      : [action.interviewQuestion];
+    const mappedInterviews = Array.isArray(freshInterviews) && freshInterviews.length
+      ? freshInterviews
+      : existingInterviews.length
+        ? existingInterviews.map(question => {
+            if (question.questionId == action.interviewQuestion.questionId) {
+              return action.interviewQuestion
+            }
+            return question;
+          })
+        : [action.interviewQuestion];
 
     return {
       ...state,

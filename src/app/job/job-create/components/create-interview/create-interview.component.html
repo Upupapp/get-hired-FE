@@ -30,10 +30,27 @@
 
 <div *ngIf="interviewQuestions">
 
-  <h5 class="title-label mt-4" *ngIf="interviewQuestions && questionsContainer.length > 0"
+  <div class="d-flex align-items-center flex-wrap gap-2 mt-4"
+    *ngIf="interviewQuestions && questionsContainer.length > 0"
     [@animate]="{value:'*', params:{ y:'10px', delay:  (250) + 'ms' }}">
-    Questions Preview
-  </h5>
+    <h5 class="title-label mb-0">Questions Preview</h5>
+    <!-- Manual resync: mirrors the same backend refetch every other
+         legitimate resync already uses (see job-create.component.ts's
+         syncInterviewQuestionsFromStore()) -- a safety net in case the
+         list here and the list shown on Publish/Preview ever disagree. -->
+    <button type="button" class="btn btn-sm btn-outline-secondary gh-iq-refresh-btn"
+      *ngIf="jobId"
+      [disabled]="refreshingQuestions"
+      (click)="refreshQuestions()"
+      aria-label="Refresh interview questions from the saved job">
+      <span *ngIf="!refreshingQuestions">
+        <i class="bi bi-arrow-clockwise me-1" aria-hidden="true"></i>Refresh
+      </span>
+      <span *ngIf="refreshingQuestions">
+        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Refreshing…
+      </span>
+    </button>
+  </div>
 
   <section class="card card-body mt-3 gh-iq-card" *ngFor="let item of questionsContainer; let i = index"
     [@animate]="{value:'*', params:{ y:'10px', delay:  (i + 150) + 'ms' }}">
