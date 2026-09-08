@@ -4,12 +4,44 @@
   <p class="mt-3 text-muted">Loading job details…</p>
 </div>
 
-<!-- Error / not found state -->
-<div *ngIf="!loading && loadError" class="pd-error" role="alert">
-  <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
-  <h2>Job not found</h2>
-  <p>This job posting may have been removed or is no longer available.</p>
-  <a routerLink="/jobs" class="btn btn-primary mt-2">Browse all jobs</a>
+<!-- Error / not found state -- aligned to the same GetHired visual
+     structure as the generic 404 page (see error-not-found.component),
+     with job-specific messaging and no duplicate navigation actions. -->
+<div *ngIf="!loading && loadError" class="gh-404" role="alert">
+  <div class="gh-404__card">
+
+    <div class="gh-404__brandbar">
+      <span class="gh-404__brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2C8 6 5 9 5 14a7 7 0 0014 0c0-5-3-8-7-12z" fill="#FF5A36"/>
+        </svg>
+        <span class="gh-404__brand-text">GET<span class="gh-404__brand-accent">HIRED</span></span>
+      </span>
+    </div>
+
+    <div class="gh-404__body">
+      <h1 class="gh-404__title">Job Not Found</h1>
+      <p class="gh-404__description">
+        This job posting may have been removed or is no longer available.
+      </p>
+
+      <div class="gh-404__illustration">
+        <img
+          src="/assets/images/404_3d_img.png"
+          alt=""
+          aria-hidden="true"
+          width="420"
+          height="252"
+        />
+      </div>
+
+      <div class="gh-404__actions">
+        <a routerLink="/jobs" class="gh-404__btn gh-404__btn--primary hvr-grow">Browse Jobs</a>
+        <a routerLink="/home" class="gh-404__btn gh-404__btn--secondary hvr-grow">Go to Homepage</a>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- Full-width job detail: job-posts-details owns hero, breadcrumb, and layout -->
