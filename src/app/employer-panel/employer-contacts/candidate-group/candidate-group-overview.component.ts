@@ -45,7 +45,7 @@ export class CandidateGroupOverviewComponent implements OnInit {
       error: () => {
         this.jobSummaries = [];
         this.loading = false;
-        this.snackbarService.error("We couldn't load your candidate groups right now. Please try again.", '');
+        this.snackbarService.error("We couldn't load your hiring decisions right now. Please try again.", '');
       },
     });
   }
