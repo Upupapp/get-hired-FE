@@ -989,6 +989,21 @@ select.gh-input {
 .gh-captcha-wrap {
   margin: 12px 0;
   width: 100%;
+  // BUGFIX: transform:scale() (applied in signup.component.ts's
+  // applyRecaptchaScale()) only shrinks the widget VISUALLY -- its real,
+  // unscaled interactive iframe box still occupies its native ~304px x
+  // 78-150px space in the layout. This wrapper's own height is set (in
+  // TS) to the SCALED height, which is smaller than that real box
+  // whenever scale < 1 (any viewport under 304px wide, i.e. most phones).
+  // Without clipping, the widget's real hit-testable box extended past
+  // this wrapper's shrunk height and invisibly overlapped the "Privacy
+  // Policy and Terms of Use" row directly below it -- a click that
+  // visually landed on "Privacy Policy" actually hit the reCAPTCHA
+  // iframe underneath, re-triggering/refocusing it instead of following
+  // the link. overflow:hidden clips exactly that invisible excess; the
+  // widget's visible scaled render already fits entirely within the
+  // wrapper's set height, so nothing about its appearance changes.
+  overflow: hidden;
   // GAP FIX: the widget's growth to ~150px during its own inline verify/
   // retry states (see the original overlap bug this used to guard against)
   // is now handled live by signup.component.ts's applyRecaptchaScale() --
