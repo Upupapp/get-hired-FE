@@ -277,13 +277,19 @@
               </div>
               <div class="gh-ap-notif-list">
                 <p class="gh-ap-notif-empty" *ngIf="notifications.length === 0">No notifications yet.</p>
-                <button type="button" class="gh-ap-notif-item" *ngFor="let n of notifications"
+                <div class="gh-ap-notif-item" *ngFor="let n of notifications"
                   [class.gh-ap-notif-item--unread]="!n.isRead"
-                  (click)="onNotificationClick(n)">
+                  role="button" tabindex="0"
+                  (click)="onNotificationClick(n)"
+                  (keydown.enter)="onNotificationClick(n)">
+                  <button type="button" class="gh-ap-notif-item-delete" aria-label="Delete notification"
+                    (click)="deleteNotification(n, $event)">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                   <span class="gh-ap-notif-item-title">{{ n.title }}</span>
                   <span class="gh-ap-notif-item-body">{{ n.body }}</span>
                   <span class="gh-ap-notif-item-time">{{ n.createdAt | date:'MMM d, h:mm a' }}</span>
-                </button>
+                </div>
               </div>
             </div>
           </div>
