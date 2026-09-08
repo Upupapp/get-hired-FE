@@ -134,6 +134,21 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
     });
   }
 
+  deleteNotification(notification: AppNotification, event: Event): void {
+    // Stops the click from also bubbling into onNotificationClick's
+    // mark-read/navigate behavior -- deleting shouldn't also navigate away.
+    event.stopPropagation();
+    this.notificationService.delete(notification.id).subscribe({
+      next: () => {
+        this.notifications = this.notifications.filter((n) => n.id !== notification.id);
+        if (!notification.isRead) {
+          this.unreadCount = Math.max(0, this.unreadCount - 1);
+        }
+      },
+      error: () => {}
+    });
+  }
+
   // MOBILEVIEW: Open applicant mobile nav drawer
   openMobileNav(): void {
     this.mobileNavOpen = true;

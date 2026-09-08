@@ -52,4 +52,10 @@ export class NotificationService {
       .post<any>(`${this.base}/read-all`, {})
       .pipe(map((res: any) => res?.data?.updatedCount ?? 0));
   }
+
+  delete(id: string): Observable<boolean> {
+    return this.baseService
+      .delete<any>(`${this.base}/${id}`)
+      .pipe(map((res: any) => !!res?.data?.found));
+  }
 }
