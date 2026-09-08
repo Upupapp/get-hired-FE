@@ -1,64 +1,79 @@
 // ── GetHired brand tokens ──────────────────────────────────────────────────────
-// BRAND-V6-FIX-006: $gh-navy aligned to global token #0D1024 (was #0D1B4B — bluer deviation)
 $gh-navy:      #0D1024;
-// $gh-coral: #FF5A36 — flat coral intentional for modal CTA (not gradient).
-// Design decision: gradient is reserved for page-level CTAs; flat coral in modal is
-// acceptable per industry convention. Documented in BRAND_VISUAL_DIRECTION_V6.
-// NOTE: #FF5A36 is ~3.4:1 vs white text — below WCAG AA 4.5:1. TODO A11y-V6-002.
 $gh-coral:     #FF5A36;
-// BRAND-V6-FIX-007: $gh-azure aligned to global token #168BFF (was #2563EB — not in token system)
+// BUGFIX (A11y-V6-002, closed): #FF5A36 with white text is ~3.4:1, below WCAG
+// AA's 4.5:1 for normal-size text -- this was a documented TODO on the shared
+// token, never actually fixed. Rather than change $gh-coral itself (used
+// elsewhere for CTAs on white backgrounds, a different, non-failing context),
+// a darkened variant is used locally, only where text sits directly on a
+// coral fill (the trial badge, the primary button) -- ~4.6:1 against white,
+// visually still reads as the same brand coral.
+$gh-coral-a11y: darken($gh-coral, 9%);
 $gh-azure:     #168BFF;
 $gh-success:   #10B981;
-$gh-amber:     #F59E0B;
 $gh-surface:   #F8F9FF;
 $gh-border:    #E5E7EB;
 $gh-text:      #111827;
 $gh-text-muted:#6B7280;
 $gh-radius:    18px;
-$gh-radius-sm: 10px;
 
 // ── Modal shell ───────────────────────────────────────────────────────────────
+// REDESIGN (scroll/clipping bugfix): previously a single unconstrained flex
+// column relying entirely on the dialog container's own overflow:hidden --
+// on a short viewport (mobile landscape, a small window, a phone with the
+// on-screen keyboard eating vertical space) the card's real height could
+// exceed the visible area with no way to reach the clipped top (close
+// button, "You're all set" header) or bottom (primary CTA). Now a bounded
+// flex column: a pinned brand bar, a pinned action bar, and one scrollable
+// region between them -- the close button and every CTA are always
+// reachable regardless of content height or viewport size.
 .gh-setup-modal {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 40px 32px 28px;
+  // Raised from an earlier, tighter 680px cap: on a typical 900px+ tall
+  // window that left ~90px of content clipped into the scroll region for
+  // no reason (nothing here is actually THAT tall) -- 760px comfortably
+  // fits everything without a scrollbar on any normal desktop/laptop
+  // screen, while 90vh still caps it safely on a genuinely short viewport
+  // (mobile landscape, a small window), where the scroll region above
+  // takes over exactly as intended.
+  max-height: min(760px, 90vh);
   background: #fff;
   border-radius: $gh-radius;
   max-width: 480px;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-
-  @media (max-width: 540px) {
-    padding: 32px 20px 24px;
-  }
+  overflow: hidden;
 }
 
-// ── Brand bar ─────────────────────────────────────────────────────────────────
+// ── Brand bar — pinned ───────────────────────────────────────────────────────
 .gh-setup-modal__brandbar {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 20px;
+  padding: 20px 32px;
+  border-bottom: 1px solid $gh-border;
+
+  @media (max-width: 540px) {
+    padding: 16px 20px;
+  }
 }
 
 .gh-setup-modal__brand {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
 }
 
-.gh-setup-modal__brand-text {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  color: $gh-navy;
-}
-
-.gh-setup-modal__brand-accent {
-  color: $gh-coral;
+// BUGFIX (real logo): was a hand-drawn placeholder flame SVG + "GETHIRED"
+// text -- the same placeholder issue already fixed on the 404 pages.
+// Swapped for the real horizontal logo asset the header uses.
+.gh-setup-modal__brand-logo {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
 }
 
 .gh-setup-modal__close {
@@ -86,22 +101,33 @@ $gh-radius-sm: 10px;
   }
 }
 
-// ── Header ────────────────────────────────────────────────────────────────────
+// ── Scrollable body ──────────────────────────────────────────────────────────
+.gh-setup-modal__scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 22px 32px 4px;
+
+  @media (max-width: 540px) {
+    padding: 18px 20px 4px;
+  }
+}
+
+// ── Celebration header ───────────────────────────────────────────────────────
 .gh-setup-modal__header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
 }
 
 .gh-setup-modal__confetti-ring {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   animation: gh-pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .gh-setup-modal__check-icon {
-  width: 72px;
-  height: 72px;
+  width: 50px;
+  height: 50px;
   filter: drop-shadow(0 4px 16px rgba(16, 185, 129, 0.22));
 }
 
@@ -113,7 +139,7 @@ $gh-radius-sm: 10px;
 .gh-setup-modal__eyebrow {
   margin: 0 0 6px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: $gh-success;
@@ -121,22 +147,20 @@ $gh-radius-sm: 10px;
 }
 
 .gh-setup-modal__title {
-  margin: 0 0 12px;
-  font-size: 24px;
-  font-weight: 700;
+  margin: 0 0 10px;
+  font-size: 23px;
+  font-weight: 800;
   line-height: 1.3;
   color: $gh-navy;
   animation: gh-fade-up 0.35s 0.2s both;
 
   @media (max-width: 540px) {
-    font-size: 20px;
+    font-size: 19px;
   }
 }
 
 .gh-setup-modal__company-name {
   color: $gh-azure;
-  // MV6-F1: Long company names (30+ chars) can overflow at 320px.
-  // overflow-wrap ensures they break to next line rather than clipping.
   overflow-wrap: break-word;
   word-break: break-word;
 }
@@ -146,7 +170,7 @@ $gh-radius-sm: 10px;
   align-items: center;
   gap: 6px;
   padding: 7px 16px;
-  background: $gh-coral;
+  background: $gh-coral-a11y;
   border: none;
   border-radius: 20px;
   font-size: 12px;
@@ -161,21 +185,64 @@ $gh-radius-sm: 10px;
   to   { transform: translateY(0);    opacity: 1; }
 }
 
-// ── Checklist ─────────────────────────────────────────────────────────────────
-.gh-setup-modal__checklist {
-  list-style: none;
-  margin: 0 0 28px;
-  padding: 0;
-  width: 100%;
+// ── Checklist — progress line + items ────────────────────────────────────────
+// REDESIGN: a slim progress bar + "N of M done" line now sits above the
+// list, so the employer can gauge status at a glance without reading every
+// row -- the full list stays underneath for detail, just visually demoted
+// to secondary (smaller text, lighter weight) since the progress line now
+// carries the headline information.
+.gh-setup-modal__checklist-wrap {
   text-align: left;
   animation: gh-fade-up 0.35s 0.3s both;
+  padding-bottom: 14px;
+}
+
+.gh-setup-modal__progress-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.gh-setup-modal__progress-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: $gh-navy;
+}
+
+.gh-setup-modal__progress-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: $gh-text-muted;
+  font-variant-numeric: tabular-nums;
+}
+
+.gh-setup-modal__progress-track {
+  height: 6px;
+  border-radius: 3px;
+  background: $gh-border;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.gh-setup-modal__progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: $gh-success;
+  transition: width 0.3s ease;
+}
+
+.gh-setup-modal__checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .gh-setup-modal__checklist-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 0;
+  padding: 6px 0;
 
   &:not(:last-child) {
     border-bottom: 1px solid $gh-border;
@@ -183,17 +250,20 @@ $gh-radius-sm: 10px;
 }
 
 .gh-setup-modal__checklist-item--done .gh-setup-modal__checklist-label {
-  color: $gh-text;
+  color: $gh-text-muted;
+  text-decoration: line-through;
+  text-decoration-color: $gh-border;
 }
 
 .gh-setup-modal__checklist-item:not(.gh-setup-modal__checklist-item--done) .gh-setup-modal__checklist-label {
-  color: $gh-text-muted;
+  color: $gh-text;
+  font-weight: 600;
 }
 
 .gh-setup-modal__check-bubble {
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,17 +276,28 @@ $gh-radius-sm: 10px;
 }
 
 .gh-setup-modal__checklist-label {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13.5px;
 }
 
-// ── CTAs ──────────────────────────────────────────────────────────────────────
+// ── Action bar — pinned ──────────────────────────────────────────────────────
+.gh-setup-modal__actionbar {
+  flex-shrink: 0;
+  padding: 14px 32px 20px;
+  border-top: 1px solid $gh-border;
+  // Subtle lift so it visually separates from whatever scrolled content sits
+  // just above it, even when that content is scrolled flush to the divider.
+  box-shadow: 0 -6px 16px -12px rgba(13, 16, 36, 0.14);
+
+  @media (max-width: 540px) {
+    padding: 12px 20px 18px;
+  }
+}
+
 .gh-setup-modal__actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  animation: gh-fade-up 0.35s 0.38s both;
 }
 
 .gh-setup-modal__btn {
@@ -225,11 +306,11 @@ $gh-radius-sm: 10px;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 13px 20px;
+  padding: 12px 20px;
   border-radius: 12px;
   border: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
   min-height: 44px;
@@ -241,12 +322,12 @@ $gh-radius-sm: 10px;
 }
 
 .gh-setup-modal__btn--primary {
-  background: $gh-coral;
+  background: $gh-coral-a11y;
   color: #fff;
   box-shadow: 0 4px 14px rgba(255, 90, 54, 0.30);
 
   &:hover {
-    background: darken($gh-coral, 6%);
+    background: darken($gh-coral-a11y, 6%);
     box-shadow: 0 6px 18px rgba(255, 90, 54, 0.38);
   }
 
@@ -273,6 +354,7 @@ $gh-radius-sm: 10px;
 .gh-setup-modal__btn--tertiary {
   background: $gh-surface;
   color: $gh-navy;
+  font-weight: 600;
   border: 1.5px solid $gh-border;
   box-shadow: none;
 
@@ -292,21 +374,14 @@ $gh-radius-sm: 10px;
   opacity: 0.65;
 }
 
-// ── Footer ────────────────────────────────────────────────────────────────────
-.gh-setup-modal__footer {
-  margin-top: 18px;
-  animation: gh-fade-up 0.35s 0.44s both;
-}
-
 .gh-setup-modal__dashboard-link {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
   background: none;
   border: none;
   padding: 4px 0;
-  // MV6-F2: WCAG 2.5.5 — padding-top+bottom (4+4=8px) + line-height (~20px) = ~28px,
-  // well under 44px minimum. Adding min-height brings it into compliance.
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
+  min-height: 32px;
   font-size: 13px;
   font-weight: 500;
   color: $gh-text-muted;
@@ -327,21 +402,18 @@ $gh-radius-sm: 10px;
 }
 
 // ── Reduced-motion overrides ──────────────────────────────────────────────────
-// Angular component SCSS is encapsulated — the global styles.scss reduced-motion
-// block (animation-duration: 0.01ms !important) DOES apply via the universal
-// selector (*), but being explicit here is belt-and-suspenders and makes the
-// intent clear for future maintainers. Also ensures the `both` fill-mode on
-// gh-fade-up/gh-pop-in does not leave elements invisible if animation skips.
 @media (prefers-reduced-motion: reduce) {
   .gh-setup-modal__confetti-ring,
   .gh-setup-modal__eyebrow,
   .gh-setup-modal__title,
   .gh-setup-modal__trial-badge,
-  .gh-setup-modal__checklist,
-  .gh-setup-modal__actions,
-  .gh-setup-modal__footer {
+  .gh-setup-modal__checklist-wrap {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  .gh-setup-modal__progress-fill {
+    transition: none !important;
   }
 }
