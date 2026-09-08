@@ -61,7 +61,7 @@
   // Remove native search clear
   &::-webkit-search-cancel-button { display: none; }
 
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     font-size: 13px;
   }
 }
@@ -138,17 +138,11 @@
   &:active { transform: scale(0.97); }
   &:focus-visible { outline: 2px solid #FF7062; outline-offset: 2px; }
 
+  // BUGFIX (JS-15, widened): a full-text button left almost no room for
+  // the placeholder on real phone widths (390-430px, not just 375px),
+  // which is what caused the clipping/overlap. Icon-only here reclaims
+  // that space; desktop/tablet (>480px) keep the labeled button unchanged.
   @media (max-width: 480px) {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-
-  // BUGFIX (JS-15): at real 375px width, a full-text button left almost no
-  // room for the placeholder ("Search jobs, companies, skills, or
-  // locations"), which is what caused the clipping/overlap. Icon-only here
-  // reclaims that space; desktop/tablet (>400px) keep the labeled button
-  // unchanged.
-  @media (max-width: 400px) {
     padding: 8px;
     min-width: 36px;
   }
@@ -158,13 +152,13 @@
   display: none;
   flex-shrink: 0;
 
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     display: inline-flex;
   }
 }
 
 .gh-search-submit-text {
-  @media (max-width: 400px) {
+  @media (max-width: 480px) {
     display: none;
   }
 }
