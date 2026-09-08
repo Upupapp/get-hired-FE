@@ -56,7 +56,7 @@ $gh-text-muted:#6B7280;
 // ── Responsive body: CSS Grid reflows the illustration between the
 // desktop two-column layout (image left, text stacked right) and the
 // mobile single-column reading order (code -> title -> description ->
-// illustration -> actions -> links) with no JS involved. ─────────────────
+// illustration -> actions) with no JS involved. ──────────────────────────
 .gh-404__body {
   display: grid;
   grid-template-columns: 1fr;
@@ -65,8 +65,7 @@ $gh-text-muted:#6B7280;
     "title"
     "description"
     "illustration"
-    "actions"
-    "links";
+    "actions";
   row-gap: 14px;
   text-align: center;
   justify-items: center;
@@ -82,8 +81,7 @@ $gh-text-muted:#6B7280;
       "illustration code"
       "illustration title"
       "illustration description"
-      "illustration actions"
-      "illustration links";
+      "illustration actions";
   }
 }
 
@@ -210,23 +208,3 @@ $gh-text-muted:#6B7280;
   }
 }
 
-.gh-404__links {
-  grid-area: links;
-  margin-top: 4px;
-  font-family: 'Manrope', sans-serif;
-  font-size: 13px;
-
-  a {
-    color: $gh-text-muted;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-
-    &:not(:last-child) {
-      margin-right: 16px;
-    }
-
-    &:hover {
-      color: $gh-navy;
-    }
-  }
-}

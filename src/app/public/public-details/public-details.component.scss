@@ -8,18 +8,199 @@
   min-height: 40vh;
 }
 
-.pd-error {
+// ── "Job Not Found" state -- mirrors error-not-found.component's .gh-404
+// structure so both 404 experiences share the same GetHired visual
+// language. No "code" grid area here (this isn't a generic 404 route,
+// it's an inline error state on a job-details page that failed to load).
+$gh-navy:      #0D1024;
+$gh-coral:     #FF5A36;
+$gh-surface:   #F8F9FF;
+$gh-border:    #E5E7EB;
+$gh-text-muted:#6B7280;
+
+.gh-404 {
+  min-height: 650px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 40vh;
-  text-align: center;
-  padding: 40px 24px;
+  background: $gh-surface;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
 
-  i { font-size: 3rem; color: #aaa; margin-bottom: 16px; }
-  h2 { font-size: 1.4rem; font-weight: 600; color: #1A2341; margin-bottom: 8px; }
-  p { color: #666; max-width: 360px; }
+.gh-404__card {
+  width: 100%;
+  max-width: 980px;
+  background: #fff;
+  border: 1px solid $gh-border;
+  border-radius: 18px;
+  padding: 28px 28px 36px;
+  box-sizing: border-box;
+
+  @media (min-width: 900px) {
+    padding: 32px 48px 48px;
+  }
+}
+
+.gh-404__brandbar {
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid $gh-border;
+}
+
+.gh-404__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gh-404__brand-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: $gh-navy;
+}
+
+.gh-404__brand-accent {
+  color: $gh-coral;
+}
+
+.gh-404__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "title"
+    "description"
+    "illustration"
+    "actions";
+  row-gap: 14px;
+  text-align: center;
+  justify-items: center;
+
+  @media (min-width: 900px) {
+    grid-template-columns: minmax(280px, 420px) 1fr;
+    column-gap: 56px;
+    row-gap: 12px;
+    text-align: left;
+    justify-items: start;
+    align-items: start;
+    grid-template-areas:
+      "illustration title"
+      "illustration description"
+      "illustration actions";
+  }
+}
+
+.gh-404__illustration {
+  grid-area: illustration;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 900px) {
+    max-width: none;
+    align-self: center;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    max-width: 320px;
+
+    @media (min-width: 900px) {
+      max-width: 100%;
+    }
+  }
+}
+
+.gh-404__title {
+  grid-area: title;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.3;
+  color: $gh-navy;
+
+  @media (min-width: 900px) {
+    font-size: 26px;
+  }
+}
+
+.gh-404__description {
+  grid-area: description;
+  margin: 0;
+  max-width: 420px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  color: $gh-text-muted;
+}
+
+.gh-404__actions {
+  grid-area: actions;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 6px;
+
+  @media (min-width: 560px) {
+    flex-direction: row;
+    max-width: none;
+  }
+}
+
+.gh-404__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 26px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid $gh-coral;
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.978);
+  }
+}
+
+.gh-404__btn--primary {
+  background: $gh-navy;
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(13, 16, 36, 0.22);
+
+  &:hover {
+    background: lighten($gh-navy, 8%);
+    color: #fff;
+  }
+}
+
+.gh-404__btn--secondary {
+  background: #fff;
+  color: $gh-navy;
+  border: 1.5px solid $gh-border;
+
+  &:hover {
+    border-color: $gh-coral;
+    color: $gh-coral;
+  }
 }
 
 .job-breadcrumb {

@@ -48,6 +48,11 @@
   color: #1a1830;
   line-height: 1.4;
   min-width: 0;
+  // BUGFIX (JS-15): a long placeholder in a narrow flex row previously just
+  // hard-clipped mid-character right against the Search button, reading as
+  // "overlap" -- ellipsis gives the same space-constrained truncation a
+  // clean, readable edge instead.
+  text-overflow: ellipsis;
 
   &::placeholder {
     color: #9CA3AF;
@@ -55,6 +60,10 @@
 
   // Remove native search clear
   &::-webkit-search-cancel-button { display: none; }
+
+  @media (max-width: 400px) {
+    font-size: 13px;
+  }
 }
 
 .gh-search-spinner {
@@ -108,6 +117,9 @@
 }
 
 .gh-search-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
   color: #fff;
   border: none;
@@ -129,6 +141,31 @@
   @media (max-width: 480px) {
     padding: 8px 12px;
     font-size: 13px;
+  }
+
+  // BUGFIX (JS-15): at real 375px width, a full-text button left almost no
+  // room for the placeholder ("Search jobs, companies, skills, or
+  // locations"), which is what caused the clipping/overlap. Icon-only here
+  // reclaims that space; desktop/tablet (>400px) keep the labeled button
+  // unchanged.
+  @media (max-width: 400px) {
+    padding: 8px;
+    min-width: 36px;
+  }
+}
+
+.gh-search-submit-icon {
+  display: none;
+  flex-shrink: 0;
+
+  @media (max-width: 400px) {
+    display: inline-flex;
+  }
+}
+
+.gh-search-submit-text {
+  @media (max-width: 400px) {
+    display: none;
   }
 }
 
