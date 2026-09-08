@@ -317,7 +317,11 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     // left registered (unlinked from nav) -- their branches below are
     // kept only for contacts/candidate-list, still reachable via the
     // Interview hub's deep links.
-    if (url.includes('/contacts/job-groups')) return 'Candidate Group';
+    // CANDIDATE-GROUP-V2: job-derived view relabeled "Hiring Decisions";
+    // "Candidate Group" restored to its original meaning (manual grouping,
+    // contacts/groups).
+    if (url.includes('/contacts/job-groups')) return 'Hiring Decisions';
+    if (url.includes('/contacts/groups'))     return 'Candidate Group';
     if (url.includes('/contacts/candidate-list')) return 'Candidate Profile';
     if (url.includes('/applicants'))          return 'Applicants';
     if (url.includes('/interview'))           return 'Interviews';
@@ -339,7 +343,8 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     // new Candidate Group and Applicants sections are each their own
     // top-level parent, matching their promoted sidebar position.
     if (url.includes('/contacts/candidate-list')) return 'Talent';
-    if (url.includes('/contacts/job-groups')) return 'Candidate Group';
+    if (url.includes('/contacts/job-groups')) return 'Hiring Decisions';
+    if (url.includes('/contacts/groups'))     return 'Candidate Group';
     if (url.includes('/applicants'))          return 'Applicants';
     if (url.includes('/interview') || url.includes('/messages')) return 'Hiring Workspace';
     if (url.includes('/company'))             return 'Company';
@@ -360,6 +365,7 @@ export class EmployerPanelComponent implements OnInit, OnDestroy {
     // their nav links (routes still work if visited directly, they just
     // fall back to no subtitle, same as any other unlisted route).
     if (url.includes('/contacts/job-groups'))     return 'Applicants grouped by job, once marked Hired or Rejected.';
+    if (url.includes('/contacts/groups'))         return 'Create and manage your own candidate groups.';
     if (url.includes('/contacts/candidate-list')) return 'Review this candidate\'s application and profile.';
     if (url.includes('/applicants'))              return 'Review candidates who applied to your jobs.';
     if (url.includes('/interview'))               return 'Review interview activity and candidate video responses.';
