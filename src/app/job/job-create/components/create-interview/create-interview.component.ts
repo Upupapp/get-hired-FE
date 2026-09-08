@@ -31,6 +31,21 @@ export class CreateInterviewComponent implements OnInit {
    *  it needs this explicit nudge to pick up the resync. */
   syncQuestionsFromFormArray(): void {
     this.questionsContainer = [...this.interviewQuestions.value];
+    this.refreshingQuestions = false;
+  }
+
+  refreshingQuestions = false;
+
+  /** Manual escape hatch: re-fetches this job fresh from the backend and
+   *  resyncs the interview question list from it, via the same
+   *  editJob$ -> syncInterviewQuestionsFromStore() -> syncQuestionsFromFormArray()
+   *  pipeline every other legitimate resync already uses (see job-create.
+   *  component.ts). Nothing to refresh from for a job that hasn't been
+   *  saved yet -- jobId only exists once it has. */
+  refreshQuestions(): void {
+    if (!this.jobId || this.refreshingQuestions) return;
+    this.refreshingQuestions = true;
+    this.jobFacade.getJobById(this.jobId);
   }
 
   hasPendingQuestion(): boolean {
