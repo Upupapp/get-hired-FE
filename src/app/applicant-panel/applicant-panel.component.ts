@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } fro
 import { NavigationEnd, Router } from '@angular/router';
 import { CoreService } from '@app-core/services/core.service';
 import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
-import { Subscription } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { NotificationService, AppNotification } from '@main/shared/services/notification.service';
 
 @Component({
   selector: 'app-applicant-panel',
@@ -30,11 +31,22 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
 
   private routerSub: Subscription;
 
+  // Notification bell/center -- same lightweight local-state + polling
+  // pattern as core/header.component.ts's (the employer panel's) bell,
+  // reusing that exact same NotificationService/backend; the job seeker
+  // portal just never had a bell wired up to show it in until now.
+  notifications: AppNotification[] = [];
+  unreadCount = 0;
+  notifPanelOpen = false;
+  private notifPollSub: Subscription;
+  private static readonly NOTIF_POLL_INTERVAL_MS = 45000;
+
   constructor(
     private coreService: CoreService,
     private applicantFacade: ApplicantFacade,
     private router: Router,
     private dialog: MatDialog,
+    private notificationService: NotificationService,
   ) { }
 
   ngOnInit(): void {
@@ -48,10 +60,71 @@ export class ApplicantPanelComponent implements OnInit, OnDestroy {
     this.routerSub = this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe(() => this.closeMobileNav());
+
+    if (this.isUserLoggedIn) {
+      this.refreshNotifications();
+      // Polling, not a websocket -- matches the employer panel's bell
+      // exactly; no real-time push infra exists in this codebase.
+      this.notifPollSub = interval(ApplicantPanelComponent.NOTIF_POLL_INTERVAL_MS).subscribe(() => {
+        this.refreshNotifications();
+      });
+    }
   }
 
   ngOnDestroy(): void {
     if (this.routerSub) { this.routerSub.unsubscribe(); }
+    if (this.notifPollSub) { this.notifPollSub.unsubscribe(); }
+  }
+
+  refreshNotifications(): void {
+    this.notificationService.list().subscribe({
+      next: (result) => {
+        this.notifications = result.notifications || [];
+        this.unreadCount = result.unreadCount || 0;
+      },
+      error: () => {
+        // Non-fatal -- the bell just stays at its last-known state.
+      }
+    });
+  }
+
+  toggleNotifPanel(): void {
+    this.notifPanelOpen = !this.notifPanelOpen;
+    if (this.notifPanelOpen) {
+      this.refreshNotifications();
+    }
+  }
+
+  closeNotifPanel(): void {
+    this.notifPanelOpen = false;
+  }
+
+  onNotificationClick(notification: AppNotification): void {
+    if (!notification.isRead) {
+      this.notificationService.markRead(notification.id).subscribe({
+        next: () => {
+          notification.isRead = true;
+          this.unreadCount = Math.max(0, this.unreadCount - 1);
+        },
+        error: () => {}
+      });
+    }
+    this.notifPanelOpen = false;
+    if (notification.linkRoute) {
+      this.router.navigate([notification.linkRoute], {
+        queryParams: notification.linkQuery || {}
+      });
+    }
+  }
+
+  markAllNotificationsRead(): void {
+    this.notificationService.markAllRead().subscribe({
+      next: () => {
+        this.notifications = this.notifications.map((n) => ({ ...n, isRead: true }));
+        this.unreadCount = 0;
+      },
+      error: () => {}
+    });
   }
 
   // MOBILEVIEW: Open applicant mobile nav drawer
