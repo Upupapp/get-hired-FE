@@ -123,13 +123,13 @@
       </span>
     </button>
 
-    <!-- TERMS-LINK FIX: /terms has never been a registered route in this
-         app (confirmed via a full-repo route search) -- this link 404'd
-         for every user who clicked it. Same fix as signup.component.html:
-         merged into one real link to the one page that actually exists. -->
+    <!-- TERMS-LINK FIX (resolved): /terms is now a registered route
+         (terms.component.ts) -- split back into two standalone links. -->
     <p class="gh-role-terms">
       By continuing, you agree to GetHired's
-      <a href="/privacy" target="_blank" rel="noopener">Terms of Service and Privacy Policy</a>.
+      <a href="/terms" target="_blank" rel="noopener">Terms of Use</a>
+      and
+      <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.
     </p>
   </div>
 </div>

@@ -10,8 +10,8 @@
 
 // ── "Job Not Found" state -- mirrors error-not-found.component's .gh-404
 // structure so both 404 experiences share the same GetHired visual
-// language. No "code" grid area here (this isn't a generic 404 route,
-// it's an inline error state on a job-details page that failed to load).
+// language, with its own distinct eyebrow/title/description content
+// below so it never reads as a copy of the generic 404 page.
 $gh-navy:      #0D1024;
 $gh-coral:     #FF5A36;
 $gh-surface:   #F8F9FF;
@@ -51,25 +51,24 @@ $gh-text-muted:#6B7280;
 .gh-404__brand {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  text-decoration: none;
 }
 
-.gh-404__brand-text {
-  font-family: 'Manrope', sans-serif;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.01em;
-  color: $gh-navy;
-}
-
-.gh-404__brand-accent {
-  color: $gh-coral;
+// BUGFIX (real logo): same placeholder-flame-SVG issue as
+// error-not-found.component -- replaced with the actual GetHired
+// horizontal logo asset the header uses.
+.gh-404__brand-logo {
+  height: 28px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
 }
 
 .gh-404__body {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-areas:
+    "code"
     "title"
     "description"
     "illustration"
@@ -86,10 +85,25 @@ $gh-text-muted:#6B7280;
     justify-items: start;
     align-items: start;
     grid-template-areas:
+      "illustration code"
       "illustration title"
       "illustration description"
       "illustration actions";
   }
+}
+
+// Small uppercase eyebrow tag -- distinct from error-not-found's large
+// numeric "404" (a phrase like "JOB NOT FOUND" doesn't work at that
+// size/weight), but the same brand navy + Manrope pairing so both error
+// states still read as one visual family.
+.gh-404__code {
+  grid-area: code;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: $gh-coral;
 }
 
 .gh-404__illustration {

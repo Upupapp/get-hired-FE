@@ -25,6 +25,7 @@ import { PortalFaqComponent } from './shared/portal-faq/portal-faq.component';
 import { JobBoardEmployerCtaComponent } from './components/job-board-employer-cta/job-board-employer-cta.component';
 import { AiJobPreviewPanelComponent } from './employer-portal/ai-job-preview-panel/ai-job-preview-panel.component';
 import { PrivacyComponent } from './privacy/privacy.component';
+import { TermsComponent } from './terms/terms.component';
 
 const routes: Routes = [
   {
@@ -65,6 +66,7 @@ const routes: Routes = [
       { path: 'job-seekers', component: JobSeekerPortalComponent },
       { path: 'employers', component: EmployerPortalComponent },
       { path: 'privacy', component: PrivacyComponent },
+      { path: 'terms', component: TermsComponent },
     ]
   }
 ]
@@ -86,6 +88,7 @@ const routes: Routes = [
     JobBoardEmployerCtaComponent,
     AiJobPreviewPanelComponent,
     PrivacyComponent,
+    TermsComponent,
   ],
   imports: [
     // RouterModule MUST be first so public routes (/home, /jobs, etc.) are
