@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, Input, Output, EventEmitter,
-  ElementRef, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, NgZone
+  ElementRef, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, NgZone, HostListener
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
@@ -16,8 +16,18 @@ import { Router } from '@angular/router';
 export class SearchAutocompleteComponent implements OnInit, OnDestroy {
   @Input() initialQuery = '';
   @Input() placeholder = 'Search jobs, companies, skills, or locations';
+  // BUGFIX (JS-15 follow-up): the full placeholder has no room to fit on
+  // real phone widths (390-430px) without clipping, even with the input's
+  // own ellipsis and the icon-only submit button below 400px. A shorter,
+  // still-meaningful placeholder on narrow viewports fixes this at the
+  // source instead of relying purely on truncation. Desktop/tablet keep
+  // the original full placeholder unchanged.
+  @Input() mobilePlaceholder = 'Search jobs & companies';
   @Input() scope: 'jobs' | 'companies' | 'all' = 'all';
   @Output() searchSubmit = new EventEmitter<string>();
+
+  isNarrowViewport = false;
+  private static readonly NARROW_BREAKPOINT = 480;
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
@@ -37,7 +47,26 @@ export class SearchAutocompleteComponent implements OnInit, OnDestroy {
     private zone: NgZone,
   ) {}
 
+  get effectivePlaceholder(): string {
+    return this.isNarrowViewport ? this.mobilePlaceholder : this.placeholder;
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.updateNarrowViewport();
+  }
+
+  private updateNarrowViewport(): void {
+    const next = typeof window !== 'undefined'
+      && window.innerWidth <= SearchAutocompleteComponent.NARROW_BREAKPOINT;
+    if (next !== this.isNarrowViewport) {
+      this.isNarrowViewport = next;
+      this.cd.markForCheck();
+    }
+  }
+
   ngOnInit() {
+    this.updateNarrowViewport();
     this.query = this.initialQuery || '';
 
     this.query$.pipe(
