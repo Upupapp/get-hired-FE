@@ -459,8 +459,10 @@
           </ul>
 
           <!-- CTA — anchored at bottom. Disabled only for the current plan;
-               Enterprise stays actionable because Contact Sales is a real action. -->
-          <div class="gh-plan-card__cta">
+               Enterprise stays actionable because Contact Sales is a real action.
+               A plan with nothing to act on (the Free Trial has no upgrade route)
+               renders no button at all, rather than one that does nothing. -->
+          <div class="gh-plan-card__cta" *ngIf="ctaFor(plan).kind !== 'none'">
             <button
               class="gh-plan-card__cta-btn"
               [ngClass]="{
@@ -498,11 +500,24 @@
           (click)="goToPlanSlide(i)">
         </button>
       </div>
+
+      <!-- WCAG 2.2.2 pause control for the auto-advancing carousel. Rendered only
+           when motion is allowed, so reduced-motion users never see a control for
+           movement that is not happening. -->
+      <button type="button" class="gh-plan-carousel__autoplay"
+        *ngIf="planCarouselMotionAllowed && !catalogLoading && !catalogError && catalogPlans.length > 1"
+        aria-label="Pause automatic plan rotation"
+        [attr.aria-pressed]="planCarouselUserPaused"
+        (click)="togglePlanCarouselAutoAdvance()">
+        <svg *ngIf="!planCarouselUserPaused" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+        <svg *ngIf="planCarouselUserPaused" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+      </button>
     </div>
 
     <!-- ── COMPARE PLANS ── -->
-    <!-- Desktop renders a matrix; below 900px the same data stacks per plan so
-         a five-column table is never forced onto a phone. -->
+    <!-- Desktop renders a matrix. Below 900px each feature row stacks and lists
+         every plan's value with the plan named in the cell, so a five-column table
+         is never forced onto a phone and no plan is hidden. -->
     <div class="gh-sub-section" *ngIf="!catalogLoading && !catalogError && catalogPlans.length"
       role="region" aria-label="Compare plans">
       <h2 class="gh-sub-section__title">Compare plans</h2>
@@ -526,6 +541,7 @@
                 <th scope="row" class="gh-compare__rowhead">{{ row.label }}</th>
                 <td *ngFor="let plan of catalogPlans"
                   [class.gh-compare__col--current]="isCurrentCatalogPlan(plan)">
+                  <span class="gh-compare__cell-plan">{{ planName(plan) }}</span>
                   <ng-container *ngIf="row.values[plan.slug] === true">
                     <span class="sr-only">Included</span>
                     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>

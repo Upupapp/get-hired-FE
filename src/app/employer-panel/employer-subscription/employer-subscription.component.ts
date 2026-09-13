@@ -180,6 +180,10 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   private planCarouselTimer: any;
   private planCarouselResumeTimer: any;
   private planCarouselPaused = false;
+  /** Set only by the explicit pause control. Kept separate from the transient
+   *  hover/touch/focus pause, so an interaction ending can never silently undo a
+   *  pause the Employer asked for. */
+  planCarouselUserPaused = false;
   private planCarouselResizeObserver?: ResizeObserver;
   private planCarouselResizeDebounce: any;
 
@@ -211,7 +215,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
 
     this.planCarouselTimer = setInterval(() => {
-      if (this.planCarouselPaused) { return; }
+      if (this.planCarouselPaused || this.planCarouselUserPaused) { return; }
       this.advancePlanCarousel();
     }, 2000);
   }
@@ -260,6 +264,22 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   onPlanCarouselInteractionEnd(): void {
     clearTimeout(this.planCarouselResumeTimer);
     this.planCarouselResumeTimer = setTimeout(() => { this.planCarouselPaused = false; }, 3000);
+  }
+
+  /** Whether the carousel moves on its own at all. Reduced-motion users get no
+   *  auto-advance (see startPlanCarouselAutoScroll), so they get no control for
+   *  movement that is not happening. A getter rather than state set in
+   *  ngAfterViewInit, which would change a bound value mid change detection. */
+  get planCarouselMotionAllowed(): boolean {
+    if (typeof window === 'undefined') { return false; }
+    return !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /** WCAG 2.2.2: content that moves automatically for more than five seconds
+   *  needs a way to pause it. Hover, touch and focus already pause briefly;
+   *  this is the persistent, explicit control. */
+  togglePlanCarouselAutoAdvance(): void {
+    this.planCarouselUserPaused = !this.planCarouselUserPaused;
   }
 
   /** Keeps the active dot + edge affordances in sync when the Employer
@@ -339,7 +359,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
         },
         (_err) => {
           // No local price fallback by design. Showing a stale hardcoded figure
-          // is what produced the advertise-2,499 / charge-3,490 mismatch this
+          // is what produced the advertise-one-price / charge-another mismatch this
           // page is being fixed for; an honest empty state is safer than a
           // confident wrong number.
           this.catalog = null;
@@ -457,8 +477,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   // This replaced getEffectivePlanConfigs(), which branched on whether the
   // backend had returned plans and then returned the hardcoded PLAN_CONFIGS
   // either way — a dead branch that silently guaranteed the frontend's own
-  // prices always won. That is how the page came to advertise PHP 2,499 for
-  // Growth while planCatalogServiceV4 charged PHP 3,490.
+  // prices always won. That is how the page came to advertise one price for
+  // Growth while planCatalogServiceV4 charged another.
 
   /** Plans to render, straight from the backend catalog. Empty until it loads. */
   get catalogPlans(): PlanCatalogItem[] {
@@ -524,8 +544,9 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
       this.contactSales();
       return;
     }
-    // upgradeRoute is the backend's own route for this plan; it is null for the
-    // trial and for Enterprise, so an absent route is a deliberate "no checkout".
+    // planCta() only makes a card actionable when there is somewhere to go — a
+    // plan with no upgradeRoute renders no button at all — so this guard satisfies
+    // the type checker rather than being a silent no-op path.
     if (plan.upgradeRoute) {
       this.router.navigateByUrl(plan.upgradeRoute);
     }

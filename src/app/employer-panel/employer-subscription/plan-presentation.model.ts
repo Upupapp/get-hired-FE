@@ -269,9 +269,10 @@ export function buildComparison(plans: PlanCatalogItem[]): ComparisonGroup[] {
 
 export interface PlanCta {
   label: string;
-  /** false when the card represents the plan the employer is already on. */
+  /** false for the plan the employer is already on, and for a plan with nothing to act on. */
   actionable: boolean;
-  kind: 'current' | 'upgrade' | 'switch' | 'contact_sales' | 'choose';
+  /** 'none' means the card renders no button at all. */
+  kind: 'current' | 'upgrade' | 'switch' | 'contact_sales' | 'choose' | 'none';
 }
 
 /**
@@ -287,6 +288,12 @@ export function planCta(plan: PlanCatalogItem, orderedSlugs: string[], currentSl
   }
   if (plan.enterprise || plan.contactSalesRequired) {
     return { label: 'Contact Sales', actionable: true, kind: 'contact_sales' };
+  }
+  // Nothing to act on: the backend gives this plan no upgrade route (the Free
+  // Trial). A button here looked actionable and did nothing, so the card renders
+  // none instead.
+  if (!plan.upgradeRoute) {
+    return { label: '', actionable: false, kind: 'none' };
   }
   if (!currentSlug) {
     return { label: `Choose ${planDisplayName(plan)}`, actionable: true, kind: 'choose' };

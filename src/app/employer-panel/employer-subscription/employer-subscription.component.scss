@@ -667,6 +667,15 @@
     .gh-plan-card__price-val { color: #fff; }
     .gh-plan-card__feature { color: rgba(255, 255, 255, 0.85); }
     .gh-plan-card__feature--excluded { color: rgba(255, 255, 255, 0.35); }
+
+    // Everything added to the card for the catalog-driven page inherits the
+    // light-surface colours unless overridden here. Without these the capacity
+    // lines were #101828 on #0D1024 — near-invisible on the recommended plan.
+    .gh-plan-card__price-per { color: rgba(255, 255, 255, 0.72); }
+    .gh-plan-card__price-caption,
+    .gh-plan-card__price-effective { color: rgba(255, 255, 255, 0.72); }
+    .gh-plan-card__capacity { border-top-color: rgba(255, 255, 255, 0.16); }
+    .gh-plan-card__capacity-item { color: var(--gh-white); }
   }
 
   &--current {
@@ -1372,7 +1381,7 @@
   margin: 0 0 20px;
   padding: 4px;
   border-radius: 999px;
-  background: var(--gh-surface-2, #f1f4f9);
+  background: var(--gh-bg);
   width: fit-content;
   max-width: 100%;
 
@@ -1384,20 +1393,20 @@
     border-radius: 999px;
     font-size: 14px;
     font-weight: 600;
-    color: var(--gh-text-muted, #5b6576);
+    color: var(--gh-text-secondary);
     background: transparent;
     transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
 
-    &:hover { color: var(--gh-text, #16202e); }
+    &:hover { color: var(--gh-text); }
 
     &:focus-visible {
-      outline: 2px solid var(--gh-brand, #2f6bff);
+      outline: 2px solid var(--gh-azure);
       outline-offset: 2px;
     }
 
     &--active {
-      background: var(--gh-surface, #fff);
-      color: var(--gh-text, #16202e);
+      background: var(--gh-white);
+      color: var(--gh-text);
       box-shadow: 0 1px 3px rgba(16, 30, 54, .12);
     }
   }
@@ -1406,7 +1415,7 @@
     padding: 0 12px;
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--gh-success-ink, #17794a);
+    color: var(--gh-text-secondary);
   }
 }
 
@@ -1421,25 +1430,25 @@
     align-items: flex-start;
     gap: 10px;
     padding: 20px;
-    border: 1px solid var(--gh-border, #e2e8f0);
+    border: 1px solid var(--gh-border);
     border-radius: 14px;
-    background: var(--gh-surface, #fff);
+    background: var(--gh-white);
     font-size: 14px;
-    color: var(--gh-text-muted, #5b6576);
+    color: var(--gh-text-secondary);
   }
 
   &__retry {
     appearance: none;
     cursor: pointer;
-    border: 1px solid var(--gh-border, #e2e8f0);
-    background: var(--gh-surface, #fff);
-    color: var(--gh-text, #16202e);
+    border: 1px solid var(--gh-border);
+    background: var(--gh-white);
+    color: var(--gh-text);
     font-size: 13.5px;
     font-weight: 600;
     padding: 8px 16px;
     border-radius: 8px;
 
-    &:focus-visible { outline: 2px solid var(--gh-brand, #2f6bff); outline-offset: 2px; }
+    &:focus-visible { outline: 2px solid var(--gh-azure); outline-offset: 2px; }
   }
 }
 
@@ -1449,13 +1458,13 @@
     list-style: none;
     margin: 14px 0 10px;
     padding: 14px 0 0;
-    border-top: 1px solid var(--gh-border, #e2e8f0);
+    border-top: 1px solid var(--gh-border);
   }
 
   &__capacity-item {
     font-size: 14px;
     font-weight: 600;
-    color: var(--gh-text, #16202e);
+    color: var(--gh-text);
     line-height: 1.5;
 
     & + & { margin-top: 6px; }
@@ -1467,14 +1476,14 @@
     margin: 2px 0 0;
     font-size: 12.5px;
     line-height: 1.45;
-    color: var(--gh-text-muted, #5b6576);
+    color: var(--gh-text-secondary);
   }
 
   &__price-effective {
     margin: 2px 0 0;
     font-size: 12.5px;
     font-weight: 600;
-    color: var(--gh-text-muted, #5b6576);
+    color: var(--gh-text-secondary);
   }
 }
 
@@ -1488,7 +1497,7 @@
     font-weight: 700;
     letter-spacing: .04em;
     text-transform: uppercase;
-    color: var(--gh-text-muted, #5b6576);
+    color: var(--gh-text-secondary);
   }
 
   /* The table is the only thing allowed to scroll sideways; the page body
@@ -1496,9 +1505,9 @@
   &__scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--gh-border, #e2e8f0);
+    border: 1px solid var(--gh-border);
     border-radius: 14px;
-    background: var(--gh-surface, #fff);
+    background: var(--gh-white);
   }
 
   &__table {
@@ -1510,42 +1519,53 @@
     th, td {
       padding: 12px 14px;
       text-align: left;
-      border-bottom: 1px solid var(--gh-border-soft, #eef2f7);
+      border-bottom: 1px solid var(--gh-border);
     }
 
     thead th {
       position: sticky;
       top: 0;
       z-index: 1;
-      background: var(--gh-surface-2, #f8fafc);
+      background: var(--gh-bg);
       font-weight: 700;
-      color: var(--gh-text, #16202e);
+      color: var(--gh-text);
       white-space: nowrap;
     }
 
     tbody tr:last-child th,
     tbody tr:last-child td { border-bottom: 0; }
 
-    td { color: var(--gh-text, #16202e); }
+    td { color: var(--gh-text); }
   }
 
   &__rowhead {
     font-weight: 600;
-    color: var(--gh-text-muted, #5b6576);
+    color: var(--gh-text-secondary);
     white-space: normal;
   }
 
   &__col--current {
-    background: var(--gh-brand-soft, #eef3ff);
+    background: var(--gh-azure-soft);
   }
 
   &__dash {
-    color: var(--gh-text-subtle, #9aa5b5);
+    color: var(--gh-text-secondary);
   }
 }
 
-/* Phone: the five-column matrix would be unreadable, so each plan becomes its
-   own labelled block using the same data rather than a squeezed table. */
+/* The plan name inside each comparison cell. Hidden on the desktop matrix, where
+   the column header names the plan — display:none also keeps it from screen
+   readers, which already get that header. Shown in the stacked view below. */
+.gh-compare__cell-plan { display: none; }
+
+/* Secondary text drops to 4.47:1 on the current plan's --gh-azure-soft column, just
+   under AA, so text inside that column takes the primary text colour. */
+.gh-compare__col--current .gh-compare__cell-plan,
+.gh-compare__col--current .gh-compare__dash { color: var(--gh-text); }
+
+/* Phone: each feature row becomes its own block listing EVERY plan's value, with
+   the plan named in the cell. The earlier version hid every column except the
+   current plan's, so an employer with no plan saw row labels and no values. */
 @media (max-width: 900px) {
   .gh-compare__table {
     min-width: 0;
@@ -1553,29 +1573,58 @@
     thead { display: none; }
 
     tbody tr {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 2px 12px;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--gh-border-soft, #eef2f7);
+      display: block;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--gh-border);
     }
 
     th, td {
+      display: block;
       border: 0;
-      padding: 2px 0;
+      padding: 0;
+    }
+
+    th[scope='row'] {
+      margin-bottom: 6px;
+      color: var(--gh-text);
     }
 
     tbody td {
-      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 8px;
+      border-radius: 8px;
       font-weight: 600;
     }
-
-    /* Only the current plan's column is carried into the stacked view; showing
-       all five values per row on a phone is what made this unreadable. */
-    tbody td:not(.gh-compare__col--current) { display: none; }
   }
 
-  .gh-compare__col--current { background: transparent; }
+  .gh-compare__cell-plan {
+    display: inline;
+    font-weight: 500;
+    color: var(--gh-text-secondary);
+  }
+}
+
+/* WCAG 2.2.2 pause control for the auto-advancing plan carousel. 44px target. */
+.gh-plan-carousel__autoplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 4px auto 0;
+  padding: 0;
+  border: 1px solid var(--gh-border);
+  border-radius: 999px;
+  background: var(--gh-white);
+  color: var(--gh-text);
+  cursor: pointer;
+
+  &:focus-visible { outline: 2px solid var(--gh-azure); outline-offset: 2px; }
+
+  &[aria-pressed='true'] { background: var(--gh-bg); }
 }
 
 @media (prefers-reduced-motion: reduce) {

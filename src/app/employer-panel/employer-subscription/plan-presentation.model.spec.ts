@@ -344,6 +344,25 @@ describe('plan-presentation', () => {
       expect(cta.kind).toBe('choose');
       expect(cta.label).toBe('Choose Growth');
     });
+
+    it('offers no action for a plan without an upgrade route (the Free Trial)', () => {
+      // The Free Trial card used to show "Choose Free Trial" or "Switch to Free
+      // Trial" and do nothing on click, because the backend gives it no route.
+      for (const current of [null, 'growth']) {
+        const cta = planCta(TRIAL, ORDER, current);
+        expect(cta.kind).withContext(`current=${current}`).toBe('none');
+        expect(cta.actionable).withContext(`current=${current}`).toBeFalse();
+      }
+    });
+
+    it('still marks the Free Trial as the current plan for an employer on it', () => {
+      expect(planCta(TRIAL, ORDER, 'free_trial').kind).toBe('current');
+    });
+
+    it('keeps Contact Sales for a plan with no upgrade route that is sales-led', () => {
+      // Enterprise has no self-serve route either, but its action is real.
+      expect(planCta(ENTERPRISE, ORDER, 'growth').kind).toBe('contact_sales');
+    });
   });
 
   describe('buildComparison', () => {
