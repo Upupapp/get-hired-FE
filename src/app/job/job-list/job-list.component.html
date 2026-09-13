@@ -3,7 +3,7 @@
     <!-- Talent proof badge — persists across empty/loaded states -->
     <div class="gh-job-list-topbar">
       <app-talent-proof-badge variant="pill" placement="employer_dashboard_job_list"></app-talent-proof-badge>
-      <button class="gh-btn-primary gh-pressable gh-job-list-post-btn" (click)="getCompanyRestrictions()"
+      <button class="gh-btn-primary gh-pressable gh-job-list-post-btn" (click)="openJobPostAssistant()"
         aria-label="Post a new job">
         <i class="bi bi-plus-lg" aria-hidden="true"></i>
         Post a job
@@ -22,7 +22,7 @@
               Post your first job to start receiving applicants.
             </p>
             <button class="gh-btn-primary gh-pressable gh-job-list-empty-cta"
-              (click)="getCompanyRestrictions()"
+              (click)="openJobPostAssistant()"
               aria-label="Post your first job">
               <i class="bi bi-plus-lg" aria-hidden="true"></i>
               Post your first job

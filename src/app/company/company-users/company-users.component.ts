@@ -2,11 +2,10 @@ import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, Subject } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { CompanyFacade } from '@app-company/state/company.facade';
 import { CompanyService } from '../company.service';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
-import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { mainAnimations } from '@main/shared/animations/main-animations';
@@ -109,39 +108,13 @@ export class CompanyUsersComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * "Add team member". No seat pre-check: adding past the seat limit is refused by the backend
+   * with HTTP 402, and the invite dialog opens the limit modal (B5). The old check compared
+   * seat counts here and turned the employer away before the backend was asked.
+   */
   addAccess(): void {
-    this.companyFacade.getCompanySubscription(this.companyId);
-    this.companyFacade.subsRestrictions$.pipe(
-      filter(subs => !!subs),
-      take(1),
-      takeUntil(this.unsubscribe$)
-    ).subscribe(subs => this.checkSubs(subs));
-  }
-
-  checkSubs(subs: Model.CompanySubscriptions): void {
-    if (subs) {
-      if (subs.adminCount === subs.admin) {
-        this.restrictUserCreation();
-      } else {
-        this.addUserToCompany();
-      }
-    }
-  }
-
-  restrictUserCreation(): void {
-    const ref = this.dialog.open(SubscriptionAlertComponent, {
-      // OVERLAY-AUDIT FIX: same narrow-viewport gap as job-list.component.ts's
-      // identical SubscriptionAlertComponent dialog -- same fix.
-      width: 'clamp(340px, 34vw, 480px)',
-      data: { isError: true }
-    });
-    this.subscriptions$.add(
-      ref.afterClosed().pipe(takeUntil(this.unsubscribe$)).subscribe(result => {
-        if (result === 1) {
-          this.router.navigate(['../../subscription'], { relativeTo: this.route });
-        }
-      })
-    );
+    this.addUserToCompany();
   }
 
   addUserToCompany(): void {

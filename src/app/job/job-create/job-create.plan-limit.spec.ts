@@ -35,13 +35,13 @@ describe('JobCreateComponent -- a publish refused by a plan limit (B5)', () => {
   let mockJobFacade: any;
   let planLimitDialog: { open: jasmine.Spy };
   let jobService: jasmine.SpyObj<JobService>;
+  let restrictionsRead: jasmine.Spy;
 
   beforeEach(async () => {
     refusal$ = new Subject<EmployerPlanLimitRefusal | null>();
     choice$ = new Subject<PlanLimitChoice | undefined>();
     mockJobFacade = {
       jobDetails$: of(null),
-      subsRestrictions$: of(null),
       loading$: of(false),
       planLimitRefusal$: refusal$.asObservable(),
       saveJob: jasmine.createSpy('saveJob'),
@@ -54,6 +54,9 @@ describe('JobCreateComponent -- a publish refused by a plan limit (B5)', () => {
       resetFormState: jasmine.createSpy('resetFormState'),
     };
     planLimitDialog = { open: jasmine.createSpy('open').and.returnValue(choice$.asObservable()) };
+    // B5.1: the old gate read this stream; the page must not read it at all now.
+    restrictionsRead = jasmine.createSpy('subsRestrictions$').and.returnValue(of({ jobPost: 1, jobPostCount: 1 }));
+    Object.defineProperty(mockJobFacade, 'subsRestrictions$', { get: restrictionsRead });
     // Untyped, as in job-create.component.spec.ts: getJobLevels is not on JobService's type.
     jobService = jasmine.createSpyObj('JobService', ['getJobLevels', 'saveJob']) as jasmine.SpyObj<JobService>;
 
@@ -112,6 +115,18 @@ describe('JobCreateComponent -- a publish refused by a plan limit (B5)', () => {
     choice$.next('upgrade');
     choice$.next(undefined);
     expect(mockJobFacade.saveJob).not.toHaveBeenCalled();
+  });
+
+  it('B5.1: Publish where the old gate saw the job limit reached is sent to the backend, and its 402 opens the limit dialog', () => {
+    expect(restrictionsRead).withContext('the page read the subscription restrictions').not.toHaveBeenCalled();
+    const job: any = { jobTitle: 'Chef', jobStatusId: 2, jobId: '' };
+    (TestBed.inject(JobReadinessService) as any).evaluate = () => ({ blockingItems: [] });
+    spyOn(component, 'formatJob').and.returnValue(job);
+    component.publishJobPost();
+    expect(mockJobFacade.saveJob).toHaveBeenCalledOnceWith(job);
+    refusal$.next(EMPLOYER_REFUSAL);
+    expect(planLimitDialog.open).toHaveBeenCalledOnceWith(EMPLOYER_REFUSAL);
+    expect(restrictionsRead).not.toHaveBeenCalled();
   });
 
   it('a background autosave refused by a plan limit shows the backend\'s reason on the save pill, not a connection error', () => {

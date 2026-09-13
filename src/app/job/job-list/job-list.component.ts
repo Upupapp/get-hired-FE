@@ -21,7 +21,6 @@ import { TableControlModalComponent } from './dialogs/table-control-modal/table-
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { CurrencyPipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 import { EasyJobPostAssistantModalComponent } from '../easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 
 import * as Model from '../job.model';
@@ -103,7 +102,6 @@ export class JobListComponent implements OnInit, OnDestroy {
     };
   };
 
-  isAllowed: boolean = true;
   status: string[] = ['All', 'Draft', 'Published'];
 
   constructor(
@@ -121,7 +119,6 @@ export class JobListComponent implements OnInit, OnDestroy {
       if (res) {
         this.user = JSON.parse(res);
         this.jobFacade.getBasicList(this.user.companyId);
-        this.jobFacade.getCompanySubscription(this.user.companyId);
       }
     });
 
@@ -136,12 +133,6 @@ export class JobListComponent implements OnInit, OnDestroy {
       this.jobFacade.loading$
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe(this.onLoad.bind(this))
-    );
-
-    this.req.add(
-      this.jobFacade.subsRestrictions$
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(this.checkJobRestriction.bind(this))
     );
 
     // QA8 BRAND FIX-B: surface changeJobStatusFail and deleteJobFail errors.
@@ -173,22 +164,18 @@ export class JobListComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkJobRestriction(subs: Model.CompanySubscriptions) {
-    if (subs && subs.jobPost === subs.jobPostCount) {
-      this.isAllowed = false;
-    }
-  }
-
-  getCompanyRestrictions() {
-    if (this.isAllowed) {
-      this.dialog.open(EasyJobPostAssistantModalComponent, {
-        width: '560px',
-        maxWidth: '96vw',
-        panelClass: 'gh-assistant-dialog',
-      });
-    } else {
-      this.restrictJobCreation(false);
-    }
+  /**
+   * "Post a job". No plan pre-check: the backend refuses a publish past the job limit with
+   * HTTP 402, and the assistant opens the limit modal, whose "Save as draft" keeps the work
+   * (B5). The old check compared subscription counts here and turned the employer away before
+   * the backend was asked: the client restating server truth.
+   */
+  openJobPostAssistant() {
+    this.dialog.open(EasyJobPostAssistantModalComponent, {
+      width: '560px',
+      maxWidth: '96vw',
+      panelClass: 'gh-assistant-dialog',
+    });
   }
 
   formatSalary(salaryMin, salaryMax, rate, currency) {
@@ -298,36 +285,6 @@ export class JobListComponent implements OnInit, OnDestroy {
 
   onLoad(isLoading) {
     this.loading = isLoading;
-  }
-
-  restrictJobCreation(restriction) {
-    let openChecker = this.dialog.open(
-      SubscriptionAlertComponent,
-      {
-        // OVERLAY-AUDIT FIX: flat 34vw computed to ~270-300px on the
-        // 768-900px tablet/small-desktop range -- too narrow for this
-        // dialog's large fs-1 heading. clamp() gives it a real floor
-        // (340px) and ceiling (480px) instead. True mobile (<=767px) is
-        // unaffected -- a separate global rule already forces full width there.
-        width: 'clamp(340px, 34vw, 480px)',
-        data: {
-          isError: restriction
-        }
-      }
-    );
-
-    this.req.add(
-      openChecker
-        .afterClosed()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(result => {
-          if (result == 1) {
-            this.router.navigate(['../../subscription'], { relativeTo: this.route })
-          } else {
-            this.router.navigate(['../create'], { relativeTo: this.route });
-          }
-        })
-    );
   }
 
 

@@ -1,10 +1,11 @@
 <!-- Loading state -->
-<div class="mt-5" *ngIf="!(!loading && restrictions$ | async)">
+<div class="mt-5" *ngIf="loading || !jobForm">
   <app-inline-loading></app-inline-loading>
 </div>
 
 <!-- Main shell — shown once loaded and subscription resolved -->
-<div class="gh-jc-shell" *ngIf="!loading && restrictions$ | async" @fadeInPage>
+<!-- B5.1: ready once the form exists. This used to wait for /getsubscriptionrestrictions, whose only other use was the publish gate removed below. -->
+<div class="gh-jc-shell" *ngIf="!loading && jobForm" @fadeInPage>
 
   <!-- ── MISSION BAR (sticky) ────────────────────────────────────────────── -->
   <header class="gh-jc-hero gh-sf-mission-bar">
@@ -212,7 +213,7 @@
               class="gh-btn gh-btn--publish"
               type="button"
               (click)="publishJobPost()"
-              [disabled]="!isAllowedToPublish || loading || (autoSaveState === 'saving' && assistantPrefilled && !jobId)"
+              [disabled]="loading || (autoSaveState === 'saving' && assistantPrefilled && !jobId)"
               [attr.aria-label]="loading ? 'Publishing...' : 'Publish job post'"
             >
               <span *ngIf="!loading">
@@ -225,14 +226,8 @@
           </div>
         </div>
 
-        <!-- Subscription gate warning -->
-        <div *ngIf="!isAllowedToPublish && stepper === 4" class="gh-jc-plan-gate" role="alert">
-          <i class="bi bi-lock-fill me-2" aria-hidden="true"></i>
-          You've reached your job post limit.
-          <button class="gh-jc-plan-gate-link" type="button" (click)="restrictJobCreation(true)">
-            Upgrade your plan
-          </button>
-        </div>
+        <!-- B5.1: no client-side plan gate. A publish past the limit is refused by the backend
+             (HTTP 402) and opens the limit modal, whose "Save as draft" keeps the work. -->
 
       </main>
 
@@ -526,7 +521,7 @@
       class="gh-btn gh-btn--publish gh-btn--sm"
       type="button"
       (click)="publishJobPost()"
-      [disabled]="!isAllowedToPublish || loading"
+      [disabled]="loading"
     >
       <i class="bi bi-send-fill me-1" aria-hidden="true"></i>Publish
     </button>

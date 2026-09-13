@@ -7,10 +7,9 @@ import { distinctUntilChanged, Subject, Subscription, take, debounceTime } from 
 import * as Model from '../job.model';
 import * as QuestionModel from '@main/interview/interview.model';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
 import { TalentProofService } from '@main/public/services/talent-proof.service';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
 import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/haptic-feedback.service';
@@ -49,7 +48,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   public unsubscribe$ = new Subject<void>();
   questions: QuestionModel.InterviewQuestion[];
 
-  isAllowedToPublish: boolean = true;
   companyId: string;
   mode: string;
   delayControl: boolean = true;
@@ -322,12 +320,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
   // QA7 FIX-9: tracked below in ngOnInit to ensure unsubscribe on destroy.
   loading$: any;
 
-  restrictions$ = this.jobFacade.subsRestrictions$
-    .pipe(
-      tap(subs => {
-        if (subs) this.getCompanyRestrictions(subs);
-      })
-    );
 
   constructor(
     private fb: FormBuilder,
@@ -395,7 +387,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.jobFacade.getCompanySubscription(this.companyId);
         // companyId is only available here (async), so the first save of an
         // AI-prefilled draft is deferred until this point — see applyAssistantPrefill().
         if (this.shouldPersistAssistantDraft) {
@@ -697,12 +688,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
 
   onLoad(isLoading) {
     this.loading = isLoading;
-  }
-
-  getCompanyRestrictions(subs: Model.CompanySubscriptions) {
-    if (subs.jobPost === subs.jobPostCount) {
-      this.isAllowedToPublish = false;
-    }
   }
 
   // BUGFIX (QA EM-21, P1): group-level validator for the jobInfo FormGroup
@@ -2111,29 +2096,6 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.jobFacade.saveInterview(bodyInterview.interviewQuestions, bodyInterview.interviewTemplateId)
         break;
     }
-  }
-
-  restrictJobCreation(restriction) {
-    let openChecker = this.dialog.open(
-      SubscriptionAlertComponent,
-      {
-        width: 'min(560px, 95vw)',
-        data: {
-          isError: restriction
-        }
-      }
-    );
-
-    this.subscriptions.add(
-      openChecker
-        .afterClosed()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(result => {
-          if (result == 1) {
-            this.router.navigate(['../../subscription'], { relativeTo: this.route })
-          }
-        })
-    );
   }
 
   ngOnDestroy() {

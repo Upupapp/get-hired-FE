@@ -20,7 +20,7 @@ const ENTITLEMENT_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-subscription-limit-modal',
   template: `
-    <div class="limit-modal" [attr.aria-label]="title">
+    <div class="limit-modal">
       <div class="limit-modal__header">
         <div class="limit-modal__icon" aria-hidden="true">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -37,7 +37,8 @@ const ENTITLEMENT_LABELS: Record<string, string> = {
       </div>
 
       <div class="limit-modal__body">
-        <h2 class="limit-modal__title">{{ title }}</h2>
+        <!-- mat-dialog-title gives the heading an id and names the dialog with it (aria-labelledby). -->
+        <h2 class="limit-modal__title" mat-dialog-title>{{ title }}</h2>
         <p class="limit-modal__message">{{ data.userMessage }}</p>
 
         <div class="limit-modal__meter" *ngIf="hasMeter" role="img" [attr.aria-label]="entitlementLabel + ': ' + data.used + ' of ' + data.limit + ' used'">

@@ -16,7 +16,9 @@ export class PlanLimitDialogService {
   open(refusal: EmployerPlanLimitRefusal): Observable<PlanLimitChoice | undefined> {
     return this.dialog.open<SubscriptionLimitModalComponent, EmployerPlanLimitRefusal, PlanLimitChoice>(
       SubscriptionLimitModalComponent,
-      { data: refusal, width: '480px', maxWidth: '92vw', autoFocus: true, restoreFocus: true },
+      // First focus on the heading that names the dialog, so it is read before any control,
+      // rather than on the first tabbable element, which is "Close dialog".
+      { data: refusal, width: '480px', maxWidth: '92vw', autoFocus: 'first-heading', restoreFocus: true },
     ).afterClosed();
   }
 }
