@@ -103,12 +103,12 @@
           Your free trial is active.
           <ng-container *ngIf="hasTrialEndDate"> Trial ends on <strong>{{ trialEndDate }}</strong>.</ng-container>
           <ng-container *ngIf="!hasTrialEndDate"> Trial end date will appear here once confirmed.</ng-container>
-          Upgrade to keep access.
+          Choose a plan to keep publishing jobs, adding team members and adding screening questions after it ends.
         </span>
         <span *ngIf="currentStatus === 'trial_ending_soon'">
           Your trial is ending soon.
           <ng-container *ngIf="hasTrialEndDate"> It ends on <strong>{{ trialEndDate }}</strong>.</ng-container>
-          Upgrade now to avoid losing access to your hiring tools.
+          Choose a plan to keep publishing jobs, adding team members and adding screening questions. Your published jobs stay published.
         </span>
         <span *ngIf="currentStatus === 'active'">Your plan is active. Renews on <strong>{{ renewalDate }}</strong>.</span>
         <span *ngIf="currentStatus === 'manual'">Your plan is active under manual billing.</span>

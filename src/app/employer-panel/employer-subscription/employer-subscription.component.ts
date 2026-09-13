@@ -104,7 +104,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
       q: 'What happens when my free trial ends?',
       // B6: from gh-be's committed code (7613c06): nothing unpublishes or hides a published job when a
       // trial ends; plan limits gate only new actions (A3/A3.1). Say nothing it does not enforce.
-      a: 'Your published jobs stay published and keep receiving applications. To publish or reopen jobs, add team members or add screening questions, choose a plan.'
+      // B6.1: whether applications keep arriving after a trial ends is unconfirmed, so it is not said.
+      a: 'Your published jobs stay published. Choose a plan to publish or reopen jobs, add team members, or add screening questions.'
     },
     {
       q: 'What counts as an active job post?',

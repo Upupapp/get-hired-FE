@@ -18,10 +18,10 @@ describe('EmployerSubscriptionComponent -- the trial FAQ says what the backend d
     return item!.a;
   }
 
-  it('says published jobs stay published and keep receiving applications', () => {
+  it('says published jobs stay published, and not that applications keep arriving (unconfirmed, B6.1)', () => {
     const answer = trialAnswer();
     expect(answer).toContain('published jobs stay published');
-    expect(answer).toContain('keep receiving applications');
+    expect(answer).not.toMatch(/keep receiving applications|applications keep|still arrive/i);
   });
 
   it('claims nothing is paused or deleted', () => {
@@ -34,7 +34,7 @@ describe('EmployerSubscriptionComponent -- the trial FAQ says what the backend d
 
   it('names only the new actions a plan unlocks: publishing or reopening jobs, team members, screening questions', () => {
     const answer = trialAnswer();
-    ['publish or reopen jobs', 'add team members', 'add screening questions', 'choose a plan'].forEach(phrase =>
+    ['publish or reopen jobs', 'add team members', 'add screening questions', 'Choose a plan'].forEach(phrase =>
       expect(answer).withContext(phrase).toContain(phrase));
     expect(answer).not.toMatch(/applicant|cap|limit of/i);
   });
