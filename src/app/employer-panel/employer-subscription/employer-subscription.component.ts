@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompanyFacade } from '@main/company/state/company.facade';
@@ -168,6 +168,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     private billing: BillingService,
     private pricingCatalogService: SubscriptionPricingCatalogService,
     private guardrailService: SubscriptionGuardrailService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -178,6 +179,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
         this.companyDetails = details;
       });
 
+    // The upgrade landing's "Compare all plans" opens this page as ?compare=1.
+    this.compareRequested = this.route.snapshot.queryParamMap.get('compare') === '1';
     this.loadSummary();
   }
 
@@ -354,10 +357,12 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
         (data) => {
           this.summary = data;
           this.loading = false;
+          this.focusRequestedSection();
         },
         (_err) => {
           this.loadError = true;
           this.loading = false;
+          this.focusRequestedSection();
         }
       );
 
@@ -406,6 +411,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
             this.billingCycle = this.catalog.upgradeLandingDefaultCycle;
           }
           this.catalogLoading = false;
+          this.focusRequestedSection();
         },
         (_err) => {
           // No local price fallback by design. Showing a stale hardcoded figure
@@ -415,6 +421,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
           this.catalog = null;
           this.catalogError = true;
           this.catalogLoading = false;
+          this.focusRequestedSection();
         }
       );
   }
@@ -660,6 +667,21 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   @ViewChild('plansHeading') plansHeading?: ElementRef<HTMLElement>;
   @ViewChild('compareHeading') compareHeading?: ElementRef<HTMLElement>;
+
+  /** Set when the page was opened as ?compare=1, until Compare plans has been focused. */
+  private compareRequested = false;
+
+  /**
+   * Honours ?compare=1 once the page can. Compare plans renders only after BOTH the summary
+   * (the page's main content) and the catalog (the table itself) have settled, so this runs
+   * whenever either settles and acts only when neither is still loading. After a failed
+   * summary the request stays pending, so a successful Retry still takes the employer there.
+   */
+  private focusRequestedSection(): void {
+    if (!this.compareRequested || this.loading || this.catalogLoading || this.loadError) { return; }
+    this.compareRequested = false;
+    this.focusPlanSection('compare');
+  }
 
   /**
    * Scrolls to a section heading on the Plan tab and moves focus to it, so keyboard

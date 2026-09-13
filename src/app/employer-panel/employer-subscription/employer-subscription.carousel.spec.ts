@@ -14,7 +14,7 @@ describe('EmployerSubscriptionComponent -- carousel pause control (WCAG 2.2.2)',
   function create(reducedMotion: boolean): { component: EmployerSubscriptionComponent; advance: jasmine.Spy } {
     spyOn(window, 'matchMedia').and.returnValue({ matches: reducedMotion } as unknown as MediaQueryList);
     const component = new EmployerSubscriptionComponent(
-      {} as any, {} as any, {} as any, {} as any, {} as any, {} as any, {} as any,
+      {} as any, {} as any, {} as any, {} as any, {} as any, {} as any, {} as any, {} as any,
     );
     const advance = spyOn(component, 'advancePlanCarousel');
     return { component, advance };

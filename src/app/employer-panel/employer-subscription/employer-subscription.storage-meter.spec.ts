@@ -2,7 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { SubscriptionUsageMeterComponent } from './components/subscription-usage-meter/subscription-usage-meter.component';
@@ -67,6 +67,7 @@ describe('EmployerSubscriptionComponent -- Recruitment Storage meter (B3)', () =
         { provide: SubscriptionGuardrailService, useValue: { getSummary: storageRequest } },
         { provide: SubscriptionPricingCatalogService, useValue: { getCatalog: () => throwError(new Error('catalog not under test')) } },
         { provide: Router, useValue: jasmine.createSpyObj<Router>('Router', ['navigate', 'navigateByUrl']) },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
         { provide: MatDialog, useValue: {} },
         { provide: BillingService, useValue: {} },
       ],

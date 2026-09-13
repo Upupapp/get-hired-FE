@@ -2,7 +2,7 @@ import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { EmployerSubscriptionComponent } from './employer-subscription.component';
@@ -114,6 +114,7 @@ describe('EmployerSubscriptionComponent -- hero and banner billing buttons (UI-0
           useValue: { getCatalog: () => options.catalogFails ? throwError(new Error('catalog unavailable')) : of({ success: true, catalog: CATALOG }) },
         },
         { provide: Router, useValue: router },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
         { provide: MatDialog, useValue: {} },
         { provide: BillingService, useValue: {} },
         { provide: SubscriptionGuardrailService, useValue: { getSummary: () => of({ success: true, summary: { usage: {} } }) } },
