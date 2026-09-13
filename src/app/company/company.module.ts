@@ -24,6 +24,7 @@ import { JobsModule } from '@main/jobs/jobs.module';
 import { ImportAddUserComponent } from './company-users/dialogs/import-add-user.component/import-add-user.component';
 import { CompanyBasicComponent } from './company-basic/company-basic.component';
 import { GhFeedbackModalComponent } from './company-details-form/gh-feedback-modal/gh-feedback-modal.component';
+import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
 
 const exportedComponents = [
   CompanyComponent,
@@ -52,6 +53,8 @@ const exportedComponents = [
     SharedModule,
     MatDialogModule,
     NgChartsModule,
+    // F4: the trial status widget on the dashboard
+    EngagementUiModule,
     JobsModule,
     StoreModule.forFeature('company', companyReducer),
     EffectsModule.forFeature([CompanyEffects])

@@ -1,4 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
@@ -13,6 +14,17 @@ import { SubscriptionSummaryService } from './subscription-summary.service';
 import { EmployerSubscriptionSummary } from './subscription.models';
 import { UpgradeAnnualFirstLandingComponent } from './upgrade/upgrade-annual-first-landing.component';
 import { SubscriptionStatusBannerComponent } from './components/subscription-status-banner/subscription-status-banner.component';
+import { TrialDaysRemainingBadgeComponent } from './components/trial-days-remaining-badge/trial-days-remaining-badge.component';
+import { SubscriptionUsageMeterComponent } from './components/subscription-usage-meter/subscription-usage-meter.component';
+import { SubscriptionUpgradeRecommendationService } from './services/subscription-upgrade-recommendation.service';
+import { SubscriptionEngagementService } from '@main/shared/engagement/subscription-engagement.service';
+import { TrialStatusWidgetComponent } from '@main/shared/engagement/trial-status-widget.component';
+import { EngagementContext } from '@main/shared/engagement/engagement-contract.models';
+import { ENGAGEMENT_CONTEXT_RESPONSE } from '../../../testing/engagement-contract.fixture';
+import {
+  E2_SUB_TRIALING, E2_SUB_TRIAL_ENDING, E2_SUB_TRIAL_ENDS_TODAY, E2_SUB_TRIAL_END_UNREADABLE, E2_SUB_TRIAL_EXPIRED,
+  E2_USAGE_CONFIRMED, E2_USAGE_NO_PLAN, E2_USAGE_UNCONFIRMED,
+} from '../../../testing/engagement-e2-trial.fixture';
 
 /**
  * B6.1 (gh-ui U5): every string an employer reads about a trial ending, read through the code that
@@ -51,6 +63,9 @@ const REPLACED_IN_F2: { [where: string]: string } = {
   'status banner trial_ending before F2': 'Upgrade now to keep your job posts active and hiring without interruption.',
   'status banner trial_expired before F2': 'Your active job posts are paused. Choose a plan to resume hiring.',
 };
+
+/** F4: a false trial-end claim planted as the widget check's control; it must be caught. */
+const PLANTED_FALSE_WIDGET_STRING = 'Your job posts will be paused when your free trial ends.';
 
 describe('Trial-state copy -- says only what the backend does at trial end (B6.1)', () => {
   it('the check catches every string it replaced (each old string is its own control)', () => {
@@ -138,6 +153,35 @@ describe('Trial-state copy -- says only what the backend does at trial end (B6.1
 
   it('the check catches both status-banner strings F2 replaced (controls, RUL-08)', () => {
     Object.keys(REPLACED_IN_F2).forEach(where => expect(FORBIDDEN.test(REPLACED_IN_F2[where])).withContext(where).toBeTrue());
+  });
+
+  it('the check catches the planted false widget string (control, F4)', () => {
+    expect(FORBIDDEN.test(PLANTED_FALSE_WIDGET_STRING)).toBeTrue();
+  });
+
+  it('the trial status widget, as rendered for every trial state and usage read, makes no paused, lost or keep claim (F4)', () => {
+    const context$ = new BehaviorSubject<EngagementContext | null>(null);
+    TestBed.configureTestingModule({
+      declarations: [TrialStatusWidgetComponent, TrialDaysRemainingBadgeComponent, SubscriptionUsageMeterComponent],
+      providers: [
+        { provide: SubscriptionEngagementService, useValue: { context$ } },
+        { provide: SubscriptionUpgradeRecommendationService, useValue: { recordEvent: () => {} } },
+      ],
+    });
+    const fixture = TestBed.createComponent(TrialStatusWidgetComponent);
+    let rendered = 0;
+    [E2_SUB_TRIALING, E2_SUB_TRIAL_ENDING, E2_SUB_TRIAL_ENDS_TODAY, E2_SUB_TRIAL_EXPIRED, E2_SUB_TRIAL_END_UNREADABLE].forEach(subscription => {
+      [E2_USAGE_CONFIRMED, E2_USAGE_UNCONFIRMED, E2_USAGE_NO_PLAN].forEach(usage => {
+        context$.next({ ...ENGAGEMENT_CONTEXT_RESPONSE.context, subscription, usage });
+        fixture.detectChanges();
+        const text = (fixture.nativeElement.textContent || '').replace(/\s+/g, ' ').trim();
+        expect(text.length).toBeGreaterThan(0);
+        expect(FORBIDDEN.test(text)).withContext(text).toBeFalse();
+        expect(KEEP.test(text)).withContext(text).toBeFalse();
+        rendered++;
+      });
+    });
+    expect(rendered).toBe(15);
   });
 
   it('the subscription status banner (RUL-08): trial_ending and trial_expired take the FAQ wording', () => {

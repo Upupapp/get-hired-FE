@@ -24,6 +24,9 @@ export const STORAGE_NOTES: Record<StorageStatus, string | null> = {
  */
 export const STORAGE_UNAVAILABLE_NOTE = 'Storage usage unavailable.';
 
+/** F4: shown for a count the backend did not confirm, in place of a figure: "0" would be false. */
+export const COUNT_UNAVAILABLE_NOTE = 'Usage unavailable.';
+
 const STORAGE_FILL: Record<StorageStatus, string> = {
   normal: 'usage-meter__fill--healthy',
   notice: 'usage-meter__fill--caution',
@@ -39,7 +42,7 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
     <div class="usage-meter" [class.usage-meter--storage]="kind === 'storage'" [attr.aria-label]="ariaSummary">
       <div class="usage-meter__header">
         <span class="usage-meter__label" *ngIf="showLabel">{{ label }}</span>
-        <span class="usage-meter__count" [ngClass]="countClass" *ngIf="!storageUnavailable && !noPlan">
+        <span class="usage-meter__count" [ngClass]="countClass" *ngIf="!countUnavailable && !storageUnavailable && !noPlan">
           {{ usedLabel }}
           <span class="usage-meter__of" aria-hidden="true"> / {{ limitLabel }}</span>
         </span>
@@ -55,7 +58,7 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
           [style.width.%]="animatedPercent">
         </div>
       </div>
-      <div class="usage-meter__warning" *ngIf="kind === 'count' && (usage?.warningLevel === 'near_90' || usage?.warningLevel === 'at_limit')" role="alert" aria-live="polite">
+      <div class="usage-meter__warning" *ngIf="kind === 'count' && !countUnavailable && (usage?.warningLevel === 'near_90' || usage?.warningLevel === 'at_limit')" role="alert" aria-live="polite">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -64,6 +67,7 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
         <span *ngIf="usage?.warningLevel === 'near_90'">Approaching limit.</span>
       </div>
       <p class="usage-meter__note" *ngIf="storageNote" [ngClass]="noteClass" role="status">{{ storageNote }}</p>
+      <p class="usage-meter__note usage-meter__note--unavailable" *ngIf="countUnavailable" role="status">{{ countUnavailableNote }}</p>
     </div>
   `,
   styleUrls: ['./subscription-usage-meter.component.scss']
@@ -80,6 +84,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   @Input() showLabel = true;
 
   animatedPercent: number = 0;
+  readonly countUnavailableNote = COUNT_UNAVAILABLE_NOTE;
   private isBrowser: boolean;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
@@ -130,7 +135,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   }
 
   get ariaSummary(): string {
-    if (this.storageUnavailable) return this.label + ': usage unavailable';
+    if (this.countUnavailable || this.storageUnavailable) return this.label + ': usage unavailable';
     if (this.noPlan) return this.label + ': no plan';
     return this.label + ': ' + this.usedLabel + ' of ' + this.limitLabel + ' used';
   }
@@ -200,9 +205,17 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
     return typeof pct === 'number' ? Math.min(100, Math.max(0, pct)) : null;
   }
 
+  /**
+   * F4: a count the backend did not confirm (countConfidence other than 'confirmed', as the engagement
+   * context can send) is unmeasured, not zero: no figure, no bar, no warning.
+   */
+  get countUnavailable(): boolean {
+    return this.kind === 'count' && (!this.usage || this.usage.countConfidence !== 'confirmed');
+  }
+
   /** Enterprise sends no limit and no percentage: its storage is custom, so there is no bar to fill. */
   get showTrack(): boolean {
-    return this.kind === 'count' || this.storagePercent !== null;
+    return this.kind === 'count' ? !this.countUnavailable : this.storagePercent !== null;
   }
 
   get storageNote(): string | null {

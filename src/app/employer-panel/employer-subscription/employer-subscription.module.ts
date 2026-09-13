@@ -10,8 +10,6 @@ import { UpgradeAnnualFirstLandingComponent } from './upgrade/upgrade-annual-fir
 
 // Components
 import { SubscriptionStatusChipComponent } from './components/subscription-status-chip/subscription-status-chip.component';
-import { TrialDaysRemainingBadgeComponent } from './components/trial-days-remaining-badge/trial-days-remaining-badge.component';
-import { SubscriptionUsageMeterComponent } from './components/subscription-usage-meter/subscription-usage-meter.component';
 import { SubscriptionLimitModalComponent } from './components/subscription-limit-modal/subscription-limit-modal.component';
 import { CheckoutReturnStatusComponent } from './components/checkout-return-status/checkout-return-status.component';
 import { BillingStatusBannerComponent } from './components/billing-status-banner/billing-status-banner.component';
@@ -45,8 +43,6 @@ const routes: Routes = [
     EmployerSubscriptionComponent,
     UpgradeAnnualFirstLandingComponent,
     SubscriptionStatusChipComponent,
-    TrialDaysRemainingBadgeComponent,
-    SubscriptionUsageMeterComponent,
     SubscriptionLimitModalComponent,
     CheckoutReturnStatusComponent,
     BillingStatusBannerComponent,
