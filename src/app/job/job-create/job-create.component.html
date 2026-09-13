@@ -135,6 +135,8 @@
 
         <!-- ── STEP 3: Screening & Interview ──────────────────────────── -->
         <ng-container *ngIf="stepper === 3">
+          <!-- F7: the served lock for video screening questions (context.capabilities); it displays, it never blocks -->
+          <app-engagement-feature-lock feature="video_interview_questions"></app-engagement-feature-lock>
           <app-create-interview-questions
             (publishChanges)="publishJobPost()"
             [questions]="questions"

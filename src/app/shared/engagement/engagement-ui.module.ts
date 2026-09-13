@@ -7,6 +7,7 @@ import { SubscriptionUsageMeterComponent } from '@main/employer-panel/employer-s
 import { EngagementShellBannerComponent } from './engagement-shell-banner.component';
 import { TrialStatusWidgetComponent } from './trial-status-widget.component';
 import { EngagementContextualNudgeComponent } from './engagement-contextual-nudge.component';
+import { EngagementFeatureLockComponent } from './engagement-feature-lock.component';
 
 /**
  * The engagement message components, declared once so the employer shell and the subscription pages
@@ -16,7 +17,7 @@ import { EngagementContextualNudgeComponent } from './engagement-contextual-nudg
 const COMPONENTS = [
   SubscriptionStatusBannerComponent, UpgradePromptCardComponent, EngagementShellBannerComponent,
   TrialDaysRemainingBadgeComponent, SubscriptionUsageMeterComponent, TrialStatusWidgetComponent,
-  EngagementContextualNudgeComponent,
+  EngagementContextualNudgeComponent, EngagementFeatureLockComponent,
 ];
 
 @NgModule({

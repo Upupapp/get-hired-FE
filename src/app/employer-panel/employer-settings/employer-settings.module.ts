@@ -12,6 +12,7 @@ import { EmployerAccountSettingsComponent } from './employer-account-settings/em
 import { EmployerCompanySetupSuccessModalComponent } from './employer-company-setup-success-modal/employer-company-setup-success-modal.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
+import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
 
 const routes: Routes = [
   { path: 'settings', component: EmployerSettingsComponent },
@@ -36,6 +37,8 @@ const routes: Routes = [
     CompanyModule,
     MatDialogModule,
     SharedModule,
+    // F7: the company page feature lock on Branding & Media
+    EngagementUiModule,
     RouterModule.forChild(routes)
   ],
   providers: [AuthFacade, EmployeeFacade]
