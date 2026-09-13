@@ -93,7 +93,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     {
       q: 'What happens if I reach my storage limit?',
       requires: 'recruitment_storage_bytes',
-      a: 'Your existing applications remain safe. New video responses and file uploads may be paused until storage is freed or your capacity is increased. Nothing already submitted to you is deleted because you reached the limit.'
+      a: 'New applications, video responses and files still reach you, and nothing already submitted is deleted. Your usage is simply over your plan\'s capacity, so choose a plan with more Recruitment Storage to bring it back within it.'
     },
     {
       q: 'Can I delete old applications or media to free storage?',

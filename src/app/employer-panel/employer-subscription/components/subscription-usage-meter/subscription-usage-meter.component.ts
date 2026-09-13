@@ -4,15 +4,18 @@ import { EntitlementUsageV4, RecruitmentStorageUsageV4, StorageStatus } from '..
 import { formatStorage } from '../../plan-presentation.model';
 
 /**
- * Copy for the backend's Recruitment Storage bands. None of it may suggest that anything
- * an employer already received is removed: reaching the limit deletes nothing.
+ * Copy for the backend's Recruitment Storage bands. None of it may suggest that anything an
+ * employer already received is removed (reaching the limit deletes nothing), nor that anything
+ * stops: since gh-be A3.1 no application or file is refused over storage, so going past the
+ * capacity only means the plan is exceeded.
  */
 export const STORAGE_NOTES: Record<StorageStatus, string | null> = {
   normal: null,
   notice: 'You have used at least 70% of your Recruitment Storage.',
   warning: 'You have used at least 80% of your Recruitment Storage.',
   critical: 'You have used at least 90% of your Recruitment Storage. Upgrade soon for more capacity.',
-  full: 'Recruitment Storage is full. Your existing applications and candidate media stay safe. Upgrade for more capacity.',
+  full: "You've reached or gone past your plan's Recruitment Storage capacity. New applications and their files still arrive, and your existing applications and candidate media stay safe. Upgrade for more capacity.",
+  no_plan: 'Your account has no plan yet, so it includes no Recruitment Storage. Choose a plan to add capacity.',
 };
 
 /**
@@ -27,6 +30,7 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
   warning: 'usage-meter__fill--warning',
   critical: 'usage-meter__fill--critical',
   full: 'usage-meter__fill--critical',
+  no_plan: '',
 };
 
 @Component({
@@ -35,7 +39,7 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
     <div class="usage-meter" [class.usage-meter--storage]="kind === 'storage'" [attr.aria-label]="ariaSummary">
       <div class="usage-meter__header">
         <span class="usage-meter__label" *ngIf="showLabel">{{ label }}</span>
-        <span class="usage-meter__count" [ngClass]="countClass" *ngIf="!storageUnavailable">
+        <span class="usage-meter__count" [ngClass]="countClass" *ngIf="!storageUnavailable && !noPlan">
           {{ usedLabel }}
           <span class="usage-meter__of" aria-hidden="true"> / {{ limitLabel }}</span>
         </span>
@@ -127,6 +131,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
 
   get ariaSummary(): string {
     if (this.storageUnavailable) return this.label + ': usage unavailable';
+    if (this.noPlan) return this.label + ': no plan';
     return this.label + ': ' + this.usedLabel + ' of ' + this.limitLabel + ' used';
   }
 
@@ -179,9 +184,17 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
     return this.usage.countConfidence !== 'confirmed';
   }
 
-  /** The backend's percentUsed; a full bar when the status is full, since a zero limit sends no percentage. */
+  /**
+   * gh-be A2.3: a limit of exactly 0 means the account has no plan. That is a choose-a-plan
+   * state with no figures and no bar, never "0 GB of 0 GB, full", whatever is stored.
+   */
+  get noPlan(): boolean {
+    return this.storageStatus === 'no_plan' && !this.storageUnavailable;
+  }
+
+  /** The backend's percentUsed; a full bar when the status is full. */
   get storagePercent(): number | null {
-    if (this.storageUnavailable || !this.usage) return null;
+    if (this.storageUnavailable || this.noPlan || !this.usage) return null;
     if (this.storageStatus === 'full') return 100;
     const pct = this.usage.percentUsed;
     return typeof pct === 'number' ? Math.min(100, Math.max(0, pct)) : null;

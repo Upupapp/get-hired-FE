@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { By } from '@angular/platform-browser';
 import { EntitlementUsageV4, RecruitmentStorageUsageV4, StorageStatus } from '../../subscription-v4.models';
 import { STORAGE_NOTES, STORAGE_UNAVAILABLE_NOTE, SubscriptionUsageMeterComponent } from './subscription-usage-meter.component';
+import { NO_PLAN_EMPTY, NO_PLAN_HOLDING_MEDIA } from '../../../../../testing/storage-status.fixture';
 
 /**
  * B3: the Recruitment Storage meter shows the band the backend sends and nothing it
@@ -47,7 +48,7 @@ describe('SubscriptionUsageMeterComponent -- Recruitment Storage states (B3)', (
   const text = () => (fixture.nativeElement.textContent || '').replace(/\s+/g, ' ').trim();
   const find = (css: string) => fixture.debugElement.query(By.css(css));
 
-  const STATES: Array<{ status: StorageStatus; band: string; usedGb: number; percent: number; fill: string; note: string | null }> = [
+  const STATES: Array<{ status: Exclude<StorageStatus, 'no_plan'>; band: string; usedGb: number; percent: number; fill: string; note: string | null }> = [
     { status: 'normal', band: 'below 70%', usedGb: 20, percent: 40, fill: 'usage-meter__fill--healthy', note: null },
     { status: 'notice', band: '70%', usedGb: 37, percent: 74, fill: 'usage-meter__fill--caution', note: 'at least 70%' },
     { status: 'warning', band: '80%', usedGb: 40, percent: 80, fill: 'usage-meter__fill--warning', note: 'at least 80%' },
@@ -78,14 +79,17 @@ describe('SubscriptionUsageMeterComponent -- Recruitment Storage states (B3)', (
     }));
   });
 
-  it('full: says existing applications stay safe', fakeAsync(() => {
+  it('full: says new applications and their files still arrive and existing ones stay safe, since A3.1 refuses none over storage', fakeAsync(() => {
     render(block({ used: 200 * GB, limit: 200 * GB, remaining: 0, percentUsed: 100, warningLevel: 'at_limit', storageStatus: 'full' }));
-    expect(find('.usage-meter__note').nativeElement.textContent).toContain('Your existing applications and candidate media stay safe');
+    const note: string = find('.usage-meter__note').nativeElement.textContent;
+    expect(note).toContain("gone past your plan's Recruitment Storage capacity");
+    expect(note).toContain('New applications and their files still arrive');
+    expect(note).toContain('your existing applications and candidate media stay safe');
   }));
 
   it('no copy for any band, or for an unavailable count, suggests anything received is removed', () => {
     const notes = [...Object.values(STORAGE_NOTES), STORAGE_UNAVAILABLE_NOTE].filter((n): n is string => !!n);
-    expect(notes.length).toBe(5);
+    expect(notes.length).toBe(6);
     notes.forEach(note => expect(note).not.toMatch(/delet|remov|eras|purg|lose|lost|wipe/i));
   });
 
@@ -111,11 +115,29 @@ describe('SubscriptionUsageMeterComponent -- Recruitment Storage states (B3)', (
     expect(find('.usage-meter__note')).toBeNull();
   }));
 
-  it('no plan (zero limit, full, no percentage) shows a full bar and the full note', fakeAsync(() => {
-    render(block({ used: 0, limit: 0, remaining: 0, percentUsed: null, warningLevel: 'at_limit', storageStatus: 'full' }));
-    expect(text()).toContain('0 GB / 0 GB');
-    expect(find('.usage-meter__fill').nativeElement.style.width).toBe('100%');
-    expect(find('.usage-meter__note').nativeElement.textContent).toContain('stay safe');
+  // gh-be A2.3 (72d4975): a zero limit is no_plan, which replaces the old "full at 0 GB / 0 GB".
+  [['nothing stored', NO_PLAN_EMPTY], ['still holding media', NO_PLAN_HOLDING_MEDIA]].forEach(([label, noPlan]) => {
+    it(`no_plan (${label}): a choose-a-plan note with no figures and no bar, never "full"`, fakeAsync(() => {
+      render(noPlan as any);
+      expect(find('.usage-meter__note').nativeElement.textContent.trim()).toBe(STORAGE_NOTES.no_plan as string);
+      expect(text()).toContain('Choose a plan');
+      expect(find('.usage-meter__count')).toBeNull();
+      expect(find('.usage-meter__track')).toBeNull();
+      expect(text()).not.toMatch(/\d\s*GB/);
+      expect(text().toLowerCase()).not.toContain('full');
+      expect(fixture.nativeElement.querySelectorAll('[class*="--critical"], [class*="--full"], [class*="--warning"]').length).toBe(0);
+      expect(find('.usage-meter').nativeElement.getAttribute('aria-label')).toBe('Recruitment Storage: no plan');
+    }));
+  });
+
+  it('shows the figure the way the sibling usage cards do: 22px/800 used, 14px/600 capacity', fakeAsync(() => {
+    render(block({}));
+    const count = getComputedStyle(find('.usage-meter__count').nativeElement);
+    expect(count.fontSize).toBe('22px');
+    expect(count.fontWeight).toBe('800');
+    const capacity = getComputedStyle(find('.usage-meter__of').nativeElement);
+    expect(capacity.fontSize).toBe('14px');
+    expect(capacity.fontWeight).toBe('600');
   }));
 
   // What 4c3412d sends when the count fails for an employer with no plan: storageStatus
@@ -151,7 +173,7 @@ describe('SubscriptionUsageMeterComponent -- Recruitment Storage states (B3)', (
   }));
 
   // The page's sibling usage bar (employer-subscription.component.scss .gh-usage-meter).
-  const SIBLING_FILL: Record<StorageStatus, string> = {
+  const SIBLING_FILL: Record<Exclude<StorageStatus, 'no_plan'>, string> = {
     normal: 'rgb(16, 185, 129)', notice: 'rgb(245, 158, 11)', warning: 'rgb(245, 158, 11)',
     critical: 'rgb(239, 68, 68)', full: 'rgb(239, 68, 68)',
   };

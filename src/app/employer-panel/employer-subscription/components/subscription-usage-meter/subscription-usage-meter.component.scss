@@ -78,6 +78,20 @@
 // (employer-subscription.component.scss .gh-usage-meter): a --gh-border track and a
 // static #10B981 / #F59E0B / #EF4444 fill, with no glow.
 .usage-meter--storage {
+  // The sibling cards' figure (employer-subscription.component.scss .gh-usage-card__used and
+  // __max): what is used at 22px/800, the capacity at 14px/600 in the secondary ink. No colour
+  // is set on the figure, so the warning and critical inks still apply.
+  .usage-meter__count {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .usage-meter__of {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gh-text-secondary, #667085);
+  }
+
   .usage-meter__track {
     background: var(--gh-border, #E7EAF3);
     border-radius: 3px;

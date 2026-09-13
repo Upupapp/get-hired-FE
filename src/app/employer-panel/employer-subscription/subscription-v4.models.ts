@@ -105,9 +105,10 @@ export interface EntitlementUsageV4 {
 
 /**
  * Recruitment Storage band, from thresholds the backend centralises
- * (normal < 70% ≤ notice < 80% ≤ warning < 90% ≤ critical < 100% ≤ full).
+ * (normal < 70% ≤ notice < 80% ≤ warning < 90% ≤ critical < 100% ≤ full), plus `no_plan`
+ * when the plan's limit is exactly 0: the account has no plan (gh-be A2.3, 72d4975).
  */
-export type StorageStatus = 'normal' | 'notice' | 'warning' | 'critical' | 'full';
+export type StorageStatus = 'normal' | 'notice' | 'warning' | 'critical' | 'full' | 'no_plan';
 
 /**
  * `usage.recruitment_storage` on GET /api/subscriptions/employer/summary: the sibling
