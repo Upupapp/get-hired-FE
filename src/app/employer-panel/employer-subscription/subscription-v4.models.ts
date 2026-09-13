@@ -26,13 +26,35 @@ export interface PlanPricingDisplay {
   annual: PlanPricingAnnual;
 }
 
+/**
+ * Mirrors `PLAN_CATALOG[].entitlements` in the backend's planCatalogServiceV4.js,
+ * which the catalog endpoint returns verbatim (`entitlements: p.entitlements`).
+ *
+ * Every numeric field is `number | null`: Enterprise carries `null` on all of them,
+ * meaning "no catalog limit, resolved from the account's custom override". The
+ * backend is explicit that a fake-unlimited integer such as 999999 must never be
+ * encoded, so `null` is the unlimited/custom signal throughout.
+ *
+ * The four fields below the original six were already being sent by the backend
+ * and were simply absent from this type — a returned-but-undocumented contract
+ * gap. They are what the pricing page needs to show Recruitment Storage and
+ * video-screening limits without inventing anything.
+ */
 export interface PlanEntitlements {
-  active_job_posts: number;
-  admin_users: number;
-  video_responses: number;
+  active_job_posts: number | null;
+  admin_users: number | null;
+  video_responses: number | null;
   customized_company_page: boolean;
   video_interview_questions: boolean;
   dedicated_support: boolean;
+  /** Applicant cap. Only the trial sets one; paid plans send null (uncapped). */
+  applicants?: number | null;
+  /** Recruitment Storage capacity in BYTES. Retained capacity, not a monthly allowance. */
+  recruitment_storage_bytes?: number | null;
+  /** GetHired Video Screening: questions askable per job. */
+  video_questions_per_job?: number | null;
+  /** Featured job credits granted per month. */
+  featured_job_credits?: number | null;
 }
 
 export interface PlanCatalogItem {
@@ -46,6 +68,8 @@ export interface PlanCatalogItem {
   pricing: PlanPricingDisplay;
   entitlements: PlanEntitlements;
   upgradeRoute: string | null;
+  /** Backend flag: this plan is contractual and must never reach self-serve checkout. */
+  contactSalesRequired?: boolean;
   defaultBillingCycle: BillingCycle;
 }
 

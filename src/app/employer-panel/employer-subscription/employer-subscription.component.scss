@@ -1360,3 +1360,224 @@
   .gh-inv-table td { padding: 10px 12px; }
 }
 
+
+/* ── Monthly / Annual toggle ───────────────────────────────────────────────── */
+/* Only rendered when the backend offers both cycles, so it is never a control
+   that does nothing. */
+.gh-cycle-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 0 0 20px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--gh-surface-2, #f1f4f9);
+  width: fit-content;
+  max-width: 100%;
+
+  &__btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gh-text-muted, #5b6576);
+    background: transparent;
+    transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
+
+    &:hover { color: var(--gh-text, #16202e); }
+
+    &:focus-visible {
+      outline: 2px solid var(--gh-brand, #2f6bff);
+      outline-offset: 2px;
+    }
+
+    &--active {
+      background: var(--gh-surface, #fff);
+      color: var(--gh-text, #16202e);
+      box-shadow: 0 1px 3px rgba(16, 30, 54, .12);
+    }
+  }
+
+  &__note {
+    padding: 0 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--gh-success-ink, #17794a);
+  }
+}
+
+/* ── Catalog loading / error states ────────────────────────────────────────── */
+.gh-plan-state {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  &--error {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid var(--gh-border, #e2e8f0);
+    border-radius: 14px;
+    background: var(--gh-surface, #fff);
+    font-size: 14px;
+    color: var(--gh-text-muted, #5b6576);
+  }
+
+  &__retry {
+    appearance: none;
+    cursor: pointer;
+    border: 1px solid var(--gh-border, #e2e8f0);
+    background: var(--gh-surface, #fff);
+    color: var(--gh-text, #16202e);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+
+    &:focus-visible { outline: 2px solid var(--gh-brand, #2f6bff); outline-offset: 2px; }
+  }
+}
+
+/* ── Plan card: capacity block + price captions ────────────────────────────── */
+.gh-plan-card {
+  &__capacity {
+    list-style: none;
+    margin: 14px 0 10px;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--gh-border, #e2e8f0);
+  }
+
+  &__capacity-item {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gh-text, #16202e);
+    line-height: 1.5;
+
+    & + & { margin-top: 6px; }
+  }
+
+  /* Annual disclosure. Never hidden behind the effective-monthly figure —
+     the amount charged today has to stay the prominent one. */
+  &__price-caption {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--gh-text-muted, #5b6576);
+  }
+
+  &__price-effective {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--gh-text-muted, #5b6576);
+  }
+}
+
+/* ── Compare plans ─────────────────────────────────────────────────────────── */
+.gh-compare {
+  & + & { margin-top: 26px; }
+
+  &__group-title {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--gh-text-muted, #5b6576);
+  }
+
+  /* The table is the only thing allowed to scroll sideways; the page body
+     never does. */
+  &__scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--gh-border, #e2e8f0);
+    border-radius: 14px;
+    background: var(--gh-surface, #fff);
+  }
+
+  &__table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 14px;
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--gh-border-soft, #eef2f7);
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--gh-surface-2, #f8fafc);
+      font-weight: 700;
+      color: var(--gh-text, #16202e);
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child th,
+    tbody tr:last-child td { border-bottom: 0; }
+
+    td { color: var(--gh-text, #16202e); }
+  }
+
+  &__rowhead {
+    font-weight: 600;
+    color: var(--gh-text-muted, #5b6576);
+    white-space: normal;
+  }
+
+  &__col--current {
+    background: var(--gh-brand-soft, #eef3ff);
+  }
+
+  &__dash {
+    color: var(--gh-text-subtle, #9aa5b5);
+  }
+}
+
+/* Phone: the five-column matrix would be unreadable, so each plan becomes its
+   own labelled block using the same data rather than a squeezed table. */
+@media (max-width: 900px) {
+  .gh-compare__table {
+    min-width: 0;
+
+    thead { display: none; }
+
+    tbody tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2px 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--gh-border-soft, #eef2f7);
+    }
+
+    th, td {
+      border: 0;
+      padding: 2px 0;
+    }
+
+    tbody td {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    /* Only the current plan's column is carried into the stacked view; showing
+       all five values per row on a phone is what made this unreadable. */
+    tbody td:not(.gh-compare__col--current) { display: none; }
+  }
+
+  .gh-compare__col--current { background: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-cycle-toggle__btn { transition: none; }
+}

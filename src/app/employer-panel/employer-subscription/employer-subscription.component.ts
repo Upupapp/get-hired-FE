@@ -9,17 +9,20 @@ import { SubscriptionSummaryService } from './subscription-summary.service';
 import { EmployerSubscriptionSummary, EntitlementUsage, BooleanEntitlement, InvoiceListItem } from './subscription.models';
 import { BillingService } from './services/billing.service';
 import { InvoiceSendModalComponent } from './components/invoice-send-modal/invoice-send-modal.component';
+import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
+import { BillingCycle, PlanCatalogItem, PricingCatalog } from './subscription-v4.models';
+import {
+  CapacityLine,
+  ComparisonGroup,
+  PlanCta,
+  PlanPriceDisplay,
+  buildComparison,
+  capacityLines,
+  planCta,
+  planDisplayName,
+  planPrice,
+} from './plan-presentation.model';
 
-interface PlanConfig {
-  code: string;
-  name: string;
-  audience: string;
-  priceLabel: string;
-  recommended?: boolean;
-  trial?: boolean;
-  enterprise?: boolean;
-  features: Array<{ label: string; included: boolean }>;
-}
 
 @Component({
   selector: 'app-employer-subscription',
@@ -46,12 +49,30 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   selectedInvoiceId: string | null = null;
 
   // FAQ accordion state — each index tracks open/closed
-  faqOpen: boolean[] = [false, false, false, false, false, false, false];
+  // Derived from faqItems so adding an entry can never leave the accordion
+  // with fewer flags than questions (the old literal was a fixed 7).
+  faqOpen: boolean[] = [];
 
   readonly faqItems = [
     {
+      q: 'What is Recruitment Storage?',
+      a: 'Recruitment Storage is the capacity included with your plan for applicant video responses, CVs and resumes, uploaded candidate documents, portfolio files and other candidate media held in GetHired.'
+    },
+    {
+      q: 'Does Recruitment Storage reset every month?',
+      a: 'No. Recruitment Storage is the total active capacity included with your plan, not a monthly allowance. It reflects what you are currently holding, so it only goes down when you remove candidate media.'
+    },
+    {
+      q: 'What happens if I reach my storage limit?',
+      a: 'Your existing applications remain safe. New video responses and file uploads may be paused until storage is freed or your capacity is increased. Nothing already submitted to you is deleted because you reached the limit.'
+    },
+    {
+      q: 'Can I delete old applications or media to free storage?',
+      a: 'Yes, subject to the platform\'s retention and deletion rules.'
+    },
+    {
       q: 'What happens when my free trial ends?',
-      a: 'When your free trial expires, your active job posts will be paused and you will lose access to premium features. Choose a paid plan before your trial ends to keep your hiring running without interruption.'
+      a: 'When your free trial expires, your active job posts will be paused and you will lose access to paid features. Choose a plan before your trial ends to keep your hiring running without interruption.'
     },
     {
       q: 'What counts as an active job post?',
@@ -62,8 +83,12 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
       a: 'Yes. You can upgrade or switch plans at any time. When upgrading, the new plan takes effect immediately. When switching to a lower tier, the change takes effect at the end of your current billing period.'
     },
     {
-      q: 'Are video responses included in all plans?',
-      a: 'Video responses are not included in the Free Trial. The Starter plan includes 5 video responses. Growth, Premium, and Enterprise plans include video responses — unlimited on Growth and above.'
+      q: 'How does annual billing work?',
+      a: 'Annual plans are charged once for twelve months of access rather than billed monthly. The exact amount due today, and the equivalent monthly figure, are both shown on each plan card when Annual is selected.'
+    },
+    {
+      q: 'How many video questions can I ask per job?',
+      a: 'GetHired Video Screening lets you ask applicants structured questions and review their recorded answers alongside their CV. The number of questions available per job depends on your plan and is shown on each plan card and in Compare plans.'
     },
     {
       q: 'What payment methods are accepted?',
@@ -79,83 +104,24 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
   ];
 
-  readonly PLAN_CONFIGS: PlanConfig[] = [
-    {
-      code: 'free_trial',
-      name: 'Free Trial',
-      audience: 'Try GetHired with limited hiring tools.',
-      priceLabel: 'Free',
-      trial: true,
-      features: [
-        { label: '5 active job posts', included: true },
-        { label: 'Applicant tracking', included: true },
-        { label: 'Company profile', included: true },
-        { label: 'Interview questions', included: true },
-        { label: 'Video responses', included: false },
-        { label: 'Public company profile', included: false },
-      ],
-    },
-    {
-      code: 'starter',
-      name: 'Starter',
-      audience: 'For small employers hiring occasionally.',
-      priceLabel: '₱999/mo',
-      features: [
-        { label: '5 active job posts', included: true },
-        { label: 'Applicant tracking', included: true },
-        { label: 'Company profile', included: true },
-        { label: 'Interview questions', included: true },
-        { label: '5 video responses', included: true },
-        { label: 'Public company profile', included: false },
-      ],
-    },
-    {
-      code: 'growth',
-      name: 'Growth',
-      audience: 'For active hiring teams.',
-      priceLabel: '₱2,499/mo',
-      recommended: true,
-      features: [
-        { label: '15 active job posts', included: true },
-        { label: '3 admin users', included: true },
-        { label: 'Candidate messaging', included: true },
-        { label: 'Interview workflow', included: true },
-        { label: 'Video responses', included: true },
-        { label: 'Public company profile', included: true },
-        { label: 'Employer branding', included: true },
-      ],
-    },
-    {
-      code: 'premium',
-      name: 'Premium',
-      audience: 'For frequent hiring and larger teams.',
-      priceLabel: '₱4,999/mo',
-      features: [
-        { label: '30 active job posts', included: true },
-        { label: '5 admin users', included: true },
-        { label: 'Candidate messaging', included: true },
-        { label: 'Video interviews', included: true },
-        { label: 'Advanced analytics', included: true },
-        { label: 'Public company profile', included: true },
-        { label: 'Priority support', included: true },
-      ],
-    },
-    {
-      code: 'enterprise',
-      name: 'Enterprise',
-      audience: 'For large employers and custom hiring operations.',
-      priceLabel: 'Custom',
-      enterprise: true,
-      features: [
-        { label: 'Custom job volume', included: true },
-        { label: 'Custom admin users', included: true },
-        { label: 'Candidate messaging', included: true },
-        { label: 'Video interviews', included: true },
-        { label: 'Custom billing', included: true },
-        { label: 'Dedicated support', included: true },
-      ],
-    },
-  ];
+
+  // ── Backend pricing catalog ─────────────────────────────────────────────────
+  // Every price, capacity and Recruitment Storage figure rendered on this page
+  // comes from here. Nothing about plan content is decided in the frontend.
+  catalog: PricingCatalog | null = null;
+  catalogLoading = true;
+  catalogError = false;
+
+  /** Selected billing cycle for the pricing cards. Seeded from the catalog. */
+  billingCycle: BillingCycle = 'monthly';
+
+  // Recruitment Storage: the plan's CAPACITY is real backend data and is shown on
+  // the plan cards and in Compare plans. How much an employer has CONSUMED is not
+  // — there is no bytes-used aggregation anywhere in the backend and no endpoint
+  // exposes one. The usage meter, its 70/80/90/100% warning states and the
+  // per-category breakdown are therefore not built at all rather than rendered
+  // from invented numbers. See BE-P2 in GETHIRED_PRICING_BACKEND_DEPENDENCIES.md
+  // for the exact field requested; build the meter in the commit that consumes it.
 
   constructor(
     public companyFacade: CompanyFacade,
@@ -163,9 +129,12 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     private router: Router,
     private dialog: MatDialog,
     private billing: BillingService,
+    private pricingCatalogService: SubscriptionPricingCatalogService,
   ) {}
 
   ngOnInit(): void {
+    this.faqOpen = this.faqItems.map(() => false);
+
     // Read company data without dispatching clearing actions
     this.companyFacade.companyDetails$
       .pipe(takeUntil(this.destroy$))
@@ -335,6 +304,43 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
           this.loading = false;
         }
       );
+
+    this.loadPricingCatalog();
+  }
+
+  /**
+   * Loads the backend pricing catalog — the source of truth for every price,
+   * capacity and Recruitment Storage figure on this page.
+   *
+   * Kept independent of the summary request on purpose: the summary is the
+   * employer's own usage, the catalog is the price list. If usage fails to load
+   * the employer should still be able to read the plans, and vice versa, so
+   * neither failure is allowed to blank the other half of the page.
+   */
+  loadPricingCatalog(): void {
+    this.catalogLoading = true;
+    this.catalogError = false;
+
+    this.pricingCatalogService.getCatalog()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (res) => {
+          this.catalog = (res && res.catalog) ? res.catalog : null;
+          if (this.catalog && this.catalog.upgradeLandingDefaultCycle) {
+            this.billingCycle = this.catalog.upgradeLandingDefaultCycle;
+          }
+          this.catalogLoading = false;
+        },
+        (_err) => {
+          // No local price fallback by design. Showing a stale hardcoded figure
+          // is what produced the advertise-2,499 / charge-3,490 mismatch this
+          // page is being fixed for; an honest empty state is safer than a
+          // confident wrong number.
+          this.catalog = null;
+          this.catalogError = true;
+          this.catalogLoading = false;
+        }
+      );
   }
 
   // --- Entitlement formatting helpers ---
@@ -410,10 +416,6 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     return this.summary && this.summary.recommendedPlan;
   }
 
-  get recommendedPlanConfig(): PlanConfig | null {
-    if (!this.recommendedPlan) { return null; }
-    return this.PLAN_CONFIGS.find(p => p.code === this.recommendedPlan.planCode) || null;
-  }
 
   // --- Upgrade routing (annual-first) ---
 
@@ -428,17 +430,6 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   // --- Plan helpers ---
 
-  getPlanCta(planCode: string): string {
-    const current = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
-    if (!current || current === 'none' || current === null) { return 'Choose plan'; }
-    if (current === planCode) { return 'Current plan'; }
-    const order = ['free_trial', 'starter', 'growth', 'premium', 'enterprise'];
-    const currentIdx = order.indexOf(current);
-    const targetIdx = order.indexOf(planCode);
-    if (planCode === 'enterprise') { return 'Contact sales'; }
-    if (targetIdx > currentIdx) { return 'Upgrade'; }
-    return 'Switch plan';
-  }
 
   isCurrentPlan(planCode: string): boolean {
     const current = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
@@ -455,12 +446,96 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     return currentIdx >= targetIdx;
   }
 
-  getEffectivePlanConfigs(): PlanConfig[] {
-    // If backend returns available plans, try to enrich; otherwise use defaults
-    if (this.summary && this.summary.availablePlans && this.summary.availablePlans.length > 0) {
-      return this.PLAN_CONFIGS;
+  // ── Catalog-driven plan rendering ───────────────────────────────────────────
+  //
+  // This replaced getEffectivePlanConfigs(), which branched on whether the
+  // backend had returned plans and then returned the hardcoded PLAN_CONFIGS
+  // either way — a dead branch that silently guaranteed the frontend's own
+  // prices always won. That is how the page came to advertise PHP 2,499 for
+  // Growth while planCatalogServiceV4 charged PHP 3,490.
+
+  /** Plans to render, straight from the backend catalog. Empty until it loads. */
+  get catalogPlans(): PlanCatalogItem[] {
+    return (this.catalog && this.catalog.plans) ? this.catalog.plans : [];
+  }
+
+  /** Tier order, derived from catalog order rather than a second hardcoded list. */
+  get orderedSlugs(): string[] {
+    return this.catalogPlans.map(p => p.slug);
+  }
+
+  /**
+   * The employer's current plan slug.
+   *
+   * Prefers the catalog's own `current` flag, because the backend resolves
+   * legacy slug aliases (`premium` → `business`) before setting it. Falling back
+   * to the summary's raw code is what made the old order arrays disagree:
+   * navigateToUpgrade() remapped premium→business while getPlanCta() did not, so
+   * the fourth tier ranked inconsistently depending on which method was asked.
+   */
+  get currentPlanSlug(): string | null {
+    const flagged = this.catalogPlans.find(p => p.current);
+    if (flagged) { return flagged.slug; }
+    const code = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
+    if (!code || code === 'none') { return null; }
+    return code === 'premium' ? 'business' : code;
+  }
+
+  planName(plan: PlanCatalogItem): string {
+    return planDisplayName(plan);
+  }
+
+  planCapacities(plan: PlanCatalogItem): CapacityLine[] {
+    return capacityLines(plan);
+  }
+
+  planPriceFor(plan: PlanCatalogItem): PlanPriceDisplay {
+    return planPrice(plan, this.billingCycle);
+  }
+
+  ctaFor(plan: PlanCatalogItem): PlanCta {
+    return planCta(plan, this.orderedSlugs, this.currentPlanSlug);
+  }
+
+  get comparisonGroups(): ComparisonGroup[] {
+    return buildComparison(this.catalogPlans);
+  }
+
+  /** True when the backend offers both cycles, so the toggle is never a no-op. */
+  get canToggleBillingCycle(): boolean {
+    return !!(this.catalog && this.catalog.monthlyAvailable && this.catalog.annualAvailable);
+  }
+
+  setBillingCycle(cycle: BillingCycle): void {
+    this.billingCycle = cycle;
+  }
+
+  /** Routes a card CTA. Enterprise never reaches self-serve checkout. */
+  onPlanCta(plan: PlanCatalogItem): void {
+    const cta = this.ctaFor(plan);
+    if (!cta.actionable) { return; }
+    if (cta.kind === 'contact_sales') {
+      this.contactSales();
+      return;
     }
-    return this.PLAN_CONFIGS;
+    // upgradeRoute is the backend's own route for this plan; it is null for the
+    // trial and for Enterprise, so an absent route is a deliberate "no checkout".
+    if (plan.upgradeRoute) {
+      this.router.navigateByUrl(plan.upgradeRoute);
+    }
+  }
+
+  contactSales(): void {
+    window.location.href = 'mailto:support@gethired.ph?subject=GetHired%20Enterprise%20enquiry';
+  }
+
+  isCurrentCatalogPlan(plan: PlanCatalogItem): boolean {
+    return this.ctaFor(plan).kind === 'current';
+  }
+
+  /** trackBy so toggling the billing cycle re-renders prices, not whole cards. */
+  trackPlanBySlug(_index: number, plan: PlanCatalogItem): string {
+    return plan.slug;
   }
 
   // --- Status helpers ---

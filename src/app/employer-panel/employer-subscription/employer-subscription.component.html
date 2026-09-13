@@ -350,16 +350,45 @@
     </div>
 
     <!-- ── PLAN CARDS ── -->
+    <!-- Every price, capacity and Recruitment Storage figure below comes from
+         GET /api/subscriptions/pricing-catalog. Nothing here is hardcoded: the
+         page previously rendered its own PLAN_CONFIGS and so advertised prices
+         the backend did not charge. -->
     <div class="gh-sub-section" role="region" aria-label="Available plans">
       <h2 class="gh-sub-section__title">Available plans</h2>
       <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow.</p>
 
+      <!-- Monthly / Annual toggle — only rendered when the backend offers both,
+           so it can never be a control that does nothing. -->
+      <div class="gh-cycle-toggle" *ngIf="canToggleBillingCycle" role="group" aria-label="Billing cycle">
+        <button type="button" class="gh-cycle-toggle__btn"
+          [class.gh-cycle-toggle__btn--active]="billingCycle === 'monthly'"
+          [attr.aria-pressed]="billingCycle === 'monthly'"
+          (click)="setBillingCycle('monthly')">Monthly</button>
+        <button type="button" class="gh-cycle-toggle__btn"
+          [class.gh-cycle-toggle__btn--active]="billingCycle === 'annual'"
+          [attr.aria-pressed]="billingCycle === 'annual'"
+          (click)="setBillingCycle('annual')">Annual</button>
+        <span class="gh-cycle-toggle__note" *ngIf="catalog?.annualCopy">{{ catalog.annualCopy }}</span>
+      </div>
+
+      <!-- Catalog states. No local price fallback by design — an honest empty
+           state beats a confident wrong number on a billing page. -->
+      <div class="gh-plan-state" *ngIf="catalogLoading">
+        <div class="gh-skeleton-card" *ngFor="let i of [0,1,2]"></div>
+      </div>
+      <div class="gh-plan-state gh-plan-state--error" *ngIf="catalogError && !catalogLoading" role="alert">
+        <p>We couldn't load current pricing. Your plan and usage above are unaffected.</p>
+        <button type="button" class="gh-plan-state__retry" (click)="loadPricingCatalog()">Try again</button>
+      </div>
+
       <div class="gh-plan-carousel"
+        *ngIf="!catalogLoading && !catalogError && catalogPlans.length"
         [class.gh-plan-carousel--can-scroll-prev]="planCarouselCanScrollPrev"
         [class.gh-plan-carousel--can-scroll-next]="planCarouselCanScrollNext">
         <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
-          (click)="goToPlanSlide((planCarouselActiveIndex - 1 + getEffectivePlanConfigs().length) % getEffectivePlanConfigs().length)"
+          (click)="goToPlanSlide((planCarouselActiveIndex - 1 + catalogPlans.length) % catalogPlans.length)"
           aria-label="Previous plan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -372,58 +401,78 @@
           (focusin)="onPlanCarouselInteractionStart()" (focusout)="onPlanCarouselInteractionEnd()"
           (scroll)="syncActiveSlide()">
         <div class="gh-plan-card"
-          *ngFor="let plan of getEffectivePlanConfigs()"
+          *ngFor="let plan of catalogPlans; trackBy: trackPlanBySlug"
           [ngClass]="{
-            'gh-plan-card--recommended': plan.recommended && !isCurrentPlan(plan.code),
-            'gh-plan-card--current': isCurrentPlan(plan.code),
-            'gh-plan-card--trial': plan.trial && !isCurrentPlan(plan.code)
+            'gh-plan-card--recommended': plan.recommended && !isCurrentCatalogPlan(plan),
+            'gh-plan-card--current': isCurrentCatalogPlan(plan),
+            'gh-plan-card--trial': plan.trial && !isCurrentCatalogPlan(plan)
           }">
 
-          <!-- Badges -->
+          <!-- Badges. Recommended and Current are mutually exclusive so a card
+               can never read "Current plan" and "Recommended" at once. -->
           <div class="gh-plan-card__badges">
-            <span class="gh-plan-badge--recommended" *ngIf="plan.recommended && !isCurrentPlan(plan.code)" aria-label="Recommended plan">Recommended</span>
-            <span class="gh-plan-badge--current" *ngIf="isCurrentPlan(plan.code)" aria-label="Your current plan">Current plan</span>
+            <span class="gh-plan-badge--recommended" *ngIf="plan.recommended && !isCurrentCatalogPlan(plan)" aria-label="Recommended plan">Recommended</span>
+            <span class="gh-plan-badge--current" *ngIf="isCurrentCatalogPlan(plan)" aria-label="Your current plan">Current plan</span>
           </div>
 
-          <!-- Plan name -->
-          <h3 class="gh-plan-card__name">{{ plan.name }}</h3>
+          <h3 class="gh-plan-card__name">{{ planName(plan) }}</h3>
           <p class="gh-plan-card__audience">{{ plan.audience }}</p>
 
-          <!-- Price -->
+          <!-- Price. The annual branch always shows the backend's due-today
+               disclosure; the effective monthly figure is an equivalence beside
+               it, never a replacement that would imply monthly billing. -->
           <div class="gh-plan-card__price">
-            <span class="gh-plan-card__price-val">{{ plan.priceLabel }}</span>
-            <span class="gh-plan-card__price-per" *ngIf="!plan.trial && !plan.enterprise">/mo</span>
+            <span class="gh-plan-card__price-val">{{ planPriceFor(plan).amount }}</span>
+            <span class="gh-plan-card__price-per" *ngIf="planPriceFor(plan).suffix">{{ planPriceFor(plan).suffix }}</span>
           </div>
+          <p class="gh-plan-card__price-caption" *ngIf="planPriceFor(plan).caption">{{ planPriceFor(plan).caption }}</p>
+          <p class="gh-plan-card__price-effective" *ngIf="planPriceFor(plan).effectiveMonthly">{{ planPriceFor(plan).effectiveMonthly }}</p>
 
-          <!-- Features list -->
-          <ul class="gh-plan-card__features" [attr.aria-label]="plan.name + ' features'">
-            <li class="gh-plan-card__feature" *ngFor="let feat of plan.features"
-              [ngClass]="feat.included ? 'gh-plan-card__feature--included' : 'gh-plan-card__feature--excluded'">
+          <!-- The four headline capacities, same order on every card so the
+               cards read as comparable columns. Storage is retained capacity. -->
+          <ul class="gh-plan-card__capacity" [attr.aria-label]="planName(plan) + ' capacity'">
+            <li class="gh-plan-card__capacity-item" *ngFor="let cap of planCapacities(plan)">{{ cap.label }}</li>
+          </ul>
+
+          <!-- Only entitlements the backend actually sends. Capabilities it does
+               not model are absent rather than ticked — a tick nothing enforces
+               is a dead feature. -->
+          <ul class="gh-plan-card__features" [attr.aria-label]="planName(plan) + ' features'">
+            <li class="gh-plan-card__feature gh-plan-card__feature--included" *ngIf="plan.entitlements?.video_interview_questions">
               <span class="gh-plan-card__feat-icon" aria-hidden="true">
-                <svg *ngIf="feat.included" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                <svg *ngIf="!feat.included" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               </span>
-              <span>
-                {{ feat.label }}
-                <span class="sr-only" *ngIf="!feat.included"> — not included</span>
+              <span>GetHired Video Screening</span>
+            </li>
+            <li class="gh-plan-card__feature gh-plan-card__feature--included" *ngIf="plan.entitlements?.customized_company_page">
+              <span class="gh-plan-card__feat-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               </span>
+              <span>Customised company page</span>
+            </li>
+            <li class="gh-plan-card__feature gh-plan-card__feature--included" *ngIf="plan.entitlements?.dedicated_support">
+              <span class="gh-plan-card__feat-icon" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Dedicated support</span>
             </li>
           </ul>
 
-          <!-- CTA — anchored at bottom -->
+          <!-- CTA — anchored at bottom. Disabled only for the current plan;
+               Enterprise stays actionable because Contact Sales is a real action. -->
           <div class="gh-plan-card__cta">
             <button
               class="gh-plan-card__cta-btn"
               [ngClass]="{
-                'gh-plan-card__cta-btn--primary': !isCurrentPlan(plan.code) && !plan.enterprise,
-                'gh-plan-card__cta-btn--current': isCurrentPlan(plan.code),
-                'gh-plan-card__cta-btn--enterprise': plan.enterprise
+                'gh-plan-card__cta-btn--primary': ctaFor(plan).kind === 'upgrade' || ctaFor(plan).kind === 'choose',
+                'gh-plan-card__cta-btn--current': ctaFor(plan).kind === 'current',
+                'gh-plan-card__cta-btn--enterprise': ctaFor(plan).kind === 'contact_sales'
               }"
-              [disabled]="isCurrentPlan(plan.code) || plan.enterprise === true"
-              [attr.aria-disabled]="isCurrentPlan(plan.code) ? 'true' : null"
-              [attr.aria-label]="isCurrentPlan(plan.code) ? 'Currently on ' + plan.name + ' plan' : getPlanCta(plan.code) + ' to ' + plan.name"
-              (click)="navigateToUpgrade(plan.code)">
-              {{ isCurrentPlan(plan.code) ? 'Current plan' : getPlanCta(plan.code) }}
+              [disabled]="!ctaFor(plan).actionable"
+              [attr.aria-disabled]="!ctaFor(plan).actionable ? 'true' : null"
+              [attr.aria-label]="ctaFor(plan).actionable ? ctaFor(plan).label : 'Currently on the ' + planName(plan) + ' plan'"
+              (click)="onPlanCta(plan)">
+              {{ ctaFor(plan).label }}
             </button>
           </div>
 
@@ -431,26 +480,68 @@
         </div>
 
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--next"
-          (click)="goToPlanSlide((planCarouselActiveIndex + 1) % getEffectivePlanConfigs().length)"
+          (click)="goToPlanSlide((planCarouselActiveIndex + 1) % catalogPlans.length)"
           aria-label="Next plan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
 
-      <!-- Pagination dots: one per plan card, matching what people expect
-           a pricing carousel's dots to mean ("this dot is the Growth
-           plan"). Clicking one reliably scrolls that exact card into view
-           via scrollToCard()'s real offsetLeft measurement, and the active
-           dot is kept in sync with manual scroll the same way. -->
-      <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan">
+      <!-- Pagination dots: one per plan card. -->
+      <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan"
+        *ngIf="!catalogLoading && !catalogError && catalogPlans.length">
         <button type="button" class="gh-plan-carousel__dot"
-          *ngFor="let plan of getEffectivePlanConfigs(); let i = index"
+          *ngFor="let plan of catalogPlans; let i = index"
           [class.gh-plan-carousel__dot--active]="planCarouselActiveIndex === i"
           role="tab"
           [attr.aria-selected]="planCarouselActiveIndex === i"
-          [attr.aria-label]="'Go to ' + plan.name + ' plan'"
+          [attr.aria-label]="'Go to ' + planName(plan) + ' plan'"
           (click)="goToPlanSlide(i)">
         </button>
+      </div>
+    </div>
+
+    <!-- ── COMPARE PLANS ── -->
+    <!-- Desktop renders a matrix; below 900px the same data stacks per plan so
+         a five-column table is never forced onto a phone. -->
+    <div class="gh-sub-section" *ngIf="!catalogLoading && !catalogError && catalogPlans.length"
+      role="region" aria-label="Compare plans">
+      <h2 class="gh-sub-section__title">Compare plans</h2>
+      <p class="gh-sub-section__sub">Only capabilities GetHired actually enforces are listed here.</p>
+
+      <div class="gh-compare" *ngFor="let group of comparisonGroups">
+        <h3 class="gh-compare__group-title">{{ group.title }}</h3>
+
+        <div class="gh-compare__scroll">
+          <table class="gh-compare__table">
+            <caption class="sr-only">{{ group.title }} by plan</caption>
+            <thead>
+              <tr>
+                <th scope="col" class="gh-compare__rowhead">Feature</th>
+                <th scope="col" *ngFor="let plan of catalogPlans"
+                  [class.gh-compare__col--current]="isCurrentCatalogPlan(plan)">{{ planName(plan) }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of group.rows">
+                <th scope="row" class="gh-compare__rowhead">{{ row.label }}</th>
+                <td *ngFor="let plan of catalogPlans"
+                  [class.gh-compare__col--current]="isCurrentCatalogPlan(plan)">
+                  <ng-container *ngIf="row.values[plan.slug] === true">
+                    <span class="sr-only">Included</span>
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  </ng-container>
+                  <ng-container *ngIf="row.values[plan.slug] === false">
+                    <span class="sr-only">Not included</span>
+                    <span aria-hidden="true" class="gh-compare__dash">—</span>
+                  </ng-container>
+                  <ng-container *ngIf="row.values[plan.slug] !== true && row.values[plan.slug] !== false">
+                    {{ row.values[plan.slug] }}
+                  </ng-container>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
