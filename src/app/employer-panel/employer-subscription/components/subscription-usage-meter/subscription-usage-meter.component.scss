@@ -26,7 +26,8 @@
     &--critical { color: #dc2626; }
   }
 
-  &__of { font-weight: 400; color: #9CA3AF; }
+  // #6B7280 is 4.8:1 on white; the #9CA3AF this replaced was 2.5:1, invisible while the meter was unused.
+  &__of { font-weight: 400; color: #6B7280; }
 
   &__track {
     width: 100%;
@@ -55,6 +56,20 @@
     font-weight: 600;
     color: #dc2626;
     margin-top: 1px;
+  }
+
+  // Recruitment Storage band notes. Each ink is at least 4.8:1 on white.
+  &__note {
+    margin: 2px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #4B5563;
+
+    &--notice,
+    &--warning { color: #92400E; }
+    &--critical,
+    &--full { color: #B91C1C; font-weight: 600; }
+    &--unavailable { color: #6B7280; }
   }
 }
 

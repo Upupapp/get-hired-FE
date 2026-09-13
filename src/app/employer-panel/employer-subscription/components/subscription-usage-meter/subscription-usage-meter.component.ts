@@ -1,29 +1,54 @@
 import { Component, Input, OnChanges, AfterViewInit, ElementRef, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { EntitlementUsageV4 } from '../../subscription-v4.models';
+import { EntitlementUsageV4, RecruitmentStorageUsageV4, StorageStatus } from '../../subscription-v4.models';
+import { formatStorage } from '../../plan-presentation.model';
+
+/**
+ * Copy for the backend's Recruitment Storage bands. None of it may suggest that anything
+ * an employer already received is removed: reaching the limit deletes nothing.
+ */
+export const STORAGE_NOTES: Record<StorageStatus, string | null> = {
+  normal: null,
+  notice: 'You have used at least 70% of your Recruitment Storage.',
+  warning: 'You have used at least 80% of your Recruitment Storage.',
+  critical: 'You have used at least 90% of your Recruitment Storage. Upgrade soon for more capacity.',
+  full: 'Recruitment Storage is full. Your existing applications and candidate media stay safe. Upgrade for more capacity.',
+};
+
+/** Shown while the backend cannot count storage, where "0 GB used" would be a confident falsehood. */
+export const STORAGE_UNAVAILABLE_NOTE = 'Storage usage is not available right now.';
+
+const STORAGE_FILL: Record<StorageStatus, string> = {
+  normal: 'usage-meter__fill--healthy',
+  notice: 'usage-meter__fill--caution',
+  warning: 'usage-meter__fill--warning',
+  critical: 'usage-meter__fill--critical',
+  full: 'usage-meter__fill--critical',
+};
 
 @Component({
   selector: 'app-subscription-usage-meter',
   template: `
-    <div class="usage-meter" [attr.aria-label]="label + ': ' + (usage?.used || 0) + ' of ' + limitLabel + ' used'">
+    <div class="usage-meter" [attr.aria-label]="ariaSummary">
       <div class="usage-meter__header">
         <span class="usage-meter__label">{{ label }}</span>
-        <span class="usage-meter__count" [ngClass]="countClass">
-          {{ usage?.used || 0 }}
+        <span class="usage-meter__count" [ngClass]="countClass" *ngIf="!storageUnavailable">
+          {{ usedLabel }}
           <span class="usage-meter__of" aria-hidden="true"> / {{ limitLabel }}</span>
         </span>
       </div>
-      <div class="usage-meter__track" role="progressbar"
-        [attr.aria-valuenow]="usage?.used || 0"
+      <div class="usage-meter__track" role="progressbar" *ngIf="showTrack"
+        [attr.aria-valuenow]="ariaValueNow"
         [attr.aria-valuemin]="0"
-        [attr.aria-valuemax]="limitNum || 100"
+        [attr.aria-valuemax]="ariaValueMax"
+        [attr.aria-valuetext]="kind === 'storage' ? usedLabel + ' of ' + limitLabel : null"
         [attr.aria-label]="label + ' usage'">
         <div class="usage-meter__fill"
           [ngClass]="fillClass"
           [style.width.%]="animatedPercent">
         </div>
       </div>
-      <div class="usage-meter__warning" *ngIf="usage?.warningLevel === 'near_90' || usage?.warningLevel === 'at_limit'" role="alert" aria-live="polite">
+      <div class="usage-meter__warning" *ngIf="kind === 'count' && (usage?.warningLevel === 'near_90' || usage?.warningLevel === 'at_limit')" role="alert" aria-live="polite">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -31,13 +56,19 @@ import { EntitlementUsageV4 } from '../../subscription-v4.models';
         <span *ngIf="usage?.warningLevel === 'at_limit'">Limit reached. Upgrade to continue.</span>
         <span *ngIf="usage?.warningLevel === 'near_90'">Approaching limit.</span>
       </div>
+      <p class="usage-meter__note" *ngIf="storageNote" [ngClass]="noteClass" role="status">{{ storageNote }}</p>
     </div>
   `,
   styleUrls: ['./subscription-usage-meter.component.scss']
 })
 export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit {
   @Input() label: string = '';
-  @Input() usage: EntitlementUsageV4 | null = null;
+  @Input() usage: EntitlementUsageV4 | RecruitmentStorageUsageV4 | null = null;
+  /**
+   * 'storage' reads a Recruitment Storage block: `used` and `limit` are bytes, and the
+   * band comes from the backend's `storageStatus`, never from thresholds re-derived here.
+   */
+  @Input() kind: 'count' | 'storage' = 'count';
 
   animatedPercent: number = 0;
   private isBrowser: boolean;
@@ -63,6 +94,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   }
 
   get targetPercent(): number {
+    if (this.kind === 'storage') return this.storagePercent || 0;
     if (!this.usage) return 0;
     if (this.usage.limit === 'unlimited') return 0;
     if (!this.usage.limit || this.usage.limit === null) return 0;
@@ -78,12 +110,32 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   get limitLabel(): string {
     if (!this.usage) return '–';
     if (this.usage.limit === 'unlimited') return 'Unlimited';
+    if (this.kind === 'storage') return this.usage.limit === null ? 'Custom' : (formatStorage(this.usage.limit) || '–');
     if (this.usage.limit === null) return '–';
     return String(this.usage.limit);
   }
 
+  get usedLabel(): string {
+    const used = (this.usage && this.usage.used) || 0;
+    return this.kind === 'storage' ? (formatStorage(used) || '–') : String(used);
+  }
+
+  get ariaSummary(): string {
+    if (this.storageUnavailable) return this.label + ': usage not available';
+    return this.label + ': ' + this.usedLabel + ' of ' + this.limitLabel + ' used';
+  }
+
+  get ariaValueNow(): number {
+    return this.kind === 'storage' ? (this.storagePercent || 0) : ((this.usage && this.usage.used) || 0);
+  }
+
+  get ariaValueMax(): number {
+    return this.kind === 'storage' ? 100 : (this.limitNum || 100);
+  }
+
   get fillClass(): string {
     if (!this.usage) return '';
+    if (this.kind === 'storage') return this.storageStatus ? STORAGE_FILL[this.storageStatus] : '';
     if (this.usage.warningLevel === 'at_limit') return 'usage-meter__fill--critical';
     if (this.usage.warningLevel === 'near_90') return 'usage-meter__fill--warning';
     if (this.usage.warningLevel === 'near_70') return 'usage-meter__fill--caution';
@@ -92,8 +144,48 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
 
   get countClass(): string {
     if (!this.usage) return '';
+    if (this.kind === 'storage') {
+      if (this.storageStatus === 'critical' || this.storageStatus === 'full') return 'usage-meter__count--critical';
+      if (this.storageStatus === 'warning') return 'usage-meter__count--warning';
+      return '';
+    }
     if (this.usage.warningLevel === 'at_limit') return 'usage-meter__count--critical';
     if (this.usage.warningLevel === 'near_90') return 'usage-meter__count--warning';
     return '';
+  }
+
+  // ── Recruitment Storage ─────────────────────────────────────────────────────
+
+  get storageStatus(): StorageStatus | null {
+    if (this.kind !== 'storage' || !this.usage) return null;
+    return (this.usage as RecruitmentStorageUsageV4).storageStatus || null;
+  }
+
+  /** The backend sends storageStatus null while it cannot count storage, so no figures are shown. */
+  get storageUnavailable(): boolean {
+    return this.kind === 'storage' && this.storageStatus === null;
+  }
+
+  /** The backend's percentUsed; a full bar when the status is full, since a zero limit sends no percentage. */
+  get storagePercent(): number | null {
+    if (this.storageUnavailable || !this.usage) return null;
+    if (this.storageStatus === 'full') return 100;
+    const pct = this.usage.percentUsed;
+    return typeof pct === 'number' ? Math.min(100, Math.max(0, pct)) : null;
+  }
+
+  /** Enterprise sends no limit and no percentage: its storage is custom, so there is no bar to fill. */
+  get showTrack(): boolean {
+    return this.kind === 'count' || this.storagePercent !== null;
+  }
+
+  get storageNote(): string | null {
+    if (this.kind !== 'storage') return null;
+    if (this.storageUnavailable) return STORAGE_UNAVAILABLE_NOTE;
+    return STORAGE_NOTES[this.storageStatus as StorageStatus];
+  }
+
+  get noteClass(): string {
+    return 'usage-meter__note--' + (this.storageStatus || 'unavailable');
   }
 }

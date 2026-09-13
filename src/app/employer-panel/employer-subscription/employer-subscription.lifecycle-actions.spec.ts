@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { CompanyFacade } from '@main/company/state/company.facade';
 import { EmployerSubscriptionComponent } from './employer-subscription.component';
 import { BillingService } from './services/billing.service';
+import { SubscriptionGuardrailService } from './services/subscription-guardrail.service';
 import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
 import { SubscriptionSummaryService } from './subscription-summary.service';
 import { EmployerSubscriptionSummary } from './subscription.models';
@@ -115,6 +116,7 @@ describe('EmployerSubscriptionComponent -- hero and banner billing buttons (UI-0
         { provide: Router, useValue: router },
         { provide: MatDialog, useValue: {} },
         { provide: BillingService, useValue: {} },
+        { provide: SubscriptionGuardrailService, useValue: { getSummary: () => of({ success: true, summary: { usage: {} } }) } },
       ],
     });
     const fixture = TestBed.createComponent(EmployerSubscriptionComponent);

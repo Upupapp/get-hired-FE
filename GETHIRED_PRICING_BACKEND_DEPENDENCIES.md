@@ -5,8 +5,9 @@ the backend pricing catalog. Measured against `get-hired-BE` HEAD on 2026-09-13.
 
 The front end now renders **every** price, capacity and Recruitment Storage figure
 from `GET /api/subscriptions/pricing-catalog`. It holds no plan values of its own.
-BE-P1 is closed by an owner decision and needs no work; BE-P2 to BE-P5 each require
-a change in `get-hired-BE` and cannot be fixed from this repo.
+BE-P1 is closed by an owner decision and needs no work. BE-P2 is served at gh-be
+`4c3412d`, and the storage meter consumes it. BE-P3 to BE-P5 each require a change in
+`get-hired-BE` and cannot be fixed from this repo.
 
 ---
 
@@ -67,34 +68,29 @@ obvious from the checkout flow.
 
 ---
 
-## BE-P2 — No Recruitment Storage usage anywhere (BLOCKS the meter)
+## BE-P2 — Recruitment Storage usage — SERVED at gh-be `4c3412d`, meter built (B3)
 
-Plan **capacity** (`recruitment_storage_bytes`) exists only in gh-be's uncommitted
-catalog — see the correction above. Production does not send it, so the page shows no
-storage figure against production.
+**Update, 2026-09-13.** gh-be committed the requested block at `4c3412d` (A2).
+`GET /api/subscriptions/employer/summary` now returns `usage.recruitment_storage` in
+the `EntitlementUsageV4` shape, with `used`, `limit` and `remaining` in bytes. It adds
+`storageStatus`: `normal`, `notice` (70%), `warning` (80%), `critical` (90%) or `full`
+(100%), and `null` while the count is unavailable. Plan capacity
+(`recruitment_storage_bytes`) is committed at `872f3ae` (A1). Neither commit was on
+gh-be's `main` when the meter was built, so production still sends no block.
 
-Consumed **bytes** are now metered in gh-be's uncommitted tree
-(`storedMediaService.getEmployerStorageUsage()` → `usedBytes`, `limitBytes`,
-`percentage`, `status`, `breakdown`), but **no endpoint serves them to the frontend**.
+The front end reads that shape at the commit, not from a working tree:
 
-Consequently the following are **not built at all** — no markup, no disabled
-control, no "coming soon". A comment at the top of `employer-subscription.component.ts`
-records why and points here:
+- `subscription-usage-meter` has a storage mode whose bands come from `storageStatus`
+  alone, so no threshold is derived in the front end.
+- The subscription page renders the meter in the Usage cockpit **only when the block is
+  present**. With no key (production today) or a failed request, no meter renders.
+- At 100% the copy says existing applications and candidate media stay safe.
 
-- the storage usage meter (`37.4 GB of 50 GB used`)
-- the 70 / 80 / 90 / 100 % warning states
-- the per-category breakdown (video responses / CVs & documents / other)
-- "Free Up Storage" and any storage-driven upgrade nudge
+**Still not built, because nothing serves it:**
 
-**Requested:** add `recruitment_storage` to the entitlement usage block that
-`GET /api/subscriptions/employer/summary` already returns for `active_job_posts`
-and `admin_users`, using the same `EntitlementUsageV4` shape (`used`, `limit`,
-`remaining`, `percentUsed`, `warningLevel`, `countSource`, `countConfidence`).
-`used` in bytes. The existing `warningLevel` thresholds map onto the required
-states directly.
-
-A breakdown by media type would additionally enable the category rows; the total
-alone is enough to switch the meter on.
+- the per-category breakdown (video responses / CVs & documents / other); the block
+  carries a total only
+- "Free Up Storage" and any storage-driven upgrade nudge beyond the meter's own note
 
 ---
 

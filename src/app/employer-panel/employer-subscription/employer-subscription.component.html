@@ -281,6 +281,12 @@
           </ng-template>
         </div>
 
+        <!-- Recruitment Storage: only the V4 summary's usage.recruitment_storage block drives
+             this card. A backend without the block renders none (absent is not zero). -->
+        <div class="gh-usage-card" *ngIf="storageUsage">
+          <app-subscription-usage-meter label="Recruitment Storage" kind="storage" [usage]="storageUsage"></app-subscription-usage-meter>
+        </div>
+
         <!-- Interview questions -->
         <div class="gh-usage-card" *ngIf="summary.usage.recruitment?.interviewQuestions">
           <div class="gh-usage-card__header">

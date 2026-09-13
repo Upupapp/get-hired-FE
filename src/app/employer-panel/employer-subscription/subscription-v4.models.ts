@@ -35,9 +35,9 @@ export interface PlanPricingDisplay {
  * backend is explicit that a fake-unlimited integer such as 999999 must never be
  * encoded, so `null` is the unlimited/custom signal throughout.
  *
- * The four optional fields below the original six are sent only by the catalog in
- * gh-be's working tree (uncommitted as of 2026-09-13); `origin/main` does not send
- * them. They are optional so the page renders honestly against both: a present
+ * The four optional fields below the original six are sent only by a backend at or
+ * after commit 872f3ae (committed 2026-09-13, not yet on the backend's `main`), so
+ * production does not send them. They are optional so the page renders honestly against both: a present
  * `null` means custom (Enterprise), while an ABSENT key means that catalog does not
  * model the entitlement and nothing is displayed for it. See isModelled() in
  * plan-presentation.model.ts.
@@ -103,6 +103,21 @@ export interface EntitlementUsageV4 {
   countConfidence: 'confirmed' | 'unavailable' | string;
 }
 
+/**
+ * Recruitment Storage band, from thresholds the backend centralises
+ * (normal < 70% ≤ notice < 80% ≤ warning < 90% ≤ critical < 100% ≤ full).
+ */
+export type StorageStatus = 'normal' | 'notice' | 'warning' | 'critical' | 'full';
+
+/**
+ * `usage.recruitment_storage` on GET /api/subscriptions/employer/summary: the sibling
+ * meters' shape with `used`, `limit` and `remaining` in BYTES, plus `storageStatus`,
+ * which is null while the backend cannot count storage. Enterprise sends a null limit.
+ */
+export interface RecruitmentStorageUsageV4 extends EntitlementUsageV4 {
+  storageStatus: StorageStatus | null;
+}
+
 export interface BooleanEntitlementV4 {
   included: boolean;
 }
@@ -125,6 +140,8 @@ export interface SubscriptionSummaryV4Usage {
   active_job_posts: EntitlementUsageV4;
   admin_users: EntitlementUsageV4;
   video_responses: EntitlementUsageV4;
+  /** Absent from a backend that predates storage metering; absent renders no meter. */
+  recruitment_storage?: RecruitmentStorageUsageV4;
   customized_company_page: BooleanEntitlementV4;
   video_interview_questions: BooleanEntitlementV4;
   dedicated_support: BooleanEntitlementV4;

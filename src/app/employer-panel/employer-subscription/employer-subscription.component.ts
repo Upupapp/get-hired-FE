@@ -10,7 +10,8 @@ import { EmployerSubscriptionSummary, EntitlementUsage, BooleanEntitlement, Invo
 import { BillingService } from './services/billing.service';
 import { InvoiceSendModalComponent } from './components/invoice-send-modal/invoice-send-modal.component';
 import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
-import { BillingCycle, PlanCatalogItem, PlanEntitlements, PricingCatalog } from './subscription-v4.models';
+import { SubscriptionGuardrailService } from './services/subscription-guardrail.service';
+import { BillingCycle, PlanCatalogItem, PlanEntitlements, PricingCatalog, RecruitmentStorageUsageV4 } from './subscription-v4.models';
 import {
   CapacityLine,
   ComparisonGroup,
@@ -142,18 +143,22 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   catalogLoading = true;
   catalogError = false;
 
+  /**
+   * Recruitment Storage usage: the V4 employer summary's `usage.recruitment_storage` block,
+   * passed to the meter unchanged. Null renders no meter, both when that request fails and
+   * when the backend predates the block and sends no key (absent is not zero).
+   */
+  storageUsage: RecruitmentStorageUsageV4 | null = null;
+
   /** Selected billing cycle for the pricing cards. Seeded from the catalog. */
   billingCycle: BillingCycle = 'monthly';
 
-  // Recruitment Storage: the plan's CAPACITY is modelled only by the catalog in gh-be's
-  // uncommitted tree — production (`origin/main`) does not send the field — so the cards,
-  // Compare plans and the storage FAQ show it only when the catalog does (isModelled).
-  // How much an employer has CONSUMED reaches the frontend through no endpoint at all;
-  // gh-be has uncommitted metering but nothing serves it. The usage meter, its
-  // 70/80/90/100% warning states and the per-category breakdown are therefore not
-  // built at all rather than rendered from invented numbers. See BE-P2 in
-  // GETHIRED_PRICING_BACKEND_DEPENDENCIES.md for the field requested; build the
-  // meter in the commit that consumes it.
+  // Recruitment Storage: the plan's CAPACITY comes from the catalog, and the cards, Compare
+  // plans and the storage FAQ show it only when the catalog models it (isModelled). How much
+  // an employer has CONSUMED comes from the V4 employer summary's usage.recruitment_storage
+  // block (storageUsage below), which also carries the 70/80/90/100% band as storageStatus,
+  // so no threshold is derived here. The per-category breakdown is not built: no endpoint
+  // serves it.
 
   constructor(
     public companyFacade: CompanyFacade,
@@ -162,6 +167,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     private dialog: MatDialog,
     private billing: BillingService,
     private pricingCatalogService: SubscriptionPricingCatalogService,
+    private guardrailService: SubscriptionGuardrailService,
   ) {}
 
   ngOnInit(): void {
@@ -356,6 +362,26 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
       );
 
     this.loadPricingCatalog();
+    this.loadStorageUsage();
+  }
+
+  /**
+   * Loads Recruitment Storage usage from its own request, so a backend without the block,
+   * or a failure here, never blanks the summary or the price list.
+   */
+  loadStorageUsage(): void {
+    this.guardrailService.getSummary()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (res) => {
+          const usage = res && res.summary && res.summary.usage;
+          const block = usage && usage.recruitment_storage;
+          this.storageUsage = block && typeof block.used === 'number' ? block : null;
+        },
+        (_err) => {
+          this.storageUsage = null;
+        }
+      );
   }
 
   /**
