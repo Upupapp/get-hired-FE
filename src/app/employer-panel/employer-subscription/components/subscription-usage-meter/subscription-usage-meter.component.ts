@@ -15,8 +15,11 @@ export const STORAGE_NOTES: Record<StorageStatus, string | null> = {
   full: 'Recruitment Storage is full. Your existing applications and candidate media stay safe. Upgrade for more capacity.',
 };
 
-/** Shown while the backend cannot count storage, where "0 GB used" would be a confident falsehood. */
-export const STORAGE_UNAVAILABLE_NOTE = 'Storage usage is not available right now.';
+/**
+ * Shown whenever the backend could not count storage, for whatever reason, in place of
+ * figures and any band: "0 GB used" or a warning would both be false.
+ */
+export const STORAGE_UNAVAILABLE_NOTE = 'Storage usage unavailable.';
 
 const STORAGE_FILL: Record<StorageStatus, string> = {
   normal: 'usage-meter__fill--healthy',
@@ -121,7 +124,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   }
 
   get ariaSummary(): string {
-    if (this.storageUnavailable) return this.label + ': usage not available';
+    if (this.storageUnavailable) return this.label + ': usage unavailable';
     return this.label + ': ' + this.usedLabel + ' of ' + this.limitLabel + ' used';
   }
 
@@ -135,7 +138,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
 
   get fillClass(): string {
     if (!this.usage) return '';
-    if (this.kind === 'storage') return this.storageStatus ? STORAGE_FILL[this.storageStatus] : '';
+    if (this.kind === 'storage') return this.storageStatus && !this.storageUnavailable ? STORAGE_FILL[this.storageStatus] : '';
     if (this.usage.warningLevel === 'at_limit') return 'usage-meter__fill--critical';
     if (this.usage.warningLevel === 'near_90') return 'usage-meter__fill--warning';
     if (this.usage.warningLevel === 'near_70') return 'usage-meter__fill--caution';
@@ -145,6 +148,7 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   get countClass(): string {
     if (!this.usage) return '';
     if (this.kind === 'storage') {
+      if (this.storageUnavailable) return '';
       if (this.storageStatus === 'critical' || this.storageStatus === 'full') return 'usage-meter__count--critical';
       if (this.storageStatus === 'warning') return 'usage-meter__count--warning';
       return '';
@@ -161,9 +165,16 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
     return (this.usage as RecruitmentStorageUsageV4).storageStatus || null;
   }
 
-  /** The backend sends storageStatus null while it cannot count storage, so no figures are shown. */
+  /**
+   * The backend could not count storage. It says so twice: countConfidence is not
+   * 'confirmed', and storageStatus is null. Either signal is enough, because an uncounted
+   * block carries a placeholder `used` of 0 and, with a zero limit, a warningLevel of
+   * at_limit, and neither may reach the screen as a figure or a band.
+   */
   get storageUnavailable(): boolean {
-    return this.kind === 'storage' && this.storageStatus === null;
+    if (this.kind !== 'storage') return false;
+    if (!this.usage || this.storageStatus === null) return true;
+    return this.usage.countConfidence !== 'confirmed';
   }
 
   /** The backend's percentUsed; a full bar when the status is full, since a zero limit sends no percentage. */
@@ -186,6 +197,6 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
   }
 
   get noteClass(): string {
-    return 'usage-meter__note--' + (this.storageStatus || 'unavailable');
+    return 'usage-meter__note--' + (this.storageUnavailable ? 'unavailable' : this.storageStatus);
   }
 }

@@ -118,6 +118,38 @@ describe('SubscriptionUsageMeterComponent -- Recruitment Storage states (B3)', (
     expect(find('.usage-meter__note').nativeElement.textContent).toContain('stay safe');
   }));
 
+  // What 4c3412d sends when the count fails for an employer with no plan: storageStatus
+  // null, confidence unavailable, a placeholder used of 0, and a zero limit whose
+  // warningLevel reads at_limit.
+  const UNAVAILABLE_NO_PLAN: Partial<RecruitmentStorageUsageV4> = {
+    used: 0, limit: 0, remaining: 0, percentUsed: null, warningLevel: 'at_limit',
+    storageStatus: null, countSource: 'stored_media.active', countConfidence: 'unavailable',
+  };
+
+  function expectUnavailableWithoutWarning(): void {
+    const note = find('.usage-meter__note').nativeElement as HTMLElement;
+    expect(note.textContent!.trim()).toBe('Storage usage unavailable.');
+    expect(note.classList).toContain('usage-meter__note--unavailable');
+    expect(find('.usage-meter__count')).toBeNull();
+    expect(find('.usage-meter__track')).toBeNull();
+    expect(find('.usage-meter__warning')).toBeNull();
+    expect(text()).not.toMatch(/\d\s*GB/);
+    const banded = fixture.nativeElement.querySelectorAll(
+      '[class*="--notice"], [class*="--caution"], [class*="--warning"], [class*="--critical"], [class*="--full"]');
+    expect(banded.length).withContext('an unavailable meter carries a warning-state class').toBe(0);
+    expect(find('.usage-meter').nativeElement.getAttribute('aria-label')).toBe('Recruitment Storage: usage unavailable');
+  }
+
+  it('unavailable renders "Storage usage unavailable" with no warning state, even when warningLevel reads at_limit', fakeAsync(() => {
+    render(block(UNAVAILABLE_NO_PLAN));
+    expectUnavailableWithoutWarning();
+  }));
+
+  it('a count the backend did not confirm is unavailable even if the block carries a band', fakeAsync(() => {
+    render(block({ ...UNAVAILABLE_NO_PLAN, limit: 50 * GB, remaining: 50 * GB, percentUsed: 0, warningLevel: 'none', storageStatus: 'full' }));
+    expectUnavailableWithoutWarning();
+  }));
+
   it('count mode is unchanged: raw counts, its own warning, no storage note', fakeAsync(() => {
     render({ key: 'active_job_posts', used: 9, limit: 10, remaining: 1, percentUsed: 90, warningLevel: 'near_90', countSource: 'jobs.status', countConfidence: 'confirmed' },
       'count', 'Active job posts');

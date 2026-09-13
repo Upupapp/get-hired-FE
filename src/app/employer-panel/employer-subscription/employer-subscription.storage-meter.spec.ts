@@ -111,6 +111,23 @@ describe('EmployerSubscriptionComponent -- Recruitment Storage meter (B3)', () =
     expect(shown).not.toMatch(/delet|remov|eras|purg|lose|lost|wipe/i);
   });
 
+  it('renders the block sent when storage cannot be counted as "Storage usage unavailable", never 0 GB or a warning', () => {
+    // As employerSummaryStorage.test.js asserts it at 4c3412d: confidence unavailable,
+    // used 0, a 50 GB limit and storageStatus null; the rest is what buildEntitlementUsage derives.
+    const unavailable: RecruitmentStorageUsageV4 = {
+      key: 'recruitment_storage', used: 0, limit: 50 * GB, remaining: 50 * GB, percentUsed: 0, warningLevel: 'none',
+      storageStatus: null, countSource: 'stored_media.active', countConfidence: 'unavailable',
+    };
+    const fixture = render(of(v4Response({ active_job_posts: SIBLING_METER, recruitment_storage: unavailable })));
+    const meter = meterIn(fixture);
+    expect(meter).withContext('an unavailable block still renders the meter, saying so').not.toBeNull();
+    const shown: string = meter.nativeElement.textContent;
+    expect(shown).toContain('Storage usage unavailable');
+    expect(shown).not.toMatch(/\d\s*GB/);
+    expect(meter.nativeElement.querySelectorAll(
+      '[class*="--notice"], [class*="--caution"], [class*="--warning"], [class*="--critical"], [class*="--full"]').length).toBe(0);
+  });
+
   it('Retry reloads the storage block along with the summary', () => {
     const fixture = render(of(v4Response({ recruitment_storage: storageBlock('normal') })), throwError(new Error('summary unavailable')));
     expect(storageRequest).toHaveBeenCalledTimes(1);
