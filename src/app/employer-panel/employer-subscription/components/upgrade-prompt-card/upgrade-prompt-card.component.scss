@@ -137,3 +137,69 @@
   .upgrade-prompt,
   .upgrade-prompt__savings-badge { animation: none; }
 }
+
+// F2: a backend message. The priority label and the icon always come with the colour.
+.upgrade-prompt {
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4B5563;
+  }
+
+  &__priority {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    line-height: 18px;
+  }
+
+  &__eyebrow { font-weight: 600; }
+
+  &__btn--secondary {
+    background: #fff;
+    color: #4B4A8C;
+    border: 1.5px solid rgba(108, 107, 173, 0.45);
+    width: 100%;
+    &:hover { background: rgba(108, 107, 173, 0.06); }
+  }
+
+  &__btn:disabled { opacity: 0.6; cursor: default; }
+
+  &--critical {
+    background: var(--gh-sf-state-error-surface, #FEF2F2);
+    border-color: var(--gh-sf-state-error-border, #EF4444);
+    .upgrade-prompt__title, .upgrade-prompt__priority, .upgrade-prompt__icon--message { color: #b91c1c; }
+  }
+
+  &--high {
+    background: var(--gh-sf-state-warning-surface, #FFFBEB);
+    border-color: var(--gh-sf-state-warning-border, #F59E0B);
+    border-width: 2px;
+    .upgrade-prompt__priority, .upgrade-prompt__icon--message { color: var(--gh-color-warning-accessible, #b45309); }
+  }
+
+  &--warning {
+    background: rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.3);
+    .upgrade-prompt__priority, .upgrade-prompt__icon--message { color: var(--gh-color-warning-accessible, #b45309); }
+  }
+
+  &--notice {
+    background: rgba(108, 107, 173, 0.04);
+    border-color: rgba(108, 107, 173, 0.16);
+    .upgrade-prompt__priority, .upgrade-prompt__icon--message { color: #4B4A8C; }
+  }
+
+  &--info {
+    background: #F9FAFB;
+    border-color: #E5E7EB;
+    .upgrade-prompt__priority, .upgrade-prompt__icon--message { color: #4B5563; }
+  }
+}

@@ -13,6 +13,7 @@ import { InternalEmployerGuard } from './employer-internal-authguard';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CompanyModule } from '@main/company/company.module';
+import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
 // B01: Global recruiter messages inbox
 import { RecruiterMessagesComponent } from './recruiter-messages/recruiter-messages.component';
 // CANDIDATE-GROUP-V1: standalone Applicants section (job picker -> existing
@@ -83,6 +84,8 @@ const routes: Routes = [
     CoreModule,
     MatDialogModule,
     SharedModule,
+    // F2: the engagement banner above every employer page
+    EngagementUiModule,
     EmployeeModule,
     CompanyModule,
     RouterModule.forChild(routes)

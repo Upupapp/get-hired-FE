@@ -12,11 +12,10 @@ import { UpgradeAnnualFirstLandingComponent } from './upgrade/upgrade-annual-fir
 import { SubscriptionStatusChipComponent } from './components/subscription-status-chip/subscription-status-chip.component';
 import { TrialDaysRemainingBadgeComponent } from './components/trial-days-remaining-badge/trial-days-remaining-badge.component';
 import { SubscriptionUsageMeterComponent } from './components/subscription-usage-meter/subscription-usage-meter.component';
-import { SubscriptionStatusBannerComponent } from './components/subscription-status-banner/subscription-status-banner.component';
 import { SubscriptionLimitModalComponent } from './components/subscription-limit-modal/subscription-limit-modal.component';
 import { CheckoutReturnStatusComponent } from './components/checkout-return-status/checkout-return-status.component';
 import { BillingStatusBannerComponent } from './components/billing-status-banner/billing-status-banner.component';
-import { UpgradePromptCardComponent } from './components/upgrade-prompt-card/upgrade-prompt-card.component';
+import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
 import { PlanComparisonStripComponent } from './components/plan-comparison-strip/plan-comparison-strip.component';
 
 // Invoice Vault components
@@ -48,11 +47,9 @@ const routes: Routes = [
     SubscriptionStatusChipComponent,
     TrialDaysRemainingBadgeComponent,
     SubscriptionUsageMeterComponent,
-    SubscriptionStatusBannerComponent,
     SubscriptionLimitModalComponent,
     CheckoutReturnStatusComponent,
     BillingStatusBannerComponent,
-    UpgradePromptCardComponent,
     PlanComparisonStripComponent,
     // Invoice Vault
     InvoiceStatusChipComponent,
@@ -63,6 +60,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     SharedModule,
+    // F2: the banner and card are declared there, so the employer shell can render them too.
+    EngagementUiModule,
     ReactiveFormsModule,
     MatDialogModule,
     RouterModule.forChild(routes),

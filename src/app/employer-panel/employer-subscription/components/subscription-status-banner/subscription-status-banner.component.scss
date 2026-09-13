@@ -63,3 +63,102 @@
 @media (prefers-reduced-motion: reduce) {
   .sub-banner { animation: none; }
 }
+
+// F2: a backend message. The priority label and the icon always come with the colour.
+.sub-banner {
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  &__priority {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    line-height: 18px;
+  }
+
+  &__eyebrow { font-weight: 600; }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &--message .sub-banner__cta { min-height: 36px; }
+  &__cta:focus-visible, &__dismiss:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+  &__cta:disabled, &__dismiss:disabled { opacity: 0.6; cursor: default; }
+
+  &__cta--secondary {
+    background: transparent !important;
+    color: inherit !important;
+    border: 1.5px solid currentColor !important;
+  }
+
+  &__dismiss {
+    min-height: 36px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  &--critical {
+    background: var(--gh-sf-state-error-surface, #FEF2F2);
+    border-color: var(--gh-sf-state-error-border, #EF4444);
+    color: #991b1b;
+    .sub-banner__cta { background: #b91c1c; color: #fff; }
+  }
+
+  &--high {
+    background: var(--gh-sf-state-warning-surface, #FFFBEB);
+    border-color: var(--gh-sf-state-warning-border, #F59E0B);
+    border-width: 2px;
+    color: #92400e;
+    .sub-banner__cta { background: var(--gh-color-warning-accessible, #b45309); color: #fff; }
+  }
+
+  &--warning {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.4);
+    color: #92400e;
+    .sub-banner__cta { background: var(--gh-color-warning-accessible, #b45309); color: #fff; }
+  }
+
+  &--notice {
+    background: rgba(108, 107, 173, 0.06);
+    border-color: rgba(108, 107, 173, 0.3);
+    color: #1a1830;
+    .sub-banner__cta { background: #5B5A9C; color: #fff; }
+  }
+
+  &--info {
+    background: #F9FAFB;
+    border-color: #E5E7EB;
+    color: #1F2937;
+    .sub-banner__cta { background: #374151; color: #fff; }
+  }
+
+  @media (max-width: 600px) {
+    .sub-banner__actions { width: 100%; }
+    &--message .sub-banner__cta { flex: 1 1 auto; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sub-banner { animation: none; }
+}

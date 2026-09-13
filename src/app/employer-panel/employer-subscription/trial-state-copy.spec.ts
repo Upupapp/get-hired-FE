@@ -12,6 +12,7 @@ import { SubscriptionPricingCatalogService } from './services/subscription-prici
 import { SubscriptionSummaryService } from './subscription-summary.service';
 import { EmployerSubscriptionSummary } from './subscription.models';
 import { UpgradeAnnualFirstLandingComponent } from './upgrade/upgrade-annual-first-landing.component';
+import { SubscriptionStatusBannerComponent } from './components/subscription-status-banner/subscription-status-banner.component';
 
 /**
  * B6.1 (gh-ui U5): every string an employer reads about a trial ending, read through the code that
@@ -43,6 +44,12 @@ const REPLACED: { [where: string]: string } = {
   'dashboard trial_expired': 'Choose a plan to keep your jobs active and manage applicants.',
   'dashboard trial_ending': 'Upgrade now to keep your jobs, applicants, and video responses active.',
   'landing trial_ending': 'Your free trial is ending soon. Upgrade to keep your company page, job posts, and video interviews active.',
+};
+
+/** RUL-08 (gh-qa Q17): the subscription status banner's two trial strings, replaced when F2 first mounted that banner. */
+const REPLACED_IN_F2: { [where: string]: string } = {
+  'status banner trial_ending before F2': 'Upgrade now to keep your job posts active and hiring without interruption.',
+  'status banner trial_expired before F2': 'Your active job posts are paused. Choose a plan to resume hiring.',
 };
 
 describe('Trial-state copy -- says only what the backend does at trial end (B6.1)', () => {
@@ -126,6 +133,24 @@ describe('Trial-state copy -- says only what the backend does at trial end (B6.1
     [ending, expired].forEach(subtitle => {
       expect(FORBIDDEN.test(subtitle)).withContext(subtitle).toBeFalse();
       expect(KEEP.test(subtitle)).withContext(subtitle).toBeFalse();
+    });
+  });
+
+  it('the check catches both status-banner strings F2 replaced (controls, RUL-08)', () => {
+    Object.keys(REPLACED_IN_F2).forEach(where => expect(FORBIDDEN.test(REPLACED_IN_F2[where])).withContext(where).toBeTrue());
+  });
+
+  it('the subscription status banner (RUL-08): trial_ending and trial_expired take the FAQ wording', () => {
+    const banner = Object.create(SubscriptionStatusBannerComponent.prototype) as SubscriptionStatusBannerComponent;
+    banner.planStatus = 'trial_ending';
+    const ending = banner.body;
+    banner.planStatus = 'trial_expired';
+    const expired = banner.body;
+    expect(ending).toBe('Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
+    expect(expired).toBe('Your published jobs stay published. Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
+    [ending, expired].forEach(body => {
+      expect(FORBIDDEN.test(body)).withContext(body).toBeFalse();
+      expect(KEEP.test(body)).withContext(body).toBeFalse();
     });
   });
 });
