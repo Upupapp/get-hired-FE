@@ -551,15 +551,15 @@
       <p class="gh-sub-section__sub">Common questions about plans, trials, limits, and payments.</p>
       <div class="gh-faq-list">
 
-        <div class="gh-faq-item" *ngFor="let item of faqItems; let i = index">
+        <div class="gh-faq-item" *ngFor="let item of visibleFaqItems; let i = index">
           <button
             class="gh-faq-item__q gh-pressable"
-            (click)="toggleFaq(i)"
-            [attr.aria-expanded]="faqOpen[i]"
+            (click)="toggleFaq(item.q)"
+            [attr.aria-expanded]="isFaqOpen(item.q)"
             [attr.aria-controls]="'faq-answer-' + i"
             [id]="'faq-q-' + i">
             <span>{{ item.q }}</span>
-            <svg class="gh-faq-item__chevron" [ngClass]="{'gh-faq-item__chevron--open': faqOpen[i]}"
+            <svg class="gh-faq-item__chevron" [ngClass]="{'gh-faq-item__chevron--open': isFaqOpen(item.q)}"
               width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               aria-hidden="true">
               <polyline points="6 9 12 15 18 9"/>
@@ -567,7 +567,7 @@
           </button>
           <div
             class="gh-faq-item__a"
-            *ngIf="faqOpen[i]"
+            *ngIf="isFaqOpen(item.q)"
             role="region"
             [id]="'faq-answer-' + i"
             [attr.aria-labelledby]="'faq-q-' + i">

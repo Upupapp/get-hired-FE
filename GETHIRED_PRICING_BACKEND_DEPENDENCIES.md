@@ -10,6 +10,33 @@ a change in `get-hired-BE` and cannot be fixed from this repo.
 
 ---
 
+## ⚠ Correction, 2026-09-13 — what production actually serves
+
+An earlier version of this file said the backend catalog *"already models the entire
+brief"*, including Recruitment Storage capacity and video questions per job, and that
+those figures were *"live on the plan cards now"*. **That was measured against gh-be's
+uncommitted working tree, not against `origin/main`.** Production is different:
+
+| | `origin/main` @ `ad3b007` (production) | gh-be working tree (uncommitted) |
+|---|---|---|
+| Plans | 4 — `free_trial`, `starter`, `growth`, `business`. **No Enterprise.** | 5, incl. Enterprise |
+| Jobs / users | 1/1 · 2/1 · 6/3 · 20/8 | 1/1 · 5/2 · 15/5 · 40/15 |
+| `recruitment_storage_bytes` | **absent** | 1 / 10 / 50 / 200 GB / null |
+| `video_questions_per_job` | **absent** | 1 / 3 / 5 / 10 / null |
+| `applicants`, `featured_job_credits` | **absent** | present |
+| Prices | ₱1,490 / ₱3,490 / ₱6,990 | identical |
+
+The page rendered absent keys as "Custom", so against production it would have told a
+Starter employer it had custom storage. **Fixed:** the page now distinguishes an
+*absent* key (catalog does not model it → nothing shown) from an explicit `null`
+(Enterprise → "Custom"). Capacity lines, Compare-plans rows and the storage/video FAQ
+entries all appear only when the catalog carries the field. The page is correct against
+production today and picks the new entitlements up automatically when gh-be commits them.
+
+Prices were never affected — they are identical in both.
+
+---
+
 ## BE-P1 — RESOLVED, no backend change required
 
 **Owner decision, 2026-09-13: the approved prices are ₱1,490 / ₱3,490 / ₱6,990** —
@@ -42,13 +69,13 @@ obvious from the checkout flow.
 
 ## BE-P2 — No Recruitment Storage usage anywhere (BLOCKS the meter)
 
-Plan **capacity** exists and is already served: `recruitment_storage_bytes`
-(1 GB / 10 GB / 50 GB / 200 GB / null). It is live on the plan cards and in
-Compare plans now.
+Plan **capacity** (`recruitment_storage_bytes`) exists only in gh-be's uncommitted
+catalog — see the correction above. Production does not send it, so the page shows no
+storage figure against production.
 
-Consumed **bytes** do not exist. There is no aggregation over applicant video
-responses, CVs, documents or portfolio files anywhere in the backend, and no
-endpoint exposes one.
+Consumed **bytes** are now metered in gh-be's uncommitted tree
+(`storedMediaService.getEmployerStorageUsage()` → `usedBytes`, `limitBytes`,
+`percentage`, `status`, `breakdown`), but **no endpoint serves them to the frontend**.
 
 Consequently the following are **not built at all** — no markup, no disabled
 control, no "coming soon". A comment at the top of `employer-subscription.component.ts`
@@ -74,8 +101,8 @@ alone is enough to switch the meter on.
 ## BE-P3 — Summary omits entitlements the catalog already defines
 
 `controllers/subscriptionGuardrailsControllerV4.js` returns usage for
-`active_job_posts` and `admin_users` only. The catalog defines four more that have
-no usage counterpart: `video_questions_per_job`, `applicants`,
+`active_job_posts` and `admin_users` only. gh-be's uncommitted catalog defines four
+more entitlements with no usage counterpart: `video_questions_per_job`, `applicants`,
 `featured_job_credits`, `recruitment_storage_bytes`.
 
 Without them the page can state a plan's limit but never how much of it is used,
@@ -139,5 +166,6 @@ No action needed on these; recorded so they are not "fixed" into something else.
   code, because the backend resolves legacy slug aliases before setting it.
 - `upgradeRoute` — `null` for the trial and Enterprise is read as "no self-serve
   checkout", which is what routes Enterprise to Contact Sales.
-- `contactSalesRequired` and the four extra entitlement fields were being sent but
-  were missing from the FE types; `subscription-v4.models.ts` now declares them.
+- `contactSalesRequired` and the four extra entitlement fields are sent only by gh-be's
+  uncommitted catalog, not by production. `subscription-v4.models.ts` declares them as
+  **optional**, and the page renders nothing for a key that is absent.

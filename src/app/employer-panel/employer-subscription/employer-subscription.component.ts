@@ -10,7 +10,7 @@ import { EmployerSubscriptionSummary, EntitlementUsage, BooleanEntitlement, Invo
 import { BillingService } from './services/billing.service';
 import { InvoiceSendModalComponent } from './components/invoice-send-modal/invoice-send-modal.component';
 import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
-import { BillingCycle, PlanCatalogItem, PricingCatalog } from './subscription-v4.models';
+import { BillingCycle, PlanCatalogItem, PlanEntitlements, PricingCatalog } from './subscription-v4.models';
 import {
   CapacityLine,
   ComparisonGroup,
@@ -18,6 +18,7 @@ import {
   PlanPriceDisplay,
   buildComparison,
   capacityLines,
+  isModelled,
   planCta,
   planDisplayName,
   planPrice,
@@ -48,26 +49,30 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   invoicesTotal = 0;
   selectedInvoiceId: string | null = null;
 
-  // FAQ accordion state — each index tracks open/closed
-  // Derived from faqItems so adding an entry can never leave the accordion
-  // with fewer flags than questions (the old literal was a fixed 7).
-  faqOpen: boolean[] = [];
+  // FAQ accordion state. Keyed by question text, not index: the visible FAQ list is filtered by what the
+  // catalog models (see visibleFaqItems), so an index would point at a different
+  // question whenever the catalog changes shape.
+  private openFaqs = new Set<string>();
 
-  readonly faqItems = [
+  readonly faqItems: Array<{ q: string; a: string; requires?: keyof PlanEntitlements }> = [
     {
       q: 'What is Recruitment Storage?',
+      requires: 'recruitment_storage_bytes',
       a: 'Recruitment Storage is the capacity included with your plan for applicant video responses, CVs and resumes, uploaded candidate documents, portfolio files and other candidate media held in GetHired.'
     },
     {
       q: 'Does Recruitment Storage reset every month?',
+      requires: 'recruitment_storage_bytes',
       a: 'No. Recruitment Storage is the total active capacity included with your plan, not a monthly allowance. It reflects what you are currently holding, so it only goes down when you remove candidate media.'
     },
     {
       q: 'What happens if I reach my storage limit?',
+      requires: 'recruitment_storage_bytes',
       a: 'Your existing applications remain safe. New video responses and file uploads may be paused until storage is freed or your capacity is increased. Nothing already submitted to you is deleted because you reached the limit.'
     },
     {
       q: 'Can I delete old applications or media to free storage?',
+      requires: 'recruitment_storage_bytes',
       a: 'Yes, subject to the platform\'s retention and deletion rules.'
     },
     {
@@ -88,6 +93,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
     {
       q: 'How many video questions can I ask per job?',
+      requires: 'video_questions_per_job',
       a: 'GetHired Video Screening lets you ask applicants structured questions and review their recorded answers alongside their CV. The number of questions available per job depends on your plan and is shown on each plan card and in Compare plans.'
     },
     {
@@ -115,13 +121,15 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   /** Selected billing cycle for the pricing cards. Seeded from the catalog. */
   billingCycle: BillingCycle = 'monthly';
 
-  // Recruitment Storage: the plan's CAPACITY is real backend data and is shown on
-  // the plan cards and in Compare plans. How much an employer has CONSUMED is not
-  // — there is no bytes-used aggregation anywhere in the backend and no endpoint
-  // exposes one. The usage meter, its 70/80/90/100% warning states and the
-  // per-category breakdown are therefore not built at all rather than rendered
-  // from invented numbers. See BE-P2 in GETHIRED_PRICING_BACKEND_DEPENDENCIES.md
-  // for the exact field requested; build the meter in the commit that consumes it.
+  // Recruitment Storage: the plan's CAPACITY is modelled only by the catalog in gh-be's
+  // uncommitted tree — production (`origin/main`) does not send the field — so the cards,
+  // Compare plans and the storage FAQ show it only when the catalog does (isModelled).
+  // How much an employer has CONSUMED reaches the frontend through no endpoint at all;
+  // gh-be has uncommitted metering but nothing serves it. The usage meter, its
+  // 70/80/90/100% warning states and the per-category breakdown are therefore not
+  // built at all rather than rendered from invented numbers. See BE-P2 in
+  // GETHIRED_PRICING_BACKEND_DEPENDENCIES.md for the field requested; build the
+  // meter in the commit that consumes it.
 
   constructor(
     public companyFacade: CompanyFacade,
@@ -133,8 +141,6 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   ) {}
 
   ngOnInit(): void {
-    this.faqOpen = this.faqItems.map(() => false);
-
     // Read company data without dispatching clearing actions
     this.companyFacade.companyDetails$
       .pipe(takeUntil(this.destroy$))
@@ -647,8 +653,23 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   // --- FAQ ---
 
-  toggleFaq(idx: number): void {
-    this.faqOpen[idx] = !this.faqOpen[idx];
+  /**
+   * FAQ entries the current catalog can truthfully answer. The Recruitment Storage and
+   * per-job video-question answers describe entitlements the production catalog does
+   * not model; showing them there would explain a limit nothing enforces. They appear
+   * automatically once any plan in the catalog carries the field.
+   */
+  get visibleFaqItems(): Array<{ q: string; a: string; requires?: keyof PlanEntitlements }> {
+    return this.faqItems.filter(item =>
+      !item.requires || this.catalogPlans.some(p => isModelled(p.entitlements, item.requires!)));
+  }
+
+  isFaqOpen(q: string): boolean {
+    return this.openFaqs.has(q);
+  }
+
+  toggleFaq(q: string): void {
+    if (this.openFaqs.has(q)) { this.openFaqs.delete(q); } else { this.openFaqs.add(q); }
   }
 
   // --- Lifecycle ---

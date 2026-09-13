@@ -4,6 +4,7 @@ import {
   capacityLines,
   formatLimit,
   formatStorage,
+  isModelled,
   planCta,
   planDisplayName,
   planPrice,
@@ -124,7 +125,9 @@ describe('plan-presentation', () => {
       expect(formatLimit(15)).toBe('15');
       expect(formatLimit(0)).toBe('0');
       expect(formatLimit(null)).toBe('Custom');
-      expect(formatLimit(undefined)).toBe('Custom');
+      // An absent key is NOT custom — callers filter it out, and the defensive
+      // fallback is a dash, never a word that reads as a commitment.
+      expect(formatLimit(undefined)).toBe('—');
     });
   });
 
@@ -169,10 +172,10 @@ describe('plan-presentation', () => {
       expect(labels[1]).toContain('Custom');
     });
 
-    it('does not throw when entitlements are missing entirely', () => {
+    it('states no capacity at all when entitlements are missing entirely', () => {
       const bare = makePlan({ entitlements: undefined as any });
       expect(() => capacityLines(bare)).not.toThrow();
-      expect(capacityLines(bare).length).toBe(4);
+      expect(capacityLines(bare).length).toBe(0);
     });
   });
 
@@ -396,6 +399,83 @@ describe('plan-presentation', () => {
       groups.forEach(g => g.rows.forEach(r => {
         expect(Object.keys(r.values).sort()).toEqual(['enterprise', 'free_trial', 'growth']);
       }));
+    });
+  });
+
+  /**
+   * The contract `origin/main` actually serves (planCatalogServiceV4.js at ad3b007):
+   * four plans, no Enterprise, and entitlements WITHOUT recruitment_storage_bytes,
+   * video_questions_per_job, applicants or featured_job_credits. Those keys exist only in
+   * gh-be's uncommitted catalog. The page must say nothing about an entitlement the
+   * catalog does not model — an earlier version rendered these absent keys as "Custom".
+   */
+  describe('against the production catalog (keys absent, not null)', () => {
+    const prod = (slug: string, name: string, jobs: number, users: number, video: number, dedicated: boolean) =>
+      makePlan({
+        slug, name, recommended: slug === 'growth',
+        entitlements: {
+          active_job_posts: jobs, admin_users: users, video_responses: video,
+          customized_company_page: true, video_interview_questions: true, dedicated_support: dedicated,
+        } as any,
+      });
+    const PROD = [
+      prod('free_trial', 'Free Trial', 1, 1, 5, false),
+      prod('starter', 'Starter', 2, 1, 25, false),
+      prod('growth', 'Growth', 6, 3, 100, false),
+      prod('business', 'Business', 20, 8, 400, true),
+    ];
+    const allLabels = (plans: PlanCatalogItem[]) =>
+      buildComparison(plans).reduce((acc: string[], g) => acc.concat(g.rows.map(r => r.label)), []);
+
+    it('treats an absent key as not modelled and an explicit null as modelled', () => {
+      expect(isModelled(PROD[1].entitlements, 'recruitment_storage_bytes')).toBeFalse();
+      expect(isModelled(ENTERPRISE.entitlements, 'recruitment_storage_bytes')).toBeTrue();
+      expect(isModelled(undefined, 'active_job_posts')).toBeFalse();
+    });
+
+    it('shows only the capacities the catalog models', () => {
+      expect(capacityLines(PROD[1]).map(c => c.key)).toEqual(['jobs', 'users']);
+      expect(capacityLines(PROD[1]).map(c => c.label)).toEqual(['2 active jobs', '1 employer user']);
+    });
+
+    it('never claims custom storage or custom video questions for a self-serve plan', () => {
+      PROD.forEach(p => {
+        const text = capacityLines(p).map(c => c.label).join(' | ');
+        expect(text).withContext(p.slug).not.toContain('Custom');
+        expect(text).withContext(p.slug).not.toContain('Recruitment Storage');
+        expect(text).withContext(p.slug).not.toContain('video question');
+      });
+    });
+
+    it('omits comparison rows for entitlements the catalog does not model', () => {
+      const labels = allLabels(PROD);
+      for (const absent of ['Recruitment Storage', 'Applicants', 'Video questions per job', 'Featured job credits per month']) {
+        expect(labels).withContext(absent).not.toContain(absent);
+      }
+      for (const present of ['Active jobs', 'Employer users', 'Video responses included', 'Interview questions', 'Customised company page', 'Dedicated support']) {
+        expect(labels).withContext(present).toContain(present);
+      }
+    });
+
+    it('never puts Custom or Unlimited in any production comparison cell', () => {
+      buildComparison(PROD).forEach(g => g.rows.forEach(r => {
+        Object.keys(r.values).forEach(slug => {
+          expect(r.values[slug]).withContext(`${r.label} / ${slug}`).not.toBe('Custom');
+          expect(r.values[slug]).withContext(`${r.label} / ${slug}`).not.toBe('Unlimited');
+        });
+      }));
+    });
+
+    it('drops a row when only some plans model the entitlement', () => {
+      // A mixed catalog would force a guess into the empty cells.
+      const labels = allLabels([PROD[1], makePlan()]);
+      expect(labels).not.toContain('Recruitment Storage');
+      expect(labels).toContain('Active jobs');
+    });
+
+    it('still renders the real production figures', () => {
+      const jobs = buildComparison(PROD)[0].rows.find(r => r.label === 'Active jobs')!;
+      expect(jobs.values).toEqual({ free_trial: '1', starter: '2', growth: '6', business: '20' });
     });
   });
 });

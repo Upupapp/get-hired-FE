@@ -35,10 +35,12 @@ export interface PlanPricingDisplay {
  * backend is explicit that a fake-unlimited integer such as 999999 must never be
  * encoded, so `null` is the unlimited/custom signal throughout.
  *
- * The four fields below the original six were already being sent by the backend
- * and were simply absent from this type — a returned-but-undocumented contract
- * gap. They are what the pricing page needs to show Recruitment Storage and
- * video-screening limits without inventing anything.
+ * The four optional fields below the original six are sent only by the catalog in
+ * gh-be's working tree (uncommitted as of 2026-09-13); `origin/main` does not send
+ * them. They are optional so the page renders honestly against both: a present
+ * `null` means custom (Enterprise), while an ABSENT key means that catalog does not
+ * model the entitlement and nothing is displayed for it. See isModelled() in
+ * plan-presentation.model.ts.
  */
 export interface PlanEntitlements {
   active_job_posts: number | null;

@@ -50,9 +50,14 @@ export function formatStorage(bytes: number | null | undefined): string | null {
   return `${Number.isInteger(gb) ? gb : gb.toFixed(1)} GB`;
 }
 
-/** A numeric entitlement, or "Custom" when the backend sends null (Enterprise). */
+/**
+ * A numeric entitlement, or "Custom" when the backend sends an explicit null
+ * (Enterprise). An absent key is not "Custom" — it renders as a dash, and callers
+ * are expected to have filtered it out already via isModelled().
+ */
 export function formatLimit(value: number | null | undefined): string {
-  if (value === null || typeof value === 'undefined') { return CUSTOM_LABEL; }
+  if (typeof value === 'undefined') { return '—'; }
+  if (value === null) { return CUSTOM_LABEL; }
   return String(value);
 }
 
@@ -62,7 +67,7 @@ function countLine(value: number | null | undefined, singular: string, plural: s
   return `${value} ${value === 1 ? singular : plural}`;
 }
 
-// ── Capacity summary (the four headline limits on each card) ──────────────────
+// ── Capacity summary (the headline limits the catalog models) ─────────────────
 
 export interface CapacityLine {
   key: 'jobs' | 'users' | 'storage' | 'videoQuestions';
@@ -70,34 +75,57 @@ export interface CapacityLine {
 }
 
 /**
- * The four capacity limits shown on every plan card, in a fixed order so the
- * cards read as a comparable column set rather than an arbitrary list.
+ * A field is MODELLED when the backend sends the key at all — including an explicit
+ * `null`, which is Enterprise's "custom, resolved per account".
  *
- * Storage is deliberately phrased as retained capacity ("50 GB Recruitment
- * Storage"), never as a monthly allowance ("50 GB/month") — it does not reset.
+ * An ABSENT key means this catalog version does not model that entitlement, which is
+ * a different statement. The production catalog (`origin/main`, planCatalogServiceV4
+ * at ad3b007) sends no `recruitment_storage_bytes`, `video_questions_per_job`,
+ * `applicants` or `featured_job_credits`; only the uncommitted catalog in gh-be's tree
+ * does. An earlier version of this file treated absent like null and rendered those
+ * keys as "Custom" — telling a Starter employer they had custom storage. Absent now
+ * means "say nothing about it".
+ */
+export function isModelled(e: PlanEntitlements | null | undefined, key: keyof PlanEntitlements): boolean {
+  return !!e && Object.prototype.hasOwnProperty.call(e, key) && typeof (e as any)[key] !== 'undefined';
+}
+
+/**
+ * The headline capacity limits on a plan card, in a fixed order so the cards read as
+ * comparable columns. Only entitlements the catalog models are included.
+ *
+ * Storage is phrased as retained capacity ("50 GB Recruitment Storage"), never as a
+ * monthly allowance ("50 GB/month") — it does not reset.
  */
 export function capacityLines(plan: PlanCatalogItem): CapacityLine[] {
-  const e: PlanEntitlements = plan.entitlements || ({} as PlanEntitlements);
-  const storage = formatStorage(e.recruitment_storage_bytes);
+  const e = plan.entitlements;
+  const lines: CapacityLine[] = [];
 
-  return [
-    { key: 'jobs', label: countLine(e.active_job_posts, 'active job', 'active jobs') },
-    { key: 'users', label: countLine(e.admin_users, 'employer user', 'employer users') },
-    {
+  if (isModelled(e, 'active_job_posts')) {
+    lines.push({ key: 'jobs', label: countLine(e.active_job_posts, 'active job', 'active jobs') });
+  }
+  if (isModelled(e, 'admin_users')) {
+    lines.push({ key: 'users', label: countLine(e.admin_users, 'employer user', 'employer users') });
+  }
+  if (isModelled(e, 'recruitment_storage_bytes')) {
+    const storage = formatStorage(e.recruitment_storage_bytes);
+    lines.push({
       key: 'storage',
-      // Enterprise carries no catalog capacity; the backend notes 500 GB+ as the
-      // typical contractual starting point, so say that rather than a bare "Custom".
+      // An explicit null is custom capacity. For Enterprise the typical contractual
+      // starting point is 500 GB+, so say that rather than a bare "Custom".
       label: storage
         ? `${storage} Recruitment Storage`
         : (plan.enterprise ? '500 GB+ Recruitment Storage' : `${CUSTOM_LABEL} Recruitment Storage`),
-    },
-    {
+    });
+  }
+  if (isModelled(e, 'video_questions_per_job')) {
+    const v = e.video_questions_per_job;
+    lines.push({
       key: 'videoQuestions',
-      label: e.video_questions_per_job === null || typeof e.video_questions_per_job === 'undefined'
-        ? `${CUSTOM_LABEL} video questions`
-        : `${e.video_questions_per_job} video question${e.video_questions_per_job === 1 ? '' : 's'}/job`,
-    },
-  ];
+      label: v === null ? `${CUSTOM_LABEL} video questions` : `${v} video question${v === 1 ? '' : 's'}/job`,
+    });
+  }
+  return lines;
 }
 
 // ── Pricing display ───────────────────────────────────────────────────────────
@@ -176,83 +204,65 @@ export interface ComparisonGroup {
 /**
  * Builds the Compare Plans matrix from the catalog only.
  *
- * Rows are limited to entitlements the backend actually sends. Capability rows
- * the backend does not model (talent pools, SSO, audit logs, source-of-hire
- * reporting and the rest of the Premium/Enterprise feature copy) are
- * deliberately absent rather than rendered as guesses — showing a tick for
- * something nothing enforces is the dead-feature failure the brief forbids.
+ * A row appears only when EVERY plan in the catalog models its entitlement (see
+ * isModelled). A row present for some plans and absent for others would force a guess
+ * into the empty cells, and a comparison table is exactly where a guessed "Unlimited"
+ * or "Custom" reads as a commitment. Groups left with no rows are dropped.
+ *
+ * Capabilities the backend does not model at all (talent pools, SSO, audit logs,
+ * source-of-hire reporting and the rest of the Premium/Enterprise feature copy) are
+ * never rendered — a tick for something nothing enforces is the dead-feature failure
+ * the brief forbids.
  */
 export function buildComparison(plans: PlanCatalogItem[]): ComparisonGroup[] {
-  const byPlan = <T extends ComparisonValue>(fn: (p: PlanCatalogItem) => T) => {
+  const byPlan = (fn: (p: PlanCatalogItem) => ComparisonValue) => {
     const out: { [slug: string]: ComparisonValue } = {};
     plans.forEach(p => { out[p.slug] = fn(p); });
     return out;
   };
+  const modelledByAll = (key: keyof PlanEntitlements) =>
+    plans.length > 0 && plans.every(p => isModelled(p.entitlements, key));
+
+  type RowSpec = { label: string; field: keyof PlanEntitlements; value: (p: PlanCatalogItem) => ComparisonValue };
+  const group = (title: string, specs: RowSpec[]): ComparisonGroup => ({
+    title,
+    rows: specs.filter(r => modelledByAll(r.field)).map(r => ({ label: r.label, values: byPlan(r.value) })),
+  });
 
   return [
-    {
-      title: 'Hiring capacity',
-      rows: [
-        { label: 'Active jobs', values: byPlan(p => formatLimit(p.entitlements?.active_job_posts)) },
-        { label: 'Employer users', values: byPlan(p => formatLimit(p.entitlements?.admin_users)) },
-        {
-          label: 'Applicants',
-          values: byPlan(p => {
-            const v = p.entitlements?.applicants;
-            // null on paid plans means uncapped, not unknown.
-            return v === null || typeof v === 'undefined' ? 'Unlimited' : String(v);
-          }),
+    group('Hiring capacity', [
+      { label: 'Active jobs', field: 'active_job_posts', value: p => formatLimit(p.entitlements.active_job_posts) },
+      { label: 'Employer users', field: 'admin_users', value: p => formatLimit(p.entitlements.admin_users) },
+      {
+        label: 'Applicants', field: 'applicants',
+        // Modelled, and null on a paid plan means uncapped rather than unknown.
+        value: p => p.entitlements.applicants === null ? 'Unlimited' : String(p.entitlements.applicants),
+      },
+      {
+        label: 'Recruitment Storage', field: 'recruitment_storage_bytes',
+        value: p => formatStorage(p.entitlements.recruitment_storage_bytes) || (p.enterprise ? '500 GB+' : CUSTOM_LABEL),
+      },
+    ]),
+    group('Candidate screening', [
+      { label: 'Video questions per job', field: 'video_questions_per_job', value: p => formatLimit(p.entitlements.video_questions_per_job) },
+      { label: 'Video responses included', field: 'video_responses', value: p => formatLimit(p.entitlements.video_responses) },
+      { label: 'Interview questions', field: 'video_interview_questions', value: p => !!p.entitlements.video_interview_questions },
+    ]),
+    group('Employer brand', [
+      { label: 'Customised company page', field: 'customized_company_page', value: p => !!p.entitlements.customized_company_page },
+      {
+        label: 'Featured job credits per month', field: 'featured_job_credits',
+        value: p => {
+          const v = p.entitlements.featured_job_credits;
+          if (v === null) { return CUSTOM_LABEL; }
+          return v === 0 ? false : String(v);
         },
-        {
-          label: 'Recruitment Storage',
-          values: byPlan(p => {
-            const s = formatStorage(p.entitlements?.recruitment_storage_bytes);
-            return s || (p.enterprise ? '500 GB+' : CUSTOM_LABEL);
-          }),
-        },
-      ],
-    },
-    {
-      title: 'Candidate screening',
-      rows: [
-        {
-          label: 'Video questions per job',
-          values: byPlan(p => formatLimit(p.entitlements?.video_questions_per_job)),
-        },
-        {
-          label: 'Video responses included',
-          values: byPlan(p => formatLimit(p.entitlements?.video_responses)),
-        },
-        {
-          label: 'Interview questions',
-          values: byPlan(p => !!p.entitlements?.video_interview_questions),
-        },
-      ],
-    },
-    {
-      title: 'Employer brand',
-      rows: [
-        {
-          label: 'Customised company page',
-          values: byPlan(p => !!p.entitlements?.customized_company_page),
-        },
-        {
-          label: 'Featured job credits per month',
-          values: byPlan(p => {
-            const v = p.entitlements?.featured_job_credits;
-            if (v === null || typeof v === 'undefined') { return CUSTOM_LABEL; }
-            return v === 0 ? false : String(v);
-          }),
-        },
-      ],
-    },
-    {
-      title: 'Support',
-      rows: [
-        { label: 'Dedicated support', values: byPlan(p => !!p.entitlements?.dedicated_support) },
-      ],
-    },
-  ];
+      },
+    ]),
+    group('Support', [
+      { label: 'Dedicated support', field: 'dedicated_support', value: p => !!p.entitlements.dedicated_support },
+    ]),
+  ].filter(g => g.rows.length > 0);
 }
 
 // ── Card CTA ──────────────────────────────────────────────────────────────────
