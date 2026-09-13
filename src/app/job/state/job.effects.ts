@@ -7,7 +7,8 @@ import {
   exhaustMap,
   map,
   mergeMap,
-  switchMap
+  switchMap,
+  tap
 } from 'rxjs/operators';
 import {
   Actions,
@@ -19,6 +20,7 @@ import * as Model from '../job.model';
 import { JobService } from '../job.service';
 import * as InterviewModel from '@main/interview/interview.model';
 import { employerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 
 @Injectable()
 export class JobEffects {
@@ -26,7 +28,14 @@ export class JobEffects {
   constructor(
     private jobService: JobService,
     private actions$: Actions,
+    private refreshBus: EngagementRefreshBus,
   ) { }
+
+  // A job closed, archived, reopened or deleted changes the job meter: read the engagement context again.
+  refreshEngagementOnJobChange$ = createEffect(() => this.actions$.pipe(
+    ofType(JobActions.changeJobStatusSuccess, JobActions.deleteJobSuccess),
+    tap(action => this.refreshBus.request(action.type === JobActions.deleteJobSuccess.type ? 'job_deleted' : 'job_status_changed')),
+  ), { dispatch: false });
 
   // getAllJob$ = createEffect(() => {
   //   return this.actions$.pipe(

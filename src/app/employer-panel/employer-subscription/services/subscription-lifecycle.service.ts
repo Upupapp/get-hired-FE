@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
+import {
+  CtaIntent, MessageActionResult, NotificationItem, NotificationListQuery, NotificationListResponse,
+} from '@main/shared/engagement/engagement-contract.models';
 
 export interface LifecycleStatus {
   status: string;
@@ -31,15 +34,11 @@ export interface CheckoutReturnStatus {
   lifecycle: LifecycleStatus | null;
 }
 
-export interface SubscriptionNotification {
-  id: number;
-  type: string;
-  title: string;
-  body: string;
-  isRead: boolean;
-  metadata: Record<string, any>;
-  createdAt: string;
-}
+/**
+ * One subscription or billing message (contract §4.3). Its id is a string: engine messages look like
+ * `NOTIF-26-48213907`, payment notices like `SUBN-42`. Before E2 this endpoint returned numbers.
+ */
+export type SubscriptionNotification = NotificationItem;
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionLifecycleService {
@@ -55,12 +54,30 @@ export class SubscriptionLifecycleService {
     return this.http.get<CheckoutReturnStatus>(`${this.base}/subscriptions/checkout-intent/${intentId}/return-status`);
   }
 
-  getNotifications(): Observable<{ success: boolean; notifications: SubscriptionNotification[] }> {
-    return this.http.get<any>(`${this.base}/subscriptions/notifications`);
+  /** The caller's subscription and billing messages, newest first (contract §3.2). Unread by default. */
+  getNotifications(query: NotificationListQuery = {}): Observable<NotificationListResponse> {
+    let params = new HttpParams();
+    if (query.status) { params = params.set('status', query.status); }
+    if (query.category && query.category.length) { params = params.set('category', query.category.join(',')); }
+    if (query.priority && query.priority.length) { params = params.set('priority', query.priority.join(',')); }
+    if (query.page !== undefined) { params = params.set('page', String(query.page)); }
+    if (query.limit !== undefined) { params = params.set('limit', String(query.limit)); }
+    return this.http.get<NotificationListResponse>(`${this.base}/subscriptions/notifications`, { params });
   }
 
-  markNotificationRead(id: number): Observable<{ success: boolean }> {
-    return this.http.post<{ success: boolean }>(`${this.base}/subscriptions/notifications/${id}/read`, {});
+  /** `found: false` means nothing this viewer could see matched: a 200 answer, not a failure (contract §3.3). */
+  markNotificationRead(id: string): Observable<MessageActionResult> {
+    return this.http.post<MessageActionResult>(`${this.base}/subscriptions/notifications/${encodeURIComponent(id)}/read`, {});
+  }
+
+  /** An engine id or a context id (`nudge:<ruleKey>`). 409 NOT_DISMISSIBLE for CRITICAL and `SUBN-` notices (contract §3.4). */
+  dismissNotification(id: string): Observable<MessageActionResult> {
+    return this.http.post<MessageActionResult>(`${this.base}/subscriptions/notifications/${encodeURIComponent(id)}/dismiss`, {});
+  }
+
+  /** Records the click only; the endpoint does not redirect. 400 INVALID_INTENT when the intent is not offered (contract §3.5). */
+  clickNotification(id: string, intent: CtaIntent): Observable<MessageActionResult> {
+    return this.http.post<MessageActionResult>(`${this.base}/subscriptions/notifications/${encodeURIComponent(id)}/click`, { intent });
   }
 
   triggerDunningCheck(): Observable<{ success: boolean }> {

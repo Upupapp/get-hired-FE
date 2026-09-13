@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BaseService } from '@main/core/services/base.service';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 
 export interface AppNotification {
   id: string;
@@ -33,7 +34,7 @@ export interface NotificationListResult {
 export class NotificationService {
   private base = `${environment.api_url}/notifications`;
 
-  constructor(private baseService: BaseService) {}
+  constructor(private baseService: BaseService, private refreshBus: EngagementRefreshBus) {}
 
   list(): Observable<NotificationListResult> {
     return this.baseService
@@ -44,18 +45,18 @@ export class NotificationService {
   markRead(id: string): Observable<boolean> {
     return this.baseService
       .post<any>(`${this.base}/${id}/read`, {})
-      .pipe(map((res: any) => !!res?.data?.found));
+      .pipe(map((res: any) => !!res?.data?.found), tap(() => this.refreshBus.request('bell_read')));
   }
 
   markAllRead(): Observable<number> {
     return this.baseService
       .post<any>(`${this.base}/read-all`, {})
-      .pipe(map((res: any) => res?.data?.updatedCount ?? 0));
+      .pipe(map((res: any) => res?.data?.updatedCount ?? 0), tap(() => this.refreshBus.request('bell_read')));
   }
 
   delete(id: string): Observable<boolean> {
     return this.baseService
       .delete<any>(`${this.base}/${id}`)
-      .pipe(map((res: any) => !!res?.data?.found));
+      .pipe(map((res: any) => !!res?.data?.found), tap(() => this.refreshBus.request('bell_dismissed')));
   }
 }

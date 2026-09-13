@@ -5,6 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, interval } from 'rxjs';
 import { takeUntil, switchMap, startWith } from 'rxjs/operators';
 import { SubscriptionLifecycleService, CheckoutReturnStatus } from '../../services/subscription-lifecycle.service';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
+
+/** A return that changed the subscription, so the engagement context is read again (contract §3.1). */
+const SETTLED_RETURN_STATUSES = ['payment_success_confirmed', 'payment_failed', 'payment_expired'];
 
 @Component({
   selector: 'app-checkout-return-status',
@@ -124,6 +128,7 @@ export class CheckoutReturnStatusComponent implements OnInit, OnDestroy {
     private router: Router,
     private lifecycleService: SubscriptionLifecycleService,
     private cdr: ChangeDetectorRef,
+    private refreshBus: EngagementRefreshBus,
   ) {}
 
   ngOnInit(): void {
@@ -163,6 +168,7 @@ export class CheckoutReturnStatusComponent implements OnInit, OnDestroy {
           this.returnStatus = res.returnStatus || 'payment_unknown_retry';
           this.userMessage = res.userMessage || '';
           this.billingCycle = res.billingCycle || 'monthly';
+          if (SETTLED_RETURN_STATUSES.indexOf(this.returnStatus) !== -1) { this.refreshBus.request('checkout_return'); }
           if (this.returnStatus !== 'payment_pending' && this.returnStatus !== 'checking_payment') {
             this.stopPolling$.next();
           }

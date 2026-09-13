@@ -2,6 +2,7 @@ import { of } from 'rxjs';
 import { CompanyUsersComponent } from './company-users.component';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
 import { SubscriptionAlertComponent } from '@app-shared/components/subscription-alert/subscription-alert.component';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 
 /**
  * B5.1: "Add team member". No seat pre-check on the client: the invite dialog opens, its request
@@ -19,7 +20,7 @@ describe('CompanyUsersComponent -- "Add team member" has no client-side seat gat
     };
     Object.defineProperty(facade, 'subsRestrictions$', { get: restrictionsRead });
     const component = new CompanyUsersComponent(facade, {} as any, dialog as any,
-      jasmine.createSpyObj('Router', ['navigate']), {} as any, jasmine.createSpyObj('SnackbarService', ['success', 'error']));
+      jasmine.createSpyObj('Router', ['navigate']), {} as any, jasmine.createSpyObj('SnackbarService', ['success', 'error']), new EngagementRefreshBus());
     component.companyId = 'CO-1';
 
     component.addAccess();

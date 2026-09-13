@@ -8,6 +8,7 @@ import { CompanyService } from '../company.service';
 import { ImportAddUserComponent } from './dialogs/import-add-user.component/import-add-user.component';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SnackbarService } from '@app-core/services/snackbar.service';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 import { mainAnimations } from '@main/shared/animations/main-animations';
 import * as Model from '../company.model';
 
@@ -35,7 +36,8 @@ export class CompanyUsersComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private snackbarService: SnackbarService
+    private snackbarService: SnackbarService,
+    private refreshBus: EngagementRefreshBus,
   ) {}
 
   ngOnInit(): void {
@@ -96,6 +98,7 @@ export class CompanyUsersComponent implements OnInit, OnDestroy {
       this.companyService.removeCompanyUser(member.uid, this.companyId).subscribe({
         next: () => {
           this.removingUid = '';
+          this.refreshBus.request('member_removed');
           this.snackbarService.success(`${member.fullName} has been removed from this company.`, '');
           this.companyFacade.getCompanyUsers(this.companyId);
         },

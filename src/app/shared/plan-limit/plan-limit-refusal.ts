@@ -38,6 +38,15 @@ export const PLAN_LIMIT_HTTP_STATUS = 402;
 export const JOB_NOT_ACCEPTING_APPLICATIONS = 'JOB_NOT_ACCEPTING_APPLICATIONS';
 export const JOB_NOT_ACCEPTING_APPLICATIONS_MESSAGE = "This job isn't accepting new applications right now. Please check back later.";
 
+/** A3.1's candidate refusal body, sent as HTTP 400 (contract §4.6): five keys and no plan detail. */
+export interface CandidatePlanRefusal {
+  success: false;
+  status: 'error';
+  code: typeof JOB_NOT_ACCEPTING_APPLICATIONS;
+  error: string;
+  message: string;
+}
+
 /** What the employer chose in the limit modal. Dismissing it chooses nothing (undefined). */
 export type PlanLimitChoice = 'upgrade' | 'plans' | 'draft';
 
