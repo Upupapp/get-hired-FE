@@ -62,6 +62,9 @@ describe('ApplicationProcessComponent -- submit lifecycle', () => {
     mockDialog = {
       open: jasmine.createSpy('open').and.returnValue({
         afterClosed: () => dialogAfterClosed$.asObservable(),
+        // submitApplication() holds the returned ref and calls close() on it when
+        // the submission settles; a ref without close() throws inside afterSubmit.
+        close: jasmine.createSpy('close'),
       }),
       closeAll: jasmine.createSpy('closeAll'),
     };

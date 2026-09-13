@@ -50,7 +50,19 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
   beforeEach(async () => {
     mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
     mockSnackBar = jasmine.createSpyObj('MatSnackBar', ['open']);
-    mockJobService = jasmine.createSpyObj('JobService', ['updateApplicationStatus']);
+    mockJobService = jasmine.createSpyObj('JobService',
+      ['updateApplicationStatus', 'getApplicantStatusOptions']);
+    // The component loads the status list on init and reports an error unless it
+    // can find Hired and Rejected by name, so the fixture has to carry real rows
+    // rather than an empty array.
+    mockJobService.getApplicantStatusOptions.and.returnValue(of({
+      data: [
+        { id: 3, name: 'Under Review' },
+        { id: 4, name: 'Shortlisted' },
+        { id: 5, name: 'Rejected' },
+        { id: 6, name: 'Hired' },
+      ],
+    }));
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
@@ -76,16 +88,51 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
   it('calls updateApplicationStatus with correct args on a new status', fakeAsync(() => {
     mockJobService.updateApplicationStatus.and.returnValue(of({}));
 
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
     component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     tick();
 
     expect(mockJobService.updateApplicationStatus).toHaveBeenCalledOnceWith('app-001', 4);
   }));
 
-  it('shows success snack and closes dialog with statusUpdated on HTTP success', fakeAsync(() => {
+  it('stages the change without sending it until it is confirmed', fakeAsync(() => {
+    // The safety property behind the confirmation step: every status now
+    // reachable from this menu (Hired/Rejected) emails the applicant, so a
+    // single click must never reach the backend. If selectStatus() ever applies
+    // the change directly again, an unintended click emails a candidate.
     mockJobService.updateApplicationStatus.and.returnValue(of({}));
 
     component.selectStatus(4, 'Shortlisted');
+    tick();
+
+    expect(mockJobService.updateApplicationStatus).not.toHaveBeenCalled();
+    expect(component.confirmingStatus).toEqual({ id: 4, name: 'Shortlisted' });
+  }));
+
+  it('sends nothing when the confirmation is cancelled', fakeAsync(() => {
+    mockJobService.updateApplicationStatus.and.returnValue(of({}));
+
+    component.selectStatus(4, 'Shortlisted');
+    component.cancelConfirm();
+    tick();
+
+    expect(mockJobService.updateApplicationStatus).not.toHaveBeenCalled();
+    expect(component.confirmingStatus).toBeNull();
+  }));
+
+  it('shows success snack and closes dialog with statusUpdated on HTTP success', fakeAsync(() => {
+    mockJobService.updateApplicationStatus.and.returnValue(of({}));
+
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
+    component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     tick();
 
     expect(mockSnackBar.open).toHaveBeenCalledWith(
@@ -105,7 +152,12 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
     const gate = new Subject<any>();
     mockJobService.updateApplicationStatus.and.returnValue(gate.asObservable());
 
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
     component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     expect(component.statusUpdating).toBeTrue();
 
     gate.next({});
@@ -123,7 +175,12 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
       throwError(() => ({ error: { message: 'Application not found.' } }))
     );
 
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
     component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     tick();
 
     expect(mockSnackBar.open).toHaveBeenCalledWith(
@@ -136,7 +193,12 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
       throwError(() => ({}))
     );
 
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
     component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     tick();
 
     expect(mockSnackBar.open).toHaveBeenCalledWith(
@@ -149,7 +211,12 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
     const gate = new Subject<any>();
     mockJobService.updateApplicationStatus.and.returnValue(gate.asObservable());
 
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
     component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     expect(component.statusUpdating).toBeTrue();
 
     gate.error({});
@@ -162,7 +229,12 @@ describe('ApplicantActionModalComponent -- status picker (d3246b6)', () => {
       throwError(() => ({}))
     );
 
+    // selectStatus() now only STAGES the change: with Change Status trimmed to
+    // Hired/Rejected, every remaining option emails the applicant, so the
+    // component always asks for confirmation and confirmStatusChange() is what
+    // sends it. Previously selectStatus() applied non-5/6 statuses immediately.
     component.selectStatus(4, 'Shortlisted');
+    component.confirmStatusChange();
     tick();
 
     expect(mockDialogRef.close).not.toHaveBeenCalled();
