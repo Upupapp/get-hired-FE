@@ -32,9 +32,9 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
 @Component({
   selector: 'app-subscription-usage-meter',
   template: `
-    <div class="usage-meter" [attr.aria-label]="ariaSummary">
+    <div class="usage-meter" [class.usage-meter--storage]="kind === 'storage'" [attr.aria-label]="ariaSummary">
       <div class="usage-meter__header">
-        <span class="usage-meter__label">{{ label }}</span>
+        <span class="usage-meter__label" *ngIf="showLabel">{{ label }}</span>
         <span class="usage-meter__count" [ngClass]="countClass" *ngIf="!storageUnavailable">
           {{ usedLabel }}
           <span class="usage-meter__of" aria-hidden="true"> / {{ limitLabel }}</span>
@@ -72,6 +72,8 @@ export class SubscriptionUsageMeterComponent implements OnChanges, AfterViewInit
    * band comes from the backend's `storageStatus`, never from thresholds re-derived here.
    */
   @Input() kind: 'count' | 'storage' = 'count';
+  /** Off when the surrounding card already names the meter in its own header; the label still names it to assistive tech. */
+  @Input() showLabel = true;
 
   animatedPercent: number = 0;
   private isBrowser: boolean;

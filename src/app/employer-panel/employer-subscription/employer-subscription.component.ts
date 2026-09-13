@@ -47,7 +47,7 @@ const CHOOSE_PLAN: LifecycleAction = { label: 'Choose a plan', kind: 'upgrade' }
 const UPGRADE_NOW: LifecycleAction = { label: 'Upgrade now', kind: 'upgrade' };
 const CONTACT_BILLING: LifecycleAction = { label: 'Contact billing support', kind: 'contact_billing' };
 const REACTIVATE_PLAN: LifecycleAction = { label: 'Reactivate plan', kind: 'reactivate' };
-const MANAGE_PLAN: LifecycleAction = { label: 'Manage plan', kind: 'plans' };
+const CHANGE_PLAN: LifecycleAction = { label: 'Change plan', kind: 'plans' };
 const COMPARE_PLANS: LifecycleAction = { label: 'Compare plans', kind: 'compare' };
 
 @Component({
@@ -127,7 +127,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
     {
       q: 'How do I fix a failed payment?',
-      a: `If a payment fails, this page shows a "Contact billing support" button. It opens an email to ${SUPPORT_EMAIL}, and our billing team will help you update your payment method or retry the charge. Your plan will remain active for a short grace period while you resolve the issue.`
+      a: `If a payment fails, this page shows a "Contact billing support" button. It opens an email to ${SUPPORT_EMAIL}, and our billing team will help you complete the payment. Your plan will remain active for a short grace period while you resolve the issue.`
     },
     {
       q: 'Who do I contact for billing help?',
@@ -230,15 +230,23 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     // changing width for any other reason. ResizeObserver watches the
     // track element itself, so any of those cases refresh edge-affordance
     // state too. Debounced so a drag-resize doesn't thrash.
-    if (typeof ResizeObserver !== 'undefined' && this.planCarouselTrack?.nativeElement) {
-      this.planCarouselResizeObserver = new ResizeObserver(() => {
-        clearTimeout(this.planCarouselResizeDebounce);
-        this.planCarouselResizeDebounce = setTimeout(() => this.syncScrollBoundaryState(), 120);
-      });
-      this.planCarouselResizeObserver.observe(this.planCarouselTrack.nativeElement);
-    }
+    this.observePlanCarouselTrack();
 
     this.startPlanCarouselAutoScroll();
+  }
+
+  /**
+   * Attaches the resize watch at most once. The track renders only after the catalog has
+   * loaded, which is usually after this view initialises, so the catalog callback calls
+   * this too; before that, ngAfterViewInit found no track and nothing was watched.
+   */
+  private observePlanCarouselTrack(): void {
+    if (this.planCarouselResizeObserver || typeof ResizeObserver === 'undefined' || !this.planCarouselTrack?.nativeElement) { return; }
+    this.planCarouselResizeObserver = new ResizeObserver(() => {
+      clearTimeout(this.planCarouselResizeDebounce);
+      this.planCarouselResizeDebounce = setTimeout(() => this.syncScrollBoundaryState(), 120);
+    });
+    this.planCarouselResizeObserver.observe(this.planCarouselTrack.nativeElement);
   }
 
   private startPlanCarouselAutoScroll(): void {
@@ -306,6 +314,15 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   get planCarouselMotionAllowed(): boolean {
     if (typeof window === 'undefined') { return false; }
     return !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /**
+   * The track overflows, so auto-advance really moves it. Cards keep a fixed width at every
+   * breakpoint, so this can be true on a desktop as well as a phone; the pause control
+   * follows it rather than the ≤768px dots.
+   */
+  get planCarouselCanMove(): boolean {
+    return this.planCarouselCanScrollPrev || this.planCarouselCanScrollNext;
   }
 
   /** WCAG 2.2.2: content that moves automatically for more than five seconds
@@ -412,6 +429,13 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
           }
           this.catalogLoading = false;
           this.focusRequestedSection();
+          // The track renders on the change detection after this callback: measure it then,
+          // so the edge fades and the pause control reflect whether it can scroll.
+          setTimeout(() => {
+            if (this.destroy$.isStopped) { return; }
+            this.observePlanCarouselTrack();
+            this.syncScrollBoundaryState();
+          }, 0);
         },
         (_err) => {
           // No local price fallback by design. Showing a stale hardcoded figure
@@ -702,7 +726,13 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     }, 0);
   }
 
-  /** Billing recovery goes to support by email until the backend exposes a payment-retry route. */
+  /** Shown in the billing banner as text, so a device with no mail client still has somewhere to write. */
+  readonly supportEmail = SUPPORT_EMAIL;
+
+  /**
+   * Billing recovery goes to support by email. Payments are one-off PayMongo links and
+   * no card is stored, so there is no payment method to update and no retry to call.
+   */
   get billingSupportHref(): string {
     return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent('GetHired billing support')}`;
   }
@@ -761,7 +791,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     if (status === 'cancelled') { return REACTIVATE_PLAN; }
     // A pending payment has nothing to act on until it verifies; re-fetching is not an action.
     if (status === 'pending') { return null; }
-    return MANAGE_PLAN;
+    return CHANGE_PLAN;
   }
 
   /** The lifecycle banner's button, for the statuses whose banner asks the employer to act. */

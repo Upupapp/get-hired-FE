@@ -44,8 +44,9 @@
 
     &--healthy { background: #6C6BAD; }
     &--caution { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.4); }
-    &--warning { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 22, 0.5); animation: warn-glow 1.5s ease infinite; }
-    &--critical { background: #dc2626; box-shadow: 0 0 10px rgba(220, 38, 38, 0.6); animation: critical-glow 1s ease infinite; }
+    // Static: an endless pulse is content that moves with no way to stop it (WCAG 2.2.2).
+    &--warning { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 22, 0.5); }
+    &--critical { background: #dc2626; box-shadow: 0 0 10px rgba(220, 38, 38, 0.6); }
   }
 
   &__warning {
@@ -73,14 +74,25 @@
   }
 }
 
-@keyframes warn-glow {
-  0%, 100% { box-shadow: 0 0 6px rgba(249, 115, 22, 0.3); }
-  50% { box-shadow: 0 0 12px rgba(249, 115, 22, 0.6); }
-}
+// Recruitment Storage sits among the page's usage cards, so it takes their bar
+// (employer-subscription.component.scss .gh-usage-meter): a --gh-border track and a
+// static #10B981 / #F59E0B / #EF4444 fill, with no glow.
+.usage-meter--storage {
+  .usage-meter__track {
+    background: var(--gh-border, #E7EAF3);
+    border-radius: 3px;
+  }
 
-@keyframes critical-glow {
-  0%, 100% { box-shadow: 0 0 6px rgba(220, 38, 38, 0.4); }
-  50% { box-shadow: 0 0 14px rgba(220, 38, 38, 0.8); }
+  .usage-meter__fill {
+    border-radius: 3px;
+    box-shadow: none;
+    transition: width 400ms ease;
+
+    &--healthy { background: #10B981; }
+    &--caution,
+    &--warning { background: #F59E0B; }
+    &--critical { background: #EF4444; }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -38,8 +38,8 @@ const EXPECTED_BUTTONS: Array<[Status, string | null, string[]]> = [
   ['none', null, ['Choose a plan', 'Compare plans']],
   ['trialing', 'free_trial', ['Upgrade now', 'Upgrade now']],
   ['trial_ending_soon', 'free_trial', ['Upgrade now', 'Upgrade now']],
-  ['active', 'starter', ['Manage plan']],
-  ['manual', 'starter', ['Manage plan']],
+  ['active', 'starter', ['Change plan']],
+  ['manual', 'starter', ['Change plan']],
   ['payment_failed', 'starter', ['Contact billing support', 'Contact billing support']],
   ['past_due', 'starter', ['Contact billing support', 'Contact billing support']],
   ['pending', 'starter', []],
@@ -249,7 +249,7 @@ describe('EmployerSubscriptionComponent -- hero and banner billing buttons (UI-0
     expect(document.activeElement).toBe(heading(fixture, 'Available plans'));
   }));
 
-  it('Manage plan focuses Available plans, where the upgrade and switch actions are', fakeAsync(() => {
+  it('Change plan focuses Available plans, where the upgrade and switch actions are', fakeAsync(() => {
     const fixture = render('active', 'starter');
     tick();
     button(fixture, 'hero').click();
@@ -257,6 +257,15 @@ describe('EmployerSubscriptionComponent -- hero and banner billing buttons (UI-0
     tick();
     expect(document.activeElement).toBe(heading(fixture, 'Available plans'));
   }));
+
+  (['payment_failed', 'past_due'] as Status[]).forEach(status => {
+    it(`shows support@gethired.ph as text in the billing banner for status ${status}, so a device with no mail client can still reach billing`, () => {
+      const fixture = render(status, 'starter');
+      const line: string = fixture.debugElement.query(By.css('.gh-sub-banner__body')).nativeElement.textContent;
+      expect(line).toContain('Contact billing support at support@gethired.ph');
+      expect(line).not.toContain('payment method');
+    });
+  });
 
   it('keeps Retry under the error state as the one button that reloads', () => {
     const fixture = render('none', null, { summaryFails: true });

@@ -150,6 +150,34 @@ describe('SubscriptionUsageMeterComponent -- Recruitment Storage states (B3)', (
     expectUnavailableWithoutWarning();
   }));
 
+  // The page's sibling usage bar (employer-subscription.component.scss .gh-usage-meter).
+  const SIBLING_FILL: Record<StorageStatus, string> = {
+    normal: 'rgb(16, 185, 129)', notice: 'rgb(245, 158, 11)', warning: 'rgb(245, 158, 11)',
+    critical: 'rgb(239, 68, 68)', full: 'rgb(239, 68, 68)',
+  };
+
+  STATES.forEach(state => {
+    it(`${state.status}: a static sibling-card bar (--gh-border track, ${SIBLING_FILL[state.status]} fill, no glow) and no endless animation`, fakeAsync(() => {
+      render(block({ used: state.usedGb * GB, remaining: (50 - state.usedGb) * GB, percentUsed: state.percent, storageStatus: state.status }));
+      const fill = getComputedStyle(find('.usage-meter__fill').nativeElement);
+      expect(fill.backgroundColor).toBe(SIBLING_FILL[state.status]);
+      expect(fill.boxShadow).toBe('none');
+      expect(fill.animationName).toBe('none');
+      expect(fill.animationIterationCount).not.toBe('infinite');
+      expect(getComputedStyle(find('.usage-meter__track').nativeElement).backgroundColor).toBe('rgb(231, 234, 243)');
+    }));
+  });
+
+  (['near_90', 'at_limit'] as const).forEach(level => {
+    it(`count mode at ${level} runs no endless animation either`, fakeAsync(() => {
+      render({ key: 'active_job_posts', used: level === 'at_limit' ? 10 : 9, limit: 10, remaining: level === 'at_limit' ? 0 : 1,
+        percentUsed: level === 'at_limit' ? 100 : 90, warningLevel: level, countSource: 'jobs.status', countConfidence: 'confirmed' }, 'count', 'Active job posts');
+      const fill = getComputedStyle(find('.usage-meter__fill').nativeElement);
+      expect(fill.animationName).toBe('none');
+      expect(fill.animationIterationCount).not.toBe('infinite');
+    }));
+  });
+
   it('count mode is unchanged: raw counts, its own warning, no storage note', fakeAsync(() => {
     render({ key: 'active_job_posts', used: 9, limit: 10, remaining: 1, percentUsed: 90, warningLevel: 'near_90', countSource: 'jobs.status', countConfidence: 'confirmed' },
       'count', 'Active job posts');

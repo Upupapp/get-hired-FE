@@ -129,6 +129,21 @@ describe('EmployerSubscriptionComponent -- Recruitment Storage meter (B3)', () =
       '[class*="--notice"], [class*="--caution"], [class*="--warning"], [class*="--critical"], [class*="--full"]').length).toBe(0);
   });
 
+  it('the storage card uses the sibling cards\' header: a 28px icon and a 13px/600 --gh-text label, with no second label inside', () => {
+    const fixture = render(of(v4Response({ recruitment_storage: storageBlock('normal') })));
+    const card: HTMLElement = meterIn(fixture).nativeElement.closest('.gh-usage-card');
+    const icon = getComputedStyle(card.querySelector('.gh-usage-card__header .gh-usage-card__icon') as HTMLElement);
+    expect(icon.width).toBe('28px');
+    expect(icon.height).toBe('28px');
+    const label = card.querySelector('.gh-usage-card__header .gh-usage-card__label') as HTMLElement;
+    expect(label.textContent!.trim()).toBe('Recruitment Storage');
+    expect(getComputedStyle(label).fontSize).toBe('13px');
+    expect(getComputedStyle(label).fontWeight).toBe('600');
+    expect(getComputedStyle(label).color).toBe('rgb(16, 24, 40)');
+    expect(card.querySelector('.usage-meter__label')).withContext('the meter repeats the card header').toBeNull();
+    expect(meterIn(fixture).nativeElement.querySelector('.usage-meter').getAttribute('aria-label')).toContain('Recruitment Storage');
+  });
+
   it('Retry reloads the storage block along with the summary', () => {
     const fixture = render(of(v4Response({ recruitment_storage: storageBlock('normal') })), throwError(new Error('summary unavailable')));
     expect(storageRequest).toHaveBeenCalledTimes(1);
