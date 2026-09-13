@@ -39,6 +39,8 @@ import { JobPostModeDialogComponent, JobPostMode } from '@app-job/job-create/com
 import { resolveJobLevelId, LevelOption } from '@app-job/utils/job-level-resolver';
 import { resolveWorkSetupId, resolveJobTypeId } from '@app-job/utils/job-field-resolvers';
 import { SnackbarService } from '@app-core/services/snackbar.service';
+import { PlanLimitDialogService } from '@main/shared/plan-limit/plan-limit-dialog.service';
+import { EmployerPlanLimitRefusal, employerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 @Component({
   selector: 'app-easy-job-post-assistant-modal',
@@ -123,6 +125,7 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
     private jobService: JobService,
     private jobFacade: JobFacade,
     private snackbarService: SnackbarService,
+    private planLimitDialog: PlanLimitDialogService,
   ) {}
 
   ngOnInit(): void {
@@ -844,26 +847,62 @@ export class EasyJobPostAssistantModalComponent implements OnInit, OnDestroy {
             });
             this.dialogRef.close({ navigateTo: '/recruiter/jobs/list', published: true });
           },
-          error: (err) => {
-            this.postingNow = false;
-            this.haptics.error();
-            if (err && err.status === 401) { this.dialogRef.close(); return; }
-            // Surface the backend's own `missing` field list when present
-            // (validateJobPublishPayload's 422 shape) instead of just its
-            // generic message -- covers any required field the pre-check
-            // above doesn't already catch (e.g. city/country/description).
-            const missing = err && err.error && err.error.missing;
-            const baseMsg = (err && err.error && err.error.message) || 'Could not publish this job. Please try again.';
-            this.errorMsg = (Array.isArray(missing) && missing.length > 0)
-              ? `${baseMsg} (${missing.join(', ')})`
-              : baseMsg;
-          },
+          error: (err) => this.onPostNowFailed(err, job, companyId),
         });
       },
       error: () => {
         this.postingNow = false;
         this.errorMsg = 'Could not load job levels. Please try again.';
       },
+    });
+  }
+
+  /** "Post now" failed. A plan-limit refusal opens the limit modal; every other failure keeps its message. */
+  onPostNowFailed(err: any, job: Model.Job, companyId: string): void {
+    this.postingNow = false;
+    this.haptics.error();
+    if (err && err.status === 401) { this.dialogRef.close(); return; }
+    const refusal = employerPlanLimitRefusal(err);
+    if (refusal) {
+      this.onPublishRefused(refusal, job, companyId);
+      return;
+    }
+    // Surface the backend's own `missing` field list when present
+    // (validateJobPublishPayload's 422 shape) instead of just its
+    // generic message -- covers any required field the pre-check
+    // above doesn't already catch (e.g. city/country/description).
+    const missing = err && err.error && err.error.missing;
+    const baseMsg = (err && err.error && err.error.message) || 'Could not publish this job. Please try again.';
+    this.errorMsg = (Array.isArray(missing) && missing.length > 0)
+      ? `${baseMsg} (${missing.join(', ')})`
+      : baseMsg;
+  }
+
+  /**
+   * B5: "Post now" refused by a plan limit. The limit modal explains it. The refusal saved
+   * nothing, so "Save as draft" saves the same job as a draft and returns to the jobs list,
+   * the way a successful post does.
+   */
+  onPublishRefused(refusal: EmployerPlanLimitRefusal, job: Model.Job, companyId: string): void {
+    this.planLimitDialog.open(refusal).pipe(takeUntil(this.destroy$)).subscribe((choice) => {
+      if (choice !== 'draft') { return; }
+      this.postingNow = true;
+      this.jobService.saveJob({ ...job, jobStatusId: 1 }).pipe(takeUntil(this.destroy$)).subscribe({
+        next: () => {
+          this.postingNow = false;
+          if (this.ownerScope) { this.aiCreateDraft.clear(this.ownerScope); }
+          this.snackbarService.success('"' + job.jobTitle + '" is saved as a draft.', '', 5000);
+          this.jobFacade.getBasicList(companyId);
+          this.dialogRef.afterClosed().subscribe(() => {
+            this.router.navigate(['/recruiter/jobs/list']);
+          });
+          this.dialogRef.close({ navigateTo: '/recruiter/jobs/list', published: false });
+        },
+        error: () => {
+          this.postingNow = false;
+          this.errorMsg = 'Could not save this job as a draft. Please try again.';
+        },
+      });
     });
   }
 

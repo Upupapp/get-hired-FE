@@ -3,6 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import * as Model from '../job.model';
 import * as JobActions from './job.actions';
 import * as InterviewModel from '@main/interview/interview.model';
+import { EmployerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 export interface State extends AppState.State {
   job: JobState;
@@ -29,7 +30,9 @@ export interface JobState {
   jobLoading: boolean;
   applicants: Model.JobApplicants[],
   applicant: Model.JobApplicantDetails;
-  subs: Model.CompanySubscriptions
+  subs: Model.CompanySubscriptions;
+  /** B5: the last save refused by a plan limit, until the page has shown it. */
+  planLimitRefusal: EmployerPlanLimitRefusal | null;
 }
 
 const initialState: JobState = {
@@ -53,7 +56,8 @@ const initialState: JobState = {
   jobLoading: false,
   applicants: [],
   applicant: null,
-  subs: null
+  subs: null,
+  planLimitRefusal: null
 }
 
 export const jobReducer = createReducer<JobState>(
@@ -113,7 +117,8 @@ export const jobReducer = createReducer<JobState>(
     return {
       ...state,
       loading: true,
-      succesMsg: null
+      succesMsg: null,
+      planLimitRefusal: null
     };
   }),
   on(JobActions.saveJobSuccess, (state, action): JobState => {
@@ -141,6 +146,21 @@ export const jobReducer = createReducer<JobState>(
       loading: false,
       error: action.payload,
       succesMsg: null
+    };
+  }),
+  // B5: no error text for a plan-limit refusal; the page opens the limit modal instead.
+  on(JobActions.saveJobRefused, (state, action): JobState => {
+    return {
+      ...state,
+      loading: false,
+      succesMsg: null,
+      planLimitRefusal: action.refusal
+    };
+  }),
+  on(JobActions.clearPlanLimitRefusal, (state): JobState => {
+    return {
+      ...state,
+      planLimitRefusal: null
     };
   }),
   on(JobActions.resetSuccessMsg, (state): JobState => {

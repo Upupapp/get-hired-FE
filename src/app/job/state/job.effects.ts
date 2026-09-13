@@ -18,6 +18,7 @@ import * as JobActions from './job.actions';
 import * as Model from '../job.model';
 import { JobService } from '../job.service';
 import * as InterviewModel from '@main/interview/interview.model';
+import { employerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 @Injectable()
 export class JobEffects {
@@ -93,6 +94,10 @@ export class JobEffects {
           catchError((err) => {
             // BE 403 uses { message: "..." }; other BE errors use { error: "..." }.
             // Normalise so the reducer and UI always receive a string.
+            // B5: a publish refused by a plan limit (HTTP 402) carries its own payload for
+            // the limit modal, so it is not flattened into an error string.
+            const refusal = employerPlanLimitRefusal(err);
+            if (refusal) { return of(JobActions.saveJobRefused({ refusal })); }
             const body = (err && err.error) || {};
             const payload: string = body.error || body.message || 'Unable to save your job. Please try again.';
             return of(JobActions.saveJobFail({ payload }))

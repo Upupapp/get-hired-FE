@@ -112,6 +112,11 @@ export const jobError = createSelector(
   state => state.error
 );
 
+export const planLimitRefusal = createSelector(
+  getJobInitState,
+  state => state.planLimitRefusal
+);
+
 export const getjobApplicants = createSelector(
   getJobInitState,
   state => state.applicants

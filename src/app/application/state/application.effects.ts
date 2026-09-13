@@ -15,6 +15,7 @@ import {
 import * as Model from '../application.model';
 import { ApplicationService } from '../application.service';
 import * as ApplicationActions from './application.actions';
+import { JOB_NOT_ACCEPTING_APPLICATIONS } from '@main/shared/plan-limit/plan-limit-refusal';
 
 @Injectable()
 export class ApplicationEffects {
@@ -47,7 +48,11 @@ export class ApplicationEffects {
               ? (errBody.code || 'JOB_APPLICATION_ALREADY_EXISTS')
               : err && err.status === 413
                 ? (errBody.code || 'PAYLOAD_TOO_LARGE')
-                : null;
+                // A3.1: the job is not taking applications. A Free Trial job past its
+                // applicant cap answers exactly as a closed job does: neutral, no plan detail.
+                : err && err.status === 400 && errBody.code === JOB_NOT_ACCEPTING_APPLICATIONS
+                  ? JOB_NOT_ACCEPTING_APPLICATIONS
+                  : null;
             const errorMsg = errBody.error || errBody.message ||
               (err && err.status === 413
                 ? 'One of your uploaded files is too large -- this is most often a recorded video interview answer. Please remove or re-record the oversized video and try again.'

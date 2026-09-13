@@ -11,6 +11,7 @@ import { ApplicantFacade } from '@app-applicant/state/applicant.facade';
 import { ApplicationFacade } from '../state/application.facade';
 import { CoreService } from '@app-core/services/core.service';
 import { SnackbarService } from '@app-core/services/snackbar.service';
+import { CANDIDATE_REFUSAL } from '../../../testing/plan-limit-refusal.fixture';
 
 /**
  * Behavioural specs for the apply-flow controller.
@@ -345,6 +346,33 @@ describe('ApplicationProcessComponent -- submit lifecycle', () => {
       component.redirectToUpdate();
       expect(localStorage.getItem('returnURL')).toBeNull();
       expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('user/profile/edit');
+    });
+  });
+  // -------------------------------------------------------------------------
+  // B5 / A3.1: a job that is not taking applications
+  // -------------------------------------------------------------------------
+  describe('a job that is not taking applications (A3.1)', () => {
+    const NOT_ACCEPTING = { error: CANDIDATE_REFUSAL.error, errorCode: 'JOB_NOT_ACCEPTING_APPLICATIONS' };
+
+    it('is a neutral notice in the backend\'s own words, not a submission failure', () => {
+      component.submitApplication();
+      component.afterSubmit(NOT_ACCEPTING);
+      expect(component.submitStatus).toBe('not_accepting');
+      expect(component.submitError).toBe(CANDIDATE_REFUSAL.message);
+      expect(mockSnackbar.error).not.toHaveBeenCalled();
+    });
+
+    it('exposes no plan detail: the body and the message name no plan, limit or enforcement', () => {
+      component.afterSubmit(NOT_ACCEPTING);
+      expect(Object.keys(CANDIDATE_REFUSAL).sort()).toEqual(['code', 'error', 'message', 'status', 'success']);
+      expect(component.submitError).not.toMatch(/plan|limit|upgrade|subscri|trial|enforce|storage|PLAN_LIMIT/i);
+    });
+
+    it('still lets the applicant try again later', () => {
+      component.submitApplication();
+      component.afterSubmit(NOT_ACCEPTING);
+      component.submitApplication();
+      expect(mockApplicationFacade.submitApplication).toHaveBeenCalledTimes(2);
     });
   });
 });

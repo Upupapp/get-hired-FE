@@ -26,6 +26,8 @@ import { JobCreateRecoveryService } from '../services/job-create-recovery.servic
 import { CompanyNotSetupComponent } from '@main/company/company-not-setup/company-not-setup.component';
 import { CoreService } from '@app-core/services/core.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PlanLimitDialogService } from '@main/shared/plan-limit/plan-limit-dialog.service';
+import { EmployerPlanLimitRefusal, employerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 // Page-entrance fade animation (reduced-motion safe — Angular ignores if not supported)
 const fadeInPage = trigger('fadeInPage', [
@@ -346,6 +348,7 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     private jobCreateRecovery: JobCreateRecoveryService,
     private coreService: CoreService,
     private snackBar: MatSnackBar,
+    private planLimitDialog: PlanLimitDialogService,
   ) {
     this.route.queryParams.subscribe(params => {
       this.jobId = params.id;
@@ -436,6 +439,8 @@ export class JobCreateComponent implements OnInit, OnDestroy {
       this.jobFacade.success$
         .pipe().subscribe(this.afterSubmit.bind(this))
     );
+
+    this.watchPlanLimitRefusals();
 
     // F-08 UX: subscribe to job error stream to surface 403/404/500 messages.
     // Clears the loading/saving-draft spinner on any error so the user can retry.
@@ -998,6 +1003,28 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     // *ngIf otherwise), which is always true here since a delete/edit can
     // only originate from that step being open in the first place.
     this.createInterviewRef?.syncQuestionsFromFormArray();
+  }
+
+  /**
+   * B5: a publish refused by a plan limit opens the limit modal with gh-be's payload in place
+   * of an inline error. The refusal saved nothing, so "Save as draft" really saves this job
+   * as a draft; an upgrade navigates from the modal itself.
+   */
+  private watchPlanLimitRefusals(): void {
+    this.subscriptions.add(
+      this.jobFacade.planLimitRefusal$.subscribe((refusal: EmployerPlanLimitRefusal | null) => {
+        if (refusal) { this.onPlanLimitRefused(refusal); }
+      })
+    );
+  }
+
+  onPlanLimitRefused(refusal: EmployerPlanLimitRefusal): void {
+    this.jobFacade.clearPlanLimitRefusal();
+    this.isReadyToPublish = false;
+    this.haptics.warning();
+    this.planLimitDialog.open(refusal).subscribe((choice) => {
+      if (choice === 'draft') { this.saveAsDraft(); }
+    });
   }
 
   async saveAsDraft() {
@@ -1801,6 +1828,13 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         this.setAutoSaveState('saved');
       },
       error: (err: any) => {
+        // B5: e.g. questions added to a live job past its cap. The background save changed
+        // nothing; say why on the save pill rather than blaming the connection.
+        const refusal = employerPlanLimitRefusal(err);
+        if (refusal) {
+          this.setAutoSaveState('failed', refusal.userMessage);
+          return;
+        }
         const status = err && err.status;
         let msg = "Your changes weren't saved automatically. Check your connection and try again.";
         if (status === 401 || status === 403) {

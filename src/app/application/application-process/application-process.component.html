@@ -55,6 +55,16 @@
       <span><strong>Submission failed.</strong> {{ submitError }}</span>
     </div>
 
+    <!-- A3.1: the job has stopped taking applications (closed, or a Free Trial job past its
+         applicant cap). A neutral notice, not an error, and nothing about the employer's plan. -->
+    <div class="alert alert-info d-flex align-items-start gap-2 mb-3"
+         *ngIf="submitStatus === 'not_accepting'"
+         role="status"
+         aria-live="polite">
+      <span class="material-icons mt-1" style="font-size:1.2rem;" aria-hidden="true">info_outline</span>
+      <span>{{ submitError }}</span>
+    </div>
+
     <!-- Form content — hidden once submission is complete (success or duplicate) -->
     <ng-container *ngIf="submitStatus !== 'success' && submitStatus !== 'duplicate'">
 

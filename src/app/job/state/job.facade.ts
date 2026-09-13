@@ -26,6 +26,7 @@ export class JobFacade {
   getJobById$ = this.store.pipe(select(fromfeature.getJobById));
   getJobLoading$ = this.store.pipe(select(fromfeature.jobLoading));
   jobError$ = this.store.pipe(select(fromfeature.jobError));
+  planLimitRefusal$ = this.store.pipe(select(fromfeature.planLimitRefusal));
   applicants$ = this.store.pipe(select(fromfeature.getjobApplicants));
   details$ = this.store.pipe(select(fromfeature.getApplicantDetails));
   subsRestrictions$ = this.store.pipe(select(fromfeature.getCompanySubscription));
@@ -70,6 +71,9 @@ export class JobFacade {
 
   changeJobStatus(status: number, jobId: string) {
     this.store.dispatch(JobAction.changeJobStatus({ status, jobId }));
+  }
+  clearPlanLimitRefusal() {
+    this.store.dispatch(JobAction.clearPlanLimitRefusal());
   }
 
   saveInterview(interview: InterviewModel.InterviewQuestion[], interviewTemplateId: string) {

@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription, Subject } from 'rxjs';
-import { skip, distinctUntilChanged } from 'rxjs/operators';
+import { skip, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { select, Store } from '@ngrx/store';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { CompanyActionTypes } from '@main/shared/store/actions/company.action';
@@ -12,6 +12,8 @@ import { CompanyState } from '@main/shared/store/reducers/company.reducer';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { HapticService } from '@app-core/services/haptic.service';
 import { CSVDataRecord } from './import-user-model';
+import { PlanLimitDialogService } from '@main/shared/plan-limit/plan-limit-dialog.service';
+import { employerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 interface InviteResult {
   email: string;
@@ -62,6 +64,7 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
     private snackbarService: SnackbarService,
     private hapticService: HapticService,
     private companyState: Store<StoreState>,
+    private planLimitDialog: PlanLimitDialogService,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
@@ -131,6 +134,29 @@ export class ImportAddUserComponent implements OnInit, OnDestroy {
           }
         }
       }
+    });
+
+    this.watchPlanLimitRefusals();
+  }
+
+  /**
+   * B5: adding team members past the seat limit fails the whole request with HTTP 402 and
+   * gh-be's plan-limit payload, so nobody is invited. The subscription above reacts only to
+   * a new companyUserRes, so without this a refusal would just leave the dialog as it was.
+   */
+  private watchPlanLimitRefusals(): void {
+    this.invitedCompanyUsers$.pipe(
+      skip(1),
+      map((invite: CompanyState) => invite.error),
+      distinctUntilChanged(),
+      takeUntil(this.unsubscribe$),
+    ).subscribe((error: unknown) => {
+      const refusal = employerPlanLimitRefusal(error);
+      if (!refusal) { return; }
+      this.loading = false;
+      this.isLoading = false;
+      this.submitting = false;
+      this.planLimitDialog.open(refusal).pipe(takeUntil(this.unsubscribe$)).subscribe();
     });
   }
 

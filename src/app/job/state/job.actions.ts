@@ -4,6 +4,7 @@ import {
 } from "@ngrx/store";
 import * as Model from '../job.model';
 import * as InterviewModel from '@main/interview/interview.model';
+import { EmployerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 enum AllFeatureActionTypes {
   GetCompanySubscription = '[job] - Get Company Subscription',
@@ -49,6 +50,8 @@ enum AllFeatureActionTypes {
   SaveJob = '[job] - Save Job',
   SaveJobSuccess = '[job] - Save Job Success',
   SaveJobFail = '[job] - Save Job Fail',
+  SaveJobRefused = '[job] - Save Job Refused By Plan Limit',
+  ClearPlanLimitRefusal = '[job] - Clear Plan Limit Refusal',
 
   ChangeJobStatus = '[job] - Change Job status',
   ChangeJobStatusSuccess = '[job] - Change Job status Success',
@@ -188,6 +191,19 @@ export const saveJobSuccess = createAction(
 export const saveJobFail = createAction(
   AllFeatureActionTypes.SaveJobFail,
   props<{ payload: any }>()
+);
+
+/**
+ * B5: a save refused by a plan limit (gh-be A3, HTTP 402). Kept apart from saveJobFail so
+ * no generic error copy stands in for the limit modal the page opens.
+ */
+export const saveJobRefused = createAction(
+  AllFeatureActionTypes.SaveJobRefused,
+  props<{ refusal: EmployerPlanLimitRefusal }>()
+);
+
+export const clearPlanLimitRefusal = createAction(
+  AllFeatureActionTypes.ClearPlanLimitRefusal
 );
 
 export const changeJobStatus = createAction(

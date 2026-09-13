@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { InterviewNotificationComponent } from './steps/interview-questions/components/interview-notification/interview-notification.component';
 import { environment } from '@environments/environment';
 import { Router } from '@angular/router';
+import { JOB_NOT_ACCEPTING_APPLICATIONS, JOB_NOT_ACCEPTING_APPLICATIONS_MESSAGE } from '@main/shared/plan-limit/plan-limit-refusal';
 
 @Component({
   selector: 'app-application-process',
@@ -35,7 +36,7 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
   user: ApplicantModel.Applicant;
   isSubmitting: boolean;
   // LAUNCH-01: tracks submission lifecycle for inline feedback panels
-  submitStatus: string = 'idle'; // idle | submitting | success | error | duplicate
+  submitStatus: string = 'idle'; // idle | submitting | success | error | duplicate | not_accepting
   submitError: string = '';
   // BUGFIX: submission previously only disabled the Submit button itself
   // (spinner inside it) -- every other control on the page (nav, other
@@ -251,6 +252,19 @@ export class ApplicationProcessComponent implements OnInit, OnChanges {
     if (result.errorCode === 'JOB_APPLICATION_ALREADY_EXISTS') {
       this.submitStatus = 'duplicate';
       this.isSubmitting = false;
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // A3.1: the job has stopped taking applications. It is not the applicant's mistake, so it
+    // is a neutral notice in the backend's own words, never a "Submission failed", and it
+    // says nothing about the employer's plan.
+    if (result.errorCode === JOB_NOT_ACCEPTING_APPLICATIONS) {
+      this.submitStatus = 'not_accepting';
+      this.isSubmitting = false;
+      this.submitError = (typeof result.error === 'string' && result.error.trim())
+        ? result.error
+        : JOB_NOT_ACCEPTING_APPLICATIONS_MESSAGE;
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       return;
     }
