@@ -114,8 +114,9 @@ export interface EngagementSubscription {
   trial: {
     status: 'trialing' | 'trial_ending' | 'trial_expired';
     /**
-     * null when the backend cannot read the trial end: gh-be's buildSubscriptionBlock at 658d0a5 sends null for
-     * endsAt, daysRemaining and lengthDays then, which contract §4.1 does not state.
+     * null when the backend cannot read the trial end: gh-be's buildSubscriptionBlock at 658d0a5 sends null for endsAt and
+     * daysRemaining then, which contract §4.1 does not state. lengthDays comes from the catalog, and is null only if the
+     * catalog's free trial has no length.
      */
     endsAt: string | null;
     /** Whole days left, rounded up, never below 0. Render it; never compute it. */

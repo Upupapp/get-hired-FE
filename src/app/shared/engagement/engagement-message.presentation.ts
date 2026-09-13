@@ -1,4 +1,4 @@
-import { EngagementContext, EngagementPriority, Nudge } from './engagement-contract.models';
+import { EngagementContext, EngagementPriority, Nudge, NudgeMeter } from './engagement-contract.models';
 import { MessageActionOutcome } from './subscription-engagement.service';
 
 /**
@@ -37,6 +37,24 @@ export function majorSurfaces(context: EngagementContext | null): { banner: Nudg
   const banner = context && context.banner ? context.banner : null;
   const card = !banner && context && context.dashboardCard ? context.dashboardCard : null;
   return { banner, card };
+}
+
+/**
+ * CONTEXTUAL_NUDGE (contract §3.1, F0 D3): the ranked messages that may sit beside an action, for one meter, taken
+ * from prominent + secondary in rank order. A message the backend placed only as a banner or a card is not one of them.
+ */
+export function contextualNudges(context: EngagementContext | null, meter: NudgeMeter): Nudge[] {
+  if (!context) { return []; }
+  const seen = new Set<string>();
+  return [context.prominent, ...(context.secondary || [])]
+    .filter((message): message is Nudge => !!message
+      && message.meter === meter
+      && message.presentation.surfaces.indexOf('CONTEXTUAL_NUDGE') !== -1)
+    .filter(message => {
+      if (seen.has(message.id)) { return false; }
+      seen.add(message.id);
+      return true;
+    });
 }
 
 /**

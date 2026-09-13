@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { E2_USAGE_CONFIRMED, E2_USAGE_UNCONFIRMED } from '../../../../../testing/engagement-e2-trial.fixture';
+import { E2_USAGE_UNCONFIRMED_AT_LIMIT } from '../../../../../testing/engagement-e2-usage-at-limit.fixture';
 import { EntitlementUsageV4 } from '../../subscription-v4.models';
 import { COUNT_UNAVAILABLE_NOTE, SubscriptionUsageMeterComponent } from './subscription-usage-meter.component';
 
@@ -30,6 +31,22 @@ describe('SubscriptionUsageMeterComponent -- a count the backend did not confirm
       expect(root.querySelector('.usage-meter__warning')).withContext(where).toBeNull();
       expect(root.querySelector('.usage-meter__note--unavailable')!.textContent!.trim()).withContext(where).toBe(COUNT_UNAVAILABLE_NOTE);
       expect(root.querySelector('.usage-meter')!.getAttribute('aria-label')).withContext(where).toBe('Active jobs: usage unavailable');
+    });
+  });
+
+  it('an unconfirmed count at warningLevel at_limit shows no warning, only the unavailable note (F5, gh-qa Q24 note 1)', () => {
+    const atLimit: Array<[string, EntitlementUsageV4]> = [
+      ['active_job_posts, unavailable', E2_USAGE_UNCONFIRMED_AT_LIMIT.active_job_posts!],
+      ['admin_users, error', E2_USAGE_UNCONFIRMED_AT_LIMIT.admin_users!],
+      ['video_responses, unavailable', E2_USAGE_UNCONFIRMED_AT_LIMIT.video_responses!],
+    ];
+    atLimit.forEach(([where, usage]) => {
+      expect(usage.warningLevel).withContext(where).toBe('at_limit');
+      expect(usage.countConfidence).withContext(where).not.toBe('confirmed');
+      const root = render(usage, 'Active jobs');
+      expect(root.querySelector('.usage-meter__warning')).withContext(where).toBeNull();
+      expect(root.textContent).withContext(where).not.toContain('Limit reached');
+      expect(root.querySelector('.usage-meter__note--unavailable')).withContext(where).not.toBeNull();
     });
   });
 

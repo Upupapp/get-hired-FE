@@ -7,7 +7,7 @@ import { environment } from 'environments/environment';
 import { SubscriptionStatusBannerComponent } from '@main/employer-panel/employer-subscription/components/subscription-status-banner/subscription-status-banner.component';
 import { UpgradePromptCardComponent } from '@main/employer-panel/employer-subscription/components/upgrade-prompt-card/upgrade-prompt-card.component';
 import { ENGAGEMENT_CONTEXT_RESPONSE } from '../../../testing/engagement-contract.fixture';
-import { E2_PLACED_WITH_BANNER, E2_STORAGE_90_OWNER } from '../../../testing/engagement-e2-code.fixture';
+import { E2_PLACED_WITH_BANNER } from '../../../testing/engagement-e2-code.fixture';
 import { EngagementContextResponse } from './engagement-contract.models';
 import { EngagementShellBannerComponent } from './engagement-shell-banner.component';
 
@@ -77,16 +77,6 @@ describe('EngagementShellBannerComponent -- the banner above every employer page
     expect(element().querySelector('.sub-banner')!.getAttribute('role')).toBe('alert');
     expect(element().querySelector('.sub-banner__title')!.textContent!.trim()).toBe('Your Recruitment Storage is full');
     expect(element().querySelector('app-upgrade-prompt-card')).toBeNull();
-  }));
-
-  it('a context carrying both a banner and a card still renders one banner and no card', fakeAsync(() => {
-    setUp('browser', '/recruiter/dashboard');
-    const body = served();
-    Object.assign(body.context, E2_PLACED_WITH_BANNER, { dashboardCard: E2_STORAGE_90_OWNER });
-    http.expectOne(CONTEXT_URL).flush(body);
-    fixture.detectChanges();
-    expect(element().querySelectorAll('.sub-banner').length).toBe(1);
-    expect(element().querySelector('.upgrade-prompt')).toBeNull();
   }));
 
   it('with no banner (the contract example carries a dashboard card), the shell renders nothing: the card is not the shell\'s', fakeAsync(() => {

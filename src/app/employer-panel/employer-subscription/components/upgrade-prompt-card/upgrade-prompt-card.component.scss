@@ -203,3 +203,24 @@
     .upgrade-prompt__priority, .upgrade-prompt__icon--message { color: #4B5563; }
   }
 }
+
+// F5: a message beside an action. Smaller, with the words and the actions on one row where they fit.
+.upgrade-prompt--compact {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  .upgrade-prompt__body { flex: 1 1 260px; }
+  .upgrade-prompt__title { font-size: 13px; }
+  .upgrade-prompt__copy { font-size: 12px; }
+  .upgrade-prompt__actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .upgrade-prompt__btn { width: auto; height: 36px; padding: 0 14px; }
+
+  @media (max-width: 600px) {
+    .upgrade-prompt__actions { width: 100%; }
+    .upgrade-prompt__btn { flex: 1 1 auto; }
+  }
+}

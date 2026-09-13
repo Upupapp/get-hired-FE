@@ -30,6 +30,7 @@ import { JobReadinessBarComponent } from './components/job-readiness-bar/job-rea
 import { JobReadinessChipsComponent } from './components/job-readiness-chips/job-readiness-chips.component';
 // Comprehensive/Simplified job-post mode picker (Start From Scratch)
 import { JobPostModeDialogComponent } from './job-create/components/job-post-mode-dialog/job-post-mode-dialog.component';
+import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
 
 // const routes: Routes = [
   // { path: 'expired', component: JobExpiredComponent },
@@ -70,6 +71,8 @@ const exportedComponents = [
     ReactiveFormsModule,
     FormsModule,
     MaterialComponentsModule,
+    // F5: the jobs nudge beside Post a job and Publish
+    EngagementUiModule,
     InterviewModule,
     ApplicationModule,
     ApplicantModule,

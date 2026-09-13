@@ -15,7 +15,7 @@ import { SubscriptionEngagementService } from '@main/shared/engagement/subscript
   template: `
     <!-- F2: a backend message (contract Nudge). Its words, urgency and dismissibility are the backend's. -->
     <ng-container *ngIf="message as msg; else legacyPrompt">
-      <div *ngIf="visible" class="upgrade-prompt" [ngClass]="'upgrade-prompt--' + presentationOf(msg).tone"
+      <div *ngIf="visible" class="upgrade-prompt" [ngClass]="'upgrade-prompt--' + presentationOf(msg).tone" [class.upgrade-prompt--compact]="compact"
         role="region" [attr.aria-label]="msg.copy.eyebrow || 'Subscription message'" [attr.data-priority]="msg.priority">
         <div class="upgrade-prompt__body">
           <div class="upgrade-prompt__icon upgrade-prompt__icon--message" aria-hidden="true" [ngSwitch]="presentationOf(msg).tone">
@@ -109,6 +109,8 @@ export class UpgradePromptCardComponent implements OnChanges {
   @Input() showAnnualSavings = false;
   /** F2: a backend message. When set, it is rendered as given and the inputs above are not used. */
   @Input() message: Nudge | null = null;
+  /** F5: the smaller layout for a message beside an action (CONTEXTUAL_NUDGE). */
+  @Input() compact = false;
   @Output() dismissed = new EventEmitter<void>();
   @Output() upgraded = new EventEmitter<void>();
 

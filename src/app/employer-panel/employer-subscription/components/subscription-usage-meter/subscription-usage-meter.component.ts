@@ -63,7 +63,7 @@ const STORAGE_FILL: Record<StorageStatus, string> = {
           <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span *ngIf="usage?.warningLevel === 'at_limit'">Limit reached. Upgrade to continue.</span>
+        <span *ngIf="usage?.warningLevel === 'at_limit'">Limit reached. Upgrade to add more.</span>
         <span *ngIf="usage?.warningLevel === 'near_90'">Approaching limit.</span>
       </div>
       <p class="usage-meter__note" *ngIf="storageNote" [ngClass]="noteClass" role="status">{{ storageNote }}</p>

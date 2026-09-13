@@ -64,6 +64,16 @@ const REPLACED_IN_F2: { [where: string]: string } = {
   'status banner trial_expired before F2': 'Your active job posts are paused. Choose a plan to resume hiring.',
 };
 
+/**
+ * RUL-14: a warning may claim only what the backend refuses. The backend refuses new actions past a limit; it stops
+ * nothing else, so no warning may say an employer must upgrade "to continue".
+ */
+const CONTINUE = /\bto continue\b/i;
+
+const REPLACED_IN_F5: { [where: string]: string } = {
+  'usage meter at_limit warning before F5': 'Limit reached. Upgrade to continue.',
+};
+
 /** F4: a false trial-end claim planted as the widget check's control; it must be caught. */
 const PLANTED_FALSE_WIDGET_STRING = 'Your job posts will be paused when your free trial ends.';
 
@@ -178,10 +188,30 @@ describe('Trial-state copy -- says only what the backend does at trial end (B6.1
         expect(text.length).toBeGreaterThan(0);
         expect(FORBIDDEN.test(text)).withContext(text).toBeFalse();
         expect(KEEP.test(text)).withContext(text).toBeFalse();
+        expect(CONTINUE.test(text)).withContext(text).toBeFalse();
         rendered++;
       });
     });
     expect(rendered).toBe(15);
+  });
+
+  it('the "to continue" check catches the meter warning F5 replaced (control, RUL-14)', () => {
+    Object.keys(REPLACED_IN_F5).forEach(where => expect(CONTINUE.test(REPLACED_IN_F5[where])).withContext(where).toBeTrue());
+  });
+
+  it('the usage meter at its limit claims only what the backend refuses (RUL-14)', () => {
+    TestBed.configureTestingModule({ declarations: [SubscriptionUsageMeterComponent] });
+    const fixture = TestBed.createComponent(SubscriptionUsageMeterComponent);
+    fixture.componentInstance.kind = 'count';
+    fixture.componentInstance.label = 'Active jobs';
+    fixture.componentInstance.usage = E2_USAGE_CONFIRMED.active_job_posts!;
+    fixture.detectChanges();
+    expect(E2_USAGE_CONFIRMED.active_job_posts!.warningLevel).toBe('at_limit');
+    const warning = (fixture.nativeElement.querySelector('.usage-meter__warning').textContent || '').replace(/\s+/g, ' ').trim();
+    expect(warning).toBe('Limit reached. Upgrade to add more.');
+    expect(CONTINUE.test(warning)).withContext(warning).toBeFalse();
+    expect(FORBIDDEN.test(warning)).withContext(warning).toBeFalse();
+    expect(KEEP.test(warning)).withContext(warning).toBeFalse();
   });
 
   it('the subscription status banner (RUL-08): trial_ending and trial_expired take the FAQ wording', () => {

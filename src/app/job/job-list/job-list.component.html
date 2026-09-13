@@ -9,6 +9,8 @@
         Post a job
       </button>
     </div>
+    <!-- F5: the jobs message beside Post a job (CONTEXTUAL_NUDGE, meter jobs) -->
+    <app-engagement-contextual-nudge meter="jobs"></app-engagement-contextual-nudge>
     <div class="card card-body" *ngIf="!loading && list$ | async as list">
       <!-- Empty state: when no jobs exist, guide the employer to post their first job
            rather than showing a blank table. -->

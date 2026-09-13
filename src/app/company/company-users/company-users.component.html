@@ -16,6 +16,8 @@
       {{ 'EDIT_COMPANY_USERS.ADD_NEW_ACCESS_BUTTON' | translate }}
     </button>
   </div>
+  <!-- F5: the seats message beside adding a team member (CONTEXTUAL_NUDGE, meter seats) -->
+  <app-engagement-contextual-nudge meter="seats"></app-engagement-contextual-nudge>
 
   <ng-container *ngIf="users$ | async as members">
 
