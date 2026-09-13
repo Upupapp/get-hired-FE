@@ -1,0 +1,11 @@
+#!/bin/sh
+# Versioned pre-push hook (B4), installed by `npm install` via scripts/pre-push-gate/install.js.
+# Any Node may start the gate: it re-runs itself on the Node major the deploy ships with, or stops
+# the push with the install hint. Skipping it is an explicit act: git push --no-verify.
+root="$(git rev-parse --show-toplevel)" || exit 1
+starter="${GETHIRED_GATE_NODE:-node}"
+if ! command -v "$starter" >/dev/null 2>&1; then
+  echo "pre-push gate: no Node found to start the gate; see .github/workflows/deploy.yml for the version to install. The push was stopped." >&2
+  exit 1
+fi
+exec "$starter" "$root/scripts/pre-push-gate/run.js"

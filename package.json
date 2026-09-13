@@ -13,7 +13,10 @@
     "build-prod": "ng build --configuration=production",
     "deploy": "cd dist && gcloud app deploy --project get-hired-363107",
     "deploy-staging": "cd dist && gcloud app deploy app-staging.yaml --project get-hired-363107",
-    "verify-local-user": "node scripts/verify-local-user.js"
+    "verify-local-user": "node scripts/verify-local-user.js",
+    "prepare": "node scripts/pre-push-gate/install.js",
+    "gate": "node scripts/pre-push-gate/run.js",
+    "gate:spec": "node scripts/pre-push-gate/gate.spec.js"
   },
   "private": true,
   "dependencies": {
