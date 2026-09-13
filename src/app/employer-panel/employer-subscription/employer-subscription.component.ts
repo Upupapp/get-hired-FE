@@ -24,6 +24,30 @@ import {
   planPrice,
 } from './plan-presentation.model';
 
+/**
+ * The address every support mailto on this page opens, and the one the FAQ quotes,
+ * so the page can never name two different addresses.
+ */
+const SUPPORT_EMAIL = 'support@gethired.ph';
+
+/**
+ * A hero or banner button: what it says and what it does. Every kind has a real
+ * destination, so a status with nothing to act on gets no button rather than a
+ * reload labelled as one.
+ */
+export interface LifecycleAction {
+  label: string;
+  kind: 'upgrade' | 'reactivate' | 'compare' | 'plans' | 'contact_billing';
+}
+
+// Shared instances: heroAction and bannerAction are read on every change detection,
+// and a fresh object each time would fail Angular's dev-mode check on `*ngIf="… as action"`.
+const CHOOSE_PLAN: LifecycleAction = { label: 'Choose a plan', kind: 'upgrade' };
+const UPGRADE_NOW: LifecycleAction = { label: 'Upgrade now', kind: 'upgrade' };
+const CONTACT_BILLING: LifecycleAction = { label: 'Contact billing support', kind: 'contact_billing' };
+const REACTIVATE_PLAN: LifecycleAction = { label: 'Reactivate plan', kind: 'reactivate' };
+const MANAGE_PLAN: LifecycleAction = { label: 'Manage plan', kind: 'plans' };
+const COMPARE_PLANS: LifecycleAction = { label: 'Compare plans', kind: 'compare' };
 
 @Component({
   selector: 'app-employer-subscription',
@@ -102,11 +126,11 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
     {
       q: 'How do I fix a failed payment?',
-      a: 'If a payment fails, you will see a "Fix payment" button on this page. Click it to update your payment method or retry the charge. Your plan will remain active for a short grace period while you resolve the issue.'
+      a: `If a payment fails, this page shows a "Contact billing support" button. It opens an email to ${SUPPORT_EMAIL}, and our billing team will help you update your payment method or retry the charge. Your plan will remain active for a short grace period while you resolve the issue.`
     },
     {
       q: 'Who do I contact for billing help?',
-      a: 'For billing questions, reach out to our support team at support@gethired.ph. Enterprise customers have a dedicated account manager.'
+      a: `For billing questions, reach out to our support team at ${SUPPORT_EMAIL}. Enterprise customers have a dedicated account manager.`
     },
   ];
 
@@ -553,7 +577,90 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   contactSales(): void {
-    window.location.href = 'mailto:support@gethired.ph?subject=GetHired%20Enterprise%20enquiry';
+    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=GetHired%20Enterprise%20enquiry`;
+  }
+
+  // ── Hero and banner lifecycle actions ───────────────────────────────────────
+
+  runLifecycleAction(action: LifecycleAction): void {
+    const recommended = this.recommendedPlan && this.recommendedPlan.planCode;
+    switch (action.kind) {
+      case 'upgrade':
+        this.openUpgradeRoute([recommended, this.currentPlanSlug]);
+        return;
+      case 'reactivate':
+        this.openUpgradeRoute([this.currentPlanSlug, recommended]);
+        return;
+      case 'compare':
+        this.focusPlanSection('compare');
+        return;
+      case 'plans':
+        this.focusPlanSection('plans');
+        return;
+      case 'contact_billing':
+        this.contactBillingSupport();
+        return;
+    }
+  }
+
+  /**
+   * Opens the upgrade route of the first candidate an employer can buy self-serve.
+   * With the catalog loaded that is the plan's own `upgradeRoute`, the one its card
+   * uses, so the Free Trial and Enterprise (no route) are skipped. Before the catalog
+   * arrives, the slug route the recommendation card uses. With no candidate at all,
+   * the plan cards themselves.
+   *
+   * navigateToUpgrade() is not reused: it returns silently for the current plan,
+   * which is exactly the plan a cancelled employer reactivates, and the plan an
+   * expired one on Growth (sent no recommendation) chooses again.
+   */
+  private openUpgradeRoute(candidates: Array<string | null | undefined>): void {
+    for (const candidate of candidates) {
+      if (!candidate) { continue; }
+      const slug = candidate === 'premium' ? 'business' : candidate;
+      if (this.catalog) {
+        const plan = this.catalogPlans.find(p => p.slug === slug);
+        if (plan && plan.upgradeRoute && !plan.enterprise && !plan.contactSalesRequired) {
+          this.router.navigateByUrl(plan.upgradeRoute);
+          return;
+        }
+      } else if (slug !== 'none' && slug !== 'free_trial' && slug !== 'enterprise') {
+        this.router.navigate(['/recruiter/subscription/upgrade', slug]);
+        return;
+      }
+    }
+    this.focusPlanSection('plans');
+  }
+
+  @ViewChild('plansHeading') plansHeading?: ElementRef<HTMLElement>;
+  @ViewChild('compareHeading') compareHeading?: ElementRef<HTMLElement>;
+
+  /**
+   * Scrolls to a section heading on the Plan tab and moves focus to it, so keyboard
+   * and screen-reader users land where sighted users are taken. The banner sits above
+   * the tabs, so the Plan tab opens first. Compare plans renders only once the catalog
+   * has plans; until then the destination is Available plans, which shows the
+   * catalog's loading or error state.
+   */
+  focusPlanSection(section: 'compare' | 'plans'): void {
+    this.switchTab('plan');
+    // The tab's content and the heading queries update on the change detection that
+    // follows this handler, so the lookup waits one task.
+    setTimeout(() => {
+      const target = (section === 'compare' && this.compareHeading) || this.plansHeading;
+      if (!target) { return; }
+      target.nativeElement.scrollIntoView({ behavior: this.planCarouselMotionAllowed ? 'smooth' : 'auto', block: 'start' });
+      target.nativeElement.focus({ preventScroll: true });
+    }, 0);
+  }
+
+  /** Billing recovery goes to support by email until the backend exposes a payment-retry route. */
+  get billingSupportHref(): string {
+    return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent('GetHired billing support')}`;
+  }
+
+  contactBillingSupport(): void {
+    window.location.href = this.billingSupportHref;
   }
 
   isCurrentCatalogPlan(plan: PlanCatalogItem): boolean {
@@ -593,14 +700,29 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     return 'gh-sub-status-badge--neutral';
   }
 
-  get primaryCta(): string {
-    const status = this.summary && this.summary.currentPlan && this.summary.currentPlan.status;
-    if (!status || status === 'none' || status === 'expired') { return 'Choose a plan'; }
-    if (status === 'trialing' || status === 'trial_ending_soon') { return 'Upgrade now'; }
-    if (status === 'payment_failed' || status === 'past_due') { return 'Fix payment'; }
-    if (status === 'pending') { return 'Check status'; }
-    if (status === 'cancelled') { return 'Reactivate plan'; }
-    return 'Manage plan';
+  /**
+   * The hero's call to action for the current status, or null when there is nothing
+   * to act on. It never reloads: Retry under the error state is the only button on
+   * this page that calls loadSummary().
+   */
+  get heroAction(): LifecycleAction | null {
+    const status = this.currentStatus;
+    if (status === 'none' || status === 'expired') { return CHOOSE_PLAN; }
+    if (status === 'trialing' || status === 'trial_ending_soon') { return UPGRADE_NOW; }
+    if (status === 'payment_failed' || status === 'past_due') { return CONTACT_BILLING; }
+    if (status === 'cancelled') { return REACTIVATE_PLAN; }
+    // A pending payment has nothing to act on until it verifies; re-fetching is not an action.
+    if (status === 'pending') { return null; }
+    return MANAGE_PLAN;
+  }
+
+  /** The lifecycle banner's button, for the statuses whose banner asks the employer to act. */
+  get bannerAction(): LifecycleAction | null {
+    const status = this.currentStatus;
+    if (status === 'none' || status === 'expired') { return COMPARE_PLANS; }
+    if (status === 'trialing' || status === 'trial_ending_soon') { return UPGRADE_NOW; }
+    if (status === 'payment_failed' || status === 'past_due') { return CONTACT_BILLING; }
+    return null;
   }
 
   get bannerVariant(): string {

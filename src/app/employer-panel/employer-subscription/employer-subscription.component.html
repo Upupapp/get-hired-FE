@@ -47,8 +47,9 @@
             <span class="gh-sub-plan-badge">{{ currentPlanName }}</span>
             <span class="gh-sub-status-badge" [ngClass]="statusClass" role="status">{{ statusLabel }}</span>
           </div>
-          <button class="gh-btn-primary gh-sub-hero__cta gh-pressable" (click)="loadSummary()">
-            {{ primaryCta }}
+          <button type="button" class="gh-btn-primary gh-sub-hero__cta gh-pressable" *ngIf="heroAction as action"
+            (click)="runLifecycleAction(action)">
+            {{ action.label }}
           </button>
         </div>
         <div class="gh-sub-hero__right" *ngIf="summary && summary.usage && summary.usage.recruitment">
@@ -111,17 +112,17 @@
         </span>
         <span *ngIf="currentStatus === 'active'">Your plan is active. Renews on <strong>{{ renewalDate }}</strong>.</span>
         <span *ngIf="currentStatus === 'manual'">Your plan is active under manual billing.</span>
-        <span *ngIf="currentStatus === 'payment_failed'">Payment failed. Please retry or update your payment method to keep your plan active.</span>
-        <span *ngIf="currentStatus === 'past_due'">Payment is past due. Update your payment method to restore full access.</span>
+        <span *ngIf="currentStatus === 'payment_failed'">Payment failed. Contact billing support to update your payment method and keep your plan active.</span>
+        <span *ngIf="currentStatus === 'past_due'">Payment is past due. Contact billing support to update your payment method and restore full access.</span>
         <span *ngIf="currentStatus === 'pending'">Payment is pending verification. Your plan will activate once confirmed.</span>
         <span *ngIf="currentStatus === 'cancelled'">Your plan has been cancelled. You may retain access until <strong>{{ renewalDate }}</strong>. Reactivate to continue hiring.</span>
         <span *ngIf="currentStatus === 'expired'">Your trial or plan has ended. Choose a plan to continue hiring on GetHired.</span>
       </div>
       <div class="gh-sub-banner__action">
-        <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'none' || currentStatus === 'expired'">Compare plans</button>
-        <button class="gh-sub-banner__btn gh-sub-banner__btn--primary" *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'"
-          (click)="navigateToUpgrade(recommendedPlan?.planCode || 'growth')">Upgrade now</button>
-        <button class="gh-sub-banner__btn gh-sub-banner__btn--danger" *ngIf="currentStatus === 'payment_failed' || currentStatus === 'past_due'">Fix payment</button>
+        <button type="button" class="gh-sub-banner__btn" *ngIf="bannerAction as action"
+          [class.gh-sub-banner__btn--primary]="action.kind !== 'contact_billing'"
+          [class.gh-sub-banner__btn--danger]="action.kind === 'contact_billing'"
+          (click)="runLifecycleAction(action)">{{ action.label }}</button>
       </div>
     </div>
 
@@ -355,7 +356,7 @@
          page previously rendered its own PLAN_CONFIGS and so advertised prices
          the backend did not charge. -->
     <div class="gh-sub-section" role="region" aria-label="Available plans">
-      <h2 class="gh-sub-section__title">Available plans</h2>
+      <h2 class="gh-sub-section__title" #plansHeading tabindex="-1">Available plans</h2>
       <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow.</p>
 
       <!-- Monthly / Annual toggle — only rendered when the backend offers both,
@@ -520,7 +521,7 @@
          is never forced onto a phone and no plan is hidden. -->
     <div class="gh-sub-section" *ngIf="!catalogLoading && !catalogError && catalogPlans.length"
       role="region" aria-label="Compare plans">
-      <h2 class="gh-sub-section__title">Compare plans</h2>
+      <h2 class="gh-sub-section__title" #compareHeading tabindex="-1">Compare plans</h2>
       <p class="gh-sub-section__sub">Only capabilities GetHired actually enforces are listed here.</p>
 
       <div class="gh-compare" *ngFor="let group of comparisonGroups">

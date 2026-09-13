@@ -1190,7 +1190,7 @@
     margin: 16px;
 
     &__action { width: 100%; }
-    &__btn { width: 100%; text-align: center; }
+    &__btn { width: 100%; min-height: 44px; text-align: center; }
   }
 
   .gh-invoice-table-wrap {
