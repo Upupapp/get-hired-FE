@@ -13,8 +13,8 @@ import { PlanCatalogItem, BillingCycle } from '../subscription-v4.models';
 
 // Stable copy keys → UI copy
 const COPY_MAP: Record<string, { title: string; subtitle: string }> = {
-  trial_expired:       { title: 'Continue hiring with GetHired', subtitle: 'Your free trial has ended. Choose a plan to keep publishing jobs.' },
-  trial_ending:        { title: 'Keep your hiring momentum', subtitle: 'Your free trial is ending soon. Choose a plan to keep publishing jobs, adding team members and adding screening questions.' },
+  trial_expired:       { title: 'Continue hiring with GetHired', subtitle: 'Your free trial has ended. Choose a plan to publish or reopen jobs, add team members, or add screening questions.' },
+  trial_ending:        { title: 'Keep your hiring momentum', subtitle: 'Your free trial is ending soon. Choose a plan to publish or reopen jobs, add team members, or add screening questions.' },
   job_limit_reached:   { title: 'Upgrade to publish more jobs', subtitle: 'You\'ve used your free active job post. This job is saved as a draft. Upgrade to publish more roles.' },
   admin_limit_reached: { title: 'Add your hiring team', subtitle: 'Need help from your team? Upgrade to add more admin users.' },
   video_limit_reached: { title: 'Keep receiving video responses', subtitle: 'You\'re at your video response limit. Upgrade to keep collecting richer applicant answers.' },

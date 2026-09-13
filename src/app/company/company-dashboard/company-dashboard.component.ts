@@ -228,7 +228,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
     if (!this.upgradeRec) { return { title: '', sub: '' }; }
     const copyMap: Record<string, { title: string; sub: string }> = {
       trial_expired: { title: 'Your free trial has ended', sub: 'Your published jobs stay published. Choose a plan to publish or reopen jobs, add team members, or add screening questions.' },
-      trial_ending: { title: 'Your free trial is ending soon', sub: 'Choose a plan to keep publishing jobs, adding team members and adding screening questions after your trial.' },
+      trial_ending: { title: 'Your free trial is ending soon', sub: 'Choose a plan to publish or reopen jobs, add team members, or add screening questions.' },
       job_limit_reached: { title: "You've reached your job post limit", sub: 'Your job was saved as a draft. Upgrade to publish more active roles.' },
       admin_limit_reached: { title: "You've reached your admin user limit", sub: 'Upgrade to add more team members to your hiring workspace.' },
       video_limit_reached: { title: "You've reached your video response limit", sub: 'Upgrade to keep collecting video answers from applicants.' },

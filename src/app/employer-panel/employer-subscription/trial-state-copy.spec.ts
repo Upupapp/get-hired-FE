@@ -21,6 +21,20 @@ import { UpgradeAnnualFirstLandingComponent } from './upgrade/upgrade-annual-fir
  */
 const FORBIDDEN = /keep[^.]*\bactive\b|losing access|lose access|keep access|paus|keep receiving applications|applications keep/i;
 
+/**
+ * B6.2 (gh-ui U5 re-review): the trial allows 1 job, 1 user and 1 video question (A1), so a trial employer
+ * may never have published or added anyone. No string may ask them to "keep" doing either.
+ */
+const KEEP = /keep publishing|keep adding/i;
+
+const REPLACED_IN_B61: { [where: string]: string } = {
+  'trialing banner at B6.1': 'Choose a plan to keep publishing jobs, adding team members and adding screening questions after it ends.',
+  'trial-ending banner at B6.1': 'Choose a plan to keep publishing jobs, adding team members and adding screening questions. Your published jobs stay published.',
+  'dashboard trial_ending at B6.1': 'Choose a plan to keep publishing jobs, adding team members and adding screening questions after your trial.',
+  'landing trial_ending at B6.1': 'Your free trial is ending soon. Choose a plan to keep publishing jobs, adding team members and adding screening questions.',
+  'landing trial_expired before B6.2': 'Your free trial has ended. Choose a plan to keep publishing jobs.',
+};
+
 const REPLACED: { [where: string]: string } = {
   'FAQ at B6': 'Your published jobs stay published and keep receiving applications. To publish or reopen jobs, add team members or add screening questions, choose a plan.',
   'FAQ before B6': 'When your free trial expires, your active job posts will be paused and you will lose access to paid features.',
@@ -36,11 +50,16 @@ describe('Trial-state copy -- says only what the backend does at trial end (B6.1
     Object.keys(REPLACED).forEach(where => expect(FORBIDDEN.test(REPLACED[where])).withContext(where).toBeTrue());
   });
 
+  it('the "keep publishing / keep adding" check catches every string B6.2 replaced (controls)', () => {
+    Object.keys(REPLACED_IN_B61).forEach(where => expect(KEEP.test(REPLACED_IN_B61[where])).withContext(where).toBeTrue());
+  });
+
   it('the FAQ answer: published jobs stay published, and what a plan unlocks', () => {
     const page = new EmployerSubscriptionComponent({} as any, {} as any, {} as any, {} as any, {} as any, {} as any, {} as any, {} as any);
     const item = ((page as any).faqItems as Array<{ q: string; a: string }>).find(entry => entry.q === 'What happens when my free trial ends?');
     expect(item!.a).toBe('Your published jobs stay published. Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
     expect(FORBIDDEN.test(item!.a)).toBeFalse();
+    expect(KEEP.test(item!.a)).toBeFalse();
   });
 
   function bannerText(status: 'trialing' | 'trial_ending_soon'): string {
@@ -71,14 +90,17 @@ describe('Trial-state copy -- says only what the backend does at trial end (B6.1
 
   it('the trialing banner, as rendered', () => {
     const text = bannerText('trialing');
-    expect(text).toContain('Choose a plan to keep publishing jobs');
+    expect(text).toContain('Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
     expect(FORBIDDEN.test(text)).withContext(text).toBeFalse();
+    expect(KEEP.test(text)).withContext(text).toBeFalse();
   });
 
   it('the trial-ending banner, as rendered', () => {
     const text = bannerText('trial_ending_soon');
     expect(text).toContain('Your published jobs stay published');
+    expect(text).toContain('Choose a plan to publish or reopen jobs');
     expect(FORBIDDEN.test(text)).withContext(text).toBeFalse();
+    expect(KEEP.test(text)).withContext(text).toBeFalse();
   });
 
   it('the dashboard nudge for trial_expired and trial_ending', () => {
@@ -88,16 +110,22 @@ describe('Trial-state copy -- says only what the backend does at trial end (B6.1
     expect(expired).toContain('Your published jobs stay published');
     (dashboard as any).upgradeRec = { copyKey: 'trial_ending' };
     const ending = dashboard.upgradeNudgeCopy.sub;
-    [expired, ending].forEach(sub => expect(FORBIDDEN.test(sub)).withContext(sub).toBeFalse());
+    [expired, ending].forEach(sub => {
+      expect(FORBIDDEN.test(sub)).withContext(sub).toBeFalse();
+      expect(KEEP.test(sub)).withContext(sub).toBeFalse();
+    });
   });
 
-  it('the upgrade landing: trial_ending rewritten, trial_expired left as it was (accurate)', () => {
+  it('the upgrade landing: trial_ending and trial_expired (B6.2 rewrote :16 too, per its "no keep" proof)', () => {
     const landing = Object.create(UpgradeAnnualFirstLandingComponent.prototype) as UpgradeAnnualFirstLandingComponent;
     (landing as any).recommendation = { copyKey: 'trial_ending' };
     const ending = landing.heroSubtitle;
     (landing as any).recommendation = { copyKey: 'trial_expired' };
     const expired = landing.heroSubtitle;
-    expect(expired).toBe('Your free trial has ended. Choose a plan to keep publishing jobs.');
-    [ending, expired].forEach(subtitle => expect(FORBIDDEN.test(subtitle)).withContext(subtitle).toBeFalse());
+    expect(expired).toBe('Your free trial has ended. Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
+    [ending, expired].forEach(subtitle => {
+      expect(FORBIDDEN.test(subtitle)).withContext(subtitle).toBeFalse();
+      expect(KEEP.test(subtitle)).withContext(subtitle).toBeFalse();
+    });
   });
 });
