@@ -102,7 +102,9 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
     {
       q: 'What happens when my free trial ends?',
-      a: 'When your free trial expires, your active job posts will be paused and you will lose access to paid features. Choose a plan before your trial ends to keep your hiring running without interruption.'
+      // B6: from gh-be's committed code (7613c06): nothing unpublishes or hides a published job when a
+      // trial ends; plan limits gate only new actions (A3/A3.1). Say nothing it does not enforce.
+      a: 'Your published jobs stay published and keep receiving applications. To publish or reopen jobs, add team members or add screening questions, choose a plan.'
     },
     {
       q: 'What counts as an active job post?',
