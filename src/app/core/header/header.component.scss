@@ -54,11 +54,14 @@
 }
 
 .gh-nav-logo-img {
-  height: 36px;
+  display: block;
+  height: 36px; // Ericson: ≥28px visible
   width: auto;
-  max-width: 200px;
+  min-height: 28px;
+  max-width: 220px;
   object-fit: contain;
-  // Full-color logo on white background — no filter needed.
+  opacity: 1;
+  // Full-color on-light interim — no filter.
 }
 
 // ─── Mobile hamburger / X toggler ─────────────────────────────────────────────
@@ -335,7 +338,38 @@
   margin: 0 4px;
 }
 
-// ─── Primary button (Browse jobs / Jobs) ─────────────────────────────────────
+// ─── Browse jobs (stepped down so Sign up wins) ───────────────────────────────
+
+.gh-nav-btn-browse {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a2e;
+  background: transparent;
+  border: 1px solid rgba(26, 26, 46, 0.16);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  outline: none;
+  min-height: 44px;
+  transition: background 120ms ease, border-color 120ms ease;
+
+  &:hover { background: rgba(0, 0, 0, 0.04); color: #1a1a2e; text-decoration: none; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+}
+
+.gh-nav-auth-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// ─── Primary button (Sign up / logged-in Jobs) ────────────────────────────────
 
 .gh-nav-btn-primary {
   display: inline-flex;
@@ -361,7 +395,7 @@
   &:active { opacity: 0.80; color: #ffffff; }
 }
 
-// ─── Sign In button ───────────────────────────────────────────────────────────
+// ─── Sign In button (outline / ghost) ─────────────────────────────────────────
 
 .gh-nav-btn-signin {
   display: inline-flex;
@@ -373,15 +407,16 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%) !important;
-  color: #ffffff !important;
-  border: none !important;
+  background: transparent !important;
+  color: #1a1a2e !important;
+  border: 1px solid rgba(26, 26, 46, 0.22) !important;
+  text-decoration: none;
   white-space: nowrap;
   outline: none;
   min-height: 44px;
-  transition: opacity 120ms ease, transform 100ms ease;
+  transition: background 120ms ease, border-color 120ms ease;
 
-  &:hover { opacity: 0.88; }
+  &:hover { background: rgba(0, 0, 0, 0.04) !important; color: #1a1a2e !important; text-decoration: none; }
   &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
   &:active { transform: scale(0.97); }
 }

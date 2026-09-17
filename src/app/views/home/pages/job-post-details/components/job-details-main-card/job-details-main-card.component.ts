@@ -44,7 +44,7 @@ export class JobDetailsMainCardComponent implements OnInit {
     }
 
     else {
-      this.router.navigate(['/signup'])
+      this.router.navigate(['/signup'], { queryParams: { role: 3 } })
     }
   }
 

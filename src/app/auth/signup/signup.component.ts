@@ -430,6 +430,11 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.registerForm.get('role');
   }
 
+  get signinQuery(): { role: 2 | 3 } | Record<string, never> {
+    const role = this.registerForm?.get('role')?.value;
+    return role === 2 || role === 3 ? { role } : {};
+  }
+
   get pw_validators() {
     return this.registerForm.get('password');
   }

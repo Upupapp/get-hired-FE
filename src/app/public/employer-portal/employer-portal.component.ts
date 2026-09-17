@@ -221,7 +221,7 @@ export class EmployerPortalComponent implements OnInit, AfterViewInit, OnDestroy
 
   goToSignin(): void {
     this.haptics.selection();
-    this.router.navigateByUrl('/signin');
+    this.router.navigate(['/signin'], { queryParams: { role: 2 } });
   }
 
   browseJobs(): void {

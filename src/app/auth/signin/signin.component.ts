@@ -10,6 +10,8 @@ import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { take } from 'rxjs/operators';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
+import { AuthRole, authRoleLabel, authRoleQuery, otherAuthRole, parseAuthRole } from '@app-shared/utils/auth-role-query';
+import { Subscription } from 'rxjs';
 
 // Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
 // not as an ES module -- referencing the global here avoids bundling a
@@ -37,6 +39,8 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   email: string;
   googleLoading = false;
   googleError: string | null = null;
+  authRole: AuthRole | null = null;
+  private querySub: Subscription;
 
   credentials$ = this.authFacade.credentials$
     .pipe().subscribe(
@@ -44,6 +48,42 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
 
   error$ = this.authFacade.error$
     .pipe().subscribe(this.showError.bind(this));
+
+  get roleLabel(): string {
+    return this.authRole ? authRoleLabel(this.authRole) : '';
+  }
+
+  get switchRole(): AuthRole {
+    return this.authRole ? otherAuthRole(this.authRole) : 3;
+  }
+
+  get switchRoleLabel(): string {
+    return authRoleLabel(this.switchRole);
+  }
+
+  get registerQuery(): { role: AuthRole } | Record<string, never> {
+    return authRoleQuery(this.authRole);
+  }
+
+  get signinTitle(): string {
+    if (this.authRole === 2) {
+      return 'Welcome back, Employer';
+    }
+    if (this.authRole === 3) {
+      return 'Welcome back, Job Seeker';
+    }
+    return 'Welcome back!';
+  }
+
+  get signinSubtitle(): string {
+    if (this.authRole === 2) {
+      return 'Sign in to manage jobs and applicants';
+    }
+    if (this.authRole === 3) {
+      return 'Sign in to continue your job search';
+    }
+    return 'Sign in to continue to your account';
+  }
 
   constructor(
     private router: Router,
@@ -62,6 +102,10 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
       robots: 'noindex, nofollow',
     });
     this.onAlertClose();
+
+    this.querySub = this.activatedRoute.queryParamMap.subscribe((params) => {
+      this.authRole = parseAuthRole(params.get('role'));
+    });
 
     const rememberedEmail = localStorage.getItem('rememberedEmail');
 
@@ -307,6 +351,9 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
+    if (this.querySub) {
+      this.querySub.unsubscribe();
+    }
     if (this.credentials$) {
       this.credentials$.unsubscribe();
     }

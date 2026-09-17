@@ -345,7 +345,7 @@ export class AiJobPreviewPanelComponent implements OnChanges, OnDestroy {
     }
     this.haptics.selection();
     this.closed.emit();
-    this.router.navigate(['/signin']);
+    this.router.navigate(['/signin'], { queryParams: { role: 2 } });
   }
 
   // Google sign-in directly from the AI Job Create panel gate

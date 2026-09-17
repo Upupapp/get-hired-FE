@@ -28,7 +28,7 @@
       <div class="portal-role-secondary portal-hero-secondary">
         <a routerLink="/jobs" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</a>
         <span class="portal-role-divider" aria-hidden="true">|</span>
-        <a routerLink="/signin" class="btn-link-cta" (click)="goToSignin()">Sign in</a>
+        <a routerLink="/signin" [queryParams]="{role: 3}" class="btn-link-cta" (click)="goToSignin()">Sign in</a>
       </div>
     </div>
 
@@ -446,7 +446,7 @@
   <div class="portal-role-secondary">
     <a routerLink="/jobs" class="btn-link-cta" (click)="goToJobs()">Browse jobs without an account</a>
     <span class="portal-role-divider" aria-hidden="true">|</span>
-    <a routerLink="/signin" class="btn-link-cta" (click)="goToSignin()">Sign in</a>
+    <a routerLink="/signin" [queryParams]="{role: 3}" class="btn-link-cta" (click)="goToSignin()">Sign in</a>
   </div>
 </section>
 
