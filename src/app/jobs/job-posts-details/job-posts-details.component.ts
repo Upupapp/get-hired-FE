@@ -236,7 +236,7 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
         });
 
         localStorage.setItem('returnURL', url);
-        this.router.navigateByUrl('signin');
+        this.router.navigate(['/signin'], { queryParams: { role: 3 } });
       }
     })
 

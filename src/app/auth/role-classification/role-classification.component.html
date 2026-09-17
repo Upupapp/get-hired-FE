@@ -2,7 +2,7 @@
   <div class="gh-role-card">
     <!-- Header -->
     <div class="gh-role-header">
-      <img src="assets/brand/Gethired-horizontal-logo.png?v=3" alt="GetHired Online" class="gh-role-logo">
+      <app-brand-logo variant="horizontal" tone="on-light" [height]="36" imgClass="gh-role-logo" alt="GetHired Online"></app-brand-logo>
       <div class="gh-role-google-user" *ngIf="email">
         <img *ngIf="photoUrl" [src]="photoUrl" [alt]="displayName" class="gh-role-avatar" referrerpolicy="no-referrer">
         <div>
