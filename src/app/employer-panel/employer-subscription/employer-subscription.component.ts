@@ -8,8 +8,11 @@ import { CompanyFacade } from '@main/company/state/company.facade';
 import { SubscriptionSummaryService } from './subscription-summary.service';
 import { EmployerSubscriptionSummary, EntitlementUsage, BooleanEntitlement, InvoiceListItem } from './subscription.models';
 import { BillingService } from './services/billing.service';
+import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
+import { PlanCatalogItem, PricingCatalog } from './subscription-v4.models';
 import { InvoiceSendModalComponent } from './components/invoice-send-modal/invoice-send-modal.component';
 
+/** View model for hub plan cards — always derived from pricing-catalog (plus sales-only Enterprise). */
 interface PlanConfig {
   code: string;
   name: string;
@@ -19,6 +22,8 @@ interface PlanConfig {
   trial?: boolean;
   enterprise?: boolean;
   features: Array<{ label: string; included: boolean }>;
+  /** Catalog slug for upgrade routes (business, not premium). */
+  upgradeSlug?: string | null;
 }
 
 @Component({
@@ -63,7 +68,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
     {
       q: 'Are video responses included in all plans?',
-      a: 'Video responses are not included in the Free Trial. The Starter plan includes 5 video responses. Growth, Premium, and Enterprise plans include video responses — unlimited on Growth and above.'
+      a: 'Video response limits depend on your plan. Free Trial includes 5 video responses. Paid plans include higher limits from the live pricing catalog — check each plan card for the current number.'
     },
     {
       q: 'What payment methods are accepted?',
@@ -79,87 +84,16 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     },
   ];
 
-  readonly PLAN_CONFIGS: PlanConfig[] = [
-    {
-      code: 'free_trial',
-      name: 'Free Trial',
-      audience: 'Try GetHired with limited hiring tools.',
-      priceLabel: 'Free',
-      trial: true,
-      features: [
-        { label: '5 active job posts', included: true },
-        { label: 'Applicant tracking', included: true },
-        { label: 'Company profile', included: true },
-        { label: 'Interview questions', included: true },
-        { label: 'Video responses', included: false },
-        { label: 'Public company profile', included: false },
-      ],
-    },
-    {
-      code: 'starter',
-      name: 'Starter',
-      audience: 'For small employers hiring occasionally.',
-      priceLabel: '₱999/mo',
-      features: [
-        { label: '5 active job posts', included: true },
-        { label: 'Applicant tracking', included: true },
-        { label: 'Company profile', included: true },
-        { label: 'Interview questions', included: true },
-        { label: '5 video responses', included: true },
-        { label: 'Public company profile', included: false },
-      ],
-    },
-    {
-      code: 'growth',
-      name: 'Growth',
-      audience: 'For active hiring teams.',
-      priceLabel: '₱2,499/mo',
-      recommended: true,
-      features: [
-        { label: '15 active job posts', included: true },
-        { label: '3 admin users', included: true },
-        { label: 'Candidate messaging', included: true },
-        { label: 'Interview workflow', included: true },
-        { label: 'Video responses', included: true },
-        { label: 'Public company profile', included: true },
-        { label: 'Employer branding', included: true },
-      ],
-    },
-    {
-      code: 'premium',
-      name: 'Premium',
-      audience: 'For frequent hiring and larger teams.',
-      priceLabel: '₱4,999/mo',
-      features: [
-        { label: '30 active job posts', included: true },
-        { label: '5 admin users', included: true },
-        { label: 'Candidate messaging', included: true },
-        { label: 'Video interviews', included: true },
-        { label: 'Advanced analytics', included: true },
-        { label: 'Public company profile', included: true },
-        { label: 'Priority support', included: true },
-      ],
-    },
-    {
-      code: 'enterprise',
-      name: 'Enterprise',
-      audience: 'For large employers and custom hiring operations.',
-      priceLabel: 'Custom',
-      enterprise: true,
-      features: [
-        { label: 'Custom job volume', included: true },
-        { label: 'Custom admin users', included: true },
-        { label: 'Candidate messaging', included: true },
-        { label: 'Video interviews', included: true },
-        { label: 'Custom billing', included: true },
-        { label: 'Dedicated support', included: true },
-      ],
-    },
-  ];
+  /** @deprecated Removed — plans come from GET /subscriptions/pricing-catalog only. */
+  private catalog: PricingCatalog | null = null;
+  catalogLoading = false;
+  catalogError = false;
+  private catalogPlanConfigs: PlanConfig[] = [];
 
   constructor(
     public companyFacade: CompanyFacade,
     private subscriptionSummaryService: SubscriptionSummaryService,
+    private pricingCatalogService: SubscriptionPricingCatalogService,
     private router: Router,
     private dialog: MatDialog,
     private billing: BillingService,
@@ -174,6 +108,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
       });
 
     this.loadSummary();
+    this.loadCatalog();
   }
 
   // ── Available Plans carousel ────────────────────────────────────────────────
@@ -412,55 +347,216 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   get recommendedPlanConfig(): PlanConfig | null {
     if (!this.recommendedPlan) { return null; }
-    return this.PLAN_CONFIGS.find(p => p.code === this.recommendedPlan.planCode) || null;
+    const code = this.normalizePlanCode(this.recommendedPlan.planCode);
+    return this.getEffectivePlanConfigs().find(p => p.code === code) || null;
   }
 
   // --- Upgrade routing (annual-first) ---
 
+  normalizePlanCode(code: string | null | undefined): string {
+    if (!code) { return ''; }
+    return code === 'premium' ? 'business' : code;
+  }
+
+  displayPlanName(slugOrCode: string): string {
+    const code = this.normalizePlanCode(slugOrCode);
+    if (code === 'business') { return 'Business'; }
+    const hit = this.catalogPlanConfigs.find(p => p.code === code);
+    if (hit) { return hit.name; }
+    if (code === 'free_trial') { return 'Free Trial'; }
+    if (code === 'enterprise') { return 'Enterprise'; }
+    return code ? code.charAt(0).toUpperCase() + code.slice(1) : '';
+  }
+
   navigateToUpgrade(planCode: string): void {
-    if (this.isCurrentPlan(planCode)) return;
-    const order = ['free_trial', 'starter', 'growth', 'business', 'enterprise'];
-    // Remap legacy 'premium' alias used in PLAN_CONFIGS
-    const normalizedCode = planCode === 'premium' ? 'business' : planCode;
-    if (normalizedCode === 'enterprise') { return; }
+    if (this.isCurrentPlan(planCode)) { return; }
+    const normalizedCode = this.normalizePlanCode(planCode);
+    if (normalizedCode === 'enterprise') {
+      this.contactSales();
+      return;
+    }
+    if (normalizedCode === 'free_trial') { return; }
     this.router.navigate(['/recruiter/subscription/upgrade', normalizedCode]);
+  }
+
+  contactSales(): void {
+    window.location.href = 'mailto:support@gethired.ph?subject=' +
+      encodeURIComponent('GetHired Enterprise / Custom plan inquiry');
   }
 
   // --- Plan helpers ---
 
   getPlanCta(planCode: string): string {
-    const current = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
-    if (!current || current === 'none' || current === null) { return 'Choose plan'; }
-    if (current === planCode) { return 'Current plan'; }
-    const order = ['free_trial', 'starter', 'growth', 'premium', 'enterprise'];
+    const name = this.displayPlanName(planCode);
+    if (this.isCurrentPlan(planCode)) { return 'Current plan'; }
+    const normalized = this.normalizePlanCode(planCode);
+    if (normalized === 'enterprise') { return 'Contact sales'; }
+    const current = this.normalizePlanCode(
+      this.summary && this.summary.currentPlan && this.summary.currentPlan.code
+    );
+    if (!current || current === 'none') { return name ? ('Choose ' + name) : 'Choose plan'; }
+    const order = ['free_trial', 'starter', 'growth', 'business', 'enterprise'];
     const currentIdx = order.indexOf(current);
-    const targetIdx = order.indexOf(planCode);
-    if (planCode === 'enterprise') { return 'Contact sales'; }
-    if (targetIdx > currentIdx) { return 'Upgrade'; }
-    return 'Switch plan';
+    const targetIdx = order.indexOf(normalized);
+    if (targetIdx > currentIdx) { return name ? ('Upgrade to ' + name) : 'Upgrade'; }
+    return name ? ('Switch to ' + name) : 'Switch plan';
   }
 
   isCurrentPlan(planCode: string): boolean {
-    const current = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
-    return current === planCode;
+    const current = this.normalizePlanCode(
+      this.summary && this.summary.currentPlan && this.summary.currentPlan.code
+    );
+    const target = this.normalizePlanCode(planCode);
+    if (!current || !target) { return false; }
+    // Prefer live catalog current flag when present
+    const fromCatalog = this.catalogPlanConfigs.find(p => p.code === target);
+    if (fromCatalog && this.catalog) {
+      const item = (this.catalog.plans || []).find(p => this.normalizePlanCode(p.slug) === target);
+      if (item && item.current) { return true; }
+    }
+    return current === target;
   }
 
   isCurrentPlanAboveOrEqualTo(planCode: string): boolean {
-    const current = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
-    if (!current || current === 'none' || current === null) { return false; }
-    const order = ['free_trial', 'starter', 'growth', 'premium', 'enterprise'];
+    const current = this.normalizePlanCode(
+      this.summary && this.summary.currentPlan && this.summary.currentPlan.code
+    );
+    if (!current || current === 'none') { return false; }
+    const order = ['free_trial', 'starter', 'growth', 'business', 'enterprise'];
     const currentIdx = order.indexOf(current);
-    const targetIdx = order.indexOf(planCode);
-    if (currentIdx < 0 || targetIdx < 0) { return current === planCode; }
+    const targetIdx = order.indexOf(this.normalizePlanCode(planCode));
+    if (currentIdx < 0 || targetIdx < 0) { return current === this.normalizePlanCode(planCode); }
     return currentIdx >= targetIdx;
   }
 
   getEffectivePlanConfigs(): PlanConfig[] {
-    // If backend returns available plans, try to enrich; otherwise use defaults
-    if (this.summary && this.summary.availablePlans && this.summary.availablePlans.length > 0) {
-      return this.PLAN_CONFIGS;
+    return this.catalogPlanConfigs;
+  }
+
+  get comparisonPlans(): PlanConfig[] {
+    return this.catalogPlanConfigs.filter(p => !p.enterprise);
+  }
+
+  loadCatalog(): void {
+    this.catalogLoading = true;
+    this.catalogError = false;
+    this.pricingCatalogService.getCatalog()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (res) => {
+          this.catalogLoading = false;
+          if (res && res.success && res.catalog && Array.isArray(res.catalog.plans)) {
+            this.catalog = res.catalog;
+            this.catalogPlanConfigs = this.mapCatalogToPlanConfigs(res.catalog.plans);
+            this.catalogError = false;
+          } else if (res && res.catalog && Array.isArray(res.catalog.plans)) {
+            // Some environments omit success flag
+            this.catalog = res.catalog;
+            this.catalogPlanConfigs = this.mapCatalogToPlanConfigs(res.catalog.plans);
+            this.catalogError = false;
+          } else {
+            this.catalogError = true;
+            this.catalogPlanConfigs = [];
+          }
+        },
+        () => {
+          this.catalogLoading = false;
+          this.catalogError = true;
+          this.catalogPlanConfigs = [];
+        }
+      );
+  }
+
+  private mapCatalogToPlanConfigs(plans: PlanCatalogItem[]): PlanConfig[] {
+    const mapped = plans.map((p) => this.catalogItemToPlanConfig(p));
+    // Sales-only Enterprise/Custom — not a V4 SKU; no prices / fake entitlements
+    mapped.push({
+      code: 'enterprise',
+      name: 'Enterprise',
+      audience: 'For large employers and custom hiring operations.',
+      priceLabel: 'Custom',
+      enterprise: true,
+      upgradeSlug: null,
+      features: [
+        { label: 'Custom job volume and seats', included: true },
+        { label: 'Custom billing and contracts', included: true },
+        { label: 'Dedicated support', included: true },
+      ],
+    });
+    return mapped;
+  }
+
+  private catalogItemToPlanConfig(p: PlanCatalogItem): PlanConfig {
+    const slug = this.normalizePlanCode(p.slug);
+    const name = slug === 'business' ? 'Business' : (p.name || slug);
+    const ents = p.entitlements || ({} as any);
+    const jobs = ents.active_job_posts;
+    const admins = ents.admin_users;
+    const videos = ents.video_responses;
+    const features: Array<{ label: string; included: boolean }> = [];
+    if (typeof jobs === 'number') {
+      features.push({
+        label: jobs + ' active job post' + (jobs === 1 ? '' : 's'),
+        included: true,
+      });
     }
-    return this.PLAN_CONFIGS;
+    if (typeof admins === 'number') {
+      features.push({
+        label: admins + ' admin user' + (admins === 1 ? '' : 's'),
+        included: true,
+      });
+    }
+    if (typeof videos === 'number') {
+      features.push({
+        label: videos + ' video response' + (videos === 1 ? '' : 's'),
+        included: true,
+      });
+    }
+    if (p.trial) {
+      features.push({ label: '7-day free trial', included: true });
+    }
+    features.push({
+      label: 'Dedicated support',
+      included: !!ents.dedicated_support,
+    });
+    if (ents.customized_company_page) {
+      features.push({ label: 'Customized company page', included: true });
+    }
+    if (ents.video_interview_questions) {
+      features.push({ label: 'Video interview questions', included: true });
+    }
+
+    let priceLabel = '—';
+    if (p.trial || (p.pricing && p.pricing.monthly && p.pricing.monthly.amount === 0)) {
+      priceLabel = 'Free';
+    } else if (p.pricing && p.pricing.monthly && typeof p.pricing.monthly.amount === 'number') {
+      priceLabel = '₱' + p.pricing.monthly.amount.toLocaleString('en-PH');
+    }
+
+    return {
+      code: slug,
+      name,
+      audience: p.audience || '',
+      priceLabel,
+      recommended: !!p.recommended,
+      trial: !!p.trial,
+      enterprise: !!p.enterprise,
+      features,
+      upgradeSlug: p.upgradeRoute ? slug : (slug === 'free_trial' ? null : slug),
+    };
+  }
+
+  entitlementCell(plan: PlanConfig, key: 'jobs' | 'admins' | 'videos' | 'support'): string {
+    if (plan.enterprise) { return 'Custom'; }
+    const item = (this.catalog && this.catalog.plans || []).find(
+      p => this.normalizePlanCode(p.slug) === plan.code
+    );
+    if (!item || !item.entitlements) { return '—'; }
+    const e = item.entitlements;
+    if (key === 'jobs') { return String(e.active_job_posts); }
+    if (key === 'admins') { return String(e.admin_users); }
+    if (key === 'videos') { return String(e.video_responses); }
+    return e.dedicated_support ? 'Included' : '—';
   }
 
   // --- Status helpers ---
@@ -511,7 +607,11 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   get currentPlanName(): string {
-    return (this.summary && this.summary.currentPlan && this.summary.currentPlan.name) || 'No plan';
+    const raw = this.summary && this.summary.currentPlan && this.summary.currentPlan.name;
+    const code = this.normalizePlanCode(this.summary && this.summary.currentPlan && this.summary.currentPlan.code);
+    if (code === 'business') { return 'Business'; }
+    if (raw && /premium/i.test(raw)) { return 'Business'; }
+    return raw || 'No plan';
   }
 
   get companyName(): string {

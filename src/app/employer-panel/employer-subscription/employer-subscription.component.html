@@ -349,15 +349,40 @@
       </div>
     </div>
 
-    <!-- ── PLAN CARDS ── -->
+    <!-- ── PLAN CARDS (catalog-driven) ── -->
     <div class="gh-sub-section" role="region" aria-label="Available plans">
       <h2 class="gh-sub-section__title">Available plans</h2>
-      <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow.</p>
+      <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow. Prices and limits come from your live billing catalog.</p>
 
+      <!-- Catalog loading skeleton -->
+      <div class="gh-plan-catalog-status" *ngIf="catalogLoading" aria-live="polite">
+        <div class="gh-plan-skeleton" *ngFor="let _ of [1,2,3,4]">
+          <div class="gh-plan-skeleton__line gh-plan-skeleton__line--title"></div>
+          <div class="gh-plan-skeleton__line"></div>
+          <div class="gh-plan-skeleton__line gh-plan-skeleton__line--price"></div>
+          <div class="gh-plan-skeleton__line"></div>
+          <div class="gh-plan-skeleton__line"></div>
+        </div>
+      </div>
+
+      <!-- Catalog error -->
+      <div class="gh-sub-error gh-sub-error--inline" *ngIf="!catalogLoading && catalogError" role="alert">
+        <h3 class="gh-sub-error-title">Couldn't load billing information</h3>
+        <p>We couldn't load plan prices and limits. Check your connection and try again.</p>
+        <button type="button" class="gh-btn-primary" (click)="loadCatalog()">Retry</button>
+      </div>
+
+      <!-- Empty catalog -->
+      <div class="gh-sub-error gh-sub-error--inline" *ngIf="!catalogLoading && !catalogError && getEffectivePlanConfigs().length === 0" role="status">
+        <h3 class="gh-sub-error-title">No plans available</h3>
+        <p>There are no plans to show right now. Please try again shortly.</p>
+        <button type="button" class="gh-btn-primary" (click)="loadCatalog()">Retry</button>
+      </div>
+
+      <ng-container *ngIf="!catalogLoading && !catalogError && getEffectivePlanConfigs().length > 0">
       <div class="gh-plan-carousel"
         [class.gh-plan-carousel--can-scroll-prev]="planCarouselCanScrollPrev"
         [class.gh-plan-carousel--can-scroll-next]="planCarouselCanScrollNext">
-        <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
         <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
           (click)="goToPlanSlide((planCarouselActiveIndex - 1 + getEffectivePlanConfigs().length) % getEffectivePlanConfigs().length)"
           aria-label="Previous plan">
@@ -365,7 +390,7 @@
         </button>
 
         <div class="gh-plan-grid" #planCarouselTrack
-          role="region" aria-roledescription="carousel" aria-label="Available plans, auto-advancing every 2 seconds"
+          role="region" aria-roledescription="carousel" aria-label="Available plans"
           tabindex="0"
           (mouseenter)="onPlanCarouselInteractionStart()" (mouseleave)="onPlanCarouselInteractionEnd()"
           (touchstart)="onPlanCarouselInteractionStart()" (touchend)="onPlanCarouselInteractionEnd()"
@@ -379,23 +404,19 @@
             'gh-plan-card--trial': plan.trial && !isCurrentPlan(plan.code)
           }">
 
-          <!-- Badges -->
           <div class="gh-plan-card__badges">
             <span class="gh-plan-badge--recommended" *ngIf="plan.recommended && !isCurrentPlan(plan.code)" aria-label="Recommended plan">Recommended</span>
             <span class="gh-plan-badge--current" *ngIf="isCurrentPlan(plan.code)" aria-label="Your current plan">Current plan</span>
           </div>
 
-          <!-- Plan name -->
           <h3 class="gh-plan-card__name">{{ plan.name }}</h3>
           <p class="gh-plan-card__audience">{{ plan.audience }}</p>
 
-          <!-- Price -->
           <div class="gh-plan-card__price">
             <span class="gh-plan-card__price-val">{{ plan.priceLabel }}</span>
             <span class="gh-plan-card__price-per" *ngIf="!plan.trial && !plan.enterprise">/mo</span>
           </div>
 
-          <!-- Features list -->
           <ul class="gh-plan-card__features" [attr.aria-label]="plan.name + ' features'">
             <li class="gh-plan-card__feature" *ngFor="let feat of plan.features"
               [ngClass]="feat.included ? 'gh-plan-card__feature--included' : 'gh-plan-card__feature--excluded'">
@@ -410,18 +431,17 @@
             </li>
           </ul>
 
-          <!-- CTA — anchored at bottom -->
           <div class="gh-plan-card__cta">
             <button
               class="gh-plan-card__cta-btn"
               [ngClass]="{
-                'gh-plan-card__cta-btn--primary': !isCurrentPlan(plan.code) && !plan.enterprise,
+                'gh-plan-card__cta-btn--primary': !isCurrentPlan(plan.code),
                 'gh-plan-card__cta-btn--current': isCurrentPlan(plan.code),
-                'gh-plan-card__cta-btn--enterprise': plan.enterprise
+                'gh-plan-card__cta-btn--enterprise': plan.enterprise && !isCurrentPlan(plan.code)
               }"
-              [disabled]="isCurrentPlan(plan.code) || plan.enterprise === true"
+              [disabled]="isCurrentPlan(plan.code)"
               [attr.aria-disabled]="isCurrentPlan(plan.code) ? 'true' : null"
-              [attr.aria-label]="isCurrentPlan(plan.code) ? 'Currently on ' + plan.name + ' plan' : getPlanCta(plan.code) + ' to ' + plan.name"
+              [attr.aria-label]="isCurrentPlan(plan.code) ? 'Currently on ' + plan.name + ' plan' : getPlanCta(plan.code)"
               (click)="navigateToUpgrade(plan.code)">
               {{ isCurrentPlan(plan.code) ? 'Current plan' : getPlanCta(plan.code) }}
             </button>
@@ -437,11 +457,6 @@
         </button>
       </div>
 
-      <!-- Pagination dots: one per plan card, matching what people expect
-           a pricing carousel's dots to mean ("this dot is the Growth
-           plan"). Clicking one reliably scrolls that exact card into view
-           via scrollToCard()'s real offsetLeft measurement, and the active
-           dot is kept in sync with manual scroll the same way. -->
       <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan">
         <button type="button" class="gh-plan-carousel__dot"
           *ngFor="let plan of getEffectivePlanConfigs(); let i = index"
@@ -452,6 +467,48 @@
           (click)="goToPlanSlide(i)">
         </button>
       </div>
+
+      <!-- Plan comparison strip -->
+      <div class="gh-plan-compare" role="region" aria-label="Plan comparison">
+        <h3 class="gh-plan-compare__title">Compare plans</h3>
+        <p class="gh-plan-compare__hint">Swipe sideways on small screens to see every plan.</p>
+        <div class="gh-plan-compare__scroller">
+          <table class="gh-plan-compare__table">
+            <caption class="sr-only">Plan limits and monthly price comparison</caption>
+            <thead>
+              <tr>
+                <th scope="col">Limit</th>
+                <th scope="col" *ngFor="let plan of comparisonPlans">{{ plan.name }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Monthly price</th>
+                <td *ngFor="let plan of comparisonPlans">
+                  <span class="gh-plan-compare__price">{{ plan.priceLabel }}<span *ngIf="!plan.trial">/mo</span></span>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Active job posts</th>
+                <td *ngFor="let plan of comparisonPlans">{{ entitlementCell(plan, 'jobs') }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Admin users</th>
+                <td *ngFor="let plan of comparisonPlans">{{ entitlementCell(plan, 'admins') }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Video responses</th>
+                <td *ngFor="let plan of comparisonPlans">{{ entitlementCell(plan, 'videos') }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Dedicated support</th>
+                <td *ngFor="let plan of comparisonPlans">{{ entitlementCell(plan, 'support') }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      </ng-container>
     </div>
 
     <!-- ── BILLING FAQ ── -->

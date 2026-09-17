@@ -1360,3 +1360,105 @@
   .gh-inv-table td { padding: 10px 12px; }
 }
 
+
+
+/* ── Sub UI-1: catalog skeleton + comparison strip ───────────────── */
+.gh-plan-catalog-status {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+.gh-plan-skeleton {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  min-height: 280px;
+}
+.gh-plan-skeleton__line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+  background-size: 200% 100%;
+  animation: gh-plan-skel 1.2s ease-in-out infinite;
+  margin-bottom: 12px;
+}
+.gh-plan-skeleton__line--title { width: 55%; height: 18px; }
+.gh-plan-skeleton__line--price { width: 40%; height: 28px; }
+@keyframes gh-plan-skel {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.gh-sub-error--inline {
+  margin: 16px 0 24px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #fecaca;
+}
+
+.gh-plan-compare {
+  margin-top: 28px;
+}
+.gh-plan-compare__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #111827;
+}
+.gh-plan-compare__hint {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+.gh-plan-compare__scroller {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  /* scroll affordance */
+  background-image: linear-gradient(to right, #fff, #fff),
+    linear-gradient(to right, #fff, #fff),
+    linear-gradient(to right, rgba(17,24,39,.08), transparent),
+    linear-gradient(to left, rgba(17,24,39,.08), transparent);
+  background-position: 0 0, 100% 0, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  background-size: 24px 100%, 24px 100%, 16px 100%, 16px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+.gh-plan-compare__table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.gh-plan-compare__table th,
+.gh-plan-compare__table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+  white-space: nowrap;
+}
+.gh-plan-compare__table thead th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+.gh-plan-compare__table tbody th {
+  font-weight: 500;
+  color: #374151;
+  background: #fff;
+}
+.gh-plan-compare__price {
+  font-weight: 700;
+  color: #111827;
+}
+
+@media (max-width: 767px) {
+  .gh-plan-catalog-status {
+    grid-template-columns: 1fr;
+  }
+}
