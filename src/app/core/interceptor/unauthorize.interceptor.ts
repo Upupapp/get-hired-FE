@@ -115,7 +115,14 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
     // redirected away, even though they were never signed in. Propagate as-
     // is; the calling component/effect is better positioned to show an
     // accurate, contextual message.
-    if (!this.coreService.isLoggedIn()) {
+    // A protected shell can survive with an inconsistent `state` flag while
+    // an Authorization token is still present (for example, an older tab
+    // restored after session cleanup). Treat that as a stale authenticated
+    // session so it gets the normal refresh-or-sign-in recovery. Otherwise
+    // the 401 leaks back to feature components as a misleading checkout/API
+    // error while the UI continues to look signed in.
+    const hasStoredToken = typeof localStorage !== 'undefined' && !!localStorage.getItem('token');
+    if (!this.coreService.isLoggedIn() && !hasStoredToken) {
       return throwError(() => err);
     }
 
