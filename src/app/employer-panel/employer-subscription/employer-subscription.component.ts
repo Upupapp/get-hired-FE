@@ -572,7 +572,60 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   /** Plans to render, straight from the backend catalog. Empty until it loads. */
   get catalogPlans(): PlanCatalogItem[] {
-    return (this.catalog && this.catalog.plans) ? this.catalog.plans : [];
+    if (this.catalog && this.catalog.plans) { return this.catalog.plans; }
+
+    // Older production runtimes return the employer-specific catalog with the
+    // subscription summary. It remains server data (including price and CTA),
+    // so use it when the dedicated catalog endpoint is not available rather
+    // than replacing it with frontend constants or leaving the dashboard empty.
+    const plans = this.summary && this.summary.availablePlans;
+    if (!plans) { return []; }
+    return plans.map(plan => {
+      const slug = plan.code === 'premium' ? 'business' : plan.code;
+      const feature = (key: string) => !!(plan.features || []).find(item => item.key === key && item.included);
+      const monthly = typeof plan.priceMonthly === 'number' ? plan.priceMonthly : null;
+      return {
+        slug,
+        name: plan.name,
+        audience: plan.audience || plan.description || '',
+        recommended: !!plan.recommended,
+        trial: !!plan.trial,
+        enterprise: !!plan.enterprise,
+        current: !!plan.current || this.isCurrentPlan(plan.code),
+        pricing: {
+          monthly: {
+            amount: monthly as any,
+            currency: plan.currency || 'PHP',
+            label: monthly === null ? 'Custom' : String(monthly),
+            renewalLabel: monthly && monthly > 0 ? 'Paid monthly' : '',
+          },
+          annual: {
+            amount: null as any,
+            currency: plan.currency || 'PHP',
+            dueTodayLabel: '',
+            effectiveMonthlyLabel: '',
+            savingsCopy: null,
+            annualSavingsAmount: 0,
+            renewalLabel: '',
+          },
+        },
+        entitlements: {
+          active_job_posts: this.summaryLimit(plan.limits ? plan.limits.activeJobs : undefined),
+          admin_users: this.summaryLimit(plan.limits ? plan.limits.adminUsers : undefined),
+          video_responses: this.summaryLimit(plan.limits ? plan.limits.videoResponses : undefined),
+          customized_company_page: feature('customized_company_page') || feature('company_page'),
+          video_interview_questions: feature('video_interview_questions') || feature('video_questions'),
+          dedicated_support: feature('dedicated_support'),
+        },
+        upgradeRoute: plan.enterprise || plan.ctaAction === 'current' ? null : `/recruiter/subscription/upgrade/${slug}`,
+        contactSalesRequired: !!plan.enterprise || plan.ctaAction === 'contact_sales',
+        defaultBillingCycle: 'monthly' as BillingCycle,
+      } as PlanCatalogItem;
+    });
+  }
+
+  private summaryLimit(value: number | 'unlimited' | null | undefined): number | null {
+    return value === 'unlimited' || typeof value === 'undefined' ? null : value;
   }
 
   /** Tier order, derived from catalog order rather than a second hardcoded list. */

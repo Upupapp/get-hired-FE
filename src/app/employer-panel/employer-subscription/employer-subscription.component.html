@@ -75,7 +75,7 @@
           <span *ngIf="catalog && catalog.annualCopy">{{ catalog.annualCopy }}</span>
         </div>
         <div class="catalog-state" *ngIf="catalogLoading">Loading current plans…</div>
-        <div class="catalog-state catalog-state--error" *ngIf="catalogError">Current pricing is temporarily unavailable. <button type="button" (click)="loadPricingCatalog()">Retry</button></div>
+        <div class="catalog-state catalog-state--error" *ngIf="catalogError && !catalogPlans.length">Current pricing is temporarily unavailable. <button type="button" (click)="loadPricingCatalog()">Retry</button></div>
         <h2 id="plans-title" #plansHeading tabindex="-1" class="sr-only">Available plans</h2>
         <div class="plan-grid" *ngIf="!catalogLoading && catalogPlans.length">
           <article class="plan-card" *ngFor="let plan of catalogPlans; trackBy: trackPlanBySlug"
