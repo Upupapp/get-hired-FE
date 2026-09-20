@@ -111,7 +111,7 @@ export class JobSeekerPortalComponent implements OnInit {
   }
 
   goToSignin(): void {
-    this.router.navigateByUrl('/signin');
+    this.router.navigate(['/signin'], { queryParams: { role: 3 } });
   }
 
   onUspSectionViewed(): void {

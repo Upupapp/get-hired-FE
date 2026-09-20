@@ -345,7 +345,7 @@ export class SeoService {
       '@type': 'Organization',
       name: 'GetHired Online',
       url: BASE_URL,
-      logo: `${BASE_URL}/assets/images/logo.png`,
+      logo: `${BASE_URL}/assets/brand/gethired-mark-on-light-interim.png`,
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer support',

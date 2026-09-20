@@ -58,6 +58,7 @@ import { SearchSpotlightCardComponent } from './components/gh-search/search-spot
 import { EasyJobPostAssistantModalComponent } from '@app-job/easy-job-post-assistant/easy-job-post-assistant-modal/easy-job-post-assistant-modal.component';
 import { GoogleSigninButtonComponent } from '@main/auth/google-signin-button/google-signin-button.component';
 import { LinkedInButtonComponent } from '@main/auth/linkedin-button/linkedin-button.component';
+import { BrandLogoComponent } from './brand/brand-logo.component';
 
 
 const classesToInclude: any[] = [
@@ -107,6 +108,7 @@ const classesToInclude: any[] = [
   EasyJobPostAssistantModalComponent,
   GoogleSigninButtonComponent,
   LinkedInButtonComponent,
+  BrandLogoComponent,
 ];
 
 @NgModule({

@@ -25,6 +25,7 @@ import { CtaAction } from '@main/shared/engagement/engagement-contract.models';
 import { navigatesAfterClick, priorityPresentation } from '@main/shared/engagement/engagement-message.presentation';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
+import { roleFromPublicUrl } from '@app-shared/utils/auth-role-query';
 
 @Component({
   selector: 'app-header',
@@ -274,8 +275,27 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigate(['/jobs'], { relativeTo: this.route })
   }
 
+  /** Job Seeker on public pages; Employer on /employers*. */
+  get publicAuthQuery(): { role: 2 | 3 } {
+    return { role: roleFromPublicUrl(this.location) };
+  }
+
+  /** Employer marketing (/employers*) uses purple chrome — on-dark pack held; keep legacy lockup.
+   *  NOTE: `this.location` in this component is a URL string (router.url), not Angular Location. */
+  get isEmployersPublicRoute(): boolean {
+    const raw = typeof this.location === 'string'
+      ? this.location
+      : (this.router?.url || '');
+    const path = (raw || '').split('?')[0];
+    return path === '/employers' || path.startsWith('/employers/');
+  }
+
   redirectToRegister() {
-    this.router.navigateByUrl('/signin');
+    this.router.navigate(['/signin'], { queryParams: this.publicAuthQuery });
+  }
+
+  redirectToSignup() {
+    this.router.navigate(['/signup'], { queryParams: this.publicAuthQuery });
   }
 
   goToDashboard() {

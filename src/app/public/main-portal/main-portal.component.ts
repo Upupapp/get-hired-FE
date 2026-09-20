@@ -201,7 +201,7 @@ export class MainPortalComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   goToSignin(): void {
-    this.router.navigateByUrl('/signin');
+    this.router.navigate(['/signin'], { queryParams: { role: 3 } });
   }
 
   heroCTAFindJobs(): void {

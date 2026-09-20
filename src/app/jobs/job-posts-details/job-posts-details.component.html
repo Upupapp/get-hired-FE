@@ -22,7 +22,7 @@
     <h5>{{ errMsg === 'Unable to load this job for the current session.' ? 'Session required' : 'This job isn\'t available' }}</h5>
     <p>{{ errMsg === 'Unable to load this job for the current session.' ? 'Sign in to view this job.' : 'It may have expired, been removed, or the link may be incorrect.' }}</p>
     <div class="gh-error-cta-row">
-      <a *ngIf="errMsg === 'Unable to load this job for the current session.'" routerLink="/signin" class="btn btn-apply-now">Sign In</a>
+      <a *ngIf="errMsg === 'Unable to load this job for the current session.'" routerLink="/signin" [queryParams]="{role: 3}" class="btn btn-apply-now">Sign In</a>
       <button type="button" class="btn btn-outline-secondary" (click)="goToJobsList()">Browse all jobs</button>
     </div>
   </ng-container>
@@ -494,7 +494,7 @@
         </button>
 
         <p class="gh-reading-companion__register-hint" *ngIf="!userRole">
-          New to GetHired? <a routerLink="/signup">Create a free account</a>
+          New to GetHired? <a routerLink="/signup" [queryParams]="{role: 3}">Create a free account</a>
         </p>
 
         <div class="gh-reading-companion__divider"></div>

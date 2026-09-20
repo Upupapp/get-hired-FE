@@ -17,18 +17,15 @@
       <div class="carousel slide" #mobileCarouselEl>
         <div class="carousel-inner" id="signin-mobile-welcome-screens">
           <div class="carousel-item active text-center">
-            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
-            <img src="assets/images/placeholder/login-object-new-2.png" class="gh-mc-img">
+<img src="assets/images/placeholder/login-object-new-2.png" class="gh-mc-img">
             <p class="gh-mc-text">Find your next opportunity in <span class="title-left-gradient">ONE PLATFORM</span></p>
           </div>
           <div class="carousel-item text-center">
-            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
-            <img src="assets/images/placeholder/login-object-new-1.png" class="gh-mc-img">
+<img src="assets/images/placeholder/login-object-new-1.png" class="gh-mc-img">
             <p class="gh-mc-text">Connect talent and opportunity <span class="title-left-gradient">AUTOMATICALLY</span></p>
           </div>
           <div class="carousel-item text-center">
-            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
-            <img src="assets/images/placeholder/login-object-new-3.png" class="gh-mc-img">
+<img src="assets/images/placeholder/login-object-new-3.png" class="gh-mc-img">
             <p class="gh-mc-text">Find the perfect <span class="title-left-gradient">FIT</span> — <span class="title-left-gradient">Lights, Camera, GetHired.</span></p>
           </div>
         </div>
@@ -44,12 +41,20 @@
     <div class="col-12 col-lg-6 order-first order-lg-last bg-form gh-signin-form-col">
       <div class="card gh-auth-card py-5" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <div class="gh-auth-card-logo text-center">
-          <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-auth-card-logo-img" alt="GetHired">
+          <app-brand-logo variant="horizontal" tone="on-light" [height]="36" imgClass="gh-auth-card-logo-img" alt="GetHired"></app-brand-logo>
         </div>
         <form class="px-3" (submit)="loginAdmin($event)" [formGroup]="loginForm">
           <div class="form-group text-start gh-auth-heading">
-            <h4 class="main-title gh-auth-title m-0">Welcome <span class="gh-auth-accent">back!</span></h4>
-            <p class="gh-auth-subtitle">Sign in to continue to your account</p>
+            <h4 class="main-title gh-auth-title m-0" *ngIf="!authRole">Welcome <span class="gh-auth-accent">back!</span></h4>
+            <h4 class="main-title gh-auth-title m-0" *ngIf="authRole">{{ signinTitle }}</h4>
+            <p class="gh-auth-subtitle">{{ signinSubtitle }}</p>
+            <div class="gh-role-chip" *ngIf="authRole" role="status">
+              Signing in as {{ roleLabel }}
+            </div>
+            <a *ngIf="authRole" class="gh-role-switch" routerLink="/signin"
+              [queryParams]="{ role: switchRole }">
+              Switch to {{ switchRoleLabel }}
+            </a>
           </div>
 
           <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
@@ -196,7 +201,7 @@
           </div>
 
           <div class="text-center mt-4 join-us">
-            {{ 'SIGNIN.REGISTRATION_PROMPT' | translate }} <a [routerLink]="'/signup'" class="register"> {{ 'SIGNIN.REGISTER' | translate }}</a>
+            {{ 'SIGNIN.REGISTRATION_PROMPT' | translate }} <a [routerLink]="'/signup'" [queryParams]="registerQuery" class="register"> {{ 'SIGNIN.REGISTER' | translate }}</a>
           </div>
         </form>
       </div>
@@ -217,8 +222,7 @@
         <div class="carousel-inner pb-5" id="admin-welcome-screens">
           <div class="carousel-item active text-center">
             <div class="text-center">
-              <img src="assets/brand/Gethired-horizontal-logo.png?v=3" routerLink="/jobs" class="main-logo">
-              <h5 class="title-left-main">
+<h5 class="title-left-main">
                 Find your next opportunity in</h5>
               <h4 class="title-left-gradient">ONE PLATFORM</h4>
               <h5 class="title-left-main">in just 3 clicks.</h5>
@@ -232,8 +236,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" routerLink="/jobs" class="main-logo">
-                <h5 class="title-left-main">
+<h5 class="title-left-main">
                   Connect talent and opportunity
                 </h5>
 
@@ -247,8 +250,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" routerLink="/jobs" class="main-logo">
-                <h5 class="title-left-main">
+<h5 class="title-left-main">
                   Find the perfect
                   <span class="title-left-gradient">FIT </span>
                 </h5>

@@ -13,8 +13,7 @@
         <div class="carousel-inner pb-5" id="admin-welcome-screens">
           <div class="carousel-item active text-center">
             <div class="text-center">
-              <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo" routerLink="/jobs">
-              <h5 class="title-left-main">
+<h5 class="title-left-main">
                 Find your next opportunity in</h5>
               <h4 class="title-left-gradient">ONE PLATFORM</h4>
               <h5 class="title-left-main">in just 3 clicks.</h5>
@@ -28,8 +27,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo" routerLink="/jobs">
-                <h5 class="title-left-main">
+<h5 class="title-left-main">
                   Connect talent and opportunity
                 </h5>
 
@@ -43,8 +41,7 @@
           <div class="carousel-item text-center">
             <div class="text-center">
               <div [@animate]="{value:'*', params:{ y:'-50px', delay:'200ms' }}">
-                <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="main-logo" routerLink="/jobs">
-                <h5 class="title-left-main">
+<h5 class="title-left-main">
                   Find the perfect
                   <span class="title-left-gradient">FIT </span>
                 </h5>
@@ -68,18 +65,15 @@
       <div class="carousel slide" #mobileCarouselEl>
         <div class="carousel-inner" id="signup-mobile-welcome-screens">
           <div class="carousel-item active text-center">
-            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
-            <img src="assets/images/placeholder/login-object-new-2.png" class="gh-mc-img">
+<img src="assets/images/placeholder/login-object-new-2.png" class="gh-mc-img">
             <p class="gh-mc-text">Find your next opportunity in <span class="title-left-gradient">ONE PLATFORM</span></p>
           </div>
           <div class="carousel-item text-center">
-            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
-            <img src="assets/images/placeholder/login-object-new-1.png" class="gh-mc-img">
+<img src="assets/images/placeholder/login-object-new-1.png" class="gh-mc-img">
             <p class="gh-mc-text">Connect talent and opportunity <span class="title-left-gradient">AUTOMATICALLY</span></p>
           </div>
           <div class="carousel-item text-center">
-            <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-mc-logo">
-            <img src="assets/images/placeholder/login-object-new-3.png" class="gh-mc-img">
+<img src="assets/images/placeholder/login-object-new-3.png" class="gh-mc-img">
             <p class="gh-mc-text">Find the perfect <span class="title-left-gradient">FIT</span> — <span class="title-left-gradient">Lights, Camera, GetHired.</span></p>
           </div>
         </div>
@@ -94,7 +88,7 @@
     <div class="col-12 col-lg-6 bg-form order-first order-lg-last">
       <div class="card gh-auth-card py-5 pt-2" [@animate]="{value:'*', params:{ x:'50px', delay:'200ms' }}">
         <div class="gh-auth-card-logo text-center">
-          <img src="assets/brand/Gethired-horizontal-logo.png?v=3" class="gh-auth-card-logo-img" alt="GetHired">
+          <app-brand-logo variant="horizontal" tone="on-light" [height]="36" imgClass="gh-auth-card-logo-img" alt="GetHired"></app-brand-logo>
         </div>
         <!-- Error Message -->
         <form class="" (submit)="register($event)" [formGroup]="registerForm" *ngIf="!isResent">
@@ -166,7 +160,7 @@
                  end -- give it an actual recovery path instead of leaving
                  the applicant to guess. -->
             <span *ngIf="isDuplicateAccount">
-              <a routerLink="/signin" class="gh-legal-inline-link">Sign in</a>
+              <a routerLink="/signin" [queryParams]="signinQuery" class="gh-legal-inline-link">Sign in</a>
               or
               <a routerLink="/reset-password" class="gh-legal-inline-link">reset your password</a>.
             </span>
@@ -491,10 +485,10 @@
 
           <div class="text-center mt-4 join-us">
             <ng-container *ngIf="role_validators?.value === 2">
-              Already have an employer account? <a [routerLink]="'/signin'" class="register">Sign in</a>
+              Already have an employer account? <a [routerLink]="'/signin'" [queryParams]="signinQuery" class="register">Sign in</a>
             </ng-container>
             <ng-container *ngIf="role_validators?.value !== 2">
-              {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" class="register">{{
+              {{ 'CREATE_ACCOUNT.LOGIN_PROMPT' | translate }} <a [routerLink]="'/signin'" [queryParams]="signinQuery" class="register">{{
                 'CREATE_ACCOUNT.LOGIN_BUTTON' | translate }}</a>
             </ng-container>
           </div>

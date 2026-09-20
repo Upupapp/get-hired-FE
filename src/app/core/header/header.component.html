@@ -3,9 +3,20 @@
 
     <!-- Logo -->
     <a class="gh-nav-logo" routerLink="/home" aria-label="GetHired — go to home" *ngIf="isPublic">
-      <img src="assets/brand/Gethired-horizontal-logo.png?v=3"
+      <!-- /employers* held on legacy lockup until on-dark pack -->
+      <img *ngIf="isEmployersPublicRoute"
+           src="assets/brand/Gethired-horizontal-logo.png?v=3"
            class="gh-nav-logo-img"
-           alt="GetHired Online">
+           width="160"
+           height="36"
+           alt="GetHired">
+      <!-- Light public routes: interim on-light horizontal (≥28px; CSS sets 36px) -->
+      <img *ngIf="!isEmployersPublicRoute"
+           src="assets/brand/gethired-logo-horizontal-on-light-interim.png"
+           class="gh-nav-logo-img"
+           width="160"
+           height="36"
+           alt="GetHired">
     </a>
 
     <!-- Mobile hamburger — stays the same size/shape and swaps its icon to
@@ -40,7 +51,7 @@
       <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
 
         <li class="nav-item" *ngIf="isPublic && !isOnJobsSection">
-          <a routerLink="/jobs" class="gh-nav-btn-primary gh-pressable">Browse jobs</a>
+          <a routerLink="/jobs" class="gh-nav-btn-browse gh-pressable">Browse jobs</a>
         </li>
 
         <li class="nav-item" *ngIf="!isPublic">
@@ -77,11 +88,15 @@
         </li>
 
         <li class="nav-item">
-          <div *ngIf="!isUserLoggedIn">
-            <button class="gh-nav-btn-signin gh-pressable" type="button"
-              (click)="redirectToRegister()" aria-label="Sign in to your account">
+          <div class="gh-nav-auth-pair" *ngIf="!isUserLoggedIn">
+            <a class="gh-nav-btn-primary gh-pressable" routerLink="/signup"
+              [queryParams]="publicAuthQuery" aria-label="Create a GetHired account">
+              Sign up
+            </a>
+            <a class="gh-nav-btn-signin gh-pressable" routerLink="/signin"
+              [queryParams]="publicAuthQuery" aria-label="Sign in to your account">
               Sign In
-            </button>
+            </a>
           </div>
 
           <div class="gh-nav-avatar-wrap dropdown" *ngIf="isUserLoggedIn && user">
@@ -219,10 +234,18 @@
 
     <!-- Logged out: Sign In -->
     <li role="listitem" *ngIf="!isUserLoggedIn">
-      <button type="button" class="gh-float-menu-item gh-float-menu-item--btn gh-float-menu-item--primary"
-        (click)="redirectToRegister(); closeMobileNav()" aria-label="Sign in to your account">
+      <a routerLink="/signup" [queryParams]="publicAuthQuery"
+        class="gh-float-menu-item gh-float-menu-item--primary"
+        (click)="closeMobileNav()" aria-label="Create a GetHired account">
+        <span class="gh-float-menu-label">Sign up</span>
+      </a>
+    </li>
+    <li role="listitem" *ngIf="!isUserLoggedIn">
+      <a routerLink="/signin" [queryParams]="publicAuthQuery"
+        class="gh-float-menu-item"
+        (click)="closeMobileNav()" aria-label="Sign in to your account">
         <span class="gh-float-menu-label">Sign In</span>
-      </button>
+      </a>
     </li>
 
     <!-- Logged in: account section, flattened (no nested dropdown) -->

@@ -1,0 +1,15 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.gh-brand-logo {
+  display: block;
+  height: inherit;
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+  vertical-align: middle;
+}

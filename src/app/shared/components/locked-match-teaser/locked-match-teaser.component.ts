@@ -38,13 +38,13 @@ export class LockedMatchTeaserComponent {
     this.analytics.trackUnlockMatchClicked(this.jobId ?? '');
     this.analytics.trackSignupPromptClicked(this.context);
     this.preserveReturnUrl();
-    this.router.navigateByUrl('/signup');
+    this.router.navigate(['/signup'], { queryParams: { role: 3 } });
   }
 
   logIn(): void {
     this.analytics.trackLoginPromptClicked(this.context);
     this.preserveReturnUrl();
-    this.router.navigateByUrl('/signin');
+    this.router.navigate(['/signin'], { queryParams: { role: 3 } });
   }
 
   private preserveReturnUrl(): void {
