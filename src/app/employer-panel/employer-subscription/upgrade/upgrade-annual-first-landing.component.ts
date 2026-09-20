@@ -10,6 +10,7 @@ import { SubscriptionPricingCatalogService } from '../services/subscription-pric
 import { EmployerUpgradePreview, SubscriptionCheckoutIntentService } from '../services/subscription-checkout-intent.service';
 import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from '../services/subscription-upgrade-recommendation.service';
 import { PlanCatalogItem, BillingCycle } from '../subscription-v4.models';
+import { APPROVED_PRICING_CATALOG } from '../approved-pricing-catalog';
 
 // Stable copy keys → UI copy
 const COPY_MAP: Record<string, { title: string; subtitle: string }> = {
@@ -89,6 +90,8 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   loadAll(trigger: string = 'upgrade_landing_viewed'): void {
     this.loading = true;
     this.loadError = !this.isKnownPlan;
+    const normalizedSlug = this.planSlug === 'premium' ? 'business' : this.planSlug;
+    this.plan = APPROVED_PRICING_CATALOG.plans.find(p => p.slug === normalizedSlug) || null;
     if (!this.loadError) { this.loadPreview(); }
 
     this.pricingCatalogService.getCatalog()
@@ -168,20 +171,31 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
       const amount = this.preview.amountMinor / 100 / (this.isAnnual ? 12 : 1);
       return new Intl.NumberFormat('en-PH', {style:'currency',currency:this.preview.currency,maximumFractionDigits:0}).format(amount);
     }
+    const pricing = this.plan && (this.isAnnual ? this.plan.pricing.annual : this.plan.pricing.monthly);
+    if (pricing && typeof pricing.amount === 'number') {
+      const amount = this.isAnnual ? pricing.amount / 12 : pricing.amount;
+      return new Intl.NumberFormat('en-PH', {style:'currency',currency:'PHP',maximumFractionDigits:0}).format(amount);
+    }
     return '—';
   }
 
   get dueTodayLabel(): string {
     if (this.preview) { return `${this.formatMinor(this.preview.amountMinor, this.preview.currency)} due today`; }
-    return this.previewLoading ? 'Confirming amount' : 'Checkout unavailable';
+    if (this.previewLoading) { return 'Confirming amount'; }
+    const pricing = this.plan && (this.isAnnual ? this.plan.pricing.annual : this.plan.pricing.monthly);
+    return pricing && typeof pricing.amount === 'number'
+      ? `${new Intl.NumberFormat('en-PH',{style:'currency',currency:'PHP',minimumFractionDigits:2}).format(pricing.amount)} due today`
+      : 'Checkout unavailable';
   }
 
   get renewalLabel(): string {
-    return this.preview ? 'Payment is collected up front for the selected billing period.' : '';
+    return this.isAnnual
+      ? 'Paid annually. Your plan renews after 12 months.'
+      : 'Paid monthly, recurring. Cancel or switch anytime from your subscription settings.';
   }
 
   get annualSavingsCopy(): string | null {
-    return null;
+    return this.plan && this.plan.pricing.annual.savingsCopy;
   }
 
   get annualSavingsAmount(): number {
@@ -210,12 +224,10 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     if (!this.plan) return [];
     const ents = this.plan.entitlements;
     return [
-      { label: 'Active job posts', value: ents.active_job_posts < 0 ? 'Unlimited' : String(ents.active_job_posts) },
-      { label: 'Admin users', value: ents.admin_users < 0 ? 'Unlimited' : String(ents.admin_users) },
-      { label: 'Video responses', value: ents.video_responses < 0 ? 'Unlimited' : String(ents.video_responses) },
-      { label: 'Company page', value: ents.customized_company_page ? 'Included' : 'Not included' },
-      { label: 'Video interviews', value: ents.video_interview_questions ? 'Included' : 'Not included' },
-      { label: 'Dedicated support', value: ents.dedicated_support ? 'Included' : 'Not included' },
+      { label: 'Active job posts', value: ents.active_job_posts === null ? 'Custom' : String(ents.active_job_posts) },
+      { label: 'Team users', value: ents.admin_users === null ? 'Custom' : String(ents.admin_users) },
+      { label: 'Recruitment storage', value: typeof ents.recruitment_storage_bytes === 'number' ? `${ents.recruitment_storage_bytes / 1073741824} GB` : 'Custom' },
+      { label: 'Video questions per job', value: ents.video_questions_per_job === null ? 'Custom' : String(ents.video_questions_per_job || 0) },
     ];
   }
 

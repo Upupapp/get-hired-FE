@@ -45,7 +45,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
 
     expect(component.loading).toBeFalse();
     expect(component.loadError).toBeFalse();
-    expect(component.plan).toBeNull();
+    expect(component.plan?.slug).toBe('growth');
     expect(component.planName).toBe('Growth');
     expect(component.displayPrice).toBe('₱2,990');
     expect(component.dueTodayLabel).toBe('₱2,990.00 due today');
