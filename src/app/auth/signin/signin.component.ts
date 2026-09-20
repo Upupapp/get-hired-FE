@@ -12,6 +12,7 @@ import { take } from 'rxjs/operators';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 import { AuthRole, authRoleLabel, authRoleQuery, otherAuthRole, parseAuthRole } from '@app-shared/utils/auth-role-query';
 import { Subscription } from 'rxjs';
+import { consumeReturnUrl } from '@app-shared/utils/auth-return-url.util';
 
 // Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
 // not as an ES module -- referencing the global here avoids bundling a
@@ -178,7 +179,10 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
 
           }));
 
-          if (user.withCompany) {
+          const employerReturnUrl = consumeReturnUrl(2);
+          if (employerReturnUrl && user.withCompany) {
+            this.router.navigateByUrl(employerReturnUrl);
+          } else if (user.withCompany) {
 
             if(user.withActiveSubscription) {
               localStorage.setItem('withActiveSubscription', data.withActiveSubscription);
@@ -200,12 +204,11 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
             photoUrl: data.photoUrl
           }));
 
-          const redirect = localStorage.getItem('returnURL');
+          const redirect = consumeReturnUrl(3);
           if (redirect) {
             // PROFILE-SETUP PHASE 1 FIX: consumed once -- was previously
             // read but never cleared, leaving it to silently redirect a
             // later, unrelated sign-in to a stale job/page.
-            localStorage.removeItem('returnURL');
             this.router.navigateByUrl(redirect);
           } else {
             this.router.navigate(['/user/dashboard'], { relativeTo: this.activatedRoute });

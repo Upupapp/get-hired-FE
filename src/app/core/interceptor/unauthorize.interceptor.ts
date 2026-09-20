@@ -11,6 +11,7 @@ import { catchError, switchMap, tap } from "rxjs/operators";
 import { SnackbarService } from '../services/snackbar.service';
 import { CoreService } from "../services/core.service";
 import { TokenLifecycleService } from "../services/token-lifecycle.service";
+import { rememberReturnUrl } from '../../shared/utils/auth-return-url.util';
 
 // SAFE-401-RECOVERY: marks a request that has already been retried once
 // after a refresh attempt, so a second 401 on the SAME request goes
@@ -184,7 +185,10 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
     // suppressExpiryHandling for the full rationale.
     if (!this.handlingExpiry && !this.coreService.suppressExpiryHandling) {
       this.handlingExpiry = true;
+      const expiredUrl = this.router.url || '';
+      const expiredRole = expiredUrl.startsWith('/recruiter/') ? 2 : expiredUrl.startsWith('/user/') ? 3 : null;
       this.coreService.logout();
+      if (expiredRole) rememberReturnUrl(expiredUrl, expiredRole);
       this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');
       // AUTH LIFECYCLE FIX: previously navigated to '/' (Home) here, on the
       // reasoning that an auto-detected expiry is "just like" an explicit
@@ -197,7 +201,7 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
       // still tears down whatever protected route/module was mounted (e.g.
       // the employer portal), stopping any further now-doomed authenticated
       // calls the same as before.
-      this.router.navigateByUrl('/signin');
+      this.router.navigate(['/signin'], { queryParams: expiredRole ? { role: expiredRole } : undefined });
     }
     return throwError(() => err);
   }

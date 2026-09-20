@@ -4,6 +4,7 @@ import { UpgradeAnnualFirstLandingComponent } from './upgrade-annual-first-landi
 
 describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
   function createComponent(planSlug = 'growth') {
+    localStorage.removeItem('returnURL');
     const preview = {
       success: true,
       planVersionId: 'growth-v1',
@@ -100,6 +101,10 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     expect(component.checkoutError).toContain('session has expired');
 
     component.signIn();
-    expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');
+    expect(localStorage.getItem('returnURL')).toBe('/recruiter/subscription/upgrade/growth?billing=monthly');
+    expect(router.navigate).toHaveBeenCalledWith(['/signin'], { queryParams: { role: 2 } });
+
+    component.startCheckout();
+    expect(checkoutIntentService.createCheckoutIntent).toHaveBeenCalledTimes(1);
   });
 });

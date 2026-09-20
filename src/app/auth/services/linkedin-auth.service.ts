@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '@environments/environment';
+import { consumeReturnUrl, safeReturnUrlForRole } from '@app-shared/utils/auth-return-url.util';
 
 export interface LinkedInCompleteResponse {
   success: boolean;
@@ -148,7 +149,10 @@ export class LinkedInAuthService {
           firstName: data.firstName, lastName: data.lastName,
           photoUrl: data.photoUrl
         }));
-        if (data.withCompany) {
+        const employerReturnUrl = safeReturnUrlForRole(returnUrl, 2) || consumeReturnUrl(2);
+        if (employerReturnUrl && data.withCompany) {
+          this.router.navigateByUrl(employerReturnUrl);
+        } else if (data.withCompany) {
           if (data.withActiveSubscription) {
             localStorage.setItem('withActiveSubscription', data.withActiveSubscription);
             this.router.navigate(['/recruiter/dashboard']);
@@ -168,9 +172,8 @@ export class LinkedInAuthService {
         }));
         // PROFILE-SETUP PHASE 1 FIX: consumed once, matching
         // signin.component.ts -- was previously read but never cleared.
-        const storedReturnUrl = localStorage.getItem('returnURL');
-        if (storedReturnUrl) localStorage.removeItem('returnURL');
-        const dest = returnUrl || storedReturnUrl || '/user/dashboard';
+        const storedReturnUrl = consumeReturnUrl(3);
+        const dest = safeReturnUrlForRole(returnUrl, 3) || storedReturnUrl || '/user/dashboard';
         this.router.navigateByUrl(dest);
         break;
     }

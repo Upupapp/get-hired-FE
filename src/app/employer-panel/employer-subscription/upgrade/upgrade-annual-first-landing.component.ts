@@ -12,6 +12,7 @@ import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from 
 import { PlanCatalogItem, BillingCycle } from '../subscription-v4.models';
 import { APPROVED_PRICING_CATALOG } from '../approved-pricing-catalog';
 import { CoreService } from '../../../core/services/core.service';
+import { rememberReturnUrl } from '../../../shared/utils/auth-return-url.util';
 
 // Stable copy keys → UI copy
 const COPY_MAP: Record<string, { title: string; subtitle: string }> = {
@@ -81,6 +82,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.planSlug = this.route.snapshot.paramMap.get('planSlug') || '';
+    this.selectedCycle = this.route.snapshot.queryParamMap.get('billing') === 'annual' ? 'annual' : 'monthly';
     const trigger = this.route.snapshot.queryParamMap.get('trigger') || 'upgrade_landing_viewed';
     this.loadAll(trigger);
   }
@@ -248,7 +250,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     // Upgrade preview improves the page, but checkout itself is the authoritative
     // server-priced operation. Older production runtimes may not expose preview,
     // so its failure must not disable the real PayMongo checkout request.
-    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading) return;
+    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading || this.sessionExpired) return;
     this.checkoutLoading = true;
     this.sessionExpired = false;
     this.checkoutError = null;
@@ -287,6 +289,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
           this.sessionExpired = true;
           this.checkoutError = 'Your session has expired. Sign in again to continue to checkout.';
           this.coreService.discardExpiredSession();
+          this.rememberCheckoutReturn();
           this.cdr.markForCheck();
           return;
         }
@@ -298,7 +301,14 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
 
   goBack(): void { this.router.navigate(['/recruiter/subscription']); }
   goCompare(): void { this.router.navigate(['/recruiter/subscription'], { queryParams: { compare: '1' } }); }
-  signIn(): void { this.router.navigateByUrl('/signin'); }
+  signIn(): void {
+    this.rememberCheckoutReturn();
+    this.router.navigate(['/signin'], { queryParams: { role: 2 } });
+  }
+
+  private rememberCheckoutReturn(): void {
+    rememberReturnUrl(`/recruiter/subscription/upgrade/${encodeURIComponent(this.planSlug)}?billing=${this.selectedCycle}`, 2);
+  }
 
   private createIdempotencyKey(): string {
     if (this.isBrowser && window.crypto?.getRandomValues) {

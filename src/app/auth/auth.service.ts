@@ -16,7 +16,8 @@ export class AuthService {
   ) { }
 
   getUserCredentials(email: string) {
-    return this.baseService.get(`${this.authUrl}/getcredentials?email=${email}`);
+    const normalizedEmail = this.normalizeEmail(email);
+    return this.baseService.get(`${this.authUrl}/getcredentials?email=${encodeURIComponent(normalizedEmail)}`);
   }
 
   getRefreshToken(): any {
@@ -27,15 +28,22 @@ export class AuthService {
   }
 
   checkEmailIfExist(email: string) {
-    return this.baseService.get(`${this.authUrl}/checkemailifexist?email=${email}`);
+    const normalizedEmail = this.normalizeEmail(email);
+    return this.baseService.get(`${this.authUrl}/checkemailifexist?email=${encodeURIComponent(normalizedEmail)}`);
   }
 
   signIn(loginCredentials: { email: string, password: string }) {
-    return this.baseService.post<Model.Credentials>(`${this.authUrl}/signin`, loginCredentials);
+    return this.baseService.post<Model.Credentials>(`${this.authUrl}/signin`, {
+      ...loginCredentials,
+      email: this.normalizeEmail(loginCredentials && loginCredentials.email)
+    });
   }
 
   signUp(credentials: Model.Credentials) {
-    return this.baseService.post<Model.Credentials>(`${this.authUrl}/signup`, credentials);
+    return this.baseService.post<Model.Credentials>(`${this.authUrl}/signup`, {
+      ...credentials,
+      email: this.normalizeEmail(credentials && credentials.email)
+    });
   }
 
   verifyEmailLink(oobCode: string) {
@@ -43,12 +51,17 @@ export class AuthService {
   }
 
   resendVerification(email: string) {
-    return this.baseService.post(`${this.authUrl}/resendverificationlink?email=${email}`);
+    const normalizedEmail = this.normalizeEmail(email);
+    return this.baseService.post(`${this.authUrl}/resendverificationlink?email=${encodeURIComponent(normalizedEmail)}`);
   }
 
   getEmailPwLink(email: string) {
-    const normalizedEmail = String(email || '').trim().toLowerCase();
+    const normalizedEmail = this.normalizeEmail(email);
     return this.baseService.get(`${this.authUrl}/getpwresetlink?email=${encodeURIComponent(normalizedEmail)}`);
+  }
+
+  private normalizeEmail(email: string): string {
+    return String(email || '').trim().toLowerCase();
   }
 
   changePw(code: string, pw: string, email: string) {

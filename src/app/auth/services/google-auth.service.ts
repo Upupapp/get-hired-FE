@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { environment } from '@environments/environment';
+import { consumeReturnUrl, safeReturnUrlForRole } from '@app-shared/utils/auth-return-url.util';
 
 export interface GoogleSessionResponse {
   success: boolean;
@@ -300,7 +301,10 @@ export class GoogleAuthService {
           firstName: data.firstName, lastName: data.lastName,
           photoUrl: data.photoUrl
         }));
-        if (data.withCompany) {
+        const employerReturnUrl = safeReturnUrlForRole(returnUrl, 2) || consumeReturnUrl(2);
+        if (employerReturnUrl && data.withCompany) {
+          this.router.navigateByUrl(employerReturnUrl);
+        } else if (data.withCompany) {
           if (data.withActiveSubscription) {
             localStorage.setItem('withActiveSubscription', data.withActiveSubscription);
             this.router.navigate(['/recruiter/dashboard']);
@@ -321,11 +325,10 @@ export class GoogleAuthService {
         if (returnUrl) {
           this.router.navigateByUrl(returnUrl);
         } else {
-          const storedReturn = localStorage.getItem('returnURL');
+          const storedReturn = consumeReturnUrl(3);
           if (storedReturn) {
             // PROFILE-SETUP PHASE 1 FIX: consumed once, matching
             // signin.component.ts -- was previously read but never cleared.
-            localStorage.removeItem('returnURL');
             this.router.navigateByUrl(storedReturn);
           } else {
             this.router.navigate(['/user/dashboard']);
