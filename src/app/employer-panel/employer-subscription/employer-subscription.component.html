@@ -72,7 +72,7 @@
         <div class="billing-cycle" *ngIf="canToggleBillingCycle" role="group" aria-label="Billing cycle">
           <button type="button" [class.is-active]="billingCycle === 'monthly'" (click)="setBillingCycle('monthly')">Monthly</button>
           <button type="button" [class.is-active]="billingCycle === 'annual'" (click)="setBillingCycle('annual')">Annual</button>
-          <span *ngIf="catalog && catalog.annualCopy">{{ catalog.annualCopy }}</span>
+          <span>{{ catalog?.annualCopy || 'Save 2 months with annual billing' }}</span>
         </div>
         <div class="catalog-state" *ngIf="catalogLoading">Loading current plans…</div>
         <div class="catalog-state catalog-state--error" *ngIf="catalogError && !catalogPlans.length">Current pricing is temporarily unavailable. <button type="button" (click)="loadPricingCatalog()">Retry</button></div>

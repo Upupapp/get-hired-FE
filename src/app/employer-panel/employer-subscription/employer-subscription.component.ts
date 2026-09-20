@@ -13,6 +13,7 @@ import { SubscriptionPricingCatalogService } from './services/subscription-prici
 import { SubscriptionGuardrailService } from './services/subscription-guardrail.service';
 import { StorageAddonCheckoutRequest } from './services/subscription-checkout-intent.service';
 import { BillingCycle, PlanCatalogItem, PlanEntitlements, PricingCatalog, RecruitmentStorageUsageV4 } from './subscription-v4.models';
+import { APPROVED_PRICING_CATALOG } from './approved-pricing-catalog';
 import {
   CapacityLine,
   ComparisonGroup,
@@ -580,8 +581,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     // so use it when the dedicated catalog endpoint is not available rather
     // than replacing it with frontend constants or leaving the dashboard empty.
     const plans = this.summary && this.summary.availablePlans;
-    if (!plans) { return []; }
-    return plans.map(plan => {
+    const summaryPlans = (plans || []).map(plan => {
       const slug = plan.code === 'premium' ? 'business' : plan.code;
       const feature = (key: string) => !!(plan.features || []).find(item => item.key === key && item.included);
       const monthly = typeof plan.priceMonthly === 'number' ? plan.priceMonthly : null;
@@ -623,6 +623,37 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
         defaultBillingCycle: 'monthly' as BillingCycle,
       } as PlanCatalogItem;
     });
+
+    // Merge partial employer records into the complete approved catalog. This
+    // preserves current/recommended flags and any server-returned monthly price,
+    // while ensuring older production runtimes do not hide unreturned tiers.
+    const bySlug = new Map(summaryPlans.map(plan => [plan.slug, plan]));
+    return APPROVED_PRICING_CATALOG.plans.map(approved => {
+      const serverPlan = bySlug.get(approved.slug);
+      const current = serverPlan
+        ? serverPlan.current
+        : this.currentPlanSlugFromSummary === approved.slug;
+      if (!serverPlan) { return { ...approved, current }; }
+      return {
+        ...approved,
+        ...serverPlan,
+        current,
+        pricing: {
+          monthly: serverPlan.pricing.monthly,
+          annual: approved.pricing.annual,
+        },
+        entitlements: {
+          ...approved.entitlements,
+          ...serverPlan.entitlements,
+        },
+      };
+    });
+  }
+
+  private get currentPlanSlugFromSummary(): string | null {
+    const code = this.summary && this.summary.currentPlan && this.summary.currentPlan.code;
+    if (!code || code === 'none') { return null; }
+    return code === 'premium' ? 'business' : code;
   }
 
   private summaryLimit(value: number | 'unlimited' | null | undefined): number | null {
@@ -742,7 +773,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   /** True when the backend offers both cycles, so the toggle is never a no-op. */
   get canToggleBillingCycle(): boolean {
-    return !!(this.catalog && this.catalog.monthlyAvailable && this.catalog.annualAvailable);
+    const source = this.catalog || APPROVED_PRICING_CATALOG;
+    return !!(source.monthlyAvailable && source.annualAvailable);
   }
 
   setBillingCycle(cycle: BillingCycle): void {

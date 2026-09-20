@@ -8,7 +8,7 @@ describe('EmployerSubscriptionComponent record-backed pricing fallback', () => {
     );
   }
 
-  it('maps only the plans and prices returned by the employer summary', () => {
+  it('stitches partial employer records into the complete approved catalog', () => {
     const page = component();
     page.summary = {
       currentPlan: { code: 'free_trial', name: 'Free Trial', status: 'trialing' },
@@ -29,11 +29,24 @@ describe('EmployerSubscriptionComponent record-backed pricing fallback', () => {
       ],
     } as any;
 
-    expect(page.catalogPlans.map(plan => plan.slug)).toEqual(['free_trial', 'growth']);
-    expect(page.catalogPlans[1].pricing.monthly.amount).toBe(3490);
-    expect(page.catalogPlans[1].upgradeRoute).toBe('/recruiter/subscription/upgrade/growth');
-    expect(page.catalogPlans[1].entitlements.active_job_posts).toBe(15);
-    expect(page.catalogPlans[1].entitlements.video_responses).toBeNull();
+    expect(page.catalogPlans.map(plan => plan.slug)).toEqual(['free_trial', 'starter', 'growth', 'business', 'enterprise']);
+    expect(page.catalogPlans[1].pricing.monthly.amount).toBe(1490);
+    expect(page.catalogPlans[2].pricing.monthly.amount).toBe(3490);
+    expect(page.catalogPlans[2].pricing.annual.amount).toBe(34900);
+    expect(page.catalogPlans[2].upgradeRoute).toBe('/recruiter/subscription/upgrade/growth');
+    expect(page.catalogPlans[2].entitlements.active_job_posts).toBe(15);
+    expect(page.catalogPlans[2].entitlements.recruitment_storage_bytes).toBe(50 * 1024 * 1024 * 1024);
+    expect(page.catalogPlans[3].pricing.monthly.amount).toBe(6990);
+    expect(page.catalogPlans[4].contactSalesRequired).toBeTrue();
+    expect(page.catalogPlans[0].current).toBeTrue();
     expect(page.recommendedCatalogPlan?.slug).toBe('growth');
+  });
+
+  it('renders all approved plans even when the summary has no availablePlans array', () => {
+    const page = component();
+    page.summary = { currentPlan: { code: 'starter', name: 'Starter', status: 'active' } } as any;
+
+    expect(page.catalogPlans.length).toBe(5);
+    expect(page.catalogPlans.find(plan => plan.slug === 'starter')?.current).toBeTrue();
   });
 });
