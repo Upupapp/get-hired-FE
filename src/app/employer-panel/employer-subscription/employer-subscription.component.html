@@ -116,9 +116,10 @@
         <div class="secondary-panel__header"><button type="button" (click)="switchTab('plan')">← Back</button><h2>Billing History</h2></div>
         <div class="panel-state" *ngIf="invoicesLoading">Loading invoices…</div>
         <div class="panel-state" *ngIf="invoicesError">{{ invoicesError }} <button type="button" (click)="loadInvoices()">Retry</button></div>
-        <div class="panel-state" *ngIf="!invoicesLoading && !invoicesError && invoices.length === 0">No invoices yet.</div>
+        <div class="panel-state" *ngIf="!invoicesLoading && !invoicesError && invoices.length === 0">No billing transactions yet.</div>
+        <p class="invoice-fallback-note" *ngIf="invoiceFallbackMode && invoices.length">Showing payment history from your subscription record.</p>
         <div class="invoice-list" *ngIf="!invoicesLoading && !invoicesError && invoices.length">
-          <button type="button" class="invoice-row" *ngFor="let inv of invoices" (click)="openInvoiceDrawer(inv.id)">
+          <button type="button" class="invoice-row" *ngFor="let inv of invoices" (click)="openInvoiceDrawer(inv.id)" [class.invoice-row--readonly]="invoiceFallbackMode">
             <span><b>{{ inv.invoiceNumber }}</b><small>{{ formatInvoiceDate(inv.createdAt) }}</small></span><span>{{ inv.planName || 'Subscription' }}</span><strong>{{ formatAmount(inv.totalAmount, inv.currency) }}</strong><app-invoice-status-chip [status]="inv.status"></app-invoice-status-chip>
           </button>
         </div>

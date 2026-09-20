@@ -75,6 +75,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   invoicesError: string | null = null;
   invoicesTotal = 0;
   selectedInvoiceId: string | null = null;
+  invoiceFallbackMode = false;
 
   // FAQ accordion state. Keyed by question text, not index: the visible FAQ list is filtered by what the
   // catalog models (see visibleFaqItems), so an index would point at a different
@@ -1049,6 +1050,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   loadInvoices(): void {
     this.invoicesLoading = true;
     this.invoicesError = null;
+    this.invoiceFallbackMode = false;
 
     this.billing.listInvoices({ limit: 20, offset: 0 })
       .pipe(takeUntil(this.destroy$))
@@ -1059,17 +1061,47 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
             this.invoices = res.invoices || [];
             this.invoicesTotal = res.total || 0;
           } else {
-            this.invoicesError = 'We couldn\'t load your invoices.';
+            this.useSummaryInvoices();
           }
         },
         error: () => {
           this.invoicesLoading = false;
-          this.invoicesError = 'We couldn\'t load your invoices. Please try again.';
+          this.useSummaryInvoices();
         }
       });
   }
 
+  /**
+   * Production versions that predate the Invoice Vault routes still include a
+   * payment history in the authenticated subscription summary. Use that record
+   * as a read-only history instead of presenting a load error. No invoice detail,
+   * PDF, or send action is claimed when the dedicated billing API is unavailable.
+   */
+  private useSummaryInvoices(): void {
+    const records = (this.summary && this.summary.invoices) || [];
+    this.invoiceFallbackMode = true;
+    this.invoicesError = null;
+    this.invoices = records.map(record => ({
+      id: String(record.id),
+      invoiceNumber: String(record.id),
+      status: record.status,
+      currency: record.currency || 'PHP',
+      totalAmount: record.amount,
+      planName: record.planName || record.description || 'Subscription',
+      billingCycle: null,
+      billingPeriodStart: null,
+      billingPeriodEnd: null,
+      issuedAt: record.date,
+      paidAt: record.status === 'paid' ? record.date : null,
+      createdAt: record.date,
+      paymentMethodLabel: record.paymentMethodLabel || null,
+      hasDownload: !!record.receiptUrl,
+    }));
+    this.invoicesTotal = this.invoices.length;
+  }
+
   openInvoiceDrawer(invoiceId: string): void {
+    if (this.invoiceFallbackMode) { return; }
     this.selectedInvoiceId = invoiceId;
   }
 
