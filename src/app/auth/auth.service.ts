@@ -47,7 +47,8 @@ export class AuthService {
   }
 
   getEmailPwLink(email: string) {
-    return this.baseService.get(`${this.authUrl}/getpwresetlink?email=${email}`);
+    const normalizedEmail = String(email || '').trim().toLowerCase();
+    return this.baseService.get(`${this.authUrl}/getpwresetlink?email=${encodeURIComponent(normalizedEmail)}`);
   }
 
   changePw(code: string, pw: string, email: string) {

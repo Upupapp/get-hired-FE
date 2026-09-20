@@ -77,7 +77,12 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
 
-    this.email = this.pwForm?.get('email')?.value;
+    // Keep password recovery consistent with the canonical account email.
+    // Mixed case and accidental surrounding whitespace must not make a
+    // registered account miss a case-sensitive lookup in an older API
+    // runtime. AuthService also URL-encodes this value before transport.
+    this.email = String(this.pwForm?.get('email')?.value || '').trim().toLowerCase();
+    this.pwForm.patchValue({ email: this.email }, { emitEvent: false });
     this.loading = true;
     this.authService.getEmailPwLink(this.email)
       .pipe(
