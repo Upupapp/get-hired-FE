@@ -17,6 +17,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     };
     const checkoutIntentService = {
       previewUpgrade: jasmine.createSpy('previewUpgrade').and.returnValue(of(preview)),
+      createCheckoutIntent: jasmine.createSpy('createCheckoutIntent').and.returnValue(of({ success: false })),
     };
     const component = new UpgradeAnnualFirstLandingComponent(
       {
@@ -67,5 +68,18 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
 
     expect(component.loadError).toBeTrue();
     expect(checkoutIntentService.previewUpgrade).not.toHaveBeenCalled();
+  });
+
+  it('allows the server-authoritative checkout request when preview is unavailable', () => {
+    const { component, checkoutIntentService } = createComponent('growth');
+    component.ngOnInit();
+    component.preview = null;
+    component.previewLoading = false;
+
+    component.startCheckout();
+
+    expect(checkoutIntentService.createCheckoutIntent).toHaveBeenCalledWith(jasmine.objectContaining({
+      planCode: 'growth', billingCycle: 'monthly',
+    }));
   });
 });

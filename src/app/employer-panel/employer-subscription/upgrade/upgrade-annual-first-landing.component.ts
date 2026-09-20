@@ -242,7 +242,10 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   }
 
   startCheckout(): void {
-    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading || !this.preview) return;
+    // Upgrade preview improves the page, but checkout itself is the authoritative
+    // server-priced operation. Older production runtimes may not expose preview,
+    // so its failure must not disable the real PayMongo checkout request.
+    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading) return;
     this.checkoutLoading = true;
     this.checkoutError = null;
     this.cdr.markForCheck();
@@ -324,8 +327,8 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     this.previewLoading = true; this.preview = null; this.previewError = null;
     this.checkoutIntentService.previewUpgrade({planCode:this.planSlug === 'business' ? 'premium' : this.planSlug,billingCycle:this.selectedCycle})
       .pipe(takeUntil(this.destroy$)).subscribe({
-        next: preview => { if(request!==this.previewRequest){return;} this.previewLoading = false; this.preview = preview?.success === true && Number.isSafeInteger(preview.amountMinor) && preview.amountMinor > 0 && preview.currency === 'PHP' && preview.billingCycle === this.selectedCycle ? preview : null; this.previewError = this.preview ? null : 'This checkout option is not available.'; this.cdr.markForCheck(); },
-        error: error => { if(request!==this.previewRequest){return;} this.previewLoading = false; this.preview = null; this.previewError = this.checkoutErrorFor(error?.error?.code); this.cdr.markForCheck(); },
+        next: preview => { if(request!==this.previewRequest){return;} this.previewLoading = false; this.preview = preview?.success === true && Number.isSafeInteger(preview.amountMinor) && preview.amountMinor > 0 && preview.currency === 'PHP' && preview.billingCycle === this.selectedCycle ? preview : null; this.previewError = null; this.cdr.markForCheck(); },
+        error: () => { if(request!==this.previewRequest){return;} this.previewLoading = false; this.preview = null; this.previewError = null; this.cdr.markForCheck(); },
       });
   }
 
