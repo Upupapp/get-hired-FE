@@ -279,6 +279,12 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.checkoutLoading = false;
+        if (Number(err && err.status) === 401) {
+          this.checkoutError = null;
+          this.router.navigateByUrl('/signin');
+          this.cdr.markForCheck();
+          return;
+        }
         this.checkoutError = this.checkoutErrorFor(err?.error?.code);
         this.cdr.markForCheck();
       },

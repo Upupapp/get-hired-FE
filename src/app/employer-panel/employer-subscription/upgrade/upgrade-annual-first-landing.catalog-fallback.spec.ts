@@ -19,6 +19,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
       previewUpgrade: jasmine.createSpy('previewUpgrade').and.returnValue(of(preview)),
       createCheckoutIntent: jasmine.createSpy('createCheckoutIntent').and.returnValue(of({ success: false })),
     };
+    const router = { navigateByUrl: jasmine.createSpy('navigateByUrl'), navigate: jasmine.createSpy('navigate') };
     const component = new UpgradeAnnualFirstLandingComponent(
       {
         snapshot: {
@@ -26,7 +27,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
           queryParamMap: convertToParamMap({}),
         },
       } as any,
-      {} as any,
+      router as any,
       { getCatalog: () => throwError(() => new Error('catalog unavailable')) } as any,
       checkoutIntentService as any,
       {
@@ -36,7 +37,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
       { markForCheck: jasmine.createSpy('markForCheck') } as any,
       'browser'
     );
-    return { component, checkoutIntentService };
+    return { component, checkoutIntentService, router };
   }
 
   it('renders a known plan from the authoritative preview when the legacy catalog fails', () => {
@@ -81,5 +82,17 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     expect(checkoutIntentService.createCheckoutIntent).toHaveBeenCalledWith(jasmine.objectContaining({
       planCode: 'growth', billingCycle: 'monthly',
     }));
+  });
+
+  it('sends an expired checkout session to sign in instead of showing a payment error', () => {
+    const { component, checkoutIntentService, router } = createComponent('growth');
+    checkoutIntentService.createCheckoutIntent.and.returnValue(throwError(() => ({ status: 401 })));
+    component.ngOnInit();
+    component.previewLoading = false;
+
+    component.startCheckout();
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');
+    expect(component.checkoutError).toBeNull();
   });
 });
