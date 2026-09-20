@@ -5,16 +5,16 @@ import {
 import { CandidatePlanRefusal, EmployerPlanLimitRefusal } from '@main/shared/plan-limit/plan-limit-refusal';
 
 /**
- * The 11 tagged JSON examples of SUBSCRIPTION_ENGAGEMENT_API_CONTRACT.md at gh-be 658d0a5, in contract order,
+ * The 11 tagged JSON examples of SUBSCRIPTION_ENGAGEMENT_API_CONTRACT.md at gh-be 0e4d647, in contract order,
  * with the same keys, order and values (parsed, then printed with two-space indentation).
  * gh-be's tests/engagementContract.test.js checks each example against the code that produces it, in both
  * directions. Typing each one here is the frontend's half: a field either side adds, drops or renames stops
  * the spec build. Regenerate from the contract; never edit a value by hand.
  *
- * Contract sha256 357536d96a128709b2bf4f6cecc9448a76fd7ff0655d73a8d9da2f7d60baaf54. Each block's sha256 (first 16 hex) is noted above its constant.
+ * Contract sha256 6e5a54d4518131fef58f1923093f63539f304e19e3fd3c44b4566391d69ecf42. Each block's sha256 (first 16 hex) is noted above its constant.
  */
 
-/** contract:EngagementContextResponse · block sha256 a01ae9e7ad3c5ced */
+/** contract:EngagementContextResponse · regenerated from backend E2.2 */
 export const ENGAGEMENT_CONTEXT_RESPONSE: EngagementContextResponse = {
   "success": true,
   "context": {
@@ -313,6 +313,11 @@ export const ENGAGEMENT_CONTEXT_RESPONSE: EngagementContextResponse = {
         "SUBSCRIPTION": 0,
         "BILLING": 1,
         "ACCOUNT": 0
+      },
+      "bySource": {
+        "engine": 0,
+        "payment": 1,
+        "other": 1
       }
     },
     "capabilities": {
@@ -365,7 +370,7 @@ export const ENGAGEMENT_CONTEXT_RESPONSE: EngagementContextResponse = {
   }
 };
 
-/** contract:Nudge · block sha256 a8d657332d48e306 */
+/** contract:Nudge · regenerated from backend E2.2 */
 export const NUDGE: Nudge = {
   "id": "nudge:storage.80",
   "kind": "USAGE_WARNING",
@@ -423,12 +428,13 @@ export const NUDGE: Nudge = {
   ]
 };
 
-/** contract:NotificationListResponse · block sha256 968426107ce3702a */
+/** contract:NotificationListResponse · regenerated from backend E2.2 */
 export const NOTIFICATION_LIST_RESPONSE: NotificationListResponse = {
   "success": true,
   "notifications": [
     {
       "id": "NOTIF-26-48213907",
+      "source": "engine",
       "category": "SUBSCRIPTION",
       "type": "storage.90",
       "priority": "HIGH",
@@ -462,6 +468,7 @@ export const NOTIFICATION_LIST_RESPONSE: NotificationListResponse = {
     },
     {
       "id": "SUBN-42",
+      "source": "payment",
       "category": "BILLING",
       "type": "payment_failed",
       "priority": "HIGH",
@@ -493,9 +500,10 @@ export const NOTIFICATION_LIST_RESPONSE: NotificationListResponse = {
   "degraded": false
 };
 
-/** contract:NotificationItem · block sha256 444bdf5750af7cb5 */
+/** contract:NotificationItem · regenerated from backend E2.2 */
 export const NOTIFICATION_ITEM: NotificationItem = {
   "id": "NOTIF-26-48213907",
+  "source": "engine",
   "category": "SUBSCRIPTION",
   "type": "storage.90",
   "priority": "HIGH",
@@ -528,27 +536,27 @@ export const NOTIFICATION_ITEM: NotificationItem = {
   "expiresAt": "2026-10-13T06:12:40.000Z"
 };
 
-/** contract:MessageActionResponse · block sha256 0990e70c52670040 */
+/** contract:MessageActionResponse · regenerated from backend E2.2 */
 export const MESSAGE_ACTION_RESPONSE: MessageActionResponse = {
   "success": true,
   "found": true,
   "status": "DISMISSED"
 };
 
-/** contract:MessageActionNotFound · block sha256 a47a164c042014ad */
+/** contract:MessageActionNotFound · regenerated from backend E2.2 */
 export const MESSAGE_ACTION_NOT_FOUND: MessageActionNotFound = {
   "success": true,
   "found": false
 };
 
-/** contract:MessageActionError · block sha256 42b6674fa43bacbe */
+/** contract:MessageActionError · regenerated from backend E2.2 */
 export const MESSAGE_ACTION_ERROR: MessageActionError = {
   "success": false,
   "code": "NOT_DISMISSIBLE",
   "message": "This message stays until the issue is resolved."
 };
 
-/** contract:ListQueryError · block sha256 0df6f02b14d1144d */
+/** contract:ListQueryError · regenerated from backend E2.2 */
 export const LIST_QUERY_ERROR: ListQueryError = {
   "success": false,
   "code": "INVALID_QUERY",
@@ -556,7 +564,7 @@ export const LIST_QUERY_ERROR: ListQueryError = {
   "message": "category must be one or more of SUBSCRIPTION, BILLING."
 };
 
-/** contract:BellListResponse · block sha256 e87a2422c4c4ff9c */
+/** contract:BellListResponse · regenerated from backend E2.2 */
 export const BELL_LIST_RESPONSE: BellListResponse = {
   "status": "success",
   "data": {
@@ -623,7 +631,7 @@ export const BELL_LIST_RESPONSE: BellListResponse = {
   }
 };
 
-/** contract:EmployerLimitRefusal · block sha256 fbddfa603a106885 */
+/** contract:EmployerLimitRefusal · regenerated from backend E2.2 */
 export const CONTRACT_EMPLOYER_LIMIT_REFUSAL: EmployerPlanLimitRefusal = {
   "success": false,
   "status": "error",
@@ -657,7 +665,7 @@ export const CONTRACT_EMPLOYER_LIMIT_REFUSAL: EmployerPlanLimitRefusal = {
   "enforcementMode": "enforce"
 };
 
-/** contract:CandidateRefusal · block sha256 85c2cff486d52835 */
+/** contract:CandidateRefusal · regenerated from backend E2.2 */
 export const CONTRACT_CANDIDATE_REFUSAL: CandidatePlanRefusal = {
   "success": false,
   "status": "error",

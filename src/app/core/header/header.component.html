@@ -67,29 +67,13 @@
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            <span class="gh-nav-notif-badge" *ngIf="unreadCount > 0">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+            <span class="gh-nav-notif-badge" *ngIf="displayedUnreadCount > 0">{{ displayedUnreadCount > 9 ? '9+' : displayedUnreadCount }}</span>
           </button>
 
           <div class="gh-float-menu-catcher gh-float-menu-catcher--visible"
                *ngIf="notifPanelOpen" (click)="closeNotifPanel()" aria-hidden="true"></div>
 
-          <div class="gh-nav-notif-panel" *ngIf="notifPanelOpen" role="dialog" aria-label="Notifications">
-            <div class="gh-nav-notif-panel-header">
-              <span>Notifications</span>
-              <button type="button" class="gh-nav-notif-mark-all" *ngIf="unreadCount > 0"
-                (click)="markAllNotificationsRead()">Mark all read</button>
-            </div>
-            <div class="gh-nav-notif-list">
-              <p class="gh-nav-notif-empty" *ngIf="notifications.length === 0">No notifications yet.</p>
-              <button type="button" class="gh-nav-notif-item" *ngFor="let n of notifications"
-                [class.gh-nav-notif-item--unread]="!n.isRead"
-                (click)="onNotificationClick(n)">
-                <span class="gh-nav-notif-item-title">{{ n.title }}</span>
-                <span class="gh-nav-notif-item-body">{{ n.body }}</span>
-                <span class="gh-nav-notif-item-time">{{ n.createdAt | date:'MMM d, h:mm a' }}</span>
-              </button>
-            </div>
-          </div>
+
         </li>
 
         <li class="nav-item">
@@ -135,6 +119,34 @@
     </div>
   </div>
 </nav>
+          <div class="gh-nav-notif-panel" *ngIf="notifPanelOpen" role="dialog" aria-modal="true" aria-label="Notifications" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+            <div class="gh-nav-notif-panel-header">
+              <span>Notifications</span><button type="button" class="gh-nav-notif-mark-all" aria-label="Close notifications" (click)="closeNotifPanel()">Close</button>
+              <button type="button" class="gh-nav-notif-mark-all" *ngIf="displayedUnreadCount > 0"
+                [disabled]="notificationBusy" (click)="markAllNotificationsRead()">{{ userRole === '2' ? 'Mark visible read' : 'Mark all read' }}</button>
+            </div>
+            <div class="gh-notif-filters" *ngIf="userRole === '2'" role="group" aria-label="Notification filters">
+              <button type="button" [attr.aria-pressed]="notificationFilter === 'all'" (click)="notificationFilter = 'all'">All</button>
+              <button type="button" [attr.aria-pressed]="notificationFilter === 'subscription'" (click)="notificationFilter = 'subscription'">Subscription &amp; Billing</button>
+            </div>
+            <p class="gh-nav-notif-empty" *ngIf="hasMorePayments">Showing the latest 50 billing notices.</p>
+            <div class="gh-nav-notif-list">
+              <p class="gh-nav-notif-empty" *ngIf="visibleNotifications.length === 0">{{ notificationFilter === 'subscription' ? 'No subscription or billing notifications.' : 'No notifications yet.' }}</p>
+              <article class="gh-nav-notif-item" *ngFor="let n of visibleNotifications; trackBy: trackNotification" [class.gh-nav-notif-item--unread]="!n.isRead" [attr.data-priority]="n.priority">
+                <p class="gh-notif-meta" *ngIf="n.category"><span aria-hidden="true">{{ isSubscriptionNotification(n) ? '◇' : '○' }}</span> {{ categoryLabel(n) }} <span *ngIf="n.priority"> · {{ priorityLabel(n) }}</span><span *ngIf="!n.isRead"> · Unread</span></p>
+                <button type="button" class="gh-notif-open" (click)="onNotificationClick(n)">
+                  <span class="gh-nav-notif-item-title">{{ n.title }}</span>
+                  <span class="gh-nav-notif-item-body">{{ n.body }}</span>
+                </button>
+                <div class="gh-notif-actions" *ngIf="isSubscriptionNotification(n)">
+                  <button type="button" *ngIf="n.cta?.primary as action" [disabled]="notificationBusy" (click)="onNotificationAction(n, action)">{{ action.label }}</button>
+                  <button type="button" *ngIf="n.cta?.secondary as action" [disabled]="notificationBusy" (click)="onNotificationAction(n, action)">{{ action.label }}</button>
+                  <button type="button" *ngIf="n.dismissible === true" [disabled]="notificationBusy" (click)="dismissNotification(n)" [attr.aria-label]="'Dismiss: ' + n.title">Not Now</button>
+                </div>
+                <span class="gh-nav-notif-item-time" *ngIf="validNotificationDate(n.createdAt)">{{ n.createdAt | date:'MMM d, h:mm a' }}</span>
+              </article>
+            </div>
+          </div>
 
 <!-- Invisible click-outside catcher — transparent (this is a floating
      panel, not a modal drawer, so no dark scrim), just enough to dismiss
@@ -201,7 +213,7 @@
       <button type="button" class="gh-float-menu-item gh-float-menu-item--btn"
         (click)="toggleNotifPanel(); closeMobileNav()">
         <span class="gh-float-menu-label">Notifications</span>
-        <span class="gh-nav-notif-badge gh-nav-notif-badge--inline" *ngIf="unreadCount > 0">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
+        <span class="gh-nav-notif-badge gh-nav-notif-badge--inline" *ngIf="displayedUnreadCount > 0">{{ displayedUnreadCount > 9 ? '9+' : displayedUnreadCount }}</span>
       </button>
     </li>
 

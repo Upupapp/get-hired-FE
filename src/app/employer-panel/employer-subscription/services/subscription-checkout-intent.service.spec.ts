@@ -1,0 +1,75 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { environment } from 'environments/environment';
+import { SubscriptionCheckoutIntentService } from './subscription-checkout-intent.service';
+import { CheckoutReturnStatusComponent } from '../components/checkout-return-status/checkout-return-status.component';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
+
+describe('SubscriptionCheckoutIntentService employer billing contract', () => {
+  let service: SubscriptionCheckoutIntentService;
+  let http: HttpTestingController;
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+    service = TestBed.inject(SubscriptionCheckoutIntentService);
+    http = TestBed.inject(HttpTestingController);
+  });
+  afterEach(() => http.verify());
+
+  it('creates checkout without client price or company identifiers', () => {
+    const body = { planCode: 'growth', billingCycle: 'monthly' as const, idempotencyKey: 'stable-key' };
+    service.createCheckoutIntent(body).subscribe();
+    const req = http.expectOne(`${environment.api_url}/employer/subscription/checkout`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(body);
+    expect(req.request.body.amount).toBeUndefined();
+    expect(req.request.body.companyId).toBeUndefined();
+    req.flush({ success: true });
+  });
+
+  it('reads only the account-scoped payment attempt status', () => {
+    service.getCheckoutIntentStatus('attempt/1').subscribe();
+    const req = http.expectOne(`${environment.api_url}/employer/subscription/checkout/attempt%2F1/status`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ success: true, status: 'PENDING' });
+  });
+
+  it('loads the server-selected price and entitlements before checkout', () => {
+    const body = { planCode: 'premium', billingCycle: 'monthly' as const };
+    service.previewUpgrade(body).subscribe();
+    const req = http.expectOne(`${environment.api_url}/employer/subscription/upgrade-preview`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(body);
+    expect(req.request.body.amountMinor).toBeUndefined();
+    req.flush({success:true,amountMinor:599000,currency:'PHP'});
+  });
+
+  it('creates a server-priced storage add-on checkout', () => {
+    const body = { packageCode: 'storage_25' as const, billingCycle: 'monthly' as const, idempotencyKey: 'storage-key' };
+    service.createStorageAddonCheckout(body).subscribe();
+    const req = http.expectOne(`${environment.api_url}/employer/storage-addons/checkout`);
+    expect(req.request.body).toEqual(body);
+    expect(req.request.body.amountMinor).toBeUndefined();
+    req.flush({ success: true });
+  });
+
+  it('stitches checkout creation, pending status and authoritative paid confirmation', () => {
+    const bus = TestBed.inject(EngagementRefreshBus);
+    spyOn(bus, 'request');
+    const component = new CheckoutReturnStatusComponent({} as any, {} as any, service, {markForCheck: () => {}} as any, bus);
+    service.createCheckoutIntent({planCode:'growth',billingCycle:'monthly',idempotencyKey:'journey-key'}).subscribe(attempt => {
+      component.intentId = attempt.paymentAttemptId;
+      component.loadStatus();
+    });
+    http.expectOne(`${environment.api_url}/employer/subscription/checkout`).flush({success:true,paymentAttemptId:'journey-1',status:'PENDING'});
+    http.expectOne(`${environment.api_url}/employer/subscription/checkout/journey-1/status`).flush({success:true,status:'PENDING',billingCycle:'monthly'});
+    expect(component.returnStatus).toBe('payment_pending');
+    expect(component.activatedPlanName).toBeNull();
+    expect(bus.request).not.toHaveBeenCalled();
+    component.checkAgain();
+    http.expectOne(`${environment.api_url}/employer/subscription/checkout/journey-1/status`).flush({success:true,status:'PAID',billingCycle:'monthly',subscription:{planCode:'growth',status:'active'}});
+    expect(component.returnStatus).toBe('payment_success_confirmed');
+    expect(component.activatedPlanName).toBe('Growth');
+    expect(bus.request).toHaveBeenCalledOnceWith('checkout_return');
+    component.ngOnDestroy();
+  });
+});

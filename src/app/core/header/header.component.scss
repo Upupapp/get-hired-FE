@@ -677,3 +677,20 @@
 
 // Old .navbar-collapse mobile-collapse block removed -- superseded by the
 // gh-float-menu pattern above; that markup no longer exists in the template.
+
+// The same notification center is reachable from desktop and mobile navigation.
+.gh-notif-filters, .gh-notif-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; }
+.gh-notif-filters { padding: 12px 16px; border-bottom: 1px solid var(--gh-border); }
+.gh-notif-filters button, .gh-notif-actions button { border: 1px solid var(--gh-border); border-radius: 8px; padding: 7px 10px; background: #fff; color: var(--gh-navy, #111827); font-size: 12px; }
+.gh-notif-filters button[aria-pressed="true"] { background: var(--gh-sf-state-warning-surface); border-color: var(--gh-warning); }
+.gh-notif-open { display: block; width: 100%; border: 0; padding: 0; background: transparent; text-align: left; color: inherit; }
+.gh-notif-meta { margin: 0 0 6px; font-size: 11px; font-weight: 600; }
+.gh-nav-notif-item { overflow-wrap: anywhere; }
+.gh-notif-actions button:focus-visible, .gh-notif-filters button:focus-visible, .gh-notif-open:focus-visible { outline: 2px solid var(--gh-coral); outline-offset: 2px; }
+.gh-nav-notif-panel { position: fixed; top: 72px; right: 20px; width: min(400px, calc(100vw - 24px)); max-height: calc(100dvh - 90px); z-index: 1100; }
+.gh-nav-notif-list { max-height: calc(100dvh - 190px); }
+@media (max-width: 991.98px) { .gh-nav-notif-panel { top: 72px; right: 12px; } }
+@media (prefers-reduced-motion: reduce) { .gh-nav-notif-panel { animation: none; transition: none; } }
+
+.gh-nav-notif-item[data-priority="CRITICAL"] { border-left: 3px solid var(--gh-error); background: var(--gh-sf-state-error-surface); }
+.gh-nav-notif-item[data-priority="HIGH"], .gh-nav-notif-item[data-priority="WARNING"] { border-left: 3px solid var(--gh-warning); }

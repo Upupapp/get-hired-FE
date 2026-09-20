@@ -48,6 +48,7 @@ describe('EngagementShellBannerComponent -- the banner above every employer page
   const element = (): HTMLElement => fixture.nativeElement;
 
   afterEach(() => {
+    http.match(r => r.url.endsWith('/subscriptions/upgrade-analytics')).forEach(r => r.flush({ success: true }));
     fixture.destroy();
     http.verify();
   });

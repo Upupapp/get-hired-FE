@@ -57,6 +57,7 @@ export class SubscriptionLifecycleService {
   /** The caller's subscription and billing messages, newest first (contract §3.2). Unread by default. */
   getNotifications(query: NotificationListQuery = {}): Observable<NotificationListResponse> {
     let params = new HttpParams();
+    if (query.source && query.source.length) { params = params.set('source', query.source.join(',')); }
     if (query.status) { params = params.set('status', query.status); }
     if (query.category && query.category.length) { params = params.set('category', query.category.join(',')); }
     if (query.priority && query.priority.length) { params = params.set('priority', query.priority.join(',')); }

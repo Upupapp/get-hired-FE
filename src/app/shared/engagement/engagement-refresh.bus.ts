@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
  * payment-method update yet (UPDATE_PAYMENT_METHOD is E4), so that trigger has no call site.
  */
 export type EngagementRefreshReason =
+  | 'account_refresh'
   | 'checkout_return'
   | 'job_status_changed'
   | 'job_deleted'

@@ -85,11 +85,12 @@ export class SubscriptionEngagementService {
     });
     const refreshes$ = this.refreshBus.requests$.pipe(map(() => this.router.url));
     this.context$ = merge(navigations$, refreshes$).pipe(
-      filter(inEmployerShell),
-      switchMap(() => this.readContext()),
+      switchMap(url => inEmployerShell(url) ? this.readContext() : of(null)),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
   }
+
+  refresh(): void { this.refreshBus.request('account_refresh'); }
 
   dismiss(id: string): Observable<MessageActionOutcome> {
     return this.settle(this.lifecycle.dismissNotification(id), 'message_dismissed');
@@ -104,6 +105,7 @@ export class SubscriptionEngagementService {
     return this.http.get<EngagementContextResponse>(`${this.base}/subscriptions/engagement/context`).pipe(
       map(response => (response && response.success === true && response.context ? withoutDegradedParts(response.context) : null)),
       catchError(() => of(null)),
+      startWith(null),
     );
   }
 

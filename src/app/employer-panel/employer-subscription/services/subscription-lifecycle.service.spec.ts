@@ -32,9 +32,10 @@ describe('SubscriptionLifecycleService -- notifications, per the E2 contract (F1
   });
 
   it('sends status, comma-separated categories and priorities, page and limit', () => {
-    service.getNotifications({ status: 'ALL', category: ['SUBSCRIPTION', 'BILLING'], priority: ['HIGH', 'CRITICAL'], page: 2, limit: 50 }).subscribe();
+    service.getNotifications({ status: 'ALL', category: ['SUBSCRIPTION', 'BILLING'], priority: ['HIGH', 'CRITICAL'], source: ['payment'], page: 2, limit: 50 }).subscribe();
     const req = http.expectOne(r => r.url === URL);
     expect(req.request.params.get('status')).toBe('ALL');
+    expect(req.request.params.get('source')).toBe('payment');
     expect(req.request.params.get('category')).toBe('SUBSCRIPTION,BILLING');
     expect(req.request.params.get('priority')).toBe('HIGH,CRITICAL');
     expect(req.request.params.get('page')).toBe('2');

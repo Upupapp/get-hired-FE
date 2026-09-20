@@ -68,17 +68,17 @@ describe('CompanyDashboardComponent -- the trial widget sits beside the trial nu
 
   const text = (root: HTMLElement, selector: string): string => ((root.querySelector(selector) || { textContent: '' }).textContent || '').replace(/\s+/g, ' ').trim();
 
-  it('trial_expired: the nudge still shows its :230 copy, and the widget says the trial has ended', () => {
+  it('trial_expired: removes the legacy upsell and shows the backend trial status', () => {
     const root = render('trial_expired', E2_SUB_TRIAL_EXPIRED);
-    expect(text(root, '.gh-upgrade-nudge__title')).toBe('Your free trial has ended');
-    expect(text(root, '.gh-upgrade-nudge__sub')).toBe('Your published jobs stay published. Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
+    expect(root.querySelector('.gh-upgrade-nudge')).toBeNull();
+    expect(root.querySelector('app-engagement-dashboard-card')).not.toBeNull();
     expect(text(root, 'app-trial-status-widget .trial-badge')).toBe('Your free trial has ended');
   });
 
-  it('trial_ending: the nudge still shows its :231 copy, and the widget shows the days left', () => {
+  it('trial_ending: removes the legacy upsell and shows the backend days remaining', () => {
     const root = render('trial_ending', E2_SUB_TRIAL_ENDING);
-    expect(text(root, '.gh-upgrade-nudge__title')).toBe('Your free trial is ending soon');
-    expect(text(root, '.gh-upgrade-nudge__sub')).toBe('Choose a plan to publish or reopen jobs, add team members, or add screening questions.');
+    expect(root.querySelector('.gh-upgrade-nudge')).toBeNull();
+    expect(root.querySelector('app-engagement-dashboard-card')).not.toBeNull();
     expect(text(root, 'app-trial-status-widget .trial-badge')).toBe('1 day left in your free trial');
   });
 });

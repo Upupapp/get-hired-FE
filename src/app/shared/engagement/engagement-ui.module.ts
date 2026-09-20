@@ -14,10 +14,12 @@ import { EngagementFeatureLockComponent } from './engagement-feature-lock.compon
  * can both render them (F2). They were declared in the lazy EmployerSubscriptionModule, which the
  * shell cannot reach. F4 adds the trial badge, the usage meter and the trial widget, for the dashboard.
  */
+import { EngagementDashboardCardComponent } from './engagement-dashboard-card.component';
+
 const COMPONENTS = [
   SubscriptionStatusBannerComponent, UpgradePromptCardComponent, EngagementShellBannerComponent,
   TrialDaysRemainingBadgeComponent, SubscriptionUsageMeterComponent, TrialStatusWidgetComponent,
-  EngagementContextualNudgeComponent, EngagementFeatureLockComponent,
+  EngagementContextualNudgeComponent, EngagementFeatureLockComponent, EngagementDashboardCardComponent,
 ];
 
 @NgModule({

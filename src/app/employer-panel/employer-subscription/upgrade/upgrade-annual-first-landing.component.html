@@ -17,7 +17,7 @@
   </div>
 
   <!-- Main content -->
-  <div *ngIf="!loading && !loadError && plan" class="upgrade-landing__content">
+  <div *ngIf="!loading && !loadError" class="upgrade-landing__content">
 
     <!-- Back link -->
     <button class="upgrade-landing__back" type="button" (click)="goBack()" aria-label="Back to pricing">
@@ -30,8 +30,8 @@
     <!-- Hero panel -->
     <div class="upgrade-landing__hero">
       <div class="upgrade-landing__hero-badges">
-        <span class="upgrade-landing__plan-badge" [attr.aria-label]="plan.name + ' plan'">{{ plan.name }}</span>
-        <span *ngIf="recommendation && recommendation.recommendedPlan && recommendation.recommendedPlan.slug === plan.slug"
+        <span class="upgrade-landing__plan-badge" [attr.aria-label]="planName + ' plan'">{{ planName }}</span>
+        <span *ngIf="recommendation && recommendation.recommendedPlan && recommendation.recommendedPlan.slug === planSlug"
           class="upgrade-landing__recommended-badge" aria-label="Recommended plan">
           Recommended
         </span>
@@ -105,7 +105,7 @@
       </div>
 
       <div class="billing-panel__entitlements" aria-label="Plan features">
-        <p class="billing-panel__ent-title">Included in {{ plan.name }}</p>
+        <p class="billing-panel__ent-title">Included in {{ planName }}</p>
         <ul class="billing-panel__ent-list">
           <li *ngFor="let row of entitlementRows" class="billing-panel__ent-row">
             <span class="billing-panel__ent-label">{{ row.label }}</span>
@@ -145,7 +145,7 @@
       </div>
 
       <div class="billing-panel__entitlements" aria-label="Plan features">
-        <p class="billing-panel__ent-title">Included in {{ plan.name }}</p>
+        <p class="billing-panel__ent-title">Included in {{ planName }}</p>
         <ul class="billing-panel__ent-list">
           <li *ngFor="let row of entitlementRows" class="billing-panel__ent-row">
             <span class="billing-panel__ent-label">{{ row.label }}</span>
@@ -175,7 +175,7 @@
       *ngIf="showComparison && comparisonData"
       [comparison]="comparisonData"
       [currentPlanName]="currentPlanName"
-      [recommendedPlanName]="plan.name">
+      [recommendedPlanName]="planName">
     </app-plan-comparison-strip>
 
     <!-- GetHired value / feature panel -->
@@ -194,6 +194,8 @@
     </div>
 
     <!-- Checkout error -->
+    <div *ngIf="previewLoading" role="status" aria-live="polite">Confirming current price and availability…</div>
+    <div *ngIf="previewError && !previewLoading" class="upgrade-landing__checkout-error" role="alert">{{ previewError }}</div>
     <div *ngIf="checkoutError" class="upgrade-landing__checkout-error" role="alert" aria-live="assertive">
       {{ checkoutError }}
     </div>
@@ -203,7 +205,7 @@
       <button
         class="upgrade-btn upgrade-btn--primary"
         type="button"
-        [disabled]="checkoutLoading"
+        [disabled]="checkoutLoading || previewLoading || !preview"
         (click)="startCheckout()"
         [attr.aria-busy]="checkoutLoading"
         [attr.aria-label]="primaryCtaLabel">

@@ -55,6 +55,7 @@ export function trialWidgetView(context: EngagementContext | null): TrialWidgetV
         <p class="gh-trial-widget__title">Free trial</p>
         <app-trial-days-remaining-badge [status]="view.trial.status" [daysRemaining]="view.trial.daysRemaining"></app-trial-days-remaining-badge>
       </div>
+      <p class="gh-trial-widget__end" *ngIf="validDate(view.trial.endsAt)">Trial ends {{ view.trial.endsAt | date:'MMM d, y' }}</p>
       <div class="gh-trial-widget__meters" *ngIf="view.meters.length">
         <app-subscription-usage-meter *ngFor="let meter of view.meters; trackBy: trackMeter"
           [label]="meter.label" [kind]="meter.kind" [usage]="meter.usage"></app-subscription-usage-meter>
@@ -66,6 +67,7 @@ export function trialWidgetView(context: EngagementContext | null): TrialWidgetV
     .gh-trial-widget { margin: 16px 0; padding: 16px 18px; background: #fff; border: 1px solid var(--gh-border, #E5E7EB); border-radius: 14px; }
     .gh-trial-widget__header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
     .gh-trial-widget__title { margin: 0; font-size: 14px; font-weight: 700; color: #111827; }
+    .gh-trial-widget__end { margin: 8px 0 0; color: var(--gh-text-secondary, #4b5563); font-size: 13px; }
     .gh-trial-widget__meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 16px; margin-top: 14px; }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -78,6 +80,8 @@ export class TrialStatusWidgetComponent {
   constructor(engagement: SubscriptionEngagementService, private analytics: SubscriptionUpgradeRecommendationService) {
     this.view$ = engagement.context$.pipe(map(trialWidgetView), tap(view => this.recordImpression(view)));
   }
+
+  validDate(value: string | null): boolean { return !!value && Number.isFinite(Date.parse(value)); }
 
   trackMeter(_index: number, meter: TrialWidgetMeter): string {
     return meter.key;

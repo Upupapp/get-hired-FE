@@ -33,7 +33,10 @@ describe('UpgradePromptCardComponent -- a backend message (F2)', () => {
   const buttons = (): HTMLButtonElement[] => Array.from(fixture.nativeElement.querySelectorAll('button'));
   const button = (label: string): HTMLButtonElement => buttons().find(b => (b.textContent || '').trim() === label)!;
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.match(r => r.url.endsWith('/subscriptions/upgrade-analytics')).forEach(r => r.flush({ success: true }));
+    http.verify();
+  });
 
   it('a HIGH message (storage.90) is announced as an alert, labelled, and offers its actions and a dismiss', () => {
     render(E2_STORAGE_90_OWNER);

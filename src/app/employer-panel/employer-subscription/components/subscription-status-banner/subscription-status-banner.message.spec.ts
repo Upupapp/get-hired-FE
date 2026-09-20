@@ -34,7 +34,10 @@ describe('SubscriptionStatusBannerComponent -- a backend message (F2)', () => {
   const buttons = (): HTMLButtonElement[] => Array.from(fixture.nativeElement.querySelectorAll('button'));
   const button = (label: string): HTMLButtonElement => buttons().find(b => (b.textContent || '').trim() === label)!;
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.match(r => r.url.endsWith('/subscriptions/upgrade-analytics')).forEach(r => r.flush({ success: true }));
+    http.verify();
+  });
 
   it('storage.full renders as a CRITICAL alert with no dismiss control, for the owner and, redacted, for a team admin', () => {
     render(E2_STORAGE_FULL_OWNER);

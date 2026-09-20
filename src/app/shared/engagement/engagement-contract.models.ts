@@ -2,7 +2,7 @@ import { AppNotification } from '@main/shared/services/notification.service';
 import { StorageStatus, WarningLevel } from '@main/employer-panel/employer-subscription/subscription-v4.models';
 
 /**
- * The engagement API as gh-be serves it: SUBSCRIPTION_ENGAGEMENT_API_CONTRACT.md at 658d0a5 (SPRINT-02 E2).
+ * The engagement API as gh-be serves it: SUBSCRIPTION_ENGAGEMENT_API_CONTRACT.md at 0e4d647 (SPRINT-02 E2.2).
  *
  * Field names are the contract's, and each union below is one of its `enum:` blocks, value for value.
  * src/testing/engagement-contract.fixture.ts types every tagged JSON example in the contract against these,
@@ -24,6 +24,8 @@ export type EngagementTrigger = 'STORAGE_100' | 'STORAGE_90' | 'STORAGE_80' | 'S
 export type NotificationCategory = 'HIRING' | 'APPLICATIONS' | 'MESSAGES' | 'SUBSCRIPTION' | 'BILLING' | 'ACCOUNT';
 
 export type NotificationStatus = 'PENDING' | 'DELIVERED' | 'READ' | 'CLICKED' | 'DISMISSED' | 'EXPIRED';
+
+export type NotificationSource = 'engine' | 'payment';
 
 export type NotificationListStatus = 'UNREAD' | 'READ' | 'ALL';
 
@@ -60,17 +62,17 @@ export interface CtaAction {
   type: CtaType;
   label: string;
   action: CtaActionKind;
-  intent: CtaIntent;
+  intent?: CtaIntent;
   url: string;
 }
 
 /** One message (contract §4.2). Its words are final: render them as given, never assemble them. */
 export interface Nudge {
   /** `nudge:<ruleKey>`: pass it to dismiss and click. */
-  id: string;
-  kind: MessageKind;
+  id: string | null;
+  kind: MessageKind | 'ACCOUNT_NOTICE';
   ruleKey: string;
-  trigger: EngagementTrigger;
+  trigger: EngagementTrigger | string;
   meter: NudgeMeter;
   priority: EngagementPriority;
   messageClass: MessageClass;
@@ -84,7 +86,7 @@ export interface Nudge {
   usage: {
     used: number;
     limit: number;
-    unit: NudgeUsageUnit;
+    unit: NudgeUsageUnit | 'BYTES' | 'COUNT';
     percentage: number;
     status: StorageStatus | null;
   } | null;
@@ -168,7 +170,7 @@ export interface EngagementContext {
   banner: Nudge | null;
   dashboardCard: Nudge | null;
   /** For the employer panel's badge, use `total` (contract §7.9). */
-  unreadCounts: { total: number; byCategory: Record<NotificationCategory, number> } | null;
+  unreadCounts: { total: number; byCategory: Record<NotificationCategory, number>; bySource: { engine: number; payment: number; other: number } } | null;
   capabilities: {
     features: Partial<Record<LockableFeature, FeatureCapability>>;
     flags: Record<CapabilityFlag, boolean>;
@@ -183,6 +185,7 @@ export interface EngagementContextResponse {
 
 /** One subscription or billing message (contract §4.3). */
 export interface NotificationItem {
+  source: NotificationSource;
   /** `NOTIF-…` for engine messages, `SUBN-…` for payment notices. */
   id: string;
   category: 'SUBSCRIPTION' | 'BILLING';
@@ -221,6 +224,7 @@ export interface NotificationListResponse {
 /** The list's query (contract §3.2). An omitted field takes the backend's default. */
 export interface NotificationListQuery {
   status?: NotificationListStatus;
+  source?: NotificationSource[];
   category?: Array<'SUBSCRIPTION' | 'BILLING'>;
   priority?: EngagementPriority[];
   /** 1 to 50. */

@@ -205,18 +205,7 @@ export class CompanyDashboardComponent implements OnInit, OnDestroy {
         }
       }
     });
-    this.upgradeRecommendationService.getRecommendation('dashboard_cta', 'dashboard')
-      .pipe(takeUntil(this._destroy$))
-      .subscribe({
-        next: (res) => {
-          const rec = res && res.recommendation;
-          if (rec && rec.showPrompt && rec.priority <= 3 && this.upgradeCooldown.shouldShow(rec.trigger, rec.priority)) {
-            this.upgradeRec = rec;
-            this.upgradeCooldown.markShown(rec.trigger);
-          }
-        },
-        error: () => {}
-      });
+
   }
 
   ngOnDestroy(): void {

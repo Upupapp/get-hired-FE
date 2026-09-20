@@ -1,0 +1,13 @@
+import { ReferralBunnyConnectComponent } from './referral-bunny.module';
+import { of, throwError } from 'rxjs';
+describe('GetHired approval screen',()=>{
+ let component:ReferralBunnyConnectComponent,api:any,router:any,core:any;
+ const request='a'.repeat(64);
+ beforeEach(()=>{localStorage.clear();sessionStorage.clear();api={details:jasmine.createSpy().and.returnValue(of({programName:'GetHired'})),approve:jasmine.createSpy()};router={navigateByUrl:jasmine.createSpy()};core={logout:jasmine.createSpy().and.returnValue(of({success:true}))};component=new ReferralBunnyConnectComponent(api,{snapshot:{queryParamMap:{get:()=>request}}} as any,router,core,'browser' as any);spyOn(component,'navigateToCallback');});
+ afterEach(()=>{localStorage.clear();sessionStorage.clear();});
+ it('remembers approval through sign in',()=>{component.ngOnInit();expect(component.needsLogin).toBeTrue();component.signIn();expect(JSON.parse(sessionStorage.getItem('rb-connect-return')!).request).toBe(request);expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');});
+ it('lets an employer switch to an administrator account using the normal logout',()=>{localStorage.setItem('state','true');api.details.and.returnValue(throwError(()=>({status:403})));component.ngOnInit();expect(component.wrongAccount).toBeTrue();component.switchAccount();expect(core.logout).toHaveBeenCalled();expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');expect(sessionStorage.getItem('rb-connect-return')).not.toBeNull();});
+ it('cancels with the bound callback instead of authorizing',()=>{localStorage.setItem('state','true');component.ngOnInit();const redirect='https://referralbunny.ai/tenant/acme/quick-program/connection/program/gethired/callback?state=x&error=access_denied';api.approve.and.returnValue(of({redirect}));component.approve(false);expect(api.approve).toHaveBeenCalledWith(request,false);expect(component.navigateToCallback).toHaveBeenCalledWith(redirect);});
+ it('blocks unexpected and malformed redirects without leaving a stuck loading state',()=>{component.request=request;for(const redirect of ['not a url','https://evil.example/path']){api.approve.and.returnValue(of({redirect}));component.approve(true);expect(component.busy).toBeFalse();expect(component.error).toContain('Unexpected');}expect(component.navigateToCallback).not.toHaveBeenCalled();});
+ it('explains expiration and removes stale login continuation',()=>{localStorage.setItem('state','true');api.details.and.returnValue(throwError(()=>({status:410})));component.ngOnInit();expect(component.error).toContain('expired');expect(sessionStorage.getItem('rb-connect-return')).toBeNull();});
+});

@@ -11,6 +11,7 @@ import { UpgradeAnnualFirstLandingComponent } from './upgrade/upgrade-annual-fir
 // Components
 import { SubscriptionStatusChipComponent } from './components/subscription-status-chip/subscription-status-chip.component';
 import { SubscriptionLimitModalComponent } from './components/subscription-limit-modal/subscription-limit-modal.component';
+import { EngagementDestinationComponent } from './engagement-destination.component';
 import { CheckoutReturnStatusComponent } from './components/checkout-return-status/checkout-return-status.component';
 import { BillingStatusBannerComponent } from './components/billing-status-banner/billing-status-banner.component';
 import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
@@ -34,12 +35,15 @@ import { BillingService } from './services/billing.service';
 
 const routes: Routes = [
   { path: '', component: EmployerSubscriptionComponent },
+  { path: 'storage', component: EngagementDestinationComponent, data: {engagementDestination: 'storage'} },
+  { path: 'enterprise', component: EngagementDestinationComponent, data: {engagementDestination: 'enterprise'} },
   { path: 'upgrade/:planSlug', component: UpgradeAnnualFirstLandingComponent },
   { path: 'checkout-return', component: CheckoutReturnStatusComponent },
 ];
 
 @NgModule({
   declarations: [
+    EngagementDestinationComponent,
     EmployerSubscriptionComponent,
     UpgradeAnnualFirstLandingComponent,
     SubscriptionStatusChipComponent,

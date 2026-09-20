@@ -1,3 +1,4 @@
+import { ReferralBunnyService } from './integrations/referral-bunny/referral-bunny.service';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -15,10 +16,12 @@ export class AppComponent implements OnInit {
   constructor(
     public translateService: TranslateService,
     private router: Router,
+    private referralBunny: ReferralBunnyService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit(): void {
+    this.referralBunny.init();
     const browserLang: string = this.translateService.getBrowserLang() || 'en';
     let selectedLang: string | null = null;
     if (isPlatformBrowser(this.platformId)) {

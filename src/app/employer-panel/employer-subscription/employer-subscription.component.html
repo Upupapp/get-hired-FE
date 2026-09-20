@@ -344,24 +344,6 @@
       </div><!-- /cockpit grid -->
     </div>
 
-    <!-- ── SMART RECOMMENDATION CARD ── -->
-    <div class="gh-sub-recommendation" *ngIf="recommendedPlan && !isCurrentPlanAboveOrEqualTo(recommendedPlan.planCode)" role="complementary" aria-label="Recommended upgrade">
-      <div class="gh-sub-recommendation__left">
-        <div class="gh-sub-recommendation__pill">Recommended next step</div>
-        <p class="gh-sub-recommendation__title">Upgrade to <strong>{{ recommendedPlan.planName }}</strong></p>
-        <p class="gh-sub-recommendation__reason">{{ recommendedPlan.reason }}</p>
-        <div class="gh-sub-recommendation__benefits">
-          <span class="gh-sub-recommendation__benefit" *ngFor="let b of recommendedPlan.benefits">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            {{ b }}
-          </span>
-        </div>
-      </div>
-      <div class="gh-sub-recommendation__right">
-        <button class="gh-btn-primary gh-pressable" (click)="navigateToUpgrade(recommendedPlan.planCode)">{{ recommendedPlan.ctaLabel }}</button>
-      </div>
-    </div>
-
     <!-- ── PLAN CARDS ── -->
     <!-- Every price, capacity and Recruitment Storage figure below comes from
          GET /api/subscriptions/pricing-catalog. Nothing here is hardcoded: the

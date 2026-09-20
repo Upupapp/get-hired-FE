@@ -13,6 +13,8 @@ import { InternalEmployerGuard } from './employer-internal-authguard';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CompanyModule } from '@main/company/company.module';
+import { SubscriptionEngagementService } from '@main/shared/engagement/subscription-engagement.service';
+import { EmployerEngagementAdapter } from '@main/shared/engagement/employer-engagement.adapter';
 import { EngagementUiModule } from '@main/shared/engagement/engagement-ui.module';
 // B01: Global recruiter messages inbox
 import { RecruiterMessagesComponent } from './recruiter-messages/recruiter-messages.component';
@@ -90,6 +92,9 @@ const routes: Routes = [
     CompanyModule,
     RouterModule.forChild(routes)
   ],
-  providers: [EmployeeFacade]
+  providers: [
+    EmployeeFacade,
+    { provide: SubscriptionEngagementService, useClass: EmployerEngagementAdapter },
+  ]
 })
 export class EmployerPanelModule { }

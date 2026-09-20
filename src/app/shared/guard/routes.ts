@@ -3,7 +3,10 @@ import { AdminGuard } from './admin.guard';
 import { ApplicantGuard } from './applicant.guard';
 import { EmployerGuard } from './employer.guard';
 
+const referralBunnyRoute = { path: 'integrations/referral-bunny', loadChildren: () => import('../../integrations/referral-bunny/referral-bunny.module').then(m => m.ReferralBunnyModule) };
+
 export const adminRoutes: Routes = [
+  referralBunnyRoute,
   {
     path: 'admin',
     loadChildren: () => import('@main/admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
@@ -21,6 +24,7 @@ export const adminRoutes: Routes = [
 ];
 
 export const employerRoutes: Routes = [
+  referralBunnyRoute,
   {
     path: '',
     loadChildren: () => import('@main/employer-panel/employer-panel.module').then(m => m.EmployerPanelModule),
@@ -31,6 +35,7 @@ export const employerRoutes: Routes = [
 ]
 
 export const applicantRoutes: Routes = [
+  referralBunnyRoute,
   {
     path: '',
     loadChildren: () =>
@@ -42,6 +47,7 @@ export const applicantRoutes: Routes = [
 ];
 
 export const authRoutes: Routes = [
+  referralBunnyRoute,
   {
     path: '',
     loadChildren: () => import('@main/auth/auth.module').then(m => m.AuthModule),

@@ -8,6 +8,7 @@
     "build:ssr": "ng build --configuration=production && ng run get-hired:server --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:subscription:journey": "node scripts/subscription-e2e/local-journey.cjs",
     "heroku-postinstall": "npm install --force",
     "build-dev": "ng build --configuration=staging",
     "build-prod": "ng build --configuration=production",

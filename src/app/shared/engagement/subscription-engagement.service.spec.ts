@@ -84,9 +84,9 @@ describe('SubscriptionEngagementService (F1)', () => {
     go('/recruiter/company/settings?tab=3');
     http.expectOne(CONTEXT_URL).flush(served());
 
-    expect(first.length).toBe(3);
-    expect(second.length).toBe(3);
-    expect(first[0]!.generatedAt).toBe(ENGAGEMENT_CONTEXT_RESPONSE.context.generatedAt);
+    expect(first.length).toBe(6);
+    expect(second.length).toBe(6);
+    expect(first[1]!.generatedAt).toBe(ENGAGEMENT_CONTEXT_RESPONSE.context.generatedAt);
   }));
 
   it('reads nothing outside the employer shell, even on a refresh request', fakeAsync(() => {
@@ -95,11 +95,27 @@ describe('SubscriptionEngagementService (F1)', () => {
     const seen = watch(service);
     bus.request('bell_read');
     http.expectNone(CONTEXT_URL);
-    expect(seen).toEqual([]);
+    expect(seen).toEqual([null, null]);
 
     go('/recruiter/dashboard');
     http.expectOne(CONTEXT_URL).flush(served());
-    expect(seen.length).toBe(1);
+    expect(seen.length).toBe(4);
+  }));
+
+  it('clears cached alerts and cancels pending context reads when leaving the employer shell', fakeAsync(() => {
+    const service = setUp('browser');
+    go('/recruiter/dashboard');
+    const seen = watch(service);
+    http.expectOne(CONTEXT_URL).flush(served());
+    go('/recruiter/jobs/list');
+    const pending = http.expectOne(CONTEXT_URL);
+    expect(seen[seen.length - 1]).toBeNull();
+    go('/user/home');
+    expect(pending.cancelled).toBeTrue();
+    expect(seen[seen.length - 1]).toBeNull();
+    const late = watch(service);
+    expect(late).toEqual([null]);
+    http.expectNone(CONTEXT_URL);
   }));
 
   it('reads nothing on the server platform, and gives null', fakeAsync(() => {
@@ -130,8 +146,8 @@ describe('SubscriptionEngagementService (F1)', () => {
     go('/recruiter/jobs/list');
     http.expectOne(CONTEXT_URL).flush(served());
 
-    expect(seen.slice(0, 4)).toEqual([null, null, null, null]);
-    expect(seen[4]!.status).toBe('ok');
+    expect(seen.slice(0, 9)).toEqual(Array(9).fill(null));
+    expect(seen[9]!.status).toBe('ok');
   }));
 
   const EMPTIED: Record<DegradedPart, (c: EngagementContext) => void> = {
@@ -162,7 +178,7 @@ describe('SubscriptionEngagementService (F1)', () => {
       body.context.degraded = [part];
       http.expectOne(CONTEXT_URL).flush(body);
 
-      const context = seen[0]!;
+      const context = seen[1]!;
       EMPTIED[part](context);
       (Object.keys(PART_FIELDS) as DegradedPart[]).filter(other => other !== part).forEach(other => {
         PART_FIELDS[other].forEach(field => expect(context[field]).withContext(field).toEqual(served().context[field]));
@@ -178,7 +194,7 @@ describe('SubscriptionEngagementService (F1)', () => {
 
     bus.request('member_removed');
     http.expectOne(CONTEXT_URL).flush(served());
-    expect(seen.length).toBe(2);
+    expect(seen.length).toBe(4);
   }));
 
   it('found: false from dismiss is an answer, not an error: not_found, and the context is read again', fakeAsync(() => {

@@ -1,3 +1,4 @@
+import { EngagementTelemetryService } from '@main/shared/engagement/engagement-telemetry.service';
 import {
   Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, OnChanges, SimpleChanges,
 } from '@angular/core';
@@ -122,9 +123,21 @@ export class UpgradePromptCardComponent implements OnChanges {
     private cooldown: UpgradePromptCooldownService,
     private engagement: SubscriptionEngagementService,
     private cdr: ChangeDetectorRef,
+    private telemetry: EngagementTelemetryService,
   ) {}
 
+  private impressionId: string | null = null;
+  ngOnInit(): void { this.recordImpression(); }
+  private recordImpression(): void {
+    if (!this.message || this.impressionId === (this.message.id || this.message.ruleKey)) { return; }
+    this.impressionId = this.message.id || this.message.ruleKey;
+    if (this.message.id && typeof (this.engagement as any).seen === 'function') { (this.engagement as any).seen(this.message.id); }
+    this.telemetry.record('subscription_nudge_impression', this.message, this.compact ? 'contextual' : 'dashboard');
+    if (this.message.meter === 'storage') { this.telemetry.record('storage_warning_impression', this.message, this.compact ? 'contextual' : 'dashboard'); }
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
+    this.recordImpression();
     const change = changes['message'];
     if (change && !change.firstChange) {
       const before = change.previousValue as Nudge | null;
@@ -140,6 +153,9 @@ export class UpgradePromptCardComponent implements OnChanges {
   /** Post the click, then go to the action's own url (contract §3.5). */
   followAction(message: Nudge, action: CtaAction): void {
     if (this.busy) { return; }
+    this.telemetry.record('subscription_nudge_clicked', message, this.compact ? 'contextual' : 'dashboard');
+    if (message.meter === 'storage' && (action.intent === 'VIEW_PLAN' || action.intent === 'COMPARE_PLANS')) { this.telemetry.record('storage_upgrade_clicked', message, this.compact ? 'contextual' : 'dashboard'); }
+    if (!message.id) { this.router.navigateByUrl(action.url); return; }
     this.busy = true;
     this.engagement.click(message.id, action.intent).subscribe(outcome => {
       this.busy = false;
@@ -155,6 +171,7 @@ export class UpgradePromptCardComponent implements OnChanges {
     this.engagement.dismiss(message.id).subscribe(outcome => {
       this.busy = false;
       if (hidesAfterDismiss(outcome)) {
+        this.telemetry.record('subscription_nudge_dismissed', message, this.compact ? 'contextual' : 'dashboard');
         this.visible = false;
         this.dismissed.emit();
       }

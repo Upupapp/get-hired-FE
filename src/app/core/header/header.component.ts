@@ -16,10 +16,15 @@ import {
 } from '@angular/router';
 import { AppFacade } from '@main/state/app.facade';
 import { CoreService } from '../services/core.service';
-import { Subscription, interval } from 'rxjs';
+import { Observable, Subscription, interval } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { NotificationService, AppNotification } from '@main/shared/services/notification.service';
 import { MatDialog } from '@angular/material/dialog';
+import { SubscriptionEngagementService } from '@main/shared/engagement/subscription-engagement.service';
+import { CtaAction } from '@main/shared/engagement/engagement-contract.models';
+import { navigatesAfterClick, priorityPresentation } from '@main/shared/engagement/engagement-message.presentation';
 import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
+import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 
 @Component({
   selector: 'app-header',
@@ -41,8 +46,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   // req.user.uid regardless of role.
   notifications: AppNotification[] = [];
   unreadCount = 0;
+  notificationFilter: 'all' | 'subscription' = 'all';
+  notificationBusy = false;
+  employerUnreadCount: number | null = null;
+  hasMorePayments = false;
+  private engagementSub: Subscription;
   notifPanelOpen = false;
   private notifPollSub: Subscription;
+  private notifReadSub: Subscription;
+  private accountRefreshSub: Subscription;
   private static readonly NOTIF_POLL_INTERVAL_MS = 45000;
 
   // Mobile nav drawer — same pattern as the Employer/Applicant/Admin portal
@@ -72,6 +84,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private appFacade: AppFacade,
     private notificationService: NotificationService,
     private dialog: MatDialog,
+    private engagement: SubscriptionEngagementService,
+    private refreshBus: EngagementRefreshBus,
   ) {
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
@@ -111,38 +125,54 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
+    this.closeNotifPanel();
     if (this.mobileNavOpen) {
       this.closeMobileNav();
     }
   }
 
   ngOnInit(): void {
+    this.accountRefreshSub = this.refreshBus.requests$.subscribe(reason => {
+      if (reason === 'checkout_return' && this.isUserLoggedIn && this.userRole === '2') { this.refreshNotifications(); }
+    });
     if (this.user) {
       this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
     }
 
+    if (this.isUserLoggedIn && this.user && this.userRole === '2') {
+      this.engagementSub = this.engagement.context$.subscribe(context => {
+        this.employerUnreadCount = context?.unreadCounts?.total ?? null;
+      });
+    }
     if (this.isUserLoggedIn && this.user) {
       this.refreshNotifications();
       // Polling, not a websocket -- no real-time push infra exists in this
       // codebase yet; 45s is a reasonable balance between freshness and
       // load for a small in-app notification count.
       this.notifPollSub = interval(HeaderComponent.NOTIF_POLL_INTERVAL_MS).subscribe(() => {
+        if (this.userRole === '2') { this.engagement.refresh(); }
         this.refreshNotifications();
       });
     }
   }
 
   ngOnDestroy(): void {
+    this.accountRefreshSub?.unsubscribe();
+    this.req?.unsubscribe();
+    this.notifReadSub?.unsubscribe();
+    this.engagementSub?.unsubscribe();
     if (this.notifPollSub) {
       this.notifPollSub.unsubscribe();
     }
   }
 
   refreshNotifications(): void {
-    this.notificationService.list().subscribe({
+    this.notifReadSub?.unsubscribe();
+    this.notifReadSub = this.notificationService.listCenter(this.userRole === '2').subscribe({
       next: (result) => {
         this.notifications = result.notifications || [];
         this.unreadCount = result.unreadCount || 0;
+        this.hasMorePayments = result.hasMorePayments === true;
       },
       error: () => {
         // Non-fatal -- the bell just stays at its last-known state.
@@ -161,16 +191,60 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.notifPanelOpen = false;
   }
 
+  get displayedUnreadCount(): number { return this.userRole === '2' && this.employerUnreadCount !== null ? this.employerUnreadCount : this.unreadCount + this.notifications.filter(n => n.source === 'payment' && !n.isRead).length; }
+
+  get visibleNotifications(): AppNotification[] {
+    return this.notifications.filter(n => this.notificationFilter === 'all' || this.isSubscriptionNotification(n));
+  }
+
+  isSubscriptionNotification(n: AppNotification): boolean { return n.category === 'SUBSCRIPTION' || n.category === 'BILLING'; }
+  categoryLabel(n: AppNotification): string { return String(n.category || '').toLowerCase().replace(/^./, c => c.toUpperCase()); }
+  priorityLabel(n: AppNotification): string { return priorityPresentation(n.priority).label; }
+  validNotificationDate(value: string): boolean { return !!value && Number.isFinite(Date.parse(value)); }
+  trackNotification(_index: number, n: AppNotification): string { return n.id; }
+
+  onNotificationAction(n: AppNotification, action: CtaAction): void {
+    if (this.notificationBusy || !this.isSubscriptionNotification(n)) { return; }
+    this.notificationBusy = true;
+    const request$ = n.source === 'central'
+      ? this.notificationService.interactEmployer(n.id, 'click')
+      : this.engagement.click(n.id, action.intent).pipe(map(navigatesAfterClick));
+    request$.subscribe(shouldNavigate => {
+      this.notificationBusy = false;
+      if (shouldNavigate) {
+        this.closeNotifPanel();
+        this.router.navigateByUrl(action.url);
+      }
+      this.refreshNotifications();
+    });
+  }
+
+  dismissNotification(n: AppNotification): void {
+    if (this.notificationBusy || n.dismissible !== true || !this.isSubscriptionNotification(n)) { return; }
+    this.notificationBusy = true;
+    const request$ = n.source === 'central'
+      ? this.notificationService.interactEmployer(n.id, 'dismiss')
+      : this.engagement.dismiss(n.id).pipe(map(outcome => outcome.outcome !== 'refused'));
+    request$.subscribe(dismissed => {
+      this.notificationBusy = false;
+      if (dismissed) { this.refreshNotifications(); }
+    });
+  }
+
   onNotificationClick(notification: AppNotification): void {
     if (!notification.isRead) {
-      this.notificationService.markRead(notification.id).subscribe({
-        next: () => {
+      const read$ = notification.source === 'central' ? this.notificationService.markEmployerRead(notification.id) : notification.source === 'payment' ? this.notificationService.markPaymentRead(notification.id) : this.notificationService.markRead(notification.id);
+      read$.subscribe({
+        next: (found) => {
+          if (!found) { this.refreshNotifications(); return; }
           notification.isRead = true;
-          this.unreadCount = Math.max(0, this.unreadCount - 1);
+          if (notification.source !== 'payment') { this.unreadCount = Math.max(0, this.unreadCount - 1); }
+          this.employerUnreadCount = null;
         },
         error: () => {}
       });
     }
+    if (this.isSubscriptionNotification(notification)) { return; }
     this.notifPanelOpen = false;
     if (notification.linkRoute) {
       this.router.navigate([notification.linkRoute], {
@@ -180,12 +254,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   markAllNotificationsRead(): void {
-    this.notificationService.markAllRead().subscribe({
+    if (this.notificationBusy) { return; }
+    this.notificationBusy = true;
+    const centralIds = this.visibleNotifications.filter(n => n.source === 'central' && !n.isRead).map(n => n.id);
+    const request$: Observable<unknown> = this.userRole === '2' && this.notifications.some(n => n.source === 'central') ? this.notificationService.markVisibleEmployerRead(centralIds) : this.notificationService.markAllRead();
+    request$.subscribe({
       next: () => {
-        this.notifications = this.notifications.map((n) => ({ ...n, isRead: true }));
+        this.notifications = this.notifications.map((n) => n.source === 'payment' ? n : ({ ...n, isRead: true }));
         this.unreadCount = 0;
+        this.employerUnreadCount = null;
+        this.notificationBusy = false;
+        this.refreshNotifications();
       },
-      error: () => {}
+      error: () => { this.notificationBusy = false; }
     });
   }
 

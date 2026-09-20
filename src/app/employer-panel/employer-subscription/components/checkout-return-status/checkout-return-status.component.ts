@@ -3,8 +3,8 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, interval } from 'rxjs';
-import { takeUntil, switchMap, startWith } from 'rxjs/operators';
-import { SubscriptionLifecycleService, CheckoutReturnStatus } from '../../services/subscription-lifecycle.service';
+import { takeUntil } from 'rxjs/operators';
+import { SubscriptionCheckoutIntentService, PaymentAttemptStatusResponse } from '../../services/subscription-checkout-intent.service';
 import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 
 /** A return that changed the subscription, so the engagement context is read again (contract §3.1). */
@@ -24,7 +24,7 @@ const SETTLED_RETURN_STATUSES = ['payment_success_confirmed', 'payment_failed', 
       </div>
 
       <!-- Success -->
-      <div *ngIf="returnStatus === 'payment_success_confirmed'" class="checkout-return__success" @successReveal role="status" aria-live="polite">
+      <div *ngIf="returnStatus === 'payment_success_confirmed'" class="checkout-return__success" role="status" aria-live="polite">
         <div class="checkout-return__icon checkout-return__icon--success" aria-hidden="true">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" fill="rgba(22,163,74,0.12)"/>
@@ -32,7 +32,7 @@ const SETTLED_RETURN_STATUSES = ['payment_success_confirmed', 'payment_failed', 
               class="checkout-return__check-path"/>
           </svg>
         </div>
-        <h1 class="checkout-return__title">Payment confirmed</h1>
+        <h1 class="checkout-return__title">{{ activatedPlanName ? activatedPlanName + ' is now active' : 'Payment confirmed' }}</h1>
         <p class="checkout-return__message">{{ userMessage }}</p>
         <div class="checkout-return__billing-pill" *ngIf="isAnnual" aria-label="Annual billing active">
           Annual billing · 12 months
@@ -116,23 +116,28 @@ const SETTLED_RETURN_STATUSES = ['payment_success_confirmed', 'payment_failed', 
 export class CheckoutReturnStatusComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private stopPolling$ = new Subject<void>();
+  private pollCount = 0;
+  private statusLoading = false;
+  private static readonly MAX_POLLS = 24;
 
   intentId: string = '';
   returnStatus: string = 'checking_payment';
   userMessage: string = '';
   billingCycle: string = 'monthly';
   loadError = false;
+  activatedPlanName: string | null = null;
+  private lastSettledStatus: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private lifecycleService: SubscriptionLifecycleService,
+    private checkoutService: SubscriptionCheckoutIntentService,
     private cdr: ChangeDetectorRef,
     private refreshBus: EngagementRefreshBus,
   ) {}
 
   ngOnInit(): void {
-    this.intentId = this.route.snapshot.queryParamMap.get('intent') || '';
+    this.intentId = this.route.snapshot.queryParamMap.get('attempt') || this.route.snapshot.queryParamMap.get('intent') || this.storedAttemptId();
     if (!this.intentId) {
       this.returnStatus = 'payment_unknown_retry';
       this.cdr.markForCheck();
@@ -143,7 +148,11 @@ export class CheckoutReturnStatusComponent implements OnInit, OnDestroy {
     interval(5000)
       .pipe(takeUntil(this.stopPolling$), takeUntil(this.destroy$))
       .subscribe(() => {
-        if (this.returnStatus === 'payment_pending' || this.returnStatus === 'checking_payment') {
+        if (this.pollCount >= CheckoutReturnStatusComponent.MAX_POLLS) {
+          this.returnStatus = 'payment_unknown_retry';
+          this.stopPolling$.next();
+          this.cdr.markForCheck();
+        } else if (this.returnStatus === 'payment_pending' || this.returnStatus === 'checking_payment') {
           this.loadStatus();
         } else {
           this.stopPolling$.next();
@@ -159,22 +168,31 @@ export class CheckoutReturnStatusComponent implements OnInit, OnDestroy {
   }
 
   loadStatus(): void {
-    if (!this.intentId) return;
+    if (!this.intentId || this.statusLoading) return;
+    this.statusLoading = true;
     this.loadError = false;
-    this.lifecycleService.getCheckoutReturnStatus(this.intentId)
+    this.pollCount += 1;
+    this.checkoutService.getCheckoutIntentStatus(this.intentId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          this.returnStatus = res.returnStatus || 'payment_unknown_retry';
-          this.userMessage = res.userMessage || '';
+          this.statusLoading = false;
+          this.returnStatus = res.success === true ? this.mapStatus(res.status) : 'payment_unknown_retry';
+          this.activatedPlanName = this.returnStatus === 'payment_success_confirmed' && res.subscription?.status === 'active' ? this.planName(res.subscription.planCode) : null;
+          this.userMessage = this.messageFor(res);
           this.billingCycle = res.billingCycle || 'monthly';
-          if (SETTLED_RETURN_STATUSES.indexOf(this.returnStatus) !== -1) { this.refreshBus.request('checkout_return'); }
+          if (SETTLED_RETURN_STATUSES.indexOf(this.returnStatus) !== -1 && this.returnStatus !== this.lastSettledStatus) {
+            this.lastSettledStatus = this.returnStatus;
+            this.refreshBus.request('checkout_return');
+          }
           if (this.returnStatus !== 'payment_pending' && this.returnStatus !== 'checking_payment') {
             this.stopPolling$.next();
+            if (SETTLED_RETURN_STATUSES.indexOf(this.returnStatus) !== -1) { this.clearStoredAttempt(); }
           }
           this.cdr.markForCheck();
         },
         error: () => {
+          this.statusLoading = false;
           this.returnStatus = 'payment_unknown_retry';
           this.loadError = true;
           this.cdr.markForCheck();
@@ -188,4 +206,30 @@ export class CheckoutReturnStatusComponent implements OnInit, OnDestroy {
   goToDashboard(): void { this.router.navigate(['/recruiter/dashboard']); }
   goToSubscription(): void { this.router.navigate(['/recruiter/subscription']); }
   tryAgain(): void { this.router.navigate(['/recruiter/subscription']); }
+
+  private mapStatus(status: string): string {
+    return status === 'PAID' ? 'payment_success_confirmed'
+      : status === 'FAILED' ? 'payment_failed'
+      : status === 'EXPIRED' ? 'payment_expired'
+      : status === 'PENDING' ? 'payment_pending' : 'payment_unknown_retry';
+  }
+
+  private messageFor(response: PaymentAttemptStatusResponse): string {
+    if (response.status === 'PAID') { return 'Your payment is confirmed and your updated hiring capacity is ready.'; }
+    if (response.status === 'PENDING') { return 'We are waiting for secure payment confirmation. You can leave this page and check again later.'; }
+    return '';
+  }
+
+  private planName(code: string | null | undefined): string | null {
+    if (!code) { return null; }
+    return code.replace(/_/g, ' ').replace(/\b\w/g, value => value.toUpperCase());
+  }
+
+  private storedAttemptId(): string {
+    return typeof sessionStorage === 'undefined' ? '' : sessionStorage.getItem('gethired.paymentAttemptId') || '';
+  }
+
+  private clearStoredAttempt(): void {
+    if (typeof sessionStorage !== 'undefined') { sessionStorage.removeItem('gethired.paymentAttemptId'); }
+  }
 }

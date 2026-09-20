@@ -184,6 +184,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
     // The upgrade landing's "Compare all plans" opens this page as ?compare=1.
     this.compareRequested = this.route.snapshot.queryParamMap.get('compare') === '1';
+    const requestedTab = this.route.snapshot.queryParamMap.get('tab');
+    if (requestedTab === 'billing-profile' || requestedTab === 'invoices') { this.switchTab(requestedTab); }
     this.loadSummary();
   }
 

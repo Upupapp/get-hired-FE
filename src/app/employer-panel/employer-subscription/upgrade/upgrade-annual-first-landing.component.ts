@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { SubscriptionPricingCatalogService } from '../services/subscription-pricing-catalog.service';
-import { SubscriptionCheckoutIntentService } from '../services/subscription-checkout-intent.service';
+import { EmployerUpgradePreview, SubscriptionCheckoutIntentService } from '../services/subscription-checkout-intent.service';
 import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from '../services/subscription-upgrade-recommendation.service';
 import { PlanCatalogItem, BillingCycle } from '../subscription-v4.models';
 
@@ -43,18 +43,22 @@ const FEATURE_LIST = [
 })
 export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  private previewRequest = 0;
 
   loading = true;
   checkoutLoading = false;
   loadError = false;
   checkoutError: string | null = null;
+  preview: EmployerUpgradePreview | null = null;
+  previewLoading = false;
+  previewError: string | null = null;
 
   planSlug: string = '';
   plan: PlanCatalogItem | null = null;
   recommendation: UpgradeRecommendation | null = null;
   showComparison = false;
 
-  selectedCycle: BillingCycle = 'annual';
+  selectedCycle: BillingCycle = 'monthly';
 
   readonly featureList = FEATURE_LIST;
   private isBrowser: boolean;
@@ -84,7 +88,8 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
 
   loadAll(trigger: string = 'upgrade_landing_viewed'): void {
     this.loading = true;
-    this.loadError = false;
+    this.loadError = !this.isKnownPlan;
+    if (!this.loadError) { this.loadPreview(); }
 
     this.pricingCatalogService.getCatalog()
       .pipe(takeUntil(this.destroy$))
@@ -92,14 +97,11 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
         next: (res) => {
           if (res && res.catalog && res.catalog.plans) {
             this.plan = res.catalog.plans.find(p => p.slug === this.planSlug) || null;
-            if (!this.plan) this.loadError = true;
-          } else {
-            this.loadError = true;
           }
           this.loading = false;
           this.cdr.markForCheck();
         },
-        error: () => { this.loadError = true; this.loading = false; this.cdr.markForCheck(); },
+        error: () => { this.loading = false; this.cdr.markForCheck(); },
       });
 
     // Load recommendation (non-blocking — page works without it)
@@ -118,15 +120,10 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     // Analytics: fire upgrade_landing_viewed
     this.recommendationService.recordEvent('upgrade_landing_viewed', {
       currentPlan: this.planSlug,
-      defaultBillingCycle: 'annual',
+      defaultBillingCycle: 'monthly',
       surface: 'upgrade_landing',
     });
 
-    // Analytics: fire annual_tab_defaulted on load
-    this.recommendationService.recordEvent('annual_tab_defaulted', {
-      planSlug: this.planSlug,
-      surface: 'upgrade_landing',
-    });
   }
 
   loadPlan(): void { this.loadAll(); }
@@ -135,6 +132,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     const wasAnnual = this.selectedCycle === 'annual';
     this.selectedCycle = cycle;
     this.checkoutError = null;
+    this.loadPreview();
     this.cdr.markForCheck();
     // Analytics
     if (cycle === 'monthly' && wasAnnual) {
@@ -152,6 +150,8 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   }
 
   get isAnnual(): boolean { return this.selectedCycle === 'annual'; }
+  get isKnownPlan(): boolean { return ['starter','growth','business','premium'].indexOf(this.planSlug) !== -1; }
+  get planName(): string { return this.plan?.name || ({starter:'Starter',growth:'Growth',business:'Premium',premium:'Premium'} as Record<string,string>)[this.planSlug] || 'Plan'; }
 
   get heroTitle(): string {
     if (!this.recommendation) return COPY_MAP['default'].title;
@@ -164,25 +164,24 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   }
 
   get displayPrice(): string {
-    if (!this.plan) return '';
-    if (this.isAnnual) return this.plan.pricing.annual.effectiveMonthlyLabel;
-    return this.plan.pricing.monthly.label;
+    if (this.preview) {
+      const amount = this.preview.amountMinor / 100 / (this.isAnnual ? 12 : 1);
+      return new Intl.NumberFormat('en-PH', {style:'currency',currency:this.preview.currency,maximumFractionDigits:0}).format(amount);
+    }
+    return '—';
   }
 
   get dueTodayLabel(): string {
-    if (!this.plan) return '';
-    if (this.isAnnual) return this.plan.pricing.annual.dueTodayLabel;
-    return this.plan.pricing.monthly.renewalLabel;
+    if (this.preview) { return `${this.formatMinor(this.preview.amountMinor, this.preview.currency)} due today`; }
+    return this.previewLoading ? 'Confirming amount' : 'Checkout unavailable';
   }
 
   get renewalLabel(): string {
-    if (!this.plan) return '';
-    return this.isAnnual ? this.plan.pricing.annual.renewalLabel : this.plan.pricing.monthly.renewalLabel;
+    return this.preview ? 'Payment is collected up front for the selected billing period.' : '';
   }
 
   get annualSavingsCopy(): string | null {
-    if (!this.plan || !this.isAnnual) return null;
-    return this.plan.pricing.annual.savingsCopy;
+    return null;
   }
 
   get annualSavingsAmount(): number {
@@ -198,6 +197,16 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   get tabMonthlyLabel(): string { return 'Monthly subscription package'; }
 
   get entitlementRows(): Array<{ label: string; value: string }> {
+    if (this.preview?.entitlements) {
+      const e = this.preview.entitlements;
+      const value = (key:string) => typeof e[key] === 'number' ? String(e[key]) : 'Custom';
+      return [
+        {label:'Active job posts',value:value('jobs')},
+        {label:'Admin users',value:value('users')},
+        {label:'Recruitment Storage',value:typeof e['storage']==='number' ? `${Number(e['storage'])/1000000000} GB` : 'Custom'},
+        {label:'Video questions per job',value:value('video')},
+      ];
+    }
     if (!this.plan) return [];
     const ents = this.plan.entitlements;
     return [
@@ -221,7 +230,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   }
 
   startCheckout(): void {
-    if (!this.plan || this.checkoutLoading) return;
+    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading || !this.preview) return;
     this.checkoutLoading = true;
     this.checkoutError = null;
     this.cdr.markForCheck();
@@ -232,18 +241,21 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
       surface: 'upgrade_landing',
     });
 
+    const idempotencyKey = this.checkoutIdempotencyKey();
     this.checkoutIntentService.createCheckoutIntent({
-      planSlug: this.planSlug,
+      planCode: this.planSlug === 'business' ? 'premium' : this.planSlug,
       billingCycle: this.selectedCycle,
-      sourceSurface: 'upgrade_landing',
+      idempotencyKey,
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         this.checkoutLoading = false;
-        if (res && res.checkoutUrl && this.isBrowser) {
-          window.location.href = res.checkoutUrl;
-        } else if (res && res.checkoutIntentId) {
+        if (res?.success === true && res.paymentAttemptId && res.checkoutUrl && this.isBrowser && this.isSafeCheckoutUrl(res.checkoutUrl)) {
+          sessionStorage.setItem('gethired.paymentAttemptId', res.paymentAttemptId);
+          sessionStorage.removeItem(this.checkoutKeyStorageName());
+          window.location.assign(res.checkoutUrl);
+        } else if (res?.success === true && res.paymentAttemptId) {
           this.router.navigate(['/recruiter/subscription/checkout-return'], {
-            queryParams: { intent: res.checkoutIntentId },
+            queryParams: { attempt: res.paymentAttemptId },
           });
         } else {
           this.checkoutError = 'We couldn\'t prepare checkout right now. Please try again.';
@@ -252,8 +264,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.checkoutLoading = false;
-        const msg = (err && err.error && err.error.message) || 'We couldn\'t prepare checkout right now. Please try again.';
-        this.checkoutError = msg;
+        this.checkoutError = this.checkoutErrorFor(err?.error?.code);
         this.cdr.markForCheck();
       },
     });
@@ -261,4 +272,52 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
 
   goBack(): void { this.router.navigate(['/recruiter/subscription']); }
   goCompare(): void { this.router.navigate(['/recruiter/subscription'], { queryParams: { compare: '1' } }); }
+
+  private createIdempotencyKey(): string {
+    if (this.isBrowser && window.crypto?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      return Array.from(bytes).map(value => value.toString(16).padStart(2, '0')).join('');
+    }
+    return `checkout_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  }
+
+  private checkoutKeyStorageName(): string { return `gethired.checkoutKey.${this.planSlug}.${this.selectedCycle}`; }
+  private checkoutIdempotencyKey(): string {
+    if (!this.isBrowser) { return this.createIdempotencyKey(); }
+    const storageName = this.checkoutKeyStorageName();
+    const existing = sessionStorage.getItem(storageName);
+    if (existing) { return existing; }
+    const created = this.createIdempotencyKey();
+    sessionStorage.setItem(storageName, created);
+    return created;
+  }
+
+  private isSafeCheckoutUrl(value: string): boolean {
+    try { return new URL(value).protocol === 'https:'; } catch (_) { return false; }
+  }
+
+  private checkoutErrorFor(code: string | undefined): string {
+    if (code === 'INVALID_BILLING_CYCLE') { return 'That billing cycle is not available. Choose monthly billing or review the plans.'; }
+    if (code === 'SUBSCRIPTION_ALREADY_ACTIVE') { return 'This subscription is already active. Refresh your subscription details to see the latest status.'; }
+    if (code === 'UPGRADE_NOT_ALLOWED') { return 'This plan change is not available for the current subscription.'; }
+    if (code === 'BILLING_FORBIDDEN') { return 'Only an account owner or billing administrator can start checkout.'; }
+    if (code === 'BILLING_UNAVAILABLE') { return 'Billing is temporarily unavailable. Please try again later.'; }
+    return 'We couldn\'t prepare checkout right now. Please try again.';
+  }
+
+  private loadPreview(): void {
+    if (!this.isKnownPlan) { return; }
+    const request = ++this.previewRequest;
+    this.previewLoading = true; this.preview = null; this.previewError = null;
+    this.checkoutIntentService.previewUpgrade({planCode:this.planSlug === 'business' ? 'premium' : this.planSlug,billingCycle:this.selectedCycle})
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: preview => { if(request!==this.previewRequest){return;} this.previewLoading = false; this.preview = preview?.success === true && Number.isSafeInteger(preview.amountMinor) && preview.amountMinor > 0 && preview.currency === 'PHP' && preview.billingCycle === this.selectedCycle ? preview : null; this.previewError = this.preview ? null : 'This checkout option is not available.'; this.cdr.markForCheck(); },
+        error: error => { if(request!==this.previewRequest){return;} this.previewLoading = false; this.preview = null; this.previewError = this.checkoutErrorFor(error?.error?.code); this.cdr.markForCheck(); },
+      });
+  }
+
+  private formatMinor(amountMinor:number,currency:string):string {
+    return new Intl.NumberFormat('en-PH',{style:'currency',currency,minimumFractionDigits:2}).format(amountMinor/100);
+  }
 }
