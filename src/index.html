@@ -3,6 +3,18 @@
 
 <head>
   <meta charset="utf-8">
+  <script>
+    // The API accepts the canonical apex origin. Redirect before Angular or
+    // any API request can run so www visitors do not fail CORS preflight.
+    if (window.location.hostname === 'www.gethiredonline.app') {
+      window.location.replace(
+        'https://gethiredonline.app' +
+        window.location.pathname +
+        window.location.search +
+        window.location.hash
+      );
+    }
+  </script>
   <title>GetHired Online — Jobs and Hiring Platform in the Philippines</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
