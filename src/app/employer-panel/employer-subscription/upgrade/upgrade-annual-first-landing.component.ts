@@ -286,7 +286,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
         if (Number(err && err.status) === 401) {
           this.sessionExpired = true;
           this.checkoutError = 'Your session has expired. Sign in again to continue to checkout.';
-          this.coreService.logout();
+          this.coreService.discardExpiredSession();
           this.cdr.markForCheck();
           return;
         }

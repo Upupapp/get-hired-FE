@@ -20,7 +20,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
       createCheckoutIntent: jasmine.createSpy('createCheckoutIntent').and.returnValue(of({ success: false })),
     };
     const router = { navigateByUrl: jasmine.createSpy('navigateByUrl'), navigate: jasmine.createSpy('navigate') };
-    const coreService = { logout: jasmine.createSpy('logout') };
+    const coreService = { discardExpiredSession: jasmine.createSpy('discardExpiredSession') };
     const component = new UpgradeAnnualFirstLandingComponent(
       {
         snapshot: {
@@ -94,7 +94,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
 
     component.startCheckout();
 
-    expect(coreService.logout).toHaveBeenCalledTimes(1);
+    expect(coreService.discardExpiredSession).toHaveBeenCalledTimes(1);
     expect(router.navigateByUrl).not.toHaveBeenCalled();
     expect(component.sessionExpired).toBeTrue();
     expect(component.checkoutError).toContain('session has expired');

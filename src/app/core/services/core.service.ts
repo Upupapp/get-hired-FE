@@ -236,6 +236,29 @@ export class CoreService {
    * via AiCreateDraftService.clear(ownerScope) -- this method never needs
    * to know that key exists, let alone preserve/restore it.
    */
+  /**
+   * Clears an already-invalid browser session without calling the revoke
+   * endpoint. Use this only after the API has returned 401: that token is
+   * no longer a usable server session, and another /auth/logout request can
+   * only consume rate-limit capacity while the user is trying to sign in.
+   */
+  discardExpiredSession(): void {
+    this.isLogin = false;
+    this.roleAs = '';
+    this.suppressExpiryHandling = false;
+    this.tokenLifecycle.stop();
+    for (const key of AUTH_SESSION_STORAGE_KEYS) {
+      try { localStorage.removeItem(key); } catch (_) {}
+    }
+    try {
+      localStorage.setItem('state', 'false');
+      localStorage.setItem('role', '');
+    } catch (_) {}
+    try { this.authFacade.logout(); } catch (_) {}
+    this.authStateSubject.next(false);
+    this.currentUserSubject.next(CoreService.safeParseUserSnapshot());
+  }
+
   logout() {
     // Captured BEFORE the cleanup below removes it -- the revoke request
     // constructed further down is a COLD observable (HttpClient requests
@@ -249,53 +272,7 @@ export class CoreService {
     // actually fires relative to the cleanup.
     const tokenForRevoke = localStorage.getItem('token');
 
-    this.isLogin = false;
-    this.roleAs = '';
-    this.suppressExpiryHandling = false;
-    // SESSION-SILENT-REFRESH: no reason to keep a proactive refresh timer
-    // alive (or let an in-flight refresh silently repopulate localStorage
-    // with a live session right after we just cleared it) once the user
-    // has actually signed out.
-    this.tokenLifecycle.stop();
-    for (const key of AUTH_SESSION_STORAGE_KEYS) {
-      try { localStorage.removeItem(key); } catch (_) {}
-    }
-    // Explicit signed-out values (not just removal) for the two keys
-    // isLoggedIn()/route guards actually read, matching this method's
-    // previous observable behavior.
-    try {
-      localStorage.setItem('state', 'false');
-      localStorage.setItem('role', '');
-    } catch (_) {}
-
-    // SIGNIN STALE-CREDENTIALS-REPLAY FIX: SigninComponent subscribes to
-    // AuthFacade.credentials$ (an NgRx select(), which replays the current
-    // store value to every new subscriber) as a class-field initializer --
-    // i.e. on construction, unconditionally. AuthFacade.logout() existed
-    // but was never called by the app's one real sign-out path, so the
-    // store's `credentials` slice kept the last successful login response
-    // forever (in-memory, survives client-side navigation). Any later
-    // mount of SigninComponent -- even long after a genuine, complete
-    // sign-out -- would immediately replay that stale response into
-    // loggedIn(), silently re-establishing the old session and
-    // self-navigating away from the sign-in page. Clearing the slice here
-    // (resetCredentials() -> credentials: {...initAuth}, no `id` field, so
-    // loggedIn()'s `user && user.id` guard is a no-op on replay) closes
-    // that leak at its source instead of patching every subscriber.
-    //
-    // Deliberately LAST and try/caught: the local sign-out above (the part
-    // that actually matters -- state/role/token removed) must complete
-    // unconditionally, even if this store dispatch were ever to throw.
-    try { this.authFacade.logout(); } catch (_) {}
-
-    // AUTH LIFECYCLE SYNC: push immediately rather than waiting for the
-    // next NavigationEnd -- a caller may not navigate at all right after
-    // calling logout() (e.g. a guard clearing a stale session while
-    // staying on the currently-rendering page), and any subscriber
-    // (public header, etc.) must reflect "signed out" the instant this
-    // method returns, not on some later, possibly-nonexistent navigation.
-    this.authStateSubject.next(false);
-    this.currentUserSubject.next(CoreService.safeParseUserSnapshot());
+    this.discardExpiredSession();
 
     // NAVIGATION-ABORTS-IN-FLIGHT-REQUEST FIX: this used to fire the
     // backend's session-revoke call (POST /auth/logout ->
