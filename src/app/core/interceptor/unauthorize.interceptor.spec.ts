@@ -45,4 +45,24 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
       },
     });
   });
+
+  it('clears a dead restored session on a protected route even when its token is gone', (done) => {
+    localStorage.setItem('state', 'false');
+    const router = { url: '/recruiter/subscription/upgrade/growth', navigateByUrl: jasmine.createSpy('navigateByUrl') };
+    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, logout: jasmine.createSpy('logout') };
+    const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
+    const lifecycle = { refreshNow: jasmine.createSpy('refreshNow').and.returnValue(of(false)) };
+    const interceptor = new UnAuthorizedInterceptor(router as any, core as any, snackbar as any, lifecycle as any);
+    const next: HttpHandler = { handle: () => throwError(() => new HttpErrorResponse({ status: 401 })) };
+
+    interceptor.intercept(new HttpRequest('POST', '/checkout', {}), next).subscribe({
+      next: () => done.fail('expected a 401'),
+      error: () => {
+        expect(lifecycle.refreshNow).toHaveBeenCalledTimes(1);
+        expect(core.logout).toHaveBeenCalledTimes(1);
+        expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');
+        done();
+      },
+    });
+  });
 });

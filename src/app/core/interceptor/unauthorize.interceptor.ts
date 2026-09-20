@@ -122,7 +122,8 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
     // the 401 leaks back to feature components as a misleading checkout/API
     // error while the UI continues to look signed in.
     const hasStoredToken = typeof localStorage !== 'undefined' && !!localStorage.getItem('token');
-    if (!this.coreService.isLoggedIn() && !hasStoredToken) {
+    const protectedRoute = /^\/(recruiter|user|admin)(\/|$)/.test(this.router.url || '');
+    if (!this.coreService.isLoggedIn() && !hasStoredToken && !protectedRoute) {
       return throwError(() => err);
     }
 
