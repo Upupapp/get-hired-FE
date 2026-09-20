@@ -20,6 +20,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
       createCheckoutIntent: jasmine.createSpy('createCheckoutIntent').and.returnValue(of({ success: false })),
     };
     const router = { navigateByUrl: jasmine.createSpy('navigateByUrl'), navigate: jasmine.createSpy('navigate') };
+    const coreService = { logout: jasmine.createSpy('logout') };
     const component = new UpgradeAnnualFirstLandingComponent(
       {
         snapshot: {
@@ -34,10 +35,11 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
         getRecommendation: () => throwError(() => new Error('recommendation unavailable')),
         recordEvent: jasmine.createSpy('recordEvent'),
       } as any,
+      coreService as any,
       { markForCheck: jasmine.createSpy('markForCheck') } as any,
       'browser'
     );
-    return { component, checkoutIntentService, router };
+    return { component, checkoutIntentService, router, coreService };
   }
 
   it('renders a known plan from the authoritative preview when the legacy catalog fails', () => {
@@ -85,13 +87,14 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
   });
 
   it('sends an expired checkout session to sign in instead of showing a payment error', () => {
-    const { component, checkoutIntentService, router } = createComponent('growth');
+    const { component, checkoutIntentService, router, coreService } = createComponent('growth');
     checkoutIntentService.createCheckoutIntent.and.returnValue(throwError(() => ({ status: 401 })));
     component.ngOnInit();
     component.previewLoading = false;
 
     component.startCheckout();
 
+    expect(coreService.logout).toHaveBeenCalledTimes(1);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');
     expect(component.checkoutError).toBeNull();
   });

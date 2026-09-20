@@ -11,6 +11,7 @@ import { EmployerUpgradePreview, SubscriptionCheckoutIntentService } from '../se
 import { SubscriptionUpgradeRecommendationService, UpgradeRecommendation } from '../services/subscription-upgrade-recommendation.service';
 import { PlanCatalogItem, BillingCycle } from '../subscription-v4.models';
 import { APPROVED_PRICING_CATALOG } from '../approved-pricing-catalog';
+import { CoreService } from '../../../core/services/core.service';
 
 // Stable copy keys → UI copy
 const COPY_MAP: Record<string, { title: string; subtitle: string }> = {
@@ -70,6 +71,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     private pricingCatalogService: SubscriptionPricingCatalogService,
     private checkoutIntentService: SubscriptionCheckoutIntentService,
     private recommendationService: SubscriptionUpgradeRecommendationService,
+    private coreService: CoreService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
@@ -281,6 +283,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
         this.checkoutLoading = false;
         if (Number(err && err.status) === 401) {
           this.checkoutError = null;
+          this.coreService.logout();
           this.router.navigateByUrl('/signin');
           this.cdr.markForCheck();
           return;
