@@ -7,6 +7,7 @@ import {
   InvoiceDetail,
   BillingProfile,
 } from '../subscription.models';
+import { EmployerCheckoutResponse, StorageAddonCheckoutRequest } from './subscription-checkout-intent.service';
 
 @Injectable({ providedIn: 'root' })
 export class BillingService {
@@ -54,5 +55,10 @@ export class BillingService {
     return this.http.put<{ success: boolean; profile: BillingProfile; message?: string }>(
       `${this.apiBase}/billing/profile`, profile
     );
+  }
+
+  /** Starts the server-authoritative PayMongo flow for Recruitment Storage add-ons. */
+  createStorageAddonCheckout(request: StorageAddonCheckoutRequest): Observable<EmployerCheckoutResponse> {
+    return this.http.post<EmployerCheckoutResponse>(`${this.apiBase}/employer/storage-addons/checkout`, request);
   }
 }

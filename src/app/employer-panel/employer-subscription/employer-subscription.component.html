@@ -1,710 +1,136 @@
-<div class="gh-sub-page">
-
-  <!-- ====================================================
-       SKELETON STATE
-  ===================================================== -->
+<div class="billing-page">
   <ng-container *ngIf="loading">
-    <div class="gh-sub-hero gh-sub-hero--skeleton">
-      <div class="gh-skeleton gh-skeleton--h32 gh-skeleton--w40"></div>
-      <div class="gh-skeleton gh-skeleton--h20 gh-skeleton--w60 gh-mt-12"></div>
-    </div>
-    <div class="gh-sub-cockpit-grid gh-mt-24">
-      <div class="gh-usage-card gh-skeleton-card" *ngFor="let i of [0,1,2]"></div>
-    </div>
+    <div class="billing-skeleton billing-skeleton--top"></div>
+    <div class="billing-skeleton billing-skeleton--plans"></div>
   </ng-container>
 
-  <!-- ====================================================
-       ERROR STATE
-  ===================================================== -->
-  <ng-container *ngIf="!loading && loadError">
-    <div class="gh-sub-error-state">
-      <div class="gh-sub-error-icon">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-      </div>
-      <h2 class="gh-sub-error-title">Couldn't load billing information</h2>
-      <p class="gh-sub-error-desc">There was a problem fetching your subscription details. Please try again.</p>
-      <button class="gh-btn-primary" (click)="loadSummary()">Retry</button>
-    </div>
-  </ng-container>
+  <section class="billing-error" *ngIf="!loading && loadError" role="alert">
+    <h2>Couldn't load billing information</h2>
+    <p>There was a problem fetching your subscription details.</p>
+    <button type="button" class="primary-button" (click)="loadSummary()">Retry</button>
+  </section>
 
-  <!-- ====================================================
-       MAIN CONTENT (loaded)
-  ===================================================== -->
-  <ng-container *ngIf="!loading && !loadError">
-
-    <!-- ── HERO CARD ── -->
-    <div class="gh-sub-hero" role="region" aria-label="Subscription overview">
-      <div class="gh-sub-hero__inner">
-        <div class="gh-sub-hero__left">
-          <span class="gh-sub-hero__eyebrow">Subscription command center</span>
-          <h1 class="gh-sub-hero__title">Manage your GetHired plan</h1>
-          <div class="gh-sub-hero__meta">
-            <span class="gh-sub-hero__company" *ngIf="companyName">{{ companyName }}</span>
-            <span class="gh-sub-plan-badge">{{ currentPlanName }}</span>
-            <span class="gh-sub-status-badge" [ngClass]="statusClass" role="status">{{ statusLabel }}</span>
-          </div>
-          <button type="button" class="gh-btn-primary gh-sub-hero__cta gh-pressable" *ngIf="heroAction as action"
-            (click)="runLifecycleAction(action)">
-            {{ action.label }}
-          </button>
-        </div>
-        <div class="gh-sub-hero__right" *ngIf="summary && summary.usage && summary.usage.recruitment">
-          <div class="gh-sub-hero__pulse" role="group" aria-label="Usage summary">
-            <div class="gh-sub-hero__pulse-item">
-              <span class="gh-sub-hero__pulse-val" aria-label="Active jobs">{{ summary.usage.recruitment.activeJobs?.used ?? 0 }}</span>
-              <span class="gh-sub-hero__pulse-label">Active jobs</span>
-            </div>
-            <div class="gh-sub-hero__pulse-item">
-              <span class="gh-sub-hero__pulse-val" aria-label="Admin users">{{ summary.usage.recruitment.adminUsers?.used ?? 0 }}</span>
-              <span class="gh-sub-hero__pulse-label">Admin users</span>
-            </div>
-            <div class="gh-sub-hero__pulse-item">
-              <span class="gh-sub-hero__pulse-val" aria-label="Video responses"
-                [ngClass]="{'gh-sub-hero__pulse-val--incl': videoResponsesIsBoolean(summary.usage.recruitment.videoResponses) && videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses)}">
-                {{ summary.usage.recruitment.videoResponses?.included === 'unlimited'
-                    ? '∞'
-                    : videoResponsesIsBoolean(summary.usage.recruitment.videoResponses)
-                      ? (videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses) ? '✓' : '—')
-                      : (summary.usage.recruitment.videoResponses?.used ?? 0) }}
-              </span>
-              <span class="gh-sub-hero__pulse-label">Video responses</span>
-            </div>
-          </div>
-          <div class="gh-sub-hero__renewal" *ngIf="summary.currentPlan?.currentPeriodEnd">
-            <ng-container *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'">
-              Trial ends <strong>{{ renewalDate }}</strong>
-            </ng-container>
-            <ng-container *ngIf="currentStatus !== 'trialing' && currentStatus !== 'trial_ending_soon'">
-              Renews <strong>{{ renewalDate }}</strong>
-            </ng-container>
-          </div>
-        </div>
-      </div>
+  <ng-container *ngIf="!loading && !loadError && summary">
+    <div class="billing-toolbar" role="tablist" aria-label="Subscription sections">
+      <button type="button" [class.is-active]="activeTab === 'plan'" (click)="switchTab('plan')">Plan overview</button>
+      <button type="button" [class.is-active]="activeTab === 'invoices'" (click)="switchTab('invoices')">Billing history</button>
+      <button type="button" [class.is-active]="activeTab === 'billing-profile'" (click)="switchTab('billing-profile')">Billing profile</button>
     </div>
 
-    <!-- ── LIFECYCLE STATUS BANNER ── -->
-    <div class="gh-sub-banner" [ngClass]="'gh-sub-banner--' + bannerVariant" role="status" aria-live="polite">
-      <div class="gh-sub-banner__icon" aria-hidden="true">
-        <svg *ngIf="currentStatus === 'none' || currentStatus === 'expired'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <svg *ngIf="currentStatus === 'trialing'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <svg *ngIf="currentStatus === 'trial_ending_soon'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <svg *ngIf="currentStatus === 'active' || currentStatus === 'manual'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        <svg *ngIf="currentStatus === 'payment_failed' || currentStatus === 'past_due'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-        <svg *ngIf="currentStatus === 'pending'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <svg *ngIf="currentStatus === 'cancelled'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      </div>
-      <div class="gh-sub-banner__body">
-        <span *ngIf="currentStatus === 'none'">Choose a plan to start hiring. Unlock applicant tracking, interview tools, and more.</span>
-        <span *ngIf="currentStatus === 'trialing'">
-          Your free trial is active.
-          <ng-container *ngIf="hasTrialEndDate"> Trial ends on <strong>{{ trialEndDate }}</strong>.</ng-container>
-          <ng-container *ngIf="!hasTrialEndDate"> Trial end date will appear here once confirmed.</ng-container>
-          Choose a plan to publish or reopen jobs, add team members, or add screening questions.
-        </span>
-        <span *ngIf="currentStatus === 'trial_ending_soon'">
-          Your trial is ending soon.
-          <ng-container *ngIf="hasTrialEndDate"> It ends on <strong>{{ trialEndDate }}</strong>.</ng-container>
-          Choose a plan to publish or reopen jobs, add team members, or add screening questions. Your published jobs stay published.
-        </span>
-        <span *ngIf="currentStatus === 'active'">Your plan is active. Renews on <strong>{{ renewalDate }}</strong>.</span>
-        <span *ngIf="currentStatus === 'manual'">Your plan is active under manual billing.</span>
-        <span *ngIf="currentStatus === 'payment_failed'">Payment failed. Contact billing support at <strong>{{ supportEmail }}</strong> to complete the payment and keep your plan active.</span>
-        <span *ngIf="currentStatus === 'past_due'">Payment is past due. Contact billing support at <strong>{{ supportEmail }}</strong> to complete the payment and restore full access.</span>
-        <span *ngIf="currentStatus === 'pending'">Payment is pending verification. Your plan will activate once confirmed.</span>
-        <span *ngIf="currentStatus === 'cancelled'">Your plan has been cancelled. You may retain access until <strong>{{ renewalDate }}</strong>. Reactivate to continue hiring.</span>
-        <span *ngIf="currentStatus === 'expired'">Your trial or plan has ended. Choose a plan to continue hiring on GetHired.</span>
-      </div>
-      <div class="gh-sub-banner__action">
-        <button type="button" class="gh-sub-banner__btn" *ngIf="bannerAction as action"
-          [class.gh-sub-banner__btn--primary]="action.kind !== 'contact_billing'"
-          [class.gh-sub-banner__btn--danger]="action.kind === 'contact_billing'"
-          (click)="runLifecycleAction(action)">{{ action.label }}</button>
-      </div>
-    </div>
-
-    <!-- ── SUBTAB NAV ── -->
-    <nav class="gh-sub-tabs" role="tablist" aria-label="Subscription sections">
-      <button type="button" role="tab"
-        class="gh-sub-tab" [class.gh-sub-tab--active]="activeTab === 'plan'"
-        [attr.aria-selected]="activeTab === 'plan'"
-        (click)="switchTab('plan')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        Plan &amp; Usage
-      </button>
-      <button type="button" role="tab"
-        class="gh-sub-tab" [class.gh-sub-tab--active]="activeTab === 'invoices'"
-        [attr.aria-selected]="activeTab === 'invoices'"
-        (click)="switchTab('invoices')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Invoices
-      </button>
-      <button type="button" role="tab"
-        class="gh-sub-tab" [class.gh-sub-tab--active]="activeTab === 'billing-profile'"
-        [attr.aria-selected]="activeTab === 'billing-profile'"
-        (click)="switchTab('billing-profile')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Billing Profile
-      </button>
-    </nav>
-
-    <!-- ══════════════════════ TAB: PLAN & USAGE ══════════════════════════ -->
     <ng-container *ngIf="activeTab === 'plan'">
-
-    <!-- ── PLAN USAGE COCKPIT ── -->
-    <div class="gh-sub-section" *ngIf="summary && summary.usage" role="region" aria-label="Plan usage">
-      <h2 class="gh-sub-section__title">Usage cockpit</h2>
-      <p class="gh-sub-section__sub">How you're using your current plan.</p>
-      <div class="gh-sub-cockpit-grid">
-
-        <!-- Active job posts -->
-        <div class="gh-usage-card" *ngIf="summary.usage.recruitment?.activeJobs">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--jobs" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-            </div>
-            <span class="gh-usage-card__label">Active job posts</span>
-          </div>
-          <ng-container *ngIf="!isUnlimited(summary.usage.recruitment.activeJobs); else unlimitedJobs">
-            <div class="gh-usage-card__counts">
-              <span class="gh-usage-card__used">{{ summary.usage.recruitment.activeJobs.used }}</span>
-              <span class="gh-usage-card__sep">/</span>
-              <span class="gh-usage-card__max">{{ formatEntitlementMax(summary.usage.recruitment.activeJobs) }}</span>
-            </div>
-            <div class="gh-usage-meter" role="progressbar"
-              [attr.aria-valuenow]="summary.usage.recruitment.activeJobs.used"
-              [attr.aria-valuemin]="0"
-              [attr.aria-valuemax]="summary.usage.recruitment.activeJobs.included"
-              [attr.aria-label]="'Active job posts: ' + summary.usage.recruitment.activeJobs.used + ' of ' + summary.usage.recruitment.activeJobs.included + ' used'">
-              <div class="gh-usage-meter-fill"
-                [ngClass]="getMeterClass(summary.usage.recruitment.activeJobs)"
-                [style.width.%]="getMeterPercent(summary.usage.recruitment.activeJobs)">
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #unlimitedJobs>
-            <div class="gh-usage-card__unlimited">Unlimited</div>
-          </ng-template>
-          <div class="gh-usage-card__alert" *ngIf="isAtLimit(summary.usage.recruitment.activeJobs)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Limit reached — upgrade to post more jobs
-          </div>
-          <div class="gh-usage-card__warning" *ngIf="!isAtLimit(summary.usage.recruitment.activeJobs) && isNearLimit(summary.usage.recruitment.activeJobs)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            Approaching limit
-          </div>
-        </div>
-
-        <!-- Admin users -->
-        <div class="gh-usage-card" *ngIf="summary.usage.recruitment?.adminUsers">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--users" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <span class="gh-usage-card__label">Admin users</span>
-          </div>
-          <ng-container *ngIf="!isUnlimited(summary.usage.recruitment.adminUsers); else unlimitedAdmins">
-            <div class="gh-usage-card__counts">
-              <span class="gh-usage-card__used">{{ summary.usage.recruitment.adminUsers.used }}</span>
-              <span class="gh-usage-card__sep">/</span>
-              <span class="gh-usage-card__max">{{ formatEntitlementMax(summary.usage.recruitment.adminUsers) }}</span>
-            </div>
-            <div class="gh-usage-meter" role="progressbar"
-              [attr.aria-valuenow]="summary.usage.recruitment.adminUsers.used"
-              [attr.aria-valuemin]="0"
-              [attr.aria-valuemax]="summary.usage.recruitment.adminUsers.included"
-              [attr.aria-label]="'Admin users: ' + summary.usage.recruitment.adminUsers.used + ' of ' + summary.usage.recruitment.adminUsers.included + ' used'">
-              <div class="gh-usage-meter-fill"
-                [ngClass]="getMeterClass(summary.usage.recruitment.adminUsers)"
-                [style.width.%]="getMeterPercent(summary.usage.recruitment.adminUsers)">
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #unlimitedAdmins>
-            <div class="gh-usage-card__unlimited">Unlimited</div>
-          </ng-template>
-          <div class="gh-usage-card__alert" *ngIf="isAtLimit(summary.usage.recruitment.adminUsers)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Limit reached — upgrade to add more team members
-          </div>
-        </div>
-
-        <!-- Video responses -->
-        <div class="gh-usage-card" *ngIf="summary.usage.recruitment?.videoResponses">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--video" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            </div>
-            <span class="gh-usage-card__label">Video responses</span>
-          </div>
-          <ng-container *ngIf="isUnlimited(summary.usage.recruitment.videoResponses); else notUnlimitedVideo">
-            <div class="gh-usage-card__unlimited">Unlimited</div>
-          </ng-container>
-          <ng-template #notUnlimitedVideo>
-            <!-- Boolean DB column: show Included/Not included chip -->
-            <ng-container *ngIf="videoResponsesIsBoolean(summary.usage.recruitment.videoResponses); else numericVideo">
-              <span class="gh-ent-chip"
-                [ngClass]="videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses) ? 'gh-ent-chip--included' : 'gh-ent-chip--excluded'">
-                {{ videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses) ? 'Included' : 'Not included' }}
-              </span>
-              <p class="gh-usage-card__helper" *ngIf="!videoResponsesBooleanIncluded(summary.usage.recruitment.videoResponses)">
-                Upgrade to collect video responses.
+      <section class="overview-grid" aria-label="Current subscription overview">
+        <article class="current-plan-card">
+          <div class="current-plan-card__header">
+            <div>
+              <span class="soft-badge">Current Plan</span>
+              <h2>{{ currentPlanName }}</h2>
+              <p>
+                <span *ngIf="currentStatus === 'trialing' || currentStatus === 'trial_ending_soon'">Trial access</span>
+                <span *ngIf="trialDaysLeft !== null" class="days-left"> · {{ trialDaysLeft }} day{{ trialDaysLeft === 1 ? '' : 's' }} left</span>
+                <span *ngIf="currentStatus !== 'trialing' && currentStatus !== 'trial_ending_soon'">{{ statusLabel }}</span>
               </p>
-            </ng-container>
-            <!-- Numeric limit -->
-            <ng-template #numericVideo>
-              <ng-container *ngIf="summary.usage.recruitment.videoResponses.included !== null && summary.usage.recruitment.videoResponses.included !== undefined; else videoNotIncluded">
-                <div class="gh-usage-card__counts">
-                  <span class="gh-usage-card__used">{{ summary.usage.recruitment.videoResponses.used }}</span>
-                  <span class="gh-usage-card__sep">/</span>
-                  <span class="gh-usage-card__max">{{ formatEntitlementMax(summary.usage.recruitment.videoResponses) }}</span>
-                </div>
-                <div class="gh-usage-meter" role="progressbar"
-                  [attr.aria-valuenow]="summary.usage.recruitment.videoResponses.used"
-                  [attr.aria-valuemin]="0"
-                  [attr.aria-valuemax]="summary.usage.recruitment.videoResponses.included"
-                  [attr.aria-label]="'Video responses: ' + summary.usage.recruitment.videoResponses.used + ' of ' + summary.usage.recruitment.videoResponses.included + ' used'">
-                  <div class="gh-usage-meter-fill"
-                    [ngClass]="getMeterClass(summary.usage.recruitment.videoResponses)"
-                    [style.width.%]="getMeterPercent(summary.usage.recruitment.videoResponses)">
-                  </div>
-                </div>
-              </ng-container>
-              <ng-template #videoNotIncluded>
-                <span class="gh-ent-chip gh-ent-chip--excluded">Not included</span>
-                <p class="gh-usage-card__helper">Upgrade to collect video responses.</p>
-              </ng-template>
-            </ng-template>
-          </ng-template>
-        </div>
-
-        <!-- Recruitment Storage: only the V4 summary's usage.recruitment_storage block drives
-             this card. A backend without the block renders none (absent is not zero). -->
-        <div class="gh-usage-card" *ngIf="storageUsage">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--storage" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
             </div>
-            <span class="gh-usage-card__label">Recruitment Storage</span>
-          </div>
-          <app-subscription-usage-meter label="Recruitment Storage" kind="storage" [showLabel]="false" [usage]="storageUsage"></app-subscription-usage-meter>
-        </div>
-
-        <!-- Interview questions -->
-        <div class="gh-usage-card" *ngIf="summary.usage.recruitment?.interviewQuestions">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--interview" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="current-plan-card__actions">
+              <button type="button" (click)="focusPlanSection('plans')">Manage Plan</button>
+              <button type="button" (click)="switchTab('invoices')">Billing History</button>
             </div>
-            <span class="gh-usage-card__label">Interview questions</span>
           </div>
-          <span class="gh-ent-chip"
-            [ngClass]="summary.usage.recruitment.interviewQuestions.included ? 'gh-ent-chip--included' : 'gh-ent-chip--excluded'">
-            {{ formatBooleanEntitlement(summary.usage.recruitment.interviewQuestions) }}
-          </span>
-        </div>
 
-        <!-- Candidate messaging -->
-        <div class="gh-usage-card" *ngIf="summary.usage.recruitment?.messaging">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--msg" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div class="usage-strip" *ngIf="summary.usage && summary.usage.recruitment as recruitment">
+            <div class="usage-stat" *ngIf="recruitment.activeJobs as jobs">
+              <span class="usage-stat__icon">▣</span><span><small>Active Jobs</small><strong>{{ jobs.used }} / {{ formatEntitlementMax(jobs) }}</strong></span>
+              <i><b [style.width.%]="getMeterPercent(jobs)"></b></i>
             </div>
-            <span class="gh-usage-card__label">Candidate messaging</span>
-          </div>
-          <span class="gh-ent-chip"
-            [ngClass]="summary.usage.recruitment.messaging.included ? 'gh-ent-chip--included' : 'gh-ent-chip--excluded'">
-            {{ formatBooleanEntitlement(summary.usage.recruitment.messaging) }}
-          </span>
-          <p class="gh-usage-card__helper" *ngIf="!summary.usage.recruitment.messaging.included">
-            Upgrade to Growth to message applicants directly.
-          </p>
-        </div>
-
-        <!-- Public company profile (SEO employer page) -->
-        <div class="gh-usage-card" *ngIf="summary.usage.branding?.publicProfile">
-          <div class="gh-usage-card__header">
-            <div class="gh-usage-card__icon gh-usage-card__icon--profile" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            <div class="usage-stat" *ngIf="recruitment.adminUsers as users">
+              <span class="usage-stat__icon">♙</span><span><small>Team Members</small><strong>{{ users.used }} / {{ formatEntitlementMax(users) }}</strong></span>
+              <i><b [style.width.%]="getMeterPercent(users)"></b></i>
             </div>
-            <span class="gh-usage-card__label">Public company profile</span>
+            <div class="usage-stat" *ngIf="storageUsage">
+              <span class="usage-stat__icon">◉</span><span><small>Recruitment Storage</small><strong>{{ storageUsedLabel }} / {{ storageLimitLabel }}</strong></span>
+              <i><b [style.width.%]="storagePercent || 0"></b></i>
+            </div>
+            <div class="usage-stat" *ngIf="recruitment.videoResponses as videos">
+              <span class="usage-stat__icon">▻</span><span><small>Video Responses</small><strong>{{ formatEntitlement(videos) }}</strong></span>
+              <i><b [style.width.%]="getMeterPercent(videos)"></b></i>
+            </div>
           </div>
-          <span class="gh-ent-chip"
-            [ngClass]="summary.usage.branding.publicProfile.included ? 'gh-ent-chip--included' : 'gh-ent-chip--excluded'">
-            {{ formatBooleanEntitlement(summary.usage.branding.publicProfile) }}
-          </span>
-          <p class="gh-usage-card__helper" *ngIf="!summary.usage.branding.publicProfile.included">
-            Upgrade to publish an SEO-friendly employer page.
-          </p>
-        </div>
+        </article>
 
-      </div><!-- /cockpit grid -->
-    </div>
-
-    <!-- ── PLAN CARDS ── -->
-    <!-- Every price, capacity and Recruitment Storage figure below comes from
-         GET /api/subscriptions/pricing-catalog. Nothing here is hardcoded: the
-         page previously rendered its own PLAN_CONFIGS and so advertised prices
-         the backend did not charge. -->
-    <div class="gh-sub-section" role="region" aria-label="Available plans">
-      <h2 class="gh-sub-section__title" #plansHeading tabindex="-1">Available plans</h2>
-      <p class="gh-sub-section__sub">Choose the plan that matches your hiring volume and team workflow.</p>
-
-      <!-- Monthly / Annual toggle — only rendered when the backend offers both,
-           so it can never be a control that does nothing. -->
-      <div class="gh-cycle-toggle" *ngIf="canToggleBillingCycle" role="group" aria-label="Billing cycle">
-        <button type="button" class="gh-cycle-toggle__btn"
-          [class.gh-cycle-toggle__btn--active]="billingCycle === 'monthly'"
-          [attr.aria-pressed]="billingCycle === 'monthly'"
-          (click)="setBillingCycle('monthly')">Monthly</button>
-        <button type="button" class="gh-cycle-toggle__btn"
-          [class.gh-cycle-toggle__btn--active]="billingCycle === 'annual'"
-          [attr.aria-pressed]="billingCycle === 'annual'"
-          (click)="setBillingCycle('annual')">Annual</button>
-        <span class="gh-cycle-toggle__note" *ngIf="catalog?.annualCopy">{{ catalog.annualCopy }}</span>
-      </div>
-
-      <!-- Catalog states. No local price fallback by design — an honest empty
-           state beats a confident wrong number on a billing page. -->
-      <div class="gh-plan-state" *ngIf="catalogLoading">
-        <div class="gh-skeleton-card" *ngFor="let i of [0,1,2]"></div>
-      </div>
-      <div class="gh-plan-state gh-plan-state--error" *ngIf="catalogError && !catalogLoading" role="alert">
-        <p>We couldn't load current pricing. Your plan and usage above are unaffected.</p>
-        <button type="button" class="gh-plan-state__retry" (click)="loadPricingCatalog()">Try again</button>
-      </div>
-
-      <div class="gh-plan-carousel"
-        *ngIf="!catalogLoading && !catalogError && catalogPlans.length"
-        [class.gh-plan-carousel--can-scroll-prev]="planCarouselCanScrollPrev"
-        [class.gh-plan-carousel--can-scroll-next]="planCarouselCanScrollNext">
-        <!-- Prev/Next: desktop-only, hidden on touch/small screens where swipe is the natural gesture -->
-        <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--prev"
-          (click)="goToPlanSlide((planCarouselActiveIndex - 1 + catalogPlans.length) % catalogPlans.length)"
-          aria-label="Previous plan">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-
-        <div class="gh-plan-grid" #planCarouselTrack
-          role="region" aria-roledescription="carousel" aria-label="Available plans, auto-advancing every 2 seconds"
-          tabindex="0"
-          (mouseenter)="onPlanCarouselInteractionStart()" (mouseleave)="onPlanCarouselInteractionEnd()"
-          (touchstart)="onPlanCarouselInteractionStart()" (touchend)="onPlanCarouselInteractionEnd()"
-          (focusin)="onPlanCarouselInteractionStart()" (focusout)="onPlanCarouselInteractionEnd()"
-          (scroll)="syncActiveSlide()">
-        <div class="gh-plan-card"
-          *ngFor="let plan of catalogPlans; trackBy: trackPlanBySlug"
-          [ngClass]="{
-            'gh-plan-card--recommended': plan.recommended && !isCurrentCatalogPlan(plan),
-            'gh-plan-card--current': isCurrentCatalogPlan(plan),
-            'gh-plan-card--trial': plan.trial && !isCurrentCatalogPlan(plan)
-          }">
-
-          <!-- Badges. Recommended and Current are mutually exclusive so a card
-               can never read "Current plan" and "Recommended" at once. -->
-          <div class="gh-plan-card__badges">
-            <span class="gh-plan-badge--recommended" *ngIf="plan.recommended && !isCurrentCatalogPlan(plan)" aria-label="Recommended plan">Recommended</span>
-            <span class="gh-plan-badge--current" *ngIf="isCurrentCatalogPlan(plan)" aria-label="Your current plan">Current plan</span>
+        <article class="recommendation-card" *ngIf="recommendedCatalogPlan as recommendation">
+          <div class="recommendation-card__copy">
+            <span class="recommendation-badge">Recommended next step</span>
+            <h2>Upgrade to {{ planName(recommendation) }}</h2>
+            <p>{{ recommendation.audience }}</p>
+            <ul><li *ngFor="let feature of planCapacities(recommendation)">✓ {{ feature.label }}</li></ul>
           </div>
+          <button type="button" class="gradient-button" (click)="onPlanCta(recommendation)">{{ ctaFor(recommendation).label }} <span aria-hidden="true">→</span></button>
+          <div class="growth-art" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </article>
+      </section>
 
-          <h3 class="gh-plan-card__name">{{ planName(plan) }}</h3>
-          <p class="gh-plan-card__audience">{{ plan.audience }}</p>
-
-          <!-- Price. The annual branch always shows the backend's due-today
-               disclosure; the effective monthly figure is an equivalence beside
-               it, never a replacement that would imply monthly billing. -->
-          <div class="gh-plan-card__price">
-            <span class="gh-plan-card__price-val">{{ planPriceFor(plan).amount }}</span>
-            <span class="gh-plan-card__price-per" *ngIf="planPriceFor(plan).suffix">{{ planPriceFor(plan).suffix }}</span>
-          </div>
-          <p class="gh-plan-card__price-caption" *ngIf="planPriceFor(plan).caption">{{ planPriceFor(plan).caption }}</p>
-          <p class="gh-plan-card__price-effective" *ngIf="planPriceFor(plan).effectiveMonthly">{{ planPriceFor(plan).effectiveMonthly }}</p>
-
-          <!-- The four headline capacities, same order on every card so the
-               cards read as comparable columns. Storage is retained capacity. -->
-          <ul class="gh-plan-card__capacity" [attr.aria-label]="planName(plan) + ' capacity'">
-            <li class="gh-plan-card__capacity-item" *ngFor="let cap of planCapacities(plan)">{{ cap.label }}</li>
-          </ul>
-
-          <!-- Only entitlements the backend actually sends. Capabilities it does
-               not model are absent rather than ticked — a tick nothing enforces
-               is a dead feature. -->
-          <ul class="gh-plan-card__features" [attr.aria-label]="planName(plan) + ' features'">
-            <li class="gh-plan-card__feature gh-plan-card__feature--included" *ngIf="plan.entitlements?.video_interview_questions">
-              <span class="gh-plan-card__feat-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              <span>GetHired Video Screening</span>
-            </li>
-            <li class="gh-plan-card__feature gh-plan-card__feature--included" *ngIf="plan.entitlements?.customized_company_page">
-              <span class="gh-plan-card__feat-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              <span>Customised company page</span>
-            </li>
-            <li class="gh-plan-card__feature gh-plan-card__feature--included" *ngIf="plan.entitlements?.dedicated_support">
-              <span class="gh-plan-card__feat-icon" aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              </span>
-              <span>Dedicated support</span>
-            </li>
-          </ul>
-
-          <!-- CTA — anchored at bottom. Disabled only for the current plan;
-               Enterprise stays actionable because Contact Sales is a real action.
-               A plan with nothing to act on (the Free Trial has no upgrade route)
-               renders no button at all, rather than one that does nothing. -->
-          <div class="gh-plan-card__cta" *ngIf="ctaFor(plan).kind !== 'none'">
-            <button
-              class="gh-plan-card__cta-btn"
-              [ngClass]="{
-                'gh-plan-card__cta-btn--primary': ctaFor(plan).kind === 'upgrade' || ctaFor(plan).kind === 'choose',
-                'gh-plan-card__cta-btn--current': ctaFor(plan).kind === 'current',
-                'gh-plan-card__cta-btn--enterprise': ctaFor(plan).kind === 'contact_sales'
-              }"
-              [disabled]="!ctaFor(plan).actionable"
-              [attr.aria-disabled]="!ctaFor(plan).actionable ? 'true' : null"
-              [attr.aria-label]="ctaFor(plan).actionable ? ctaFor(plan).label : 'Currently on the ' + planName(plan) + ' plan'"
-              (click)="onPlanCta(plan)">
-              {{ ctaFor(plan).label }}
-            </button>
-          </div>
-
+      <section class="plan-section" aria-labelledby="plans-title">
+        <div class="billing-cycle" *ngIf="canToggleBillingCycle" role="group" aria-label="Billing cycle">
+          <button type="button" [class.is-active]="billingCycle === 'monthly'" (click)="setBillingCycle('monthly')">Monthly</button>
+          <button type="button" [class.is-active]="billingCycle === 'annual'" (click)="setBillingCycle('annual')">Annual</button>
+          <span *ngIf="catalog && catalog.annualCopy">{{ catalog.annualCopy }}</span>
         </div>
+        <div class="catalog-state" *ngIf="catalogLoading">Loading current plans…</div>
+        <div class="catalog-state catalog-state--error" *ngIf="catalogError">Current pricing is temporarily unavailable. <button type="button" (click)="loadPricingCatalog()">Retry</button></div>
+        <h2 id="plans-title" #plansHeading tabindex="-1" class="sr-only">Available plans</h2>
+        <div class="plan-grid" *ngIf="!catalogLoading && catalogPlans.length">
+          <article class="plan-card" *ngFor="let plan of catalogPlans; trackBy: trackPlanBySlug"
+            [class.plan-card--current]="isCurrentCatalogPlan(plan)" [class.plan-card--featured]="plan.recommended">
+            <div class="plan-card__topline">
+              <span class="plan-pill" *ngIf="isCurrentCatalogPlan(plan)">Current Plan</span>
+              <span class="plan-pill plan-pill--popular" *ngIf="plan.recommended && !isCurrentCatalogPlan(plan)">Most Popular</span>
+              <span class="plan-card__symbol" aria-hidden="true">{{ plan.enterprise ? '▥' : (plan.recommended ? '▥' : '♢') }}</span>
+            </div>
+            <h3>{{ planName(plan) }}</h3>
+            <p class="plan-card__audience">{{ plan.audience }}</p>
+            <div class="plan-price"><strong>{{ planPriceFor(plan).amount }}</strong><span>{{ planPriceFor(plan).suffix }}</span></div>
+            <p class="plan-price__caption" *ngIf="planPriceFor(plan).caption">{{ planPriceFor(plan).caption }}</p>
+            <p class="plan-price__caption" *ngIf="planPriceFor(plan).effectiveMonthly">{{ planPriceFor(plan).effectiveMonthly }}</p>
+            <ul class="feature-list"><li *ngFor="let feature of planFeatureLabels(plan)"><span>✓</span>{{ feature }}</li></ul>
+            <button type="button" class="plan-cta" *ngIf="ctaFor(plan).label" [disabled]="!ctaFor(plan).actionable" (click)="onPlanCta(plan)">{{ ctaFor(plan).label }}</button>
+          </article>
         </div>
+      </section>
 
-        <button type="button" class="gh-plan-carousel__arrow gh-plan-carousel__arrow--next"
-          (click)="goToPlanSlide((planCarouselActiveIndex + 1) % catalogPlans.length)"
-          aria-label="Next plan">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-
-      <!-- Pagination dots: one per plan card. -->
-      <div class="gh-plan-carousel__dots" role="tablist" aria-label="Select a plan"
-        *ngIf="!catalogLoading && !catalogError && catalogPlans.length">
-        <button type="button" class="gh-plan-carousel__dot"
-          *ngFor="let plan of catalogPlans; let i = index"
-          [class.gh-plan-carousel__dot--active]="planCarouselActiveIndex === i"
-          role="tab"
-          [attr.aria-selected]="planCarouselActiveIndex === i"
-          [attr.aria-label]="'Go to ' + planName(plan) + ' plan'"
-          (click)="goToPlanSlide(i)">
-        </button>
-      </div>
-
-      <!-- WCAG 2.2.2 pause control for the auto-advancing carousel. Rendered only
-           when motion is allowed, so reduced-motion users never see a control for
-           movement that is not happening. -->
-      <button type="button" class="gh-plan-carousel__autoplay"
-        *ngIf="planCarouselMotionAllowed && planCarouselCanMove && !catalogLoading && !catalogError && catalogPlans.length > 1"
-        aria-label="Pause automatic plan rotation"
-        [attr.aria-pressed]="planCarouselUserPaused"
-        (click)="togglePlanCarouselAutoAdvance()">
-        <svg *ngIf="!planCarouselUserPaused" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-        <svg *ngIf="planCarouselUserPaused" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
-      </button>
-    </div>
-
-    <!-- ── COMPARE PLANS ── -->
-    <!-- Desktop renders a matrix. Below 900px each feature row stacks and lists
-         every plan's value with the plan named in the cell, so a five-column table
-         is never forced onto a phone and no plan is hidden. -->
-    <div class="gh-sub-section" *ngIf="!catalogLoading && !catalogError && catalogPlans.length"
-      role="region" aria-label="Compare plans">
-      <h2 class="gh-sub-section__title" #compareHeading tabindex="-1">Compare plans</h2>
-      <p class="gh-sub-section__sub">Only capabilities GetHired actually enforces are listed here.</p>
-
-      <div class="gh-compare" *ngFor="let group of comparisonGroups">
-        <h3 class="gh-compare__group-title">{{ group.title }}</h3>
-
-        <div class="gh-compare__scroll">
-          <table class="gh-compare__table">
-            <caption class="sr-only">{{ group.title }} by plan</caption>
-            <thead>
-              <tr>
-                <th scope="col" class="gh-compare__rowhead">Feature</th>
-                <th scope="col" *ngFor="let plan of catalogPlans"
-                  [class.gh-compare__col--current]="isCurrentCatalogPlan(plan)">{{ planName(plan) }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of group.rows">
-                <th scope="row" class="gh-compare__rowhead">{{ row.label }}</th>
-                <td *ngFor="let plan of catalogPlans"
-                  [class.gh-compare__col--current]="isCurrentCatalogPlan(plan)">
-                  <span class="gh-compare__cell-plan">{{ planName(plan) }}</span>
-                  <ng-container *ngIf="row.values[plan.slug] === true">
-                    <span class="sr-only">Included</span>
-                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  </ng-container>
-                  <ng-container *ngIf="row.values[plan.slug] === false">
-                    <span class="sr-only">Not included</span>
-                    <span aria-hidden="true" class="gh-compare__dash">—</span>
-                  </ng-container>
-                  <ng-container *ngIf="row.values[plan.slug] !== true && row.values[plan.slug] !== false">
-                    {{ row.values[plan.slug] }}
-                  </ng-container>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <section class="storage-card" *ngIf="storageUsage" aria-label="Recruitment storage">
+        <div class="storage-card__icon" aria-hidden="true">◉</div>
+        <div class="storage-card__main"><h2>Recruitment Storage</h2><p>Your current usage across jobs, candidates, and video responses.</p><div class="storage-progress"><i [style.width.%]="storagePercent || 0"></i></div></div>
+        <strong class="storage-card__count">{{ storageUsedLabel }} <span>of {{ storageLimitLabel }} used</span></strong>
+        <strong class="storage-card__percent" *ngIf="storagePercent !== null">{{ storagePercent }}%</strong>
+        <div class="storage-addons">
+          <span>Need more storage?<small>Add storage anytime.</small></span>
+          <button type="button" [disabled]="!!storageCheckoutCode" (click)="startStorageCheckout('storage_25')"><b>+25 GB</b><small>Buy add-on</small></button>
+          <button type="button" [disabled]="!!storageCheckoutCode" (click)="startStorageCheckout('storage_100')"><b>+100 GB</b><small>Buy add-on</small></button>
+          <button type="button" [disabled]="!!storageCheckoutCode" (click)="startStorageCheckout('storage_250')"><b>+250 GB</b><small>Buy add-on</small></button>
         </div>
-      </div>
-    </div>
+        <p class="storage-card__error" *ngIf="storageCheckoutError">{{ storageCheckoutError }}</p>
+      </section>
+    </ng-container>
 
-    <!-- ── BILLING FAQ ── -->
-    <div class="gh-sub-section" role="region" aria-label="Billing FAQ">
-      <h2 class="gh-sub-section__title">Billing FAQ</h2>
-      <p class="gh-sub-section__sub">Common questions about plans, trials, limits, and payments.</p>
-      <div class="gh-faq-list">
-
-        <div class="gh-faq-item" *ngFor="let item of visibleFaqItems; let i = index">
-          <button
-            class="gh-faq-item__q gh-pressable"
-            (click)="toggleFaq(item.q)"
-            [attr.aria-expanded]="isFaqOpen(item.q)"
-            [attr.aria-controls]="'faq-answer-' + i"
-            [id]="'faq-q-' + i">
-            <span>{{ item.q }}</span>
-            <svg class="gh-faq-item__chevron" [ngClass]="{'gh-faq-item__chevron--open': isFaqOpen(item.q)}"
-              width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              aria-hidden="true">
-              <polyline points="6 9 12 15 18 9"/>
-            </svg>
-          </button>
-          <div
-            class="gh-faq-item__a"
-            *ngIf="isFaqOpen(item.q)"
-            role="region"
-            [id]="'faq-answer-' + i"
-            [attr.aria-labelledby]="'faq-q-' + i">
-            {{ item.a }}
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    </ng-container><!-- /plan tab -->
-
-    <!-- ══════════════════════ TAB: INVOICES ═════════════════════════════ -->
     <ng-container *ngIf="activeTab === 'invoices'">
-
-      <!-- Loading -->
-      <div class="gh-inv-vault-loading" *ngIf="invoicesLoading" aria-busy="true" aria-live="polite">
-        <div class="gh-inv-skel" *ngFor="let i of [1,2,3,4]"></div>
-      </div>
-
-      <!-- Error -->
-      <div class="gh-inv-vault-error" *ngIf="invoicesError && !invoicesLoading" role="alert">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        {{ invoicesError }}
-        <button type="button" class="gh-inv-vault-error__retry" (click)="loadInvoices()">Retry</button>
-      </div>
-
-      <!-- Empty state -->
-      <div class="gh-inv-vault-empty" *ngIf="!invoicesLoading && !invoicesError && invoices.length === 0" role="status">
-        <div class="gh-inv-vault-empty__icon" aria-hidden="true">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-          </svg>
+      <section class="secondary-panel">
+        <div class="secondary-panel__header"><button type="button" (click)="switchTab('plan')">← Back</button><h2>Billing History</h2></div>
+        <div class="panel-state" *ngIf="invoicesLoading">Loading invoices…</div>
+        <div class="panel-state" *ngIf="invoicesError">{{ invoicesError }} <button type="button" (click)="loadInvoices()">Retry</button></div>
+        <div class="panel-state" *ngIf="!invoicesLoading && !invoicesError && invoices.length === 0">No invoices yet.</div>
+        <div class="invoice-list" *ngIf="!invoicesLoading && !invoicesError && invoices.length">
+          <button type="button" class="invoice-row" *ngFor="let inv of invoices" (click)="openInvoiceDrawer(inv.id)">
+            <span><b>{{ inv.invoiceNumber }}</b><small>{{ formatInvoiceDate(inv.createdAt) }}</small></span><span>{{ inv.planName || 'Subscription' }}</span><strong>{{ formatAmount(inv.totalAmount, inv.currency) }}</strong><app-invoice-status-chip [status]="inv.status"></app-invoice-status-chip>
+          </button>
         </div>
-        <h3 class="gh-inv-vault-empty__title">No invoices yet</h3>
-        <p class="gh-inv-vault-empty__desc">Invoices will appear here after your first payment is confirmed.</p>
-        <button type="button" class="gh-inv-vault-empty__cta" (click)="switchTab('plan')">View plans</button>
-      </div>
+      </section>
+      <app-invoice-detail-drawer [invoiceId]="selectedInvoiceId" (closed)="closeInvoiceDrawer()"></app-invoice-detail-drawer>
+    </ng-container>
 
-      <!-- Invoice table -->
-      <div class="gh-inv-vault" *ngIf="!invoicesLoading && !invoicesError && invoices.length > 0">
-
-        <div class="gh-inv-vault__header">
-          <div class="gh-inv-vault__header-left">
-            <h2 class="gh-inv-vault__title">Invoice Vault</h2>
-            <span class="gh-inv-vault__count" *ngIf="invoicesTotal > 0">{{ invoicesTotal }} invoice{{ invoicesTotal === 1 ? '' : 's' }}</span>
-          </div>
-        </div>
-
-        <div class="gh-inv-table-wrap" role="region" aria-label="Invoice history">
-          <table class="gh-inv-table">
-            <thead>
-              <tr>
-                <th scope="col">Invoice #</th>
-                <th scope="col">Period</th>
-                <th scope="col">Plan</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Status</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let inv of invoices" class="gh-inv-table__row gh-pressable" (click)="openInvoiceDrawer(inv.id)"
-                role="button" [attr.aria-label]="'View invoice ' + inv.invoiceNumber">
-                <td class="gh-inv-table__num" data-label="Invoice #">
-                  <span class="gh-inv-num">{{ inv.invoiceNumber }}</span>
-                </td>
-                <td class="gh-inv-table__period" data-label="Period">
-                  <span *ngIf="inv.billingPeriodStart && inv.billingPeriodEnd">
-                    {{ formatInvoicePeriod(inv.billingPeriodStart, inv.billingPeriodEnd) }}
-                  </span>
-                  <span *ngIf="!inv.billingPeriodStart" class="gh-inv-table__muted">
-                    {{ formatInvoiceDate(inv.createdAt) }}
-                  </span>
-                </td>
-                <td class="gh-inv-table__plan" data-label="Plan">
-                  {{ inv.planName || '—' }}
-                  <span class="gh-inv-table__cycle" *ngIf="inv.billingCycle">
-                    {{ inv.billingCycle === 'annual' ? '· Annual' : '· Monthly' }}
-                  </span>
-                </td>
-                <td class="gh-inv-table__amount" data-label="Amount">
-                  {{ formatAmount(inv.totalAmount, inv.currency) }}
-                </td>
-                <td data-label="Status">
-                  <app-invoice-status-chip [status]="inv.status"></app-invoice-status-chip>
-                </td>
-                <td class="gh-inv-table__actions" data-label="Actions" (click)="$event.stopPropagation()">
-                  <button type="button" class="gh-inv-action-btn" (click)="viewInvoicePdf(inv)"
-                    [attr.aria-label]="'Download invoice ' + inv.invoiceNumber">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    PDF
-                  </button>
-                  <button type="button" class="gh-inv-action-btn" (click)="openInvoiceSend(inv)"
-                    [attr.aria-label]="'Send invoice ' + inv.invoiceNumber + ' by email'">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
-                    Send
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Invoice detail drawer -->
-      <app-invoice-detail-drawer
-        [invoiceId]="selectedInvoiceId"
-        (closed)="closeInvoiceDrawer()">
-      </app-invoice-detail-drawer>
-
-    </ng-container><!-- /invoices tab -->
-
-    <!-- ══════════════════════ TAB: BILLING PROFILE ═══════════════════════ -->
     <ng-container *ngIf="activeTab === 'billing-profile'">
-      <div class="gh-sub-section">
+      <section class="secondary-panel">
+        <div class="secondary-panel__header"><button type="button" (click)="switchTab('plan')">← Back</button><h2>Billing Profile</h2></div>
         <app-billing-profile></app-billing-profile>
-      </div>
-    </ng-container><!-- /billing-profile tab -->
-
-  </ng-container><!-- /main content -->
-
+      </section>
+    </ng-container>
+  </ng-container>
 </div>
-
-<!-- Invoice detail drawer is positioned fixed — rendered at root level -->
-

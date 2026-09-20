@@ -11,6 +11,7 @@ import { BillingService } from './services/billing.service';
 import { InvoiceSendModalComponent } from './components/invoice-send-modal/invoice-send-modal.component';
 import { SubscriptionPricingCatalogService } from './services/subscription-pricing-catalog.service';
 import { SubscriptionGuardrailService } from './services/subscription-guardrail.service';
+import { StorageAddonCheckoutRequest } from './services/subscription-checkout-intent.service';
 import { BillingCycle, PlanCatalogItem, PlanEntitlements, PricingCatalog, RecruitmentStorageUsageV4 } from './subscription-v4.models';
 import {
   CapacityLine,
@@ -23,6 +24,7 @@ import {
   planCta,
   planDisplayName,
   planPrice,
+  formatStorage,
 } from './plan-presentation.model';
 
 /**
@@ -152,6 +154,8 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
    * when the backend predates the block and sends no key (absent is not zero).
    */
   storageUsage: RecruitmentStorageUsageV4 | null = null;
+  storageCheckoutCode: StorageAddonCheckoutRequest['packageCode'] | null = null;
+  storageCheckoutError: string | null = null;
 
   /** Selected billing cycle for the pricing cards. Seeded from the catalog. */
   billingCycle: BillingCycle = 'monthly';
@@ -603,6 +607,74 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   planPriceFor(plan: PlanCatalogItem): PlanPriceDisplay {
     return planPrice(plan, this.billingCycle);
+  }
+
+  /** Catalog record used by the overview card. */
+  get currentCatalogPlan(): PlanCatalogItem | null {
+    return this.catalogPlans.find(plan => this.isCurrentCatalogPlan(plan)) || null;
+  }
+
+  /** Backend recommendation joined to the authoritative catalog record. */
+  get recommendedCatalogPlan(): PlanCatalogItem | null {
+    const code = this.recommendedPlan && this.recommendedPlan.planCode;
+    const normalized = code === 'premium' ? 'business' : code;
+    return this.catalogPlans.find(plan => plan.slug === normalized)
+      || this.catalogPlans.find(plan => plan.recommended)
+      || null;
+  }
+
+  get trialDaysLeft(): number | null {
+    const raw = this.summary && this.summary.currentPlan &&
+      (this.summary.currentPlan.trialEndsAt || this.summary.currentPlan.currentPeriodEnd);
+    if (!raw || (this.currentStatus !== 'trialing' && this.currentStatus !== 'trial_ending_soon')) { return null; }
+    const remaining = new Date(raw).getTime() - Date.now();
+    return Math.max(0, Math.ceil(remaining / 86400000));
+  }
+
+  get storageUsedLabel(): string {
+    return this.storageUsage ? (formatStorage(this.storageUsage.used) || '0 GB') : '—';
+  }
+
+  get storageLimitLabel(): string {
+    if (!this.storageUsage) { return '—'; }
+    if (this.storageUsage.limit === 'unlimited' || this.storageUsage.limit === null) { return 'Custom'; }
+    return formatStorage(this.storageUsage.limit) || '0 GB';
+  }
+
+  get storagePercent(): number | null {
+    if (!this.storageUsage || typeof this.storageUsage.percentUsed !== 'number') { return null; }
+    return Math.max(0, Math.min(100, Math.round(this.storageUsage.percentUsed)));
+  }
+
+  planFeatureLabels(plan: PlanCatalogItem): string[] {
+    const labels = this.planCapacities(plan).map(item => item.label);
+    const e = plan.entitlements;
+    if (e.customized_company_page) { labels.push('Customized company page'); }
+    if (e.video_interview_questions) { labels.push('Video interview questions'); }
+    if (e.dedicated_support) { labels.push('Dedicated support'); }
+    return labels;
+  }
+
+  startStorageCheckout(packageCode: StorageAddonCheckoutRequest['packageCode']): void {
+    if (this.storageCheckoutCode) { return; }
+    this.storageCheckoutCode = packageCode;
+    this.storageCheckoutError = null;
+    this.billing.createStorageAddonCheckout({ packageCode, billingCycle: 'monthly' })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        response => {
+          this.storageCheckoutCode = null;
+          if (response && response.checkoutUrl && /^https:\/\//i.test(response.checkoutUrl)) {
+            window.location.assign(response.checkoutUrl);
+            return;
+          }
+          this.storageCheckoutError = 'Storage checkout is unavailable right now.';
+        },
+        () => {
+          this.storageCheckoutCode = null;
+          this.storageCheckoutError = 'Storage checkout is unavailable right now.';
+        }
+      );
   }
 
   ctaFor(plan: PlanCatalogItem): PlanCta {
