@@ -62,6 +62,7 @@ describe('ApplicationProcessComponent -- submit lifecycle', () => {
     mockDialog = {
       open: jasmine.createSpy('open').and.returnValue({
         afterClosed: () => dialogAfterClosed$.asObservable(),
+        close: jasmine.createSpy('close'),
       }),
       closeAll: jasmine.createSpy('closeAll'),
     };

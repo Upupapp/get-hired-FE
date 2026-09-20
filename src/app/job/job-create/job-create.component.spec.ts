@@ -15,6 +15,9 @@ import { HapticFeedbackService } from '@main/shared/services/haptic-feedback/hap
 import { JobReadinessService } from '../services/job-readiness.service';
 import { EasyJobPostAssistantService } from '../easy-job-post-assistant/easy-job-post-assistant.service';
 import { AiCreateDraftService } from '../services/ai-create-draft.service';
+import { JobCreateRecoveryService } from '../services/job-create-recovery.service';
+import { CoreService } from '@app-core/services/core.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * Behavioural specs for the job-create stepper.
@@ -99,6 +102,10 @@ describe('JobCreateComponent -- stepper navigation and save mapping', () => {
         { provide: AiCreateDraftService, useValue: jasmine.createSpyObj(
             'AiCreateDraftService', ['save', 'load', 'clear', 'hasDraft']) },
         { provide: JobService, useValue: jasmine.createSpyObj('JobService', ['getJobLevels']) },
+        { provide: JobCreateRecoveryService, useValue:
+            jasmine.createSpyObj('JobCreateRecoveryService', ['save', 'load', 'clear']) },
+        { provide: CoreService, useValue: { authState$: of(false) } },
+        { provide: MatSnackBar, useValue: jasmine.createSpyObj('MatSnackBar', ['open']) },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
