@@ -8,6 +8,7 @@ import { UnauthGuard } from './shared/guard/unauth.guard';
 import { AdminGuard } from './shared/guard/admin.guard';
 
 export const routes: Routes = [
+  { path: 'integrations/referral-bunny', loadChildren: () => import('./integrations/referral-bunny/referral-bunny.module').then(m => m.ReferralBunnyModule) },
   {
     // Top-level redirect for the bare root, evaluated as a plain
     // top-level array entry -- no nested children involved at all.
