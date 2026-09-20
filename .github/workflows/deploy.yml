@@ -25,7 +25,7 @@ jobs:
       - name: Build production
         run: NODE_OPTIONS=--max-old-space-size=4096 npx ng build --configuration production
 
-      - name: Deploy to server
+      - name: Deploy to active GetHired web roots
         env:
           LINODE_HOST: ${{ secrets.LINODE_HOST }}
           LINODE_USER: ${{ secrets.LINODE_USER }}
@@ -36,7 +36,6 @@ jobs:
           echo "$LINODE_SSH_KEY" | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$LINODE_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no             "$LINODE_USER@$LINODE_HOST" "nginx -T 2>/dev/null | grep -E 'server_name|^[[:space:]]*root '"
-          rsync -az --delete             -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no"             dist/get-hired/             "$LINODE_USER@$LINODE_HOST:/var/www/gethired/dist/get-hired/"
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no             "$LINODE_USER@$LINODE_HOST" "nginx -s reload"
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" dist/get-hired/ "$LINODE_USER@$LINODE_HOST:/var/www/gethired/.deploy-staging/"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$LINODE_USER@$LINODE_HOST" 'set -e; found=0; for live_dir in $(nginx -T 2>/dev/null | sed -n "s/^[[:space:]]*root[[:space:]]*\([^;]*\);/\1/p" | sort -u); do case "$live_dir" in /var/www/gethired*) if [ -f "$live_dir/index.html" ]; then rsync -a --delete /var/www/gethired/.deploy-staging/ "$live_dir/"; found=1; fi ;; esac; done; test "$found" -eq 1; nginx -s reload'
           echo "Deploy complete."
