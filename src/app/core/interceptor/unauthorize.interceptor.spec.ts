@@ -65,4 +65,22 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
       },
     });
   });
+
+  it('recovers a status-shaped production 401 without requiring class identity', (done) => {
+    const router = { url: '/recruiter/subscription', navigateByUrl: jasmine.createSpy('navigateByUrl') };
+    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, logout: jasmine.createSpy('logout') };
+    const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
+    const lifecycle = { refreshNow: jasmine.createSpy('refreshNow').and.returnValue(of(false)) };
+    const interceptor = new UnAuthorizedInterceptor(router as any, core as any, snackbar as any, lifecycle as any);
+    const next: HttpHandler = { handle: () => throwError(() => ({ status: 401, error: 'Unauthorized' })) };
+
+    interceptor.intercept(new HttpRequest('GET', '/subscription'), next).subscribe({
+      next: () => done.fail('expected a 401'),
+      error: () => {
+        expect(core.logout).toHaveBeenCalledTimes(1);
+        expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');
+        done();
+      },
+    });
+  });
 });

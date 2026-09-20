@@ -60,13 +60,18 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
         }
       }),
       catchError((err: any) => {
-        if (!(err instanceof HttpErrorResponse)) {
+        // Production errors can cross an injector/bundle boundary and lose
+        // `instanceof HttpErrorResponse` identity while retaining Angular's
+        // stable numeric HTTP status shape. Status is the contract needed by
+        // this interceptor; class identity is not.
+        const status = err instanceof HttpErrorResponse ? err.status : Number(err && err.status);
+        if (!Number.isFinite(status)) {
           return throwError(() => err);
         }
 
-        if (err.status === 401) {
-          return this.handle401(request, next, err);
-        } else if (err.status === 403) {
+        if (status === 401) {
+          return this.handle401(request, next, err as HttpErrorResponse);
+        } else if (status === 403) {
           // Authenticated but denied -- not a dead session. Surface the
           // backend's own message when it sent a real, user-safe one;
           // otherwise a generic permission-denied notice. Never logs out
@@ -81,7 +86,7 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
           const body = (err as HttpErrorResponse).error;
           const msg = (body && (body.message || body.error)) || `You don't have permission to do that.`;
           this.snackbarService.error(msg, '');
-        } else if (err.status === 429) {
+        } else if (status === 429) {
           // NOTIFY QA11 (SEC-01): Rate-limit hit. Do NOT log the user out.
           // Show a non-destructive warning so the user knows to wait, not retry
           // immediately. The snackbar is informational, not a session signal.
