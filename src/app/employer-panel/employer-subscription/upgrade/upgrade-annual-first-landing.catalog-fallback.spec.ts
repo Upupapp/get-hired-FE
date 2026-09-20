@@ -86,7 +86,7 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     }));
   });
 
-  it('sends an expired checkout session to sign in instead of showing a payment error', () => {
+  it('shows a stable sign-in action for an expired checkout session', () => {
     const { component, checkoutIntentService, router, coreService } = createComponent('growth');
     checkoutIntentService.createCheckoutIntent.and.returnValue(throwError(() => ({ status: 401 })));
     component.ngOnInit();
@@ -95,7 +95,11 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     component.startCheckout();
 
     expect(coreService.logout).toHaveBeenCalledTimes(1);
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(component.sessionExpired).toBeTrue();
+    expect(component.checkoutError).toContain('session has expired');
+
+    component.signIn();
     expect(router.navigateByUrl).toHaveBeenCalledWith('/signin');
-    expect(component.checkoutError).toBeNull();
   });
 });

@@ -49,6 +49,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
 
   loading = true;
   checkoutLoading = false;
+  sessionExpired = false;
   loadError = false;
   checkoutError: string | null = null;
   preview: EmployerUpgradePreview | null = null;
@@ -249,6 +250,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     // so its failure must not disable the real PayMongo checkout request.
     if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading) return;
     this.checkoutLoading = true;
+    this.sessionExpired = false;
     this.checkoutError = null;
     this.cdr.markForCheck();
 
@@ -282,9 +284,9 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.checkoutLoading = false;
         if (Number(err && err.status) === 401) {
-          this.checkoutError = null;
+          this.sessionExpired = true;
+          this.checkoutError = 'Your session has expired. Sign in again to continue to checkout.';
           this.coreService.logout();
-          this.router.navigateByUrl('/signin');
           this.cdr.markForCheck();
           return;
         }
@@ -296,6 +298,7 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
 
   goBack(): void { this.router.navigate(['/recruiter/subscription']); }
   goCompare(): void { this.router.navigate(['/recruiter/subscription'], { queryParams: { compare: '1' } }); }
+  signIn(): void { this.router.navigateByUrl('/signin'); }
 
   private createIdempotencyKey(): string {
     if (this.isBrowser && window.crypto?.getRandomValues) {
