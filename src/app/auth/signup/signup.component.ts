@@ -12,6 +12,7 @@ import { environment } from '@environments/environment';
 import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
+import { AuthRole } from '@app-shared/utils/auth-role-query';
 
 // Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
 // not as an ES module -- referencing the global here avoids bundling a
@@ -433,6 +434,16 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
   get signinQuery(): { role: 2 | 3 } | Record<string, never> {
     const role = this.registerForm?.get('role')?.value;
     return role === 2 || role === 3 ? { role } : {};
+  }
+
+  selectAuthRole(role: AuthRole): void {
+    this.registerForm.patchValue({ role });
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { role },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   get pw_validators() {

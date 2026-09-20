@@ -65,6 +65,16 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
     return authRoleQuery(this.authRole);
   }
 
+  selectAuthRole(role: AuthRole): void {
+    this.authRole = role;
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { role },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+  }
+
   get signinTitle(): string {
     if (this.authRole === 2) {
       return 'Welcome back, Employer';

@@ -19,6 +19,7 @@ import { RoleClassificationComponent } from './role-classification/role-classifi
 import { LinkedInCompleteComponent } from './linkedin-complete/linkedin-complete.component';
 import { environment } from '@environments/environment';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
+import { AuthRolePromptComponent } from './auth-role-prompt/auth-role-prompt.component';
 
 // Expose Google OAuth client ID as a window property for the GIS button component.
 // This runs synchronously at module load — no async required.
@@ -56,6 +57,7 @@ const routes: Routes = [
     AccountSettingComponent,
     RoleClassificationComponent,
     LinkedInCompleteComponent,
+    AuthRolePromptComponent,
   ],
   imports: [
     CommonModule,
