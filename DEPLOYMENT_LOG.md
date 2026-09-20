@@ -8,3 +8,4 @@
 - Production browser build passed.
 - Subscription lifecycle journey: 11 checks passed.
 - Deployment target: existing GitHub Actions to Linode workflow.
+- Deployment trigger: signed-in GitHub web commit after OAuth event suppression.
