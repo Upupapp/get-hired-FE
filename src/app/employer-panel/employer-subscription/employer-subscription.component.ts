@@ -673,6 +673,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
     const normalized = code === 'premium' ? 'business' : code;
     return this.catalogPlans.find(plan => plan.slug === normalized)
       || this.catalogPlans.find(plan => plan.recommended)
+      || this.catalogPlans.find(plan => !plan.current && (plan.enterprise || !!plan.upgradeRoute))
       || null;
   }
 
