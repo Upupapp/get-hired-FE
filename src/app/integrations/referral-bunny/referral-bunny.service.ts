@@ -29,7 +29,7 @@ export class ReferralBunnyService {
       const saved = JSON.parse(localStorage.getItem('rb-referral') || 'null');
       if (programId && membershipId && !this.captureBusy && this.lastAttempt !== programId+':'+membershipId && !(saved && saved.programId===programId && saved.membershipId===membershipId && saved.expiresAt>Date.now())) {
         this.lastAttempt = programId+':'+membershipId; this.captureBusy = true;
-        this.http.post<any>(this.base+'/capture',{programId,membershipId}).subscribe({next: data => {
+        this.http.post<any>(this.base+'/capture',{programId,membershipId,clickToken:params.get('rb_click')}).subscribe({next: data => {
           this.captureBusy=false;
           try { localStorage.setItem('rb-referral',JSON.stringify({...data,programId,membershipId})); } catch (_) {}
           this.claim();

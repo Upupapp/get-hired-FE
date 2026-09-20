@@ -18,9 +18,13 @@ describe('Referral Bunny automatic connection and attribution',()=>{
  it('does not make connector requests on ordinary visits',()=>{history.replaceState({},'','/home');service.init();http.expectNone(r=>r.url.includes('/referral-bunny'));});
  it('captures a referral before login and claims it automatically for a new employer session',()=>{
   history.replaceState({},'','/home?rb_program=p&rb_ref=m');service.init();
-  const capture=http.expectOne(base+'/capture');expect(capture.request.body).toEqual({programId:'p',membershipId:'m'});capture.flush({receipt:'opaque',expiresAt:Date.now()+60000});
+  const capture=http.expectOne(base+'/capture');expect(capture.request.body).toEqual({programId:'p',membershipId:'m',clickToken:null});capture.flush({receipt:'opaque',expiresAt:Date.now()+60000});
   localStorage.setItem('state','true');localStorage.setItem('role','2');history.replaceState({},'','/recruiter/dashboard');events.next(new NavigationEnd(1,'/recruiter/dashboard','/recruiter/dashboard'));
   const claim=http.expectOne(base+'/claim');expect(claim.request.body).toEqual({receipt:'opaque'});claim.flush({attributed:true});expect(localStorage.getItem('rb-referral')).toBeNull();
+ });
+ it('carries the click token into the referral receipt capture',()=>{
+  history.replaceState({},'','/home?rb_program=p&rb_ref=m&rb_click=encrypted-click');service.init();
+  const capture=http.expectOne(base+'/capture');expect(capture.request.body.clickToken).toBe('encrypted-click');capture.flush({receipt:'opaque',expiresAt:Date.now()+60000});
  });
  it('returns to the exact saved approval request after sign in',()=>{
   history.replaceState({},'','/admin');const request='a'.repeat(64);sessionStorage.setItem('rb-connect-return',JSON.stringify({request,expires:Date.now()+60000}));localStorage.setItem('state','true');service.init();
