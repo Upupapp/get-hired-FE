@@ -57,7 +57,7 @@
                   </span>
                 </div>
                 <button class="btn btn-primary" (click)="upgrade(companySubs[0].companyId)" style="height: 3rem"
-                  *ngIf="companySubs[0].subscriptionId > 1 && companySubs[0].subscriptionId < 4">
+                  *ngIf="!companySubs[0].isComplimentary && companySubs[0].subscriptionId > 1 && companySubs[0].subscriptionId < 4">
                   Upgrade Plan
                 </button>
               </div>
@@ -67,12 +67,12 @@
         <div class="col-12 col-md-5 p-2">
           <div class="card card-body h-100 p-4">
             <div class="fs-6 fw-light">
-              Next payment on
+              {{ companySubs[0].isComplimentary ? 'Internal / Complimentary' : 'Next payment on' }}
             </div>
             <div class="fs-5 fw-bold">
-              {{ companySubs[0].endAt | date: 'mediumDate' }}
+              {{ companySubs[0].isComplimentary ? 'No payment required' : (companySubs[0].endAt | date: 'mediumDate') }}
             </div>
-            <button class="btn btn-outline-primary w-50 mt-auto" (click)="payNow(companySubs[0].companyId)"
+            <button *ngIf="!companySubs[0].isComplimentary" class="btn btn-outline-primary w-50 mt-auto" (click)="payNow(companySubs[0].companyId)"
               style="height: 3rem">
               Pay now
             </button>

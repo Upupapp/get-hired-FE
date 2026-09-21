@@ -125,6 +125,10 @@ export interface BooleanEntitlementV4 {
 
 // ── Subscription summary ──────────────────────────────────────────────────────
 export interface SubscriptionSummaryV4Plan {
+    accessKind?: 'standard' | 'internal_complimentary';
+    accessLabel?: string | null;
+    isComplimentary?: boolean;
+  isPaid?: boolean;
   slug: string | null;
   name: string;
   status: string;

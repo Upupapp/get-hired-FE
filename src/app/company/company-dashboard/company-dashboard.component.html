@@ -42,7 +42,7 @@
         <div class="rdb-cmd-chips">
           <ng-container *ngIf="subsRestrictions$ | async as subsHero">
             <span class="rdb-chip rdb-chip--plan">
-              {{ subsHero.isPaid ? (subsHero.subscriptionName || 'Pro plan') : 'Free plan' }}
+              {{ subsHero.isComplimentary ? (subsHero.subscriptionName + ' · Internal / Complimentary') : (subsHero.isPaid ? (subsHero.subscriptionName || 'Pro plan') : 'Free plan') }}
             </span>
           </ng-container>
           <ng-container *ngIf="cachedHiringHealth !== 'unknown'">
@@ -617,11 +617,11 @@
       <ng-container *ngIf="!subsError && (subsRestrictions$ | async) as subs">
         <div class="gh-health-card-top">
           <span class="gh-health-label">Subscription / Plan Health</span>
-          <span class="gh-chip" [class.gh-chip--good]="subs.isPaid" [class.gh-chip--neutral]="!subs.isPaid">
-            {{ subs.isPaid ? (subs.subscriptionName || 'Pro plan') : 'Free plan' }}
+          <span class="gh-chip" [class.gh-chip--good]="subs.isPaid || subs.isComplimentary" [class.gh-chip--neutral]="!subs.isPaid && !subs.isComplimentary">
+            {{ subs.isComplimentary ? (subs.subscriptionName + ' · Internal / Complimentary') : (subs.isPaid ? (subs.subscriptionName || 'Pro plan') : 'Free plan') }}
           </span>
         </div>
-        <p class="gh-sub-renew" *ngIf="subs.isPaid && subs.endAt">
+        <p class="gh-sub-renew" *ngIf="!subs.isComplimentary && subs.isPaid && subs.endAt">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
             width="12" height="12" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
           Renews {{ subs.endAt | date:'mediumDate' }}

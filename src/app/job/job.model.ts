@@ -158,6 +158,9 @@ export interface JobApplicantDetails {
 export interface CompanySubscriptions {
   companyId: string;
   createdAt: Date;
+    accessKind?: 'standard' | 'internal_complimentary';
+    accessLabel?: string | null;
+    isComplimentary?: boolean;
   isPaid: boolean;
   paymentDate: Date;
   subscriptionId: number;

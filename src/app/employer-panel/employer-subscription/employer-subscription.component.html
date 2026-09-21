@@ -31,11 +31,12 @@
               </p>
             </div>
             <div class="current-plan-card__actions">
-              <button type="button" (click)="focusPlanSection('plans')">Manage Plan</button>
+              <button *ngIf="!isComplimentary" type="button" (click)="focusPlanSection('plans')">Manage Plan</button>
               <button type="button" (click)="switchTab('invoices')">Billing History</button>
             </div>
           </div>
 
+          <p *ngIf="isComplimentary" role="status">Internal company access. Your assigned plan features remain available. No subscription payment or renewal is required.</p>
           <div class="usage-strip" *ngIf="summary.usage && summary.usage.recruitment as recruitment">
             <div class="usage-stat" *ngIf="recruitment.activeJobs as jobs">
               <span class="usage-stat__icon">▣</span><span><small>Active Jobs</small><strong>{{ jobs.used }} / {{ formatEntitlementMax(jobs) }}</strong></span>
@@ -68,7 +69,7 @@
         </article>
       </section>
 
-      <section class="plan-section" aria-labelledby="plans-title">
+      <section *ngIf="!isComplimentary" class="plan-section" aria-labelledby="plans-title">
         <div class="billing-cycle" *ngIf="canToggleBillingCycle" role="group" aria-label="Billing cycle">
           <button type="button" [class.is-active]="billingCycle === 'monthly'" (click)="setBillingCycle('monthly')">Monthly</button>
           <button type="button" [class.is-active]="billingCycle === 'annual'" (click)="setBillingCycle('annual')">Annual</button>
@@ -101,7 +102,7 @@
         <div class="storage-card__main"><h2>Recruitment Storage</h2><p>Your current usage across jobs, candidates, and video responses.</p><div class="storage-progress"><i [style.width.%]="storagePercent || 0"></i></div></div>
         <strong class="storage-card__count">{{ storageUsedLabel }} <span>of {{ storageLimitLabel }} used</span></strong>
         <strong class="storage-card__percent" *ngIf="storagePercent !== null">{{ storagePercent }}%</strong>
-        <div class="storage-addons">
+        <div class="storage-addons" *ngIf="!isComplimentary">
           <span>Need more storage?<small>Add storage anytime.</small></span>
           <button type="button" [disabled]="!!storageCheckoutCode" (click)="startStorageCheckout('storage_25')"><b>+25 GB</b><small>Buy add-on</small></button>
           <button type="button" [disabled]="!!storageCheckoutCode" (click)="startStorageCheckout('storage_100')"><b>+100 GB</b><small>Buy add-on</small></button>

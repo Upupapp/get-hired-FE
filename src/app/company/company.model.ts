@@ -21,7 +21,10 @@ export interface Company {
   export interface CompanySubscriptions {
     companyId: string;
     createdAt: Date;
-    isPaid: boolean;
+      accessKind?: 'standard' | 'internal_complimentary';
+    accessLabel?: string | null;
+    isComplimentary?: boolean;
+  isPaid: boolean;
     paymentDate: Date;
     subscriptionId: number;
     jobPost: number;

@@ -14,6 +14,9 @@ export interface LifecycleStatus {
   periodEnd: string | null;
   trialEndsAt: string | null;
   amountPaid: number | null;
+    accessKind?: 'standard' | 'internal_complimentary';
+    accessLabel?: string | null;
+    isComplimentary?: boolean;
   isPaid: boolean;
   subscriptionId: number | null;
   subscriptionName: string | null;

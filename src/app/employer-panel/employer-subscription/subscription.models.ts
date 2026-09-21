@@ -105,6 +105,10 @@ export interface EmployerSubscriptionSummary {
     profileCompleteness?: number | null;
   };
   currentPlan: {
+    accessKind?: 'standard' | 'internal_complimentary';
+    accessLabel?: string | null;
+    isComplimentary?: boolean;
+    isPaid?: boolean;
     id: number | string | null;
     code: string | null;
     name: string;

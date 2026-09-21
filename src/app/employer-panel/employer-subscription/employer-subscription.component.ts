@@ -714,6 +714,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   /** Backend recommendation joined to the authoritative catalog record. */
   get recommendedCatalogPlan(): PlanCatalogItem | null {
+    if (this.isComplimentary) { return null; }
     const code = this.recommendedPlan && this.recommendedPlan.planCode;
     const normalized = code === 'premium' ? 'business' : code;
     return this.catalogPlans.find(plan => plan.slug === normalized)
@@ -755,7 +756,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   startStorageCheckout(packageCode: StorageAddonCheckoutRequest['packageCode']): void {
-    if (this.storageCheckoutCode) { return; }
+    if (this.isComplimentary || this.storageCheckoutCode) { return; }
     this.storageCheckoutCode = packageCode;
     this.storageCheckoutError = null;
     this.billing.createStorageAddonCheckout({ packageCode, billingCycle: 'monthly' })
@@ -777,6 +778,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
   }
 
   ctaFor(plan: PlanCatalogItem): PlanCta {
+    if (this.isComplimentary) { return {label: 'Managed internally', actionable: false, kind: 'none'}; }
     return planCta(plan, this.orderedSlugs, this.currentPlanSlug);
   }
 
@@ -786,6 +788,7 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   /** True when the backend offers both cycles, so the toggle is never a no-op. */
   get canToggleBillingCycle(): boolean {
+    if (this.isComplimentary) { return false; }
     const source = this.catalog || APPROVED_PRICING_CATALOG;
     return !!(source.monthlyAvailable && source.annualAvailable);
   }
@@ -929,7 +932,13 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
 
   // --- Status helpers ---
 
+  get isComplimentary(): boolean {
+    const plan = this.summary && this.summary.currentPlan;
+    return !!plan && plan.accessKind === 'internal_complimentary' && plan.isComplimentary === true;
+  }
+
   get statusLabel(): string {
+    if (this.isComplimentary) { return 'Internal / Complimentary'; }
     const status = this.summary && this.summary.currentPlan && this.summary.currentPlan.status;
     const map: { [k: string]: string } = {
       none: 'No plan',
