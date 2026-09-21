@@ -187,7 +187,11 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
       this.handlingExpiry = true;
       const expiredUrl = this.router.url || '';
       const expiredRole = expiredUrl.startsWith('/recruiter/') ? 2 : expiredUrl.startsWith('/user/') ? 3 : null;
-      this.coreService.logout();
+      // A 401 already proves this browser token cannot authorize requests.
+      // Do not call the asynchronous logout/revocation endpoint here: it can
+      // finish after a fast re-sign-in and revoke the brand-new Firebase
+      // session, causing an immediate sign-in/expired-session loop.
+      this.coreService.discardExpiredSession();
       if (expiredRole) rememberReturnUrl(expiredUrl, expiredRole);
       this.snackbarService.error(`Your session has expired. Please sign in again to continue.`, '');
       // AUTH LIFECYCLE FIX: previously navigated to '/' (Home) here, on the

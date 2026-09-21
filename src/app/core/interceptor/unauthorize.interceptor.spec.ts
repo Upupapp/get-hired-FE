@@ -14,7 +14,7 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
     localStorage.setItem('token', 'Bearer stale-token');
 
     const router = { navigateByUrl: jasmine.createSpy('navigateByUrl') };
-    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, logout: jasmine.createSpy('logout') };
+    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, discardExpiredSession: jasmine.createSpy('discardExpiredSession') };
     const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
     const lifecycle = {
       refreshNow: jasmine.createSpy('refreshNow').and.callFake(() => {
@@ -50,7 +50,7 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
   it('clears a dead restored session on a protected route even when its token is gone', (done) => {
     localStorage.setItem('state', 'false');
     const router = { url: '/recruiter/subscription/upgrade/growth?billing=monthly', navigate: jasmine.createSpy('navigate') };
-    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, logout: jasmine.createSpy('logout') };
+    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, discardExpiredSession: jasmine.createSpy('discardExpiredSession') };
     const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
     const lifecycle = { refreshNow: jasmine.createSpy('refreshNow').and.returnValue(of(false)) };
     const interceptor = new UnAuthorizedInterceptor(router as any, core as any, snackbar as any, lifecycle as any);
@@ -60,7 +60,7 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
       next: () => done.fail('expected a 401'),
       error: () => {
         expect(lifecycle.refreshNow).toHaveBeenCalledTimes(1);
-        expect(core.logout).toHaveBeenCalledTimes(1);
+        expect(core.discardExpiredSession).toHaveBeenCalledTimes(1);
         expect(localStorage.getItem('returnURL')).toBe('/recruiter/subscription/upgrade/growth?billing=monthly');
         expect(router.navigate).toHaveBeenCalledWith(['/signin'], { queryParams: { role: 2 } });
         done();
@@ -70,7 +70,7 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
 
   it('recovers a status-shaped production 401 without requiring class identity', (done) => {
     const router = { url: '/recruiter/subscription', navigate: jasmine.createSpy('navigate') };
-    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, logout: jasmine.createSpy('logout') };
+    const core = { isLoggedIn: () => false, suppressExpiryHandling: false, discardExpiredSession: jasmine.createSpy('discardExpiredSession') };
     const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
     const lifecycle = { refreshNow: jasmine.createSpy('refreshNow').and.returnValue(of(false)) };
     const interceptor = new UnAuthorizedInterceptor(router as any, core as any, snackbar as any, lifecycle as any);
@@ -79,7 +79,7 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
     interceptor.intercept(new HttpRequest('GET', '/subscription'), next).subscribe({
       next: () => done.fail('expected a 401'),
       error: () => {
-        expect(core.logout).toHaveBeenCalledTimes(1);
+        expect(core.discardExpiredSession).toHaveBeenCalledTimes(1);
         expect(router.navigate).toHaveBeenCalledWith(['/signin'], { queryParams: { role: 2 } });
         done();
       },
