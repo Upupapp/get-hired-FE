@@ -148,6 +148,17 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
       return throwError(() => err);
     }
 
+    // A response can arrive after this browser has already established a
+    // newer session. Never let a delayed 401 belonging to the previous
+    // token clear the current account. Retry that request once with the
+    // current token; if the current token is also rejected, the normal
+    // RETRIED_AFTER_REFRESH path below performs expiry recovery.
+    const requestToken = request.headers.get('Authorization');
+    const currentToken = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+    if (requestToken && currentToken && requestToken !== currentToken) {
+      return this.retryOnceWithToken(request, next, currentToken);
+    }
+
     if (request.context.get(RETRIED_AFTER_REFRESH)) {
       return this.hardLogout(err);
     }
@@ -158,11 +169,30 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
           return this.hardLogout(err);
         }
         const freshToken = localStorage.getItem('token');
-        const retried = request.clone({
-          setHeaders: freshToken ? { Authorization: freshToken } : {},
-          context: request.context.set(RETRIED_AFTER_REFRESH, true),
-        });
-        return next.handle(retried);
+        return this.retryOnceWithToken(request, next, freshToken);
+      }),
+    );
+  }
+
+  /** A replacement Observable returned by catchError does not pass through
+   * that same catchError again. Handle the retry's 401 here explicitly so a
+   * rejected refreshed/current token cannot leak into feature components as
+   * an unexplained API error while the UI still appears authenticated. */
+  private retryOnceWithToken(
+    request: HttpRequest<any>,
+    next: HttpHandler,
+    token: string | null,
+  ): Observable<HttpEvent<any>> {
+    const retried = request.clone({
+      setHeaders: token ? { Authorization: token } : {},
+      context: request.context.set(RETRIED_AFTER_REFRESH, true),
+    });
+    return next.handle(retried).pipe(
+      catchError((retryErr: any) => {
+        if (Number(retryErr && retryErr.status) === 401) {
+          return this.hardLogout(retryErr as HttpErrorResponse);
+        }
+        return throwError(() => retryErr);
       }),
     );
   }

@@ -53,4 +53,18 @@ describe('TokenLifecycleService session cleanup races', () => {
     expect(firstResult).toEqual([false]);
     expect(localStorage.getItem('token')).toBe('Bearer current-token');
   });
+
+  it('does not overwrite credentials established by a newer sign-in', () => {
+    let result: boolean | undefined;
+    service.refreshNow().subscribe(value => result = value);
+    const request = http.expectOne(req => req.url.includes('securetoken.googleapis.com/v1/token'));
+
+    localStorage.setItem('token', 'Bearer newly-signed-in-token');
+    localStorage.setItem('refreshToken', 'newly-signed-in-refresh-token');
+    request.flush({ id_token: 'late-old-token', refresh_token: 'late-old-refresh-token' });
+
+    expect(result).toBe(false);
+    expect(localStorage.getItem('token')).toBe('Bearer newly-signed-in-token');
+    expect(localStorage.getItem('refreshToken')).toBe('newly-signed-in-refresh-token');
+  });
 });

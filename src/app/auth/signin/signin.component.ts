@@ -149,7 +149,11 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
       localStorage.setItem('loginMessage', 'Login was successful.');
       localStorage.setItem('token', 'Bearer ' + data.token);
       localStorage.setItem('token_authorization', data.token.replace('Bearer ', ''));
-      localStorage.setItem('refreshToken', data.refreshToken);
+      if (data.refreshToken) {
+        localStorage.setItem('refreshToken', data.refreshToken);
+      } else {
+        localStorage.removeItem('refreshToken');
+      }
 
       if (this.loginForm) {
         this.loginForm.reset();

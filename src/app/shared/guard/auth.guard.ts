@@ -3,6 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable, of } from 'rxjs';
 import { CoreService } from '@app-core/services/core.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { rememberReturnUrl } from '../utils/auth-return-url.util';
 
 @Injectable({
   providedIn: 'root'
@@ -53,8 +54,9 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
 
   async checkUserLogin(route?: ActivatedRouteSnapshot, url?: any): Promise<boolean> {
     const logged = await this.asyncLocalStorage.getItem('state');
+    const token = await this.asyncLocalStorage.getItem('token');
 
-    if (logged == 'true') {
+    if (logged == 'true' && !!token) {
       const userRole = await this.coreService.getRole();
       if (route.data.role && route.data.role.indexOf(userRole) === -1) {
         // Wrong role: redirect to the correct panel and deny access to this route.
@@ -66,9 +68,22 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanDeactivate<u
       }
       return true;
     } else {
+      // A protected route must require both halves of the local session.
+      // `state=true` without a token, or a leftover token with state=false,
+      // is an interrupted/expired session. Clear it before loading Sign in
+      // so stale credentials cannot be attached to guest requests.
+      if (logged == 'true' || !!token) {
+        this.coreService.discardExpiredSession();
+      }
+      const expectedRole = route && route.data ? Number(route.data.role) : null;
+      if ((expectedRole === 2 || expectedRole === 3) && url) {
+        rememberReturnUrl(url, expectedRole);
+      }
       this.snackBar.open(`You are not Authorized to access that page. Please Login first`,
         '', { duration: 4000, panelClass: ['danger-snackbar'] });
-      this.router.navigateByUrl('/signin');
+      this.router.navigate(['/signin'], {
+        queryParams: expectedRole === 2 || expectedRole === 3 ? { role: expectedRole } : undefined,
+      });
       return false;
     }
   }

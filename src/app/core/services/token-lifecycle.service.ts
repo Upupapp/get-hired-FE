@@ -136,6 +136,7 @@ export class TokenLifecycleService implements OnDestroy {
     if (this.refreshInFlight$) return this.refreshInFlight$;
 
     const refreshToken = typeof localStorage !== 'undefined' ? localStorage.getItem('refreshToken') : null;
+    const sessionToken = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
     if (!refreshToken) return of(false);
 
     const apiKey = (environment as any).firebase && (environment as any).firebase.apiKey;
@@ -156,6 +157,12 @@ export class TokenLifecycleService implements OnDestroy {
         // late response resurrect the expired session or overwrite tokens
         // belonging to a newer sign-in.
         if (requestGeneration !== this.sessionGeneration) return false;
+        // A newer sign-in can replace the refresh token without calling
+        // stop() first (OAuth callbacks and cross-tab timing are examples).
+        // Bind this response to the refresh token that initiated it so an
+        // older account's late response cannot overwrite the new session.
+        if (localStorage.getItem('refreshToken') !== refreshToken
+          || localStorage.getItem('token') !== sessionToken) return false;
         // Firebase's Secure Token response names the new ID token
         // `id_token` (and mirrors it as `access_token`); either is the
         // same value. `refresh_token` may come back rotated -- always

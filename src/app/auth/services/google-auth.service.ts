@@ -283,6 +283,8 @@ export class GoogleAuthService {
     localStorage.setItem('token_authorization', data.token.replace('Bearer ', ''));
     if (data.refreshToken) {
       localStorage.setItem('refreshToken', data.refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
     }
 
     switch (data.role) {
