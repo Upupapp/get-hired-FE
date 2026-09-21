@@ -9,10 +9,13 @@ describe('SubscriptionCheckoutIntentService employer billing contract', () => {
   let service: SubscriptionCheckoutIntentService;
   let http: HttpTestingController;
   beforeEach(() => {
+    localStorage.setItem('token', 'Bearer checkout-token');
     TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
     service = TestBed.inject(SubscriptionCheckoutIntentService);
     http = TestBed.inject(HttpTestingController);
   });
+
+  afterEach(() => localStorage.removeItem('token'));
   afterEach(() => http.verify());
 
   it('creates checkout without client price or company identifiers', () => {
@@ -21,6 +24,7 @@ describe('SubscriptionCheckoutIntentService employer billing contract', () => {
     service.createCheckoutIntent(body).subscribe(value => response = value);
     const req = http.expectOne(`${environment.api_url}/subscriptions/checkout-intent`);
     expect(req.request.method).toBe('POST');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer checkout-token');
     expect(req.request.body).toEqual({ planSlug: 'growth', billingCycle: 'monthly', idempotencyKey: 'stable-key' });
     expect(req.request.body.amount).toBeUndefined();
     expect(req.request.body.companyId).toBeUndefined();
@@ -32,6 +36,7 @@ describe('SubscriptionCheckoutIntentService employer billing contract', () => {
     service.getCheckoutIntentStatus('attempt/1').subscribe();
     const req = http.expectOne(`${environment.api_url}/subscriptions/checkout-intent/attempt%2F1/return-status`);
     expect(req.request.method).toBe('GET');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer checkout-token');
     req.flush({ success: true, checkoutIntentId: 'attempt/1', returnStatus: 'payment_pending', billingCycle: 'monthly' });
   });
 

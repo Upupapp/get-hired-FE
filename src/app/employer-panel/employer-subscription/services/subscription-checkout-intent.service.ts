@@ -71,7 +71,7 @@ export class SubscriptionCheckoutIntentService {
       planSlug: request.planCode,
       billingCycle: request.billingCycle,
       idempotencyKey: request.idempotencyKey,
-    }).pipe(map(res => {
+    }, this.authOptions()).pipe(map(res => {
       const disclosure = res.disclosure || {};
       return {
         success: res.success === true,
@@ -91,7 +91,7 @@ export class SubscriptionCheckoutIntentService {
     return this.http.post<EmployerUpgradePreview>(`${this.apiBase}/upgrade-preview`, request);
   }
   getCheckoutIntentStatus(id: string): Observable<PaymentAttemptStatusResponse> {
-    return this.http.get<LegacyCheckoutReturnStatus>(`${environment.api_url}/subscriptions/checkout-intent/${encodeURIComponent(id)}/return-status`)
+    return this.http.get<LegacyCheckoutReturnStatus>(`${environment.api_url}/subscriptions/checkout-intent/${encodeURIComponent(id)}/return-status`, this.authOptions())
       .pipe(map(res => ({
         success: res.success === true,
         paymentAttemptId: res.checkoutIntentId,
@@ -118,5 +118,18 @@ export class SubscriptionCheckoutIntentService {
     if (status === 'payment_failed') { return 'FAILED'; }
     if (status === 'payment_expired') { return 'EXPIRED'; }
     return 'PENDING';
+  }
+
+  /**
+   * The deployed checkout routes require Firebase bearer authentication.
+   * Keep the token on these two payment requests explicitly as well as via
+   * the app-wide interceptor. This protects lazy-loaded subscription code
+   * from losing the header when its HttpClient chain is reconstructed after
+   * a Google sign-in redirect.
+   */
+  private authOptions(): { headers?: Record<string, string> } {
+    if (typeof localStorage === 'undefined') { return {}; }
+    const token = localStorage.getItem('token');
+    return token ? { headers: { Authorization: token } } : {};
   }
 }
