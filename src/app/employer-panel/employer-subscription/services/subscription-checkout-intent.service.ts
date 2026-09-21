@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 import { BillingCycle } from '../subscription-v4.models';
 
@@ -39,21 +40,83 @@ export interface EmployerUpgradePreview {
   entitlements: Record<string, number | boolean | null>;
   proration: false;
 }
+interface LegacyCheckoutIntentResponse {
+  success: boolean;
+  status?: string;
+  checkoutIntentId?: string;
+  checkoutUrl?: string | null;
+  disclosure?: {
+    checkoutUrl?: string | null;
+    selectedBillingCycle?: BillingCycle;
+    amountDueToday?: number;
+  };
+}
+interface LegacyCheckoutReturnStatus {
+  success: boolean;
+  checkoutIntentId: string;
+  returnStatus: string;
+  billingCycle: BillingCycle;
+  lifecycle?: { planSlug?: string | null; status?: string | null } | null;
+}
 export interface StorageAddonCheckoutRequest { packageCode: 'storage_25' | 'storage_100' | 'storage_250'; billingCycle: 'monthly'; idempotencyKey?: string; }
 @Injectable({ providedIn: 'root' })
 export class SubscriptionCheckoutIntentService {
   private apiBase = `${environment.api_url}/employer/subscription`;
   constructor(private http: HttpClient) {}
   createCheckoutIntent(request: EmployerCheckoutRequest): Observable<EmployerCheckoutResponse> {
-    return this.http.post<EmployerCheckoutResponse>(`${this.apiBase}/checkout`, request);
+    // Production currently exposes the hardened V4 checkout-intent route.
+    // Adapt its server-priced response to the newer UI contract so checkout
+    // remains a backend-authoritative PayMongo redirect.
+    return this.http.post<LegacyCheckoutIntentResponse>(`${environment.api_url}/subscriptions/checkout-intent`, {
+      planSlug: request.planCode,
+      billingCycle: request.billingCycle,
+      idempotencyKey: request.idempotencyKey,
+    }).pipe(map(res => {
+      const disclosure = res.disclosure || {};
+      return {
+        success: res.success === true,
+        paymentAttemptId: res.checkoutIntentId || '',
+        provider: 'PAYMONGO' as const,
+        checkoutUrl: res.checkoutUrl || disclosure.checkoutUrl || null,
+        status: String(res.status || 'pending').toUpperCase() as PaymentAttemptStatus,
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        amountMinor: Math.round(Number(disclosure.amountDueToday || 0) * 100),
+        currency: 'PHP' as const,
+        billingCycle: disclosure.selectedBillingCycle || request.billingCycle,
+        purchaseType: 'SUBSCRIPTION',
+      };
+    }));
   }
   previewUpgrade(request: Pick<EmployerCheckoutRequest, 'planCode' | 'billingCycle'>): Observable<EmployerUpgradePreview> {
     return this.http.post<EmployerUpgradePreview>(`${this.apiBase}/upgrade-preview`, request);
   }
   getCheckoutIntentStatus(id: string): Observable<PaymentAttemptStatusResponse> {
-    return this.http.get<PaymentAttemptStatusResponse>(`${this.apiBase}/checkout/${encodeURIComponent(id)}/status`);
+    return this.http.get<LegacyCheckoutReturnStatus>(`${environment.api_url}/subscriptions/checkout-intent/${encodeURIComponent(id)}/return-status`)
+      .pipe(map(res => ({
+        success: res.success === true,
+        paymentAttemptId: res.checkoutIntentId,
+        provider: 'PAYMONGO' as const,
+        status: this.mapLegacyReturnStatus(res.returnStatus),
+        expiresAt: '',
+        amountMinor: 0,
+        currency: 'PHP' as const,
+        billingCycle: res.billingCycle || 'monthly',
+        purchaseType: 'SUBSCRIPTION',
+        subscription: res.lifecycle ? {
+          planCode: res.lifecycle.planSlug || null,
+          billingCycle: res.billingCycle || 'monthly',
+          status: res.returnStatus === 'payment_success_confirmed' ? 'active' : (res.lifecycle.status || undefined),
+        } : null,
+      })));
   }
   createStorageAddonCheckout(request: StorageAddonCheckoutRequest): Observable<EmployerCheckoutResponse> {
     return this.http.post<EmployerCheckoutResponse>(`${environment.api_url}/employer/storage-addons/checkout`, request);
+  }
+
+  private mapLegacyReturnStatus(status: string): PaymentAttemptStatus {
+    if (status === 'payment_success_confirmed') { return 'PAID'; }
+    if (status === 'payment_failed') { return 'FAILED'; }
+    if (status === 'payment_expired') { return 'EXPIRED'; }
+    return 'PENDING';
   }
 }

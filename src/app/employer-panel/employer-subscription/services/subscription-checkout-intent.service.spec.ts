@@ -17,20 +17,22 @@ describe('SubscriptionCheckoutIntentService employer billing contract', () => {
 
   it('creates checkout without client price or company identifiers', () => {
     const body = { planCode: 'growth', billingCycle: 'monthly' as const, idempotencyKey: 'stable-key' };
-    service.createCheckoutIntent(body).subscribe();
-    const req = http.expectOne(`${environment.api_url}/employer/subscription/checkout`);
+    let response: any;
+    service.createCheckoutIntent(body).subscribe(value => response = value);
+    const req = http.expectOne(`${environment.api_url}/subscriptions/checkout-intent`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(body);
+    expect(req.request.body).toEqual({ planSlug: 'growth', billingCycle: 'monthly', idempotencyKey: 'stable-key' });
     expect(req.request.body.amount).toBeUndefined();
     expect(req.request.body.companyId).toBeUndefined();
-    req.flush({ success: true });
+    req.flush({ success: true, status: 'pending', checkoutIntentId: 'SUBS-1', disclosure: { checkoutUrl: 'https://checkout.paymongo.com/link', selectedBillingCycle: 'monthly', amountDueToday: 3490 } });
+    expect(response).toEqual(jasmine.objectContaining({ success: true, paymentAttemptId: 'SUBS-1', checkoutUrl: 'https://checkout.paymongo.com/link', status: 'PENDING', amountMinor: 349000 }));
   });
 
   it('reads only the account-scoped payment attempt status', () => {
     service.getCheckoutIntentStatus('attempt/1').subscribe();
-    const req = http.expectOne(`${environment.api_url}/employer/subscription/checkout/attempt%2F1/status`);
+    const req = http.expectOne(`${environment.api_url}/subscriptions/checkout-intent/attempt%2F1/return-status`);
     expect(req.request.method).toBe('GET');
-    req.flush({ success: true, status: 'PENDING' });
+    req.flush({ success: true, checkoutIntentId: 'attempt/1', returnStatus: 'payment_pending', billingCycle: 'monthly' });
   });
 
   it('loads the server-selected price and entitlements before checkout', () => {
@@ -60,13 +62,13 @@ describe('SubscriptionCheckoutIntentService employer billing contract', () => {
       component.intentId = attempt.paymentAttemptId;
       component.loadStatus();
     });
-    http.expectOne(`${environment.api_url}/employer/subscription/checkout`).flush({success:true,paymentAttemptId:'journey-1',status:'PENDING'});
-    http.expectOne(`${environment.api_url}/employer/subscription/checkout/journey-1/status`).flush({success:true,status:'PENDING',billingCycle:'monthly'});
+    http.expectOne(`${environment.api_url}/subscriptions/checkout-intent`).flush({success:true,checkoutIntentId:'journey-1',status:'pending',disclosure:{billingCycle:'monthly'}});
+    http.expectOne(`${environment.api_url}/subscriptions/checkout-intent/journey-1/return-status`).flush({success:true,checkoutIntentId:'journey-1',returnStatus:'payment_pending',billingCycle:'monthly'});
     expect(component.returnStatus).toBe('payment_pending');
     expect(component.activatedPlanName).toBeNull();
     expect(bus.request).not.toHaveBeenCalled();
     component.checkAgain();
-    http.expectOne(`${environment.api_url}/employer/subscription/checkout/journey-1/status`).flush({success:true,status:'PAID',billingCycle:'monthly',subscription:{planCode:'growth',status:'active'}});
+    http.expectOne(`${environment.api_url}/subscriptions/checkout-intent/journey-1/return-status`).flush({success:true,checkoutIntentId:'journey-1',returnStatus:'payment_success_confirmed',billingCycle:'monthly',lifecycle:{planSlug:'growth',status:'active'}});
     expect(component.returnStatus).toBe('payment_success_confirmed');
     expect(component.activatedPlanName).toBe('Growth');
     expect(bus.request).toHaveBeenCalledOnceWith('checkout_return');
