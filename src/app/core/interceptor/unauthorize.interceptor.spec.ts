@@ -1,6 +1,6 @@
-import { HttpErrorResponse, HttpHandler, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpContext, HttpErrorResponse, HttpHandler, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
-import { UnAuthorizedInterceptor } from './unauthorize.interceptor';
+import { SKIP_SESSION_EXPIRY, UnAuthorizedInterceptor } from './unauthorize.interceptor';
 
 describe('UnAuthorizedInterceptor stale shell recovery', () => {
   afterEach(() => {
@@ -42,6 +42,31 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
         expect(lifecycle.refreshNow).toHaveBeenCalledTimes(1);
         expect(calls).toBe(2);
         expect(router.navigateByUrl).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  it('does not sign out for a 401 from an optional subscription enhancement', (done) => {
+    localStorage.setItem('state', 'true');
+    localStorage.setItem('token', 'Bearer valid-checkout-token');
+    const router = { url: '/recruiter/subscription/upgrade/growth?billing=annual', navigate: jasmine.createSpy('navigate') };
+    const core = { isLoggedIn: () => true, suppressExpiryHandling: false, discardExpiredSession: jasmine.createSpy('discardExpiredSession') };
+    const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
+    const lifecycle = { refreshNow: jasmine.createSpy('refreshNow') };
+    const interceptor = new UnAuthorizedInterceptor(router as any, core as any, snackbar as any, lifecycle as any);
+    const next: HttpHandler = { handle: () => throwError(() => new HttpErrorResponse({ status: 401 })) };
+    const request = new HttpRequest('POST', '/employer/subscription/upgrade-preview', {}, {
+      context: new HttpContext().set(SKIP_SESSION_EXPIRY, true),
+    });
+
+    interceptor.intercept(request, next).subscribe({
+      next: () => done.fail('expected the optional request to retain its 401'),
+      error: (err) => {
+        expect(err.status).toBe(401);
+        expect(lifecycle.refreshNow).not.toHaveBeenCalled();
+        expect(core.discardExpiredSession).not.toHaveBeenCalled();
+        expect(router.navigate).not.toHaveBeenCalled();
         done();
       },
     });

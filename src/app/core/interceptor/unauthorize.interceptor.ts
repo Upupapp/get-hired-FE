@@ -21,6 +21,14 @@ import { rememberReturnUrl } from '../../shared/utils/auth-return-url.util';
 // revoked/disabled account).
 const RETRIED_AFTER_REFRESH = new HttpContextToken<boolean>(() => false);
 
+/** Optional enhancement requests must never destroy an otherwise valid
+ * employer session. Some production runtimes do not expose these endpoints
+ * (upgrade preview/recommendation/analytics) with the same auth contract as
+ * the authoritative checkout route and answer 401. Callers mark those
+ * requests with this context token so the feature can fall back to catalog
+ * data without turning an unavailable enhancement into a forced logout. */
+export const SKIP_SESSION_EXPIRY = new HttpContextToken<boolean>(() => false);
+
 @Injectable()
 export class UnAuthorizedInterceptor implements HttpInterceptor {
   // BURST-401 DEDUPE: an expired/invalid token doesn't fail one request --
@@ -71,6 +79,9 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
         }
 
         if (status === 401) {
+          if (request.context.get(SKIP_SESSION_EXPIRY)) {
+            return throwError(() => err);
+          }
           return this.handle401(request, next, err as HttpErrorResponse);
         } else if (status === 403) {
           // Authenticated but denied -- not a dead session. Surface the
