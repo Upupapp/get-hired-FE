@@ -218,6 +218,17 @@ describe('plan-presentation', () => {
       expect(p.suffix).toBe('');
     });
 
+    it('never labels a free trial as paid when an older summary sends stale renewal copy', () => {
+      const stale = makePlan({
+        ...TRIAL,
+        pricing: {
+          ...TRIAL.pricing,
+          monthly: { ...TRIAL.pricing.monthly, renewalLabel: 'Paid monthly, recurring' },
+        },
+      });
+      expect(planPrice(stale, 'monthly').caption).toBe('Free trial');
+    });
+
     it('renders a null price as Custom, never as zero', () => {
       // A custom-priced plan showing "₱0" would read as free.
       for (const cycle of ['monthly', 'annual'] as const) {

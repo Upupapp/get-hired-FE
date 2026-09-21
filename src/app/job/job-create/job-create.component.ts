@@ -763,7 +763,10 @@ export class JobCreateComponent implements OnInit, OnDestroy {
         // validate the value actually entered.
         salaryMinimum: [data ? data.salaryMinimum : null, Validators.min(0)],
         salaryMaximum: [data ? data.salaryMaximum : null, Validators.min(0)],
-        salaryCurrency: [data ? data.salaryCurrency : null],
+        // PHP is the product default and the first visible option in the
+        // select. Keep the form value aligned with that visible selection so a
+        // newly published job never sends null and later falls back to USD.
+        salaryCurrency: [data && data.salaryCurrency ? data.salaryCurrency : 'PHP'],
         // contractStart: DetailedDate;
         // contractEnd: DetailedDate;
       }, { validators: this.salaryRangeValidator }),

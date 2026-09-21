@@ -216,17 +216,14 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
   get tabMonthlyLabel(): string { return 'Monthly subscription package'; }
 
   get entitlementRows(): Array<{ label: string; value: string }> {
-    if (this.preview?.entitlements) {
-      const e = this.preview.entitlements;
-      const value = (key:string) => typeof e[key] === 'number' ? String(e[key]) : 'Custom';
-      return [
-        {label:'Active job posts',value:value('jobs')},
-        {label:'Admin users',value:value('users')},
-        {label:'Recruitment Storage',value:typeof e['storage']==='number' ? `${Number(e['storage'])/1000000000} GB` : 'Custom'},
-        {label:'Video questions per job',value:value('video')},
-      ];
-    }
     if (!this.plan) return [];
+    // The checkout preview uses the legacy billing entitlement shape. Its
+    // `video` key is the account-wide video-response allowance, not the
+    // per-job question limit advertised here, and older plan versions store
+    // storage as binary bytes. Rendering that object directly changed Growth
+    // from 50 GB / 5 questions to 53.6870912 GB / 100 questions as soon as the
+    // preview arrived. The catalog is the public plan contract; the preview is
+    // used only for the authoritative price and checkout availability.
     const ents = this.plan.entitlements;
     return [
       { label: 'Active job posts', value: ents.active_job_posts === null ? 'Custom' : String(ents.active_job_posts) },

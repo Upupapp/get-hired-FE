@@ -56,13 +56,29 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     expect(component.dueTodayLabel).toBe('₱2,990.00 due today');
     expect(component.entitlementRows).toEqual([
       { label: 'Active job posts', value: '15' },
-      { label: 'Admin users', value: '5' },
-      { label: 'Recruitment Storage', value: '50 GB' },
+      { label: 'Team users', value: '5' },
+      { label: 'Recruitment storage', value: '50 GB' },
       { label: 'Video questions per job', value: '5' },
     ]);
     expect(checkoutIntentService.previewUpgrade).toHaveBeenCalledOnceWith({
       planCode: 'growth', billingCycle: 'monthly',
     });
+  });
+
+  it('keeps catalog question and storage limits when a legacy preview uses response limits and binary bytes', () => {
+    const { component, checkoutIntentService } = createComponent();
+    checkoutIntentService.previewUpgrade.and.returnValue(of({
+      success: true, planVersionId: 'growth-legacy', purchaseType: 'SUBSCRIPTION',
+      amountMinor: 349000, currency: 'PHP', billingCycle: 'monthly', billingMode: 'UPFRONT',
+      entitlements: { jobs: 15, users: 5, storage: 53687091200, video: 100 }, proration: false,
+    }));
+    component.ngOnInit();
+    expect(component.entitlementRows).toEqual([
+      { label: 'Active job posts', value: '15' },
+      { label: 'Team users', value: '5' },
+      { label: 'Recruitment storage', value: '50 GB' },
+      { label: 'Video questions per job', value: '5' },
+    ]);
   });
 
   it('keeps an unknown plan route in the fatal error state', () => {

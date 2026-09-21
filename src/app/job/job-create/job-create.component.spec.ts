@@ -226,6 +226,20 @@ describe('JobCreateComponent -- stepper navigation and save mapping', () => {
 
       expect(component.stepper).toBe(2);
     });
+
+    it('lets simplified posting leave optional compensation completely blank', () => {
+      createWith('simplified');
+      component.stepper = 2;
+      component.jobInfoValid = component.jobForm.controls['jobInfo'].valid;
+      component.onNextStep();
+      expect(component.stepper).toBe(4);
+      expect(mockDialog.open).not.toHaveBeenCalled();
+    });
+
+    it('stores PHP as the default currency shown by the new-job form', () => {
+      createWith('simplified');
+      expect(component.jobForm.get('jobInfo.salaryCurrency')?.value).toBe('PHP');
+    });
   });
 
   // -------------------------------------------------------------------------

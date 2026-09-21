@@ -161,7 +161,7 @@ export function planPrice(plan: PlanCatalogItem, cycle: BillingCycle): PlanPrice
       return { amount: CUSTOM_LABEL, suffix: '', caption: a.renewalLabel || null, effectiveMonthly: null };
     }
     if (a.amount === 0) {
-      return { amount: 'Free', suffix: '', caption: a.renewalLabel || null, effectiveMonthly: null };
+      return { amount: 'Free', suffix: '', caption: plan.trial ? 'Free trial' : (a.renewalLabel || null), effectiveMonthly: null };
     }
     return {
       amount: peso(a.amount),
@@ -176,7 +176,7 @@ export function planPrice(plan: PlanCatalogItem, cycle: BillingCycle): PlanPrice
     return { amount: CUSTOM_LABEL, suffix: '', caption: m.renewalLabel || null, effectiveMonthly: null };
   }
   if (m.amount === 0) {
-    return { amount: 'Free', suffix: '', caption: m.renewalLabel || null, effectiveMonthly: null };
+    return { amount: 'Free', suffix: '', caption: plan.trial ? 'Free trial' : (m.renewalLabel || null), effectiveMonthly: null };
   }
   return { amount: peso(m.amount), suffix: '/month', caption: m.renewalLabel || null, effectiveMonthly: null };
 }

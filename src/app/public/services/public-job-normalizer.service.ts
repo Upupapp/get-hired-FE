@@ -17,7 +17,10 @@ export class PublicJobNormalizerService {
 
     const salaryMin = this.toNumber(raw.salaryMinimum ?? raw.salary_minimum);
     const salaryMax = this.toNumber(raw.salaryMaximum ?? raw.salary_maximum);
-    const salaryCurrency = this.toStringOrNull(raw.salaryCurrency ?? raw.salary_currency);
+    const salaryCurrency = this.normalizeSalaryCurrency(
+      raw.salaryCurrency ?? raw.salary_currency,
+      raw.jobCountry ?? raw.job_country
+    );
 
     const interviewQuestions = this.toArray(raw.interviewQuestions ?? raw.interview_questions);
     const interviewTemplateId = raw.interviewTemplateId ?? raw.interview_template_id ?? null;
@@ -199,6 +202,15 @@ export class PublicJobNormalizerService {
     }
     const single = min ?? max ?? 0;
     return `${cur} ${fmt(single)}`.trim();
+  }
+
+  private normalizeSalaryCurrency(value: any, country: any): string | null {
+    const currency = this.toStringOrNull(value);
+    if (currency) { return currency.toUpperCase(); }
+    // Historical Philippine jobs can have a null currency even though the
+    // creation form displayed PHP. Preserve those records as peso listings.
+    const normalizedCountry = this.toStringOrNull(country);
+    return normalizedCountry && /^(philippines|ph)$/i.test(normalizedCountry.trim()) ? 'PHP' : null;
   }
 
   /**
