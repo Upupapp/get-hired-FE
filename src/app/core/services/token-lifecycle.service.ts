@@ -58,6 +58,9 @@ export class TokenLifecycleService implements OnDestroy {
   private readonly rawHttp: HttpClient;
   private refreshTimer: ReturnType<typeof setTimeout> | null = null;
   private refreshInFlight$: Observable<boolean> | null = null;
+  /** Invalidates responses from refresh requests that were already in flight
+   * when an expired session was discarded or the user explicitly signed out. */
+  private sessionGeneration = 0;
   private visibilityHandler = () => {
     if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
       // WAKE-OLD-TAB / RETURN-AFTER-INACTIVITY: re-derive from the token's
@@ -142,12 +145,17 @@ export class TokenLifecycleService implements OnDestroy {
     body.set('grant_type', 'refresh_token');
     body.set('refresh_token', refreshToken);
 
-    this.refreshInFlight$ = this.rawHttp.post<any>(
+    const requestGeneration = this.sessionGeneration;
+    const request$ = this.rawHttp.post<any>(
       `https://securetoken.googleapis.com/v1/token?key=${apiKey}`,
       body.toString(),
       { headers: new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' }) },
     ).pipe(
       map((res) => {
+        // stop() may have run while this request was in flight. Never let a
+        // late response resurrect the expired session or overwrite tokens
+        // belonging to a newer sign-in.
+        if (requestGeneration !== this.sessionGeneration) return false;
         // Firebase's Secure Token response names the new ID token
         // `id_token` (and mirrors it as `access_token`); either is the
         // same value. `refresh_token` may come back rotated -- always
@@ -172,11 +180,16 @@ export class TokenLifecycleService implements OnDestroy {
         return true;
       }),
       catchError(() => of(false)),
-      finalize(() => { this.refreshInFlight$ = null; }),
+      // A stopped request may finish after a newer refresh has started. Only
+      // clear the single-flight slot when this is still the current request.
+      finalize(() => {
+        if (this.refreshInFlight$ === request$) this.refreshInFlight$ = null;
+      }),
       shareReplay(1),
     );
 
-    return this.refreshInFlight$;
+    this.refreshInFlight$ = request$;
+    return request$;
   }
 
   /** Called from CoreService.logout() -- no reason to keep a refresh timer
@@ -184,6 +197,7 @@ export class TokenLifecycleService implements OnDestroy {
    *  with a live session) once the user has actually signed out. */
   stop(): void {
     this.clearTimer();
+    this.sessionGeneration++;
     this.refreshInFlight$ = null;
   }
 

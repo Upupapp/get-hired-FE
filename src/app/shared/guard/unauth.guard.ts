@@ -87,7 +87,7 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
     if (Date.now() - this.lastInvalidCheckAt < UnauthGuard.INVALID_CHECK_COOLDOWN_MS) {
       // Already found this invalid moments ago -- skip straight to the
       // self-heal instead of firing another GET /auth/getprofile.
-      this.coreService.logout();
+      this.coreService.discardExpiredSession();
       return true;
     }
 
@@ -99,12 +99,11 @@ export class UnauthGuard implements CanActivate, CanActivateChild, CanDeactivate
       this.navigateToUserRole(userRole);
       return false;
     } catch (_) {
-      // Stale/invalid -- self-heal through the existing canonical cleanup
-      // (never a parallel mechanism; preserves this owner's AI recovery,
-      // same as every other logout() caller), then let the auth page
-      // render normally instead of leaving the optimistic redirect in place.
+      // Stale/invalid -- clear locally without starting a delayed backend
+      // revoke. A revoke racing a fresh sign-in can invalidate the brand-new
+      // session after the user has already reached their dashboard.
       this.lastInvalidCheckAt = Date.now();
-      this.coreService.logout();
+      this.coreService.discardExpiredSession();
       return true;
     }
   }

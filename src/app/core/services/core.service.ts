@@ -296,9 +296,8 @@ export class CoreService {
     // request has actually had a real chance to reach the server. Local
     // sign-out above is unconditional regardless of which side of the
     // race wins.
-    // shareReplay(1): several existing callers (header.component.ts,
-    // UnAuthorizedInterceptor's auto-logout-on-401, UnauthGuard's
-    // self-heal) call coreService.logout() as a bare statement and never
+    // shareReplay(1): some explicit sign-out callers call
+    // coreService.logout() as a bare statement and never
     // subscribe to what it returns -- with a plain cold observable, the
     // HTTP request would then never actually execute at all. Subscribing
     // once internally below guarantees it always fires exactly once,

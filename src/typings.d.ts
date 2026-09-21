@@ -1,3 +1,5 @@
+/// <reference types="google.maps" />
+
 // Google Identity Services global type declarations
 // Loaded via script tag in index.html (accounts.google.com/gsi/client)
 declare namespace google {
