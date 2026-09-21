@@ -11,6 +11,18 @@ export class SubscriptionGuardrailService {
   constructor(private http: HttpClient) {}
 
   getSummary(): Observable<SubscriptionSummaryResponse> {
-    return this.http.get<SubscriptionSummaryResponse>(`${this.apiBase}/subscriptions/employer/summary`);
+    return this.http.get<SubscriptionSummaryResponse>(
+      `${this.apiBase}/subscriptions/employer/summary`,
+      this.authOptions(),
+    );
+  }
+
+  /** Lazy subscription modules can be reconstructed without the root HTTP
+   * interceptor after an auth redirect. Preserve the Firebase bearer header
+   * explicitly for this authenticated request, matching checkout. */
+  private authOptions(): { headers?: Record<string, string> } {
+    if (typeof localStorage === 'undefined') { return {}; }
+    const token = localStorage.getItem('token');
+    return token ? { headers: { Authorization: token } } : {};
   }
 }
