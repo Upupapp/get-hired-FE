@@ -81,6 +81,32 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     ]);
   });
 
+  it('keeps approved question and storage limits when the async server catalog is legacy', () => {
+    const { component } = createComponent();
+    (component as any).pricingCatalogService.getCatalog = () => of({
+      catalog: {
+        plans: [{
+          slug: 'growth', name: 'Growth', description: 'For active hiring teams.',
+          pricing: { monthly: { amount: 3490 }, annual: { amount: 34900 } },
+          entitlements: {
+            active_job_posts: 15, admin_users: 5,
+            recruitment_storage_bytes: 53687091200,
+            video_questions_per_job: 100,
+          },
+        }],
+      },
+    });
+
+    component.ngOnInit();
+
+    expect(component.entitlementRows).toEqual([
+      { label: 'Active job posts', value: '15' },
+      { label: 'Team users', value: '5' },
+      { label: 'Recruitment storage', value: '50 GB' },
+      { label: 'Video questions per job', value: '5' },
+    ]);
+  });
+
   it('keeps an unknown plan route in the fatal error state', () => {
     const { component, checkoutIntentService } = createComponent('unknown');
 

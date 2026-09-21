@@ -104,7 +104,16 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           if (res && res.catalog && res.catalog.plans) {
-            this.plan = res.catalog.plans.find(p => p.slug === this.planSlug) || null;
+            const serverPlan = res.catalog.plans.find(p => p.slug === this.planSlug || p.slug === normalizedSlug) || null;
+            const approvedPlan = APPROVED_PRICING_CATALOG.plans.find(p => p.slug === normalizedSlug) || null;
+            // Server catalog pricing may be newer, but some deployed catalog
+            // rows still expose legacy account-wide storage/video allowances.
+            // Preserve the approved public per-plan limits shown before the
+            // async request completes so the checkout page cannot visibly
+            // change from 50 GB / 5 questions to 53.6870912 GB / 100.
+            this.plan = serverPlan && approvedPlan
+              ? { ...serverPlan, entitlements: approvedPlan.entitlements }
+              : (approvedPlan || serverPlan);
           }
           this.loading = false;
           this.cdr.markForCheck();
