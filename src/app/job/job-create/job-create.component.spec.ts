@@ -230,7 +230,7 @@ describe('JobCreateComponent -- stepper navigation and save mapping', () => {
     it('lets simplified posting leave optional compensation completely blank', () => {
       createWith('simplified');
       component.stepper = 2;
-      component.jobInfoValid = component.jobForm.controls['jobInfo'].valid;
+      expect(component.jobInfoValid).toBeTrue();
       component.onNextStep();
       expect(component.stepper).toBe(4);
       expect(mockDialog.open).not.toHaveBeenCalled();

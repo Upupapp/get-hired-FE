@@ -781,6 +781,15 @@ export class JobCreateComponent implements OnInit, OnDestroy {
     this.formSubs.unsubscribe();
     this.formSubs = new Subscription();
 
+    // statusChanges only emits after a control changes. Step 2 contains only
+    // optional fields, so a user who leaves compensation blank never changes
+    // that group and the cached flag otherwise remains at its class default
+    // (`false`) even though the FormGroup is already valid. Seed all cached
+    // validity flags from the newly built form before listening for changes.
+    this.initialFormValid = this.jobForm.controls.initialData.valid;
+    this.jobInfoValid = this.jobForm.controls.jobInfo.valid;
+    this.interviewValid = this.jobForm.controls.interview.valid;
+
     this.formSubs.add(
       this.jobForm.controls.initialData.statusChanges
         .pipe(distinctUntilChanged())
