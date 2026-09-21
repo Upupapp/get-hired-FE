@@ -1,12 +1,12 @@
 /** Single source for GetHired brand mark paths (Logo Sprint 1 — light-only interim). */
 
 export type BrandLogoVariant = 'horizontal' | 'mark';
-export type BrandLogoTone = 'on-light';
+export type BrandLogoTone = 'on-light' | 'on-dark';
 
 export const BRAND_ASSETS = {
   horizontalOnLight: 'assets/brand/gethired-logo-horizontal-on-light-interim.png',
   markOnLight: 'assets/brand/gethired-mark-on-light-interim.png',
-  /** Held until on-dark pack: keep legacy lockup on dark/purple surfaces. */
+  /** Interim source for dark surfaces; BrandLogoComponent renders it white. */
   horizontalLegacy: 'assets/brand/Gethired-horizontal-logo.png?v=3',
 } as const;
 

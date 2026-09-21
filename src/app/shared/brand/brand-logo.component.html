@@ -3,6 +3,7 @@
   [alt]="resolvedAlt"
   [attr.aria-hidden]="decorative ? true : null"
   class="gh-brand-logo"
+  [class.gh-brand-logo--on-dark]="tone === 'on-dark'"
   [ngClass]="imgClass"
   [style.height]="heightCss"
   [style.width]="'auto'"

@@ -13,3 +13,10 @@
   object-fit: contain;
   vertical-align: middle;
 }
+
+// The current horizontal lockup has navy "GET" lettering intended for light
+// surfaces. Convert the complete lockup to white wherever it sits on navy so
+// every letter remains readable until a native on-dark asset is supplied.
+.gh-brand-logo--on-dark {
+  filter: brightness(0) invert(1);
+}
