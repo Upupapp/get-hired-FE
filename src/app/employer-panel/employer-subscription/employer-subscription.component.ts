@@ -634,17 +634,30 @@ export class EmployerSubscriptionComponent implements OnInit, OnDestroy, AfterVi
         ? serverPlan.current
         : this.currentPlanSlugFromSummary === approved.slug;
       if (!serverPlan) { return { ...approved, current }; }
+      // Older summary records use null for fields they do not model. Null is
+      // only an intentional custom value for Enterprise; allowing those gaps
+      // to overwrite the approved paid tiers made Premium display as Custom.
+      const modelledEntitlements = Object.keys(serverPlan.entitlements).reduce((result, key) => {
+        const value = (serverPlan.entitlements as any)[key];
+        if (value !== null && typeof value !== 'undefined' && (typeof value !== 'boolean' || value)) {
+          (result as any)[key] = value;
+        }
+        return result;
+      }, {} as Partial<PlanCatalogItem['entitlements']>);
+      const serverMonthly = serverPlan.pricing.monthly.amount;
       return {
         ...approved,
         ...serverPlan,
         current,
         pricing: {
-          monthly: serverPlan.pricing.monthly,
+          monthly: serverMonthly === null && !approved.enterprise
+            ? approved.pricing.monthly
+            : serverPlan.pricing.monthly,
           annual: approved.pricing.annual,
         },
         entitlements: {
           ...approved.entitlements,
-          ...serverPlan.entitlements,
+          ...(approved.enterprise ? serverPlan.entitlements : modelledEntitlements),
         },
       };
     });

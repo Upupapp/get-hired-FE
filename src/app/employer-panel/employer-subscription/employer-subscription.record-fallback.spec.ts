@@ -36,10 +36,29 @@ describe('EmployerSubscriptionComponent record-backed pricing fallback', () => {
     expect(page.catalogPlans[2].upgradeRoute).toBe('/recruiter/subscription/upgrade/growth');
     expect(page.catalogPlans[2].entitlements.active_job_posts).toBe(15);
     expect(page.catalogPlans[2].entitlements.recruitment_storage_bytes).toBe(50 * 1024 * 1024 * 1024);
-    expect(page.catalogPlans[3].pricing.monthly.amount).toBe(6990);
+    expect(page.catalogPlans[3].pricing.monthly.amount).toBe(5990);
     expect(page.catalogPlans[4].contactSalesRequired).toBeTrue();
     expect(page.catalogPlans[0].current).toBeTrue();
     expect(page.recommendedCatalogPlan?.slug).toBe('growth');
+  });
+
+  it('does not turn a partially modelled Premium record into a custom plan', () => {
+    const page = component();
+    page.summary = {
+      currentPlan: { code: 'free_trial', name: 'Free Trial', status: 'expired' },
+      availablePlans: [{
+        id: 4, code: 'premium', name: 'Premium', priceMonthly: null, currency: 'PHP',
+        features: [], limits: { activeJobs: null, adminUsers: null, videoResponses: null },
+        ctaLabel: 'Upgrade', ctaAction: 'upgrade',
+      }],
+    } as any;
+
+    const premium = page.catalogPlans.find(plan => plan.slug === 'business')!;
+    expect(premium.pricing.monthly.amount).toBe(5990);
+    expect(premium.pricing.annual.amount).toBe(59900);
+    expect(premium.entitlements.active_job_posts).toBe(40);
+    expect(premium.entitlements.admin_users).toBe(15);
+    expect(premium.entitlements.recruitment_storage_bytes).toBe(200 * 1024 * 1024 * 1024);
   });
 
   it('renders all approved plans even when the summary has no availablePlans array', () => {

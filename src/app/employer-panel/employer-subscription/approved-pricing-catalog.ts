@@ -36,7 +36,7 @@ export const APPROVED_PRICING_CATALOG: PricingCatalog = {
       featured_job_credits: 0, customized_company_page: true,
       video_interview_questions: true, dedicated_support: false,
     }, { recommended: true }),
-    plan('business', 'Premium', 'For frequent hiring and larger teams with dedicated support.', 6990, 69900, {
+    plan('business', 'Premium', 'For frequent hiring and larger teams with dedicated support.', 5990, 59900, {
       active_job_posts: 40, admin_users: 15, applicants: null,
       recruitment_storage_bytes: 200 * GB, video_questions_per_job: 10, video_responses: 400,
       featured_job_credits: 5, customized_company_page: true,
@@ -90,4 +90,3 @@ function plan(
     defaultBillingCycle: 'monthly',
   };
 }
-

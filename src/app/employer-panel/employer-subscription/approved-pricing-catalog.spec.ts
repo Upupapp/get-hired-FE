@@ -7,8 +7,8 @@ describe('approved pricing compatibility catalog', () => {
     expect(plans.map(plan => plan.slug)).toEqual([
       'free_trial', 'starter', 'growth', 'business', 'enterprise',
     ]);
-    expect(plans.map(plan => plan.pricing.monthly.amount)).toEqual([0, 1490, 3490, 6990, null]);
-    expect(plans.map(plan => plan.pricing.annual.amount)).toEqual([0, 14900, 34900, 69900, null]);
+    expect(plans.map(plan => plan.pricing.monthly.amount)).toEqual([0, 1490, 3490, 5990, null]);
+    expect(plans.map(plan => plan.pricing.annual.amount)).toEqual([0, 14900, 34900, 59900, null]);
   });
 
   it('keeps checkout routes canonical and Enterprise sales-led', () => {
