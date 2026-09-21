@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 import { BillingCycle } from '../subscription-v4.models';
+import { SKIP_SESSION_EXPIRY } from '../../../core/interceptor/unauthorize.interceptor';
 
 export type PaymentAttemptStatus = 'PENDING' | 'PAID' | 'FAILED' | 'EXPIRED';
 export interface EmployerCheckoutRequest {
@@ -88,7 +89,10 @@ export class SubscriptionCheckoutIntentService {
     }));
   }
   previewUpgrade(request: Pick<EmployerCheckoutRequest, 'planCode' | 'billingCycle'>): Observable<EmployerUpgradePreview> {
-    return this.http.post<EmployerUpgradePreview>(`${this.apiBase}/upgrade-preview`, request);
+    return this.http.post<EmployerUpgradePreview>(`${this.apiBase}/upgrade-preview`, request, {
+      ...this.authOptions(),
+      context: new HttpContext().set(SKIP_SESSION_EXPIRY, true),
+    });
   }
   getCheckoutIntentStatus(id: string): Observable<PaymentAttemptStatusResponse> {
     return this.http.get<LegacyCheckoutReturnStatus>(`${environment.api_url}/subscriptions/checkout-intent/${encodeURIComponent(id)}/return-status`, this.authOptions())

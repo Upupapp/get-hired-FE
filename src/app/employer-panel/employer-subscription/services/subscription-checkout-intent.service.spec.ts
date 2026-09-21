@@ -2,6 +2,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { environment } from 'environments/environment';
 import { SubscriptionCheckoutIntentService } from './subscription-checkout-intent.service';
+import { SKIP_SESSION_EXPIRY } from '../../../core/interceptor/unauthorize.interceptor';
 import { CheckoutReturnStatusComponent } from '../components/checkout-return-status/checkout-return-status.component';
 import { EngagementRefreshBus } from '@main/shared/engagement/engagement-refresh.bus';
 
@@ -44,6 +45,8 @@ describe('SubscriptionCheckoutIntentService employer billing contract', () => {
     const body = { planCode: 'premium', billingCycle: 'monthly' as const };
     service.previewUpgrade(body).subscribe();
     const req = http.expectOne(`${environment.api_url}/employer/subscription/upgrade-preview`);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer checkout-token');
+    expect(req.request.context.get(SKIP_SESSION_EXPIRY)).toBeTrue();
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(body);
     expect(req.request.body.amountMinor).toBeUndefined();

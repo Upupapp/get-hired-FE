@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
+import { SKIP_SESSION_EXPIRY } from '../../../core/interceptor/unauthorize.interceptor';
 
 export interface RecommendedPlanMeta {
   slug: string;
@@ -79,13 +80,17 @@ export class SubscriptionUpgradeRecommendationService {
     if (trigger) params.push(`trigger=${encodeURIComponent(trigger)}`);
     if (surface) params.push(`surface=${encodeURIComponent(surface)}`);
     if (params.length) url += '?' + params.join('&');
-    return this.http.get<UpgradeRecommendationResponse>(url);
+    return this.http.get<UpgradeRecommendationResponse>(url, {
+      context: new HttpContext().set(SKIP_SESSION_EXPIRY, true),
+    });
   }
 
   recordEvent(eventName: string, properties: Record<string, any> = {}): void {
     this.http.post(`${this.base}/subscriptions/upgrade-analytics`, {
       eventName,
       properties,
+    }, {
+      context: new HttpContext().set(SKIP_SESSION_EXPIRY, true),
     }).subscribe({ error: () => {} }); // fire-and-forget
   }
 }
