@@ -616,6 +616,29 @@ $info-blue: #2563EB;
   &:focus-visible { outline: 2px solid $azure; outline-offset: 2px; }
 }
 
+.as-danger-zone {
+  border-color: #f2b8b5;
+  background: #fffafa;
+}
+
+.as-danger-copy {
+  color: $muted;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+
+.as-btn--danger {
+  background: #c62828;
+  color: #fff;
+  border: 1px solid #c62828;
+  box-shadow: none;
+
+  &:hover:not(:disabled) { background: #a91f1f; border-color: #a91f1f; }
+  &:focus-visible { outline: 3px solid rgba(198, 40, 40, 0.25); outline-offset: 2px; }
+  &:disabled { opacity: 0.6; cursor: wait; }
+}
+
 // ── Mobile ─────────────────────────────────────────────────────────────────────
 
 @media (max-width: 480px) {

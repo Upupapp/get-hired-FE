@@ -377,4 +377,22 @@
     </ng-container>
   </div>
 
+  <div class="as-card as-danger-zone">
+    <div class="as-card-header">
+      <h3 class="as-card-title">Delete account</h3>
+      <p class="as-card-sub">Permanently remove your employer account and all GetHired recruitment data.</p>
+    </div>
+    <div *ngIf="deleteError" class="as-banner as-banner--error" role="alert" aria-live="assertive">
+      <span class="as-banner-msg">{{ deleteError }}</span>
+    </div>
+    <p class="as-danger-copy">
+      This deletes your company profile, job posts, applications, interview responses, billing history, and stored recruitment files. This action cannot be undone.
+    </p>
+    <button type="button" class="as-btn as-btn--danger"
+      [disabled]="deleteInProgress" [attr.aria-busy]="deleteInProgress"
+      (click)="onDeleteAccount()">
+      {{ deleteInProgress ? 'Deleting account…' : 'Delete account permanently' }}
+    </button>
+  </div>
+
 </div>

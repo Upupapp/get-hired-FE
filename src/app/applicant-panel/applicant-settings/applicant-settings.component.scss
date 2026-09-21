@@ -162,6 +162,18 @@
   margin-top: var(--gh-space-6, 24px);
 }
 
+.gh-settings__card--danger {
+  border-color: #f2b8b5;
+  background: #fffafa;
+}
+
+.gh-settings__danger-copy {
+  margin: 0;
+  color: var(--gh-text-secondary, #667085);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .gh-btn {
   height: 42px;
   padding: 0 var(--gh-space-6, 24px);
@@ -185,6 +197,14 @@
       outline: 2px solid var(--gh-navy, #0D1024);
       outline-offset: 2px;
     }
+  }
+
+  &--danger {
+    background: #c62828;
+    color: #fff;
+
+    &:hover:not(:disabled) { background: #a91f1f; }
+    &:focus-visible { outline: 2px solid #c62828; outline-offset: 2px; }
   }
 }
 

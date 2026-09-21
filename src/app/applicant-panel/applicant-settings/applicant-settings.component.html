@@ -131,4 +131,23 @@
       </button>
     </div>
   </form>
+
+  <section class="gh-settings__card gh-settings__card--danger" aria-labelledby="delete-account-title">
+    <div class="gh-settings__card-head">
+      <div>
+        <h2 id="delete-account-title" class="gh-settings__section-title">Delete account</h2>
+        <p class="gh-settings__section-hint">Permanently remove your profile and all GetHired application data.</p>
+      </div>
+    </div>
+    <div role="alert" class="gh-alert gh-alert--error" *ngIf="deleteError">{{ deleteError }}</div>
+    <p class="gh-settings__danger-copy">
+      Your applications, resumes, documents, and interview responses will be deleted. This action cannot be undone.
+    </p>
+    <div class="gh-settings__card-actions">
+      <button type="button" class="gh-btn gh-btn--danger" [disabled]="deleteInProgress"
+        [attr.aria-busy]="deleteInProgress" (click)="onDeleteAccount()">
+        {{ deleteInProgress ? 'Deleting account…' : 'Delete account permanently' }}
+      </button>
+    </div>
+  </section>
 </section>

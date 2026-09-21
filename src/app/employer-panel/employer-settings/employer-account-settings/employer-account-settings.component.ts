@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { UpdatedDialogComponent } from '@app-shared/components/updated-dialog/updated-dialog.component';
 import { SecurityLogoutCountdownComponent } from '@app-shared/components/security-logout-countdown/security-logout-countdown.component';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 import { AuthFacade } from '@main/auth/state/auth.facade';
 import { AuthService } from '@main/auth/auth.service';
 import { EmployeeFacade } from '@main/employee/state/employee.facade';
@@ -36,6 +37,8 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
 
   pwState: PwState = 'idle';
   pwErrorMessage = '';
+  deleteInProgress = false;
+  deleteError = '';
 
   private readonly COMMON_PW = [
     'password', 'password1', 'password12', 'password123', 'password1234',
@@ -344,6 +347,41 @@ export class EmployerAccountSettingsComponent implements OnInit, OnDestroy {
     this.pwState = 'idle';
     this.pwErrorMessage = '';
     this.clearPwFields();
+  }
+
+  onDeleteAccount(): void {
+    if (this.deleteInProgress || !this.user) { return; }
+
+    this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: true,
+      data: {
+        title: 'Delete your account?',
+        message: 'This permanently deletes your account, company profile, job posts, applications, interview responses, billing history, and stored recruitment files. This cannot be undone.',
+        confirmLabel: 'Delete account permanently',
+        cancelLabel: 'Keep my account',
+        destructive: true,
+      },
+    }).afterClosed().subscribe((answer) => {
+      if (answer !== 1) { return; }
+      const uid = this.user._id || this.user.id || this.user.uid || '';
+      if (!uid) {
+        this.deleteError = 'We couldn’t identify this account. Refresh the page and try again.';
+        return;
+      }
+
+      this.deleteInProgress = true;
+      this.deleteError = '';
+      this.authService.deleteAccount(uid).subscribe({
+        next: () => {
+          this.coreService.discardExpiredSession();
+          window.location.href = '/';
+        },
+        error: () => {
+          this.deleteInProgress = false;
+          this.deleteError = 'Your account was not deleted. Please try again. If the problem continues, contact support.';
+        },
+      });
+    });
   }
 
   private clearPwFields(): void {

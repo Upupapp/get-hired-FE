@@ -9,6 +9,7 @@ import { ApplicantFacade } from '@main/applicant/state/applicant.facade';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 import { CoreService } from '@app-core/services/core.service';
+import { ConfirmationDialogComponent } from '@app-shared/components/confirmation-dialog/confirmation-dialog.component';
 
 // REDESIGN (GETHIRED_JOBSEEKER_SETTINGS_PROFILE_AUTH_REMEDIATION_V1):
 // the previous single, unbound, decorative "Password" field is replaced
@@ -63,6 +64,8 @@ export class ApplicantSettingsComponent implements OnInit {
   changingPassword = false;
   passwordChangeError: string | null = null;
   passwordChangeSuccess = false;
+  deleteInProgress = false;
+  deleteError: string | null = null;
 
   showCurrentPassword = false;
   showNewPassword = false;
@@ -224,6 +227,39 @@ export class ApplicantSettingsComponent implements OnInit {
   toggleShowCurrentPassword(): void { this.showCurrentPassword = !this.showCurrentPassword; }
   toggleShowNewPassword(): void { this.showNewPassword = !this.showNewPassword; }
   toggleShowConfirmPassword(): void { this.showConfirmPassword = !this.showConfirmPassword; }
+
+  onDeleteAccount(): void {
+    if (this.deleteInProgress || !this.user) return;
+    this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: true,
+      data: {
+        title: 'Delete your account?',
+        message: 'This permanently deletes your profile, applications, resumes, documents, and interview responses. This cannot be undone.',
+        confirmLabel: 'Delete account permanently',
+        cancelLabel: 'Keep my account',
+        destructive: true,
+      },
+    }).afterClosed().subscribe((answer) => {
+      if (answer !== 1) return;
+      const uid = this.user._id || this.user.id || this.user.uid || '';
+      if (!uid) {
+        this.deleteError = 'We couldn’t identify this account. Refresh the page and try again.';
+        return;
+      }
+      this.deleteInProgress = true;
+      this.deleteError = null;
+      this.authService.deleteAccount(uid).subscribe({
+        next: () => {
+          this.coreService.discardExpiredSession();
+          window.location.href = '/';
+        },
+        error: () => {
+          this.deleteInProgress = false;
+          this.deleteError = 'Your account was not deleted. Please try again. If the problem continues, contact support.';
+        },
+      });
+    });
+  }
 
   afterChange(event) {
     if (event == 'updated') {

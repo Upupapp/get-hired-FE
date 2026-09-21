@@ -90,4 +90,8 @@ export class AuthService {
   updateUserProfile(user: Model.User) {
     return this.baseService.put<Model.User>(`${this.authUrl}/updateprofile`, user);
   }
+
+  deleteAccount(userId: string) {
+    return this.baseService.put(`${this.authUrl}/archive?userId=${encodeURIComponent(userId)}`, {});
+  }
 }
