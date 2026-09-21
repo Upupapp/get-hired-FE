@@ -250,7 +250,14 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
     // Upgrade preview improves the page, but checkout itself is the authoritative
     // server-priced operation. Older production runtimes may not expose preview,
     // so its failure must not disable the real PayMongo checkout request.
-    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading || this.sessionExpired) return;
+    if (!this.isKnownPlan || this.checkoutLoading || this.previewLoading) return;
+    // A previous 401 must never turn the primary CTA into a silent no-op.
+    // Route back through sign-in so the remembered checkout URL can restore
+    // this exact plan/cycle after authentication.
+    if (this.sessionExpired) {
+      this.signIn();
+      return;
+    }
     this.checkoutLoading = true;
     this.sessionExpired = false;
     this.checkoutError = null;
@@ -291,6 +298,10 @@ export class UpgradeAnnualFirstLandingComponent implements OnInit, OnDestroy {
           this.coreService.discardExpiredSession();
           this.rememberCheckoutReturn();
           this.cdr.markForCheck();
+          // The global interceptor normally owns this redirect. Keep a
+          // component-level fallback because a checkout 401 can otherwise
+          // leave the protected shell mounted with a disabled CTA.
+          this.router.navigate(['/signin'], { queryParams: { role: 2 } });
           return;
         }
         this.checkoutError = this.checkoutErrorFor(err?.error?.code);

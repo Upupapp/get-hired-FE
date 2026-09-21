@@ -99,12 +99,15 @@ describe('UpgradeAnnualFirstLandingComponent catalog fallback', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
     expect(component.sessionExpired).toBeTrue();
     expect(component.checkoutError).toContain('session has expired');
+    expect(router.navigate).toHaveBeenCalledWith(['/signin'], { queryParams: { role: 2 } });
 
+    router.navigate.calls.reset();
     component.signIn();
     expect(localStorage.getItem('returnURL')).toBe('/recruiter/subscription/upgrade/growth?billing=monthly');
     expect(router.navigate).toHaveBeenCalledWith(['/signin'], { queryParams: { role: 2 } });
 
     component.startCheckout();
     expect(checkoutIntentService.createCheckoutIntent).toHaveBeenCalledTimes(1);
+    expect(router.navigate).toHaveBeenCalledWith(['/signin'], { queryParams: { role: 2 } });
   });
 });

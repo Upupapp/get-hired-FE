@@ -27,7 +27,7 @@
       <div class="summary-includes"><strong>Your plan includes:</strong><div *ngFor="let row of entitlementRows"><span>{{ row.label }}</span><b>{{ row.value }}</b></div></div>
       <div *ngIf="previewLoading" class="checkout-status" role="status">Confirming current price and checkout availability…</div>
       <div *ngIf="checkoutError" class="checkout-alert" role="alert"><span>!</span><p>{{ checkoutError }}</p><button type="button" (click)="sessionExpired ? signIn() : startCheckout()">{{ sessionExpired ? 'Sign in' : 'Retry' }}</button></div>
-      <button class="checkout-button" type="button" [disabled]="checkoutLoading || previewLoading || sessionExpired" (click)="startCheckout()" [attr.aria-busy]="checkoutLoading">{{ checkoutLoading ? 'Preparing checkout…' : primaryCtaLabel }} <span *ngIf="!checkoutLoading">→</span></button>
+      <button class="checkout-button" type="button" [disabled]="checkoutLoading || previewLoading" (click)="startCheckout()" [attr.aria-busy]="checkoutLoading">{{ checkoutLoading ? 'Preparing checkout…' : (sessionExpired ? 'Sign in to continue' : primaryCtaLabel) }} <span *ngIf="!checkoutLoading">→</span></button>
       <button class="compare-button" type="button" (click)="goCompare()">Compare all plans</button>
       <div class="payment-trust"><strong>▣ &nbsp; Secure checkout powered by PayMongo</strong><div><b>VISA</b><b>●●</b><b>G<span>Cash</span></b><b>maya</b></div></div>
       <div class="payment-note"><span>ⓘ</span><p>Your selected billing cycle will be confirmed before payment. Your plan activates after a successful payment. No hidden charges.</p></div>
