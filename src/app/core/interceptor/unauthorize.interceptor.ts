@@ -124,6 +124,15 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
    * hard-logout path below, unchanged from before.
    */
   private handle401(request: HttpRequest<any>, next: HttpHandler, err: HttpErrorResponse): Observable<HttpEvent<any>> {
+    // A deliberate logout clears local state before its server-side revoke
+    // and before the protected page's remaining requests have all settled.
+    // Their expected 401s must stay silent; otherwise the interceptor races
+    // the logout redirect, shows a false "session expired" toast, and can
+    // bounce a following /signup navigation back to /signin.
+    if (this.coreService.explicitLogoutInProgress) {
+      return throwError(() => err);
+    }
+
     // GUEST FIX (2026-08-19, unchanged): a 401 only means "your session
     // expired" for someone who HAD a local session to begin with. A true
     // first-time guest (isLoggedIn() false -- no local session state at

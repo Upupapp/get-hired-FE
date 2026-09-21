@@ -72,6 +72,32 @@ describe('UnAuthorizedInterceptor stale shell recovery', () => {
     });
   });
 
+  it('keeps late 401 responses silent while an explicit logout is in progress', (done) => {
+    const router = { url: '/recruiter/dashboard', navigate: jasmine.createSpy('navigate') };
+    const core = {
+      isLoggedIn: () => false,
+      suppressExpiryHandling: false,
+      explicitLogoutInProgress: true,
+      discardExpiredSession: jasmine.createSpy('discardExpiredSession'),
+    };
+    const snackbar = { error: jasmine.createSpy('error'), warning: jasmine.createSpy('warning') };
+    const lifecycle = { refreshNow: jasmine.createSpy('refreshNow') };
+    const interceptor = new UnAuthorizedInterceptor(router as any, core as any, snackbar as any, lifecycle as any);
+    const next: HttpHandler = { handle: () => throwError(() => new HttpErrorResponse({ status: 401 })) };
+
+    interceptor.intercept(new HttpRequest('GET', '/recruiter/dashboard/analytics'), next).subscribe({
+      next: () => done.fail('expected the original 401'),
+      error: (err) => {
+        expect(err.status).toBe(401);
+        expect(lifecycle.refreshNow).not.toHaveBeenCalled();
+        expect(core.discardExpiredSession).not.toHaveBeenCalled();
+        expect(snackbar.error).not.toHaveBeenCalled();
+        expect(router.navigate).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
   it('clears a dead restored session on a protected route even when its token is gone', (done) => {
     localStorage.setItem('state', 'false');
     const router = { url: '/recruiter/subscription/upgrade/growth?billing=monthly', navigate: jasmine.createSpy('navigate') };

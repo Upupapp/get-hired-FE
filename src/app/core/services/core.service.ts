@@ -66,6 +66,11 @@ export class CoreService {
    */
   suppressExpiryHandling = false;
 
+  /** True while a user-requested logout is clearing local state and the
+   * best-effort server revoke is finishing. Late 401s from the page being
+   * torn down must not be reclassified as a newly expired session. */
+  explicitLogoutInProgress = false;
+
   /**
    * AUTH LIFECYCLE SYNC: a single reactive source of truth for "is this
    * browser tab currently authenticated", so components that render
@@ -271,6 +276,11 @@ export class CoreService {
     // revoke call still authenticates correctly regardless of when it
     // actually fires relative to the cleanup.
     const tokenForRevoke = localStorage.getItem('token');
+
+    this.explicitLogoutInProgress = true;
+    timer(3000).subscribe(() => {
+      this.explicitLogoutInProgress = false;
+    });
 
     this.discardExpiredSession();
 
