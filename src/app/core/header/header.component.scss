@@ -338,6 +338,31 @@
   margin: 0 4px;
 }
 
+// ─── Referral action ─────────────────────────────────────────────────────────
+
+.gh-nav-btn-refer {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #FF7062 0%, #FF3D6E 100%);
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+  outline: none;
+  min-height: 44px;
+  transition: opacity 120ms ease;
+
+  &:hover { opacity: 0.88; color: #ffffff; text-decoration: none; }
+  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
+  &:active { opacity: 0.80; color: #ffffff; }
+}
+
 // ─── Browse jobs (stepped down so Sign up wins) ───────────────────────────────
 
 .gh-nav-btn-browse {

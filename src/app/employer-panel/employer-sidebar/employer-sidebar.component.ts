@@ -175,6 +175,10 @@ export class EmployerSidebarComponent implements OnInit, OnDestroy {
         route: 'company/settings'
       },
       {
+        title: 'Refer', icon: 'refer.png', class: 'refer',
+        externalUrl: 'https://referralbunny.ai/gethired/referrals'
+      },
+      {
         title: this.translate.instant('ADMIN_DASHOBOARD.SIDEBAR_SUBCRIPTIONS'), icon: 'subscribe.png', class: 'subscription',
         route: 'subscription'
       }

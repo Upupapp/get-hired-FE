@@ -11,6 +11,21 @@
   <ul class="gh-sidebar-nav" role="list">
 
     <li role="listitem" *ngFor="let item of sidebarItems">
+      <a *ngIf="item?.externalUrl; else internalSidebarItem"
+        class="gh-sidebar-item gh-sidebar-item--link"
+        [href]="item.externalUrl"
+        [attr.aria-label]="item?.title">
+        <span class="gh-sidebar-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18">
+            <path d="M7 10a4 4 0 0 1 4-4h5"/>
+            <path d="M13 3l3 3-3 3"/>
+            <path d="M13 11v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3"/>
+          </svg>
+        </span>
+        <span class="gh-sidebar-label">{{ item?.title }}</span>
+      </a>
+
+      <ng-template #internalSidebarItem>
       <div class="gh-sidebar-item"
         role="button"
         [attr.tabindex]="0"
@@ -46,6 +61,7 @@
           <path d="M3 4.5l3 3 3-3"/>
         </svg>
       </div>
+      </ng-template>
 
       <!-- Sub-routes -->
       <ul class="gh-sidebar-subnav" *ngIf="item?.sub_routes?.length > 0 && isSubnavOpen(item?.route)"

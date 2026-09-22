@@ -50,6 +50,15 @@
     <div class="gh-nav-desktop-list d-none d-lg-flex">
       <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
 
+        <li class="nav-item" *ngIf="isPublic">
+          <a
+            href="https://referralbunny.ai/gethired/referrals"
+            class="gh-nav-btn-refer gh-pressable"
+            aria-label="Refer someone through Referral Bunny">
+            Refer
+          </a>
+        </li>
+
         <li class="nav-item" *ngIf="isPublic && !isOnJobsSection">
           <a routerLink="/jobs" class="gh-nav-btn-browse gh-pressable">Browse jobs</a>
         </li>
@@ -200,6 +209,15 @@
   </div>
 
   <ul class="gh-float-menu-list" role="list">
+
+    <li role="listitem" *ngIf="isPublic">
+      <a href="https://referralbunny.ai/gethired/referrals"
+        class="gh-float-menu-item gh-float-menu-item--primary"
+        (click)="closeMobileNav()"
+        aria-label="Refer someone through Referral Bunny">
+        <span class="gh-float-menu-label">Refer</span>
+      </a>
+    </li>
 
     <li role="listitem" *ngIf="isPublic && !isOnJobsSection">
       <a routerLink="/jobs" class="gh-float-menu-item" (click)="closeMobileNav()">
