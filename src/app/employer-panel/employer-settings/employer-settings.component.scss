@@ -99,6 +99,9 @@
   margin: 0 0 4px;
   line-height: 1.2;
 }
+.ebc-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.ebc-title-row .ebc-hero-title { margin-bottom: 0; }
+.ebc-verified-badge { display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 20px; color: #157252; background: #e8f8f1; font-size: 10px; font-weight: 800; white-space: nowrap; }
 
 .ebc-hero-subtitle {
   font-size: 14px;

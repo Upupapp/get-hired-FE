@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://api.gethiredonline.app",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "warn"
+  }
+}

@@ -1,4 +1,6 @@
 export interface Company {
+  isVerified?: boolean;
+  isArchived?: boolean;
   companyId: string;
   companyName: string;
   companyLogoUrl: string;

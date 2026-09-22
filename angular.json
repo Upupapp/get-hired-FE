@@ -32,6 +32,12 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/admin",
+                "output": "/admin"
+              },
+              "src/_redirects",
               "src/robots.txt",
               "src/google8d5e93b3a9106865.html"
             ],
@@ -92,6 +98,20 @@
               ],
               "outputHashing": "all"
             },
+            "local-preview": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local-preview.ts"
+                }
+              ]
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -111,6 +131,10 @@
             },
             "staging": {
               "browserTarget": "get-hired:build:staging"
+            },
+            "local-preview": {
+              "browserTarget": "get-hired:build:local-preview",
+              "proxyConfig": "proxy.local-preview.json"
             },
             "development": {
               "browserTarget": "get-hired:build:development"

@@ -40,6 +40,7 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
   companyName: string = '';
   companyLogoUrl: string = '';
   companySlug: string = '';
+  isVerified: boolean = false;
 
   // Profile completeness computed from company data
   profileCompleteness: number = 0;
@@ -74,6 +75,7 @@ export class EmployerSettingsComponent implements OnInit, OnDestroy {
           this.companyName = company.companyName || '';
           this.companyLogoUrl = (company as any).companyLogoUrl || '';
           this.companySlug = (company as any).slug || '';
+          this.isVerified = (company as any).isVerified === true;
           this.profileCompleteness = this.computeCompleteness(company);
           this.cd.markForCheck();
         }

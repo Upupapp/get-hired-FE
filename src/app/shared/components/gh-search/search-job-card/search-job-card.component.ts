@@ -65,11 +65,13 @@ export class SearchJobCardComponent {
 
   createProfile(event: MouseEvent) {
     event.stopPropagation();
-    this.router.navigate(['/register']);
+    localStorage.setItem('returnURL', '/jobs/details/' + this.job.jobId);
+    this.router.navigate(['/signup'], { queryParams: { role: 3 } });
   }
 
   logIn(event: MouseEvent) {
     event.stopPropagation();
-    this.router.navigate(['/login'], { queryParams: { returnUrl: '/jobs/details/' + this.job.jobId } });
+    localStorage.setItem('returnURL', '/jobs/details/' + this.job.jobId);
+    this.router.navigate(['/signin'], { queryParams: { role: 3 } });
   }
 }

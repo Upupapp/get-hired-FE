@@ -34,6 +34,9 @@
         <span>{{ badge.name }}</span>
       </span>
     </div>
+    <button type="button" class="job-card__save" [class.job-card__save--saved]="isSaved"
+      [disabled]="saveLoading" [attr.aria-pressed]="isSaved"
+      [attr.aria-label]="isSaved ? 'Remove from saved jobs' : 'Save job'" (click)="toggleSave($event)">{{ isSaved ? '♥' : '♡' }}</button>
   </div>
 
   <div class="job-card__body">
@@ -73,7 +76,6 @@
         {{ badge.label }}
       </span>
     </div>
-
     <!-- Match area — see job-card.component.ts header comment for why this
          is intentionally lightweight rather than a fabricated per-card score. -->
     <div class="job-card__match-area">

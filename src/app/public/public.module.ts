@@ -54,7 +54,7 @@ const routes: Routes = [
       {
         path: 'companies',
         children: [
-          { path: '', component: CompaniesComponent, pathMatch: 'full' },
+          { path: '', redirectTo: '/jobs', pathMatch: 'full' },
           { path: 'details', component: PublicCompanyDetailsComponent },
           { path: ':slug', component: PublicCompanyDetailsComponent },
         ],

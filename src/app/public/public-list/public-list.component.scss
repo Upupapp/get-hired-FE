@@ -1,5 +1,69 @@
 @import "src/assets/styles/colors";
 
+// Approved 2026 public job-board concept. The source reference is a flattened
+// mockup, so the luminous edge waves are rebuilt as layered CSS shapes rather
+// than embedding text from the screenshot into the product UI.
+.jb-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 236px;
+  padding: 36px clamp(24px, 5vw, 76px) 44px;
+  color: #fff;
+  background:
+    radial-gradient(75% 160% at 70% 115%, rgba(255, 54, 116, .30), transparent 56%),
+    radial-gradient(55% 110% at 2% 68%, rgba(255, 102, 87, .24), transparent 52%),
+    linear-gradient(122deg, #0b1337 0%, #141e52 55%, #11183f 100%);
+  border-radius: 0 0 26px 26px;
+  box-shadow: 0 22px 55px rgba(15, 25, 67, .15);
+}
+.jb-hero::before { content:""; position:absolute; inset:0; z-index:-2; background:radial-gradient(circle at 77% 4%,rgba(255,255,255,.08),transparent 19%),linear-gradient(110deg,transparent 0 62%,rgba(255,255,255,.025) 63%,transparent 74%); }
+.jb-wave { position:absolute; z-index:-1; border-radius:50%; pointer-events:none; filter:drop-shadow(0 0 22px rgba(255,73,122,.34)); }
+.jb-wave::after { content:""; position:absolute; inset:12px; border-radius:inherit; background:linear-gradient(135deg,rgba(255,136,103,.94),rgba(248,29,116,.78) 48%,rgba(83,41,142,.18) 76%); }
+.jb-wave--left { width:430px; height:190px; left:-255px; bottom:-94px; transform:rotate(11deg); background:linear-gradient(110deg,#ff8a68,#ff306d 52%,#6d348f); }
+.jb-wave--right { width:650px; height:235px; right:-245px; bottom:-128px; transform:rotate(-9deg); background:linear-gradient(110deg,#4a286e,#ff386f 52%,#ff8c69); }
+.jb-hero-inner { max-width:1480px; margin:auto; display:grid; grid-template-columns:minmax(300px,.82fr) minmax(520px,1.45fr) 210px; align-items:center; gap:34px; }
+.jb-hero-inner > * { min-width: 0; }
+.jb-eyebrow { display:block; margin-bottom:8px; font-size:11px; font-weight:700; letter-spacing:.42em; color:rgba(255,255,255,.78); }
+.jb-hero-copy h1 { margin:0; max-width:480px; font:800 clamp(38px,4vw,60px)/.96 'Manrope',sans-serif; letter-spacing:-.045em; }
+.jb-hero-copy h1 strong { display:block; font:inherit; color:#ff6577; background:linear-gradient(110deg,#ff8a6b,#ff3476); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.jb-hero-copy p { margin:14px 0 0; max-width:100%; white-space:normal; font-size:15px; line-height:1.5; color:rgba(255,255,255,.88); }
+.jb-search-stack { min-width:0; }
+.jb-search-tabs { width:290px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; padding:4px; margin-bottom:12px; border:1px solid rgba(255,255,255,.08); border-radius:13px; background:rgba(255,255,255,.08); backdrop-filter:blur(14px); }
+.jb-search-tabs button,.jb-search-tabs a { min-width:0; min-height:38px; padding:0 5px; border:0; border-radius:10px; color:rgba(255,255,255,.82); background:transparent; display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; font:600 13px 'Manrope',sans-serif; cursor:pointer; }
+.jb-search-tabs .is-active { color:#171b43; background:linear-gradient(120deg,#fff,#ffdce7); box-shadow:0 4px 15px rgba(255,69,112,.18); }
+.jb-search-form { display:grid; grid-template-columns:minmax(220px,1.35fr) minmax(150px,.7fr) 190px; padding:6px; border-radius:16px; background:#fff; box-shadow:0 16px 45px rgba(2,8,31,.26); }
+.jb-search-field { min-height:50px; margin:0; padding:0 15px; display:flex; align-items:center; gap:10px; color:#65708f; border-right:1px solid #edf0f7; }
+.jb-search-field input { width:100%; border:0; outline:0; color:#151b3b; background:transparent; font:500 13px 'Manrope',sans-serif; }
+.jb-search-field--location { border-right:0; }
+.jb-search-button { min-height:50px; border:0; border-radius:11px; color:#fff; font:700 13px 'Manrope',sans-serif; background:linear-gradient(110deg,#ff695f,#ff2e70); box-shadow:0 8px 20px rgba(255,49,107,.25); }
+.jb-popular { margin-top:11px; display:flex; align-items:center; flex-wrap:wrap; gap:7px; font-size:11px; color:rgba(255,255,255,.7); }
+.jb-popular button { min-height:29px; padding:0 11px; border:1px solid rgba(255,255,255,.12); border-radius:9px; color:#fff; background:rgba(255,255,255,.08); font-size:10px; cursor:pointer; }
+.jb-hero-aside { align-self:stretch; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; }
+.jb-hand-note { margin:0 22px 8px 0; transform:rotate(-7deg); font:italic 16px/1.2 cursive; color:rgba(255,255,255,.86); }
+.jb-stat-card { width:205px; padding:15px; display:grid; grid-template-columns:42px 1fr; column-gap:10px; border:1px solid rgba(255,255,255,.18); border-radius:14px; background:rgba(255,255,255,.09); backdrop-filter:blur(13px); box-shadow:0 12px 30px rgba(4,8,28,.2); }
+.jb-stat-card i { grid-row:1/3; align-self:center; font-size:30px; color:#ffb1b4; }.jb-stat-card strong{font-size:17px}.jb-stat-card span{font-size:10px;color:rgba(255,255,255,.78)}
+
+.jb-board { max-width:1540px; margin:0 auto; padding:26px clamp(18px,3.5vw,56px) 72px; display:grid; grid-template-columns:238px minmax(0,1fr); gap:24px; background:#f7f9fd; }
+.jb-filter-card { position:sticky; top:86px; align-self:start; padding:18px; border:1px solid #e4e8f1; border-radius:15px; background:#fff; box-shadow:0 8px 30px rgba(21,32,70,.05); }
+.jb-filter-title { display:flex; align-items:center; justify-content:space-between; }.jb-filter-title h2{margin:0;font-size:16px}.jb-filter-title button{border:0;background:0;color:#356cff;font-size:11px;cursor:pointer}
+.jb-filter-card fieldset { margin:18px 0 0; padding:16px 0 0; border:0; border-top:1px solid #eef0f5; }
+.jb-filter-card legend { margin:0 0 10px; float:none; font-size:12px; font-weight:800; color:#18203f; }
+.jb-filter-card label { min-height:27px; margin:0; display:flex; align-items:center; gap:8px; color:#44506d; font-size:11px; cursor:pointer; }.jb-filter-card label small{margin-left:auto;color:#8992a9}
+.jb-filter-card input[type=checkbox] { width:14px;height:14px;accent-color:#ff4968; }
+.jb-location-search { height:34px!important;margin-bottom:8px!important;padding:0 9px;border:1px solid #dfe4ee;border-radius:8px; }.jb-location-search input{min-width:0;width:100%;border:0;outline:0;font-size:10px}
+.jb-results { min-width:0; }
+.jb-results-head { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:14px; }.jb-results-head h2{margin:0 0 3px;font-size:19px;color:#171e3f}.jb-results-head p{margin:0;color:#8490aa;font-size:11px}
+.jb-sort { min-width:155px;padding:8px 11px;border:1px solid #e0e5ef;border-radius:10px;background:#fff;color:#8a93a8;font-size:9px; }.jb-sort select{display:block;width:100%;border:0;outline:0;color:#24305a;background:transparent;font-weight:700;font-size:11px}
+.jb-quick-filters { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:8px; margin:0 0 12px; }.jb-quick-filters button{min-height:38px;padding:0 14px;border:1px solid #e2e7f0;border-radius:10px;background:#fff;color:#24304f;font-size:10px;box-shadow:0 3px 12px rgba(20,31,66,.04)}
+.jb-mobile-filter-button { display:none; }
+.jb-results ::ng-deep .jpl-section-head { display:none; }
+.jb-results ::ng-deep .row { --bs-gutter-x:14px; }
+
+@media (max-width:1280px){.jb-hero-inner{grid-template-columns:minmax(260px,.8fr) minmax(480px,1.35fr)}.jb-hero-aside{display:none}.jb-search-form{grid-template-columns:minmax(190px,1fr) minmax(135px,.65fr) 155px}.jb-board{grid-template-columns:220px minmax(0,1fr)}}
+@media (max-width:960px){.jb-hero{padding-top:30px}.jb-hero-inner{grid-template-columns:minmax(0,1fr)}.jb-hero-copy{text-align:center}.jb-hero-copy h1{margin:auto}.jb-search-tabs{margin:20px auto 12px}.jb-search-stack{width:min(720px,100%);margin:auto}.jb-board{grid-template-columns:minmax(0,1fr)}.jb-mobile-filter-button{display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:0 15px;border:1px solid #e1e6ef;border-radius:11px;background:#fff;font-weight:700}.jb-filter-card{display:none;position:static}.jb-filter-card.is-open{display:block}.jb-results-head{margin-top:5px}}
+@media (max-width:620px){.jb-hero{padding:28px 16px 34px;border-radius:0 0 20px 20px}.jb-hero-inner{width:100%;grid-template-columns:minmax(0,1fr)!important}.jb-hero-copy,.jb-search-stack{width:100%;max-width:100%;overflow:hidden}.jb-hero-copy h1{font-size:40px}.jb-hero-copy p{width:100%;max-width:350px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.jb-search-tabs,.jb-search-form{width:100%;max-width:100%;box-sizing:border-box}.jb-search-tabs button,.jb-search-tabs a{gap:5px;font-size:11px;overflow:hidden}.jb-search-form{grid-template-columns:minmax(0,1fr)}.jb-search-field input{min-width:0}.jb-search-field{min-width:0;border-right:0;border-bottom:1px solid #edf0f7}.jb-search-button{margin-top:5px}.jb-popular{justify-content:center;max-height:74px;overflow:hidden}.jb-board{padding:18px 12px 50px}.jb-results-head{align-items:stretch;flex-direction:column}.jb-sort{width:100%}.jb-quick-filters{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding-bottom:4px}.jb-quick-filters button{white-space:nowrap}.jb-wave--left{left:-330px}.jb-wave--right{right:-430px}}
+
 // Search mode layout
 // top: 68px — matches the fixed public nav height so the sticky header
 // docks below the nav instead of sliding underneath it (nav is z-999).

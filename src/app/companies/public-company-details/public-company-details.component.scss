@@ -183,6 +183,9 @@ $border:       rgba(0,0,0,0.07);
   color: #ffffff; margin: 0 0 8px;
   letter-spacing: -0.5px; line-height: 1.15;
 }
+.cph-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.cph-title-row .cph-hero-title { margin-bottom: 0; }
+.cph-verified-badge { display: inline-flex; align-items: center; padding: 5px 10px; border: 1px solid rgba(68, 221, 165, .35); border-radius: 20px; color: #8df0ca; background: rgba(23, 184, 122, .16); font-family: 'Manrope', sans-serif; font-size: 10px; font-weight: 800; white-space: nowrap; }
 .cph-hero-tagline {
   font-family: 'Manrope', sans-serif; font-size: 14px; color: rgba(255,255,255,0.72);
   line-height: 1.55; margin: 0 0 18px; max-width: 480px;

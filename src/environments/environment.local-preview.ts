@@ -1,0 +1,24 @@
+export const environment = {
+  production: false,
+  projectName: 'gethired',
+  server: 'https://ssr-back.herokuapp.com',
+  main_product_id: 'Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzcxNTE3OTU2MzQzNDk=',
+  api_url: '/api',
+  app_url: 'http://127.0.0.1:4201',
+  NgRxName: 'App devtools',
+  NgRxMaxAge: 15,
+  isDebug: false,
+  apiKey: 'AIzaSyB6zvOfgenO-ed_KkyjYus1PcSk5aiMo4A',
+  mapRestrictions: ['sg', 'ph'],
+  recaptchaSiteKey: '6LesdZ0tAAAAANTArmxFxI6tKsqUPiMn24LAEqui',
+  firebase: {
+    apiKey: 'AIzaSyCn8PyF2eW2sMNsRuzCaOLusCdRcAVpkPY',
+    authDomain: 'get-hired-363107.firebaseapp.com',
+    projectId: 'get-hired-363107',
+    storageBucket: 'get-hired-363107.appspot.com',
+    messagingSenderId: '818317489154',
+    appId: '1:818317489154:web:d849afade1105af929631b',
+    measurementId: 'G-4C797NXLJF',
+  },
+  googleClientId: '818317489154-iuqb1f23igvvlf5u8p80ipo85si1b2q5.apps.googleusercontent.com'
+};

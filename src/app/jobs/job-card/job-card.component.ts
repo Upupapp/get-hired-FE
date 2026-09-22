@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { mainAnimations } from '@app-shared/animations/main-animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CoreService } from '@app-core/services/core.service';
 import * as Model from '../jobs.model';
 import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
@@ -8,6 +8,8 @@ import { JobSignalsService } from '@main/public/services/job-signals.service';
 import { NormalizedJob } from '@main/public/services/public-job-normalizer.model';
 import { JobSignals } from '@main/public/services/job-signals.model';
 import { PublicPortalAnalyticsService } from '@main/public/services/public-portal-analytics.service';
+import { JobsService } from '../jobs.service';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 
 /**
  * Redesigned public job card (Phase 8). The component class stays
@@ -47,19 +49,23 @@ export class JobCardComponent implements OnInit {
   /** Set when the company logo URL 404s/fails to load, so the template
    * falls back to the initial-letter avatar instead of a broken-image icon. */
   logoFailed = false;
+  saveLoading = false;
+  isSaved = false;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private core: CoreService,
     private normalizer: PublicJobNormalizerService,
     private jobSignals: JobSignalsService,
     private analytics: PublicPortalAnalyticsService,
+    private jobsService: JobsService,
+    private snackbar: SnackbarService,
   ) { }
 
   ngOnInit(): void {
     this.normalized = this.normalizer.normalize(this.data);
     this.signals = this.jobSignals.compute(this.normalized);
+    this.isSaved = this.normalized?.savedStatus === 'saved';
     this.isLoggedIn = this.core.isLoggedIn();
     if (this.isLoggedIn) {
       this.core.getRole().then((role: string) => {
@@ -92,8 +98,38 @@ export class JobCardComponent implements OnInit {
   companyRedirect(event: Event): void {
     event.stopPropagation();
     this.analytics.trackCompanyPreviewClicked(this.data?.companyId);
-    this.router.navigate([`../companies/details`], { relativeTo: this.route, queryParams: {
+    this.router.navigate(['/companies/details'], { queryParams: {
       id: this.data?.companyId
     }});
+  }
+
+  toggleSave(event: Event): void {
+    event.stopPropagation();
+    const returnUrl = `/jobs/details/${this.data?.jobId}`;
+    if (!this.isLoggedIn) {
+      localStorage.setItem('returnURL', returnUrl);
+      this.router.navigate(['/signin'], { queryParams: { role: 3 } });
+      return;
+    }
+    if (!this.isApplicantRole) {
+      this.snackbar.info('Saving jobs is available to job seekers.');
+      return;
+    }
+    if (this.saveLoading) return;
+    const previous = this.isSaved;
+    this.isSaved = !previous;
+    this.saveLoading = true;
+    this.jobsService.toggleSaveJob(this.data.jobId).subscribe({
+      next: (res: any) => {
+        this.isSaved = !!(res?.data?.isSaved ?? res?.isSaved);
+        this.saveLoading = false;
+        this.snackbar.success(this.isSaved ? 'Job saved.' : 'Job removed from saved jobs.');
+      },
+      error: () => {
+        this.isSaved = previous;
+        this.saveLoading = false;
+        this.snackbar.error('Could not update this saved job. Please try again.');
+      }
+    });
   }
 }

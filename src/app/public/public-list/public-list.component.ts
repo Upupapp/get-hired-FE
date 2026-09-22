@@ -37,8 +37,12 @@ export class PublicListComponent implements OnInit, OnDestroy {
   searchError = false;
   activeQuery = '';
   activeTab: SearchTab = 'all';
-  activeFilters: { workSetup?: string; employmentType?: string; location?: string; sort?: string } = {};
+  activeFilters: { workSetup?: string; employmentType?: string; location?: string; salaryMin?: number; salaryMax?: number; sort?: string } = {};
   searchPage = 1;
+  browseQuery = '';
+  browseLocation = '';
+  filterLocation = '';
+  mobileFiltersOpen = false;
 
   // Federated results
   jobResults: SearchJobResult[] = [];
@@ -75,15 +79,17 @@ export class PublicListComponent implements OnInit, OnDestroy {
         const location = (params['location'] || '').trim();
         const workSetup = params['workSetup'] || null;
         const employmentType = params['employmentType'] || null;
+        const salaryMin = params['salaryMin'] != null ? Number(params['salaryMin']) : undefined;
+        const salaryMax = params['salaryMax'] != null ? Number(params['salaryMax']) : undefined;
         const sort = params['sort'] || 'relevance';
         const page = parseInt(params['page'], 10) || 1;
         const tab = (params['type'] || 'all') as SearchTab;
 
         this.activeQuery = q;
-        this.activeFilters = { workSetup, employmentType, location, sort };
+        this.activeFilters = { workSetup, employmentType, location, salaryMin, salaryMax, sort };
         this.searchPage = page;
         this.activeTab = ['all', 'jobs', 'companies'].indexOf(tab) !== -1 ? tab : 'all';
-        this.isSearchMode = !!(q || workSetup || employmentType || location);
+        this.isSearchMode = !!(q || workSetup || employmentType || location || salaryMin != null || salaryMax != null);
 
         this.updateSeo(q);
 
@@ -93,6 +99,7 @@ export class PublicListComponent implements OnInit, OnDestroy {
           this.clearResults();
           return this.searchService.searchPublic({
             q, location, workSetup: workSetup || undefined, employmentType: employmentType || undefined,
+            salaryMin, salaryMax,
             sort: sort || undefined, type: this.activeTab, page,
           });
         }
@@ -177,6 +184,39 @@ export class PublicListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/jobs'], { queryParams: qp });
   }
 
+  submitBrowseSearch(): void {
+    const qp: any = { page: '1' };
+    const q = (this.browseQuery || '').trim();
+    const location = (this.browseLocation || '').trim();
+    if (q) qp.q = q;
+    if (location) qp.location = location;
+    this.router.navigate(['/jobs'], { queryParams: qp });
+  }
+
+  searchPopular(term: string): void {
+    if (term === 'Remote') { this.applyFilter('workSetup', 'remote'); return; }
+    if (term === 'Fresh Grad') { this.applyFilter('employmentType', 'fresh grad'); return; }
+    this.browseQuery = term;
+    this.onSearchSubmit(term);
+  }
+
+  searchByLocation(): void {
+    const location = (this.filterLocation || '').trim();
+    if (location) this.applyFilter('location', location);
+  }
+
+  applySalary(min: number | null, max: number | null): void {
+    const qp = this.buildCurrentParams();
+    if (min != null) qp.salaryMin = String(min); else delete qp.salaryMin;
+    if (max != null) qp.salaryMax = String(max); else delete qp.salaryMax;
+    qp.page = '1';
+    this.router.navigate(['/jobs'], { queryParams: qp });
+  }
+
+  toggleMobileFilters(): void {
+    this.mobileFiltersOpen = !this.mobileFiltersOpen;
+  }
+
   applyFilter(key: string, value: string | null) {
     const qp = this.buildCurrentParams();
     if (value) { qp[key] = value; } else { delete qp[key]; }
@@ -210,13 +250,15 @@ export class PublicListComponent implements OnInit, OnDestroy {
     if (this.activeFilters.workSetup) qp['workSetup'] = this.activeFilters.workSetup;
     if (this.activeFilters.employmentType) qp['employmentType'] = this.activeFilters.employmentType;
     if (this.activeFilters.location) qp['location'] = this.activeFilters.location;
+    if (this.activeFilters.salaryMin != null) qp['salaryMin'] = String(this.activeFilters.salaryMin);
+    if (this.activeFilters.salaryMax != null) qp['salaryMax'] = String(this.activeFilters.salaryMax);
     if (this.activeFilters.sort && this.activeFilters.sort !== 'relevance') qp['sort'] = this.activeFilters.sort;
     if (this.activeTab !== 'all') qp['type'] = this.activeTab;
     return qp;
   }
 
   get hasActiveFilters(): boolean {
-    return !!(this.activeFilters.workSetup || this.activeFilters.employmentType || this.activeFilters.location);
+    return !!(this.activeFilters.workSetup || this.activeFilters.employmentType || this.activeFilters.location || this.activeFilters.salaryMin != null || this.activeFilters.salaryMax != null);
   }
 
   get activeFilterChips(): { label: string; key: string }[] {
@@ -224,10 +266,17 @@ export class PublicListComponent implements OnInit, OnDestroy {
     if (this.activeFilters.workSetup) chips.push({ label: this.activeFilters.workSetup, key: 'workSetup' });
     if (this.activeFilters.employmentType) chips.push({ label: this.activeFilters.employmentType, key: 'employmentType' });
     if (this.activeFilters.location) chips.push({ label: this.activeFilters.location, key: 'location' });
+    if (this.activeFilters.salaryMin != null || this.activeFilters.salaryMax != null) {
+      const min = this.activeFilters.salaryMin;
+      const max = this.activeFilters.salaryMax;
+      const label = min != null && max != null ? `₱${min.toLocaleString()} – ₱${max.toLocaleString()}` : min != null ? `₱${min.toLocaleString()}+` : `Up to ₱${max!.toLocaleString()}`;
+      chips.push({ label, key: 'salary' });
+    }
     return chips;
   }
 
   removeChip(chip: { key: string }) {
+    if (chip.key === 'salary') { this.applySalary(null, null); return; }
     this.applyFilter(chip.key, null);
   }
 

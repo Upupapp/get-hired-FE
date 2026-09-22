@@ -106,6 +106,11 @@
           <option value="salary_high">Highest salary</option>
         </select>
 
+        <select class="gh-search-select" aria-label="Salary range filter"
+          (change)="$any($event.target).value === '20-40' ? applySalary(20000,40000) : $any($event.target).value === '40-80' ? applySalary(40000,80000) : $any($event.target).value === '80+' ? applySalary(80000,null) : applySalary(null,null)">
+          <option value="">Any salary</option><option value="20-40">₱20,000 – ₱40,000</option><option value="40-80">₱40,000 – ₱80,000</option><option value="80+">₱80,000+</option>
+        </select>
+
         <span class="gh-search-count" aria-live="polite" aria-atomic="true">
           <ng-container *ngIf="!searchLoading && counts.all > 0">{{ countSummary }}</ng-container>
         </span>
@@ -234,23 +239,78 @@
 
 <!-- ── BROWSE MODE ─────────────────────────────────────────────────────────── -->
 <ng-template #browseMode>
-
-  <div class="gh-search-page-header gh-search-page-header--browse">
-    <div class="gh-search-page-inner">
-      <app-search-autocomplete
-        placeholder="Search jobs, companies, skills, or locations"
-        scope="jobs"
-        (searchSubmit)="onSearchSubmit($event)">
-      </app-search-autocomplete>
+  <section class="jb-hero" aria-labelledby="jobs-hero-title">
+    <div class="jb-wave jb-wave--left" aria-hidden="true"></div>
+    <div class="jb-wave jb-wave--right" aria-hidden="true"></div>
+    <div class="jb-hero-inner">
+      <div class="jb-hero-copy">
+        <span class="jb-eyebrow">MORE THAN JOBS</span>
+        <h1 id="jobs-hero-title">Find your next <strong>opportunity</strong></h1>
+        <p>Great companies. Meaningful careers. A brighter you.</p>
+      </div>
+      <div class="jb-search-stack">
+        <form class="jb-search-form" (ngSubmit)="submitBrowseSearch()" role="search">
+          <label class="jb-search-field">
+            <span class="visually-hidden">Job title, keyword, or company</span>
+            <i class="bi bi-search" aria-hidden="true"></i>
+            <input type="search" name="browseQuery" [(ngModel)]="browseQuery" placeholder="Job title, keyword, or company">
+          </label>
+          <label class="jb-search-field jb-search-field--location">
+            <span class="visually-hidden">Location</span>
+            <i class="bi bi-geo-alt" aria-hidden="true"></i>
+            <input type="text" name="browseLocation" [(ngModel)]="browseLocation" placeholder="Location">
+          </label>
+          <button class="jb-search-button" type="submit">Search Jobs <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="jb-popular" aria-label="Popular searches">
+          <span>Popular searches:</span>
+          <button type="button" *ngFor="let term of ['Marketing','Engineering','Remote','Fresh Grad','Finance','Customer Support']" (click)="searchPopular(term)">{{ term }}</button>
+        </div>
+      </div>
+      <div class="jb-hero-aside">
+        <span class="jb-hand-note">A brighter<br>career starts<br>here. ↙</span>
+        <div class="jb-stat-card"><i class="bi bi-people-fill" aria-hidden="true"></i><span>Jobs from Top Companies</span></div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <app-public-companies-recommended></app-public-companies-recommended>
+  <main class="jb-board">
+    <button type="button" class="jb-mobile-filter-button" (click)="toggleMobileFilters()" [attr.aria-expanded]="mobileFiltersOpen">Filters <span aria-hidden="true">⌄</span></button>
+    <aside class="jb-filter-card" [class.is-open]="mobileFiltersOpen" aria-label="Job filters">
+      <div class="jb-filter-title"><h2>Filters</h2><button type="button" (click)="browseAll()">Clear all</button></div>
+      <fieldset><legend>Work Setup</legend>
+        <label><input type="checkbox" (change)="applyFilter('workSetup', $any($event.target).checked ? 'remote' : null)"> Remote</label>
+        <label><input type="checkbox" (change)="applyFilter('workSetup', $any($event.target).checked ? 'onsite' : null)"> On-site</label>
+        <label><input type="checkbox" (change)="applyFilter('workSetup', $any($event.target).checked ? 'hybrid' : null)"> Hybrid</label>
+      </fieldset>
+      <fieldset><legend>Employment Type</legend>
+        <label *ngFor="let type of ['Full-time','Part-time','Contract','Internship','Fresh Grad']"><input type="checkbox" (change)="applyFilter('employmentType', $any($event.target).checked ? type.toLowerCase() : null)"> {{ type }}</label>
+      </fieldset>
+      <fieldset><legend>Location</legend>
+        <label class="jb-location-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" [(ngModel)]="filterLocation" (keyup.enter)="searchByLocation()" placeholder="Search location" aria-label="Search location"></label>
+        <label *ngFor="let place of ['National Capital Region','Cavite','Laguna','Cebu','Davao']"><input type="checkbox" (change)="applyFilter('location', $any($event.target).checked ? place : null)"> {{ place }}</label>
+      </fieldset>
+      <fieldset><legend>Salary Range</legend>
+        <label><input type="radio" name="salary" (change)="applySalary(null,null)"> Any salary</label>
+        <label><input type="radio" name="salary" (change)="applySalary(20000,40000)"> ₱20,000 – ₱40,000</label>
+        <label><input type="radio" name="salary" (change)="applySalary(40000,80000)"> ₱40,000 – ₱80,000</label>
+        <label><input type="radio" name="salary" (change)="applySalary(80000,null)"> ₱80,000+</label>
+      </fieldset>
+    </aside>
 
-  <div class="container-fluid mb-2">
-    <div class="mt-5 px-lg-5">
-      <app-job-board-employer-cta></app-job-board-employer-cta>
-
+    <section class="jb-results" aria-label="Available jobs">
+      <div class="jb-results-head">
+        <div><h2>Explore open opportunities</h2><p>Discover roles from companies hiring across the Philippines and beyond.</p></div>
+        <label class="jb-sort">Sort by<select aria-label="Sort jobs" (change)="applyFilter('sort', $any($event.target).value)"><option value="relevance">Most relevant</option><option value="newest">Newest</option><option value="salary_high">Highest salary</option></select></label>
+      </div>
+      <div class="jb-quick-filters" aria-label="Quick filters">
+        <button type="button" (click)="applyFilter('workSetup','remote')">⌁ Remote</button>
+        <button type="button" (click)="applyFilter('workSetup','onsite')">▥ On-site</button>
+        <button type="button" (click)="applyFilter('employmentType','full-time')">▣ Full-time</button>
+        <button type="button" (click)="applyFilter('employmentType','part-time')">◷ Part-time</button>
+        <button type="button" (click)="searchPopular('Fresh Grad')">♧ Fresh Grad</button>
+        <button type="button" (click)="applySalary(1,null)">ⓢ Salary Shown</button>
+      </div>
       <div class="jb-browse-split">
         <div class="jb-browse-list">
           <app-job-posts-list
@@ -332,9 +392,7 @@
           </button>
         </div>
       </aside>
-    </div>
-  </div>
-
-  <app-public-explore-users [userRole]="userRole"></app-public-explore-users>
+    </section>
+  </main>
 
 </ng-template>

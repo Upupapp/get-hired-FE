@@ -46,6 +46,7 @@ export interface PublicCompanyProfile {
   // True only for a renamed duplicate ("Company Name #2", etc.) from the
   // historical-duplicates backfill -- drives the "duplicate listing" banner.
   isDuplicate?: boolean;
+  isVerified?: boolean;
   seo: {
     title: string;
     description: string;

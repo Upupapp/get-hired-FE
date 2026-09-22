@@ -50,6 +50,10 @@
     <div class="gh-nav-desktop-list d-none d-lg-flex">
       <ul class="navbar-nav ms-auto align-items-center gh-nav-list">
 
+        <li class="nav-item gh-nav-public-links" *ngIf="isPublic">
+          <a routerLink="/employers">For Employers</a>
+        </li>
+
         <li class="nav-item" *ngIf="isPublic">
           <a
             href="https://referralbunny.ai/gethired/referrals"
