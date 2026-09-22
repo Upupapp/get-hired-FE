@@ -73,11 +73,14 @@ export class SeoService {
       description,
       robots = 'index, follow',
       canonical,
-      ogImage = DEFAULT_OG_IMAGE,
       ogImageAlt,
       ogType = 'website',
       twitterCard = 'summary_large_image',
     } = config;
+
+    // Absolute HTTPS OG image (relative paths get BASE_URL; empty → default).
+    const ogImage = this.toAbsoluteHttps(config.ogImage) || DEFAULT_OG_IMAGE;
+    const ogImageType = this.imageMimeFromUrl(ogImage);
 
     // <title>
     this.titleService.setTitle(title);
@@ -95,26 +98,22 @@ export class SeoService {
       property: 'og:url',
       content: canonical || `${BASE_URL}${this.router.url}`,
     });
-    if (ogImage) {
-      this.meta.updateTag({ property: 'og:image', content: ogImage });
-      this.meta.updateTag({ property: 'og:image:secure_url', content: ogImage });
-      this.meta.updateTag({ property: 'og:image:width', content: '1200' });
-      this.meta.updateTag({ property: 'og:image:height', content: '630' });
-      this.meta.updateTag({ property: 'og:image:type', content: 'image/jpeg' });
-      if (ogImageAlt) {
-        this.meta.updateTag({ property: 'og:image:alt', content: ogImageAlt });
-      }
+    this.meta.updateTag({ property: 'og:image', content: ogImage });
+    this.meta.updateTag({ property: 'og:image:secure_url', content: ogImage });
+    this.meta.updateTag({ property: 'og:image:width', content: '1200' });
+    this.meta.updateTag({ property: 'og:image:height', content: '630' });
+    this.meta.updateTag({ property: 'og:image:type', content: ogImageType });
+    if (ogImageAlt) {
+      this.meta.updateTag({ property: 'og:image:alt', content: ogImageAlt });
     }
 
     // Twitter
     this.meta.updateTag({ name: 'twitter:card', content: twitterCard });
     this.meta.updateTag({ name: 'twitter:title', content: title });
     this.meta.updateTag({ name: 'twitter:description', content: description });
-    if (ogImage) {
-      this.meta.updateTag({ name: 'twitter:image', content: ogImage });
-      if (ogImageAlt) {
-        this.meta.updateTag({ name: 'twitter:image:alt', content: ogImageAlt });
-      }
+    this.meta.updateTag({ name: 'twitter:image', content: ogImage });
+    if (ogImageAlt) {
+      this.meta.updateTag({ name: 'twitter:image:alt', content: ogImageAlt });
     }
 
     // Canonical link element — set when provided, clear when omitted
@@ -185,7 +184,10 @@ export class SeoService {
       this.meta.updateTag({ property: 'og:url', content: config.url });
     }
     if (config.image) {
-      this.meta.updateTag({ property: 'og:image', content: config.image });
+      const image = this.toAbsoluteHttps(config.image) || DEFAULT_OG_IMAGE;
+      this.meta.updateTag({ property: 'og:image', content: image });
+      this.meta.updateTag({ property: 'og:image:secure_url', content: image });
+      this.meta.updateTag({ property: 'og:image:type', content: this.imageMimeFromUrl(image) });
     }
     if (config.siteName) {
       this.meta.updateTag({ property: 'og:site_name', content: config.siteName });
@@ -416,6 +418,31 @@ export class SeoService {
   // ─────────────────────────────────────────────────────────────────────────
   // Private helpers
   // ─────────────────────────────────────────────────────────────────────────
+
+
+  /** Resolve relative or protocol-relative asset URLs to absolute HTTPS. */
+  private toAbsoluteHttps(url: string | undefined | null): string {
+    const raw = (url || '').trim();
+    if (!raw) {
+      return '';
+    }
+    if (/^https?:\/\//i.test(raw)) {
+      return raw;
+    }
+    if (raw.startsWith('//')) {
+      return `https:${raw}`;
+    }
+    const pathPart = raw.startsWith('/') ? raw : `/${raw}`;
+    return `${BASE_URL}${pathPart}`;
+  }
+
+  private imageMimeFromUrl(url: string): string {
+    const clean = (url || '').split('?')[0].toLowerCase();
+    if (clean.endsWith('.png')) return 'image/png';
+    if (clean.endsWith('.webp')) return 'image/webp';
+    if (clean.endsWith('.gif')) return 'image/gif';
+    return 'image/jpeg';
+  }
 
   private toIso(value: any): string | undefined {
     if (!value) return undefined;

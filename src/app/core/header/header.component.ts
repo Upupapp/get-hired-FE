@@ -8,8 +8,11 @@ import {
   ElementRef,
   HostListener,
   AfterViewInit,
-  OnDestroy
+  OnDestroy,
+  Inject,
+  PLATFORM_ID
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import {
   Router,
   ActivatedRoute
@@ -31,7 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() user: any;
   @Input() isUserLoggedIn: boolean;
   @Input() isPublic: boolean;
-  userRole = localStorage.getItem('role');
+  userRole: string | null = null;
   initials: string;
 
   // Notification bell/center -- lightweight local-component-state +
@@ -73,16 +76,29 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private appFacade: AppFacade,
     private notificationService: NotificationService,
     private dialog: MatDialog,
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
+    // SSR: localStorage / window are undefined on Node — guard or job-detail
+    // Universal render crashes before PublicDetails can set OG meta.
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        this.userRole = localStorage.getItem('role');
+      } catch {
+        this.userRole = null;
+      }
+    }
+
     this.req = this.router.events.subscribe((event: any) => {
       this.location = this.router.url;
 
-      // scroll to top every page change
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      });
+      // scroll to top every page change (browser only)
+      if (isPlatformBrowser(this.platformId)) {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
 
       // Close the mobile drawer on navigation -- otherwise it stays open
       // (with its scrim blocking the page) across a route change triggered
