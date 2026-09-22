@@ -25,40 +25,6 @@
         </p>
       </div>
 
-      <!-- ── TABS ───────────────────────────────────────────────────────────── -->
-      <nav class="gh-search-tabs" role="tablist" aria-label="Filter results by type">
-        <button
-          class="gh-search-tab"
-          [class.gh-search-tab--active]="activeTab === 'all'"
-          role="tab"
-          [attr.aria-selected]="activeTab === 'all'"
-          type="button"
-          (click)="switchTab('all')">
-          All
-          <span *ngIf="!searchLoading && counts.all > 0" class="gh-tab-count">{{ counts.all }}</span>
-        </button>
-        <button
-          class="gh-search-tab"
-          [class.gh-search-tab--active]="activeTab === 'jobs'"
-          role="tab"
-          [attr.aria-selected]="activeTab === 'jobs'"
-          type="button"
-          (click)="switchTab('jobs')">
-          Jobs
-          <span *ngIf="!searchLoading && counts.jobs > 0" class="gh-tab-count">{{ counts.jobs }}</span>
-        </button>
-        <button
-          class="gh-search-tab"
-          [class.gh-search-tab--active]="activeTab === 'companies'"
-          role="tab"
-          [attr.aria-selected]="activeTab === 'companies'"
-          type="button"
-          (click)="switchTab('companies')">
-          Companies
-          <span *ngIf="!searchLoading && counts.companies > 0" class="gh-tab-count">{{ counts.companies }}</span>
-        </button>
-      </nav>
-
       <!-- Active filter chips -->
       <div *ngIf="activeFilterChips.length > 0" class="gh-search-chips" aria-label="Active filters">
         <span *ngFor="let chip of activeFilterChips" class="gh-chip" role="status">
@@ -128,22 +94,10 @@
       <!-- ── RESULTS ─────────────────────────────────────────────────────────── -->
       <ng-container *ngIf="!searchLoading && !searchError">
 
-        <!-- Company spotlight (All tab, strong company match) -->
-        <app-search-spotlight-card
-          *ngIf="showSpotlight"
-          [spotlight]="companySpotlight"
-          [query]="activeQuery">
-        </app-search-spotlight-card>
-
         <!-- Jobs section -->
         <section
-          *ngIf="activeTab !== 'companies'"
           class="gh-search-section"
           aria-label="Job results">
-
-          <h2 *ngIf="activeTab === 'all' && visibleJobs.length > 0" class="gh-search-section-title">
-            Jobs <span class="gh-section-count">{{ counts.jobs }}</span>
-          </h2>
 
           <div class="gh-search-results" role="list">
             <app-search-job-card
@@ -163,7 +117,7 @@
 
         <!-- Low-result recovery (1–3 job results in search mode) -->
         <aside class="gh-low-result-recovery"
-          *ngIf="isLowResultSearch && activeTab !== 'companies'"
+          *ngIf="isLowResultSearch"
           role="region"
           aria-label="Search tips for finding more jobs">
           <div class="gh-lrr-icon" aria-hidden="true">
@@ -179,47 +133,9 @@
             <button type="button" class="gh-lrr-btn" (click)="clearAllFilters()" *ngIf="hasActiveFilters">
               Clear filters
             </button>
-            <a routerLink="/companies" class="gh-lrr-btn gh-lrr-btn--sec">Browse companies</a>
             <a routerLink="/user/profile/cv-builder" class="gh-lrr-btn gh-lrr-btn--sec">CV Health check</a>
           </div>
         </aside>
-
-        <!-- Companies section -->
-        <section
-          *ngIf="activeTab !== 'jobs'"
-          class="gh-search-section"
-          [class.gh-search-section--companies]="true"
-          aria-label="Company results">
-
-          <h2 *ngIf="activeTab === 'all' && visibleCompanies.length > 0" class="gh-search-section-title">
-            Companies <span class="gh-section-count">{{ counts.companies }}</span>
-          </h2>
-
-          <div class="gh-company-results" role="list">
-            <app-search-company-card
-              *ngFor="let company of visibleCompanies; trackBy: trackByCompanyId"
-              [company]="company"
-              role="listitem">
-            </app-search-company-card>
-          </div>
-
-          <!-- Companies pagination -->
-          <div *ngIf="visibleCompanies.length > 0 && (searchPage > 1 || hasCompaniesNextPage)" class="gh-search-pagination" aria-label="Companies pagination">
-            <button *ngIf="searchPage > 1" class="gh-pag-btn" type="button" (click)="changePage(searchPage - 1)">← Previous</button>
-            <span class="gh-pag-info">Page {{ searchPage }}</span>
-            <button *ngIf="hasCompaniesNextPage" class="gh-pag-btn gh-pag-btn--primary" type="button" (click)="changePage(searchPage + 1)">Next →</button>
-          </div>
-        </section>
-
-        <!-- Empty state: partial results (jobs only) -->
-        <div *ngIf="!isAllEmpty && activeTab === 'all' && emptyRecovery?.type === 'companies_missing'" class="gh-search-partial-note" role="status">
-          No matching companies found. Showing job results only.
-        </div>
-
-        <!-- Empty state: partial results (companies only) -->
-        <div *ngIf="!isAllEmpty && activeTab === 'all' && emptyRecovery?.type === 'jobs_missing'" class="gh-search-partial-note" role="status">
-          No matching jobs found. Showing companies only.
-        </div>
 
         <!-- Fully empty state -->
         <app-search-empty-state
