@@ -24,6 +24,16 @@ export const adminDashboard = createSelector (
   state => state.dashboard
 );
 
+export const dashboardLoading = createSelector(
+  getAdminInitState,
+  state => state.dashboardLoading
+);
+
+export const dashboardError = createSelector(
+  getAdminInitState,
+  state => state.dashboardError
+);
+
 // export const adminLoading = createSelector(
 //   getAdminInitState,
 //   state => state.loading

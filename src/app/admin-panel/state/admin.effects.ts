@@ -5,6 +5,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import * as AdminActions from './admin.actions';
 import * as Model from '../admin.model';
 import { AdminService } from '../admin.service';
+import { normalizeDashboard, readHttpError } from '../admin.normalize';
 
 @Injectable()
 export class AdminEffects {
@@ -19,12 +20,12 @@ export class AdminEffects {
       mergeMap(() => this.adminService.getDashboardDetails()
         .pipe(
           map((res: any) => {
-            const dashboard: Model.Dashboard = res.data;
-            return AdminActions.adminDashboardSuccess({ dashboard });
+            return AdminActions.adminDashboardSuccess({ dashboard: normalizeDashboard(res) });
           }),
           catchError((err) => {
-            const { error } = err.error;
-            return of(AdminActions.adminDashboardFail({ payload: error }))
+            return of(AdminActions.adminDashboardFail({
+              payload: readHttpError(err, 'Could not load the dashboard.')
+            }));
           })
         )
       )

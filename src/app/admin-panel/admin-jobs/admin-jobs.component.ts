@@ -2,45 +2,41 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
-import { AdminUserRow, ProfileField } from '../admin.model';
+import { AdminJobRow } from '../admin.model';
 import { AdminService } from '../admin.service';
 import {
-  USER_ROLE_FILTERS,
-  displayPersonName,
+  JOB_STATUS_FILTERS,
   formatAdminDate,
-  profileFields,
+  isPublishedStatus,
+  jobStatusClass,
   readHttpError,
   readPage,
-  roleLabel,
-  unwrapAdminBody,
 } from '../admin.normalize';
 
 @Component({
-  selector: 'app-admin-users',
-  templateUrl: './admin-users.component.html',
-  styleUrls: ['./admin-users.component.scss']
+  selector: 'app-admin-jobs',
+  templateUrl: './admin-jobs.component.html',
+  styleUrls: ['./admin-jobs.component.scss']
 })
-export class AdminUsersComponent implements OnInit, OnDestroy {
-  readonly roleFilters = USER_ROLE_FILTERS;
+export class AdminJobsComponent implements OnInit, OnDestroy {
+  readonly statusFilters = JOB_STATUS_FILTERS;
   readonly pageSize = 25;
 
-  rows: AdminUserRow[] = [];
+  rows: AdminJobRow[] = [];
   total = 0;
   page = 1;
   searchText = '';
-  role = '';
-  selectedId: string | null = null;
-  profile: any = null;
+  status = '';
   loading = false;
   error = '';
-  profileLoading = false;
-  profileError = '';
+  notice = '';
+  actionError = '';
+  pendingId: string | null = null;
+  unpublishingId: string | null = null;
 
   private q = '';
   private loadedKey = '';
-  private loadedProfileId: string | null | undefined = undefined;
   private fetchSeq = 0;
-  private profileSeq = 0;
   private searchInput$ = new Subject<string>();
   private destroy$ = new Subject<void>();
   private listSub: Subscription | null = null;
@@ -54,24 +50,17 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
       map(params => this.readParams(params)),
-      distinctUntilChanged((a, b) =>
-        a.q === b.q && a.role === b.role && a.page === b.page && a.id === b.id
-      ),
+      distinctUntilChanged((a, b) => a.q === b.q && a.status === b.status && a.page === b.page),
       takeUntil(this.destroy$)
     ).subscribe(state => {
       this.q = state.q;
       this.searchText = state.q;
-      this.role = state.role;
+      this.status = state.status;
       this.page = state.page;
-      const key = `${state.q}|${state.role}|${state.page}`;
+      const key = `${state.q}|${state.status}|${state.page}`;
       if (key !== this.loadedKey) {
         this.loadedKey = key;
         this.fetch();
-      }
-      if (state.id !== this.loadedProfileId) {
-        this.loadedProfileId = state.id;
-        this.selectedId = state.id;
-        this.loadProfile(state.id);
       }
     });
 
@@ -98,8 +87,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     this.searchInput$.next(value);
   }
 
-  onRole(role: string): void {
-    this.role = role;
+  onStatus(status: string): void {
+    this.status = status;
     this.page = 1;
     this.pushQuery();
   }
@@ -117,59 +106,68 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     this.pushQuery();
   }
 
-  openUser(row: AdminUserRow): void {
-    if (!row.uid) {
-      return;
-    }
-    this.selectedId = row.uid;
-    this.pushQuery();
-  }
-
-  closeDetail(): void {
-    this.selectedId = null;
-    this.profile = null;
-    this.profileError = '';
-    this.pushQuery();
-  }
-
   retry(): void {
     this.fetch();
   }
 
-  retryProfile(): void {
-    this.loadProfile(this.selectedId);
+  askUnpublish(job: AdminJobRow): void {
+    this.actionError = '';
+    this.notice = '';
+    this.pendingId = job.jobId;
   }
 
-  nameOf(row: AdminUserRow): string {
-    return displayPersonName(row);
+  cancelUnpublish(): void {
+    if (this.unpublishingId) {
+      return;
+    }
+    this.pendingId = null;
   }
 
-  roleOf(role: number | string | null): string {
-    return roleLabel(role);
+  confirmUnpublish(job: AdminJobRow): void {
+    if (!job.jobId || this.unpublishingId) {
+      return;
+    }
+    this.unpublishingId = job.jobId;
+    this.actionError = '';
+    this.adminService.unpublishJob(job.jobId).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.unpublishingId = null;
+        this.pendingId = null;
+        this.notice = `Unpublished ${job.title || 'job'}. It stays in the directory and is hidden from applicants.`;
+        this.fetch();
+      },
+      error: err => {
+        this.unpublishingId = null;
+        this.actionError = readHttpError(err, 'Could not unpublish this job.');
+      }
+    });
+  }
+
+  canUnpublish(job: AdminJobRow): boolean {
+    return !!job.jobId && isPublishedStatus(job.status);
+  }
+
+  statusClass(job: AdminJobRow): string {
+    return jobStatusClass(job.status);
   }
 
   when(value: string | null): string {
     return formatAdminDate(value);
   }
 
-  get detailFields(): ProfileField[] {
-    return profileFields(this.profile);
+  count(value: number | null): string {
+    return value == null ? '—' : String(value);
   }
 
-  get selectedRow(): AdminUserRow | null {
-    return this.rows.find(row => row.uid === this.selectedId) || null;
+  trackJob(_index: number, row: AdminJobRow): string {
+    return row.jobId || row.title;
   }
 
-  trackUser(_index: number, row: AdminUserRow): string {
-    return row.uid || row.email;
-  }
-
-  private readParams(params: ParamMap): { q: string; role: string; page: number; id: string | null } {
+  private readParams(params: ParamMap): { q: string; status: string; page: number } {
     return {
       q: params.get('q') || '',
-      role: params.get('role') || '',
+      status: params.get('status') || '',
       page: readPage(params.get('page')),
-      id: params.get('id'),
     };
   }
 
@@ -178,9 +176,8 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
       relativeTo: this.route,
       queryParams: {
         q: this.searchText.trim() || null,
-        role: this.role || null,
+        status: this.status || null,
         page: this.page > 1 ? this.page : null,
-        id: this.selectedId || null,
       },
     });
   }
@@ -192,9 +189,9 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     const seq = ++this.fetchSeq;
     this.loading = true;
     this.error = '';
-    this.listSub = this.adminService.listUsers({
+    this.listSub = this.adminService.listJobs({
       q: this.q,
-      role: this.role,
+      status: this.status,
       page: this.page,
       pageSize: this.pageSize,
     }).pipe(takeUntil(this.destroy$)).subscribe({
@@ -214,34 +211,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.rows = [];
         this.total = 0;
-        this.error = readHttpError(err, 'Could not load users.');
-      }
-    });
-  }
-
-  private loadProfile(id: string | null): void {
-    this.profile = null;
-    this.profileError = '';
-    if (!id) {
-      this.profileLoading = false;
-      return;
-    }
-    const seq = ++this.profileSeq;
-    this.profileLoading = true;
-    this.adminService.userProfile(id).pipe(takeUntil(this.destroy$)).subscribe({
-      next: res => {
-        if (seq !== this.profileSeq) {
-          return;
-        }
-        this.profileLoading = false;
-        this.profile = unwrapAdminBody(res);
-      },
-      error: err => {
-        if (seq !== this.profileSeq) {
-          return;
-        }
-        this.profileLoading = false;
-        this.profileError = readHttpError(err, 'Could not load this user.');
+        this.error = readHttpError(err, 'Could not load jobs.');
       }
     });
   }

@@ -5,7 +5,6 @@ import { AuthGuard } from '@app-shared/guard/auth.guard'
 import { EmployerGuard } from './shared/guard/employer.guard';
 import { ApplicantGuard } from './shared/guard/applicant.guard';
 import { UnauthGuard } from './shared/guard/unauth.guard';
-import { AdminGuard } from './shared/guard/admin.guard';
 
 export const routes: Routes = [
   { path: 'integrations/referral-bunny', loadChildren: () => import('./integrations/referral-bunny/referral-bunny.module').then(m => m.ReferralBunnyModule) },
@@ -29,6 +28,8 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('@main/admin-panel/admin-panel.module').then(m => m.AdminPanelModule),
+    // Role 1 is enforced here by AuthGuard. The legacy AdminGuard calls
+    // router.resetConfig, so it is not composed with this route.
     canActivate: [AuthGuard],
     data: {
       role: '1'

@@ -1,105 +1,81 @@
-<div class="employee-container ">
-	<div class="card"
-	[@animate]="{value:'*', params:{ x:'-50px', delay:'200ms' }}">
+<section class="admin-page" aria-labelledby="admin-users-title">
+  <header class="admin-page-header">
+    <h1 id="admin-users-title">Users</h1>
+    <p>Search accounts and open a profile. Email verification lives under Tools.</p>
+  </header>
 
+  <form class="admin-filters" (ngSubmit)="applySearch()">
+    <label class="admin-field">
+      <span>Search</span>
+      <input type="search" name="user-search" [ngModel]="searchText" (ngModelChange)="onSearch($event)"
+        placeholder="Email or name" autocomplete="off">
+    </label>
+    <label class="admin-field">
+      <span>Role</span>
+      <select name="user-role" [ngModel]="role" (ngModelChange)="onRole($event)">
+        <option *ngFor="let option of roleFilters" [value]="option.value">{{ option.label }}</option>
+      </select>
+    </label>
+    <button type="submit" class="admin-btn admin-btn--primary">Search</button>
+  </form>
 
-		<ng-container>
-			<div class="share-container text-center"
-			style="position: relative;"
-			[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}">
-				<div class="row pt-4">
-					<div class="col-12 col-md-12 text-start mb-2">
-						<h4 class="title-add">Uploading CSV file</h4>
-						<h5 class="title-description">Add new candidate by uploading .csv file. You can <a href="../../../../../../../assets/files/import-contact.csv" download="import-candidate.csv">download the Template</a> here for reference</h5>
-					</div>
-				</div>
+  <app-admin-status
+    [loading]="loading"
+    [error]="error"
+    [empty]="!loading && !error && rows.length === 0"
+    loadingText="Loading users…"
+    emptyText="No users match these filters."
+    (retry)="retry()">
+  </app-admin-status>
 
+  <div class="admin-split" *ngIf="(!loading && !error && rows.length) || selectedId">
+    <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
+      <table class="admin-table">
+        <caption class="admin-muted">User directory</caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Created</th>
+            <th scope="col">Last login</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows; trackBy: trackUser" [class.admin-row--selected]="row.uid === selectedId">
+            <td>
+              <button type="button" class="admin-row-button" (click)="openUser(row)">{{ nameOf(row) }}</button>
+            </td>
+            <td class="admin-ellipsis">{{ row.email || '—' }}</td>
+            <td>{{ roleOf(row.role) }}</td>
+            <td>{{ when(row.createdAt) }}</td>
+            <td>{{ when(row.lastLogin) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+    </div>
 
-				<ng-container>
-					<div class="text-center"
-					[@animate]="{value:'*', params:{ y:'-10px', delay:'200ms' }}"
-					style="min-height:50px"
-					>
-					<div>
-						<div class="card-body" *ngIf="!uploadedFile">
-							<input type="file" #csvReader hidden name="Upload CSV" id="txtFileUpload" (change)="uploadListener($event)" accept=".csv" />
-
-							<!-- <app-file-upload-document
-							(upload)="uploadListener($event)"
-							label="Upload CSV"
-							[singleLine]="true"></app-file-upload-document> -->
-
-							<!-- <button (click)="csvReader.click()" class="btn upload btn-primary">Choose File</button> -->
-
-							<div class="uploader-container">
-								<div class="row">
-								    <div class="col-8 text-start">
-								        <h6>Choose File</h6>
-								        <span>We accept: <span class="text-document">CSV File Only</span></span>
-								    </div>
-
-								    <div class="col-4">
-								        <button type="button" class="btn btn-uploader"
-								        [disabled]="document"
-								        (click)="csvReader.click()">Browse Files</button>
-								    </div>
-								</div>
-							</div>
-
-							<div class="upload mt-2">
-								<!-- <div class="upload--name" *ngIf="document">
-									{{document}}
-								</div> -->
-
-								<div class="preview-file mt-4">
-								    <h5 class="title-preview">Preview File</h5>
-								    <div class="mb-3 p-3">
-								        <div class="d-flex file">
-								            <div class="img-circle me-3">
-								                <img src="/assets/images/placeholder/icons/document-upload.png" width="40px">
-								            </div>
-
-								            <div class="w-100 mt-2">
-								                <div>
-								                    <div class="document-uploaded truncate">{{fileData?.name}}
-
-								                    </div>
-
-
-								                    <img src="/assets/images/placeholder/icons/remove-gray.png" height="15px" *ngIf="fileData"
-								                    class="float-end" (click)="removeDocument()">
-
-								                    <div class="float-end me-2"
-								                    *ngIf="fileData"
-								                    style="margin-top: -21px;">
-								                        {{(fileData?.size * 0.000001)?.toFixed(1) }}
-								                        MB/50 MB
-								                    </div>
-								                </div>
-								                <div class="progress mt-2">
-								                    <div class="progress-bar" role="progressbar"
-								                    [ngStyle]="{ width: (((uploadedFile?.size * 0.000001) / 50) * 100) + '%' }"
-								                    style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								                </div>
-								            </div>
-								        </div>
-								    </div>
-								</div>
-
-
-								<button class="btn btn-primary" *ngIf="document" (click)="uploadFile()">Upload</button>
-							</div>
-						</div>
-					</div>
-					</div>
-				</ng-container>
-			</div>
-		</ng-container>
-
-    <h3>Email Read: {{ emails.length }}</h3>
-    <h3>Email Verified: {{ verified }}</h3>
-    <button class="btn btn-primary" *ngIf="emails && emails.length > 0"
-      (click)="manualVerifyEmails()">
-      Start Manual Verification</button>
-	</div>
-</div>
+    <aside class="admin-card admin-detail" *ngIf="selectedId" aria-label="User profile">
+      <div class="admin-detail-header">
+        <h2>{{ selectedRow ? nameOf(selectedRow) : 'User profile' }}</h2>
+        <button type="button" class="admin-btn admin-btn--ghost" (click)="closeDetail()">Close</button>
+      </div>
+      <p class="admin-muted" *ngIf="selectedRow">{{ selectedRow.email }}</p>
+      <app-admin-status
+        [loading]="profileLoading"
+        [error]="profileError"
+        [empty]="!profileLoading && !profileError && detailFields.length === 0"
+        loadingText="Loading profile…"
+        emptyText="No profile details returned."
+        (retry)="retryProfile()">
+      </app-admin-status>
+      <dl class="admin-detail-grid" *ngIf="!profileLoading && !profileError && detailFields.length">
+        <ng-container *ngFor="let field of detailFields">
+          <dt>{{ field.label }}</dt>
+          <dd>{{ field.value }}</dd>
+        </ng-container>
+      </dl>
+    </aside>
+  </div>
+</section>

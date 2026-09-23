@@ -1,0 +1,47 @@
+<section class="admin-page" aria-labelledby="admin-companies-title">
+  <header class="admin-page-header">
+    <h1 id="admin-companies-title">Companies</h1>
+    <p>Employer companies and how many jobs are currently open.</p>
+  </header>
+
+  <form class="admin-filters" (ngSubmit)="applySearch()">
+    <label class="admin-field">
+      <span>Search</span>
+      <input type="search" name="company-search" [ngModel]="searchText" (ngModelChange)="onSearch($event)"
+        placeholder="Company name" autocomplete="off">
+    </label>
+    <button type="submit" class="admin-btn admin-btn--primary">Search</button>
+  </form>
+
+  <app-admin-status
+    [loading]="loading"
+    [error]="error"
+    [empty]="!loading && !error && rows.length === 0"
+    loadingText="Loading companies…"
+    emptyText="No companies match this search."
+    (retry)="retry()">
+  </app-admin-status>
+
+  <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
+    <table class="admin-table">
+      <caption class="admin-muted">Company directory</caption>
+      <thead>
+        <tr>
+          <th scope="col">Company</th>
+          <th scope="col">Slug</th>
+          <th scope="col">Open jobs</th>
+          <th scope="col">Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows; trackBy: trackCompany">
+          <td class="admin-ellipsis">{{ row.companyName || '—' }}</td>
+          <td class="admin-ellipsis">{{ row.slug || '—' }}</td>
+          <td>{{ count(row.openJobsCount) }}</td>
+          <td>{{ when(row.createdAt) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+  </div>
+</section>

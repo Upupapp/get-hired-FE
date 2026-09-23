@@ -57,57 +57,17 @@
     </div>
 
     <ul class="gh-admin-drawer-nav" role="list">
-      <li role="listitem">
-        <a #firstAdminDrawerLink
-           routerLink="/admin/dashboard"
+      <li role="listitem" *ngFor="let item of navItems">
+        <a #drawerLink
+           [routerLink]="'/admin/' + item.route"
            routerLinkActive="gh-admin-drawer-nav-item--active"
-           [routerLinkActiveOptions]="{exact:true}"
-           #rla0="routerLinkActive"
-           [attr.aria-current]="rla0.isActive ? 'page' : null"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           #drawerRla="routerLinkActive"
+           [attr.aria-current]="drawerRla.isActive ? 'page' : null"
            class="gh-admin-drawer-nav-item"
            (click)="closeMobileNav()">
-          <svg class="gh-admin-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <rect x="3" y="3" width="7" height="7"/>
-            <rect x="14" y="3" width="7" height="7"/>
-            <rect x="3" y="14" width="7" height="7"/>
-            <rect x="14" y="14" width="7" height="7"/>
-          </svg>
-          <span class="gh-admin-drawer-nav-label">Dashboard</span>
-        </a>
-      </li>
-      <li role="listitem">
-        <a routerLink="/admin/users"
-           routerLinkActive="gh-admin-drawer-nav-item--active"
-           [routerLinkActiveOptions]="{exact:false}"
-           #rla1="routerLinkActive"
-           [attr.aria-current]="rla1.isActive ? 'page' : null"
-           class="gh-admin-drawer-nav-item"
-           (click)="closeMobileNav()">
-          <svg class="gh-admin-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-          </svg>
-          <span class="gh-admin-drawer-nav-label">Users</span>
-        </a>
-      </li>
-      <li role="listitem">
-        <a routerLink="/admin/users"
-           routerLinkActive="gh-admin-drawer-nav-item--active"
-           [routerLinkActiveOptions]="{exact:false}"
-           #rla3="routerLinkActive"
-           [attr.aria-current]="rla3.isActive ? 'page' : null"
-           class="gh-admin-drawer-nav-item"
-           (click)="closeMobileNav()">
-          <svg class="gh-admin-drawer-nav-icon" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-          <span class="gh-admin-drawer-nav-label">Users</span>
+          <app-admin-nav-icon class="gh-admin-drawer-nav-icon" [name]="item.icon" [size]="20"></app-admin-nav-icon>
+          <span class="gh-admin-drawer-nav-label">{{ item.title }}</span>
         </a>
       </li>
     </ul>
@@ -134,25 +94,14 @@
 
   <!-- MOBILEVIEW: Admin bottom nav bar -->
   <nav class="gh-admin-mobile-nav d-flex d-md-none" aria-label="Mobile admin navigation" role="navigation">
-    <a routerLink="/admin/dashboard" routerLinkActive="gh-admin-mobile-nav-item--active"
-      class="gh-admin-mobile-nav-item" aria-label="Dashboard">
-      <svg class="gh-admin-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" aria-hidden="true" focusable="false">
-        <rect x="3" y="3" width="7" height="7"/>
-        <rect x="14" y="3" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/>
-        <rect x="14" y="14" width="7" height="7"/>
-      </svg>
-      <span class="gh-admin-mobile-nav-label">Dashboard</span>
-    </a>
-    <a routerLink="/admin/users" routerLinkActive="gh-admin-mobile-nav-item--active"
-      class="gh-admin-mobile-nav-item" aria-label="Users">
-      <svg class="gh-admin-mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" aria-hidden="true" focusable="false">
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
-      </svg>
-      <span class="gh-admin-mobile-nav-label">Users</span>
+    <a *ngFor="let item of navItems"
+      [routerLink]="'/admin/' + item.route"
+      routerLinkActive="gh-admin-mobile-nav-item--active"
+      [routerLinkActiveOptions]="{ exact: !!item.exact }"
+      class="gh-admin-mobile-nav-item"
+      [attr.aria-label]="item.title">
+      <app-admin-nav-icon [name]="item.icon" [size]="22"></app-admin-nav-icon>
+      <span class="gh-admin-mobile-nav-label">{{ item.title }}</span>
     </a>
   </nav>
 

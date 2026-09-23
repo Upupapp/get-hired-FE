@@ -1,0 +1,81 @@
+<section class="admin-page" aria-labelledby="admin-jobs-title">
+  <header class="admin-page-header">
+    <h1 id="admin-jobs-title">Jobs</h1>
+    <p>Review listings and unpublish a live job. Unpublish hides it from applicants and does not delete it.</p>
+  </header>
+
+  <form class="admin-filters" (ngSubmit)="applySearch()">
+    <label class="admin-field">
+      <span>Search</span>
+      <input type="search" name="job-search" [ngModel]="searchText" (ngModelChange)="onSearch($event)"
+        placeholder="Title or company" autocomplete="off">
+    </label>
+    <label class="admin-field">
+      <span>Status</span>
+      <select name="job-status" [ngModel]="status" (ngModelChange)="onStatus($event)">
+        <option *ngFor="let option of statusFilters" [value]="option.value">{{ option.label }}</option>
+      </select>
+    </label>
+    <button type="submit" class="admin-btn admin-btn--primary">Search</button>
+  </form>
+
+  <p class="admin-state admin-state--ok" role="status" *ngIf="notice">{{ notice }}</p>
+  <div class="admin-state admin-state--error" role="alert" *ngIf="actionError">
+    <p>{{ actionError }}</p>
+  </div>
+
+  <app-admin-status
+    [loading]="loading"
+    [error]="error"
+    [empty]="!loading && !error && rows.length === 0"
+    loadingText="Loading jobs…"
+    emptyText="No jobs match these filters."
+    (retry)="retry()">
+  </app-admin-status>
+
+  <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
+    <table class="admin-table">
+      <caption class="admin-muted">Job moderation</caption>
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Company</th>
+          <th scope="col">Status</th>
+          <th scope="col">Applicants</th>
+          <th scope="col">Created</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows; trackBy: trackJob">
+          <td class="admin-ellipsis">{{ row.title || '—' }}</td>
+          <td class="admin-ellipsis">{{ row.companyName || '—' }}</td>
+          <td><span [class]="statusClass(row)">{{ row.statusLabel }}</span></td>
+          <td>{{ count(row.applicantCount) }}</td>
+          <td>{{ when(row.createdAt) }}</td>
+          <td>
+            <div class="admin-confirm" *ngIf="pendingId === row.jobId; else unpublishButton">
+              <p>Unpublish “{{ row.title || 'this job' }}”? Applicants will no longer see it.</p>
+              <div class="admin-confirm-actions">
+                <button type="button" class="admin-btn admin-btn--danger"
+                  [disabled]="unpublishingId === row.jobId" (click)="confirmUnpublish(row)">
+                  {{ unpublishingId === row.jobId ? 'Unpublishing…' : 'Confirm unpublish' }}
+                </button>
+                <button type="button" class="admin-btn admin-btn--ghost" (click)="cancelUnpublish()" [disabled]="unpublishingId === row.jobId">
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <ng-template #unpublishButton>
+              <button *ngIf="canUnpublish(row); else noAction" type="button" class="admin-btn admin-btn--ghost" (click)="askUnpublish(row)">
+                Unpublish
+              </button>
+              <ng-template #noAction><span class="admin-muted">—</span></ng-template>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+  </div>
+</section>
