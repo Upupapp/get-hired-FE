@@ -115,33 +115,30 @@ export interface AdminApplicationRow {
 
 export interface AdminPlanBreakdown {
   slug: string;
-  plan: string;
+  label: string;
   count: number;
-  mrr: number;
-}
-
-export interface AdminRevenuePoint {
-  date: string;
-  amount: number;
+  /** Share of companies that have a plan row. */
+  pct: number;
 }
 
 export interface AdminSubscriptionRow {
-  subscriptionId: string;
   companyId: string;
   companyName: string;
-  plan: string;
   planSlug: string;
+  planLabel: string;
   status: string;
+  cycle: string;
+  periodEnd: string | null;
   mrr: number;
-  startedAt: string | null;
-  renewsAt: string | null;
+  lastPaymentAt: string | null;
 }
 
 export interface AdminPaymentRow {
   paymentId: string;
-  invoiceId: string;
+  externalId: string;
   companyId: string;
   companyName: string;
+  planLabel: string;
   paidAt: string;
   amount: number;
   method: string;
@@ -153,32 +150,32 @@ export interface AdminFinanceQuery {
   from?: string;
   to?: string;
   q?: string;
-  companyId?: string;
+  plan?: string;
+  subscriptionStatus?: string;
+  paymentStatus?: string;
   page: number;
   pageSize: number;
   paymentPage: number;
 }
 
 /**
- * Subscription counts and MRR are a current snapshot.
- * Revenue fields follow the time filter, and the company id when Finance is filtered.
+ * MRR and status counts are a current snapshot.
+ * Revenue and the payments table follow the time filter.
+ * The subscriptions table is a directory and does not follow the range.
  */
 export interface AdminFinance {
   currency: string;
-  activeCount: number;
-  canceledCount: number;
-  trialCount: number;
   mrr: number;
+  revenueInRange: number;
+  payingCompanies: number;
+  activeCount: number;
+  trialCount: number;
+  pastDueCount: number;
   plans: AdminPlanBreakdown[];
   from: string | null;
   to: string | null;
-  revenueInRange: number;
-  revenuePrevious: number;
-  revenueSeries: AdminRevenuePoint[];
   subscriptions: AdminPage<AdminSubscriptionRow>;
   payments: AdminPage<AdminPaymentRow>;
-  companyId: string | null;
-  companyName: string | null;
   fromFixture: boolean;
 }
 
@@ -193,15 +190,25 @@ export interface AdminCompanyEvent {
   at: string;
   kind: string;
   summary: string;
+  actor: string | null;
+}
+
+export interface AdminUsageMeter {
+  label: string;
+  used: number;
+  limit: number | null;
 }
 
 export interface AdminCompanySubscription {
   plan: string;
   planSlug: string;
   status: string;
+  cycle: string;
   mrr: number;
   startedAt: string | null;
-  renewsAt: string | null;
+  periodEnd: string | null;
+  trialDaysLeft: number | null;
+  entitlements: AdminUsageMeter[];
 }
 
 export interface AdminCompanyDetail {
@@ -212,7 +219,7 @@ export interface AdminCompanyDetail {
   openJobsCount: number | null;
   status: string | null;
   adminContact: AdminCompanyContact | null;
-  contacts: AdminCompanyContact[];
+  admins: AdminCompanyContact[];
   subscription: AdminCompanySubscription | null;
   payments: AdminPaymentRow[];
   history: AdminCompanyEvent[];

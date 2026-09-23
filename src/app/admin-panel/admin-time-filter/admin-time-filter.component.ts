@@ -16,6 +16,8 @@ export class AdminTimeFilterComponent {
   readonly presets = ADMIN_TIME_PRESETS;
 
   @Input() updating = false;
+  /** When true, no preset is shown as pressed. Used by All history beside this control. */
+  @Input() inactive = false;
   @Output() rangeChange = new EventEmitter<AdminTimeRange>();
 
   committed: AdminTimeRange = resolvePreset('7d');
@@ -37,7 +39,7 @@ export class AdminTimeFilterComponent {
   }
 
   pressed(preset: AdminRangePreset): boolean {
-    return this.committed.preset === preset;
+    return !this.inactive && this.committed.preset === preset;
   }
 
   select(preset: AdminRangePreset): void {

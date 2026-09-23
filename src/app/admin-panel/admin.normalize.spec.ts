@@ -183,17 +183,18 @@ describe('admin response normalizers', () => {
         currency: 'PHP',
         active_count: 2,
         mrr: 4980,
-        plans: [{ slug: 'business', name: 'Business', count: 1, mrr: 5990 }],
+        plans: [{ slug: 'business', label: 'Business', company_count: 1, pct: 20 }],
         revenue_in_range: 1490,
-        revenue_series: [{ date: '2026-09-24', amount: 1490 }],
-        subscriptions: { items: [{ company_id: 'CO-1', company_name: 'Acme', plan_slug: 'business', plan: 'Business', status: 'active', mrr: 5990 }], total: 1 },
-        payments: [{ invoice_id: 'INV-1', amount: 1490, status: 'Paid', paid_at: '2026-09-24' }],
+        subscriptions: { items: [{ company_id: 'CO-1', company_name: 'Acme', plan_slug: 'business', status: 'active', mrr_php: 5990, cycle: 'monthly' }], total: 1 },
+        payments: [{ external_id: 'pay_1', amount_php: 1490, status: 'succeeded', paid_at: '2026-09-24', plan_slug: 'business' }],
       }
     });
     expect(finance.mrr).toBe(4980);
-    expect(finance.plans[0].plan).toBe('Premium');
-    expect(finance.subscriptions.items[0].plan).toBe('Premium');
-    expect(finance.payments.items[0].invoiceId).toBe('INV-1');
+    expect(finance.plans[0].label).toBe('Business');
+    expect(finance.plans[0].pct).toBe(20);
+    expect(finance.subscriptions.items[0].planLabel).toBe('Business');
+    expect(finance.payments.items[0].externalId).toBe('pay_1');
+    expect(finance.payments.items[0].status).toBe('succeeded');
     expect(finance.fromFixture).toBeFalse();
     expect(normalizeFinance({ data: { items: [] } })).toBeNull();
 
@@ -205,12 +206,14 @@ describe('admin response normalizers', () => {
         admin_contact: { name: 'Rosa', email: 'rosa@example.com', phone: '+63 917', role: 'Company admin' },
         subscription: { plan_slug: 'growth', plan: 'Growth', status: 'active', mrr: 3490 },
         payments: [{ invoice_id: 'INV-CO-20', amount: 3490, status: 'Paid' }],
-        history: [{ at: '2026-08-01', kind: 'Plan change', summary: 'Moved from Starter to Growth' }],
+        history: [{ at: '2026-08-01', kind: 'Plan change', summary: 'Moved from Starter to Growth', actor: 'Rosa' }],
       }
     });
     expect(detail.companyId).toBe('CO-20');
     expect(detail.adminContact.role).toBe('Company admin');
-    expect(detail.history[0].summary).toContain('Growth');
+    expect(detail.admins.length).toBe(1);
+    expect(detail.history[0].actor).toBe('Rosa');
+    expect(detail.subscription.plan).toBe('Growth');
   });
 
   it('builds query strings and reads http errors', () => {

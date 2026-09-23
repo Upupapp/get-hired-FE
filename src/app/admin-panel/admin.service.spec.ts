@@ -213,23 +213,23 @@ describe('AdminService admin MVP endpoints', () => {
       `${environment.api_url}/admin/finance?range=7d&from=2026-09-17&to=2026-09-24&page=1&pageSize=25&payPage=1`
     );
     missing.flush('missing', { status: 404, statusText: 'Not Found' });
-    expect(mrr).toBe(28970);
+    expect(mrr).toBe(27972);
 
     let liveMrr = -1;
     service.getFinance({
       from: '2026-09-24',
       to: '2026-09-24',
-      companyId: 'CO-20',
+      plan: 'business',
       page: 1,
       pageSize: 25,
       paymentPage: 1,
     }).subscribe(page => {
       liveMrr = page.mrr;
       expect(page.fromFixture).toBeFalse();
-      expect(page.plans[0].plan).toBe('Premium');
+      expect(page.plans[0].label).toBe('Business');
     });
     const live = httpMock.expectOne(
-      `${environment.api_url}/admin/finance?from=2026-09-24&to=2026-09-24&company=CO-20&page=1&pageSize=25&payPage=1`
+      `${environment.api_url}/admin/finance?from=2026-09-24&to=2026-09-24&plan=business&page=1&pageSize=25&payPage=1`
     );
     live.flush({
       data: {
@@ -281,7 +281,8 @@ describe('AdminService admin MVP endpoints', () => {
     service.getCompanyDetail('CO-22').subscribe(detail => {
       name = detail.companyName;
       expect(detail.fromFixture).toBeTrue();
-      expect(detail.subscription.plan).toBe('Premium');
+      expect(detail.subscription.plan).toBe('Business');
+      expect(detail.admins.length).toBe(6);
     });
     const req = httpMock.expectOne(`${environment.api_url}/admin/companies/CO-22`);
     req.flush({ data: { items: [{ company_id: 'CO-22', company_name: 'Northline Logistics' }], total: 1 } });

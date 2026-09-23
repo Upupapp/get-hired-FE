@@ -10,8 +10,8 @@ import {
   AdminPage,
   AdminPaymentRow,
   AdminPlanBreakdown,
-  AdminRevenuePoint,
   AdminSubscriptionRow,
+  AdminUsageMeter,
   AdminUserRow,
   Dashboard,
   ProfileField,
@@ -328,6 +328,59 @@ export function normalizePage<T>(
   };
 }
 
+/** V4 admin labels. Legacy Enterprise and any unknown slug fold into Other. */
+export function financePlanLabel(slug: string | null | undefined): string {
+  const labels: Record<string, string> = {
+    free_trial: 'Free trial',
+    starter: 'Starter',
+    growth: 'Growth',
+    business: 'Business',
+  };
+  const key = (slug || '').trim().toLowerCase();
+  return labels[key] || 'Other';
+}
+
+export function billingStatusLabel(status: string | null | undefined): string {
+  const labels: Record<string, string> = {
+    trialing: 'Trialing',
+    active: 'Active',
+    past_due: 'Past due',
+    grace: 'Grace',
+    expired: 'Expired',
+    none: 'None',
+    succeeded: 'Succeeded',
+    failed: 'Failed',
+    pending: 'Pending',
+  };
+  const key = (status || '').trim().toLowerCase();
+  if (!key) {
+    return '—';
+  }
+  return labels[key] || String(status);
+}
+
+export function billingStatusClass(status: string | null | undefined): string {
+  const key = (status || '').trim().toLowerCase();
+  if (key === 'past_due' || key === 'failed' || key === 'expired') {
+    return 'admin-badge admin-badge--closed';
+  }
+  if (key === 'active' || key === 'succeeded') {
+    return 'admin-badge admin-badge--published';
+  }
+  return 'admin-badge';
+}
+
+export function billingCycleLabel(cycle: string | null | undefined): string {
+  const key = (cycle || '').trim().toLowerCase();
+  if (key === 'annual' || key === 'yearly') {
+    return 'Annual';
+  }
+  if (key === 'monthly') {
+    return 'Monthly';
+  }
+  return key ? String(cycle) : '—';
+}
+
 export function normalizeFinance(res: any): AdminFinance | null {
   const body = unwrapAdminBody(res);
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -335,11 +388,15 @@ export function normalizeFinance(res: any): AdminFinance | null {
   }
   const hasSignal = [
     'mrr',
+    'mrr_php',
     'active_count',
     'activeCount',
+    'active_subscriptions',
     'revenue_in_range',
     'revenueInRange',
+    'revenue_in_range_php',
     'plans',
+    'plan_breakdown',
     'subscriptions',
   ].some(key => body[key] != null);
   if (!hasSignal) {
@@ -355,20 +412,23 @@ export function normalizeFinance(res: any): AdminFinance | null {
   const payments = normalizePage(paymentsSource, normalizePayment, 1, 25);
   return {
     currency: readText(body.currency) || 'PHP',
-    activeCount: readCount(body.active_count != null ? body.active_count : body.activeCount, 0),
-    canceledCount: readCount(body.canceled_count != null ? body.canceled_count : body.canceledCount, 0),
-    trialCount: readCount(body.trial_count != null ? body.trial_count : body.trialCount, 0),
-    mrr: readCount(body.mrr, 0),
-    plans: readPlans(body.plans),
+    mrr: readCount(body.mrr_php != null ? body.mrr_php : body.mrr, 0),
+    revenueInRange: readCount(
+      body.revenue_in_range_php != null ? body.revenue_in_range_php : (body.revenue_in_range != null ? body.revenue_in_range : body.revenueInRange),
+      0
+    ),
+    payingCompanies: readCount(body.paying_companies != null ? body.paying_companies : body.payingCompanies, 0),
+    activeCount: readCount(
+      body.active_subscriptions != null ? body.active_subscriptions : (body.active_count != null ? body.active_count : body.activeCount),
+      0
+    ),
+    trialCount: readCount(body.trials != null ? body.trials : (body.trial_count != null ? body.trial_count : body.trialCount), 0),
+    pastDueCount: readCount(body.past_due != null ? body.past_due : (body.pastDueCount != null ? body.pastDueCount : body.past_due_count), 0),
+    plans: readPlans(body.plan_breakdown != null ? body.plan_breakdown : body.plans),
     from: readOptionalText(body.from),
     to: readOptionalText(body.to),
-    revenueInRange: readCount(body.revenue_in_range != null ? body.revenue_in_range : body.revenueInRange, 0),
-    revenuePrevious: readCount(body.revenue_previous != null ? body.revenue_previous : body.revenuePrevious, 0),
-    revenueSeries: readRevenueSeries(body.revenue_series != null ? body.revenue_series : body.revenueSeries),
     subscriptions,
     payments,
-    companyId: readOptionalText(body.company_id != null ? body.company_id : body.companyId),
-    companyName: readOptionalText(body.company_name != null ? body.company_name : body.companyName),
     fromFixture: false,
   };
 }
@@ -382,7 +442,7 @@ export function normalizeCompanyDetail(res: any): AdminCompanyDetail | null {
   if (!companyId) {
     return null;
   }
-  const adminSource = body.admin_contact != null ? body.admin_contact : body.adminContact;
+  const admins = readAdmins(body);
   const subscriptionSource = body.subscription;
   return {
     companyId,
@@ -391,8 +451,8 @@ export function normalizeCompanyDetail(res: any): AdminCompanyDetail | null {
     createdAt: readOptionalText(body.created_at ?? body.createdAt),
     openJobsCount: readMetric(body, 'open_jobs_count', 'openJobsCount'),
     status: readOptionalText(body.status),
-    adminContact: adminSource ? normalizeContact(adminSource) : null,
-    contacts: (Array.isArray(body.contacts) ? body.contacts : []).map(row => normalizeContact(row)),
+    adminContact: admins.length ? admins[0] : null,
+    admins,
     subscription: subscriptionSource ? normalizeCompanySubscription(subscriptionSource) : null,
     payments: (Array.isArray(body.payments) ? body.payments : []).map(row => normalizePayment(row)),
     history: (Array.isArray(body.history) ? body.history : []).map(row => normalizeCompanyEvent(row)),
@@ -441,29 +501,32 @@ function normalizeSubscription(row: any): AdminSubscriptionRow {
   const source = row || {};
   const planSlug = readText(source.plan_slug ?? source.planSlug ?? source.slug);
   return {
-    subscriptionId: readText(source.subscription_id ?? source.subscriptionId ?? source.id),
     companyId: readText(source.company_id ?? source.companyId),
     companyName: readText(source.company_name ?? source.companyName),
-    plan: displayPlanName(planSlug, readText(source.plan ?? source.plan_name ?? source.planName ?? source.name)),
     planSlug,
-    status: readText(source.status),
-    mrr: readCount(source.mrr, 0),
-    startedAt: readOptionalText(source.started_at ?? source.startedAt),
-    renewsAt: readOptionalText(source.renews_at ?? source.renewsAt),
+    planLabel: financePlanLabel(planSlug),
+    status: readText(source.status).toLowerCase(),
+    cycle: readText(source.cycle ?? source.billing_cycle ?? source.billingCycle).toLowerCase(),
+    periodEnd: readOptionalText(source.period_end ?? source.periodEnd ?? source.renews_at ?? source.renewsAt),
+    mrr: readCount(source.mrr_php != null ? source.mrr_php : source.mrr, 0),
+    lastPaymentAt: readOptionalText(source.last_payment_at ?? source.lastPaymentAt),
   };
 }
 
 function normalizePayment(row: any): AdminPaymentRow {
   const source = row || {};
+  const planSlug = readText(source.plan_slug ?? source.planSlug ?? source.slug);
+  const explicitLabel = readText(source.plan_label ?? source.planLabel ?? source.plan);
   return {
     paymentId: readText(source.payment_id ?? source.paymentId ?? source.id),
-    invoiceId: readText(source.invoice_id ?? source.invoiceId),
+    externalId: readText(source.external_id ?? source.externalId),
     companyId: readText(source.company_id ?? source.companyId),
     companyName: readText(source.company_name ?? source.companyName),
+    planLabel: planSlug ? financePlanLabel(planSlug) : (explicitLabel || '—'),
     paidAt: readText(source.paid_at ?? source.paidAt ?? source.date),
-    amount: readCount(source.amount, 0),
+    amount: readCount(source.amount_php != null ? source.amount_php : source.amount, 0),
     method: readText(source.method),
-    status: readText(source.status),
+    status: readText(source.status).toLowerCase(),
   };
 }
 
@@ -480,13 +543,17 @@ function normalizeContact(row: any): AdminCompanyContact {
 function normalizeCompanySubscription(row: any): AdminCompanySubscription {
   const source = row || {};
   const planSlug = readText(source.plan_slug ?? source.planSlug ?? source.slug);
+  const trial = source.trial_days_left != null ? source.trial_days_left : source.trialDaysLeft;
   return {
-    plan: displayPlanName(planSlug, readText(source.plan ?? source.plan_name ?? source.name)),
+    plan: financePlanLabel(planSlug),
     planSlug,
-    status: readText(source.status),
-    mrr: readCount(source.mrr, 0),
+    status: readText(source.status).toLowerCase(),
+    cycle: readText(source.cycle ?? source.billing_cycle ?? source.billingCycle).toLowerCase(),
+    mrr: readCount(source.mrr_php != null ? source.mrr_php : source.mrr, 0),
     startedAt: readOptionalText(source.started_at ?? source.startedAt),
-    renewsAt: readOptionalText(source.renews_at ?? source.renewsAt),
+    periodEnd: readOptionalText(source.period_end ?? source.periodEnd ?? source.renews_at ?? source.renewsAt),
+    trialDaysLeft: trial == null || trial === '' ? null : readCount(trial, 0),
+    entitlements: readMeters(source.entitlements),
   };
 }
 
@@ -496,15 +563,33 @@ function normalizeCompanyEvent(row: any): AdminCompanyEvent {
     at: readText(source.at ?? source.date),
     kind: readText(source.kind ?? source.type),
     summary: readText(source.summary ?? source.description),
+    actor: readOptionalText(source.actor),
   };
 }
 
-/** Product copy calls the `business` slug Premium. */
-function displayPlanName(slug: string, name: string): string {
-  if (slug === 'business' && (!name || name.toLowerCase() === 'business')) {
-    return 'Premium';
+function readAdmins(body: any): AdminCompanyContact[] {
+  const list = body.admins != null ? body.admins : body.admin_users;
+  if (Array.isArray(list) && list.length) {
+    return list.map(row => normalizeContact(row));
   }
-  return name;
+  const single = body.admin_contact != null ? body.admin_contact : body.adminContact;
+  return single ? [normalizeContact(single)] : [];
+}
+
+function readMeters(value: any): AdminUsageMeter[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.map(row => {
+    const source = row || {};
+    const limitRaw = source.limit != null ? source.limit : source.cap;
+    const limitNumber = limitRaw == null || limitRaw === '' ? null : Number(limitRaw);
+    return {
+      label: readText(source.label ?? source.name),
+      used: readCount(source.used, 0),
+      limit: limitNumber != null && Number.isFinite(limitNumber) ? limitNumber : null,
+    };
+  });
 }
 
 function readPlans(value: any): AdminPlanBreakdown[] {
@@ -515,25 +600,12 @@ function readPlans(value: any): AdminPlanBreakdown[] {
     const source = row || {};
     const slug = readText(source.slug ?? source.plan_slug ?? source.planSlug);
     return {
-      slug,
-      plan: displayPlanName(slug, readText(source.plan ?? source.name)),
-      count: readCount(source.count, 0),
-      mrr: readCount(source.mrr, 0),
+      slug: slug || 'other',
+      label: readText(source.label ?? source.plan ?? source.name) || financePlanLabel(slug),
+      count: readCount(source.company_count != null ? source.company_count : source.count, 0),
+      pct: readCount(source.pct, 0),
     };
   });
-}
-
-function readRevenueSeries(value: any): AdminRevenuePoint[] {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  return value.map(point => {
-    const source = point || {};
-    return {
-      date: readText(source.date || source.day),
-      amount: readCount(source.amount != null ? source.amount : source.revenue, 0),
-    };
-  }).filter(point => !!point.date);
 }
 
 function readVisitSeries(value: any): VisitPoint[] {

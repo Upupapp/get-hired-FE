@@ -110,31 +110,46 @@ describe('admin fixtures', () => {
       pageSize: 25,
       paymentPage: 1,
     }, now);
-    expect(finance.mrr).toBe(28970);
+    expect(finance.mrr).toBe(27972);
     expect(finance.activeCount).toBe(4);
+    expect(finance.payingCompanies).toBe(4);
     expect(finance.trialCount).toBe(1);
-    expect(finance.canceledCount).toBe(1);
-    expect(finance.revenueInRange).toBe(10970);
-    const premium = finance.plans.find(plan => plan.slug === 'business');
-    expect(premium.plan).toBe('Premium');
-    expect(premium.mrr).toBe(5990);
-    expect(finance.plans.map(plan => plan.plan)).toEqual(['Free Trial', 'Starter', 'Growth', 'Premium', 'Enterprise']);
-    expect(finance.payments.items.some(row => row.status === 'Failed')).toBeTrue();
-    expect(finance.payments.items.filter(row => row.status === 'Failed').every(row => row.paidAt >= '2026-09-17')).toBeTrue();
+    expect(finance.pastDueCount).toBe(1);
+    expect(finance.revenueInRange).toBe(22980);
+    expect(finance.subscriptions.total).toBe(7);
+    const business = finance.plans.find(plan => plan.slug === 'business');
+    expect(business.label).toBe('Business');
+    expect(business.count).toBe(2);
+    expect(business.pct).toBe(29);
+    expect(finance.plans.map(plan => plan.label)).toEqual(['Free trial', 'Starter', 'Growth', 'Business', 'Other']);
+    expect(finance.payments.items.some(row => row.status === 'failed')).toBeTrue();
+    expect(finance.payments.items.some(row => row.status === 'pending')).toBeTrue();
+    expect(finance.payments.items.filter(row => row.status === 'failed').every(row => row.paidAt >= '2026-09-17')).toBeTrue();
 
-    const filtered = fixtureFinance({
+    const named = fixtureFinance({
       from: '2026-09-17',
       to: '2026-09-24',
-      companyId: 'CO-20',
       q: 'harbor',
       page: 1,
       pageSize: 25,
       paymentPage: 1,
     }, now);
-    expect(filtered.mrr).toBe(28970);
-    expect(filtered.companyName).toBe("Lola's Table");
-    expect(filtered.revenueInRange).toBe(3490);
-    expect(filtered.subscriptions.total).toBe(0);
+    expect(named.mrr).toBe(27972);
+    expect(named.revenueInRange).toBe(22980);
+    expect(named.subscriptions.total).toBe(1);
+    expect(named.subscriptions.items[0].planLabel).toBe('Starter');
+
+    const growth = fixtureFinance({
+      from: '2026-09-17',
+      to: '2026-09-24',
+      plan: 'growth',
+      page: 1,
+      pageSize: 25,
+      paymentPage: 1,
+    }, now);
+    expect(growth.subscriptions.total).toBe(1);
+    expect(growth.subscriptions.items[0].mrr).toBe(3490);
+    expect(growth.mrr).toBe(27972);
 
     const future = fixtureFinance({
       from: '2026-12-01',
@@ -144,8 +159,9 @@ describe('admin fixtures', () => {
       paymentPage: 1,
     }, now);
     expect(future.revenueInRange).toBe(0);
-    expect(future.revenueSeries.every(point => point.amount === 0)).toBeTrue();
-    expect(future.mrr).toBe(28970);
+    expect(future.payments.total).toBe(0);
+    expect(future.subscriptions.total).toBe(7);
+    expect(future.mrr).toBe(27972);
   });
 
   it('builds a full employer record and refuses an unknown company', () => {
@@ -155,11 +171,19 @@ describe('admin fixtures', () => {
     expect(detail.adminContact.phone).toContain('+63');
     expect(detail.subscription.plan).toBe('Growth');
     expect(detail.subscription.mrr).toBe(3490);
+    expect(detail.subscription.entitlements.length).toBe(3);
     expect(detail.payments.length).toBeGreaterThan(0);
     expect(detail.payments.every(row => row.companyId === 'CO-20')).toBeTrue();
     expect(detail.history.some(event => event.summary.indexOf('Kitchen Lead') !== -1)).toBeTrue();
     expect(detail.history.some(event => event.summary.indexOf('Moved from Starter to Growth') !== -1)).toBeTrue();
+    const northline = fixtureCompanyDetail('CO-22', now);
+    expect(northline.subscription.plan).toBe('Business');
+    expect(northline.subscription.cycle).toBe('annual');
+    expect(northline.subscription.mrr).toBe(4992);
+    expect(northline.admins.length).toBe(6);
+    const harbor = fixtureCompanyDetail('CO-21', now);
+    expect(harbor.history.some(event => event.kind === 'Job unpublish' && event.actor === 'Ops admin')).toBeTrue();
     const directory = fixtureCompanies({ page: 1, pageSize: 25 });
-    expect(directory.items.map(row => row.companyId)).toEqual(['CO-20', 'CO-21', 'CO-22', 'CO-23', 'CO-24', 'CO-25']);
+    expect(directory.items.map(row => row.companyId)).toEqual(['CO-20', 'CO-21', 'CO-22', 'CO-23', 'CO-24', 'CO-25', 'CO-26']);
   });
 });

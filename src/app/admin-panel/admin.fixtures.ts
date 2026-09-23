@@ -12,12 +12,14 @@
  *     + applications_in_range
  *   GET /admin/applications?q=&from=&to=&page=&pageSize=
  *     { items, total, page, pageSize }
- *   GET /admin/finance?range=&from=&to=&company=&q=&page=&pageSize=&payPage=
- *     snapshot: active_count, canceled_count, trial_count, mrr, plans[{slug,plan,count,mrr}]
- *     range: revenue_in_range, revenue_previous, revenue_series[{date,amount}]
- *     subscriptions and payments pages. `company` limits revenue and both tables only.
+ *   GET /admin/finance?range=&from=&to=&q=&plan=&status=&payStatus=&page=&pageSize=&payPage=
+ *     snapshot: mrr_php, paying_companies, active_subscriptions, trials, past_due
+ *     plan_breakdown[{ slug, label, company_count, pct }]
+ *     revenue_in_range_php (succeeded payments only)
+ *     subscriptions directory (not range-bound) and payments whose paid_at is in range
  *   GET /admin/companies/:companyId
- *     profile, admin_contact, contacts, subscription, payments, history[{at,kind,summary}]
+ *     profile, admins, subscription, payments (full history), history[{ at, kind, summary, actor }]
+ *   Later splits Clarence can own: /companies/:id/payments and /companies/:id/history
  *
  * Gaps while this flag stays on:
  * - Site visits are pageview fixtures, labeled "Pageviews (fixture)". There is no admin analytics API.
@@ -28,9 +30,11 @@
  * - Users last_login is shown as — when the list omits it (the column is not on the BE list today).
  * - Full-dashboard fixture mode (HTTP failure) also invents inventory totals. The screen says so.
  * - GET /admin/finance and GET /admin/companies/:id are not on the API yet.
- *   Plan names follow the employer catalog (business slug displays as Premium).
- *   Enterprise MRR is a contracted fixture; the public price is Custom.
- *   Only Paid rows count toward revenue. Failed charges stay on the payment table.
+ *   Finance plan labels are the V4 set: Free trial, Starter, Growth, Business.
+ *   Legacy Enterprise and a missing plan display as Other.
+ *   Annual MRR is monthly-equivalent (catalog annual ÷ 12).
+ *   Only succeeded payments count toward revenue. Failed and pending stay on the table.
+ *   Finance is read-only: no charge, refund, or plan-change actions.
  */
 import {
   AdminApplicationQuery,
@@ -53,8 +57,8 @@ import {
   Dashboard,
   VisitPoint,
 } from './admin.model';
-import { addDays, eachDay, manilaYmd, previousWindow, AdminTimeRange } from './admin-time';
-import { jobStatusLabel, jobStatusQueryValue } from './admin.normalize';
+import { addDays, eachDay, inclusiveDayCount, manilaYmd, previousWindow, AdminTimeRange } from './admin-time';
+import { financePlanLabel, jobStatusLabel, jobStatusQueryValue } from './admin.normalize';
 
 export const ADMIN_USE_FIXTURES = true;
 export const FIXTURE_VISITS_LABEL = 'Pageviews (fixture)';
@@ -98,66 +102,80 @@ const FIXTURE_JOB_ROWS: AdminJobRow[] = [
 ];
 
 /**
- * Plan names match the employer pricing catalog.
- * `business` displays as Premium. Enterprise public price is Custom;
- * 18000 is a contracted fixture MRR, not a catalog amount.
- * Payment offsets are days before today so Last 7 days stays populated.
+ * Finance labels are the V4 set from the addendum: Free trial, Starter, Growth, Business.
+ * Enterprise is legacy and displays as Other. Annual catalog price is 10× monthly;
+ * MRR for an annual plan is annual ÷ 12 (Business 59900 / 12 = 4992).
+ * Payment offsets are days before today so Last 7 days stays populated and Today stays empty.
  */
+interface FixtureCharge {
+  offset: number;
+  status: 'succeeded' | 'failed' | 'pending';
+}
+
 interface FixtureEmployer {
   row: AdminCompanyRow;
-  accountStatus: string;
-  adminContact: AdminCompanyContact;
-  contacts: AdminCompanyContact[];
-  plan: string;
+  admins: AdminCompanyContact[];
   planSlug: string;
-  subscriptionStatus: 'active' | 'trial' | 'canceled';
+  subscriptionStatus: 'active' | 'trialing' | 'past_due' | 'grace' | 'expired' | 'none';
+  cycle: 'monthly' | 'annual';
+  /** Monthly-equivalent. Counted in Current MRR only when status is active. */
   mrr: number;
   chargeAmount: number;
   startedAt: string;
-  renewsAt: string | null;
-  paidOffsets: number[];
-  failedOffsets: number[];
-  planChange: { at: string; summary: string } | null;
-  canceledAt: string | null;
+  /** Days from today. Negative means the period already ended. */
+  periodEndOffset: number;
+  videosUsed: number;
+  charges: FixtureCharge[];
+  planChange: { at: string; summary: string; actor: string } | null;
+  expiredAt: string | null;
 }
 
 const FIXTURE_EMPLOYERS: FixtureEmployer[] = [
   employer({
     companyId: 'CO-20', companyName: "Lola's Table", slug: 'lolas-table', openJobsCount: 2, createdAt: '2025-04-18',
-    accountStatus: 'Active', plan: 'Growth', planSlug: 'growth', subscriptionStatus: 'active', mrr: 3490, chargeAmount: 3490,
-    startedAt: '2025-04-18', renewsAt: '2026-10-23', paidOffsets: [1, 32, 63],
+    planSlug: 'growth', subscriptionStatus: 'active', cycle: 'monthly', mrr: 3490, chargeAmount: 3490,
+    startedAt: '2025-04-18', periodEndOffset: 30, videosUsed: 8, charges: [{ offset: 1, status: 'succeeded' }, { offset: 32, status: 'succeeded' }],
     adminName: 'Rosa Delgado', adminEmail: 'rosa.delgado@lolas.example', adminPhone: '+63 917 555 0120',
-    planChange: { at: '2026-08-01', summary: 'Moved from Starter to Growth' },
+    planChange: { at: '2026-08-01', summary: 'Moved from Starter to Growth', actor: 'Rosa Delgado' },
   }),
   employer({
     companyId: 'CO-21', companyName: 'Harbor Inn', slug: 'harbor-inn', openJobsCount: 1, createdAt: '2025-08-03',
-    accountStatus: 'Active', plan: 'Starter', planSlug: 'starter', subscriptionStatus: 'active', mrr: 1490, chargeAmount: 1490,
-    startedAt: '2025-08-03', renewsAt: '2026-10-21', paidOffsets: [3, 34],
+    planSlug: 'starter', subscriptionStatus: 'active', cycle: 'monthly', mrr: 1490, chargeAmount: 1490,
+    startedAt: '2025-08-03', periodEndOffset: 21, videosUsed: 4, charges: [{ offset: 3, status: 'succeeded' }, { offset: 34, status: 'succeeded' }],
     adminName: 'Ben Cruz', adminEmail: 'ben.cruz@harbor.example', adminPhone: '+63 918 555 0144',
   }),
   employer({
     companyId: 'CO-22', companyName: 'Northline Logistics', slug: 'northline', openJobsCount: 4, createdAt: '2026-01-22',
-    accountStatus: 'Active', plan: 'Premium', planSlug: 'business', subscriptionStatus: 'active', mrr: 5990, chargeAmount: 5990,
-    startedAt: '2026-01-22', renewsAt: '2026-10-24', paidOffsets: [0, 31],
+    planSlug: 'business', subscriptionStatus: 'active', cycle: 'annual', mrr: 4992, chargeAmount: 59900,
+    startedAt: '2026-01-22', periodEndOffset: 200, videosUsed: 12, charges: [{ offset: 15, status: 'succeeded' }],
     adminName: 'Irene Santos', adminEmail: 'irene.santos@northline.example', adminPhone: '+63 919 555 0177',
+    extraAdmins: 5,
   }),
   employer({
     companyId: 'CO-23', companyName: 'Cupping Room', slug: 'cupping-room', openJobsCount: 1, createdAt: '2026-06-15',
-    accountStatus: 'Active', plan: 'Free Trial', planSlug: 'free_trial', subscriptionStatus: 'trial', mrr: 0, chargeAmount: 0,
-    startedAt: '2026-09-17', renewsAt: '2026-09-24', paidOffsets: [],
+    planSlug: 'free_trial', subscriptionStatus: 'trialing', cycle: 'monthly', mrr: 0, chargeAmount: 0,
+    startedAt: '2026-09-17', periodEndOffset: 4, videosUsed: 1, charges: [],
     adminName: 'Marco Villanueva', adminEmail: 'marco@cupping.example', adminPhone: '+63 920 555 0190',
   }),
   employer({
     companyId: 'CO-24', companyName: 'Bay & Co.', slug: 'bay-and-co', openJobsCount: 0, createdAt: '2025-09-12',
-    accountStatus: 'Inactive', plan: 'Starter', planSlug: 'starter', subscriptionStatus: 'canceled', mrr: 0, chargeAmount: 1490,
-    startedAt: '2025-09-12', renewsAt: null, paidOffsets: [40, 71], failedOffsets: [5], canceledAt: '2026-08-20',
+    planSlug: 'starter', subscriptionStatus: 'expired', cycle: 'monthly', mrr: 0, chargeAmount: 1490,
+    startedAt: '2025-09-12', periodEndOffset: -30, videosUsed: 0, charges: [{ offset: 45, status: 'succeeded' }],
     adminName: 'Liza Gomez', adminEmail: 'liza.gomez@bayandco.example', adminPhone: '+63 921 555 0112',
+    expiredAt: '2026-08-20',
   }),
   employer({
     companyId: 'CO-25', companyName: 'QuickCart', slug: 'quickcart', openJobsCount: 1, createdAt: '2026-03-02',
-    accountStatus: 'Active', plan: 'Enterprise', planSlug: 'enterprise', subscriptionStatus: 'active', mrr: 18000, chargeAmount: 18000,
-    startedAt: '2026-03-02', renewsAt: '2026-10-12', paidOffsets: [12, 43],
+    planSlug: 'enterprise', subscriptionStatus: 'active', cycle: 'monthly', mrr: 18000, chargeAmount: 18000,
+    startedAt: '2026-03-02', periodEndOffset: 18, videosUsed: 20, charges: [{ offset: 6, status: 'succeeded' }, { offset: 40, status: 'succeeded' }],
     adminName: 'Carlo Tan', adminEmail: 'carlo.tan@quickcart.example', adminPhone: '+63 922 555 0166',
+  }),
+  employer({
+    companyId: 'CO-26', companyName: 'Mesa Verde', slug: 'mesa-verde', openJobsCount: 1, createdAt: '2026-02-02',
+    planSlug: 'business', subscriptionStatus: 'past_due', cycle: 'monthly', mrr: 5990, chargeAmount: 5990,
+    startedAt: '2026-02-02', periodEndOffset: -3, videosUsed: 6,
+    charges: [{ offset: 2, status: 'failed' }, { offset: 4, status: 'pending' }, { offset: 33, status: 'succeeded' }],
+    adminName: 'Nia Flores', adminEmail: 'nia.flores@mesaverde.example', adminPhone: '+63 923 555 0188',
   }),
 ];
 
@@ -343,54 +361,40 @@ export function fixtureFinance(query: AdminFinanceQuery, now = new Date()): Admi
   const today = manilaYmd(now);
   const from = query.from || today;
   const to = query.to || today;
-  const companyId = (query.companyId || '').trim();
-  const employer = companyId
-    ? FIXTURE_EMPLOYERS.find(row => row.row.companyId === companyId) || null
-    : null;
   const q = (query.q || '').trim().toLowerCase();
-  const payments = paymentCatalog(now).filter(row => !companyId || row.companyId === companyId);
+  const plan = (query.plan || '').trim().toLowerCase();
+  const subscriptionStatus = (query.subscriptionStatus || '').trim().toLowerCase();
+  const paymentStatus = (query.paymentStatus || '').trim().toLowerCase();
+  const payments = paymentCatalog(now);
   const inRange = (row: AdminPaymentRow) => {
     const day = (row.paidAt || '').slice(0, 10);
     return (!from || day >= from) && (!to || day <= to);
   };
-  const paidInRange = payments.filter(row => isPaid(row) && inRange(row));
-  const previous = previousWindow(from, to);
-  const paidPrevious = payments.filter(row => {
-    if (!isPaid(row)) {
-      return false;
-    }
-    const day = (row.paidAt || '').slice(0, 10);
-    return day >= previous.from && day <= previous.to && day <= today;
-  });
   const subscriptions = FIXTURE_EMPLOYERS
-    .filter(row => !companyId || row.row.companyId === companyId)
-    .map(subscriptionRow)
-    .filter(row => !q || `${row.companyName} ${row.plan} ${row.status}`.toLowerCase().indexOf(q) !== -1);
+    .map(account => subscriptionRow(account, today, payments))
+    .filter(row => !plan || planBucket(row.planSlug) === plan)
+    .filter(row => !subscriptionStatus || row.status === subscriptionStatus)
+    .filter(row => !q || row.companyName.toLowerCase().indexOf(q) !== -1);
   const paymentRows = payments
     .filter(inRange)
-    .filter(row => !q || `${row.companyName} ${row.invoiceId} ${row.status} ${row.method}`.toLowerCase().indexOf(q) !== -1);
+    .filter(row => !paymentStatus || row.status === paymentStatus)
+    .filter(row => !q || `${row.companyName} ${row.externalId} ${row.planLabel}`.toLowerCase().indexOf(q) !== -1);
 
   return {
     currency: 'PHP',
-    activeCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'active').length,
-    canceledCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'canceled').length,
-    trialCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'trial').length,
     mrr: FIXTURE_EMPLOYERS
       .filter(row => row.subscriptionStatus === 'active')
       .reduce((total, row) => total + row.mrr, 0),
+    revenueInRange: sumAmounts(payments.filter(row => row.status === 'succeeded' && inRange(row))),
+    payingCompanies: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'active' && row.mrr > 0).length,
+    activeCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'active').length,
+    trialCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'trialing').length,
+    pastDueCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'past_due').length,
     plans: planBreakdown(),
     from,
     to,
-    revenueInRange: sumAmounts(paidInRange),
-    revenuePrevious: sumAmounts(paidPrevious),
-    revenueSeries: eachDay(from, to).map(date => ({
-      date,
-      amount: date > today ? 0 : sumAmounts(paidInRange.filter(row => row.paidAt.slice(0, 10) === date)),
-    })),
     subscriptions: pageOf(subscriptions, query.page, query.pageSize),
     payments: pageOf(paymentRows, query.paymentPage, query.pageSize),
-    companyId: companyId || null,
-    companyName: employer ? employer.row.companyName : null,
     fromFixture: true,
   };
 }
@@ -400,43 +404,64 @@ export function fixtureCompanyDetail(companyId: string, now = new Date()): Admin
   if (!employer) {
     return null;
   }
+  const today = manilaYmd(now);
   const payments = paymentCatalog(now)
     .filter(row => row.companyId === companyId)
     .sort((a, b) => b.paidAt.localeCompare(a.paidAt));
   const jobs = FIXTURE_JOB_ROWS.filter(row => row.companyName === employer.row.companyName);
+  const plan = financePlanLabel(employer.planSlug);
+  const periodEnd = addDays(today, employer.periodEndOffset);
   const history: AdminCompanyEvent[] = [
     {
       at: employer.row.createdAt || '',
       kind: 'Company',
       summary: `${employer.row.companyName} was created`,
+      actor: null,
     },
     {
       at: employer.startedAt,
       kind: 'Subscription',
-      summary: `Started ${employer.plan} (${employer.subscriptionStatus})`,
+      summary: `Started ${plan} (${employer.subscriptionStatus})`,
+      actor: employer.admins[0] ? employer.admins[0].name : null,
     },
   ];
   if (employer.planChange) {
-    history.push({ at: employer.planChange.at, kind: 'Plan change', summary: employer.planChange.summary });
+    history.push({
+      at: employer.planChange.at,
+      kind: 'Plan change',
+      summary: employer.planChange.summary,
+      actor: employer.planChange.actor,
+    });
   }
-  if (employer.canceledAt) {
-    history.push({ at: employer.canceledAt, kind: 'Subscription', summary: 'Subscription canceled' });
+  if (employer.expiredAt) {
+    history.push({
+      at: employer.expiredAt,
+      kind: 'Subscription',
+      summary: 'Subscription expired',
+      actor: null,
+    });
   }
   payments.forEach(payment => {
     history.push({
       at: payment.paidAt,
       kind: 'Payment',
-      summary: `${payment.status} ${payment.amount} PHP · ${payment.invoiceId}`,
+      summary: `${payment.status} ${payment.amount} PHP · ${payment.externalId}`,
+      actor: null,
     });
   });
   jobs.forEach(job => {
+    const unpublished = Number(job.status) === 4;
     history.push({
       at: job.createdAt || '',
-      kind: 'Job post',
-      summary: `${job.title} (${job.statusLabel})`,
+      kind: unpublished ? 'Job unpublish' : 'Job post',
+      summary: unpublished ? `${job.title} unpublished by admin` : `${job.title} (${job.statusLabel})`,
+      actor: unpublished ? 'Ops admin' : null,
     });
   });
   history.sort((a, b) => b.at.localeCompare(a.at));
+  const trialDaysLeft = employer.subscriptionStatus === 'trialing'
+    ? Math.max(0, inclusiveDayCount(today, periodEnd) - 1)
+    : null;
 
   return {
     companyId: employer.row.companyId,
@@ -444,16 +469,19 @@ export function fixtureCompanyDetail(companyId: string, now = new Date()): Admin
     slug: employer.row.slug,
     createdAt: employer.row.createdAt,
     openJobsCount: employer.row.openJobsCount,
-    status: employer.accountStatus,
-    adminContact: employer.adminContact,
-    contacts: employer.contacts,
+    status: employer.subscriptionStatus,
+    adminContact: employer.admins[0] || null,
+    admins: employer.admins,
     subscription: {
-      plan: employer.plan,
+      plan,
       planSlug: employer.planSlug,
       status: employer.subscriptionStatus,
-      mrr: employer.mrr,
+      cycle: employer.cycle,
+      mrr: employer.subscriptionStatus === 'active' ? employer.mrr : 0,
       startedAt: employer.startedAt,
-      renewsAt: employer.renewsAt,
+      periodEnd,
+      trialDaysLeft,
+      entitlements: entitlementMeters(employer),
     },
     payments,
     history,
@@ -472,13 +500,20 @@ export function fixtureCompanies(query: AdminListQuery): AdminPage<AdminCompanyR
   return pageOf(filtered, query.page, query.pageSize);
 }
 
-const PLAN_BREAKDOWN_ORDER: { slug: string; plan: string }[] = [
-  { slug: 'free_trial', plan: 'Free Trial' },
-  { slug: 'starter', plan: 'Starter' },
-  { slug: 'growth', plan: 'Growth' },
-  { slug: 'business', plan: 'Premium' },
-  { slug: 'enterprise', plan: 'Enterprise' },
+const PLAN_BREAKDOWN_ORDER: { slug: string; label: string }[] = [
+  { slug: 'free_trial', label: 'Free trial' },
+  { slug: 'starter', label: 'Starter' },
+  { slug: 'growth', label: 'Growth' },
+  { slug: 'business', label: 'Business' },
+  { slug: 'other', label: 'Other' },
 ];
+
+const ENTITLEMENT_LIMITS: Record<string, { jobs: number | null; admins: number | null; videos: number | null }> = {
+  free_trial: { jobs: 1, admins: 1, videos: 5 },
+  starter: { jobs: 5, admins: 2, videos: 25 },
+  growth: { jobs: 15, admins: 5, videos: 100 },
+  business: { jobs: 40, admins: 15, videos: 400 },
+};
 
 function employer(input: {
   companyId: string;
@@ -486,28 +521,37 @@ function employer(input: {
   slug: string;
   openJobsCount: number;
   createdAt: string;
-  accountStatus: string;
-  plan: string;
   planSlug: string;
   subscriptionStatus: FixtureEmployer['subscriptionStatus'];
+  cycle: FixtureEmployer['cycle'];
   mrr: number;
   chargeAmount: number;
   startedAt: string;
-  renewsAt: string | null;
-  paidOffsets: number[];
-  failedOffsets?: number[];
+  periodEndOffset: number;
+  videosUsed: number;
+  charges: FixtureCharge[];
   adminName: string;
   adminEmail: string;
   adminPhone: string;
-  planChange?: { at: string; summary: string } | null;
-  canceledAt?: string | null;
+  extraAdmins?: number;
+  planChange?: FixtureEmployer['planChange'];
+  expiredAt?: string | null;
 }): FixtureEmployer {
-  const adminContact: AdminCompanyContact = {
+  const admins: AdminCompanyContact[] = [{
     name: input.adminName,
     email: input.adminEmail,
     phone: input.adminPhone,
     role: 'Company admin',
-  };
+  }];
+  const extra = input.extraAdmins || 0;
+  for (let index = 0; index < extra; index++) {
+    admins.push({
+      name: `Admin ${index + 2}`,
+      email: `admin${index + 2}@${input.slug}.example`,
+      phone: null,
+      role: 'Company admin',
+    });
+  }
   return {
     row: {
       companyId: input.companyId,
@@ -516,28 +560,18 @@ function employer(input: {
       openJobsCount: input.openJobsCount,
       createdAt: input.createdAt,
     },
-    accountStatus: input.accountStatus,
-    adminContact,
-    contacts: [
-      adminContact,
-      {
-        name: 'Hiring desk',
-        email: `hiring@${input.slug}.example`,
-        phone: null,
-        role: 'Hiring manager',
-      },
-    ],
-    plan: input.plan,
+    admins,
     planSlug: input.planSlug,
     subscriptionStatus: input.subscriptionStatus,
+    cycle: input.cycle,
     mrr: input.mrr,
     chargeAmount: input.chargeAmount,
     startedAt: input.startedAt,
-    renewsAt: input.renewsAt,
-    paidOffsets: input.paidOffsets,
-    failedOffsets: input.failedOffsets || [],
+    periodEndOffset: input.periodEndOffset,
+    videosUsed: input.videosUsed,
+    charges: input.charges,
     planChange: input.planChange || null,
-    canceledAt: input.canceledAt || null,
+    expiredAt: input.expiredAt || null,
   };
 }
 
@@ -545,23 +579,21 @@ function paymentCatalog(now: Date): AdminPaymentRow[] {
   const today = manilaYmd(now);
   const rows: AdminPaymentRow[] = [];
   FIXTURE_EMPLOYERS.forEach(account => {
-    account.paidOffsets.forEach(offset => {
-      rows.push(paymentRow(account, addDays(today, -offset), 'Paid'));
-    });
-    account.failedOffsets.forEach(offset => {
-      rows.push(paymentRow(account, addDays(today, -offset), 'Failed'));
+    account.charges.forEach((charge, index) => {
+      rows.push(paymentRow(account, addDays(today, -charge.offset), charge.status, index));
     });
   });
   return rows.sort((a, b) => b.paidAt.localeCompare(a.paidAt));
 }
 
-function paymentRow(account: FixtureEmployer, ymd: string, status: string): AdminPaymentRow {
+function paymentRow(account: FixtureEmployer, ymd: string, status: string, index: number): AdminPaymentRow {
   const stamp = ymd.replace(/-/g, '');
   return {
-    paymentId: `PAY-${account.row.companyId}-${stamp}`,
-    invoiceId: `INV-${account.row.companyId}-${stamp}`,
+    paymentId: `PAY-${account.row.companyId}-${stamp}-${index}`,
+    externalId: `pay_${account.row.companyId}_${stamp}_${index}f3c8`,
     companyId: account.row.companyId,
     companyName: account.row.companyName,
+    planLabel: financePlanLabel(account.planSlug),
     paidAt: ymd,
     amount: account.chargeAmount,
     method: 'PayMongo',
@@ -569,36 +601,51 @@ function paymentRow(account: FixtureEmployer, ymd: string, status: string): Admi
   };
 }
 
-function subscriptionRow(account: FixtureEmployer): AdminSubscriptionRow {
+function subscriptionRow(account: FixtureEmployer, today: string, payments: AdminPaymentRow[]): AdminSubscriptionRow {
+  const succeeded = payments
+    .filter(row => row.companyId === account.row.companyId && row.status === 'succeeded')
+    .map(row => row.paidAt)
+    .sort();
   return {
-    subscriptionId: `SUB-${account.row.companyId}`,
     companyId: account.row.companyId,
     companyName: account.row.companyName,
-    plan: account.plan,
     planSlug: account.planSlug,
+    planLabel: financePlanLabel(account.planSlug),
     status: account.subscriptionStatus,
+    cycle: account.cycle,
+    periodEnd: addDays(today, account.periodEndOffset),
     mrr: account.subscriptionStatus === 'active' ? account.mrr : 0,
-    startedAt: account.startedAt,
-    renewsAt: account.renewsAt,
+    lastPaymentAt: succeeded.length ? succeeded[succeeded.length - 1] : null,
   };
 }
 
 function planBreakdown(): AdminPlanBreakdown[] {
+  const total = FIXTURE_EMPLOYERS.length || 1;
   return PLAN_BREAKDOWN_ORDER.map(plan => {
-    const rows = FIXTURE_EMPLOYERS.filter(account => account.planSlug === plan.slug);
+    const count = FIXTURE_EMPLOYERS.filter(account => planBucket(account.planSlug) === plan.slug).length;
     return {
       slug: plan.slug,
-      plan: plan.plan,
-      count: rows.length,
-      mrr: rows
-        .filter(account => account.subscriptionStatus === 'active')
-        .reduce((total, account) => total + account.mrr, 0),
+      label: plan.label,
+      count,
+      pct: Math.round((count / total) * 100),
     };
   });
 }
 
-function isPaid(row: AdminPaymentRow): boolean {
-  return row.status.toLowerCase() === 'paid';
+function planBucket(slug: string): string {
+  if (slug === 'free_trial' || slug === 'starter' || slug === 'growth' || slug === 'business') {
+    return slug;
+  }
+  return 'other';
+}
+
+function entitlementMeters(account: FixtureEmployer): { label: string; used: number; limit: number | null }[] {
+  const limits = ENTITLEMENT_LIMITS[account.planSlug] || { jobs: null, admins: null, videos: null };
+  return [
+    { label: 'Jobs', used: account.row.openJobsCount || 0, limit: limits.jobs },
+    { label: 'Admins', used: account.admins.length, limit: limits.admins },
+    { label: 'Videos', used: account.videosUsed, limit: limits.videos },
+  ];
 }
 
 function sumAmounts(rows: AdminPaymentRow[]): number {

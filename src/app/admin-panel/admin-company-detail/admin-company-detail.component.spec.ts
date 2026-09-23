@@ -44,13 +44,28 @@ describe('AdminCompanyDetailComponent', () => {
     const text = fixture.nativeElement.textContent;
     expect(text).toContain("Lola's Table");
     expect(text).toContain('Company admin');
-    expect(text).toContain('Growth');
-    expect(text).toContain('Payment history');
-    expect(text).toContain('View jobs');
-    expect(text).toContain('View in Finance');
-    expect(text).toContain('Back to companies');
-    const finance = fixture.nativeElement.querySelector('a[href*="finance"], a');
-    expect(fixture.nativeElement.innerHTML).toContain('company=CO-20');
-    expect(finance).toBeTruthy();
+    expect(text).toContain('Overview');
+    expect(text).toContain('Subscription');
+    expect(text).toContain('Payments');
+    expect(text).toContain('History');
+    expect(text).toContain('← Companies');
+    expect(text).toContain('Open jobs');
+    const tabs = fixture.nativeElement.querySelectorAll('[role="tab"]');
+    expect(tabs.length).toBe(4);
+    expect(fixture.nativeElement.querySelector('[role="tab"][aria-selected="true"]').textContent).toContain('Overview');
+
+    fixture.componentInstance.selectTab('subscription');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Entitlement usage');
+    expect(fixture.nativeElement.textContent).toContain('Growth');
+
+    fixture.componentInstance.selectTab('payments');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('All history');
+    expect(fixture.nativeElement.textContent).toContain('PayMongo');
+
+    fixture.componentInstance.selectTab('history');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Moved from Starter to Growth');
   });
 });

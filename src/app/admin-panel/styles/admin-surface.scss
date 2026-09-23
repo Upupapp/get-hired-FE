@@ -401,6 +401,94 @@ a.admin-kpi {
   border: 0;
 }
 
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  margin: 0 0 16px;
+  border-bottom: 1px solid #e6e6e6;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-tab {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #494949;
+  cursor: pointer;
+
+  &[aria-selected='true'] {
+    color: $color-global-navy;
+    border-bottom-color: #f25248;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.admin-plan {
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+
+  &--selected {
+    background: $color-global-red-soft;
+    box-shadow: inset 0 0 0 1px rgba(242, 82, 72, 0.45);
+  }
+}
+
+.admin-kpi--hero .admin-kpi-value {
+  font-size: 36px;
+}
+
+.admin-chip-row,
+.admin-snapshot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.admin-meter {
+  margin: 12px 0;
+}
+
+.admin-meter-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.admin-meter-bar {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 99px;
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    background: $color-global-navy;
+  }
+}
+
+.admin-row-link {
+  cursor: pointer;
+}
+
 .admin-hero-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

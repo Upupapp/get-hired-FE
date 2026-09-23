@@ -35,11 +35,20 @@ describe('AdminFinanceComponent', () => {
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('Finance');
     expect(text).toContain('Last 7 days');
-    expect(text).toContain('MRR');
-    expect(text).toContain('Premium');
-    expect(text).toContain('These numbers are fixtures');
-    expect(text).toContain('Revenue');
+    expect(text).toContain('Current MRR');
+    expect(text).toContain('Revenue in range');
+    expect(text).toContain('Business');
+    expect(text).toContain('Free trial');
+    expect(text).toContain('Subscriptions');
+    expect(text).toContain('Payments');
+    expect(text).toContain('Amounts are fixtures until Clarence wires billing APIs.');
+    expect(text).not.toContain('Premium');
     const search = fixture.nativeElement.querySelector('input[name="finance-search"]');
-    expect(search.getAttribute('placeholder')).toBe('Company, plan, or invoice');
+    expect(search.getAttribute('placeholder')).toBe('Company name');
+
+    fixture.componentInstance.selectTab('payments');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('PayMongo');
+    expect(fixture.nativeElement.querySelector('[role="tab"][aria-selected="true"]').textContent).toContain('Payments');
   });
 });
