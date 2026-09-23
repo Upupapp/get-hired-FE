@@ -2,7 +2,19 @@ export interface Admin {
 
 }
 
-/** KPI payload from GET /admin/dashboard. Null means the field was absent. */
+/** One day of the site-visits sparkline. */
+export interface VisitPoint {
+  date: string;
+  count: number;
+}
+
+/**
+ * KPI payload from GET /admin/dashboard.
+ * Null means the field was absent.
+ * Inventory totals are lifetime. Visits and applicationsInRange follow the time filter.
+ * fixtureMode `fixture` means the whole payload is local sample data;
+ * `mixed` means inventory is live and visits or in-range applications were filled in.
+ */
 export interface Dashboard {
   usersTotal: number | null;
   jobseekersTotal: number | null;
@@ -13,6 +25,16 @@ export interface Dashboard {
   applications7d: number | null;
   applications30d: number | null;
   companiesTotal: number | null;
+  range: string | null;
+  from: string | null;
+  to: string | null;
+  visitsTotal: number | null;
+  visitsPrevious: number | null;
+  visitsSeries: VisitPoint[];
+  visitsMetricLabel: string | null;
+  applicationsInRange: number | null;
+  applicationsInRangeFixture: boolean;
+  fixtureMode: 'live' | 'mixed' | 'fixture';
 }
 
 export interface User {
@@ -24,6 +46,8 @@ export interface AdminPage<T> {
   total: number;
   page: number;
   pageSize: number;
+  /** True when the page was served from local fixtures after the live call failed. */
+  fromFixture?: boolean;
 }
 
 export interface AdminUserRow {
@@ -71,4 +95,20 @@ export interface AdminUserQuery extends AdminListQuery {
 
 export interface AdminJobQuery extends AdminListQuery {
   status?: string;
+}
+
+export interface AdminApplicationQuery extends AdminListQuery {
+  from?: string;
+  to?: string;
+}
+
+export interface AdminApplicationRow {
+  applicationId: string;
+  dateApplied: string | null;
+  seekerName: string;
+  seekerEmail: string;
+  jobId: string;
+  jobTitle: string;
+  companyName: string;
+  status: string | null;
 }

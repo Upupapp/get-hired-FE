@@ -19,6 +19,8 @@
     <button type="submit" class="admin-btn admin-btn--primary">Search</button>
   </form>
 
+  <p class="admin-state" *ngIf="fromFixture && !loading && !error">These rows are fixtures. The live user list did not load.</p>
+
   <app-admin-status
     [loading]="loading"
     [error]="error"

@@ -1,8 +1,12 @@
 import { Dashboard } from './admin.model';
 import {
   buildAdminQuery,
+  formatAdminDate,
+  formatAdminDay,
   isPublishedStatus,
   jobStatusLabel,
+  jobStatusQueryValue,
+  normalizeApplication,
   normalizeCompany,
   normalizeDashboard,
   normalizeJob,
@@ -38,11 +42,37 @@ describe('admin response normalizers', () => {
       applications7d: 2,
       applications30d: 9,
       companiesTotal: 3,
+      range: null,
+      from: null,
+      to: null,
+      visitsTotal: null,
+      visitsPrevious: null,
+      visitsSeries: [],
+      visitsMetricLabel: null,
+      applicationsInRange: null,
+      applicationsInRangeFixture: false,
+      fixtureMode: 'live',
     } as Dashboard);
 
     expect(normalizeDashboard({ usersTotal: 0, jobsActive: 1 }).usersTotal).toBe(0);
     expect(normalizeDashboard({ data: {} })).toBeNull();
     expect(normalizeDashboard(null)).toBeNull();
+
+    const visits = normalizeDashboard({
+      data: {
+        visits_total: 12,
+        visits_previous: 9,
+        visits_metric_label: 'Sessions',
+        visits_series: [{ date: '2026-09-23', count: 12 }],
+        applications_in_range: 4,
+      }
+    });
+    expect(visits.visitsTotal).toBe(12);
+    expect(visits.visitsPrevious).toBe(9);
+    expect(visits.visitsMetricLabel).toBe('Sessions');
+    expect(visits.visitsSeries).toEqual([{ date: '2026-09-23', count: 12 }]);
+    expect(visits.applicationsInRange).toBe(4);
+    expect(visits.fixtureMode).toBe('live');
   });
 
   it('maps user, job, and company rows from snake_case or camelCase', () => {
@@ -73,6 +103,30 @@ describe('admin response normalizers', () => {
     expect(isPublishedStatus(job.status)).toBeTrue();
     expect(isPublishedStatus('draft')).toBeFalse();
     expect(jobStatusLabel(4)).toBe('Archived');
+    expect(jobStatusQueryValue('draft')).toBe(1);
+    expect(jobStatusQueryValue('published')).toBe(2);
+    expect(jobStatusQueryValue('expired')).toBe(3);
+    expect(jobStatusQueryValue('archived')).toBe(4);
+    expect(jobStatusQueryValue('2')).toBe(2);
+    expect(jobStatusQueryValue('')).toBeUndefined();
+
+    expect(normalizeApplication({
+      application_id: 'AP-1',
+      date_applied: '2026-09-23T09:00:00+08:00',
+      seeker_name: 'Ada Cruz',
+      seeker_email: 'ada.cruz@example.com',
+      job_id: 'JB-1',
+      job_title: 'Chef',
+      company_name: 'Acme',
+      status: 'Submitted',
+    })).toEqual(jasmine.objectContaining({
+      applicationId: 'AP-1',
+      seekerEmail: 'ada.cruz@example.com',
+      jobTitle: 'Chef',
+    }));
+    expect(normalizeUser({ email: 'a@b.com' }).lastLogin).toBeNull();
+    expect(formatAdminDate(null)).toBe('—');
+    expect(formatAdminDay('2026-09-23T09:00:00+08:00')).toBe('Sep 23, 2026');
 
     expect(normalizeCompany({
       company_id: 'CO-1',

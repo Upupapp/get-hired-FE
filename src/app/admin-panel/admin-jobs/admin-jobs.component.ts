@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
@@ -31,7 +31,9 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
   error = '';
   notice = '';
   actionError = '';
-  pendingId: string | null = null;
+  fromFixture = false;
+  selectedId: string | null = null;
+  pendingJob: AdminJobRow | null = null;
   unpublishingId: string | null = null;
 
   private q = '';
@@ -50,13 +52,16 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
       map(params => this.readParams(params)),
-      distinctUntilChanged((a, b) => a.q === b.q && a.status === b.status && a.page === b.page),
+      distinctUntilChanged((a, b) =>
+        a.q === b.q && a.status === b.status && a.page === b.page && a.job === b.job
+      ),
       takeUntil(this.destroy$)
     ).subscribe(state => {
       this.q = state.q;
       this.searchText = state.q;
       this.status = state.status;
       this.page = state.page;
+      this.selectedId = state.job;
       const key = `${state.q}|${state.status}|${state.page}`;
       if (key !== this.loadedKey) {
         this.loadedKey = key;
@@ -110,21 +115,42 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
     this.fetch();
   }
 
+  openJob(row: AdminJobRow): void {
+    if (!row.jobId) {
+      return;
+    }
+    this.selectedId = row.jobId;
+    this.pushQuery();
+  }
+
+  closeDetail(): void {
+    this.selectedId = null;
+    this.pushQuery();
+  }
+
   askUnpublish(job: AdminJobRow): void {
     this.actionError = '';
     this.notice = '';
-    this.pendingId = job.jobId;
+    this.pendingJob = job;
   }
 
   cancelUnpublish(): void {
     if (this.unpublishingId) {
       return;
     }
-    this.pendingId = null;
+    this.pendingJob = null;
   }
 
-  confirmUnpublish(job: AdminJobRow): void {
-    if (!job.jobId || this.unpublishingId) {
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.pendingJob) {
+      this.cancelUnpublish();
+    }
+  }
+
+  confirmUnpublish(): void {
+    const job = this.pendingJob;
+    if (!job || !job.jobId || this.unpublishingId) {
       return;
     }
     this.unpublishingId = job.jobId;
@@ -132,7 +158,7 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
     this.adminService.unpublishJob(job.jobId).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.unpublishingId = null;
-        this.pendingId = null;
+        this.pendingJob = null;
         this.notice = `Unpublished ${job.title || 'job'}. It stays in the directory and is hidden from applicants.`;
         this.fetch();
       },
@@ -163,11 +189,16 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
     return row.jobId || row.title;
   }
 
-  private readParams(params: ParamMap): { q: string; status: string; page: number } {
+  get selectedJob(): AdminJobRow | null {
+    return this.rows.find(row => row.jobId === this.selectedId) || null;
+  }
+
+  private readParams(params: ParamMap): { q: string; status: string; page: number; job: string | null } {
     return {
       q: params.get('q') || '',
       status: params.get('status') || '',
       page: readPage(params.get('page')),
+      job: params.get('job'),
     };
   }
 
@@ -178,6 +209,7 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
         q: this.searchText.trim() || null,
         status: this.status || null,
         page: this.page > 1 ? this.page : null,
+        job: this.selectedId || null,
       },
     });
   }
@@ -203,6 +235,7 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
         this.rows = result.items;
         this.total = result.total;
         this.page = result.page || this.page;
+        this.fromFixture = !!result.fromFixture;
       },
       error: err => {
         if (seq !== this.fetchSeq) {
@@ -211,6 +244,7 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.rows = [];
         this.total = 0;
+        this.fromFixture = false;
         this.error = readHttpError(err, 'Could not load jobs.');
       }
     });

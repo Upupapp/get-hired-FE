@@ -1,42 +1,101 @@
 <section class="admin-page" aria-labelledby="admin-dashboard-title">
-  <header class="admin-page-header">
-    <h1 id="admin-dashboard-title">Dashboard</h1>
-    <p>Operational counts for accounts, jobs, applications, and companies.</p>
-  </header>
+  <div class="admin-page-toolbar admin-page-toolbar--sticky">
+    <header class="admin-page-header">
+      <h1 id="admin-dashboard-title">Dashboard</h1>
+      <p>Site visits and applications follow the time range. Account, job, and company totals are lifetime.</p>
+    </header>
+    <app-admin-time-filter [range]="range" [updating]="(loading$ | async) === true" (rangeChange)="onRange($event)"></app-admin-time-filter>
+  </div>
 
-  <ng-container *ngIf="loading$ | async; else dashboardLoaded">
-    <p class="admin-state" role="status">Loading dashboard…</p>
-  </ng-container>
+  <ng-container *ngIf="{ dash: dashboard$ | async, loading: loading$ | async, error: error$ | async } as vm">
+    <p class="admin-state" *ngIf="vm.dash?.fixtureMode === 'fixture'">
+      Live dashboard data didn’t load. These counts are fixtures for screen review, not production metrics.
+    </p>
 
-  <ng-template #dashboardLoaded>
-    <div class="admin-state admin-state--error" role="alert" *ngIf="error$ | async as error">
-      <p>{{ error }}</p>
+    <div class="admin-state admin-state--error" role="alert" *ngIf="vm.error">
+      <p>{{ vm.error }}</p>
       <button type="button" class="admin-btn admin-btn--ghost" (click)="retry()">Try again</button>
     </div>
 
-    <ng-container *ngIf="(error$ | async) === null">
-      <ng-container *ngIf="dashboard$ | async as dash; else dashboardEmpty">
-        <div class="admin-kpi-grid">
-          <ng-container *ngFor="let card of cardsFor(dash)">
-            <a *ngIf="card.link; else dashboardStatic" class="admin-card admin-kpi"
-              [routerLink]="card.link" [queryParams]="card.query || null"
-              [attr.aria-label]="card.label + ': ' + (card.value === null ? 'unavailable' : card.value)">
-              <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
-            </a>
-            <ng-template #dashboardStatic>
-              <div class="admin-card admin-kpi"
-                [attr.aria-label]="card.label + ': ' + (card.value === null ? 'unavailable' : card.value)">
-                <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
-              </div>
-            </ng-template>
-          </ng-container>
+    <article class="admin-card admin-visits" aria-label="Site visits" *ngIf="!vm.error || vm.dash">
+      <ng-container *ngIf="vm.loading && !vm.dash; else visitsBody">
+        <p class="admin-sr" role="status">Loading dashboard…</p>
+        <div class="admin-skeleton-stack" aria-hidden="true">
+          <span class="admin-skeleton admin-skeleton--label"></span>
+          <span class="admin-skeleton admin-skeleton--value"></span>
+          <span class="admin-skeleton admin-skeleton--spark"></span>
         </div>
       </ng-container>
-      <ng-template #dashboardEmpty>
-        <p class="admin-state">No dashboard numbers yet.</p>
+      <ng-template #visitsBody>
+        <ng-container *ngIf="vm.dash as dash; else dashboardEmpty">
+          <div class="admin-visits-skeleton" *ngIf="vm.loading" aria-hidden="true">
+            <span class="admin-skeleton admin-skeleton--label"></span>
+            <span class="admin-skeleton admin-skeleton--value"></span>
+            <span class="admin-skeleton admin-skeleton--spark"></span>
+          </div>
+          <ng-container *ngIf="!vm.loading">
+            <ng-container *ngIf="dash.visitsTotal === null; else visitsReady">
+              <h2 class="admin-visits-label">Site visits</h2>
+              <p class="admin-visits-empty">Site visit analytics aren’t available yet.</p>
+              <p class="admin-visits-note">{{ visitsFootnote }}</p>
+            </ng-container>
+            <ng-template #visitsReady>
+              <p class="admin-visits-kicker">{{ dash.visitsMetricLabel || 'Visits' }}</p>
+              <p class="admin-visits-window">{{ day(dash.from) }} – {{ day(dash.to) }} · Asia/Manila</p>
+              <p class="admin-visits-value">{{ dash.visitsTotal | number }}</p>
+              <p class="admin-visits-delta" *ngIf="delta(dash)" [attr.data-direction]="direction(dash)">{{ delta(dash) }}</p>
+              <svg class="admin-spark" viewBox="0 0 240 48" preserveAspectRatio="none" role="img"
+                [attr.aria-label]="(dash.visitsMetricLabel || 'Visits') + ' by day'"
+                *ngIf="dash.visitsSeries.length || dash.visitsTotal === 0">
+                <polyline [attr.points]="spark(dash)" fill="none" stroke="#F25248" stroke-width="2"></polyline>
+              </svg>
+              <p class="admin-visits-empty" *ngIf="dash.visitsTotal === 0">No visits in this range.</p>
+              <details class="admin-visits-details" *ngIf="dash.visitsSeries.length">
+                <summary>View visit details</summary>
+                <div class="admin-table-wrap">
+                  <table class="admin-table admin-table--compact">
+                    <thead>
+                      <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Visits</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let point of dash.visitsSeries">
+                        <td>{{ day(point.date) }}</td>
+                        <td>{{ point.count | number }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+              <p class="admin-visits-note">{{ visitsFootnote }}</p>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+        <ng-template #dashboardEmpty>
+          <p class="admin-state" *ngIf="!range.invalid">No dashboard numbers yet.</p>
+          <p class="admin-state" *ngIf="range.invalid">Choose a valid date range to load the dashboard.</p>
+        </ng-template>
       </ng-template>
-    </ng-container>
-  </ng-template>
+    </article>
+
+    <div class="admin-kpi-grid" *ngIf="vm.dash as dash">
+      <ng-container *ngFor="let card of cardsFor(dash)">
+        <a *ngIf="card.link; else dashboardStatic" class="admin-card admin-kpi"
+          [routerLink]="card.link" [queryParams]="card.query || null"
+          [attr.aria-label]="card.label + ': ' + (card.value === null ? 'unavailable' : card.value)">
+          <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
+        </a>
+        <ng-template #dashboardStatic>
+          <div class="admin-card admin-kpi"
+            [attr.aria-label]="card.label + ': ' + (card.value === null ? 'unavailable' : card.value)">
+            <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+  </ng-container>
 
   <ng-template #cardBody let-card>
     <span class="admin-kpi-label">{{ card.label }}</span>

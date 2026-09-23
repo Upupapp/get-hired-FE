@@ -1,3 +1,4 @@
+import { resolvePreset } from '../admin-time';
 import { adminDashboard, adminDashboardFail, adminDashboardSuccess } from './admin.actions';
 import { adminReducer } from './admin.reducer';
 import { Dashboard } from '../admin.model';
@@ -13,7 +14,19 @@ describe('adminReducer dashboard', () => {
     applications7d: 0,
     applications30d: 5,
     companiesTotal: 1,
+    range: '7d',
+    from: '2026-09-17',
+    to: '2026-09-24',
+    visitsTotal: 10,
+    visitsPrevious: 8,
+    visitsSeries: [{ date: '2026-09-24', count: 10 }],
+    visitsMetricLabel: 'Pageviews (fixture)',
+    applicationsInRange: 0,
+    applicationsInRangeFixture: false,
+    fixtureMode: 'live',
   };
+
+  const range = resolvePreset('7d', new Date('2026-09-24T02:00:00.000Z'));
 
   it('uses distinct action types so a success does not re-trigger the load effect', () => {
     expect(adminDashboard.type).toBe('[admin] - Get admin status Dashboard');
@@ -24,7 +37,7 @@ describe('adminReducer dashboard', () => {
   });
 
   it('stores KPIs on their own loading and error flags', () => {
-    const requested = adminReducer(undefined, adminDashboard());
+    const requested = adminReducer(undefined, adminDashboard({ range }));
     expect(requested.dashboardLoading).toBeTrue();
     expect(requested.dashboardError).toBeNull();
     expect(requested.loading).toBeFalse();

@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { mainAnimations } from '@app-shared/animations/main-animations';
 import { catchError, of, Subscription } from 'rxjs';
 import { AdminService } from '../admin.service';
 
 @Component({
   selector: 'app-admin-email-verify',
   templateUrl: './admin-email-verify.component.html',
-  styleUrls: ['./admin-email-verify.component.scss'],
-  animations: [mainAnimations]
+  styleUrls: ['./admin-email-verify.component.scss']
 })
 export class AdminEmailVerifyComponent implements OnInit, OnDestroy {
   public records: any;
@@ -17,6 +15,7 @@ export class AdminEmailVerifyComponent implements OnInit, OnDestroy {
   emails: string[] = [];
   subscriptions = new Subscription();
   verified = 0;
+  error = '';
   private verifyTimers: number[] = [];
 
   constructor(
@@ -62,6 +61,7 @@ export class AdminEmailVerifyComponent implements OnInit, OnDestroy {
     this.fileData = null;
     this.records = null;
     this.emails = [];
+    this.error = '';
   }
 
   onUpload(file) {
@@ -70,6 +70,7 @@ export class AdminEmailVerifyComponent implements OnInit, OnDestroy {
 
   uploadListener($event: any): void {
     const files = $event.srcElement.files;
+    this.error = '';
 
     if (this.isValidCSVFile(files[0])) {
       this.document = files[0].name;
@@ -84,13 +85,17 @@ export class AdminEmailVerifyComponent implements OnInit, OnDestroy {
         const csvRecordsArray = (csvData as string).split(/\r\n|\n/);
         const headersRow = this.getHeaderArray(csvRecordsArray);
         this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow);
+        if (!this.records || !this.records.length) {
+          this.error = 'No email addresses found. Use an Email column or a single email column.';
+        }
       };
 
-      reader.onerror = function () {
+      reader.onerror = () => {
+        this.error = 'Could not read that CSV file.';
       };
 
     } else {
-      alert('Please import a valid .csv file.');
+      this.error = 'Please import a valid .csv file.';
     }
   }
 

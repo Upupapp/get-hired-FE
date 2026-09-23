@@ -3,7 +3,7 @@ import { State } from './admin.reducer';
 import { select, Store } from '@ngrx/store';
 import * as AdminAction from './admin.actions';
 import * as fromfeature from './admin.selector';
-import * as InterviewModel from '@main/interview/interview.model';
+import { AdminTimeRange } from '../admin-time';
 
 @Injectable()
 export class AdminFacade {
@@ -20,8 +20,8 @@ export class AdminFacade {
   constructor(private store: Store<State>) {}
 
 
-  getAdminDashboard() {
-    this.store.dispatch(AdminAction.adminDashboard());
+  getAdminDashboard(range: AdminTimeRange) {
+    this.store.dispatch(AdminAction.adminDashboard({ range }));
   }
 
   getUser(userId: string) {

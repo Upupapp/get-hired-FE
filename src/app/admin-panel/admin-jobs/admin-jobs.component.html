@@ -20,6 +20,7 @@
   </form>
 
   <p class="admin-state admin-state--ok" role="status" *ngIf="notice">{{ notice }}</p>
+  <p class="admin-state" *ngIf="fromFixture && !loading && !error">These rows are fixtures. The live job list did not load.</p>
   <div class="admin-state admin-state--error" role="alert" *ngIf="actionError">
     <p>{{ actionError }}</p>
   </div>
@@ -33,49 +34,79 @@
     (retry)="retry()">
   </app-admin-status>
 
-  <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
-    <table class="admin-table">
-      <caption class="admin-muted">Job moderation</caption>
-      <thead>
-        <tr>
-          <th scope="col">Title</th>
-          <th scope="col">Company</th>
-          <th scope="col">Status</th>
-          <th scope="col">Applicants</th>
-          <th scope="col">Created</th>
-          <th scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let row of rows; trackBy: trackJob">
-          <td class="admin-ellipsis">{{ row.title || '—' }}</td>
-          <td class="admin-ellipsis">{{ row.companyName || '—' }}</td>
-          <td><span [class]="statusClass(row)">{{ row.statusLabel }}</span></td>
-          <td>{{ count(row.applicantCount) }}</td>
-          <td>{{ when(row.createdAt) }}</td>
-          <td>
-            <div class="admin-confirm" *ngIf="pendingId === row.jobId; else unpublishButton">
-              <p>Unpublish “{{ row.title || 'this job' }}”? Applicants will no longer see it.</p>
-              <div class="admin-confirm-actions">
-                <button type="button" class="admin-btn admin-btn--danger"
-                  [disabled]="unpublishingId === row.jobId" (click)="confirmUnpublish(row)">
-                  {{ unpublishingId === row.jobId ? 'Unpublishing…' : 'Confirm unpublish' }}
-                </button>
-                <button type="button" class="admin-btn admin-btn--ghost" (click)="cancelUnpublish()" [disabled]="unpublishingId === row.jobId">
-                  Cancel
-                </button>
-              </div>
-            </div>
-            <ng-template #unpublishButton>
+  <div class="admin-split" *ngIf="(!loading && !error && rows.length) || selectedId">
+    <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
+      <table class="admin-table">
+        <caption class="admin-muted">Job moderation</caption>
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Company</th>
+            <th scope="col">Status</th>
+            <th scope="col">Applicants</th>
+            <th scope="col">Created</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows; trackBy: trackJob" [class.admin-row--selected]="row.jobId === selectedId">
+            <td class="admin-ellipsis">
+              <button type="button" class="admin-row-button" (click)="openJob(row)">{{ row.title || '—' }}</button>
+            </td>
+            <td class="admin-ellipsis">{{ row.companyName || '—' }}</td>
+            <td><span [class]="statusClass(row)">{{ row.statusLabel }}</span></td>
+            <td>{{ count(row.applicantCount) }}</td>
+            <td>{{ when(row.createdAt) }}</td>
+            <td>
               <button *ngIf="canUnpublish(row); else noAction" type="button" class="admin-btn admin-btn--ghost" (click)="askUnpublish(row)">
                 Unpublish
               </button>
               <ng-template #noAction><span class="admin-muted">—</span></ng-template>
-            </ng-template>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+    </div>
+
+    <aside class="admin-card admin-detail" *ngIf="selectedId" aria-label="Job detail">
+      <div class="admin-detail-header">
+        <h2>{{ selectedJob?.title || 'Job' }}</h2>
+        <button type="button" class="admin-btn admin-btn--ghost" (click)="closeDetail()">Close</button>
+      </div>
+      <p class="admin-muted" *ngIf="!selectedJob && !loading">This job is not in the current results.</p>
+      <ng-container *ngIf="selectedJob as job">
+        <dl class="admin-detail-grid">
+          <dt>Company</dt>
+          <dd>{{ job.companyName || '—' }}</dd>
+          <dt>Status</dt>
+          <dd><span [class]="statusClass(job)">{{ job.statusLabel }}</span></dd>
+          <dt>Applicants</dt>
+          <dd>{{ count(job.applicantCount) }}</dd>
+          <dt>Created</dt>
+          <dd>{{ when(job.createdAt) }}</dd>
+        </dl>
+        <button *ngIf="canUnpublish(job)" type="button" class="admin-btn admin-btn--ghost" (click)="askUnpublish(job)">
+          Unpublish
+        </button>
+      </ng-container>
+    </aside>
+  </div>
+
+  <div class="admin-modal-layer" *ngIf="pendingJob as job">
+    <div class="admin-modal-backdrop" (click)="cancelUnpublish()"></div>
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-unpublish-title"
+      aria-describedby="admin-unpublish-body" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+      <h2 id="admin-unpublish-title">Unpublish job?</h2>
+      <p id="admin-unpublish-body">“{{ job.title || 'this job' }}” will be hidden from applicants. It is not deleted.</p>
+      <div class="admin-confirm-actions">
+        <button type="button" class="admin-btn admin-btn--danger" (click)="confirmUnpublish()" [disabled]="unpublishingId === job.jobId">
+          {{ unpublishingId === job.jobId ? 'Unpublishing…' : 'Confirm unpublish' }}
+        </button>
+        <button type="button" class="admin-btn admin-btn--ghost" cdkFocusInitial (click)="cancelUnpublish()" [disabled]="!!unpublishingId">
+          Cancel
+        </button>
+      </div>
+    </div>
   </div>
 </section>
