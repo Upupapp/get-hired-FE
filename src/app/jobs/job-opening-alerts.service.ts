@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { BaseService } from '@main/core/services/base.service';
+import { rememberReturnUrl } from '@app-shared/utils/auth-return-url.util';
 
 /** Active subscriptions a seeker can hold. The API enforces this; the page only mirrors it. */
 export const JOB_OPENING_ALERT_LIMIT = 30;
@@ -56,6 +57,58 @@ export function buildJobAlertsReturnUrl(position: string, jobRoleId?: number | s
   const roleId = normalizeJobRoleId(jobRoleId);
   if (roleId != null) query.push(`jobRoleId=${encodeURIComponent(String(roleId))}`);
   return `/job-alerts?${query.join('&')}`;
+}
+
+/**
+ * Query flag on `/jobs`. Public browse reads it after seeker sign-in and
+ * opens the subscribe modal. Kept in the role-3 return URL allowlist.
+ */
+export const JOB_ALERT_MODAL_QUERY = 'openJobAlertModal';
+
+/** Same-tab backup when email verification or a social redirect drops the query. */
+export const JOB_ALERT_MODAL_SESSION_KEY = 'gh.openJobAlertModal';
+
+/** Where a seeker lands so the jobs hero can open the subscribe modal. */
+export function buildJobsBrowseAlertReturnUrl(): string {
+  return `/jobs?${JOB_ALERT_MODAL_QUERY}=1`;
+}
+
+export function isJobAlertModalReturnUrl(value: string | null | undefined): boolean {
+  if (!value || value.indexOf('/jobs') !== 0) return false;
+  return value.indexOf(`${JOB_ALERT_MODAL_QUERY}=1`) !== -1;
+}
+
+export function markJobAlertModalSession(): void {
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(JOB_ALERT_MODAL_SESSION_KEY, '1');
+    }
+  } catch (_) { /* private mode or disabled storage */ }
+}
+
+/** Session flag plus a seeker return URL back to the jobs browse hero. */
+export function rememberJobAlertModalIntent(): void {
+  markJobAlertModalSession();
+  rememberReturnUrl(buildJobsBrowseAlertReturnUrl(), 3);
+}
+
+export function jobAlertModalIntentPending(): boolean {
+  try {
+    if (typeof sessionStorage !== 'undefined'
+      && sessionStorage.getItem(JOB_ALERT_MODAL_SESSION_KEY) === '1') {
+      return true;
+    }
+  } catch (_) { /* ignore */ }
+  if (typeof localStorage === 'undefined') return false;
+  return isJobAlertModalReturnUrl(localStorage.getItem('returnURL'));
+}
+
+export function clearJobAlertModalIntent(): void {
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(JOB_ALERT_MODAL_SESSION_KEY);
+    }
+  } catch (_) { /* ignore */ }
 }
 
 export function hasJobAlertSession(): boolean {

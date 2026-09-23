@@ -2,9 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '@environments/environment';
 import {
+  JOB_ALERT_MODAL_SESSION_KEY,
   JobOpeningAlertsService,
   buildJobAlertsReturnUrl,
+  buildJobsBrowseAlertReturnUrl,
+  clearJobAlertModalIntent,
+  jobAlertModalIntentPending,
   jobOpeningAlertErrorMessage,
+  rememberJobAlertModalIntent,
   subscriptionsFromEnvelope,
 } from './job-opening-alerts.service';
 
@@ -21,7 +26,11 @@ describe('JobOpeningAlertsService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    http.verify();
+    localStorage.removeItem('returnURL');
+    sessionStorage.removeItem(JOB_ALERT_MODAL_SESSION_KEY);
+  });
 
   it('lists active subscriptions from the success envelope', () => {
     let rows: any[] = [];
@@ -99,5 +108,16 @@ describe('JobOpeningAlertsService', () => {
   it('builds a return URL the login allowlist can keep', () => {
     expect(buildJobAlertsReturnUrl('Staff Nurse', 3)).toBe('/job-alerts?position=Staff%20Nurse&jobRoleId=3');
     expect(subscriptionsFromEnvelope({ status: 'success', data: { subscriptions: [] } })).toEqual([]);
+  });
+
+  it('remembers a jobs-browse return so seeker sign-in can reopen the subscribe modal', () => {
+    expect(buildJobsBrowseAlertReturnUrl()).toBe('/jobs?openJobAlertModal=1');
+    rememberJobAlertModalIntent();
+    expect(sessionStorage.getItem(JOB_ALERT_MODAL_SESSION_KEY)).toBe('1');
+    expect(localStorage.getItem('returnURL')).toBe('/jobs?openJobAlertModal=1');
+    expect(jobAlertModalIntentPending()).toBe(true);
+    clearJobAlertModalIntent();
+    localStorage.removeItem('returnURL');
+    expect(jobAlertModalIntentPending()).toBe(false);
   });
 });

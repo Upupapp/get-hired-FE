@@ -13,6 +13,7 @@ import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
 import { AuthRole } from '@app-shared/utils/auth-role-query';
+import { jobAlertModalIntentPending } from '@main/jobs/job-opening-alerts.service';
 
 // Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
 // not as an ES module -- referencing the global here avoids bundling a
@@ -64,6 +65,8 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
   // email" message, driving a real Sign In link in the template instead of
   // a plain string.
   isDuplicateAccount: boolean = false;
+  /** Seeker signup that should return to the jobs hero and open the alerts modal. */
+  continueJobAlerts = false;
 
   // reCAPTCHA (ng-recaptcha's <re-captcha>) renders Google's v2 checkbox
   // widget at a hard-fixed 304x78px -- unlike the Google/LinkedIn sign-in
@@ -139,6 +142,7 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
     if (requestedRole === '2' || requestedRole === '3') {
       this.registerForm.patchValue({ role: Number(requestedRole) });
     }
+    this.continueJobAlerts = requestedRole === '3' && jobAlertModalIntentPending();
 
     this.req$ = combineLatest([this.success$, this.loading$]).pipe(
       map(([success, loading]) => {

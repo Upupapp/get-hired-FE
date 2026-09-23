@@ -186,7 +186,16 @@
       </div>
       <div class="jb-hero-aside">
         <span class="jb-hand-note">A brighter<br>career starts<br>here. ↙</span>
-        <div class="jb-stat-card"><i class="bi bi-people-fill" aria-hidden="true"></i><span>Jobs from Top Companies</span></div>
+        <button
+          *ngIf="showJobAlertEntry"
+          type="button"
+          class="jb-stat-card"
+          (click)="onJobAlertsClick()"
+          aria-label="Job Alerts. Get notified when jobs match a position you choose.">
+          <i class="bi bi-bell-fill" aria-hidden="true"></i>
+          <strong>Job Alerts</strong>
+          <span>Get notified for a position <span aria-hidden="true">→</span></span>
+        </button>
       </div>
     </div>
   </section>

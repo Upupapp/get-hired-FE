@@ -13,6 +13,7 @@ import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util
 import { AuthRole, authRoleLabel, authRoleQuery, otherAuthRole, parseAuthRole } from '@app-shared/utils/auth-role-query';
 import { Subscription } from 'rxjs';
 import { consumeReturnUrl } from '@app-shared/utils/auth-return-url.util';
+import { jobAlertModalIntentPending } from '@main/jobs/job-opening-alerts.service';
 
 // Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
 // not as an ES module -- referencing the global here avoids bundling a
@@ -41,6 +42,8 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   googleLoading = false;
   googleError: string | null = null;
   authRole: AuthRole | null = null;
+  /** Seeker sign-in that should return to the jobs hero and open the alerts modal. */
+  continueJobAlerts = false;
   private querySub: Subscription;
 
   credentials$ = this.authFacade.credentials$
@@ -91,7 +94,9 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
       return 'Sign in to manage jobs and applicants';
     }
     if (this.authRole === 3) {
-      return 'Sign in to continue your job search';
+      return this.continueJobAlerts
+        ? 'Sign in to choose a position and start getting job alerts.'
+        : 'Sign in to continue your job search';
     }
     return 'Sign in to continue to your account';
   }
@@ -106,6 +111,9 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    const initialRole = parseAuthRole(this.activatedRoute.snapshot.queryParamMap.get('role'));
+    this.continueJobAlerts = initialRole === 3 && jobAlertModalIntentPending();
+
     // SEO Phase 5: sign-in is not a public indexable page
     this.seoService.setPageMeta({
       title: 'Sign In | GetHired Online',
@@ -342,6 +350,10 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   // indicators to Angular (click) handlers that call .to() removes the
   // dependency on Bootstrap's own click delegation entirely.
   ngAfterViewInit(): void {
+    if (this.continueJobAlerts && typeof document !== 'undefined') {
+      const email = document.getElementById('signin-email');
+      if (email) email.focus();
+    }
     if (typeof bootstrap === 'undefined') { return; }
     // No explicit `interval`/`pause` -- these match Bootstrap's own
     // defaults (5000ms, pause on hover), i.e. exactly what

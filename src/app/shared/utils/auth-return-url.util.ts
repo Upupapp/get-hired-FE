@@ -8,7 +8,7 @@ export function safeReturnUrlForRole(value: string | null | undefined, role: App
     const allowed = role === 2
       ? parsed.pathname === '/recruiter' || parsed.pathname.startsWith('/recruiter/')
       : role === 3
-        ? parsed.pathname === '/user' || parsed.pathname.startsWith('/user/') || parsed.pathname.startsWith('/jobs/') || parsed.pathname === '/job-alerts'
+        ? parsed.pathname === '/user' || parsed.pathname.startsWith('/user/') || parsed.pathname === '/jobs' || parsed.pathname.startsWith('/jobs/') || parsed.pathname === '/job-alerts'
         : parsed.pathname === '/admin' || parsed.pathname.startsWith('/admin/');
     return allowed ? `${parsed.pathname}${parsed.search}${parsed.hash}` : null;
   } catch (_) {

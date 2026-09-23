@@ -1,4 +1,4 @@
-<app-auth-role-prompt flow="signup" (roleSelected)="selectAuthRole($event)"></app-auth-role-prompt>
+<app-auth-role-prompt *ngIf="!continueJobAlerts" flow="signup" (roleSelected)="selectAuthRole($event)"></app-auth-role-prompt>
 
 <div class="container-fluid bg-white ">
   <div class="row">
@@ -97,6 +97,13 @@
           <div class="form-group text-start gh-auth-heading">
             <!-- V5: Employer-specific title when role=2 is pre-selected via ?role=2 query param.
                  Falls back to generic title for applicant signup (role=3) or when no role is set. -->
+            <ng-container *ngIf="continueJobAlerts && role_validators?.value === 3; else standardSignupHeading">
+              <h4 class="main-title gh-auth-title m-0">Create your <span class="gh-auth-accent">job seeker account</span></h4>
+              <p class="gh-auth-subtitle">
+                After you verify your email and sign in, we'll ask which position you want alerts for.
+              </p>
+            </ng-container>
+            <ng-template #standardSignupHeading>
             <h4 class="main-title gh-auth-title m-0"
               *ngIf="role_validators?.value === 2; else genericTitle">
               Create <span class="gh-auth-accent">your employer account</span>
@@ -110,6 +117,7 @@
             <p class="gh-auth-subtitle" *ngIf="role_validators?.value !== 2">
               Start your journey with GetHired
             </p>
+            </ng-template>
           </div>
 
           <div *ngIf="googleError" class="alert alert-danger mt-2 mb-2 py-2 px-3" role="alert" style="font-size:13px;">

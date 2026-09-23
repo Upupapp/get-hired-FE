@@ -1,0 +1,130 @@
+:host {
+  display: block;
+}
+
+.gh-jam {
+  position: relative;
+  padding: 28px 24px 24px;
+  font-family: 'Manrope', sans-serif;
+  color: #101828;
+}
+
+.gh-jam__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #475467;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { background: #f2f4f7; }
+  &:focus-visible { outline: 2px solid #168bff; outline-offset: 2px; }
+  &:disabled { opacity: 0.45; cursor: wait; }
+}
+
+h2 {
+  margin: 0 36px 8px 0;
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0;
+}
+
+#job-alert-modal-description,
+.gh-jam__status {
+  color: #475467;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  margin: 18px 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+input[type="text"] {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  color: inherit;
+
+  &:focus {
+    outline: 2px solid #168bff;
+    border-color: #168bff;
+  }
+}
+
+.gh-jam__help {
+  margin-top: 8px;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.gh-jam__error {
+  margin-top: 12px;
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gh-jam__submit,
+.gh-jam__actions button {
+  margin-top: 16px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #ff7062 0%, #ff3d6e 100%);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.65; cursor: wait; }
+  &:focus-visible { outline: 2px solid #0d1024; outline-offset: 2px; }
+}
+
+.gh-jam__submit { width: 100%; }
+
+.gh-jam__success { margin-top: 4px; }
+
+.gh-jam__status:focus {
+  outline: 2px solid #168bff;
+  outline-offset: 3px;
+}
+
+.gh-jam__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+
+  a {
+    color: #0b5cab;
+    font-weight: 800;
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+    &:focus-visible { outline: 2px solid #168bff; outline-offset: 2px; }
+  }
+
+  button { margin-top: 0; }
+}
