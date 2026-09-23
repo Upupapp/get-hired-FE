@@ -15,6 +15,7 @@ export interface BasicJob {
   workSetupName: string;
   badges: Options[];
   tags: Options[];
+  jobRoleId?: number;
 }
 
 export interface Options {

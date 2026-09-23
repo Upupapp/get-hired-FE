@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="gh-job-alert-cta"
+  [class.gh-job-alert-cta--block]="block"
+  [disabled]="busy || !(position || '').trim()"
+  [attr.aria-label]="label + (position ? ' — ' + position : '')"
+  (click)="onClick($event)">
+  <i class="bi bi-bell" aria-hidden="true"></i>
+  <span>{{ busy ? 'Saving…' : label }}</span>
+</button>

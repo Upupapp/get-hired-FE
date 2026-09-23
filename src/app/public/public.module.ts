@@ -26,6 +26,8 @@ import { JobBoardEmployerCtaComponent } from './components/job-board-employer-ct
 import { AiJobPreviewPanelComponent } from './employer-portal/ai-job-preview-panel/ai-job-preview-panel.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { TermsComponent } from './terms/terms.component';
+import { AuthGuard } from '@app-shared/guard/auth.guard';
+import { JobAlertsPageComponent } from '@main/jobs/job-alerts-page/job-alerts-page.component';
 
 const routes: Routes = [
   {
@@ -45,6 +47,12 @@ const routes: Routes = [
       { path: 'home', component: MainPortalComponent },
       { path: 'jobs/details/:id', component: PublicDetailsComponent },
       { path: 'jobs', component: PublicListComponent },
+      {
+        path: 'job-alerts',
+        component: JobAlertsPageComponent,
+        canActivate: [AuthGuard],
+        data: { role: '3' },
+      },
       { path: 'jobs/search/:keyword', component: PublicSearchComponent },
       // Company routes defined inline (not via loadChildren) because
       // CompaniesModule is eagerly imported for its components. Using

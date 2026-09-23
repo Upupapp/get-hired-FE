@@ -24,13 +24,33 @@
   }
 }
 
+.recommended-jobs-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 var(--gh-space-5, 20px) 0;
+}
+
 .recommended-jobs-title {
   font-family: var(--gh-font-base, 'Manrope', sans-serif);
   font-size: 16px;
   font-weight: 700;
   color: var(--gh-text, #101828);
   letter-spacing: 0.01em;
-  margin: 0 0 var(--gh-space-5, 20px) 0;
+  margin: 0;
+}
+
+.recommended-jobs-alerts {
+  font-family: var(--gh-font-base, 'Manrope', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gh-azure, #168BFF);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); outline-offset: 2px; }
 }
 
 .recommended-jobs-loading,

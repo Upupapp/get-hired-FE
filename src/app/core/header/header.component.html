@@ -67,6 +67,10 @@
           <a routerLink="/jobs" class="gh-nav-btn-browse gh-pressable">Browse jobs</a>
         </li>
 
+        <li class="nav-item" *ngIf="isPublic && isUserLoggedIn && userRole == '3'">
+          <a routerLink="/job-alerts" class="gh-nav-btn-browse gh-pressable">Job alerts</a>
+        </li>
+
         <li class="nav-item" *ngIf="!isPublic">
           <button class="gh-nav-btn-primary" type="button" (click)="navigateToJobs()">
             Jobs
@@ -226,6 +230,12 @@
     <li role="listitem" *ngIf="isPublic && !isOnJobsSection">
       <a routerLink="/jobs" class="gh-float-menu-item" (click)="closeMobileNav()">
         <span class="gh-float-menu-label">Browse jobs</span>
+      </a>
+    </li>
+
+    <li role="listitem" *ngIf="isPublic && isUserLoggedIn && userRole == '3'">
+      <a routerLink="/job-alerts" class="gh-float-menu-item" (click)="closeMobileNav()">
+        <span class="gh-float-menu-label">Job alerts</span>
       </a>
     </li>
 

@@ -103,5 +103,9 @@
     >
       {{ 'EMPLOYER_BRANDING.CALL_TO_ACTION_BUTTON' | translate }}
     </button>
+    <app-job-alert-subscribe
+      [position]="normalized?.title || data?.jobTitle"
+      [jobRoleId]="data?.jobRoleId || normalized?.jobRoleId">
+    </app-job-alert-subscribe>
   </div>
 </article>

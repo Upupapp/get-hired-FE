@@ -57,6 +57,9 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
       title: 'Jobs', route: '/jobs', icon: 'jobs',
     },
     {
+      title: 'Job alerts', route: '/job-alerts', icon: 'alerts',
+    },
+    {
       title: 'Applications', route: '/user/applications', icon: 'applications',
     },
     {

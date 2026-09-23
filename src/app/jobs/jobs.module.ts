@@ -16,6 +16,7 @@ import { JobDetailsSidecardComponent } from './job-details-sidecard/job-details-
 import { JobMatchPanelComponent } from './job-match-panel/job-match-panel.component';
 import { CompanySnapshotComponent } from './company-snapshot/company-snapshot.component';
 import { VideoInterviewBadgeComponent } from './video-interview-badge/video-interview-badge.component';
+import { JobAlertsPageComponent } from './job-alerts-page/job-alerts-page.component';
 
 const exportedComponents = [
   JobsComponent,
@@ -26,7 +27,8 @@ const exportedComponents = [
   JobDetailsSidecardComponent,
   JobMatchPanelComponent,
   CompanySnapshotComponent,
-  VideoInterviewBadgeComponent
+  VideoInterviewBadgeComponent,
+  JobAlertsPageComponent,
 ];
 
 @NgModule({
