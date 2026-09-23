@@ -1,7 +1,8 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { mainAnimations } from '@app-shared/animations/main-animations';
 import { Subscription } from 'rxjs';
+import { ADMIN_NAV } from '../admin-nav';
 
 @Component({
   selector: 'app-admin-sidebar',
@@ -19,12 +20,12 @@ export class AdminSidebarComponent implements OnInit {
   public location: any = '';
   public screenHeight: number = 300;
   initials: string;
+  public sidebarItems = ADMIN_NAV;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
   ) {
-    this.req = this.router.events.subscribe((event: any) => {
+    this.req = this.router.events.subscribe(() => {
       this.location = this.router.url;
       window.scrollTo({
         top: 0,
@@ -34,15 +35,6 @@ export class AdminSidebarComponent implements OnInit {
     });
   }
 
-  public sidebarItems: any[] = [
-    {
-      title: 'Dashboard', icon: 'dashboard.png', class: 'dashboard', route: 'dashboard'
-    },
-    {
-      title: 'Users', icon: 'jobs.png', class: 'jobs', route: 'users'
-    }
-  ]
-
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenHeight = window.innerHeight;
@@ -51,18 +43,15 @@ export class AdminSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.location = this.router.url;
     this.screenHeight = window.innerHeight;
-    if(this.user) {
-      this.initials = this.user.firstName.charAt(0).toUpperCase() + ' ' + this.user.lastName.charAt(0).toUpperCase();
+    const firstName = this.user && this.user.firstName;
+    const lastName = this.user && this.user.lastName;
+    if (firstName && lastName) {
+      this.initials = firstName.charAt(0).toUpperCase() + ' ' + lastName.charAt(0).toUpperCase();
     }
   }
 
   ngOnDestroy(): void {
     if (this.req) this.req.unsubscribe();
-  }
-
-  changeRoute(route) {
-    console.log(route);
-    this.router.navigate([route]);
   }
 
 }

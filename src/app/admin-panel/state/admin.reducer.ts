@@ -15,7 +15,9 @@ export interface AdminState {
   succesMsg: string;
   loading: boolean;
   user: Model.User;
-  dashboard
+  dashboard: Model.Dashboard | null;
+  dashboardLoading: boolean;
+  dashboardError: string | null;
   // admin: Model.Admin | null;
   // adminLoading: boolean
 }
@@ -27,7 +29,9 @@ const initialState: AdminState = {
   succesMsg: null,
   loading: false,
   user: null,
-  dashboard: []
+  dashboard: null,
+  dashboardLoading: false,
+  dashboardError: null,
   // adminLoading: false
 };
 
@@ -80,23 +84,23 @@ export const adminReducer = createReducer<AdminState>(
   on(AdminActions.adminDashboard, (state): AdminState => {
     return {
       ...state,
-      loading: true,
-      error: null,
-      succesMsg: null
+      dashboardLoading: true,
+      dashboardError: null,
     };
   }),
   on(AdminActions.adminDashboardSuccess, (state, action): AdminState => {
     return {
       ...state,
-      loading: false,
+      dashboardLoading: false,
+      dashboardError: null,
       dashboard: action.dashboard
     };
   }),
   on(AdminActions.adminDashboardFail, (state, action): AdminState => {
     return {
       ...state,
-      loading: false,
-      error: action.payload
+      dashboardLoading: false,
+      dashboardError: action.payload ? String(action.payload) : 'Could not load the dashboard.',
     };
   }),
 );

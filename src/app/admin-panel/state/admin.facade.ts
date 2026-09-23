@@ -12,6 +12,8 @@ export class AdminFacade {
   user$ = this.store.pipe(select(fromfeature.getUser));
   success$ = this.store.pipe(select(fromfeature.success));
   dashboard$ = this.store.pipe(select(fromfeature.adminDashboard));
+  dashboardLoading$ = this.store.pipe(select(fromfeature.dashboardLoading));
+  dashboardError$ = this.store.pipe(select(fromfeature.dashboardError));
 
   error$: any;
 

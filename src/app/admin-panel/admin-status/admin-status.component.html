@@ -1,0 +1,6 @@
+<p class="admin-state" role="status" *ngIf="loading">{{ loadingText }}</p>
+<div class="admin-state admin-state--error" role="alert" *ngIf="!loading && error">
+  <p>{{ error }}</p>
+  <button type="button" class="admin-btn admin-btn--ghost" (click)="retry.emit()">Try again</button>
+</div>
+<p class="admin-state" *ngIf="!loading && !error && empty">{{ emptyText }}</p>

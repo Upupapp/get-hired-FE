@@ -111,53 +111,48 @@
 }
 
 
-.sidebar{
-	&-icon{
-		margin-right: 10px;
+.sidebar-link {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 10px;
+	margin-bottom: 12px;
+	padding: 8px 12px;
+	border-radius: 9px;
+	color: #ffffff;
+	text-decoration: none;
+
+	&:hover {
+		color: #ffffff;
+		text-decoration: none;
 	}
 
-	&-title{
+	&:focus-visible {
+		outline: 2px solid rgba(255, 103, 93, 0.85);
+		outline-offset: 2px;
+	}
+}
+
+.sidebar-title {
+	margin: 0;
+	color: #FFFFFF;
+	cursor: pointer;
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 20px;
+	letter-spacing: 0.2px;
+
+	&:hover {
 		color: #FFFFFF;
-		cursor: pointer;
-
-		font-family: 'Manrope';
-		font-style: normal;
 		font-weight: 500;
-		font-size: 14px;
-		line-height: 20px;
-		/* identical to box height */
-
-		letter-spacing: 0.2px;
-
-
-		&:hover{
-			color: #FFFFFF;
-			font-weight: 500;
-			transition: all 0.4s ease !important;
-		}
-
 	}
+}
 
-	&-title-active{
-		color: $color-global-sidebar-employer-user-menu !important;
-		cursor: pointer;
-		background: $color-global-sidebar-applicant-route-active;
-		border-radius: 9px;
-		padding: 10px 15px 5px 5px;
-		font-family: 'Manrope';
-		font-style: normal;
-		font-weight: 600;
-		font-size: 14px;
-		line-height: 20px;
-		letter-spacing: 0.2px;
-
-		&:hover{
-			color: $color-global-sidebar-employer-user-menu;
-			font-weight: 500;
-			transition: all 0.4s ease !important;
-		}
-
-	}
+.sidebar-link.sidebar-title-active {
+	background: $color-global-sidebar-applicant-route-active;
+	font-weight: 600;
 }
 
 .dashboard{

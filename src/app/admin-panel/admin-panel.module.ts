@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
 import { AdminPanelComponent } from './admin-panel.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -13,6 +14,12 @@ import { StoreModule } from '@ngrx/store';
 import { AdminEffects } from './state/admin.effects';
 import { adminReducer } from './state/admin.reducer';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { AdminJobsComponent } from './admin-jobs/admin-jobs.component';
+import { AdminCompaniesComponent } from './admin-companies/admin-companies.component';
+import { AdminEmailVerifyComponent } from './admin-email-verify/admin-email-verify.component';
+import { AdminNavIconComponent } from './admin-nav-icon/admin-nav-icon.component';
+import { AdminPagerComponent } from './admin-pager/admin-pager.component';
+import { AdminStatusComponent } from './admin-status/admin-status.component';
 
 const routes: Routes = [
   {
@@ -21,6 +28,15 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'users', component: AdminUsersComponent },
+      { path: 'jobs', component: AdminJobsComponent },
+      { path: 'companies', component: AdminCompaniesComponent },
+      {
+        path: 'tools',
+        children: [
+          { path: '', pathMatch: 'full', redirectTo: 'email-verify' },
+          { path: 'email-verify', component: AdminEmailVerifyComponent },
+        ]
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }
@@ -31,10 +47,17 @@ const routes: Routes = [
     AdminPanelComponent,
     AdminSidebarComponent,
     AdminDashboardComponent,
-    AdminUsersComponent
+    AdminUsersComponent,
+    AdminJobsComponent,
+    AdminCompaniesComponent,
+    AdminEmailVerifyComponent,
+    AdminNavIconComponent,
+    AdminPagerComponent,
+    AdminStatusComponent,
   ],
   imports: [
     CommonModule,
+    FormsModule,
     A11yModule,
     CoreModule,
     RouterModule.forChild(routes),

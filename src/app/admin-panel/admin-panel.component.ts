@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ViewChildren, ElementRef, HostListener, QueryList } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { CoreService } from '@app-core/services/core.service';
 import { AdminFacade } from './state/admin.facade';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { ADMIN_NAV } from './admin-nav';
 
 @Component({
   selector: 'app-admin-panel',
@@ -18,9 +19,11 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   // MOBILEVIEW: Mobile drawer state
   mobileNavOpen = false;
 
-  @ViewChild('firstAdminDrawerLink') firstAdminDrawerLinkRef: ElementRef<HTMLAnchorElement>;
+  @ViewChildren('drawerLink') drawerLinks: QueryList<ElementRef<HTMLAnchorElement>>;
   // BL-003: focus return target — the hamburger button
   @ViewChild('mobileMenuBtn') mobileMenuBtn: ElementRef;
+
+  readonly navItems = ADMIN_NAV;
 
   private routerSub: Subscription;
 
@@ -48,8 +51,9 @@ export class AdminPanelComponent implements OnInit, OnDestroy {
   openMobileNav(): void {
     this.mobileNavOpen = true;
     setTimeout(() => {
-      if (this.firstAdminDrawerLinkRef?.nativeElement) {
-        this.firstAdminDrawerLinkRef.nativeElement.focus();
+      const first = this.drawerLinks && this.drawerLinks.first;
+      if (first && first.nativeElement) {
+        first.nativeElement.focus();
       }
     }, 200);
   }

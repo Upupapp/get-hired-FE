@@ -1,1 +1,46 @@
-<p>admin-dashboard works!</p>
+<section class="admin-page" aria-labelledby="admin-dashboard-title">
+  <header class="admin-page-header">
+    <h1 id="admin-dashboard-title">Dashboard</h1>
+    <p>Operational counts for accounts, jobs, applications, and companies.</p>
+  </header>
+
+  <ng-container *ngIf="loading$ | async; else dashboardLoaded">
+    <p class="admin-state" role="status">Loading dashboard…</p>
+  </ng-container>
+
+  <ng-template #dashboardLoaded>
+    <div class="admin-state admin-state--error" role="alert" *ngIf="error$ | async as error">
+      <p>{{ error }}</p>
+      <button type="button" class="admin-btn admin-btn--ghost" (click)="retry()">Try again</button>
+    </div>
+
+    <ng-container *ngIf="(error$ | async) === null">
+      <ng-container *ngIf="dashboard$ | async as dash; else dashboardEmpty">
+        <div class="admin-kpi-grid">
+          <ng-container *ngFor="let card of cardsFor(dash)">
+            <a *ngIf="card.link; else dashboardStatic" class="admin-card admin-kpi"
+              [routerLink]="card.link" [queryParams]="card.query || null"
+              [attr.aria-label]="card.label + ': ' + (card.value === null ? 'unavailable' : card.value)">
+              <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
+            </a>
+            <ng-template #dashboardStatic>
+              <div class="admin-card admin-kpi"
+                [attr.aria-label]="card.label + ': ' + (card.value === null ? 'unavailable' : card.value)">
+                <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: card }"></ng-container>
+              </div>
+            </ng-template>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-template #dashboardEmpty>
+        <p class="admin-state">No dashboard numbers yet.</p>
+      </ng-template>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #cardBody let-card>
+    <span class="admin-kpi-label">{{ card.label }}</span>
+    <span class="admin-kpi-value">{{ card.value === null ? '—' : (card.value | number) }}</span>
+    <span class="admin-kpi-hint">{{ card.hint }}</span>
+  </ng-template>
+</section>

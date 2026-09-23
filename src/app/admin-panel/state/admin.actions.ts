@@ -21,12 +21,12 @@ export const adminDashboard = createAction(
 );
 
 export const adminDashboardSuccess = createAction(
-  AllFeatureActionTypes.GetAdminDashboard,
-  props<{ dashboard: Model.Dashboard }>()
+  AllFeatureActionTypes.GetAdminDashboardSuccess,
+  props<{ dashboard: Model.Dashboard | null }>()
 );
 
 export const adminDashboardFail = createAction(
-  AllFeatureActionTypes.GetAdminDashboard,
+  AllFeatureActionTypes.GetAdminDashboardFail,
   props<{ payload: any }>()
 );
 
