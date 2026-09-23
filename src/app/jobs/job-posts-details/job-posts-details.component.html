@@ -192,6 +192,18 @@
           <app-video-interview-badge [job]="nJob"></app-video-interview-badge>
         </div>
 
+        <div class="card card-body mb-3 gh-job-alert-banner" *ngIf="showJobAlerts">
+          <div class="gh-job-alert-banner__copy">
+            <h2 class="gh-section-title">Get alerts for this position</h2>
+            <p>We'll email you when new <strong>{{ nJob.title }}</strong> jobs are posted — once when you subscribe, then every Tuesday.</p>
+          </div>
+          <app-job-alert-subscribe
+            [block]="false"
+            [position]="nJob.title"
+            [jobRoleId]="nJob.jobRoleId">
+          </app-job-alert-subscribe>
+        </div>
+
         <!-- Match panel with required disclaimer -->
         <div class="gh-match-section mb-3 gh-aligned-block">
           <app-job-match-panel [job]="nJob" (applyClicked)="toApply()"></app-job-match-panel>
@@ -496,6 +508,11 @@
         <p class="gh-reading-companion__register-hint" *ngIf="!userRole">
           New to GetHired? <a routerLink="/signup" [queryParams]="{role: 3}">Create a free account</a>
         </p>
+
+        <app-job-alert-subscribe
+          [position]="nJob.title"
+          [jobRoleId]="nJob.jobRoleId">
+        </app-job-alert-subscribe>
 
         <div class="gh-reading-companion__divider"></div>
 

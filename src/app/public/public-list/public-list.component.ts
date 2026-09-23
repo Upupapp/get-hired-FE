@@ -8,6 +8,7 @@ import {
   SearchService, FederatedSearchResponse, SearchJobResult, SearchCompanyResult,
   CompanySpotlight, SearchCounts, EmptyRecovery, LowResultRecovery,
 } from '@app-core/services/search.service';
+import { isJobSeekerRole, jobAlertEntryVisible } from '@main/jobs/job-opening-alerts.service';
 
 export type SearchTab = 'all' | 'jobs' | 'companies';
 
@@ -29,6 +30,8 @@ export class PublicListComponent implements OnInit, OnDestroy {
   };
 
   userRole = '';
+  /** Guests and job seekers. Employers and admins do not get the alerts entry. */
+  showJobAlertEntry = jobAlertEntryVisible();
   screenSize = 1600;
 
   // Search state
@@ -384,6 +387,10 @@ export class PublicListComponent implements OnInit, OnDestroy {
 
   async getUserRole() {
     this.userRole = await this.asyncLocalStorage.getItem('role') || '';
+    const state = await this.asyncLocalStorage.getItem('state');
+    const token = await this.asyncLocalStorage.getItem('token');
+    const loggedIn = state === 'true' && !!token;
+    this.showJobAlertEntry = !loggedIn || isJobSeekerRole(this.userRole);
   }
 
   trackByJobId(_: number, job: SearchJobResult) { return job.jobId; }

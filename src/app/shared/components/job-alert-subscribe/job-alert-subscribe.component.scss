@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+:host(.gh-job-alert-subscribe--hidden) {
+  display: none;
+}
+
+:host(.gh-job-alert-subscribe--inline) {
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 0.55rem;
+
+  .gh-job-alert-cta {
+    width: auto;
+    margin-top: 0;
+  }
+}
+
+.gh-job-alert-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.6rem;
+  border: 1px solid #d7deea;
+  background: #fff;
+  color: #0d1024;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  text-align: center;
+
+  &--block {
+    width: 100%;
+    margin-top: 0.45rem;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: #168bff;
+    color: #0b5cab;
+    background: #f4f9ff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #168bff;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+}

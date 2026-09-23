@@ -1,0 +1,84 @@
+<section class="gh-alerts" aria-labelledby="job-alerts-title">
+  <div class="gh-alerts__inner">
+    <p class="gh-alerts__back">
+      <a routerLink="/user/dashboard">← Back to dashboard</a>
+    </p>
+
+    <header class="gh-alerts__header">
+      <p class="gh-alerts__eyebrow">Job seeker</p>
+      <h1 id="job-alerts-title">Job opening alerts</h1>
+      <p>
+        Follow positions you want to hear about. When you subscribe, we email the newest
+        matching openings once (up to 10). After that, one email every Tuesday at 9:00 PM
+        Philippine time, again with up to 10 jobs.
+      </p>
+    </header>
+
+    <form class="gh-alerts__card" *ngIf="!forbidden" (ngSubmit)="add()" novalidate>
+      <div class="gh-alerts__card-head">
+        <h2>Add a position</h2>
+        <p *ngIf="loaded && !loadError" class="gh-alerts__count">{{ subscriptions.length }} of {{ limit }}</p>
+      </div>
+
+      <label for="job-alert-position">Position</label>
+      <input
+        id="job-alert-position"
+        type="text"
+        [formControl]="position"
+        maxlength="120"
+        autocomplete="off"
+        placeholder="e.g. Registered Nurse"
+        [attr.aria-invalid]="formError ? true : null"
+        aria-describedby="job-alert-help">
+      <p id="job-alert-help" class="gh-alerts__help">
+        We match this against job titles. You can follow up to {{ limit }} positions.
+      </p>
+
+      <p class="gh-alerts__form-error" *ngIf="formError" role="alert">{{ formError }}</p>
+      <p class="gh-alerts__cap" *ngIf="atCap" role="status">
+        You are at the {{ limit }}-position limit. Unsubscribe from one to add another.
+      </p>
+
+      <button class="gh-alerts__submit" type="submit" [disabled]="submitting || atCap">
+        {{ submitting ? 'Adding…' : 'Add alert' }}
+      </button>
+    </form>
+
+    <div class="gh-alerts__card" aria-live="polite">
+      <h2>Your positions</h2>
+
+      <p class="gh-alerts__status" *ngIf="loading" role="status">Loading your alerts…</p>
+
+      <div class="gh-alerts__load-error" *ngIf="!loading && loadError" role="alert">
+        <p>{{ loadError }}</p>
+        <button type="button" (click)="load()">Try again</button>
+      </div>
+
+      <p class="gh-alerts__empty" *ngIf="!loading && !loadError && subscriptions.length === 0">
+        You are not following any positions yet. Add one above and we will email current matches.
+      </p>
+
+      <ul class="gh-alerts__list" *ngIf="!loading && subscriptions.length > 0">
+        <li *ngFor="let item of subscriptions; trackBy: trackById">
+          <div>
+            <p class="gh-alerts__position">{{ item.position }}</p>
+            <p class="gh-alerts__meta" *ngIf="item.instantSentAt; else pendingInstant">
+              Opening email sent {{ item.instantSentAt | date:'MMM d, y, h:mm a' }}
+            </p>
+            <ng-template #pendingInstant>
+              <p class="gh-alerts__meta">Opening email not sent yet</p>
+            </ng-template>
+          </div>
+          <button
+            type="button"
+            class="gh-alerts__unsubscribe"
+            [disabled]="removingId === item.id"
+            [attr.aria-label]="'Unsubscribe from ' + item.position"
+            (click)="confirmUnsubscribe(item)">
+            {{ removingId === item.id ? 'Removing…' : 'Unsubscribe' }}
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

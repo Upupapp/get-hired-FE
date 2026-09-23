@@ -41,6 +41,7 @@ import { SubscriptionAlertComponent } from './components/subscription-alert/subs
 import { SecurityLogoutCountdownComponent } from './components/security-logout-countdown/security-logout-countdown.component';
 import { InlineLoadingComponent } from './components/inline-loading/inline-loading.component';
 import { LockedMatchTeaserComponent } from './components/locked-match-teaser/locked-match-teaser.component';
+import { JobAlertSubscribeComponent } from './components/job-alert-subscribe/job-alert-subscribe.component';
 import { TalentProofBadgeComponent } from './components/talent-proof-badge/talent-proof-badge.component';
 import { MessageThreadComponent } from './components/message-thread/message-thread.component';
 import { ApplicationCompletenessBadgeComponent } from './components/application-completeness-badge/application-completeness-badge.component';
@@ -93,6 +94,7 @@ const classesToInclude: any[] = [
   SecurityLogoutCountdownComponent,
   InlineLoadingComponent,
   LockedMatchTeaserComponent,
+  JobAlertSubscribeComponent,
   TalentProofBadgeComponent,
   MessageThreadComponent,
   ApplicationCompletenessBadgeComponent,

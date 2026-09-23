@@ -735,3 +735,17 @@
 
 // .jb-preview-full removed -- "View full job details" button deleted per
 // explicit request (View & Apply already goes to the same detail page).
+
+.jb-alert-link {
+  margin: 8px 0 0;
+
+  a {
+    color: #0b5cab;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+    &:focus-visible { outline: 2px solid #168bff; outline-offset: 2px; }
+  }
+}

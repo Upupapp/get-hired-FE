@@ -68,6 +68,10 @@
 		<button class="btn btn-primary d-block w-100"
 		[attr.aria-label]="'View and apply for ' + (data?.jobTitle || 'this job')"
 		(click)="applyNow(data)">Apply Now</button>
+		<app-job-alert-subscribe
+			[position]="data?.jobTitle"
+			[jobRoleId]="data?.jobRoleId">
+		</app-job-alert-subscribe>
 	</div>
 
 </div>
