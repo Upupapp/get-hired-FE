@@ -14,7 +14,7 @@
       </p>
     </header>
 
-    <form class="gh-alerts__card" (ngSubmit)="add()" novalidate>
+    <form class="gh-alerts__card" *ngIf="!forbidden" (ngSubmit)="add()" novalidate>
       <div class="gh-alerts__card-head">
         <h2>Add a position</h2>
         <p *ngIf="loaded && !loadError" class="gh-alerts__count">{{ subscriptions.length }} of {{ limit }}</p>

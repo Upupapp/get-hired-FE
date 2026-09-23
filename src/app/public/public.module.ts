@@ -51,6 +51,7 @@ const routes: Routes = [
         path: 'job-alerts',
         component: JobAlertsPageComponent,
         canActivate: [AuthGuard],
+        // Role 3 is the jobseeker. Employers (2) and admins (1) are turned away.
         data: { role: '3' },
       },
       { path: 'jobs/search/:keyword', component: PublicSearchComponent },

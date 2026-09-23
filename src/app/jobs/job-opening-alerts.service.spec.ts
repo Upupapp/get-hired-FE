@@ -89,6 +89,13 @@ describe('JobOpeningAlertsService', () => {
     })).toBe('Position is required');
   });
 
+  it('uses a jobseeker-only message for HTTP 403 and does not echo Forbidden', () => {
+    expect(jobOpeningAlertErrorMessage({
+      status: 403,
+      error: { status: 'error', error: 'Forbidden' },
+    })).toBe('Job opening alerts are only available to job seekers.');
+  });
+
   it('builds a return URL the login allowlist can keep', () => {
     expect(buildJobAlertsReturnUrl('Staff Nurse', 3)).toBe('/job-alerts?position=Staff%20Nurse&jobRoleId=3');
     expect(subscriptionsFromEnvelope({ status: 'success', data: { subscriptions: [] } })).toEqual([]);

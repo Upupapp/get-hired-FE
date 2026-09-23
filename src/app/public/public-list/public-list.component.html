@@ -20,7 +20,7 @@
       <!-- Dynamic H1 result heading -->
         <div class="gh-search-result-head" *ngIf="!searchLoading">
         <h1 class="gh-search-result-h1">{{ dynamicResultTitle }}</h1>
-        <p class="jb-alert-link"><a routerLink="/job-alerts">Get alerts for a position</a></p>
+        <p class="jb-alert-link" *ngIf="showJobAlertEntry"><a routerLink="/job-alerts">Get alerts for a position</a></p>
         <p class="gh-search-result-count" aria-live="polite" aria-atomic="true" *ngIf="!searchLoading && counts.all > 0">
           {{ countSummary }}
         </p>
@@ -217,7 +217,7 @@
 
     <section class="jb-results" aria-label="Available jobs">
       <div class="jb-results-head">
-        <div><h2>Explore open opportunities</h2><p>Discover roles from companies hiring across the Philippines and beyond.</p><p class="jb-alert-link"><a routerLink="/job-alerts">Get alerts for a position</a></p></div>
+        <div><h2>Explore open opportunities</h2><p>Discover roles from companies hiring across the Philippines and beyond.</p><p class="jb-alert-link" *ngIf="showJobAlertEntry"><a routerLink="/job-alerts">Get alerts for a position</a></p></div>
         <label class="jb-sort">Sort by<select aria-label="Sort jobs" (change)="applyFilter('sort', $any($event.target).value)"><option value="relevance">Most relevant</option><option value="newest">Newest</option><option value="salary_high">Highest salary</option></select></label>
       </div>
       <div class="jb-quick-filters" aria-label="Quick filters">

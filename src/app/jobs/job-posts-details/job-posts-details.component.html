@@ -192,7 +192,7 @@
           <app-video-interview-badge [job]="nJob"></app-video-interview-badge>
         </div>
 
-        <div class="card card-body mb-3 gh-job-alert-banner">
+        <div class="card card-body mb-3 gh-job-alert-banner" *ngIf="showJobAlerts">
           <div class="gh-job-alert-banner__copy">
             <h2 class="gh-section-title">Get alerts for this position</h2>
             <p>We'll email you when new <strong>{{ nJob.title }}</strong> jobs are posted — once when you subscribe, then every Tuesday.</p>

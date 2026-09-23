@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SnackbarService } from '@app-core/services/snackbar.service';
 import { CoreService } from '@app-core/services/core.service';
@@ -6,16 +6,17 @@ import {
   JobOpeningAlertsService,
   buildJobAlertsReturnUrl,
   hasJobAlertSession,
+  isJobSeekerRole,
+  jobAlertEntryVisible,
   jobOpeningAlertErrorMessage,
   normalizeJobRoleId,
 } from '@main/jobs/job-opening-alerts.service';
 import { rememberReturnUrl } from '@app-shared/utils/auth-return-url.util';
 
 /**
- * "Get alerts for this position" entry point used on public job browse/detail
- * and the jobseeker portal. Logged-out visitors are sent to sign-in and returned
- * to /job-alerts with the position prefilled. The subscribe request itself is
- * confirmed there or, when already signed in as a seeker, sent immediately.
+ * "Get alerts for this position" for guests and job seekers (role 3).
+ * Guests are sent to sign-in and returned to /job-alerts with the position
+ * prefilled. Signed-in employers and admins do not see the button.
  */
 @Component({
   selector: 'app-job-alert-subscribe',
@@ -23,15 +24,17 @@ import { rememberReturnUrl } from '@app-shared/utils/auth-return-url.util';
   styleUrls: ['./job-alert-subscribe.component.scss'],
   host: {
     '[class.gh-job-alert-subscribe--inline]': '!block',
+    '[class.gh-job-alert-subscribe--hidden]': '!visible',
   },
 })
-export class JobAlertSubscribeComponent {
+export class JobAlertSubscribeComponent implements OnInit {
   @Input() position: string | null | undefined = null;
   @Input() jobRoleId: number | null | undefined = null;
   @Input() label = 'Get alerts for this position';
   @Input() block = true;
 
   busy = false;
+  visible = jobAlertEntryVisible();
 
   constructor(
     private alerts: JobOpeningAlertsService,
@@ -39,6 +42,19 @@ export class JobAlertSubscribeComponent {
     private snackbar: SnackbarService,
     private core: CoreService,
   ) {}
+
+  ngOnInit(): void {
+    if (!hasJobAlertSession()) {
+      this.visible = true;
+      return;
+    }
+    this.visible = jobAlertEntryVisible();
+    this.core.getRole().then((role) => {
+      this.visible = isJobSeekerRole(role);
+    }).catch(() => {
+      this.visible = false;
+    });
+  }
 
   onClick(event: Event): void {
     event.stopPropagation();
@@ -59,9 +75,10 @@ export class JobAlertSubscribeComponent {
 
     this.busy = true;
     this.core.getRole().then((role) => {
-      if (role !== '3') {
+      if (!isJobSeekerRole(role)) {
         this.busy = false;
-        this.snackbar.info('Job opening alerts are for job seeker accounts.');
+        this.visible = false;
+        this.snackbar.error(jobOpeningAlertErrorMessage({ status: 403 }));
         return;
       }
       this.alerts.create(position, normalizeJobRoleId(this.jobRoleId)).subscribe({

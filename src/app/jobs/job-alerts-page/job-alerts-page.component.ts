@@ -11,6 +11,7 @@ import {
   JOB_OPENING_ALERT_LIMIT,
   JobOpeningAlertSubscription,
   JobOpeningAlertsService,
+  isJobOpeningAlertForbidden,
   jobOpeningAlertErrorMessage,
   normalizeJobRoleId,
 } from '../job-opening-alerts.service';
@@ -29,6 +30,7 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
   loaded = false;
   loadError: string | null = null;
   formError: string | null = null;
+  forbidden = false;
   submitting = false;
   removingId: string | number | null = null;
 
@@ -85,7 +87,7 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.loading = false;
         this.loaded = true;
-        this.loadError = jobOpeningAlertErrorMessage(err);
+        this.noteFailure(err, 'load');
       },
     });
   }
@@ -130,7 +132,7 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.submitting = false;
-        this.formError = jobOpeningAlertErrorMessage(err);
+        this.noteFailure(err, 'form');
       },
     });
   }
@@ -155,6 +157,14 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
     return String(item.id);
   }
 
+  private noteFailure(err: any, target: 'load' | 'form' | 'toast'): void {
+    const message = jobOpeningAlertErrorMessage(err);
+    if (isJobOpeningAlertForbidden(err)) this.forbidden = true;
+    if (target === 'load') this.loadError = message;
+    else if (target === 'form') this.formError = message;
+    else this.snackbar.error(message);
+  }
+
   private remove(item: JobOpeningAlertSubscription): void {
     this.removingId = item.id;
     this.alerts.unsubscribe(item.id).subscribe({
@@ -165,7 +175,7 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.removingId = null;
-        this.snackbar.error(jobOpeningAlertErrorMessage(err));
+        this.noteFailure(err, 'toast');
       },
     });
   }

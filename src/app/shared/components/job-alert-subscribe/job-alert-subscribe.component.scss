@@ -2,6 +2,10 @@
   display: block;
 }
 
+:host(.gh-job-alert-subscribe--hidden) {
+  display: none;
+}
+
 :host(.gh-job-alert-subscribe--inline) {
   display: inline-block;
   max-width: 100%;

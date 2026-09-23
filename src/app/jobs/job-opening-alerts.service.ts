@@ -7,6 +7,26 @@ import { BaseService } from '@main/core/services/base.service';
 /** Active subscriptions a seeker can hold. The API enforces this; the page only mirrors it. */
 export const JOB_OPENING_ALERT_LIMIT = 30;
 
+/**
+ * Jobseeker role in this app's guards and local session (`AuthGuard` data.role,
+ * `localStorage.role`). Admin is `1`, employer/recruiter is `2`.
+ */
+export const JOB_SEEKER_ROLE = '3';
+
+export const JOB_OPENING_ALERTS_SEEKER_ONLY_MESSAGE =
+  'Job opening alerts are only available to job seekers.';
+
+export function isJobSeekerRole(role: string | number | null | undefined): boolean {
+  return String(role) === JOB_SEEKER_ROLE;
+}
+
+/** Guests can see the CTA (it sends them to sign in). Signed-in employers and admins cannot. */
+export function jobAlertEntryVisible(): boolean {
+  if (!hasJobAlertSession()) return true;
+  if (typeof localStorage === 'undefined') return false;
+  return isJobSeekerRole(localStorage.getItem('role'));
+}
+
 export interface JobOpeningAlertSubscription {
   id: string | number;
   position: string;
@@ -55,8 +75,13 @@ function messageFromBody(body: any): string | null {
     || text(body.message);
 }
 
+export function isJobOpeningAlertForbidden(err: any): boolean {
+  return !!(err && err.status === 403);
+}
+
 /** Prefer the API envelope message over Angular's generic HTTP failure text. */
 export function jobOpeningAlertErrorMessage(err: any): string {
+  if (isJobOpeningAlertForbidden(err)) return JOB_OPENING_ALERTS_SEEKER_ONLY_MESSAGE;
   const fromEnvelope = messageFromBody(err && err.error) || messageFromBody(err);
   if (fromEnvelope && fromEnvelope.indexOf('Http failure') !== 0) return fromEnvelope;
   return 'Something went wrong with job alerts. Please try again.';

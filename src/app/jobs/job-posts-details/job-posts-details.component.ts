@@ -16,6 +16,7 @@ import { SeoService } from '@app-core/services/seo.service';
 import { PublicJobNormalizerService } from '@main/public/services/public-job-normalizer.service';
 import { JobSignalsService } from '@main/public/services/job-signals.service';
 import { HapticFeedbackService } from '@app-shared/services/haptic-feedback/haptic-feedback.service';
+import { hasJobAlertSession, isJobSeekerRole, jobAlertEntryVisible } from '../job-opening-alerts.service';
 
 @Component({
   selector: 'app-job-posts-details',
@@ -88,6 +89,8 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   link$: Subscription;
   jobId: string;
   userRole: string;
+  /** Guests and job seekers (role 3). Hidden for employers and admins. */
+  showJobAlerts = jobAlertEntryVisible();
   currentUrl$: Subscription;
 
   public screenSize: number = 1600;
@@ -122,7 +125,10 @@ export class JobPostsDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.jobFacade.getJobById(this.jobId);
     this.coreService.getRole()
-      .then(role => this.userRole = role);
+      .then(role => {
+        this.userRole = role;
+        this.showJobAlerts = !hasJobAlertSession() || isJobSeekerRole(role);
+      });
 
     this.normalizedJobSub = this.normalizedJob$.subscribe(job => {
       if (job) {
