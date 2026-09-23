@@ -3,12 +3,15 @@ import {
   buildAdminQuery,
   formatAdminDate,
   formatAdminDay,
+  formatAdminMoney,
   isPublishedStatus,
   jobStatusLabel,
   jobStatusQueryValue,
   normalizeApplication,
   normalizeCompany,
+  normalizeCompanyDetail,
   normalizeDashboard,
+  normalizeFinance,
   normalizeJob,
   normalizePage,
   normalizeUser,
@@ -127,6 +130,8 @@ describe('admin response normalizers', () => {
     expect(normalizeUser({ email: 'a@b.com' }).lastLogin).toBeNull();
     expect(formatAdminDate(null)).toBe('—');
     expect(formatAdminDay('2026-09-23T09:00:00+08:00')).toBe('Sep 23, 2026');
+    expect(formatAdminMoney(null)).toBe('—');
+    expect(formatAdminMoney(3490).replace(/[^\d]/g, '')).toBe('3490');
 
     expect(normalizeCompany({
       company_id: 'CO-1',
@@ -170,6 +175,42 @@ describe('admin response normalizers', () => {
     expect(labels).toContain('Profile city');
     expect(labels.some(label => /password|token/i.test(label))).toBeFalse();
     expect(fields.find(field => field.label === 'Role').value).toBe('Admin');
+  });
+
+  it('normalizes finance and company detail, and ignores a company list', () => {
+    const finance = normalizeFinance({
+      data: {
+        currency: 'PHP',
+        active_count: 2,
+        mrr: 4980,
+        plans: [{ slug: 'business', name: 'Business', count: 1, mrr: 5990 }],
+        revenue_in_range: 1490,
+        revenue_series: [{ date: '2026-09-24', amount: 1490 }],
+        subscriptions: { items: [{ company_id: 'CO-1', company_name: 'Acme', plan_slug: 'business', plan: 'Business', status: 'active', mrr: 5990 }], total: 1 },
+        payments: [{ invoice_id: 'INV-1', amount: 1490, status: 'Paid', paid_at: '2026-09-24' }],
+      }
+    });
+    expect(finance.mrr).toBe(4980);
+    expect(finance.plans[0].plan).toBe('Premium');
+    expect(finance.subscriptions.items[0].plan).toBe('Premium');
+    expect(finance.payments.items[0].invoiceId).toBe('INV-1');
+    expect(finance.fromFixture).toBeFalse();
+    expect(normalizeFinance({ data: { items: [] } })).toBeNull();
+
+    expect(normalizeCompanyDetail({ data: { items: [{ company_id: 'CO-1' }], total: 1 } })).toBeNull();
+    const detail = normalizeCompanyDetail({
+      data: {
+        company_id: 'CO-20',
+        company_name: "Lola's Table",
+        admin_contact: { name: 'Rosa', email: 'rosa@example.com', phone: '+63 917', role: 'Company admin' },
+        subscription: { plan_slug: 'growth', plan: 'Growth', status: 'active', mrr: 3490 },
+        payments: [{ invoice_id: 'INV-CO-20', amount: 3490, status: 'Paid' }],
+        history: [{ at: '2026-08-01', kind: 'Plan change', summary: 'Moved from Starter to Growth' }],
+      }
+    });
+    expect(detail.companyId).toBe('CO-20');
+    expect(detail.adminContact.role).toBe('Company admin');
+    expect(detail.history[0].summary).toContain('Growth');
   });
 
   it('builds query strings and reads http errors', () => {

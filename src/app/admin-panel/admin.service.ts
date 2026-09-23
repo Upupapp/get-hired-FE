@@ -10,6 +10,8 @@ import {
   applyDashboardFixture,
   fixtureApplications,
   fixtureCompanies,
+  fixtureCompanyDetail,
+  fixtureFinance,
   fixtureJobs,
   fixtureUsers,
 } from './admin.fixtures';
@@ -18,7 +20,9 @@ import {
   jobStatusQueryValue,
   normalizeApplication,
   normalizeCompany,
+  normalizeCompanyDetail,
   normalizeDashboard,
+  normalizeFinance,
   normalizeJob,
   normalizePage,
   normalizeUser,
@@ -107,6 +111,50 @@ export class AdminService {
     return this.baseService.get<any>(url).pipe(
       map(res => normalizePage(res, normalizeCompany, query.page, query.pageSize)),
       catchError(err => this.fixtureOrThrow(err, () => fixtureCompanies(query)))
+    );
+  }
+
+  getFinance(query: Model.AdminFinanceQuery): Observable<Model.AdminFinance> {
+    const url = `${this.adminUrl}/finance${buildAdminQuery({
+      range: query.range,
+      from: query.from,
+      to: query.to,
+      company: query.companyId,
+      q: query.q,
+      page: query.page,
+      pageSize: query.pageSize,
+      payPage: query.paymentPage,
+    })}`;
+    return this.baseService.get<any>(url).pipe(
+      map(res => {
+        const live = normalizeFinance(res);
+        if (live) {
+          return live;
+        }
+        if (!ADMIN_USE_FIXTURES) {
+          throw new Error('Finance was not in the response.');
+        }
+        return fixtureFinance(query);
+      }),
+      catchError(err => this.fixtureOrThrow(err, () => fixtureFinance(query)))
+    );
+  }
+
+  getCompanyDetail(companyId: string): Observable<Model.AdminCompanyDetail> {
+    const url = `${this.adminUrl}/companies/${encodeURIComponent(companyId)}`;
+    return this.baseService.get<any>(url).pipe(
+      map(res => {
+        const live = normalizeCompanyDetail(res);
+        if (live) {
+          return live;
+        }
+        const sample = ADMIN_USE_FIXTURES ? fixtureCompanyDetail(companyId) : null;
+        if (!sample) {
+          throw new Error('Company detail was not in the response.');
+        }
+        return sample;
+      }),
+      catchError(err => this.fixtureOrThrow(err, () => fixtureCompanyDetail(companyId)))
     );
   }
 

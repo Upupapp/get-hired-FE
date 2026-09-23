@@ -1,0 +1,145 @@
+<section class="admin-page" aria-labelledby="admin-company-detail-title">
+  <div class="admin-page-toolbar">
+    <header class="admin-page-header">
+      <p class="admin-back">
+        <a routerLink="/admin/companies">Back to companies</a>
+      </p>
+      <h1 id="admin-company-detail-title">{{ detail?.companyName || 'Company' }}</h1>
+      <p *ngIf="detail">Employer profile, company admin, subscription, payments, and history.</p>
+    </header>
+  </div>
+
+  <p class="admin-state" *ngIf="detail?.fromFixture && !loading && !error">
+    This employer record is a fixture. GET /admin/companies/{{ detail?.companyId }} is not on the API yet.
+  </p>
+
+  <app-admin-status
+    [loading]="loading && !detail"
+    [error]="error"
+    [empty]="false"
+    loadingText="Loading company…"
+    (retry)="retry()">
+  </app-admin-status>
+
+  <ng-container *ngIf="detail as company">
+    <div class="admin-link-row">
+      <a class="admin-btn admin-btn--primary" [routerLink]="['/admin/jobs']" [queryParams]="{ q: company.companyName }">View jobs</a>
+      <a class="admin-btn admin-btn--ghost" [routerLink]="['/admin/finance']" [queryParams]="{ company: company.companyId }">View in Finance</a>
+    </div>
+
+    <div class="admin-hero-grid">
+      <article class="admin-card">
+        <h2 class="admin-section-title">Profile</h2>
+        <dl class="admin-detail-grid">
+          <dt>Name</dt>
+          <dd>{{ company.companyName || '—' }}</dd>
+          <dt>Slug</dt>
+          <dd>{{ company.slug || '—' }}</dd>
+          <dt>Created</dt>
+          <dd>{{ when(company.createdAt) }}</dd>
+          <dt>Open jobs</dt>
+          <dd>{{ count(company.openJobsCount) }}</dd>
+          <dt>Status</dt>
+          <dd>{{ company.status || '—' }}</dd>
+        </dl>
+      </article>
+
+      <article class="admin-card">
+        <h2 class="admin-section-title">Company admin</h2>
+        <dl class="admin-detail-grid" *ngIf="company.adminContact as admin; else noAdmin">
+          <dt>Name</dt>
+          <dd>{{ admin.name || '—' }}</dd>
+          <dt>Email</dt>
+          <dd>{{ admin.email || '—' }}</dd>
+          <dt>Phone</dt>
+          <dd>{{ admin.phone || '—' }}</dd>
+          <dt>Role</dt>
+          <dd>{{ admin.role || '—' }}</dd>
+        </dl>
+        <ng-template #noAdmin>
+          <p class="admin-muted">No company admin on this record.</p>
+        </ng-template>
+      </article>
+    </div>
+
+    <h2 class="admin-section-title">Subscription</h2>
+    <article class="admin-card" *ngIf="company.subscription as sub; else noSub">
+      <dl class="admin-detail-grid">
+        <dt>Plan</dt>
+        <dd>{{ sub.plan || '—' }}</dd>
+        <dt>Status</dt>
+        <dd>{{ sub.status || '—' }}</dd>
+        <dt>MRR</dt>
+        <dd>{{ money(sub.mrr) }}</dd>
+        <dt>Started</dt>
+        <dd>{{ when(sub.startedAt) }}</dd>
+        <dt>Renews</dt>
+        <dd>{{ when(sub.renewsAt) }}</dd>
+      </dl>
+      <p class="admin-visits-note" *ngIf="sub.planSlug === 'enterprise'">Enterprise MRR is a contracted fixture. The public price is Custom.</p>
+    </article>
+    <ng-template #noSub>
+      <p class="admin-state">No subscription on this company.</p>
+    </ng-template>
+
+    <h2 class="admin-section-title">Contacts</h2>
+    <p class="admin-state" *ngIf="!company.contacts.length">No contacts on this record.</p>
+    <div class="admin-card admin-table-wrap" *ngIf="company.contacts.length">
+      <table class="admin-table">
+        <caption class="admin-muted">Key people. These rows are fixtures.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Role</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let person of company.contacts">
+            <td>{{ person.name || '—' }}</td>
+            <td>{{ person.role || '—' }}</td>
+            <td>{{ person.email || '—' }}</td>
+            <td>{{ person.phone || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="admin-section-title">Payment history</h2>
+    <p class="admin-state" *ngIf="!company.payments.length">No payments on this company.</p>
+    <div class="admin-card admin-table-wrap" *ngIf="company.payments.length">
+      <table class="admin-table">
+        <caption class="admin-muted">All fixture charges for this company, including failed payments. Not limited to the Finance date range.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Method</th>
+            <th scope="col">Status</th>
+            <th scope="col">Invoice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of company.payments; trackBy: trackPayment">
+            <td>{{ when(row.paidAt) }}</td>
+            <td>{{ money(row.amount) }}</td>
+            <td>{{ row.method || '—' }}</td>
+            <td>{{ row.status || '—' }}</td>
+            <td>{{ row.invoiceId || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="admin-section-title">History</h2>
+    <p class="admin-state" *ngIf="!company.history.length">No history on this company.</p>
+    <ol class="admin-timeline" *ngIf="company.history.length">
+      <li *ngFor="let event of company.history; trackBy: trackEvent">
+        <time [attr.datetime]="event.at">{{ when(event.at) }}</time>
+        <span class="admin-muted">{{ event.kind || 'Event' }}</span>
+        <p>{{ event.summary || '—' }}</p>
+      </li>
+    </ol>
+  </ng-container>
+</section>

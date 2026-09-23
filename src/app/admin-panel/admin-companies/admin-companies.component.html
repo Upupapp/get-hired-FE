@@ -1,7 +1,7 @@
 <section class="admin-page" aria-labelledby="admin-companies-title">
   <header class="admin-page-header">
     <h1 id="admin-companies-title">Companies</h1>
-    <p>Employer companies and how many jobs are currently open.</p>
+    <p>Employer companies. Open a company for profile, contacts, subscription, payments, and history.</p>
   </header>
 
   <form class="admin-filters" (ngSubmit)="applySearch()">
@@ -24,51 +24,29 @@
     (retry)="retry()">
   </app-admin-status>
 
-  <div class="admin-split" *ngIf="(!loading && !error && rows.length) || selectedId">
-    <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
-      <table class="admin-table">
-        <caption class="admin-muted">Company directory</caption>
-        <thead>
-          <tr>
-            <th scope="col">Company</th>
-            <th scope="col">Slug</th>
-            <th scope="col">Open jobs</th>
-            <th scope="col">Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let row of rows; trackBy: trackCompany" [class.admin-row--selected]="row.companyId === selectedId">
-            <td class="admin-ellipsis">
-              <button type="button" class="admin-row-button" (click)="openCompany(row)">{{ row.companyName || '—' }}</button>
-            </td>
-            <td class="admin-ellipsis">{{ row.slug || '—' }}</td>
-            <td>{{ count(row.openJobsCount) }}</td>
-            <td>{{ when(row.createdAt) }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
-    </div>
-
-    <aside class="admin-card admin-detail" *ngIf="selectedId" aria-label="Company detail">
-      <div class="admin-detail-header">
-        <h2>{{ selectedCompany?.companyName || 'Company' }}</h2>
-        <button type="button" class="admin-btn admin-btn--ghost" (click)="closeDetail()">Close</button>
-      </div>
-      <p class="admin-muted" *ngIf="!selectedCompany && !loading">This company is not in the current results.</p>
-      <ng-container *ngIf="selectedCompany as company">
-        <dl class="admin-detail-grid">
-          <dt>Slug</dt>
-          <dd>{{ company.slug || '—' }}</dd>
-          <dt>Open jobs</dt>
-          <dd>{{ count(company.openJobsCount) }}</dd>
-          <dt>Created</dt>
-          <dd>{{ when(company.createdAt) }}</dd>
-        </dl>
-        <a *ngIf="company.companyName" class="admin-btn admin-btn--primary" [routerLink]="['/admin/jobs']" [queryParams]="{ q: company.companyName }">
-          View jobs
-        </a>
-      </ng-container>
-    </aside>
+  <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
+    <table class="admin-table">
+      <caption class="admin-muted">Company directory</caption>
+      <thead>
+        <tr>
+          <th scope="col">Company</th>
+          <th scope="col">Slug</th>
+          <th scope="col">Open jobs</th>
+          <th scope="col">Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows; trackBy: trackCompany">
+          <td class="admin-ellipsis">
+            <a *ngIf="row.companyId; else unnamed" [routerLink]="['/admin/companies', row.companyId]">{{ row.companyName || '—' }}</a>
+            <ng-template #unnamed>{{ row.companyName || '—' }}</ng-template>
+          </td>
+          <td class="admin-ellipsis">{{ row.slug || '—' }}</td>
+          <td>{{ count(row.openJobsCount) }}</td>
+          <td>{{ when(row.createdAt) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
   </div>
 </section>

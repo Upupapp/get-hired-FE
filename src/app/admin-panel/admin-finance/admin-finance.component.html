@@ -1,0 +1,151 @@
+<section class="admin-page" aria-labelledby="admin-finance-title">
+  <div class="admin-page-toolbar admin-page-toolbar--sticky">
+    <header class="admin-page-header">
+      <h1 id="admin-finance-title">Finance</h1>
+      <p>Subscription counts and MRR are the current book. Revenue follows the time range.</p>
+    </header>
+    <app-admin-time-filter [range]="range" [updating]="loading" (rangeChange)="onRange($event)"></app-admin-time-filter>
+  </div>
+
+  <p class="admin-state" *ngIf="companyId">
+    Revenue and the tables below are limited to {{ finance?.companyName || companyId }}.
+    Subscription counts and MRR stay the full book.
+    <button type="button" class="admin-btn admin-btn--ghost" (click)="clearCompany()">Clear company filter</button>
+  </p>
+
+  <p class="admin-state" *ngIf="finance?.fromFixture && !loading && !error">
+    These numbers are fixtures. GET /admin/finance is not on the API yet.
+  </p>
+
+  <app-admin-status
+    [loading]="loading && !finance"
+    [error]="error"
+    [empty]="false"
+    loadingText="Loading finance…"
+    (retry)="retry()">
+  </app-admin-status>
+
+  <p class="admin-state" *ngIf="range.invalid && !loading">Choose a valid date range to load revenue.</p>
+
+  <ng-container *ngIf="finance as book">
+    <div class="admin-hero-grid" *ngIf="!error && !range.invalid">
+      <article class="admin-card admin-visits" aria-label="Monthly recurring revenue">
+        <p class="admin-visits-kicker">MRR</p>
+        <p class="admin-visits-window">Current snapshot · {{ book.currency }}</p>
+        <p class="admin-visits-value">{{ money(book.mrr) }}</p>
+        <p class="admin-visits-note">{{ snapshotFootnote }}</p>
+      </article>
+      <article class="admin-card admin-visits" aria-label="Revenue in range">
+        <p class="admin-visits-kicker">Revenue</p>
+        <p class="admin-visits-window">{{ when(book.from) }} – {{ when(book.to) }} · Asia/Manila</p>
+        <p class="admin-visits-value">{{ money(book.revenueInRange) }}</p>
+        <p class="admin-visits-delta" *ngIf="revenueDelta()" [attr.data-direction]="direction()">{{ revenueDelta() }}</p>
+        <svg class="admin-spark" viewBox="0 0 240 48" preserveAspectRatio="none" role="img" aria-label="Revenue by day">
+          <polyline [attr.points]="spark()" fill="none" stroke="#F25248" stroke-width="2"></polyline>
+        </svg>
+        <p class="admin-visits-empty" *ngIf="book.revenueInRange === 0">No revenue in this range.</p>
+        <p class="admin-visits-note">{{ revenueFootnote }}</p>
+      </article>
+    </div>
+
+    <div class="admin-kpi-grid" *ngIf="!error && !range.invalid">
+      <div class="admin-card admin-kpi" aria-label="Active subscriptions">
+        <span class="admin-kpi-label">Active</span>
+        <span class="admin-kpi-value">{{ book.activeCount }}</span>
+        <span class="admin-kpi-hint">Current snapshot</span>
+      </div>
+      <div class="admin-card admin-kpi" aria-label="Trial subscriptions">
+        <span class="admin-kpi-label">Trial</span>
+        <span class="admin-kpi-value">{{ book.trialCount }}</span>
+        <span class="admin-kpi-hint">Current snapshot</span>
+      </div>
+      <div class="admin-card admin-kpi" aria-label="Canceled subscriptions">
+        <span class="admin-kpi-label">Canceled</span>
+        <span class="admin-kpi-value">{{ book.canceledCount }}</span>
+        <span class="admin-kpi-hint">Current snapshot</span>
+      </div>
+    </div>
+
+    <h2 class="admin-section-title" *ngIf="!error && !range.invalid">Plans</h2>
+    <div class="admin-kpi-grid" *ngIf="!error && !range.invalid">
+      <div class="admin-card admin-kpi" *ngFor="let plan of book.plans" [attr.aria-label]="plan.plan">
+        <span class="admin-kpi-label">{{ plan.plan }}</span>
+        <span class="admin-kpi-value">{{ plan.count }}</span>
+        <span class="admin-kpi-hint">{{ money(plan.mrr) }} MRR · {{ planHint(plan.slug) }}</span>
+      </div>
+    </div>
+
+    <form class="admin-filters" (ngSubmit)="applySearch()">
+      <label class="admin-field">
+        <span>Search subscriptions and payments</span>
+        <input type="search" name="finance-search" [ngModel]="searchText" (ngModelChange)="onSearch($event)"
+          placeholder="Company, plan, or invoice" autocomplete="off">
+      </label>
+      <button type="submit" class="admin-btn admin-btn--primary">Search</button>
+    </form>
+
+    <h2 class="admin-section-title">Subscriptions</h2>
+    <p class="admin-state" *ngIf="!loading && !error && !book.subscriptions.items.length">No subscriptions match this search.</p>
+    <div class="admin-card admin-table-wrap" *ngIf="book.subscriptions.items.length">
+      <table class="admin-table">
+        <caption class="admin-muted">Current subscriptions. MRR contribution is zero unless the subscription is active.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Company</th>
+            <th scope="col">Plan</th>
+            <th scope="col">Status</th>
+            <th scope="col">MRR</th>
+            <th scope="col">Started</th>
+            <th scope="col">Renews</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of book.subscriptions.items; trackBy: trackSubscription">
+            <td class="admin-ellipsis">
+              <a *ngIf="row.companyId; else plainCompany" [routerLink]="['/admin/companies', row.companyId]">{{ row.companyName || '—' }}</a>
+              <ng-template #plainCompany>{{ row.companyName || '—' }}</ng-template>
+            </td>
+            <td>{{ row.plan || '—' }}</td>
+            <td>{{ row.status || '—' }}</td>
+            <td>{{ money(row.mrr) }}</td>
+            <td>{{ when(row.startedAt) }}</td>
+            <td>{{ when(row.renewsAt) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-admin-pager [page]="book.subscriptions.page" [pageSize]="pageSize" [total]="book.subscriptions.total" (pageChange)="goToSubscriptions($event)"></app-admin-pager>
+    </div>
+
+    <h2 class="admin-section-title">Payments</h2>
+    <p class="admin-state" *ngIf="!loading && !error && !book.payments.items.length">No payments in this range.</p>
+    <div class="admin-card admin-table-wrap" *ngIf="book.payments.items.length">
+      <table class="admin-table">
+        <caption class="admin-muted">Paid and failed charges in the selected range. Failed charges are not included in revenue.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Company</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Method</th>
+            <th scope="col">Status</th>
+            <th scope="col">Invoice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of book.payments.items; trackBy: trackPayment">
+            <td>{{ when(row.paidAt) }}</td>
+            <td class="admin-ellipsis">
+              <a *ngIf="row.companyId; else plainPayCompany" [routerLink]="['/admin/companies', row.companyId]">{{ row.companyName || '—' }}</a>
+              <ng-template #plainPayCompany>{{ row.companyName || '—' }}</ng-template>
+            </td>
+            <td>{{ money(row.amount) }}</td>
+            <td>{{ row.method || '—' }}</td>
+            <td>{{ row.status || '—' }}</td>
+            <td>{{ row.invoiceId || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <app-admin-pager [page]="book.payments.page" [pageSize]="pageSize" [total]="book.payments.total" (pageChange)="goToPayments($event)"></app-admin-pager>
+    </div>
+  </ng-container>
+</section>

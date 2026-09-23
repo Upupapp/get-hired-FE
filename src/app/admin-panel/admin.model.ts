@@ -112,3 +112,109 @@ export interface AdminApplicationRow {
   companyName: string;
   status: string | null;
 }
+
+export interface AdminPlanBreakdown {
+  slug: string;
+  plan: string;
+  count: number;
+  mrr: number;
+}
+
+export interface AdminRevenuePoint {
+  date: string;
+  amount: number;
+}
+
+export interface AdminSubscriptionRow {
+  subscriptionId: string;
+  companyId: string;
+  companyName: string;
+  plan: string;
+  planSlug: string;
+  status: string;
+  mrr: number;
+  startedAt: string | null;
+  renewsAt: string | null;
+}
+
+export interface AdminPaymentRow {
+  paymentId: string;
+  invoiceId: string;
+  companyId: string;
+  companyName: string;
+  paidAt: string;
+  amount: number;
+  method: string;
+  status: string;
+}
+
+export interface AdminFinanceQuery {
+  range?: string;
+  from?: string;
+  to?: string;
+  q?: string;
+  companyId?: string;
+  page: number;
+  pageSize: number;
+  paymentPage: number;
+}
+
+/**
+ * Subscription counts and MRR are a current snapshot.
+ * Revenue fields follow the time filter, and the company id when Finance is filtered.
+ */
+export interface AdminFinance {
+  currency: string;
+  activeCount: number;
+  canceledCount: number;
+  trialCount: number;
+  mrr: number;
+  plans: AdminPlanBreakdown[];
+  from: string | null;
+  to: string | null;
+  revenueInRange: number;
+  revenuePrevious: number;
+  revenueSeries: AdminRevenuePoint[];
+  subscriptions: AdminPage<AdminSubscriptionRow>;
+  payments: AdminPage<AdminPaymentRow>;
+  companyId: string | null;
+  companyName: string | null;
+  fromFixture: boolean;
+}
+
+export interface AdminCompanyContact {
+  name: string;
+  email: string;
+  phone: string | null;
+  role: string;
+}
+
+export interface AdminCompanyEvent {
+  at: string;
+  kind: string;
+  summary: string;
+}
+
+export interface AdminCompanySubscription {
+  plan: string;
+  planSlug: string;
+  status: string;
+  mrr: number;
+  startedAt: string | null;
+  renewsAt: string | null;
+}
+
+export interface AdminCompanyDetail {
+  companyId: string;
+  companyName: string;
+  slug: string;
+  createdAt: string | null;
+  openJobsCount: number | null;
+  status: string | null;
+  adminContact: AdminCompanyContact | null;
+  contacts: AdminCompanyContact[];
+  subscription: AdminCompanySubscription | null;
+  payments: AdminPaymentRow[];
+  history: AdminCompanyEvent[];
+  fromFixture: boolean;
+}

@@ -12,6 +12,12 @@
  *     + applications_in_range
  *   GET /admin/applications?q=&from=&to=&page=&pageSize=
  *     { items, total, page, pageSize }
+ *   GET /admin/finance?range=&from=&to=&company=&q=&page=&pageSize=&payPage=
+ *     snapshot: active_count, canceled_count, trial_count, mrr, plans[{slug,plan,count,mrr}]
+ *     range: revenue_in_range, revenue_previous, revenue_series[{date,amount}]
+ *     subscriptions and payments pages. `company` limits revenue and both tables only.
+ *   GET /admin/companies/:companyId
+ *     profile, admin_contact, contacts, subscription, payments, history[{at,kind,summary}]
  *
  * Gaps while this flag stays on:
  * - Site visits are pageview fixtures, labeled "Pageviews (fixture)". There is no admin analytics API.
@@ -21,15 +27,27 @@
  * - Job status words are mapped to job_status_id 1–4 before the jobs request.
  * - Users last_login is shown as — when the list omits it (the column is not on the BE list today).
  * - Full-dashboard fixture mode (HTTP failure) also invents inventory totals. The screen says so.
+ * - GET /admin/finance and GET /admin/companies/:id are not on the API yet.
+ *   Plan names follow the employer catalog (business slug displays as Premium).
+ *   Enterprise MRR is a contracted fixture; the public price is Custom.
+ *   Only Paid rows count toward revenue. Failed charges stay on the payment table.
  */
 import {
   AdminApplicationQuery,
   AdminApplicationRow,
+  AdminCompanyContact,
+  AdminCompanyDetail,
+  AdminCompanyEvent,
   AdminCompanyRow,
+  AdminFinance,
+  AdminFinanceQuery,
   AdminJobQuery,
   AdminJobRow,
   AdminListQuery,
   AdminPage,
+  AdminPaymentRow,
+  AdminPlanBreakdown,
+  AdminSubscriptionRow,
   AdminUserQuery,
   AdminUserRow,
   Dashboard,
@@ -79,12 +97,71 @@ const FIXTURE_JOB_ROWS: AdminJobRow[] = [
   { jobId: 'JB-1302', title: 'Delivery Rider', companyName: 'QuickCart', status: 2, statusLabel: 'Published', createdAt: '2026-09-20', applicantCount: 3 },
 ];
 
-const FIXTURE_COMPANIES: AdminCompanyRow[] = [
-  { companyId: 'CO-20', companyName: "Lola's Table", slug: 'lolas-table', openJobsCount: 2, createdAt: '2025-04-18' },
-  { companyId: 'CO-21', companyName: 'Harbor Inn', slug: 'harbor-inn', openJobsCount: 1, createdAt: '2025-08-03' },
-  { companyId: 'CO-22', companyName: 'Northline Logistics', slug: 'northline', openJobsCount: 4, createdAt: '2026-01-22' },
-  { companyId: 'CO-23', companyName: 'Cupping Room', slug: 'cupping-room', openJobsCount: 1, createdAt: '2026-06-15' },
+/**
+ * Plan names match the employer pricing catalog.
+ * `business` displays as Premium. Enterprise public price is Custom;
+ * 18000 is a contracted fixture MRR, not a catalog amount.
+ * Payment offsets are days before today so Last 7 days stays populated.
+ */
+interface FixtureEmployer {
+  row: AdminCompanyRow;
+  accountStatus: string;
+  adminContact: AdminCompanyContact;
+  contacts: AdminCompanyContact[];
+  plan: string;
+  planSlug: string;
+  subscriptionStatus: 'active' | 'trial' | 'canceled';
+  mrr: number;
+  chargeAmount: number;
+  startedAt: string;
+  renewsAt: string | null;
+  paidOffsets: number[];
+  failedOffsets: number[];
+  planChange: { at: string; summary: string } | null;
+  canceledAt: string | null;
+}
+
+const FIXTURE_EMPLOYERS: FixtureEmployer[] = [
+  employer({
+    companyId: 'CO-20', companyName: "Lola's Table", slug: 'lolas-table', openJobsCount: 2, createdAt: '2025-04-18',
+    accountStatus: 'Active', plan: 'Growth', planSlug: 'growth', subscriptionStatus: 'active', mrr: 3490, chargeAmount: 3490,
+    startedAt: '2025-04-18', renewsAt: '2026-10-23', paidOffsets: [1, 32, 63],
+    adminName: 'Rosa Delgado', adminEmail: 'rosa.delgado@lolas.example', adminPhone: '+63 917 555 0120',
+    planChange: { at: '2026-08-01', summary: 'Moved from Starter to Growth' },
+  }),
+  employer({
+    companyId: 'CO-21', companyName: 'Harbor Inn', slug: 'harbor-inn', openJobsCount: 1, createdAt: '2025-08-03',
+    accountStatus: 'Active', plan: 'Starter', planSlug: 'starter', subscriptionStatus: 'active', mrr: 1490, chargeAmount: 1490,
+    startedAt: '2025-08-03', renewsAt: '2026-10-21', paidOffsets: [3, 34],
+    adminName: 'Ben Cruz', adminEmail: 'ben.cruz@harbor.example', adminPhone: '+63 918 555 0144',
+  }),
+  employer({
+    companyId: 'CO-22', companyName: 'Northline Logistics', slug: 'northline', openJobsCount: 4, createdAt: '2026-01-22',
+    accountStatus: 'Active', plan: 'Premium', planSlug: 'business', subscriptionStatus: 'active', mrr: 5990, chargeAmount: 5990,
+    startedAt: '2026-01-22', renewsAt: '2026-10-24', paidOffsets: [0, 31],
+    adminName: 'Irene Santos', adminEmail: 'irene.santos@northline.example', adminPhone: '+63 919 555 0177',
+  }),
+  employer({
+    companyId: 'CO-23', companyName: 'Cupping Room', slug: 'cupping-room', openJobsCount: 1, createdAt: '2026-06-15',
+    accountStatus: 'Active', plan: 'Free Trial', planSlug: 'free_trial', subscriptionStatus: 'trial', mrr: 0, chargeAmount: 0,
+    startedAt: '2026-09-17', renewsAt: '2026-09-24', paidOffsets: [],
+    adminName: 'Marco Villanueva', adminEmail: 'marco@cupping.example', adminPhone: '+63 920 555 0190',
+  }),
+  employer({
+    companyId: 'CO-24', companyName: 'Bay & Co.', slug: 'bay-and-co', openJobsCount: 0, createdAt: '2025-09-12',
+    accountStatus: 'Inactive', plan: 'Starter', planSlug: 'starter', subscriptionStatus: 'canceled', mrr: 0, chargeAmount: 1490,
+    startedAt: '2025-09-12', renewsAt: null, paidOffsets: [40, 71], failedOffsets: [5], canceledAt: '2026-08-20',
+    adminName: 'Liza Gomez', adminEmail: 'liza.gomez@bayandco.example', adminPhone: '+63 921 555 0112',
+  }),
+  employer({
+    companyId: 'CO-25', companyName: 'QuickCart', slug: 'quickcart', openJobsCount: 1, createdAt: '2026-03-02',
+    accountStatus: 'Active', plan: 'Enterprise', planSlug: 'enterprise', subscriptionStatus: 'active', mrr: 18000, chargeAmount: 18000,
+    startedAt: '2026-03-02', renewsAt: '2026-10-12', paidOffsets: [12, 43],
+    adminName: 'Carlo Tan', adminEmail: 'carlo.tan@quickcart.example', adminPhone: '+63 922 555 0166',
+  }),
 ];
+
+const FIXTURE_COMPANIES: AdminCompanyRow[] = FIXTURE_EMPLOYERS.map(row => row.row);
 
 export function fixtureApplicationCatalog(now = new Date()): AdminApplicationRow[] {
   const today = manilaYmd(now);
@@ -262,6 +339,128 @@ export function fixtureJobs(query: AdminJobQuery): AdminPage<AdminJobRow> {
   return pageOf(filtered, query.page, query.pageSize);
 }
 
+export function fixtureFinance(query: AdminFinanceQuery, now = new Date()): AdminFinance {
+  const today = manilaYmd(now);
+  const from = query.from || today;
+  const to = query.to || today;
+  const companyId = (query.companyId || '').trim();
+  const employer = companyId
+    ? FIXTURE_EMPLOYERS.find(row => row.row.companyId === companyId) || null
+    : null;
+  const q = (query.q || '').trim().toLowerCase();
+  const payments = paymentCatalog(now).filter(row => !companyId || row.companyId === companyId);
+  const inRange = (row: AdminPaymentRow) => {
+    const day = (row.paidAt || '').slice(0, 10);
+    return (!from || day >= from) && (!to || day <= to);
+  };
+  const paidInRange = payments.filter(row => isPaid(row) && inRange(row));
+  const previous = previousWindow(from, to);
+  const paidPrevious = payments.filter(row => {
+    if (!isPaid(row)) {
+      return false;
+    }
+    const day = (row.paidAt || '').slice(0, 10);
+    return day >= previous.from && day <= previous.to && day <= today;
+  });
+  const subscriptions = FIXTURE_EMPLOYERS
+    .filter(row => !companyId || row.row.companyId === companyId)
+    .map(subscriptionRow)
+    .filter(row => !q || `${row.companyName} ${row.plan} ${row.status}`.toLowerCase().indexOf(q) !== -1);
+  const paymentRows = payments
+    .filter(inRange)
+    .filter(row => !q || `${row.companyName} ${row.invoiceId} ${row.status} ${row.method}`.toLowerCase().indexOf(q) !== -1);
+
+  return {
+    currency: 'PHP',
+    activeCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'active').length,
+    canceledCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'canceled').length,
+    trialCount: FIXTURE_EMPLOYERS.filter(row => row.subscriptionStatus === 'trial').length,
+    mrr: FIXTURE_EMPLOYERS
+      .filter(row => row.subscriptionStatus === 'active')
+      .reduce((total, row) => total + row.mrr, 0),
+    plans: planBreakdown(),
+    from,
+    to,
+    revenueInRange: sumAmounts(paidInRange),
+    revenuePrevious: sumAmounts(paidPrevious),
+    revenueSeries: eachDay(from, to).map(date => ({
+      date,
+      amount: date > today ? 0 : sumAmounts(paidInRange.filter(row => row.paidAt.slice(0, 10) === date)),
+    })),
+    subscriptions: pageOf(subscriptions, query.page, query.pageSize),
+    payments: pageOf(paymentRows, query.paymentPage, query.pageSize),
+    companyId: companyId || null,
+    companyName: employer ? employer.row.companyName : null,
+    fromFixture: true,
+  };
+}
+
+export function fixtureCompanyDetail(companyId: string, now = new Date()): AdminCompanyDetail | null {
+  const employer = FIXTURE_EMPLOYERS.find(row => row.row.companyId === companyId);
+  if (!employer) {
+    return null;
+  }
+  const payments = paymentCatalog(now)
+    .filter(row => row.companyId === companyId)
+    .sort((a, b) => b.paidAt.localeCompare(a.paidAt));
+  const jobs = FIXTURE_JOB_ROWS.filter(row => row.companyName === employer.row.companyName);
+  const history: AdminCompanyEvent[] = [
+    {
+      at: employer.row.createdAt || '',
+      kind: 'Company',
+      summary: `${employer.row.companyName} was created`,
+    },
+    {
+      at: employer.startedAt,
+      kind: 'Subscription',
+      summary: `Started ${employer.plan} (${employer.subscriptionStatus})`,
+    },
+  ];
+  if (employer.planChange) {
+    history.push({ at: employer.planChange.at, kind: 'Plan change', summary: employer.planChange.summary });
+  }
+  if (employer.canceledAt) {
+    history.push({ at: employer.canceledAt, kind: 'Subscription', summary: 'Subscription canceled' });
+  }
+  payments.forEach(payment => {
+    history.push({
+      at: payment.paidAt,
+      kind: 'Payment',
+      summary: `${payment.status} ${payment.amount} PHP · ${payment.invoiceId}`,
+    });
+  });
+  jobs.forEach(job => {
+    history.push({
+      at: job.createdAt || '',
+      kind: 'Job post',
+      summary: `${job.title} (${job.statusLabel})`,
+    });
+  });
+  history.sort((a, b) => b.at.localeCompare(a.at));
+
+  return {
+    companyId: employer.row.companyId,
+    companyName: employer.row.companyName,
+    slug: employer.row.slug,
+    createdAt: employer.row.createdAt,
+    openJobsCount: employer.row.openJobsCount,
+    status: employer.accountStatus,
+    adminContact: employer.adminContact,
+    contacts: employer.contacts,
+    subscription: {
+      plan: employer.plan,
+      planSlug: employer.planSlug,
+      status: employer.subscriptionStatus,
+      mrr: employer.mrr,
+      startedAt: employer.startedAt,
+      renewsAt: employer.renewsAt,
+    },
+    payments,
+    history,
+    fromFixture: true,
+  };
+}
+
 export function fixtureCompanies(query: AdminListQuery): AdminPage<AdminCompanyRow> {
   const q = (query.q || '').trim().toLowerCase();
   const filtered = FIXTURE_COMPANIES.filter(row => {
@@ -271,6 +470,139 @@ export function fixtureCompanies(query: AdminListQuery): AdminPage<AdminCompanyR
     return `${row.companyName} ${row.slug}`.toLowerCase().indexOf(q) !== -1;
   });
   return pageOf(filtered, query.page, query.pageSize);
+}
+
+const PLAN_BREAKDOWN_ORDER: { slug: string; plan: string }[] = [
+  { slug: 'free_trial', plan: 'Free Trial' },
+  { slug: 'starter', plan: 'Starter' },
+  { slug: 'growth', plan: 'Growth' },
+  { slug: 'business', plan: 'Premium' },
+  { slug: 'enterprise', plan: 'Enterprise' },
+];
+
+function employer(input: {
+  companyId: string;
+  companyName: string;
+  slug: string;
+  openJobsCount: number;
+  createdAt: string;
+  accountStatus: string;
+  plan: string;
+  planSlug: string;
+  subscriptionStatus: FixtureEmployer['subscriptionStatus'];
+  mrr: number;
+  chargeAmount: number;
+  startedAt: string;
+  renewsAt: string | null;
+  paidOffsets: number[];
+  failedOffsets?: number[];
+  adminName: string;
+  adminEmail: string;
+  adminPhone: string;
+  planChange?: { at: string; summary: string } | null;
+  canceledAt?: string | null;
+}): FixtureEmployer {
+  const adminContact: AdminCompanyContact = {
+    name: input.adminName,
+    email: input.adminEmail,
+    phone: input.adminPhone,
+    role: 'Company admin',
+  };
+  return {
+    row: {
+      companyId: input.companyId,
+      companyName: input.companyName,
+      slug: input.slug,
+      openJobsCount: input.openJobsCount,
+      createdAt: input.createdAt,
+    },
+    accountStatus: input.accountStatus,
+    adminContact,
+    contacts: [
+      adminContact,
+      {
+        name: 'Hiring desk',
+        email: `hiring@${input.slug}.example`,
+        phone: null,
+        role: 'Hiring manager',
+      },
+    ],
+    plan: input.plan,
+    planSlug: input.planSlug,
+    subscriptionStatus: input.subscriptionStatus,
+    mrr: input.mrr,
+    chargeAmount: input.chargeAmount,
+    startedAt: input.startedAt,
+    renewsAt: input.renewsAt,
+    paidOffsets: input.paidOffsets,
+    failedOffsets: input.failedOffsets || [],
+    planChange: input.planChange || null,
+    canceledAt: input.canceledAt || null,
+  };
+}
+
+function paymentCatalog(now: Date): AdminPaymentRow[] {
+  const today = manilaYmd(now);
+  const rows: AdminPaymentRow[] = [];
+  FIXTURE_EMPLOYERS.forEach(account => {
+    account.paidOffsets.forEach(offset => {
+      rows.push(paymentRow(account, addDays(today, -offset), 'Paid'));
+    });
+    account.failedOffsets.forEach(offset => {
+      rows.push(paymentRow(account, addDays(today, -offset), 'Failed'));
+    });
+  });
+  return rows.sort((a, b) => b.paidAt.localeCompare(a.paidAt));
+}
+
+function paymentRow(account: FixtureEmployer, ymd: string, status: string): AdminPaymentRow {
+  const stamp = ymd.replace(/-/g, '');
+  return {
+    paymentId: `PAY-${account.row.companyId}-${stamp}`,
+    invoiceId: `INV-${account.row.companyId}-${stamp}`,
+    companyId: account.row.companyId,
+    companyName: account.row.companyName,
+    paidAt: ymd,
+    amount: account.chargeAmount,
+    method: 'PayMongo',
+    status,
+  };
+}
+
+function subscriptionRow(account: FixtureEmployer): AdminSubscriptionRow {
+  return {
+    subscriptionId: `SUB-${account.row.companyId}`,
+    companyId: account.row.companyId,
+    companyName: account.row.companyName,
+    plan: account.plan,
+    planSlug: account.planSlug,
+    status: account.subscriptionStatus,
+    mrr: account.subscriptionStatus === 'active' ? account.mrr : 0,
+    startedAt: account.startedAt,
+    renewsAt: account.renewsAt,
+  };
+}
+
+function planBreakdown(): AdminPlanBreakdown[] {
+  return PLAN_BREAKDOWN_ORDER.map(plan => {
+    const rows = FIXTURE_EMPLOYERS.filter(account => account.planSlug === plan.slug);
+    return {
+      slug: plan.slug,
+      plan: plan.plan,
+      count: rows.length,
+      mrr: rows
+        .filter(account => account.subscriptionStatus === 'active')
+        .reduce((total, account) => total + account.mrr, 0),
+    };
+  });
+}
+
+function isPaid(row: AdminPaymentRow): boolean {
+  return row.status.toLowerCase() === 'paid';
+}
+
+function sumAmounts(rows: AdminPaymentRow[]): number {
+  return rows.reduce((total, row) => total + row.amount, 0);
 }
 
 function pageOf<T>(items: T[], page: number, pageSize: number): AdminPage<T> {

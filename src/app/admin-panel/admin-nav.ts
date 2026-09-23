@@ -1,4 +1,4 @@
-export type AdminNavIcon = 'dashboard' | 'users' | 'jobs' | 'companies' | 'applications' | 'tools';
+export type AdminNavIcon = 'dashboard' | 'users' | 'jobs' | 'companies' | 'applications' | 'finance' | 'tools';
 
 export interface AdminNavItem {
   title: string;
@@ -16,5 +16,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
   { title: 'Jobs', route: 'jobs', icon: 'jobs' },
   { title: 'Companies', route: 'companies', icon: 'companies' },
   { title: 'Applications', route: 'applications', icon: 'applications' },
+  { title: 'Finance', route: 'finance', icon: 'finance' },
   { title: 'Tools', route: 'tools/email-verify', icon: 'tools', match: 'tools' },
 ];

@@ -18,7 +18,6 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
   total = 0;
   page = 1;
   searchText = '';
-  selectedId: string | null = null;
   loading = false;
   error = '';
   fromFixture = false;
@@ -42,10 +41,13 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
       distinctUntilChanged((a, b) => a.q === b.q && a.page === b.page && a.id === b.id),
       takeUntil(this.destroy$)
     ).subscribe(state => {
+      if (state.id) {
+        this.router.navigate(['/admin/companies', state.id], { replaceUrl: true });
+        return;
+      }
       this.q = state.q;
       this.searchText = state.q;
       this.page = state.page;
-      this.selectedId = state.id;
       const key = `${state.q}|${state.page}`;
       if (key !== this.loadedKey) {
         this.loadedKey = key;
@@ -93,19 +95,6 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
     this.fetch();
   }
 
-  openCompany(row: AdminCompanyRow): void {
-    if (!row.companyId) {
-      return;
-    }
-    this.selectedId = row.companyId;
-    this.pushQuery();
-  }
-
-  closeDetail(): void {
-    this.selectedId = null;
-    this.pushQuery();
-  }
-
   when(value: string | null): string {
     return formatAdminDate(value);
   }
@@ -116,10 +105,6 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
 
   trackCompany(_index: number, row: AdminCompanyRow): string {
     return row.companyId || row.companyName;
-  }
-
-  get selectedCompany(): AdminCompanyRow | null {
-    return this.rows.find(row => row.companyId === this.selectedId) || null;
   }
 
   private readParams(params: ParamMap): { q: string; page: number; id: string | null } {
@@ -136,7 +121,6 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
       queryParams: {
         q: this.searchText.trim() || null,
         page: this.page > 1 ? this.page : null,
-        id: this.selectedId || null,
       },
     });
   }

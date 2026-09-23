@@ -195,6 +195,99 @@ describe('AdminService admin MVP endpoints', () => {
     expect(total).toBeGreaterThan(25);
   });
 
+  it('uses finance fixtures when the finance endpoint fails, and keeps a live payload', () => {
+    let mrr = -1;
+    service.getFinance({
+      range: '7d',
+      from: '2026-09-17',
+      to: '2026-09-24',
+      page: 1,
+      pageSize: 25,
+      paymentPage: 1,
+    }).subscribe(page => {
+      mrr = page.mrr;
+      expect(page.fromFixture).toBeTrue();
+      expect(page.activeCount).toBe(4);
+    });
+    const missing = httpMock.expectOne(
+      `${environment.api_url}/admin/finance?range=7d&from=2026-09-17&to=2026-09-24&page=1&pageSize=25&payPage=1`
+    );
+    missing.flush('missing', { status: 404, statusText: 'Not Found' });
+    expect(mrr).toBe(28970);
+
+    let liveMrr = -1;
+    service.getFinance({
+      from: '2026-09-24',
+      to: '2026-09-24',
+      companyId: 'CO-20',
+      page: 1,
+      pageSize: 25,
+      paymentPage: 1,
+    }).subscribe(page => {
+      liveMrr = page.mrr;
+      expect(page.fromFixture).toBeFalse();
+      expect(page.plans[0].plan).toBe('Premium');
+    });
+    const live = httpMock.expectOne(
+      `${environment.api_url}/admin/finance?from=2026-09-24&to=2026-09-24&company=CO-20&page=1&pageSize=25&payPage=1`
+    );
+    live.flush({
+      data: {
+        mrr: 100,
+        plans: [{ slug: 'business', name: 'Business', count: 1, mrr: 100 }],
+        revenue_in_range: 100,
+      }
+    });
+    expect(liveMrr).toBe(100);
+  });
+
+  it('does not replace an unauthorized finance response with fixtures', () => {
+    let failed = false;
+    service.getFinance({ page: 1, pageSize: 25, paymentPage: 1 }).subscribe({
+      next: () => fail('expected the 401 to surface'),
+      error: () => { failed = true; },
+    });
+    const req = httpMock.expectOne(request => request.url.indexOf('/admin/finance') !== -1);
+    req.flush('no', { status: 401, statusText: 'Unauthorized' });
+    expect(failed).toBeTrue();
+  });
+
+  it('loads a company detail fixture when the detail endpoint is missing', () => {
+    let name = '';
+    service.getCompanyDetail('CO-20').subscribe(detail => {
+      name = detail.companyName;
+      expect(detail.fromFixture).toBeTrue();
+      expect(detail.adminContact.role).toBe('Company admin');
+      expect(detail.subscription.plan).toBe('Growth');
+    });
+    const req = httpMock.expectOne(`${environment.api_url}/admin/companies/CO-20`);
+    req.flush('missing', { status: 404, statusText: 'Not Found' });
+    expect(name).toBe("Lola's Table");
+  });
+
+  it('does not invent a company when the detail call fails for an unknown id', () => {
+    let failed = false;
+    service.getCompanyDetail('CO-missing').subscribe({
+      next: () => fail('expected the missing company to surface'),
+      error: () => { failed = true; },
+    });
+    const req = httpMock.expectOne(`${environment.api_url}/admin/companies/CO-missing`);
+    req.flush('missing', { status: 404, statusText: 'Not Found' });
+    expect(failed).toBeTrue();
+  });
+
+  it('does not treat a company list payload as a detail', () => {
+    let name = '';
+    service.getCompanyDetail('CO-22').subscribe(detail => {
+      name = detail.companyName;
+      expect(detail.fromFixture).toBeTrue();
+      expect(detail.subscription.plan).toBe('Premium');
+    });
+    const req = httpMock.expectOne(`${environment.api_url}/admin/companies/CO-22`);
+    req.flush({ data: { items: [{ company_id: 'CO-22', company_name: 'Northline Logistics' }], total: 1 } });
+    expect(name).toBe('Northline Logistics');
+  });
+
   it('soft-unpublishes a job with POST and does not send a delete', () => {
     service.unpublishJob('JB-1').subscribe();
     const req = httpMock.expectOne(`${environment.api_url}/admin/jobs/JB-1/unpublish`);
