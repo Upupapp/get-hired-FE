@@ -42,17 +42,6 @@
   margin: 0;
 }
 
-.recommended-jobs-alerts {
-  font-family: var(--gh-font-base, 'Manrope', sans-serif);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gh-azure, #168BFF);
-  text-decoration: none;
-
-  &:hover { text-decoration: underline; }
-  &:focus-visible { outline: 2px solid var(--gh-azure, #168BFF); outline-offset: 2px; }
-}
-
 .recommended-jobs-loading,
 .recommended-jobs-empty {
   font-family: var(--gh-font-base, 'Manrope', sans-serif);

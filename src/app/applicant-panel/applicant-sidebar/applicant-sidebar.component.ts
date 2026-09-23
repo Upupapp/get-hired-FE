@@ -57,7 +57,7 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
       title: 'Jobs', route: '/jobs', icon: 'jobs',
     },
     {
-      title: 'Job alerts', route: '/job-alerts', icon: 'alerts',
+      title: 'Job Alerts', route: '/job-alerts', icon: 'alerts',
     },
     {
       title: 'Applications', route: '/user/applications', icon: 'applications',
@@ -122,11 +122,18 @@ export class ApplicantSidebarComponent implements OnInit, OnDestroy {
     if (item.sub_routes) {
       return item.sub_routes.some((sub: any) => this.subRouteActive(sub.route));
     }
-    return this.location === item.route || this.location.startsWith(item.route + '/');
+    const path = this.pathOf(this.location);
+    return path === item.route || path.startsWith(item.route + '/');
   }
 
   subRouteActive(route: string): boolean {
-    return this.location === route || this.location.startsWith(route + '/');
+    const path = this.pathOf(this.location);
+    return path === route || path.startsWith(route + '/');
+  }
+
+  /** router.url keeps the query and hash; active state should follow the path. */
+  private pathOf(url: string): string {
+    return (url || '').split(/[?#]/)[0];
   }
 
   isSubnavOpen(item: any): boolean {

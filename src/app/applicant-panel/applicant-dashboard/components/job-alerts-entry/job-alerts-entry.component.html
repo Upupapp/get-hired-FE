@@ -1,0 +1,36 @@
+<section class="job-alerts-entry" aria-labelledby="job-alerts-entry-title">
+  <div class="job-alerts-entry__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="26" height="26">
+      <path d="M12 4a5 5 0 0 0-5 5c0 4.4-1.5 6-1.5 6h13S17 13.4 17 9a5 5 0 0 0-5-5z"/>
+      <path d="M10 17.2a2.2 2.2 0 0 0 4 0"/>
+    </svg>
+  </div>
+
+  <div class="job-alerts-entry__copy">
+    <h2 id="job-alerts-entry-title" class="job-alerts-entry__title">Job Alerts</h2>
+    <p class="job-alerts-entry__body">Get emailed when new openings match positions you follow.</p>
+    <p class="job-alerts-entry__meta">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14" aria-hidden="true">
+        <rect x="2" y="3" width="12" height="11" rx="1.5"/>
+        <path d="M2 6.5h12M5.5 1.8v2.4M10.5 1.8v2.4"/>
+      </svg>
+      Up to 30 positions · Tuesday digest 9PM PH
+    </p>
+  </div>
+
+  <div class="job-alerts-entry__actions">
+    <a class="job-alerts-entry__primary"
+       routerLink="/job-alerts"
+       [queryParams]="{ focus: 'add' }">
+      {{ primaryLabel }}
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+        <path d="M8 3v10M3 8h10"/>
+      </svg>
+    </a>
+    <a class="job-alerts-entry__secondary"
+       routerLink="/job-alerts"
+       [fragment]="manageFragment">
+      Manage
+    </a>
+  </div>
+</section>

@@ -1,4 +1,5 @@
 <app-profile-readiness-panel [applicant]="applicant"></app-profile-readiness-panel>
+<app-job-alerts-entry></app-job-alerts-entry>
 <app-recommended-jobs [applicant]="applicant"></app-recommended-jobs>
 
 <section *ngIf="profile$ | async as profile; else noProfile">
