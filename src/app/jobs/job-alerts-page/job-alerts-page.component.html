@@ -14,7 +14,7 @@
       </p>
     </header>
 
-    <form class="gh-alerts__card" *ngIf="!forbidden" (ngSubmit)="add()" novalidate>
+    <form id="add" class="gh-alerts__card" *ngIf="!forbidden" (ngSubmit)="add()" novalidate>
       <div class="gh-alerts__card-head">
         <h2>Add a position</h2>
         <p *ngIf="loaded && !loadError" class="gh-alerts__count">{{ subscriptions.length }} of {{ limit }}</p>
@@ -22,6 +22,7 @@
 
       <label for="job-alert-position">Position</label>
       <input
+        #positionInput
         id="job-alert-position"
         type="text"
         [formControl]="position"
@@ -40,11 +41,14 @@
       </p>
 
       <button class="gh-alerts__submit" type="submit" [disabled]="submitting || atCap">
+        <svg *ngIf="!submitting" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true">
+          <path d="M8 3v10M3 8h10"/>
+        </svg>
         {{ submitting ? 'Adding…' : 'Add alert' }}
       </button>
     </form>
 
-    <div class="gh-alerts__card" aria-live="polite">
+    <div id="positions" class="gh-alerts__card" aria-live="polite">
       <h2>Your positions</h2>
 
       <p class="gh-alerts__status" *ngIf="loading" role="status">Loading your alerts…</p>
@@ -75,6 +79,9 @@
             [disabled]="removingId === item.id"
             [attr.aria-label]="'Unsubscribe from ' + item.position"
             (click)="confirmUnsubscribe(item)">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14" aria-hidden="true">
+              <path d="M3 4.5h10M6.2 4.5V3.4h3.6v1.1M4.4 4.5l.6 8.2h5.9l.6-8.2"/>
+            </svg>
             {{ removingId === item.id ? 'Removing…' : 'Unsubscribe' }}
           </button>
         </li>

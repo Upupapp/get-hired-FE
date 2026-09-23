@@ -9,6 +9,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { RouterModule, Routes } from '@angular/router';
 import { ProfileReadinessPanelComponent } from './components/profile-readiness-panel/profile-readiness-panel.component';
 import { RecommendedJobsComponent } from './components/recommended-jobs/recommended-jobs.component';
+import { JobAlertsEntryComponent } from './components/job-alerts-entry/job-alerts-entry.component';
 import { JobsModule } from '@main/jobs/jobs.module';
 
 const routes: Routes = [
@@ -22,7 +23,8 @@ const routes: Routes = [
     BannerComponent,
     ApplicantDashboardComponent,
     ProfileReadinessPanelComponent,
-    RecommendedJobsComponent
+    RecommendedJobsComponent,
+    JobAlertsEntryComponent
   ],
   imports: [
     CommonModule,

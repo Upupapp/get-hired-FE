@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { SeoService } from '@app-core/services/seo.service';
 import { SnackbarService } from '@app-core/services/snackbar.service';
@@ -21,8 +22,10 @@ import {
   templateUrl: './job-alerts-page.component.html',
   styleUrls: ['./job-alerts-page.component.scss'],
 })
-export class JobAlertsPageComponent implements OnInit, OnDestroy {
+export class JobAlertsPageComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly limit = JOB_OPENING_ALERT_LIMIT;
+
+  @ViewChild('positionInput') positionInput?: ElementRef<HTMLInputElement>;
 
   position = new FormControl('', [Validators.required, Validators.maxLength(120)]);
   subscriptions: JobOpeningAlertSubscription[] = [];
@@ -37,6 +40,10 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
   private linkedJobRoleId: number | undefined;
   private prefilledPosition = '';
   private listSub: Subscription | null = null;
+  private focusSub: Subscription | null = null;
+  private viewReady = false;
+  private pendingFocus = false;
+  private appliedFocusKey: string | null = null;
 
   constructor(
     private alerts: JobOpeningAlertsService,
@@ -45,6 +52,7 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private snackbar: SnackbarService,
     private seo: SeoService,
+    @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
   ngOnInit(): void {
@@ -63,11 +71,43 @@ export class JobAlertsPageComponent implements OnInit, OnDestroy {
       this.position.markAsPristine();
     });
 
+    // Dashboard "Add alert" lands on ?focus=add (or #add). Focus once per arrival.
+    this.focusSub = combineLatest([
+      this.route.queryParamMap,
+      this.route.fragment,
+    ]).subscribe(([params, fragment]) => {
+      const focusParam = params.get('focus');
+      const wants = focusParam === 'add' || fragment === 'add';
+      if (!wants) return;
+      const key = `add:${focusParam || ''}:${fragment || ''}`;
+      if (key === this.appliedFocusKey) return;
+      this.appliedFocusKey = key;
+      this.pendingFocus = true;
+      this.focusPositionInput();
+    });
+
     this.load();
+  }
+
+  ngAfterViewInit(): void {
+    this.viewReady = true;
+    this.focusPositionInput();
   }
 
   ngOnDestroy(): void {
     if (this.listSub) this.listSub.unsubscribe();
+    if (this.focusSub) this.focusSub.unsubscribe();
+  }
+
+  private focusPositionInput(): void {
+    if (!this.pendingFocus || !this.viewReady || !isPlatformBrowser(this.platformId)) return;
+    const input = this.positionInput && this.positionInput.nativeElement;
+    if (!input) return;
+    this.pendingFocus = false;
+    input.focus();
+    if (typeof input.scrollIntoView === 'function') {
+      input.scrollIntoView({ block: 'center' });
+    }
   }
 
   get atCap(): boolean {
