@@ -1,0 +1,40 @@
+<div class="gh-jam">
+  <h2 id="job-alert-modal-title" tabindex="-1">{{ title }}</h2>
+  <p id="job-alert-modal-description" *ngIf="!succeeded">{{ description }}</p>
+
+  <form *ngIf="!succeeded" (submit)="submit($event)" novalidate>
+    <label for="gh-job-alert-modal-position">Position</label>
+    <input
+      id="gh-job-alert-modal-position"
+      type="text"
+      [formControl]="position"
+      maxlength="120"
+      autocomplete="off"
+      placeholder="e.g. Registered Nurse"
+      cdkFocusInitial
+      [attr.aria-invalid]="formError ? true : null"
+      aria-describedby="gh-job-alert-modal-help">
+    <p id="gh-job-alert-modal-help" class="gh-jam__help">
+      We match this against job titles. You can manage alerts any time.
+    </p>
+    <p class="gh-jam__error" *ngIf="formError" role="alert">{{ formError }}</p>
+    <button class="gh-jam__submit" type="submit" [disabled]="submitting">
+      {{ submitting ? 'Saving…' : 'Get alerts' }}
+    </button>
+  </form>
+
+  <div *ngIf="succeeded" class="gh-jam__success">
+    <p #successStatus class="gh-jam__status" tabindex="-1" role="status">{{ description }}</p>
+    <p class="gh-jam__help">
+      The newest matching jobs are emailed right away. After that, one email every Tuesday at 9:00 PM Philippine time.
+    </p>
+    <div class="gh-jam__actions">
+      <a routerLink="/job-alerts" (click)="close()">Manage alerts</a>
+      <button type="button" (click)="close()">Done</button>
+    </div>
+  </div>
+
+  <button type="button" class="gh-jam__close" (click)="close()" [disabled]="submitting" aria-label="Close job alerts">
+    <span aria-hidden="true">×</span>
+  </button>
+</div>

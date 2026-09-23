@@ -5,6 +5,10 @@ import { take } from 'rxjs/operators';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { LinkedInAuthService } from '../services/linkedin-auth.service';
 import { PublicJobPreviewService } from '@main/public/services/public-job-preview.service';
+import {
+  clearJobAlertModalIntent,
+  jobAlertModalIntentPending,
+} from '@main/jobs/job-opening-alerts.service';
 
 @Component({
   selector: 'app-role-classification',
@@ -25,6 +29,7 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
 
   hasEmployerDraft = false;
   hasJobApplyIntent = false;
+  hasJobAlertIntent = false;
 
   private _provider: 'google' | 'linkedin' = 'google';
   private _sub: Subscription;
@@ -68,10 +73,15 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
     // conflict dialog below never fired, even when the intent was known.
     const returnUrl = localStorage.getItem('returnURL');
     this.hasJobApplyIntent = !!returnUrl && /^\/jobs\/details\//.test(returnUrl);
+    this.hasJobAlertIntent = jobAlertModalIntentPending();
 
     if (this.hasEmployerDraft) {
       this.recommendedRole = 'employer';
       this.recommendedLabel = 'Recommended for posting jobs';
+    } else if (this.hasJobAlertIntent) {
+      this.recommendedRole = 'job_seeker';
+      this.recommendedLabel = 'Recommended for job alerts';
+      this.selectedRole = 'job_seeker';
     } else if (this.hasJobApplyIntent) {
       this.recommendedRole = 'job_seeker';
       this.recommendedLabel = 'Recommended for applying to jobs';
@@ -98,6 +108,14 @@ export class RoleClassificationComponent implements OnInit, OnDestroy {
         'Applying to jobs requires a Job Seeker profile. Continue as Employer instead?'
       );
       if (!ok) { this.selectedRole = 'job_seeker'; return; }
+    }
+
+    if (this.hasJobAlertIntent && this.selectedRole === 'employer') {
+      const ok = window.confirm(
+        'Job opening alerts are only available to job seekers. Continue as Employer instead?'
+      );
+      if (!ok) { this.selectedRole = 'job_seeker'; return; }
+      clearJobAlertModalIntent();
     }
 
     this.submitting = true;

@@ -1,14 +1,30 @@
 import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { SeoService } from '@app-core/services/seo.service';
+import { SnackbarService } from '@app-core/services/snackbar.service';
 import {
   SearchService, FederatedSearchResponse, SearchJobResult, SearchCompanyResult,
   CompanySpotlight, SearchCounts, EmptyRecovery, LowResultRecovery,
 } from '@app-core/services/search.service';
-import { isJobSeekerRole, jobAlertEntryVisible } from '@main/jobs/job-opening-alerts.service';
+import {
+  JOB_ALERT_MODAL_QUERY,
+  JOB_ALERT_MODAL_SESSION_KEY,
+  JOB_OPENING_ALERTS_SEEKER_ONLY_MESSAGE,
+  clearJobAlertModalIntent,
+  hasJobAlertSession,
+  isJobSeekerRole,
+  jobAlertEntryVisible,
+  markJobAlertModalSession,
+  rememberJobAlertModalIntent,
+} from '@main/jobs/job-opening-alerts.service';
+import {
+  JobAlertSubscribeDialogComponent,
+  openJobAlertSubscribeDialog,
+} from '@app-shared/components/job-alert-subscribe/job-alert-subscribe-dialog.component';
 
 export type SearchTab = 'all' | 'jobs' | 'companies';
 
@@ -61,11 +77,16 @@ export class PublicListComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private jobAlertDialogRef: MatDialogRef<JobAlertSubscribeDialogComponent> | null = null;
+  private jobAlertModalResumed = false;
+
   constructor(
     private seoService: SeoService,
     private route: ActivatedRoute,
     private router: Router,
     private searchService: SearchService,
+    private dialog: MatDialog,
+    private snackbar: SnackbarService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
@@ -391,6 +412,77 @@ export class PublicListComponent implements OnInit, OnDestroy {
     const token = await this.asyncLocalStorage.getItem('token');
     const loggedIn = state === 'true' && !!token;
     this.showJobAlertEntry = !loggedIn || isJobSeekerRole(this.userRole);
+    this.resumeJobAlertModal(loggedIn);
+  }
+
+  onJobAlertsClick(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!hasJobAlertSession()) {
+      rememberJobAlertModalIntent();
+      this.snackbar.info('Sign in as a job seeker to get job alerts.');
+      this.router.navigate(['/signin'], { queryParams: { role: 3 } });
+      return;
+    }
+    const role = localStorage.getItem('role');
+    if (!isJobSeekerRole(role)) {
+      this.snackbar.error(JOB_OPENING_ALERTS_SEEKER_ONLY_MESSAGE);
+      return;
+    }
+    this.openJobAlertModal();
+  }
+
+  /**
+   * After seeker sign-in, `/jobs?openJobAlertModal=1` (or the same-tab
+   * session flag) opens this modal. Guests keep the flag. Employers and
+   * admins lose it and never see the form.
+   */
+  private resumeJobAlertModal(loggedIn: boolean): void {
+    if (!isPlatformBrowser(this.platformId) || this.jobAlertModalResumed) return;
+    const fromQuery = this.route.snapshot.queryParamMap.get(JOB_ALERT_MODAL_QUERY) === '1';
+    let fromSession = false;
+    try {
+      fromSession = sessionStorage.getItem(JOB_ALERT_MODAL_SESSION_KEY) === '1';
+    } catch (_) { /* storage unavailable */ }
+    if (!fromQuery && !fromSession) return;
+
+    if (!loggedIn) {
+      if (fromQuery) {
+        markJobAlertModalSession();
+        this.stripJobAlertModalQuery();
+      }
+      return;
+    }
+
+    this.jobAlertModalResumed = true;
+    clearJobAlertModalIntent();
+    // Strip the query before opening. MatDialog closes on navigation, so the
+    // modal has to open after that replaceUrl finishes.
+    const finish = () => {
+      if (isJobSeekerRole(this.userRole)) this.openJobAlertModal();
+    };
+    if (!fromQuery) {
+      finish();
+      return;
+    }
+    Promise.resolve(this.stripJobAlertModalQuery()).then(finish, finish);
+  }
+
+  private stripJobAlertModalQuery(): Promise<boolean> | null {
+    if (this.route.snapshot.queryParamMap.get(JOB_ALERT_MODAL_QUERY) !== '1') return null;
+    return this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [JOB_ALERT_MODAL_QUERY]: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  private openJobAlertModal(): void {
+    if (this.jobAlertDialogRef) return;
+    this.jobAlertDialogRef = openJobAlertSubscribeDialog(this.dialog);
+    this.jobAlertDialogRef.afterClosed().subscribe(() => {
+      this.jobAlertDialogRef = null;
+    });
   }
 
   trackByJobId(_: number, job: SearchJobResult) { return job.jobId; }

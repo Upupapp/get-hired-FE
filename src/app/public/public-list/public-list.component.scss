@@ -22,7 +22,7 @@
 .jb-wave::after { content:""; position:absolute; inset:12px; border-radius:inherit; background:linear-gradient(135deg,rgba(255,136,103,.94),rgba(248,29,116,.78) 48%,rgba(83,41,142,.18) 76%); }
 .jb-wave--left { width:430px; height:190px; left:-255px; bottom:-94px; transform:rotate(11deg); background:linear-gradient(110deg,#ff8a68,#ff306d 52%,#6d348f); }
 .jb-wave--right { width:650px; height:235px; right:-245px; bottom:-128px; transform:rotate(-9deg); background:linear-gradient(110deg,#4a286e,#ff386f 52%,#ff8c69); }
-.jb-hero-inner { max-width:1480px; margin:auto; display:grid; grid-template-columns:minmax(300px,.82fr) minmax(520px,1.45fr) 210px; align-items:center; gap:34px; }
+.jb-hero-inner { max-width:1480px; margin:auto; display:grid; grid-template-columns:minmax(300px,.82fr) minmax(520px,1.45fr) 248px; align-items:center; gap:34px; }
 .jb-hero-inner > * { min-width: 0; }
 .jb-eyebrow { display:block; margin-bottom:8px; font-size:11px; font-weight:700; letter-spacing:.42em; color:rgba(255,255,255,.78); }
 .jb-hero-copy h1 { margin:0; max-width:480px; font:800 clamp(38px,4vw,60px)/.96 'Manrope',sans-serif; letter-spacing:-.045em; }
@@ -41,8 +41,12 @@
 .jb-popular button { min-height:29px; padding:0 11px; border:1px solid rgba(255,255,255,.12); border-radius:9px; color:#fff; background:rgba(255,255,255,.08); font-size:10px; cursor:pointer; }
 .jb-hero-aside { align-self:stretch; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; }
 .jb-hand-note { margin:0 22px 8px 0; transform:rotate(-7deg); font:italic 16px/1.2 cursive; color:rgba(255,255,255,.86); }
-.jb-stat-card { width:205px; padding:15px; display:grid; grid-template-columns:42px 1fr; column-gap:10px; border:1px solid rgba(255,255,255,.18); border-radius:14px; background:rgba(255,255,255,.09); backdrop-filter:blur(13px); box-shadow:0 12px 30px rgba(4,8,28,.2); }
-.jb-stat-card i { grid-row:1/3; align-self:center; font-size:30px; color:#ffb1b4; }.jb-stat-card strong{font-size:17px}.jb-stat-card span{font-size:10px;color:rgba(255,255,255,.78)}
+.jb-stat-card { width:100%; margin:0; padding:15px; display:grid; grid-template-columns:42px 1fr; column-gap:10px; align-items:center; border:1px solid rgba(255,255,255,.18); border-radius:14px; background:rgba(255,255,255,.09); backdrop-filter:blur(13px); box-shadow:0 12px 30px rgba(4,8,28,.2); color:#fff; font-family:'Manrope',sans-serif; text-align:left; cursor:pointer; appearance:none; }
+.jb-stat-card i { grid-row:1 / span 2; align-self:center; font-size:28px; color:#ffb1b4; }
+.jb-stat-card strong { font-size:15px; font-weight:800; line-height:1.15; color:#fff; }
+.jb-stat-card span { font-size:11px; line-height:1.3; color:rgba(255,255,255,.82); }
+button.jb-stat-card:hover { background:rgba(255,255,255,.16); border-color:rgba(255,255,255,.45); }
+button.jb-stat-card:focus-visible { outline:2px solid #fff; outline-offset:3px; }
 
 .jb-board { max-width:1540px; margin:0 auto; padding:26px clamp(18px,3.5vw,56px) 72px; display:grid; grid-template-columns:238px minmax(0,1fr); gap:24px; background:#f7f9fd; }
 .jb-filter-card { position:sticky; top:86px; align-self:start; padding:18px; border:1px solid #e4e8f1; border-radius:15px; background:#fff; box-shadow:0 8px 30px rgba(21,32,70,.05); }
@@ -60,8 +64,8 @@
 .jb-results ::ng-deep .jpl-section-head { display:none; }
 .jb-results ::ng-deep .row { --bs-gutter-x:14px; }
 
-@media (max-width:1280px){.jb-hero-inner{grid-template-columns:minmax(260px,.8fr) minmax(480px,1.35fr)}.jb-hero-aside{display:none}.jb-search-form{grid-template-columns:minmax(190px,1fr) minmax(135px,.65fr) 155px}.jb-board{grid-template-columns:220px minmax(0,1fr)}}
-@media (max-width:960px){.jb-hero{padding-top:30px}.jb-hero-inner{grid-template-columns:minmax(0,1fr)}.jb-hero-copy{text-align:center}.jb-hero-copy h1{margin:auto}.jb-search-tabs{margin:20px auto 12px}.jb-search-stack{width:min(720px,100%);margin:auto}.jb-board{grid-template-columns:minmax(0,1fr)}.jb-mobile-filter-button{display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:0 15px;border:1px solid #e1e6ef;border-radius:11px;background:#fff;font-weight:700}.jb-filter-card{display:none;position:static}.jb-filter-card.is-open{display:block}.jb-results-head{margin-top:5px}}
+@media (max-width:1280px){.jb-hero-inner{grid-template-columns:minmax(260px,.8fr) minmax(0,1.35fr)}.jb-hand-note{display:none}.jb-hero-aside{grid-column:1 / -1;flex-direction:row;justify-content:flex-start;align-items:center}.jb-stat-card{width:min(280px,100%)}.jb-search-form{grid-template-columns:minmax(190px,1fr) minmax(135px,.65fr) 155px}.jb-board{grid-template-columns:220px minmax(0,1fr)}}
+@media (max-width:960px){.jb-hero{padding-top:30px}.jb-hero-inner{grid-template-columns:minmax(0,1fr)}.jb-hero-copy{text-align:center}.jb-hero-copy h1{margin:auto}.jb-search-tabs{margin:20px auto 12px}.jb-search-stack{width:min(720px,100%);margin:auto}.jb-hero-aside{justify-content:center;margin-top:8px}.jb-board{grid-template-columns:minmax(0,1fr)}.jb-mobile-filter-button{display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:0 15px;border:1px solid #e1e6ef;border-radius:11px;background:#fff;font-weight:700}.jb-filter-card{display:none;position:static}.jb-filter-card.is-open{display:block}.jb-results-head{margin-top:5px}}
 @media (max-width:620px){.jb-hero{padding:28px 16px 34px;border-radius:0 0 20px 20px}.jb-hero-inner{width:100%;grid-template-columns:minmax(0,1fr)!important}.jb-hero-copy,.jb-search-stack{width:100%;max-width:100%;overflow:hidden}.jb-hero-copy h1{font-size:40px}.jb-hero-copy p{width:100%;max-width:350px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.jb-search-tabs,.jb-search-form{width:100%;max-width:100%;box-sizing:border-box}.jb-search-tabs button,.jb-search-tabs a{gap:5px;font-size:11px;overflow:hidden}.jb-search-form{grid-template-columns:minmax(0,1fr)}.jb-search-field input{min-width:0}.jb-search-field{min-width:0;border-right:0;border-bottom:1px solid #edf0f7}.jb-search-button{margin-top:5px}.jb-popular{justify-content:center;max-height:74px;overflow:hidden}.jb-board{padding:18px 12px 50px}.jb-results-head{align-items:stretch;flex-direction:column}.jb-sort{width:100%}.jb-quick-filters{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding-bottom:4px}.jb-quick-filters button{white-space:nowrap}.jb-wave--left{left:-330px}.jb-wave--right{right:-430px}}
 
 // Search mode layout

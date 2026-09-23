@@ -16,6 +16,18 @@ describe('auth return URL', () => {
     expect(consumeReturnUrl(3)).toBe(url);
   });
 
+  it('keeps the public jobs browse URL so a job-alert modal can resume after seeker sign-in', () => {
+    const url = '/jobs?openJobAlertModal=1';
+    rememberReturnUrl(url, 3);
+    expect(consumeReturnUrl(3)).toBe(url);
+  });
+
+  it('does not send an employer to the jobs browse alert URL', () => {
+    expect(safeReturnUrlForRole('/jobs?openJobAlertModal=1', 2)).toBeNull();
+    expect(rememberReturnUrl('/jobs?openJobAlertModal=1', 2)).toBeUndefined();
+    expect(localStorage.getItem('returnURL')).toBeNull();
+  });
+
   it('rejects external, protocol-relative, and cross-role destinations', () => {
     expect(safeReturnUrlForRole('https://evil.example/recruiter', 2)).toBeNull();
     expect(safeReturnUrlForRole('//evil.example/recruiter', 2)).toBeNull();

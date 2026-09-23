@@ -1090,6 +1090,14 @@ a.gh-btn-ghost:hover, a.gh-btn-ghost:focus { text-decoration: none; }
   }
 }
 
+// Hero job-alert subscribe modal. The component owns padding and radius.
+.gh-job-alert-modal.mat-dialog-container,
+.gh-job-alert-modal .mat-dialog-container {
+  padding: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
 // ── Job Action Command Center dialog — strip default MatDialog chrome ──────
 // The .gh-jac component controls its own border-radius, background, padding.
 .gh-jac-dialog.mat-dialog-container,
