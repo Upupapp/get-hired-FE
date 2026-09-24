@@ -3,11 +3,16 @@ import {
   buildAdminQuery,
   formatAdminDate,
   formatAdminDay,
+  formatAdminManilaDateTime,
+  formatAdminManilaDay,
   formatAdminMoney,
   isPublishedStatus,
   jobStatusLabel,
+  isSeekerRole,
   jobStatusQueryValue,
   normalizeApplication,
+  normalizeJobAlertPage,
+  normalizeJobAlertUser,
   normalizeCompany,
   normalizeCompanyDetail,
   normalizeDashboard,
@@ -130,6 +135,11 @@ describe('admin response normalizers', () => {
     expect(normalizeUser({ email: 'a@b.com' }).lastLogin).toBeNull();
     expect(formatAdminDate(null)).toBe('—');
     expect(formatAdminDay('2026-09-23T09:00:00+08:00')).toBe('Sep 23, 2026');
+    expect(formatAdminManilaDay('2026-09-22T17:30:00.000Z')).toBe('Sep 23, 2026');
+    expect(formatAdminManilaDateTime('2026-09-23T01:00:00.000Z')).toBe('Sep 23, 2026, 9:00 AM');
+    expect(formatAdminManilaDateTime(null)).toBe('—');
+    expect(isSeekerRole(3)).toBeTrue();
+    expect(isSeekerRole(2)).toBeFalse();
     expect(formatAdminMoney(null)).toBe('—');
     expect(formatAdminMoney(3490).replace(/[^\d]/g, '')).toBe('3490');
 
@@ -214,6 +224,61 @@ describe('admin response normalizers', () => {
     expect(detail.admins.length).toBe(1);
     expect(detail.history[0].actor).toBe('Rosa');
     expect(detail.subscription.plan).toBe('Growth');
+  });
+
+  it('normalizes Job Alert rows and keeps joa_available', () => {
+    const page = normalizeJobAlertPage({
+      data: {
+        joa_available: false,
+        items: [{
+          id: 9,
+          user_uid: 'U-9',
+          seeker_email: 'ada@example.com',
+          first_name: 'Ada',
+          last_name: 'Cruz',
+          seeker_role: 3,
+          seeker_archived: false,
+          position: 'Marketing Manager',
+          position_normalized: 'marketing manager',
+          active: true,
+          created_at: '2026-09-23T09:04:00+08:00',
+          instant_sent_at: '2026-09-23T08:12:00+08:00',
+          instant_message_id: 'joa-msg-1',
+          instant_job_count: 4,
+          last_digest_week: '2026-09-22',
+          last_digest_sent_at: null,
+          last_digest_job_count: 0,
+        }],
+        total: 1,
+        page: 1,
+        pageSize: 25,
+      }
+    }, 1, 25);
+    expect(page.joaAvailable).toBeFalse();
+    expect(page.items[0].seekerName).toBe('Ada Cruz');
+    expect(page.items[0].position).toBe('Marketing Manager');
+    expect(page.items[0].instantJobCount).toBe(4);
+    expect(page.items[0].instantMessageId).toBe('joa-msg-1');
+    expect(page.items[0].lastDigestJobCount).toBe(0);
+    expect(normalizeJobAlertPage({ items: [] }, 1, 25).joaAvailable).toBeTrue();
+
+    const detail = normalizeJobAlertUser({
+      data: {
+        user_uid: 'U-9',
+        seeker_name: 'Ada Cruz',
+        seeker_email: 'ada@example.com',
+        seeker_role: 3,
+        active_count: 1,
+        total_count: 1,
+        subscriptions: [{ id: 9, position: 'Nurse', position_normalized: 'Nurse', active: false, created_at: '2026-09-01T00:00:00+08:00' }],
+      }
+    }, 'U-9');
+    expect(detail.seekerName).toBe('Ada Cruz');
+    expect(detail.activeCount).toBe(1);
+    expect(detail.subscriptions[0].active).toBeFalse();
+    expect(detail.joaAvailable).toBeTrue();
+    expect(normalizeJobAlertUser({ data: { items: [], total: 0 } }, 'U-9')).toBeNull();
+    expect(normalizeJobAlertUser({ joa_available: false }, 'U-9').joaAvailable).toBeFalse();
   });
 
   it('builds query strings and reads http errors', () => {

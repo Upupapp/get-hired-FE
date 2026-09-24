@@ -26,6 +26,21 @@
  * - applications_in_range falls back to applications_7d / applications_30d when the preset matches,
  *   otherwise to the fixture catalog. Today and custom need the new field.
  * - GET /admin/applications does not exist yet. The ops list is fixture-only until it does.
+ * - GET /admin/job-opening-alerts and GET /admin/job-opening-alerts/users/:userUid
+ *   prefer a live `{ status, data }` payload. Fixtures remain the fallback when that
+ *   call fails (not on 401/403). joa_available false is an empty list plus a calm note.
+ *   Formal shots (fixture fallback, Asia/Manila "now"):
+ *     /admin/job-alerts
+ *       Last 7 days + Active. Populated list.
+ *     /admin/job-alerts?user=U-200
+ *       Panel for Ada Cruz: several positions, normalized key, send ids, lease.
+ *     /admin/job-alerts?shot=empty
+ *       Empty Active range.
+ *     /admin/job-alerts?status=inactive&shot=empty
+ *       Empty Inactive / All copy.
+ *     /admin/job-alerts?shot=unavailable
+ *       joa_available false.
+ *   `shot` is local only. It is not sent to the API. A live payload ignores it.
  * - Job status words are mapped to job_status_id 1–4 before the jobs request.
  * - Users last_login is shown as — when the list omits it (the column is not on the BE list today).
  * - Full-dashboard fixture mode (HTTP failure) also invents inventory totals. The screen says so.
@@ -40,6 +55,11 @@ import {
   AdminApplicationQuery,
   AdminApplicationRow,
   AdminCompanyContact,
+  AdminJobAlertPage,
+  AdminJobAlertQuery,
+  AdminJobAlertRow,
+  AdminJobAlertUserDetail,
+  JobAlertFixtureShot,
   AdminCompanyDetail,
   AdminCompanyEvent,
   AdminCompanyRow,
@@ -219,6 +239,207 @@ export function fixtureApplications(query: AdminApplicationQuery, now = new Date
     return haystack.indexOf(q) !== -1;
   });
   return pageOf(filtered, query.page, query.pageSize);
+}
+
+/** Deep-link uid for the populated seeker panel (Ada Cruz, several subscriptions). */
+export const JOA_FIXTURE_PANEL_UID = 'U-200';
+
+/**
+ * One row per subscription. Offsets are days before `now` on the Manila calendar,
+ * so Last 7 days stays populated whenever the shot is taken.
+ * Message ids use the joa-msg- prefix so list shots can prove they stay off the list.
+ */
+export function fixtureJobAlertCatalog(now = new Date()): AdminJobAlertRow[] {
+  const stamp = (offset: number, hour: number, minute: number) => {
+    const day = addDays(manilaYmd(now), -offset);
+    return `${day}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00+08:00`;
+  };
+  const row = (seed: AlertSeed): AdminJobAlertRow => {
+    const createdAt = stamp(seed.offset, seed.hour == null ? 9 : seed.hour, 4);
+    const instant = seed.instant;
+    const digest = seed.digest;
+    return {
+      id: seed.id,
+      userUid: seed.userUid,
+      seekerEmail: seed.seekerEmail,
+      seekerName: seed.seekerName,
+      seekerRole: seed.seekerRole,
+      seekerArchived: !!seed.seekerArchived,
+      position: seed.position,
+      positionNormalized: seed.positionNormalized,
+      jobRoleId: seed.jobRoleId == null ? null : seed.jobRoleId,
+      active: seed.active,
+      createdAt,
+      updatedAt: createdAt,
+      instantSentAt: instant ? stamp(instant.offset, instant.hour, 12) : null,
+      instantMessageId: instant ? instant.messageId : null,
+      instantJobCount: instant ? instant.count : null,
+      instantClaimedAt: seed.claimed ? stamp(seed.claimed.offset, seed.claimed.hour, 40) : null,
+      lastDigestWeek: digest ? (digest.week || addDays(manilaYmd(now), -digest.offset)) : null,
+      lastDigestSentAt: digest ? stamp(digest.offset, digest.hour, 30) : null,
+      lastDigestMessageId: digest ? digest.messageId : null,
+      lastDigestJobCount: digest ? digest.count : null,
+    };
+  };
+  return [
+    row({
+      id: 'JOA-200-1', userUid: 'U-200', seekerName: 'Ada Cruz', seekerEmail: 'ada.cruz@example.com',
+      seekerRole: 3, position: 'Marketing Manager', positionNormalized: 'marketing manager', jobRoleId: 12,
+      active: true, offset: 1, hour: 11,
+      instant: { offset: 0, hour: 8, count: 4, messageId: 'joa-msg-instant-ada-marketing' },
+      digest: { offset: 0, hour: 8, count: 7, messageId: 'joa-msg-digest-ada-marketing' },
+    }),
+    row({
+      id: 'JOA-200-2', userUid: 'U-200', seekerName: 'Ada Cruz', seekerEmail: 'ada.cruz@example.com',
+      seekerRole: 3, position: 'Kitchen Lead', positionNormalized: 'kitchen lead',
+      active: true, offset: 2,
+      claimed: { offset: 0, hour: 7 },
+    }),
+    row({
+      id: 'JOA-200-3', userUid: 'U-200', seekerName: 'Ada Cruz', seekerEmail: 'ada.cruz@example.com',
+      seekerRole: 3, position: 'Barista', positionNormalized: 'barista',
+      active: false, offset: 3,
+      instant: { offset: 2, hour: 9, count: 2, messageId: 'joa-msg-instant-ada-barista' },
+    }),
+    row({
+      id: 'JOA-200-4', userUid: 'U-200', seekerName: 'Ada Cruz', seekerEmail: 'ada.cruz@example.com',
+      seekerRole: 3, position: 'Nurse', positionNormalized: 'Nurse',
+      active: true, offset: 20,
+    }),
+    row({
+      id: 'JOA-201-1', userUid: 'U-201', seekerName: 'Miguel Santos', seekerEmail: 'miguel.santos@example.com',
+      seekerRole: 2, position: 'Front Desk Associate', positionNormalized: 'front desk associate',
+      active: true, offset: 0, hour: 10,
+      instant: { offset: 0, hour: 11, count: 2, messageId: 'joa-msg-instant-miguel-front-desk' },
+    }),
+    row({
+      id: 'JOA-202-1', userUid: 'U-202', seekerName: 'Jonah Reyes', seekerEmail: 'jonah.reyes@example.com',
+      seekerRole: 3, seekerArchived: true, position: 'Retail Merchandiser', positionNormalized: 'retail merchandiser',
+      active: true, offset: 4,
+      digest: { offset: 1, hour: 8, count: 6, messageId: 'joa-msg-digest-jonah-retail' },
+    }),
+    row({
+      id: 'JOA-203-1', userUid: 'U-203', seekerName: 'Priya Nair', seekerEmail: 'priya.nair@example.com',
+      seekerRole: 3, position: 'Warehouse Associate', positionNormalized: 'warehouse associate',
+      active: true, offset: 5,
+      instant: { offset: 4, hour: 9, count: 3, messageId: 'joa-msg-instant-priya-warehouse' },
+      digest: { offset: 1, hour: 8, count: 5, messageId: 'joa-msg-digest-priya-warehouse' },
+    }),
+    row({
+      id: 'JOA-204-1', userUid: 'U-204', seekerName: 'Liza Gomez', seekerEmail: 'liza.gomez@example.com',
+      seekerRole: 3, position: 'Delivery Rider', positionNormalized: 'delivery rider',
+      active: false, offset: 1, hour: 14,
+    }),
+    row({
+      id: 'JOA-205-1', userUid: 'U-205', seekerName: 'Carlo Tan', seekerEmail: 'carlo.tan@example.com',
+      seekerRole: 3, position: 'Barista', positionNormalized: 'Barista',
+      active: true, offset: 6,
+      instant: { offset: 5, hour: 16, count: 1, messageId: 'joa-msg-instant-carlo-barista' },
+    }),
+    row({
+      id: 'JOA-206-1', userUid: 'U-206', seekerName: 'Ops Admin', seekerEmail: 'ops@gethired.example',
+      seekerRole: 1, seekerArchived: true, position: 'Night Auditor', positionNormalized: 'night auditor',
+      active: false, offset: 45,
+    }),
+  ];
+}
+
+export function fixtureJobAlerts(query: AdminJobAlertQuery, now = new Date()): AdminJobAlertPage {
+  const page = query.page > 0 ? query.page : 1;
+  const pageSize = query.pageSize > 0 ? query.pageSize : 25;
+  if (query.fixtureShot === 'unavailable' || query.fixtureShot === 'empty') {
+    return {
+      items: [],
+      total: 0,
+      page,
+      pageSize,
+      fromFixture: true,
+      joaAvailable: query.fixtureShot !== 'unavailable',
+    };
+  }
+  const q = (query.q || '').trim().toLowerCase();
+  const filtered = fixtureJobAlertCatalog(now).filter(row => {
+    const day = (row.createdAt || '').slice(0, 10);
+    if (query.from && day < query.from) {
+      return false;
+    }
+    if (query.to && day > query.to) {
+      return false;
+    }
+    if (query.active === true && !row.active) {
+      return false;
+    }
+    if (query.active === false && row.active) {
+      return false;
+    }
+    if (!q) {
+      return true;
+    }
+    const haystack = `${row.seekerName} ${row.seekerEmail} ${row.position}`.toLowerCase();
+    return haystack.indexOf(q) !== -1;
+  }).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)) || String(b.id).localeCompare(String(a.id)));
+  const paged = pageOf(filtered, page, pageSize);
+  return { ...paged, joaAvailable: true };
+}
+
+export function fixtureJobAlertUser(
+  userUid: string,
+  shot?: JobAlertFixtureShot | null,
+  now = new Date()
+): AdminJobAlertUserDetail | null {
+  if (shot === 'unavailable') {
+    return {
+      userUid,
+      seekerName: '',
+      seekerEmail: '',
+      seekerRole: null,
+      seekerArchived: false,
+      createdAt: null,
+      activeCount: 0,
+      totalCount: 0,
+      subscriptions: [],
+      joaAvailable: false,
+      fromFixture: true,
+    };
+  }
+  const subscriptions = fixtureJobAlertCatalog(now)
+    .filter(row => row.userUid === userUid)
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)) || String(b.id).localeCompare(String(a.id)));
+  if (!subscriptions.length) {
+    return null;
+  }
+  const first = subscriptions[0];
+  return {
+    userUid,
+    seekerName: first.seekerName,
+    seekerEmail: first.seekerEmail,
+    seekerRole: first.seekerRole,
+    seekerArchived: first.seekerArchived,
+    createdAt: null,
+    activeCount: subscriptions.filter(row => row.active).length,
+    totalCount: subscriptions.length,
+    subscriptions,
+    joaAvailable: true,
+    fromFixture: true,
+  };
+}
+
+interface AlertSeed {
+  id: string;
+  userUid: string;
+  seekerName: string;
+  seekerEmail: string;
+  seekerRole: number;
+  seekerArchived?: boolean;
+  position: string;
+  positionNormalized: string;
+  jobRoleId?: number | null;
+  active: boolean;
+  offset: number;
+  hour?: number;
+  instant?: { offset: number; hour: number; count: number; messageId: string } | null;
+  claimed?: { offset: number; hour: number } | null;
+  digest?: { offset: number; hour: number; count: number; messageId: string; week?: string } | null;
 }
 
 export function fixtureDashboard(range: AdminTimeRange, now = new Date()): Dashboard {

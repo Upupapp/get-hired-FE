@@ -7,8 +7,11 @@ import {
   fixtureCompanyDetail,
   fixtureDashboard,
   fixtureFinance,
+  fixtureJobAlerts,
+  fixtureJobAlertUser,
   fixtureJobs,
   fixtureUsers,
+  JOA_FIXTURE_PANEL_UID,
 } from './admin.fixtures';
 import { Dashboard } from './admin.model';
 
@@ -189,5 +192,71 @@ describe('admin fixtures', () => {
     expect(harbor.history.some(event => event.kind === 'Job unpublish' && event.actor === 'Ops admin')).toBeTrue();
     const directory = fixtureCompanies({ page: 1, pageSize: 25 });
     expect(directory.items.map(row => row.companyId)).toEqual(['CO-20', 'CO-21', 'CO-22', 'CO-23', 'CO-24', 'CO-25', 'CO-26']);
+  });
+
+  it('pages Job Alert fixtures for the list, the seeker panel, empty, and unavailable', () => {
+    const active = fixtureJobAlerts({
+      q: '',
+      from: '2026-09-17',
+      to: '2026-09-24',
+      page: 1,
+      pageSize: 25,
+      active: true,
+    }, now);
+    expect(active.joaAvailable).toBeTrue();
+    expect(active.fromFixture).toBeTrue();
+    expect(active.items.length).toBeGreaterThan(0);
+    expect(active.items.every(row => row.active)).toBeTrue();
+    expect(active.items.some(row => row.seekerName === 'Ada Cruz' && row.position === 'Marketing Manager')).toBeTrue();
+    expect(active.items.some(row => row.position === 'Nurse')).toBeFalse();
+    expect(active.items.some(row => row.seekerRole === 2)).toBeTrue();
+    expect(active.items.some(row => row.seekerArchived)).toBeTrue();
+
+    const detail = fixtureJobAlertUser(JOA_FIXTURE_PANEL_UID, null, now);
+    expect(detail.totalCount).toBe(4);
+    expect(detail.activeCount).toBe(3);
+    expect(detail.subscriptions.map(row => row.position)).toEqual([
+      'Marketing Manager',
+      'Kitchen Lead',
+      'Barista',
+      'Nurse',
+    ]);
+    expect(detail.subscriptions[0].positionNormalized).toBe('marketing manager');
+    expect(detail.subscriptions[1].instantSentAt).toBeNull();
+    expect(detail.subscriptions[1].instantClaimedAt).toBeTruthy();
+    expect(detail.subscriptions[0].instantMessageId).toContain('joa-msg-');
+    expect(detail.subscriptions.some(row => row.active === false)).toBeTrue();
+
+    const named = fixtureJobAlerts({
+      q: 'marketing',
+      from: '2026-01-01',
+      to: '2026-09-24',
+      page: 1,
+      pageSize: 25,
+      active: true,
+    }, now);
+    expect(named.items.length).toBe(1);
+    expect(named.items[0].position).toBe('Marketing Manager');
+
+    const empty = fixtureJobAlerts({
+      q: '',
+      from: '2026-09-17',
+      to: '2026-09-24',
+      page: 1,
+      pageSize: 25,
+      active: true,
+      fixtureShot: 'empty',
+    }, now);
+    expect(empty.total).toBe(0);
+    expect(empty.joaAvailable).toBeTrue();
+
+    const unavailable = fixtureJobAlerts({
+      page: 1,
+      pageSize: 25,
+      fixtureShot: 'unavailable',
+    }, now);
+    expect(unavailable.items).toEqual([]);
+    expect(unavailable.joaAvailable).toBeFalse();
+    expect(fixtureJobAlertUser('missing', null, now)).toBeNull();
   });
 });

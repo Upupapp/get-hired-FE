@@ -289,6 +289,175 @@ describe('AdminService admin MVP endpoints', () => {
     expect(name).toBe('Northline Logistics');
   });
 
+  it('loads Job Alert fixtures when the list endpoint is missing, and keeps a live unavailable flag', () => {
+    let total = -1;
+    service.listJobOpeningAlerts({
+      q: '',
+      from: '2020-01-01',
+      to: '2030-01-01',
+      page: 1,
+      pageSize: 25,
+      active: true,
+      fixtureShot: 'empty',
+    }).subscribe(page => {
+      total = page.total;
+      expect(page.fromFixture).toBeTrue();
+      expect(page.joaAvailable).toBeTrue();
+      expect(page.items).toEqual([]);
+    });
+    const missing = httpMock.expectOne(
+      `${environment.api_url}/admin/job-opening-alerts?active=true&from=2020-01-01&to=2030-01-01&page=1&pageSize=25`
+    );
+    expect(missing.request.url).not.toContain('shot');
+    expect(missing.request.url).not.toContain('fixture');
+    missing.flush('missing', { status: 404, statusText: 'Not Found' });
+    expect(total).toBe(0);
+
+    let liveFlag = true;
+    service.listJobOpeningAlerts({
+      page: 1,
+      pageSize: 25,
+      active: false,
+    }).subscribe(page => {
+      liveFlag = page.joaAvailable;
+      expect(page.fromFixture).toBeFalsy();
+      expect(page.items.length).toBe(0);
+    });
+    const unavailable = httpMock.expectOne(
+      `${environment.api_url}/admin/job-opening-alerts?active=false&page=1&pageSize=25`
+    );
+    unavailable.flush({ joa_available: false, items: [], total: 0 }, { status: 503, statusText: 'Unavailable' });
+    expect(liveFlag).toBeFalse();
+  });
+
+  it('calls Job Alerts with active=all and range=7d, and from/to for a custom range', () => {
+    let position = '';
+    service.listJobOpeningAlerts({
+      q: 'ada',
+      range: '7d',
+      from: '2026-09-17',
+      to: '2026-09-24',
+      page: 1,
+      pageSize: 25,
+      active: 'all',
+      userUid: 'U-200',
+    }).subscribe(page => {
+      position = page.items[0].position;
+      expect(page.joaAvailable).toBeTrue();
+      expect(page.fromFixture).toBeFalsy();
+      expect(page.total).toBe(1);
+    });
+    const preset = httpMock.expectOne(
+      `${environment.api_url}/admin/job-opening-alerts?q=ada&active=all&range=7d&user_uid=U-200&page=1&pageSize=25`
+    );
+    expect(preset.request.url).not.toContain('from=');
+    expect(preset.request.url).not.toContain('shot');
+    preset.flush({
+      status: 'success',
+      data: {
+        items: [{ id: 12, user_uid: 'U-200', position: 'Marketing Manager', active: true }],
+        total: 1,
+        page: 1,
+        pageSize: 25,
+        joa_available: true,
+      },
+    });
+    expect(position).toBe('Marketing Manager');
+
+    let customTotal = -1;
+    service.listJobOpeningAlerts({
+      range: 'custom',
+      from: '2026-09-01',
+      to: '2026-09-03',
+      page: 1,
+      pageSize: 25,
+      active: true,
+    }).subscribe(page => {
+      customTotal = page.total;
+      expect(page.joaAvailable).toBeFalse();
+      expect(page.items).toEqual([]);
+    });
+    const custom = httpMock.expectOne(
+      `${environment.api_url}/admin/job-opening-alerts?active=true&from=2026-09-01&to=2026-09-03&page=1&pageSize=25`
+    );
+    expect(custom.request.url).not.toContain('range=');
+    custom.flush({
+      status: 'success',
+      data: { items: [], total: 0, page: 1, pageSize: 25, joa_available: false },
+    });
+    expect(customTotal).toBe(0);
+  });
+
+  it('reads a live Job Alert detail envelope', () => {
+    let name = '';
+    service.getJobOpeningAlertUser('seeker-1').subscribe(detail => {
+      name = detail.seekerName;
+      expect(detail.fromFixture).toBeFalse();
+      expect(detail.joaAvailable).toBeTrue();
+      expect(detail.seekerEmail).toBe('ada@example.com');
+      expect(detail.seekerRole).toBe(3);
+      expect(detail.activeCount).toBe(1);
+      expect(detail.totalCount).toBe(2);
+      expect(detail.createdAt).toBe('2026-01-02T00:00:00.000Z');
+      expect(detail.subscriptions[0].position).toBe('Baker');
+      expect(detail.subscriptions[0].positionNormalized).toBe('baker');
+      expect(detail.subscriptions[0].instantMessageId).toBe('msg-instant-1');
+      expect(detail.subscriptions[0].active).toBeFalse();
+    });
+    const req = httpMock.expectOne(`${environment.api_url}/admin/job-opening-alerts/users/seeker-1`);
+    expect(req.request.method).toBe('GET');
+    req.flush({
+      status: 'success',
+      data: {
+        joa_available: true,
+        user_uid: 'seeker-1',
+        seeker_email: 'ada@example.com',
+        seeker_name: 'Ada Lovelace',
+        seeker_role: 3,
+        seeker_archived: false,
+        seeker_created_at: '2026-01-02T00:00:00.000Z',
+        active_count: 1,
+        total_count: 2,
+        subscriptions: [{
+          id: 30,
+          user_uid: 'seeker-1',
+          position: 'Baker',
+          position_normalized: 'baker',
+          active: false,
+          created_at: '2026-09-22T00:00:00.000Z',
+          instant_sent_at: '2026-09-20T02:05:00.000Z',
+          instant_message_id: 'msg-instant-1',
+          instant_job_count: 4,
+        }],
+      },
+    });
+    expect(name).toBe('Ada Lovelace');
+  });
+
+  it('uses a seeker Job Alert fixture when the detail endpoint is missing', () => {
+    let positions = 0;
+    service.getJobOpeningAlertUser('U-200').subscribe(detail => {
+      positions = detail.subscriptions.length;
+      expect(detail.fromFixture).toBeTrue();
+      expect(detail.seekerName).toBe('Ada Cruz');
+      expect(detail.totalCount).toBeGreaterThan(1);
+    });
+    const req = httpMock.expectOne(`${environment.api_url}/admin/job-opening-alerts/users/U-200`);
+    req.flush('missing', { status: 404, statusText: 'Not Found' });
+    expect(positions).toBeGreaterThan(1);
+  });
+
+  it('does not replace an unauthorized Job Alert response with fixtures', () => {
+    let failed = false;
+    service.listJobOpeningAlerts({ page: 1, pageSize: 25, active: true }).subscribe({
+      next: () => fail('expected the 401 to surface'),
+      error: () => { failed = true; },
+    });
+    const req = httpMock.expectOne(request => request.url.indexOf('/admin/job-opening-alerts') !== -1);
+    req.flush('no', { status: 401, statusText: 'Unauthorized' });
+    expect(failed).toBeTrue();
+  });
+
   it('soft-unpublishes a job with POST and does not send a delete', () => {
     service.unpublishJob('JB-1').subscribe();
     const req = httpMock.expectOne(`${environment.api_url}/admin/jobs/JB-1/unpublish`);

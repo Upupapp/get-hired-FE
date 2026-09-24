@@ -1,0 +1,162 @@
+<section class="admin-page" aria-labelledby="admin-job-alerts-title">
+  <div class="admin-page-toolbar admin-page-toolbar--sticky">
+    <header class="admin-page-header">
+      <h1 id="admin-job-alerts-title">Job Alerts</h1>
+      <p>Subscriptions in the selected range, by subscribed date. Open a seeker to review every position. Nothing is changed here.</p>
+    </header>
+    <app-admin-time-filter [range]="range" [updating]="loading" (rangeChange)="onRange($event)"></app-admin-time-filter>
+  </div>
+
+  <form class="admin-filters" (ngSubmit)="applySearch()">
+    <label class="admin-field">
+      <span>Search</span>
+      <input type="search" name="job-alert-search" [ngModel]="searchText" (ngModelChange)="onSearch($event)"
+        placeholder="Seeker email, name, or position" autocomplete="off">
+    </label>
+    <div class="admin-field admin-field--chips">
+      <span id="joa-status-label">Status</span>
+      <div class="admin-status-chips" role="group" aria-labelledby="joa-status-label">
+        <button type="button" class="admin-status-chip" *ngFor="let chip of statusChips"
+          [attr.aria-pressed]="status === chip.value"
+          (click)="onStatus(chip.value)">
+          {{ chip.label }}
+        </button>
+      </div>
+    </div>
+    <button type="submit" class="admin-btn admin-btn--primary">Search</button>
+  </form>
+
+  <p class="admin-state" *ngIf="showFixtureNote">
+    These rows are fixtures. GET /admin/job-opening-alerts is not on the API yet.
+  </p>
+
+  <p class="admin-state" role="status" *ngIf="showUnavailable">{{ unavailableText }}</p>
+
+  <app-admin-status
+    [loading]="loading"
+    [error]="error"
+    [empty]="showEmpty"
+    [loadingText]="loadingText"
+    [emptyText]="emptyText"
+    (retry)="retry()">
+  </app-admin-status>
+
+  <p class="admin-state" *ngIf="range.invalid && !loading">Choose a valid date range to load Job Alerts.</p>
+
+  <div class="admin-split" *ngIf="showTable || selectedUid">
+    <div class="admin-card admin-table-wrap" *ngIf="showTable">
+      <table class="admin-table">
+        <caption class="admin-muted">Job Alert subscriptions in range</caption>
+        <thead>
+          <tr>
+            <th scope="col">Subscribed at</th>
+            <th scope="col">Seeker</th>
+            <th scope="col">Position</th>
+            <th scope="col">Status</th>
+            <th scope="col">Instant</th>
+            <th scope="col">Last digest</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows; trackBy: trackRow"
+            class="admin-row-link"
+            [class.admin-row--selected]="row.userUid === selectedUid"
+            [attr.aria-selected]="row.userUid === selectedUid"
+            (click)="openSeeker(row)">
+            <td>{{ when(row.createdAt) }}</td>
+            <td>
+              <button type="button" class="admin-row-button" (click)="openSeeker(row)">{{ row.seekerName || '—' }}</button>
+              <div class="admin-muted">{{ row.seekerEmail || '—' }}</div>
+              <div class="admin-badge-row" *ngIf="row.seekerArchived || showNonSeeker(row.seekerRole)">
+                <span class="admin-badge" *ngIf="row.seekerArchived">Archived</span>
+                <span class="admin-badge" *ngIf="showNonSeeker(row.seekerRole)">{{ roleOf(row.seekerRole) }}</span>
+              </div>
+            </td>
+            <td>{{ row.position || '—' }}</td>
+            <td><span [class]="statusClass(row.active)">{{ statusLabel(row.active) }}</span></td>
+            <td>
+              {{ whenSent(row.instantSentAt) }}
+              <span class="admin-muted" *ngIf="jobsSuffix(row.instantJobCount) as suffix"> {{ suffix }}</span>
+            </td>
+            <td>
+              {{ whenSent(row.lastDigestSentAt) }}
+              <span class="admin-muted" *ngIf="jobsSuffix(row.lastDigestJobCount) as suffix"> {{ suffix }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+    </div>
+
+    <aside class="admin-card admin-detail" *ngIf="selectedUid" aria-label="Job Alert subscriptions">
+      <div class="admin-detail-header">
+        <h2>{{ headerName }}</h2>
+        <button type="button" class="admin-btn admin-btn--ghost" (click)="closeDetail()">Close</button>
+      </div>
+      <p class="admin-muted" *ngIf="headerEmail">{{ headerEmail }}</p>
+      <p class="admin-badge-row" *ngIf="headerRoleLabel || headerArchived">
+        <span class="admin-badge" *ngIf="headerRoleLabel">{{ headerRoleLabel }}</span>
+        <span class="admin-badge" *ngIf="headerArchived">Archived</span>
+      </p>
+      <ng-container *ngIf="detail">
+        <p class="admin-joa-counts" *ngIf="detail.joaAvailable && !detailLoading && !detailError">{{ detail.activeCount }} active / {{ detail.totalCount }} total</p>
+      </ng-container>
+      <app-admin-status
+        [loading]="detailLoading"
+        [error]="detailError"
+        [empty]="detailIsEmpty"
+        loadingText="Loading subscriptions…"
+        [emptyText]="detailEmptyText"
+        (retry)="retryDetail()">
+      </app-admin-status>
+      <div class="admin-table-wrap" *ngIf="showDetailTable">
+        <table class="admin-table">
+          <caption class="admin-muted">Subscriptions for this seeker</caption>
+          <thead>
+            <tr>
+              <th scope="col">Position</th>
+              <th scope="col">Status</th>
+              <th scope="col">Subscribed</th>
+              <th scope="col">Instant</th>
+              <th scope="col">Digest</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sub of detailSubscriptions; trackBy: trackRow">
+              <td>
+                <div>{{ sub.position || '—' }}</div>
+                <div class="admin-muted" *ngIf="normalizedDiffers(sub)">{{ sub.positionNormalized }}</div>
+              </td>
+              <td><span [class]="statusClass(sub.active)">{{ statusLabel(sub.active) }}</span></td>
+              <td>{{ when(sub.createdAt) }}</td>
+              <td>
+                <div>
+                  {{ whenSent(sub.instantSentAt) }}
+                  <span class="admin-muted" *ngIf="jobsSuffix(sub.instantJobCount) as suffix"> {{ suffix }}</span>
+                </div>
+                <p class="admin-id-line" *ngIf="sub.instantMessageId as messageId">
+                  <span class="admin-mono">{{ messageId }}</span>
+                  <button type="button" class="admin-copy" (click)="copyId(messageId)"
+                    [attr.aria-label]="'Copy instant message id ' + messageId">Copy</button>
+                </p>
+                <p class="admin-muted" *ngIf="showLease(sub)">Lease {{ whenSent(sub.instantClaimedAt) }}</p>
+              </td>
+              <td>
+                <div>
+                  {{ whenSent(sub.lastDigestSentAt) }}
+                  <span class="admin-muted" *ngIf="jobsSuffix(sub.lastDigestJobCount) as suffix"> {{ suffix }}</span>
+                </div>
+                <div class="admin-muted" *ngIf="sub.lastDigestWeek">{{ sub.lastDigestWeek }}</div>
+                <p class="admin-id-line" *ngIf="sub.lastDigestMessageId as messageId">
+                  <span class="admin-mono">{{ messageId }}</span>
+                  <button type="button" class="admin-copy" (click)="copyId(messageId)"
+                    [attr.aria-label]="'Copy digest message id ' + messageId">Copy</button>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </aside>
+  </div>
+</section>
