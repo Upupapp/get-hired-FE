@@ -1,0 +1,16 @@
+<div class="gh-auth-role-tabs" role="tablist" [attr.aria-label]="ariaLabel">
+  <button
+    #tabButton
+    type="button"
+    class="gh-auth-role-tab"
+    role="tab"
+    *ngFor="let tab of tabs; let index = index"
+    [id]="tabId(tab.role)"
+    [attr.aria-selected]="activeRole === tab.role ? 'true' : 'false'"
+    [attr.aria-controls]="panelId"
+    [attr.tabindex]="activeRole === tab.role ? 0 : -1"
+    (click)="select(tab.role)"
+    (keydown)="onKeydown($event, index)">
+    {{ tab.label }}
+  </button>
+</div>

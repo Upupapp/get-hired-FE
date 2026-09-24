@@ -1,0 +1,50 @@
+@import "src/assets/styles/colors";
+
+// Public auth role switcher. Underline tabs only — not the admin tab chrome.
+.gh-auth-role-tabs {
+  display: flex;
+  width: 100%;
+  margin: 14px 0 18px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.gh-auth-role-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0 0 -1px;
+  padding: 10px 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #494949;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &[aria-selected='true'] {
+    color: $color-global-navy;
+    border-bottom-color: #f25248;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f25248;
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 375px) {
+  .gh-auth-role-tab {
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 14px;
+  }
+}

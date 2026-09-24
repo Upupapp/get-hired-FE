@@ -12,7 +12,7 @@ import { environment } from '@environments/environment';
 import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
-import { AuthRole } from '@app-shared/utils/auth-role-query';
+import { AuthRole, isCanonicalAuthRoleParam, parseAuthRole } from '@app-shared/utils/auth-role-query';
 import { jobAlertModalIntentPending } from '@main/jobs/job-opening-alerts.service';
 
 // Bootstrap's JS bundle is loaded globally (see angular.json "scripts"),
@@ -67,6 +67,9 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
   isDuplicateAccount: boolean = false;
   /** Seeker signup that should return to the jobs hero and open the alerts modal. */
   continueJobAlerts = false;
+  readonly roleTabsPrefix = 'signup';
+  private querySub?: Subscription;
+  private lastCanonicalizedFrom: string | null = null;
 
   // reCAPTCHA (ng-recaptcha's <re-captcha>) renders Google's v2 checkbox
   // widget at a hard-fixed 304x78px -- unlike the Google/LinkedIn sign-in
@@ -127,22 +130,21 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
       // invalid recaptchaToken with a 400), but only after a round trip;
       // this makes the button itself reflect the real requirement.
       recaptcha: [null, Validators.compose([Validators.required])],
-      role: [null, Validators.compose([Validators.required])]
+      // No ?role= defaults to Job seekers (3). ?role=2|3 and employer|seeker
+      // aliases still pre-select, matching sign-in. The tablist is the switcher.
+      role: [3, Validators.compose([Validators.required])]
     }, { validator: this.checkIfMatchingPasswords('password', 'confirmPassword') });
 
-    // Public-portal CTAs can pre-select role via ?role=2|3 (e.g. "Continue
-    // as Employer" -> /signup?role=2) so visitors don't have to pick it
-    // again. Falls back to the existing required-field behavior if absent
-    // or not one of the two valid values.
     this.registerForm.get('password').valueChanges.subscribe((value: string) => {
       this.passwordStrength = this.computePasswordStrength(value);
     });
 
-    const requestedRole = this.activatedRoute.snapshot.queryParamMap.get('role');
-    if (requestedRole === '2' || requestedRole === '3') {
-      this.registerForm.patchValue({ role: Number(requestedRole) });
-    }
-    this.continueJobAlerts = requestedRole === '3' && jobAlertModalIntentPending();
+    const requestedRaw = this.activatedRoute.snapshot.queryParamMap.get('role');
+    const requestedRole = parseAuthRole(requestedRaw);
+    this.continueJobAlerts = requestedRole === 3 && jobAlertModalIntentPending();
+    this.querySub = this.activatedRoute.queryParamMap.subscribe((params) => {
+      this.applyRoleQuery(params.get('role'));
+    });
 
     this.req$ = combineLatest([this.success$, this.loading$]).pipe(
       map(([success, loading]) => {
@@ -435,13 +437,64 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.registerForm.get('role');
   }
 
-  get signinQuery(): { role: 2 | 3 } | Record<string, never> {
-    const role = this.registerForm?.get('role')?.value;
-    return role === 2 || role === 3 ? { role } : {};
+  get activeRole(): AuthRole {
+    const value = this.registerForm?.get('role')?.value;
+    return value === 2 || value === '2' ? 2 : 3;
+  }
+
+  get showRoleTabs(): boolean {
+    return !this.continueJobAlerts;
+  }
+
+  get rolePanelId(): string {
+    return `${this.roleTabsPrefix}-panel`;
+  }
+
+  get activeTabId(): string {
+    return `${this.roleTabsPrefix}-tab-${this.activeRole}`;
+  }
+
+  get signinQuery(): { role: AuthRole } {
+    return { role: this.activeRole };
   }
 
   selectAuthRole(role: AuthRole): void {
+    if (this.continueJobAlerts) {
+      return;
+    }
     this.registerForm.patchValue({ role });
+    this.writeRoleQuery(role);
+  }
+
+  private applyRoleQuery(raw: string | null): void {
+    const parsed = parseAuthRole(raw);
+    if (this.continueJobAlerts) {
+      this.registerForm.patchValue({ role: 3 });
+      if (parsed === 3 && !isCanonicalAuthRoleParam(raw) && this.lastCanonicalizedFrom !== raw) {
+        this.lastCanonicalizedFrom = raw;
+        this.writeRoleQuery(3);
+      }
+      return;
+    }
+    const role: AuthRole = parsed ?? 3;
+    if (this.registerForm.get('role').value !== role) {
+      this.registerForm.patchValue({ role });
+    }
+    if (isCanonicalAuthRoleParam(raw)) {
+      this.lastCanonicalizedFrom = null;
+      return;
+    }
+    if (parsed && this.lastCanonicalizedFrom !== raw) {
+      this.lastCanonicalizedFrom = raw;
+      this.writeRoleQuery(parsed);
+    }
+  }
+
+  private writeRoleQuery(role: AuthRole): void {
+    const current = this.activatedRoute.snapshot.queryParamMap.get('role');
+    if (current === String(role)) {
+      return;
+    }
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: { role },
@@ -467,6 +520,7 @@ export class SignupComponent implements OnInit, AfterViewInit, OnDestroy {
     localStorage.removeItem('signupMessage');
 
     if (this.req$) this.req$.unsubscribe();
+    if (this.querySub) this.querySub.unsubscribe();
     if (this.recaptchaResizeObserver) this.recaptchaResizeObserver.disconnect();
     this.adminCarousel?.dispose();
     this.mobileCarousel?.dispose();

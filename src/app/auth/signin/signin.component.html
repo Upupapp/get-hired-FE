@@ -1,5 +1,3 @@
-<app-auth-role-prompt *ngIf="!continueJobAlerts" flow="signin" (roleSelected)="selectAuthRole($event)"></app-auth-role-prompt>
-
 <!-- BL-012: signin carousel mobile fix.
      The carousel column is decorative (not part of auth flow).
      On screens < lg the Bootstrap grid stacks both col-12 columns vertically,
@@ -45,18 +43,21 @@
         <div class="gh-auth-card-logo text-center">
           <app-brand-logo variant="horizontal" tone="on-light" [height]="36" imgClass="gh-auth-card-logo-img" alt="GetHired"></app-brand-logo>
         </div>
-        <form class="px-3" (submit)="loginAdmin($event)" [formGroup]="loginForm">
+        <div class="px-3">
+        <app-auth-role-tabs
+          *ngIf="showRoleTabs"
+          [idPrefix]="roleTabsPrefix"
+          ariaLabel="Sign in as"
+          [activeRole]="activeRole"
+          (roleSelected)="selectAuthRole($event)">
+        </app-auth-role-tabs>
+        <form (submit)="loginAdmin($event)" [formGroup]="loginForm"
+          [attr.role]="showRoleTabs ? 'tabpanel' : null"
+          [attr.id]="showRoleTabs ? rolePanelId : null"
+          [attr.aria-labelledby]="showRoleTabs ? activeTabId : null">
           <div class="form-group text-start gh-auth-heading">
-            <h4 class="main-title gh-auth-title m-0" *ngIf="!authRole">Welcome <span class="gh-auth-accent">back!</span></h4>
-            <h4 class="main-title gh-auth-title m-0" *ngIf="authRole">{{ signinTitle }}</h4>
+            <h4 class="main-title gh-auth-title m-0">{{ signinTitle }}</h4>
             <p class="gh-auth-subtitle">{{ signinSubtitle }}</p>
-            <div class="gh-role-chip" *ngIf="authRole" role="status">
-              Signing in as {{ roleLabel }}
-            </div>
-            <a *ngIf="authRole" class="gh-role-switch" routerLink="/signin"
-              [queryParams]="{ role: switchRole }">
-              Switch to {{ switchRoleLabel }}
-            </a>
           </div>
 
           <div class="alert alert-danger alert-dismissible fade show error-message mt-2"
@@ -206,6 +207,7 @@
             {{ 'SIGNIN.REGISTRATION_PROMPT' | translate }} <a [routerLink]="'/signup'" [queryParams]="registerQuery" class="register"> {{ 'SIGNIN.REGISTER' | translate }}</a>
           </div>
         </form>
+        </div>
       </div>
     </div>
 
