@@ -32,11 +32,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              {
-                "glob": "**/*",
-                "input": "src/admin",
-                "output": "/admin"
-              },
               "src/_redirects",
               "src/robots.txt",
               "src/google8d5e93b3a9106865.html"
