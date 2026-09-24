@@ -444,7 +444,11 @@ export function normalizeJobAlertUser(res: any, fallbackUid: string): AdminJobAl
     seekerEmail: readText(seeker.seeker_email ?? seeker.seekerEmail ?? seeker.email),
     seekerRole: seeker.seeker_role ?? seeker.seekerRole ?? seeker.role ?? null,
     seekerArchived: readLooseBool(seeker.seeker_archived ?? seeker.seekerArchived ?? seeker.is_archive ?? seeker.isArchive),
-    createdAt: readOptionalText(seeker.created_at ?? seeker.createdAt ?? seeker.created_date ?? seeker.createdDate),
+    createdAt: readOptionalText(
+      seeker.seeker_created_at ?? seeker.seekerCreatedAt
+      ?? seeker.created_at ?? seeker.createdAt
+      ?? seeker.created_date ?? seeker.createdDate
+    ),
     activeCount,
     totalCount,
     subscriptions,

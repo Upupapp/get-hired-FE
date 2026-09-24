@@ -405,11 +405,12 @@ export class AdminJobAlertsComponent implements OnInit, OnDestroy {
     this.error = '';
     this.listSub = this.adminService.listJobOpeningAlerts({
       q: this.q,
+      range: this.range.preset,
       from: this.range.from,
       to: this.range.to,
       page: this.page,
       pageSize: this.pageSize,
-      active: this.status === 'all' ? undefined : this.status === 'active',
+      active: this.status === 'all' ? 'all' : this.status === 'active',
       fixtureShot: this.fixtureShot,
     }).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {

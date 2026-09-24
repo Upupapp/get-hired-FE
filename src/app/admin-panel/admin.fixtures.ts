@@ -27,8 +27,8 @@
  *   otherwise to the fixture catalog. Today and custom need the new field.
  * - GET /admin/applications does not exist yet. The ops list is fixture-only until it does.
  * - GET /admin/job-opening-alerts and GET /admin/job-opening-alerts/users/:userUid
- *   are fixture-backed until Clarence ships them. joa_available false is an empty list
- *   plus a calm note, not a hard error.
+ *   prefer a live `{ status, data }` payload. Fixtures remain the fallback when that
+ *   call fails (not on 401/403). joa_available false is an empty list plus a calm note.
  *   Formal shots (fixture fallback, Asia/Manila "now"):
  *     /admin/job-alerts
  *       Last 7 days + Active. Populated list.

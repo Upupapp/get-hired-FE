@@ -71,6 +71,7 @@ describe('AdminJobAlertsComponent', () => {
     const search = fixture.nativeElement.querySelector('input[name="job-alert-search"]');
     expect(search.getAttribute('placeholder')).toBe('Seeker email, name, or position');
     expect(stub.lists[0].active).toBeTrue();
+    expect(stub.lists[0].range).toBe('7d');
 
     const table = fixture.nativeElement.querySelector('table');
     const tableText = table.textContent as string;
@@ -85,6 +86,23 @@ describe('AdminJobAlertsComponent', () => {
     const week = detail && detail.subscriptions.map(row => row.lastDigestWeek).find(value => !!value);
     expect(week).toBeTruthy();
     expect(tableText).not.toContain(week as string);
+  });
+
+  it('sends active=all for All and active=false for Inactive', async () => {
+    const fixture = await setup();
+    const chips = fixture.nativeElement.querySelectorAll('.admin-status-chip');
+    chips[2].click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(stub.lists[stub.lists.length - 1].active).toBe('all');
+    expect(stub.lists[stub.lists.length - 1].range).toBe('7d');
+
+    chips[1].click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(stub.lists[stub.lists.length - 1].active).toBeFalse();
   });
 
   it('opens the seeker panel with every subscription, send ids, and the lease', async () => {

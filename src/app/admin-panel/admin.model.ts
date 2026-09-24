@@ -106,10 +106,17 @@ export interface AdminApplicationQuery extends AdminListQuery {
 export type JobAlertFixtureShot = 'empty' | 'unavailable';
 
 export interface AdminJobAlertQuery extends AdminListQuery {
+  /**
+   * `today` | `7d` | `30d` are sent as `range` (rolling / Manila day, same helper as Applications).
+   * `custom` is sent as `from` and `to` only.
+   */
+  range?: string | null;
   from?: string;
   to?: string;
-  /** true, false, or omit for all. */
-  active?: boolean;
+  /** true, false, or `all`. Omitted lets the API default to active. */
+  active?: boolean | 'all';
+  /** Optional list filter. The panel still loads the detail endpoint. */
+  userUid?: string;
   fixtureShot?: JobAlertFixtureShot | null;
 }
 

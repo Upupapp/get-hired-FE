@@ -166,14 +166,7 @@ export class AdminService {
   }
 
   listJobOpeningAlerts(query: Model.AdminJobAlertQuery): Observable<Model.AdminJobAlertPage> {
-    const url = `${this.adminUrl}/job-opening-alerts${buildAdminQuery({
-      q: query.q,
-      active: activeQueryValue(query.active),
-      from: query.from,
-      to: query.to,
-      page: query.page,
-      pageSize: query.pageSize,
-    })}`;
+    const url = `${this.adminUrl}/job-opening-alerts${buildAdminQuery(jobAlertListParams(query))}`;
     return this.baseService.get<any>(url).pipe(
       map(res => normalizeJobAlertPage(res, query.page, query.pageSize)),
       catchError(err => {
@@ -248,7 +241,10 @@ function isAuthFailure(err: any): boolean {
   return !!err && (err.status === 401 || err.status === 403);
 }
 
-function activeQueryValue(active: boolean | null | undefined): string | undefined {
+function activeQueryValue(active: boolean | 'all' | null | undefined): string | undefined {
+  if (active === 'all') {
+    return 'all';
+  }
   if (active === true) {
     return 'true';
   }
@@ -256,6 +252,26 @@ function activeQueryValue(active: boolean | null | undefined): string | undefine
     return 'false';
   }
   return undefined;
+}
+
+/**
+ * Presets go out as `range` so 7d/30d stay rolling windows and today stays a Manila day.
+ * Custom matches Applications: `from` and `to` only, no `range` param.
+ * Resolved preset dates stay on the query for fixture filtering and are not sent with a named preset.
+ */
+function jobAlertListParams(query: Model.AdminJobAlertQuery): Record<string, string | number | null | undefined> {
+  const preset = (query.range || '').trim().toLowerCase();
+  const namedPreset = preset === 'today' || preset === '7d' || preset === '30d';
+  return {
+    q: query.q,
+    active: activeQueryValue(query.active),
+    range: namedPreset ? preset : undefined,
+    from: namedPreset ? undefined : query.from,
+    to: namedPreset ? undefined : query.to,
+    user_uid: query.userUid,
+    page: query.page,
+    pageSize: query.pageSize,
+  };
 }
 
 function joaUnavailableError(err: any): boolean {
