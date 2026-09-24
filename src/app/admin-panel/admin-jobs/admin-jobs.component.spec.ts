@@ -44,4 +44,21 @@ describe('AdminJobsComponent', () => {
     const dialog = fixture.nativeElement.querySelector('[role="dialog"]');
     expect(dialog.getAttribute('aria-modal')).toBe('true');
   });
+
+  it('moves initial focus to Cancel when the unpublish dialog opens', () => {
+    const job: AdminJobRow = {
+      jobId: 'JB-1',
+      title: 'Kitchen Lead',
+      companyName: "Lola's Table",
+      status: 2,
+      statusLabel: 'Published',
+      createdAt: '2026-09-01',
+      applicantCount: 3,
+    };
+    component.askUnpublish(job);
+    fixture.detectChanges();
+    const cancel = fixture.nativeElement.querySelector('#admin-unpublish-cancel');
+    expect(cancel.textContent).toContain('Cancel');
+    expect(document.activeElement).toBe(cancel);
+  });
 });

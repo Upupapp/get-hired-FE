@@ -508,10 +508,11 @@ const PLAN_BREAKDOWN_ORDER: { slug: string; label: string }[] = [
   { slug: 'other', label: 'Other' },
 ];
 
+/** Growth caps match planCatalogServiceV4: 6 jobs, 3 admins, 100 videos. */
 const ENTITLEMENT_LIMITS: Record<string, { jobs: number | null; admins: number | null; videos: number | null }> = {
   free_trial: { jobs: 1, admins: 1, videos: 5 },
   starter: { jobs: 5, admins: 2, videos: 25 },
-  growth: { jobs: 15, admins: 5, videos: 100 },
+  growth: { jobs: 6, admins: 3, videos: 100 },
   business: { jobs: 40, admins: 15, videos: 400 },
 };
 

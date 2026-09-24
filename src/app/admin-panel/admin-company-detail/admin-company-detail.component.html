@@ -72,18 +72,13 @@
           <article class="admin-card">
             <h2 class="admin-section-title">Admin contact</h2>
             <p class="admin-muted" *ngIf="!company.admins.length">No company admin on this record.</p>
-            <div *ngFor="let admin of visibleAdmins()">
-              <dl class="admin-detail-grid">
-                <dt>Name</dt>
-                <dd>{{ admin.name || '—' }}</dd>
-                <dt>Email</dt>
-                <dd>{{ admin.email || '—' }}</dd>
-                <dt>Phone</dt>
-                <dd>{{ admin.phone || '—' }}</dd>
-                <dt>Role</dt>
-                <dd>{{ admin.role || '—' }}</dd>
-              </dl>
-            </div>
+            <ul class="admin-admin-list" *ngIf="company.admins.length">
+              <li *ngFor="let admin of visibleAdmins()">
+                <span class="admin-admin-name">{{ admin.name || '—' }}</span>
+                <span>{{ admin.email || '—' }}</span>
+                <span class="admin-muted">{{ admin.phone || '—' }} · {{ admin.role || '—' }}</span>
+              </li>
+            </ul>
             <button type="button" class="admin-btn admin-btn--ghost" *ngIf="hiddenAdminCount() > 0" (click)="toggleAdmins()">
               +{{ hiddenAdminCount() }} more
             </button>
