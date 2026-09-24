@@ -4,6 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { SitePageviewBeaconService } from './core/services/site-pageview-beacon.service';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class AppComponent implements OnInit {
     public translateService: TranslateService,
     private router: Router,
     private referralBunny: ReferralBunnyService,
+    private pageviewBeacon: SitePageviewBeaconService,
     @Inject(PLATFORM_ID) private platformId: object,
   ) {}
 
@@ -30,6 +32,7 @@ export class AppComponent implements OnInit {
     this.translateService.use(selectedLang || (browserLang.match(/en|vie/) ? browserLang : 'en'));
 
     if (isPlatformBrowser(this.platformId)) {
+      this.pageviewBeacon.start();
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
       ).subscribe((event: any) => {

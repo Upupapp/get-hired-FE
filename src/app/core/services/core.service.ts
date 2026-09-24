@@ -19,11 +19,13 @@ import { TokenLifecycleService } from './token-lifecycle.service';
 // recovery, an unrelated in-progress guest's recovery, or any other
 // unrelated persistent browser data that happens to live in the same
 // storage, none of which has anything to do with THIS user's session.
-const AUTH_SESSION_STORAGE_KEYS: string[] = [
+export const AUTH_SESSION_STORAGE_KEYS: string[] = [
   'state', 'role', 'user', 'token', 'token_authorization', 'refreshToken',
   'loginMessage', 'loginError', 'signupError', 'notFound',
   'withActiveSubscription', 'adminLogin', 'refreshTokenMessage', 'returnURL',
 ];
+// `gh_pv_session` (SitePageviewBeaconService) is intentionally absent.
+// Logout removes only this list, so the opaque pageview id survives sign-out.
 
 @Injectable({
   providedIn: 'root'
