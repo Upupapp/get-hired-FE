@@ -171,7 +171,11 @@ describe('admin fixtures', () => {
     expect(detail.adminContact.phone).toContain('+63');
     expect(detail.subscription.plan).toBe('Growth');
     expect(detail.subscription.mrr).toBe(3490);
-    expect(detail.subscription.entitlements.length).toBe(3);
+    expect(detail.subscription.entitlements).toEqual([
+      { label: 'Jobs', used: 2, limit: 6 },
+      { label: 'Admins', used: 1, limit: 3 },
+      { label: 'Videos', used: 8, limit: 100 },
+    ]);
     expect(detail.payments.length).toBeGreaterThan(0);
     expect(detail.payments.every(row => row.companyId === 'CO-20')).toBeTrue();
     expect(detail.history.some(event => event.summary.indexOf('Kitchen Lead') !== -1)).toBeTrue();

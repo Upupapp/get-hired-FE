@@ -57,8 +57,9 @@
 
 .admin-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
   gap: 12px;
+  min-width: 0;
 }
 
 .admin-kpi {
@@ -562,12 +563,42 @@ a.admin-kpi {
   color: #757575;
 }
 
+.admin-visits-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 8px 0 4px;
+}
+
+.admin-fixture-note {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #494949;
+}
+
 .admin-visits-value {
   margin: 4px 0;
   font-size: 40px;
   font-weight: 700;
   line-height: 1.1;
   color: $color-global-navy;
+}
+
+.admin-visits-figure .admin-visits-value {
+  margin: 0;
+}
+
+.admin-visits-metric {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #494949;
 }
 
 .admin-visits-delta {

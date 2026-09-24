@@ -8,7 +8,10 @@
 }
 
 #main-applicant-component{
-  width: 100% !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto !important;
+  max-width: 100%;
   overflow: auto;
   background-color: $color-global-sidebar-applicant-gray !important;
   padding-left: 0px !important;
@@ -44,6 +47,8 @@
   border-bottom-right-radius: 8px;
   padding: 0;
   background: $color-global-gray-cancel;
+  flex: 0 0 250px;
+  width: 250px;
   max-width: 250px;
   min-height: 100vh;
   margin-bottom: 0 !important;

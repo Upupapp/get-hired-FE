@@ -40,9 +40,11 @@
               <p class="admin-visits-note">{{ visitsFootnote }}</p>
             </ng-container>
             <ng-template #visitsReady>
-              <p class="admin-visits-kicker">{{ dash.visitsMetricLabel || 'Visits' }}</p>
               <p class="admin-visits-window">{{ day(dash.from) }} – {{ day(dash.to) }} · Asia/Manila</p>
-              <p class="admin-visits-value">{{ dash.visitsTotal | number }}</p>
+              <p class="admin-visits-figure">
+                <span class="admin-visits-metric">{{ dash.visitsMetricLabel || 'Pageviews (fixture)' }}</span>
+                <span class="admin-visits-value">{{ dash.visitsTotal | number }}</span>
+              </p>
               <p class="admin-visits-delta" *ngIf="delta(dash)" [attr.data-direction]="direction(dash)">{{ delta(dash) }}</p>
               <svg class="admin-spark" viewBox="0 0 240 48" preserveAspectRatio="none" role="img"
                 [attr.aria-label]="(dash.visitsMetricLabel || 'Visits') + ' by day'"
