@@ -102,6 +102,59 @@ export interface AdminApplicationQuery extends AdminListQuery {
   to?: string;
 }
 
+/** Fixture-only list switch. Never sent on the wire. */
+export type JobAlertFixtureShot = 'empty' | 'unavailable';
+
+export interface AdminJobAlertQuery extends AdminListQuery {
+  from?: string;
+  to?: string;
+  /** true, false, or omit for all. */
+  active?: boolean;
+  fixtureShot?: JobAlertFixtureShot | null;
+}
+
+export interface AdminJobAlertRow {
+  id: string;
+  userUid: string;
+  seekerEmail: string;
+  seekerName: string;
+  seekerRole: number | string | null;
+  seekerArchived: boolean;
+  position: string;
+  positionNormalized: string;
+  jobRoleId: number | string | null;
+  active: boolean;
+  createdAt: string | null;
+  updatedAt: string | null;
+  instantSentAt: string | null;
+  instantMessageId: string | null;
+  instantJobCount: number | null;
+  instantClaimedAt: string | null;
+  lastDigestWeek: string | null;
+  lastDigestSentAt: string | null;
+  lastDigestMessageId: string | null;
+  lastDigestJobCount: number | null;
+}
+
+export interface AdminJobAlertPage extends AdminPage<AdminJobAlertRow> {
+  /** False when the subscriptions table is not available. Prefer an empty list over a hard error. */
+  joaAvailable: boolean;
+}
+
+export interface AdminJobAlertUserDetail {
+  userUid: string;
+  seekerName: string;
+  seekerEmail: string;
+  seekerRole: number | string | null;
+  seekerArchived: boolean;
+  createdAt: string | null;
+  activeCount: number;
+  totalCount: number;
+  subscriptions: AdminJobAlertRow[];
+  joaAvailable: boolean;
+  fromFixture: boolean;
+}
+
 export interface AdminApplicationRow {
   applicationId: string;
   dateApplied: string | null;

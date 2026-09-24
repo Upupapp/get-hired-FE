@@ -1,0 +1,92 @@
+@import "../styles/admin-surface";
+@import "src/assets/styles/colors";
+
+caption {
+  caption-side: bottom;
+  text-align: left;
+  padding: 8px 14px 0;
+}
+
+.admin-filters .admin-btn {
+  min-height: 44px;
+}
+
+.admin-field--chips {
+  flex: 1 1 280px;
+}
+
+.admin-status-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-status-chip {
+  min-height: 44px;
+  border: 1px solid #e4e4e4;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #fff;
+  color: #191919;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    background: $color-global-red-soft;
+    border-color: $color-global-red-buttons-hover;
+    color: $color-global-navy;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+}
+
+.admin-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.admin-joa-counts {
+  margin: 8px 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #494949;
+}
+
+.admin-id-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+}
+
+.admin-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: #757575;
+  word-break: break-all;
+  user-select: all;
+}
+
+.admin-copy {
+  border: none;
+  background: none;
+  padding: 0;
+  color: #494949;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid rgba($color-global-red-buttons, 0.85);
+    outline-offset: 2px;
+  }
+}

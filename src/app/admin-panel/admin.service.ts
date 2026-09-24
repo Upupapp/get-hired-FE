@@ -12,11 +12,14 @@ import {
   fixtureCompanies,
   fixtureCompanyDetail,
   fixtureFinance,
+  fixtureJobAlerts,
+  fixtureJobAlertUser,
   fixtureJobs,
   fixtureUsers,
 } from './admin.fixtures';
 import {
   buildAdminQuery,
+  joaAvailableFrom,
   jobStatusQueryValue,
   normalizeApplication,
   normalizeCompany,
@@ -24,6 +27,8 @@ import {
   normalizeDashboard,
   normalizeFinance,
   normalizeJob,
+  normalizeJobAlertPage,
+  normalizeJobAlertUser,
   normalizePage,
   normalizeUser,
 } from './admin.normalize';
@@ -160,6 +165,55 @@ export class AdminService {
     );
   }
 
+  listJobOpeningAlerts(query: Model.AdminJobAlertQuery): Observable<Model.AdminJobAlertPage> {
+    const url = `${this.adminUrl}/job-opening-alerts${buildAdminQuery({
+      q: query.q,
+      active: activeQueryValue(query.active),
+      from: query.from,
+      to: query.to,
+      page: query.page,
+      pageSize: query.pageSize,
+    })}`;
+    return this.baseService.get<any>(url).pipe(
+      map(res => normalizeJobAlertPage(res, query.page, query.pageSize)),
+      catchError(err => {
+        if (joaUnavailableError(err)) {
+          return of(emptyJobAlertPage(query, false));
+        }
+        return this.fixtureOrThrow(err, () => fixtureJobAlerts(query));
+      })
+    );
+  }
+
+  getJobOpeningAlertUser(
+    userUid: string,
+    fixtureShot?: Model.JobAlertFixtureShot | null
+  ): Observable<Model.AdminJobAlertUserDetail> {
+    const url = `${this.adminUrl}/job-opening-alerts/users/${encodeURIComponent(userUid)}`;
+    return this.baseService.get<any>(url).pipe(
+      map(res => {
+        const live = normalizeJobAlertUser(res, userUid);
+        if (live) {
+          return live;
+        }
+        if (!ADMIN_USE_FIXTURES) {
+          throw new Error('Job Alert detail was not in the response.');
+        }
+        const sample = fixtureJobAlertUser(userUid, fixtureShot);
+        if (!sample) {
+          throw new Error('Job Alert detail was not in the response.');
+        }
+        return sample;
+      }),
+      catchError(err => {
+        if (joaUnavailableError(err)) {
+          return of(emptyJobAlertUser(userUid, false));
+        }
+        return this.fixtureOrThrow(err, () => fixtureJobAlertUser(userUid, fixtureShot));
+      })
+    );
+  }
+
   listApplications(query: Model.AdminApplicationQuery): Observable<Model.AdminPage<Model.AdminApplicationRow>> {
     const url = `${this.adminUrl}/applications${buildAdminQuery({
       q: query.q,
@@ -192,4 +246,49 @@ export class AdminService {
 
 function isAuthFailure(err: any): boolean {
   return !!err && (err.status === 401 || err.status === 403);
+}
+
+function activeQueryValue(active: boolean | null | undefined): string | undefined {
+  if (active === true) {
+    return 'true';
+  }
+  if (active === false) {
+    return 'false';
+  }
+  return undefined;
+}
+
+function joaUnavailableError(err: any): boolean {
+  const body = err && err.error;
+  if (joaAvailableFrom(body) === false) {
+    return true;
+  }
+  return !!(body && joaAvailableFrom(body.data) === false);
+}
+
+function emptyJobAlertPage(query: Model.AdminJobAlertQuery, joaAvailable: boolean): Model.AdminJobAlertPage {
+  return {
+    items: [],
+    total: 0,
+    page: query.page > 0 ? query.page : 1,
+    pageSize: query.pageSize > 0 ? query.pageSize : 25,
+    fromFixture: false,
+    joaAvailable,
+  };
+}
+
+function emptyJobAlertUser(userUid: string, joaAvailable: boolean): Model.AdminJobAlertUserDetail {
+  return {
+    userUid,
+    seekerName: '',
+    seekerEmail: '',
+    seekerRole: null,
+    seekerArchived: false,
+    createdAt: null,
+    activeCount: 0,
+    totalCount: 0,
+    subscriptions: [],
+    joaAvailable,
+    fromFixture: false,
+  };
 }

@@ -1,3 +1,4 @@
+import { ADMIN_TIME_ZONE, manilaYmd } from './admin-time';
 import {
   AdminApplicationRow,
   AdminCompanyContact,
@@ -6,6 +7,9 @@ import {
   AdminCompanyRow,
   AdminCompanySubscription,
   AdminFinance,
+  AdminJobAlertPage,
+  AdminJobAlertRow,
+  AdminJobAlertUserDetail,
   AdminJobRow,
   AdminPage,
   AdminPaymentRow,
@@ -110,6 +114,11 @@ export function readPage(value: string | null): number {
   return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
+export function isSeekerRole(role: number | string | null | undefined): boolean {
+  const text = role == null ? '' : String(role).trim().toLowerCase();
+  return text === '3' || text === 'jobseeker' || text === 'applicant' || text === 'candidate';
+}
+
 export function roleLabel(role: number | string | null | undefined): string {
   const text = role == null ? '' : String(role).trim().toLowerCase();
   if (text === '1' || text === 'admin') {
@@ -206,6 +215,83 @@ export function formatAdminDay(value: string | null | undefined): string {
   return `${month} ${Number(match[3])}, ${match[1]}`;
 }
 
+/**
+ * Calendar day in Asia/Manila, same "Sep 23, 2026" style as formatAdminDay.
+ * Date-only strings are not shifted. Timestamps are converted to Manila first.
+ */
+export function formatAdminManilaDay(value: string | null | undefined): string {
+  if (!value) {
+    return '—';
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return formatAdminDay(value);
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return formatAdminDay(value);
+  }
+  return formatAdminDay(manilaYmd(date));
+}
+
+/** Manila date and time, e.g. "Sep 23, 2026, 9:00 AM". Date-only values stay day-style. */
+export function formatAdminManilaDateTime(value: string | null | undefined): string {
+  if (!value) {
+    return '—';
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return formatAdminDay(value);
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return formatAdminDay(value);
+  }
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: ADMIN_TIME_ZONE,
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).formatToParts(date);
+  const month = partOf(parts, 'month');
+  const day = partOf(parts, 'day');
+  const year = partOf(parts, 'year');
+  const hour = partOf(parts, 'hour');
+  const minute = partOf(parts, 'minute');
+  const period = dayPeriodLabel(partOf(parts, 'dayPeriod'));
+  if (!month || !day || !year || !hour || !minute) {
+    return formatAdminManilaDay(value);
+  }
+  return `${month} ${Number(day)}, ${year}, ${hour}:${minute} ${period}`;
+}
+
+export function jobAlertStatusLabel(active: boolean): string {
+  return active ? 'Active' : 'Inactive';
+}
+
+export function jobAlertStatusClass(active: boolean): string {
+  return active ? 'admin-badge admin-badge--published' : 'admin-badge';
+}
+
+/** True/false when the payload says so. Null when the flag is absent. */
+export function joaAvailableFrom(source: any): boolean | null {
+  if (!source || typeof source !== 'object') {
+    return null;
+  }
+  const value = source.joa_available != null ? source.joa_available : source.joaAvailable;
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+  if (value === true || value === 1 || value === '1' || value === 'true') {
+    return true;
+  }
+  if (value === false || value === 0 || value === '0' || value === 'false') {
+    return false;
+  }
+  return null;
+}
+
 export function normalizeDashboard(res: any): Dashboard | null {
   const body = unwrapAdminBody(res);
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -275,6 +361,111 @@ export function normalizeJob(row: any): AdminJobRow {
     statusLabel: jobStatusLabel(status),
     createdAt: readOptionalText(source.created_at ?? source.createdAt),
     applicantCount: readMetric(source, 'applicant_count', 'applicantCount'),
+  };
+}
+
+export function normalizeJobAlertRow(row: any): AdminJobAlertRow {
+  const source = row || {};
+  const explicitName = readText(source.seeker_name ?? source.seekerName ?? source.name);
+  const combined = `${readText(source.first_name ?? source.firstName)} ${readText(source.last_name ?? source.lastName)}`.trim();
+  return {
+    id: readText(source.id),
+    userUid: readText(source.user_uid ?? source.userUid ?? source.uid),
+    seekerEmail: readText(source.seeker_email ?? source.seekerEmail ?? source.email),
+    seekerName: explicitName || combined,
+    seekerRole: source.seeker_role ?? source.seekerRole ?? source.role ?? source.role_id ?? source.roleId ?? null,
+    seekerArchived: readLooseBool(source.seeker_archived ?? source.seekerArchived ?? source.is_archive ?? source.isArchive),
+    position: readText(source.position),
+    positionNormalized: readText(source.position_normalized ?? source.positionNormalized),
+    jobRoleId: source.job_role_id ?? source.jobRoleId ?? null,
+    active: readLooseBool(source.active),
+    createdAt: readOptionalText(source.created_at ?? source.createdAt),
+    updatedAt: readOptionalText(source.updated_at ?? source.updatedAt),
+    instantSentAt: readOptionalText(source.instant_sent_at ?? source.instantSentAt),
+    instantMessageId: readOptionalText(source.instant_message_id ?? source.instantMessageId),
+    instantJobCount: readMetric(source, 'instant_job_count', 'instantJobCount'),
+    instantClaimedAt: readOptionalText(source.instant_claimed_at ?? source.instantClaimedAt),
+    lastDigestWeek: readOptionalText(source.last_digest_week ?? source.lastDigestWeek),
+    lastDigestSentAt: readOptionalText(source.last_digest_sent_at ?? source.lastDigestSentAt),
+    lastDigestMessageId: readOptionalText(source.last_digest_message_id ?? source.lastDigestMessageId),
+    lastDigestJobCount: readMetric(source, 'last_digest_job_count', 'lastDigestJobCount'),
+  };
+}
+
+export function normalizeJobAlertPage(
+  res: any,
+  fallbackPage: number,
+  fallbackSize: number
+): AdminJobAlertPage {
+  const page = normalizePage(res, normalizeJobAlertRow, fallbackPage, fallbackSize);
+  const body = unwrapAdminBody(res);
+  const source = body && typeof body === 'object' && !Array.isArray(body) ? body : {};
+  const flag = joaAvailableFrom(source);
+  return {
+    ...page,
+    joaAvailable: flag == null ? true : flag,
+  };
+}
+
+export function normalizeJobAlertUser(res: any, fallbackUid: string): AdminJobAlertUserDetail | null {
+  const body = unwrapAdminBody(res);
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return null;
+  }
+  const flag = joaAvailableFrom(body);
+  if (flag === false && body.subscriptions == null && !Array.isArray(body.items)) {
+    return emptyJobAlertUser(fallbackUid, false);
+  }
+  if (body.subscriptions == null && Array.isArray(body.items)) {
+    return null;
+  }
+  const seeker = body.seeker && typeof body.seeker === 'object'
+    ? body.seeker
+    : (body.user && typeof body.user === 'object' ? body.user : body);
+  const subscriptions = (Array.isArray(body.subscriptions) ? body.subscriptions : []).map(row => normalizeJobAlertRow(row));
+  const userUid = readText(
+    seeker.user_uid ?? seeker.userUid ?? seeker.uid ?? body.user_uid ?? body.userUid
+  ) || fallbackUid;
+  if (!userUid) {
+    return null;
+  }
+  const activeCount = readCount(
+    seeker.active_count != null ? seeker.active_count : (body.active_count != null ? body.active_count : body.activeCount),
+    subscriptions.filter(row => row.active).length
+  );
+  const totalCount = readCount(
+    seeker.total_count != null ? seeker.total_count : (body.total_count != null ? body.total_count : body.totalCount),
+    subscriptions.length
+  );
+  return {
+    userUid,
+    seekerName: readText(seeker.seeker_name ?? seeker.seekerName ?? seeker.name)
+      || `${readText(seeker.first_name ?? seeker.firstName)} ${readText(seeker.last_name ?? seeker.lastName)}`.trim(),
+    seekerEmail: readText(seeker.seeker_email ?? seeker.seekerEmail ?? seeker.email),
+    seekerRole: seeker.seeker_role ?? seeker.seekerRole ?? seeker.role ?? null,
+    seekerArchived: readLooseBool(seeker.seeker_archived ?? seeker.seekerArchived ?? seeker.is_archive ?? seeker.isArchive),
+    createdAt: readOptionalText(seeker.created_at ?? seeker.createdAt ?? seeker.created_date ?? seeker.createdDate),
+    activeCount,
+    totalCount,
+    subscriptions,
+    joaAvailable: flag == null ? true : flag,
+    fromFixture: false,
+  };
+}
+
+function emptyJobAlertUser(userUid: string, joaAvailable: boolean): AdminJobAlertUserDetail {
+  return {
+    userUid,
+    seekerName: '',
+    seekerEmail: '',
+    seekerRole: null,
+    seekerArchived: false,
+    createdAt: null,
+    activeCount: 0,
+    totalCount: 0,
+    subscriptions: [],
+    joaAvailable,
+    fromFixture: false,
   };
 }
 
@@ -649,6 +840,26 @@ function readText(value: any): string {
 
 function readOptionalText(value: any): string | null {
   return value == null || value === '' ? null : String(value);
+}
+
+function readLooseBool(value: any): boolean {
+  return value === true || value === 1 || value === '1' || value === 'true' || value === 't';
+}
+
+function partOf(parts: Intl.DateTimeFormatPart[], type: Intl.DateTimeFormatPartTypes): string {
+  const found = parts.find(part => part.type === type);
+  return found ? found.value : '';
+}
+
+function dayPeriodLabel(value: string): string {
+  const text = value.replace(/\./g, '').trim().toUpperCase();
+  if (text.indexOf('A') === 0) {
+    return 'AM';
+  }
+  if (text.indexOf('P') === 0) {
+    return 'PM';
+  }
+  return text;
 }
 
 function humanizeKey(key: string): string {

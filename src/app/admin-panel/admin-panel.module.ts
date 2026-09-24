@@ -18,6 +18,7 @@ import { AdminJobsComponent } from './admin-jobs/admin-jobs.component';
 import { AdminCompaniesComponent } from './admin-companies/admin-companies.component';
 import { AdminCompanyDetailComponent } from './admin-company-detail/admin-company-detail.component';
 import { AdminApplicationsComponent } from './admin-applications/admin-applications.component';
+import { AdminJobAlertsComponent } from './admin-job-alerts/admin-job-alerts.component';
 import { AdminFinanceComponent } from './admin-finance/admin-finance.component';
 import { AdminEmailVerifyComponent } from './admin-email-verify/admin-email-verify.component';
 import { AdminTimeFilterComponent } from './admin-time-filter/admin-time-filter.component';
@@ -36,6 +37,7 @@ const routes: Routes = [
       { path: 'companies', component: AdminCompaniesComponent },
       { path: 'companies/:companyId', component: AdminCompanyDetailComponent },
       { path: 'applications', component: AdminApplicationsComponent },
+      { path: 'job-alerts', component: AdminJobAlertsComponent },
       { path: 'finance', component: AdminFinanceComponent },
       {
         path: 'tools',
@@ -59,6 +61,7 @@ const routes: Routes = [
     AdminCompaniesComponent,
     AdminCompanyDetailComponent,
     AdminApplicationsComponent,
+    AdminJobAlertsComponent,
     AdminFinanceComponent,
     AdminEmailVerifyComponent,
     AdminTimeFilterComponent,
