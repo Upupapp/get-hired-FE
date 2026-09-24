@@ -42,4 +42,49 @@ describe('AdminDashboardComponent', () => {
     const pressed = fixture.nativeElement.querySelector('[aria-pressed="true"]');
     expect(pressed.textContent).toContain('Last 7 days');
   });
+
+  it('shows Pageviews (fixture) directly above the visits number', () => {
+    const store = TestBed.inject(MockStore);
+    store.setState({
+      admin: {
+        selected: null,
+        list: [],
+        error: null,
+        succesMsg: null,
+        loading: false,
+        user: null,
+        dashboardLoading: false,
+        dashboardError: null,
+        dashboard: {
+          usersTotal: 3,
+          jobseekersTotal: 1,
+          employersTotal: 1,
+          adminsTotal: 1,
+          jobsActive: 2,
+          jobsTotal: 4,
+          applications7d: 0,
+          applications30d: 5,
+          companiesTotal: 1,
+          range: '7d',
+          from: '2026-09-17',
+          to: '2026-09-24',
+          visitsTotal: 1280,
+          visitsPrevious: 1100,
+          visitsSeries: [{ date: '2026-09-24', count: 1280 }],
+          visitsMetricLabel: 'Pageviews (fixture)',
+          applicationsInRange: 0,
+          applicationsInRangeFixture: false,
+          fixtureMode: 'fixture',
+        },
+      },
+    });
+    fixture.detectChanges();
+
+    const metric = fixture.nativeElement.querySelector('.admin-visits-metric');
+    const value = fixture.nativeElement.querySelector('.admin-visits-value');
+    expect(metric.textContent.trim()).toBe('Pageviews (fixture)');
+    expect(metric.nextElementSibling).toBe(value);
+    expect(getComputedStyle(metric).textTransform).toBe('none');
+    expect(value.textContent).toContain('1,280');
+  });
 });

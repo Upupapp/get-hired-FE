@@ -103,7 +103,7 @@
         <button type="button" class="admin-btn admin-btn--danger" (click)="confirmUnpublish()" [disabled]="unpublishingId === job.jobId">
           {{ unpublishingId === job.jobId ? 'Unpublishing…' : 'Confirm unpublish' }}
         </button>
-        <button type="button" class="admin-btn admin-btn--ghost" cdkFocusInitial (click)="cancelUnpublish()" [disabled]="!!unpublishingId">
+        <button #cancelUnpublishButton id="admin-unpublish-cancel" type="button" class="admin-btn admin-btn--ghost" cdkFocusInitial (click)="cancelUnpublish()" [disabled]="!!unpublishingId">
           Cancel
         </button>
       </div>

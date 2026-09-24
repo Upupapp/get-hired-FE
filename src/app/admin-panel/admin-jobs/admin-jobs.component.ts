@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import {
   templateUrl: './admin-jobs.component.html',
   styleUrls: ['./admin-jobs.component.scss']
 })
-export class AdminJobsComponent implements OnInit, OnDestroy {
+export class AdminJobsComponent implements OnInit, OnDestroy, AfterViewChecked {
   readonly statusFilters = JOB_STATUS_FILTERS;
   readonly pageSize = 25;
 
@@ -35,6 +35,9 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
   selectedId: string | null = null;
   pendingJob: AdminJobRow | null = null;
   unpublishingId: string | null = null;
+
+  @ViewChild('cancelUnpublishButton') cancelUnpublishButton?: ElementRef<HTMLButtonElement>;
+  private pendingCancelFocus = false;
 
   private q = '';
   private loadedKey = '';
@@ -77,6 +80,14 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
       this.page = 1;
       this.pushQuery();
     });
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.pendingCancelFocus || !this.cancelUnpublishButton) {
+      return;
+    }
+    this.pendingCancelFocus = false;
+    this.cancelUnpublishButton.nativeElement.focus();
   }
 
   ngOnDestroy(): void {
@@ -132,6 +143,7 @@ export class AdminJobsComponent implements OnInit, OnDestroy {
     this.actionError = '';
     this.notice = '';
     this.pendingJob = job;
+    this.pendingCancelFocus = true;
   }
 
   cancelUnpublish(): void {

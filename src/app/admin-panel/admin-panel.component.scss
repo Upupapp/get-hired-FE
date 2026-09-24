@@ -236,6 +236,21 @@
   }
 }
 
+@media (min-width: 768px) {
+  #sidebar-container {
+    flex: 0 0 250px;
+    width: 250px;
+    max-width: 250px;
+  }
+
+  #main-applicant-component {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+    max-width: calc(100vw - 250px);
+  }
+}
+
 @media (max-width: 767px) {
   #sub-applicant-component {
     padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
