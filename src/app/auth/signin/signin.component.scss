@@ -619,7 +619,7 @@ input.ng-invalid.ng-dirty.ng-touched {
 
 @media (max-width: 768px){
 	.gh-auth-card-logo{
-		margin-bottom: 8px;
+		margin-bottom: 28px;
     position: relative;
     top: 16px;
 	}
@@ -871,30 +871,3 @@ input.ng-invalid.ng-dirty.ng-touched {
 
 
 
-.gh-role-chip {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 10px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-family: 'Manrope', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: #1a1a2e;
-  background: #f4f4f6;
-  border: 1px solid rgba(26, 26, 46, 0.12);
-}
-
-.gh-role-switch {
-  display: inline-block;
-  margin-top: 6px;
-  font-family: 'Manrope', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #4b5563;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-
-  &:hover { color: #1a1a2e; }
-  &:focus-visible { outline: 2px solid $color-global-red-buttons; outline-offset: 2px; }
-}

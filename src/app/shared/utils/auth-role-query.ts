@@ -1,11 +1,33 @@
 export type AuthRole = 2 | 3;
 
-/** Parse ?role=2|3 from a query string value. Anything else is no role. */
+/** Public auth tab order: Employers, then Job seekers. Labels are product copy. */
+export const AUTH_ROLE_TABS: ReadonlyArray<{ role: AuthRole; label: string }> = [
+  { role: 2, label: 'Employers' },
+  { role: 3, label: 'Job seekers' },
+];
+
+/**
+ * Parse public auth role from ?role=.
+ * Numeric 2|3 is the canonical contract. Aliases employer|seeker map to the same roles.
+ * Anything else (including admin / role 1) is no role.
+ */
 export function parseAuthRole(value: string | null | undefined): AuthRole | null {
-  if (value === '2' || value === '3') {
-    return Number(value) as AuthRole;
+  if (value == null) {
+    return null;
+  }
+  const normalized = String(value).trim().toLowerCase();
+  if (normalized === '2' || normalized === 'employer') {
+    return 2;
+  }
+  if (normalized === '3' || normalized === 'seeker') {
+    return 3;
   }
   return null;
+}
+
+/** True only for the numeric query contract (?role=2 or ?role=3). */
+export function isCanonicalAuthRoleParam(value: string | null | undefined): boolean {
+  return value === '2' || value === '3';
 }
 
 /**

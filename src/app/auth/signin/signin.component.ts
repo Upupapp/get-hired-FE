@@ -10,7 +10,7 @@ import { SeoService } from '@app-core/services/seo.service';
 import { GoogleAuthService } from '../services/google-auth.service';
 import { take } from 'rxjs/operators';
 import { focusFirstInvalidControl } from '@app-shared/utils/form-validation.util';
-import { AuthRole, authRoleLabel, authRoleQuery, otherAuthRole, parseAuthRole } from '@app-shared/utils/auth-role-query';
+import { AuthRole, isCanonicalAuthRoleParam, parseAuthRole } from '@app-shared/utils/auth-role-query';
 import { Subscription } from 'rxjs';
 import { consumeReturnUrl } from '@app-shared/utils/auth-return-url.util';
 import { jobAlertModalIntentPending } from '@main/jobs/job-opening-alerts.service';
@@ -44,7 +44,9 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   authRole: AuthRole | null = null;
   /** Seeker sign-in that should return to the jobs hero and open the alerts modal. */
   continueJobAlerts = false;
+  readonly roleTabsPrefix = 'signin';
   private querySub: Subscription;
+  private lastCanonicalizedFrom: string | null = null;
 
   credentials$ = this.authFacade.credentials$
     .pipe().subscribe(
@@ -53,52 +55,62 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
   error$ = this.authFacade.error$
     .pipe().subscribe(this.showError.bind(this));
 
-  get roleLabel(): string {
-    return this.authRole ? authRoleLabel(this.authRole) : '';
+  /** No ?role= defaults to Job seekers. Job Alerts stays seeker-only. */
+  get activeRole(): AuthRole {
+    if (this.continueJobAlerts) {
+      return 3;
+    }
+    return this.authRole === 2 ? 2 : 3;
   }
 
-  get switchRole(): AuthRole {
-    return this.authRole ? otherAuthRole(this.authRole) : 3;
+  get showRoleTabs(): boolean {
+    return !this.continueJobAlerts;
   }
 
-  get switchRoleLabel(): string {
-    return authRoleLabel(this.switchRole);
+  get rolePanelId(): string {
+    return `${this.roleTabsPrefix}-panel`;
   }
 
-  get registerQuery(): { role: AuthRole } | Record<string, never> {
-    return authRoleQuery(this.authRole);
+  get activeTabId(): string {
+    return `${this.roleTabsPrefix}-tab-${this.activeRole}`;
+  }
+
+  get registerQuery(): { role: AuthRole } {
+    return { role: this.activeRole };
   }
 
   selectAuthRole(role: AuthRole): void {
+    if (this.continueJobAlerts) {
+      return;
+    }
     this.authRole = role;
+    this.writeRoleQuery(role);
+  }
+
+  get signinTitle(): string {
+    return this.activeRole === 2 ? 'Welcome back, Employer' : 'Welcome back, Job Seeker';
+  }
+
+  get signinSubtitle(): string {
+    if (this.activeRole === 2) {
+      return 'Sign in to manage jobs and applicants';
+    }
+    return this.continueJobAlerts
+      ? 'Sign in to choose a position and start getting job alerts.'
+      : 'Sign in to continue your job search';
+  }
+
+  private writeRoleQuery(role: AuthRole): void {
+    const current = this.activatedRoute.snapshot.queryParamMap.get('role');
+    if (current === String(role)) {
+      return;
+    }
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: { role },
       queryParamsHandling: 'merge',
       replaceUrl: true
     });
-  }
-
-  get signinTitle(): string {
-    if (this.authRole === 2) {
-      return 'Welcome back, Employer';
-    }
-    if (this.authRole === 3) {
-      return 'Welcome back, Job Seeker';
-    }
-    return 'Welcome back!';
-  }
-
-  get signinSubtitle(): string {
-    if (this.authRole === 2) {
-      return 'Sign in to manage jobs and applicants';
-    }
-    if (this.authRole === 3) {
-      return this.continueJobAlerts
-        ? 'Sign in to choose a position and start getting job alerts.'
-        : 'Sign in to continue your job search';
-    }
-    return 'Sign in to continue to your account';
   }
 
   constructor(
@@ -123,7 +135,25 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onAlertClose();
 
     this.querySub = this.activatedRoute.queryParamMap.subscribe((params) => {
-      this.authRole = parseAuthRole(params.get('role'));
+      const raw = params.get('role');
+      const parsed = parseAuthRole(raw);
+      if (this.continueJobAlerts) {
+        this.authRole = 3;
+        if (parsed === 3 && !isCanonicalAuthRoleParam(raw) && this.lastCanonicalizedFrom !== raw) {
+          this.lastCanonicalizedFrom = raw;
+          this.writeRoleQuery(3);
+        }
+        return;
+      }
+      this.authRole = parsed;
+      if (isCanonicalAuthRoleParam(raw)) {
+        this.lastCanonicalizedFrom = null;
+        return;
+      }
+      if (parsed && this.lastCanonicalizedFrom !== raw) {
+        this.lastCanonicalizedFrom = raw;
+        this.writeRoleQuery(parsed);
+      }
     });
 
     const rememberedEmail = localStorage.getItem('rememberedEmail');
