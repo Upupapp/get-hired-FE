@@ -2,22 +2,24 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
-import { AdminCompanyRow } from '../admin.model';
+import { AdminTimeRange, rangeKey, readTimeQuery, resolvePreset, timeQueryParams } from '../admin-time';
+import { AdminApplicationRow } from '../admin.model';
 import { AdminService } from '../admin.service';
-import { formatAdminDate, readHttpError, readPage } from '../admin.normalize';
+import { formatAdminDay, readHttpError, readPage } from '../admin.normalize';
 
 @Component({
-  selector: 'app-admin-companies',
-  templateUrl: './admin-companies.component.html',
-  styleUrls: ['./admin-companies.component.scss']
+  selector: 'app-admin-applications',
+  templateUrl: './admin-applications.component.html',
+  styleUrls: ['./admin-applications.component.scss']
 })
-export class AdminCompaniesComponent implements OnInit, OnDestroy {
+export class AdminApplicationsComponent implements OnInit, OnDestroy {
   readonly pageSize = 25;
 
-  rows: AdminCompanyRow[] = [];
+  rows: AdminApplicationRow[] = [];
   total = 0;
   page = 1;
   searchText = '';
+  range: AdminTimeRange = resolvePreset('7d');
   loading = false;
   error = '';
   fromFixture = false;
@@ -37,18 +39,22 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
-      map(params => this.readParams(params)),
-      distinctUntilChanged((a, b) => a.q === b.q && a.page === b.page && a.id === b.id),
+      map(params => this.paramKey(params)),
+      distinctUntilChanged(),
       takeUntil(this.destroy$)
-    ).subscribe(state => {
-      if (state.id) {
-        this.router.navigate(['/admin/companies', state.id], { replaceUrl: true });
-        return;
-      }
+    ).subscribe(() => {
+      const state = this.readParams(this.route.snapshot.queryParamMap);
       this.q = state.q;
       this.searchText = state.q;
       this.page = state.page;
-      const key = `${state.q}|${state.page}`;
+      this.range = state.range;
+      if (state.range.invalid) {
+        this.loading = false;
+        this.rows = [];
+        this.total = 0;
+        return;
+      }
+      const key = `${state.q}|${state.page}|${rangeKey(state.range)}`;
       if (key !== this.loadedKey) {
         this.loadedKey = key;
         this.fetch();
@@ -83,6 +89,12 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
     this.pushQuery();
   }
 
+  onRange(next: AdminTimeRange): void {
+    this.range = next;
+    this.page = 1;
+    this.pushQuery();
+  }
+
   goTo(page: number): void {
     if (page < 1 || page === this.page) {
       return;
@@ -96,31 +108,41 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
   }
 
   when(value: string | null): string {
-    return formatAdminDate(value);
+    return formatAdminDay(value);
   }
 
-  count(value: number | null): string {
-    return value == null ? '—' : String(value);
+  trackApplication(_index: number, row: AdminApplicationRow): string {
+    return row.applicationId || `${row.seekerEmail}-${row.jobId}`;
   }
 
-  trackCompany(_index: number, row: AdminCompanyRow): string {
-    return row.companyId || row.companyName;
+  private paramKey(params: ParamMap): string {
+    return [
+      params.get('q') || '',
+      params.get('page') || '',
+      params.get('range') || '',
+      params.get('from') || '',
+      params.get('to') || '',
+    ].join('|');
   }
 
-  private readParams(params: ParamMap): { q: string; page: number; id: string | null } {
+  private readParams(params: ParamMap): { q: string; page: number; range: AdminTimeRange } {
     return {
       q: params.get('q') || '',
       page: readPage(params.get('page')),
-      id: params.get('id'),
+      range: readTimeQuery(params),
     };
   }
 
   private pushQuery(): void {
+    const time = timeQueryParams(this.range);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
         q: this.searchText.trim() || null,
         page: this.page > 1 ? this.page : null,
+        range: time.range,
+        from: time.from,
+        to: time.to,
       },
     });
   }
@@ -132,8 +154,10 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
     const seq = ++this.fetchSeq;
     this.loading = true;
     this.error = '';
-    this.listSub = this.adminService.listCompanies({
+    this.listSub = this.adminService.listApplications({
       q: this.q,
+      from: this.range.from,
+      to: this.range.to,
       page: this.page,
       pageSize: this.pageSize,
     }).pipe(takeUntil(this.destroy$)).subscribe({
@@ -155,7 +179,7 @@ export class AdminCompaniesComponent implements OnInit, OnDestroy {
         this.rows = [];
         this.total = 0;
         this.fromFixture = false;
-        this.error = readHttpError(err, 'Could not load companies.');
+        this.error = readHttpError(err, 'Could not load applications.');
       }
     });
   }

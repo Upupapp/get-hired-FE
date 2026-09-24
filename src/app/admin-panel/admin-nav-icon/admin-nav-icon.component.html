@@ -20,6 +20,18 @@
       <rect x="4" y="3" width="16" height="18" rx="1"/>
       <path d="M8 7h2M12 7h2M8 11h2M12 11h2M8 15h2M12 15h2"/>
     </ng-container>
+    <ng-container *ngSwitchCase="'finance'">
+      <rect x="2" y="5" width="20" height="14" rx="2"/>
+      <path d="M2 10h20"/>
+    </ng-container>
+    <ng-container *ngSwitchCase="'applications'">
+      <path d="M8 6h13"/>
+      <path d="M8 12h13"/>
+      <path d="M8 18h13"/>
+      <path d="M3 6h.01"/>
+      <path d="M3 12h.01"/>
+      <path d="M3 18h.01"/>
+    </ng-container>
     <ng-container *ngSwitchDefault>
       <path d="M14.7 6.3a4.5 4.5 0 0 0-6.4 6.4L3 18l3 3 5.3-5.3a4.5 4.5 0 0 0 6.4-6.4l-2.8 2.8-2.2-2.2 2.8-2.8z"/>
     </ng-container>

@@ -35,6 +35,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
   error = '';
   profileLoading = false;
   profileError = '';
+  fromFixture = false;
 
   private q = '';
   private loadedKey = '';
@@ -206,6 +207,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         this.rows = result.items;
         this.total = result.total;
         this.page = result.page || this.page;
+        this.fromFixture = !!result.fromFixture;
       },
       error: err => {
         if (seq !== this.fetchSeq) {
@@ -214,6 +216,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.rows = [];
         this.total = 0;
+        this.fromFixture = false;
         this.error = readHttpError(err, 'Could not load users.');
       }
     });

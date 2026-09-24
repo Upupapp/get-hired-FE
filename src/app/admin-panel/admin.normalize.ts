@@ -1,4 +1,22 @@
-import { AdminCompanyRow, AdminJobRow, AdminPage, AdminUserRow, Dashboard, ProfileField } from './admin.model';
+import {
+  AdminApplicationRow,
+  AdminCompanyContact,
+  AdminCompanyDetail,
+  AdminCompanyEvent,
+  AdminCompanyRow,
+  AdminCompanySubscription,
+  AdminFinance,
+  AdminJobRow,
+  AdminPage,
+  AdminPaymentRow,
+  AdminPlanBreakdown,
+  AdminSubscriptionRow,
+  AdminUsageMeter,
+  AdminUserRow,
+  Dashboard,
+  ProfileField,
+  VisitPoint,
+} from './admin.model';
 
 const SENSITIVE_KEY = /password|token|secret|hash|salt|otp|credential/i;
 
@@ -16,6 +34,33 @@ export const JOB_STATUS_FILTERS: { value: string; label: string }[] = [
   { value: 'expired', label: 'Expired' },
   { value: 'archived', label: 'Archived' },
 ];
+
+/**
+ * UI filters stay words. Live BE `parseListQuery` expects job_status_id.
+ * draft 1, published 2, expired 3, archived 4.
+ */
+export function jobStatusQueryValue(status: string | number | null | undefined): number | string | undefined {
+  if (status == null) {
+    return undefined;
+  }
+  const text = String(status).trim().toLowerCase();
+  if (!text) {
+    return undefined;
+  }
+  const ids: Record<string, number> = {
+    draft: 1,
+    published: 2,
+    expired: 3,
+    archived: 4,
+  };
+  if (ids[text] != null) {
+    return ids[text];
+  }
+  if (text === '1' || text === '2' || text === '3' || text === '4') {
+    return Number(text);
+  }
+  return text;
+}
 
 /** Existing admin calls return `{ data }`. A bare payload is accepted too. */
 export function unwrapAdminBody(res: any): any {
@@ -131,6 +176,36 @@ export function formatAdminDate(value: string | null | undefined): string {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
+const ADMIN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export function formatAdminMoney(value: number | null | undefined, currency = 'PHP'): string {
+  if (value == null || !Number.isFinite(Number(value))) {
+    return '—';
+  }
+  return new Intl.NumberFormat('en-PH', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Number(value));
+}
+
+/** Format a YYYY-MM-DD (or ISO prefix) without shifting the calendar day across timezones. */
+export function formatAdminDay(value: string | null | undefined): string {
+  if (!value) {
+    return '—';
+  }
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+  if (!match) {
+    return formatAdminDate(value);
+  }
+  const month = ADMIN_MONTHS[Number(match[2]) - 1];
+  if (!month) {
+    return value;
+  }
+  return `${month} ${Number(match[3])}, ${match[1]}`;
+}
+
 export function normalizeDashboard(res: any): Dashboard | null {
   const body = unwrapAdminBody(res);
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -146,8 +221,33 @@ export function normalizeDashboard(res: any): Dashboard | null {
     applications7d: readMetric(body, 'applications_7d', 'applications7d'),
     applications30d: readMetric(body, 'applications_30d', 'applications30d'),
     companiesTotal: readMetric(body, 'companies_total', 'companiesTotal'),
+    range: readOptionalText(body.range),
+    from: readOptionalText(body.from),
+    to: readOptionalText(body.to),
+    visitsTotal: readMetric(body, 'visits_total', 'visitsTotal'),
+    visitsPrevious: readMetric(body, 'visits_previous', 'visitsPrevious'),
+    visitsSeries: readVisitSeries(body.visits_series != null ? body.visits_series : body.visitsSeries),
+    visitsMetricLabel: readOptionalText(
+      body.visits_metric_label != null ? body.visits_metric_label : body.visitsMetricLabel
+    ),
+    applicationsInRange: readMetric(body, 'applications_in_range', 'applicationsInRange'),
+    applicationsInRangeFixture: false,
+    fixtureMode: 'live',
   };
-  const hasMetric = Object.keys(dashboard).some(key => dashboard[key as keyof Dashboard] !== null);
+  const hasMetric = [
+    dashboard.usersTotal,
+    dashboard.jobseekersTotal,
+    dashboard.employersTotal,
+    dashboard.adminsTotal,
+    dashboard.jobsActive,
+    dashboard.jobsTotal,
+    dashboard.applications7d,
+    dashboard.applications30d,
+    dashboard.companiesTotal,
+    dashboard.visitsTotal,
+    dashboard.visitsPrevious,
+    dashboard.applicationsInRange,
+  ].some(value => value !== null) || dashboard.visitsSeries.length > 0;
   return hasMetric ? dashboard : null;
 }
 
@@ -175,6 +275,21 @@ export function normalizeJob(row: any): AdminJobRow {
     statusLabel: jobStatusLabel(status),
     createdAt: readOptionalText(source.created_at ?? source.createdAt),
     applicantCount: readMetric(source, 'applicant_count', 'applicantCount'),
+  };
+}
+
+export function normalizeApplication(row: any): AdminApplicationRow {
+  const source = row || {};
+  const status = source.status ?? source.application_status ?? source.applicationStatus ?? null;
+  return {
+    applicationId: readText(source.application_id ?? source.applicationId ?? source.id),
+    dateApplied: readOptionalText(source.date_applied ?? source.dateApplied ?? source.applied_at ?? source.appliedAt),
+    seekerName: readText(source.seeker_name ?? source.seekerName ?? source.applicant_name ?? source.applicantName),
+    seekerEmail: readText(source.seeker_email ?? source.seekerEmail ?? source.email),
+    jobId: readText(source.job_id ?? source.jobId),
+    jobTitle: readText(source.job_title ?? source.jobTitle ?? source.title),
+    companyName: readText(source.company_name ?? source.companyName),
+    status: status == null || status === '' ? null : String(status),
   };
 }
 
@@ -213,6 +328,138 @@ export function normalizePage<T>(
   };
 }
 
+/** V4 admin labels. Legacy Enterprise and any unknown slug fold into Other. */
+export function financePlanLabel(slug: string | null | undefined): string {
+  const labels: Record<string, string> = {
+    free_trial: 'Free trial',
+    starter: 'Starter',
+    growth: 'Growth',
+    business: 'Business',
+  };
+  const key = (slug || '').trim().toLowerCase();
+  return labels[key] || 'Other';
+}
+
+export function billingStatusLabel(status: string | null | undefined): string {
+  const labels: Record<string, string> = {
+    trialing: 'Trialing',
+    active: 'Active',
+    past_due: 'Past due',
+    grace: 'Grace',
+    expired: 'Expired',
+    none: 'None',
+    succeeded: 'Succeeded',
+    failed: 'Failed',
+    pending: 'Pending',
+  };
+  const key = (status || '').trim().toLowerCase();
+  if (!key) {
+    return '—';
+  }
+  return labels[key] || String(status);
+}
+
+export function billingStatusClass(status: string | null | undefined): string {
+  const key = (status || '').trim().toLowerCase();
+  if (key === 'past_due' || key === 'failed' || key === 'expired') {
+    return 'admin-badge admin-badge--closed';
+  }
+  if (key === 'active' || key === 'succeeded') {
+    return 'admin-badge admin-badge--published';
+  }
+  return 'admin-badge';
+}
+
+export function billingCycleLabel(cycle: string | null | undefined): string {
+  const key = (cycle || '').trim().toLowerCase();
+  if (key === 'annual' || key === 'yearly') {
+    return 'Annual';
+  }
+  if (key === 'monthly') {
+    return 'Monthly';
+  }
+  return key ? String(cycle) : '—';
+}
+
+export function normalizeFinance(res: any): AdminFinance | null {
+  const body = unwrapAdminBody(res);
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return null;
+  }
+  const hasSignal = [
+    'mrr',
+    'mrr_php',
+    'active_count',
+    'activeCount',
+    'active_subscriptions',
+    'revenue_in_range',
+    'revenueInRange',
+    'revenue_in_range_php',
+    'plans',
+    'plan_breakdown',
+    'subscriptions',
+  ].some(key => body[key] != null);
+  if (!hasSignal) {
+    return null;
+  }
+  const subscriptions = normalizePage(
+    body.subscriptions != null ? body.subscriptions : [],
+    normalizeSubscription,
+    readCount(body.page, 1),
+    readCount(body.pageSize != null ? body.pageSize : body.page_size, 25)
+  );
+  const paymentsSource = body.payments != null ? body.payments : [];
+  const payments = normalizePage(paymentsSource, normalizePayment, 1, 25);
+  return {
+    currency: readText(body.currency) || 'PHP',
+    mrr: readCount(body.mrr_php != null ? body.mrr_php : body.mrr, 0),
+    revenueInRange: readCount(
+      body.revenue_in_range_php != null ? body.revenue_in_range_php : (body.revenue_in_range != null ? body.revenue_in_range : body.revenueInRange),
+      0
+    ),
+    payingCompanies: readCount(body.paying_companies != null ? body.paying_companies : body.payingCompanies, 0),
+    activeCount: readCount(
+      body.active_subscriptions != null ? body.active_subscriptions : (body.active_count != null ? body.active_count : body.activeCount),
+      0
+    ),
+    trialCount: readCount(body.trials != null ? body.trials : (body.trial_count != null ? body.trial_count : body.trialCount), 0),
+    pastDueCount: readCount(body.past_due != null ? body.past_due : (body.pastDueCount != null ? body.pastDueCount : body.past_due_count), 0),
+    plans: readPlans(body.plan_breakdown != null ? body.plan_breakdown : body.plans),
+    from: readOptionalText(body.from),
+    to: readOptionalText(body.to),
+    subscriptions,
+    payments,
+    fromFixture: false,
+  };
+}
+
+export function normalizeCompanyDetail(res: any): AdminCompanyDetail | null {
+  const body = unwrapAdminBody(res);
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return null;
+  }
+  const companyId = readText(body.company_id ?? body.companyId ?? (body.id != null && !body.items ? body.id : ''));
+  if (!companyId) {
+    return null;
+  }
+  const admins = readAdmins(body);
+  const subscriptionSource = body.subscription;
+  return {
+    companyId,
+    companyName: readText(body.company_name ?? body.companyName ?? body.name),
+    slug: readText(body.slug),
+    createdAt: readOptionalText(body.created_at ?? body.createdAt),
+    openJobsCount: readMetric(body, 'open_jobs_count', 'openJobsCount'),
+    status: readOptionalText(body.status),
+    adminContact: admins.length ? admins[0] : null,
+    admins,
+    subscription: subscriptionSource ? normalizeCompanySubscription(subscriptionSource) : null,
+    payments: (Array.isArray(body.payments) ? body.payments : []).map(row => normalizePayment(row)),
+    history: (Array.isArray(body.history) ? body.history : []).map(row => normalizeCompanyEvent(row)),
+    fromFixture: false,
+  };
+}
+
 export function profileFields(profile: any, depth = 0, prefix = ''): ProfileField[] {
   if (!profile || typeof profile !== 'object' || Array.isArray(profile) || depth > 2) {
     return [];
@@ -248,6 +495,132 @@ export function profileFields(profile: any, depth = 0, prefix = ''): ProfileFiel
     });
   });
   return fields;
+}
+
+function normalizeSubscription(row: any): AdminSubscriptionRow {
+  const source = row || {};
+  const planSlug = readText(source.plan_slug ?? source.planSlug ?? source.slug);
+  return {
+    companyId: readText(source.company_id ?? source.companyId),
+    companyName: readText(source.company_name ?? source.companyName),
+    planSlug,
+    planLabel: financePlanLabel(planSlug),
+    status: readText(source.status).toLowerCase(),
+    cycle: readText(source.cycle ?? source.billing_cycle ?? source.billingCycle).toLowerCase(),
+    periodEnd: readOptionalText(source.period_end ?? source.periodEnd ?? source.renews_at ?? source.renewsAt),
+    mrr: readCount(source.mrr_php != null ? source.mrr_php : source.mrr, 0),
+    lastPaymentAt: readOptionalText(source.last_payment_at ?? source.lastPaymentAt),
+  };
+}
+
+function normalizePayment(row: any): AdminPaymentRow {
+  const source = row || {};
+  const planSlug = readText(source.plan_slug ?? source.planSlug ?? source.slug);
+  const explicitLabel = readText(source.plan_label ?? source.planLabel ?? source.plan);
+  return {
+    paymentId: readText(source.payment_id ?? source.paymentId ?? source.id),
+    externalId: readText(source.external_id ?? source.externalId),
+    companyId: readText(source.company_id ?? source.companyId),
+    companyName: readText(source.company_name ?? source.companyName),
+    planLabel: planSlug ? financePlanLabel(planSlug) : (explicitLabel || '—'),
+    paidAt: readText(source.paid_at ?? source.paidAt ?? source.date),
+    amount: readCount(source.amount_php != null ? source.amount_php : source.amount, 0),
+    method: readText(source.method),
+    status: readText(source.status).toLowerCase(),
+  };
+}
+
+function normalizeContact(row: any): AdminCompanyContact {
+  const source = row || {};
+  return {
+    name: readText(source.name),
+    email: readText(source.email),
+    phone: readOptionalText(source.phone),
+    role: readText(source.role),
+  };
+}
+
+function normalizeCompanySubscription(row: any): AdminCompanySubscription {
+  const source = row || {};
+  const planSlug = readText(source.plan_slug ?? source.planSlug ?? source.slug);
+  const trial = source.trial_days_left != null ? source.trial_days_left : source.trialDaysLeft;
+  return {
+    plan: financePlanLabel(planSlug),
+    planSlug,
+    status: readText(source.status).toLowerCase(),
+    cycle: readText(source.cycle ?? source.billing_cycle ?? source.billingCycle).toLowerCase(),
+    mrr: readCount(source.mrr_php != null ? source.mrr_php : source.mrr, 0),
+    startedAt: readOptionalText(source.started_at ?? source.startedAt),
+    periodEnd: readOptionalText(source.period_end ?? source.periodEnd ?? source.renews_at ?? source.renewsAt),
+    trialDaysLeft: trial == null || trial === '' ? null : readCount(trial, 0),
+    entitlements: readMeters(source.entitlements),
+  };
+}
+
+function normalizeCompanyEvent(row: any): AdminCompanyEvent {
+  const source = row || {};
+  return {
+    at: readText(source.at ?? source.date),
+    kind: readText(source.kind ?? source.type),
+    summary: readText(source.summary ?? source.description),
+    actor: readOptionalText(source.actor),
+  };
+}
+
+function readAdmins(body: any): AdminCompanyContact[] {
+  const list = body.admins != null ? body.admins : body.admin_users;
+  if (Array.isArray(list) && list.length) {
+    return list.map(row => normalizeContact(row));
+  }
+  const single = body.admin_contact != null ? body.admin_contact : body.adminContact;
+  return single ? [normalizeContact(single)] : [];
+}
+
+function readMeters(value: any): AdminUsageMeter[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.map(row => {
+    const source = row || {};
+    const limitRaw = source.limit != null ? source.limit : source.cap;
+    const limitNumber = limitRaw == null || limitRaw === '' ? null : Number(limitRaw);
+    return {
+      label: readText(source.label ?? source.name),
+      used: readCount(source.used, 0),
+      limit: limitNumber != null && Number.isFinite(limitNumber) ? limitNumber : null,
+    };
+  });
+}
+
+function readPlans(value: any): AdminPlanBreakdown[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.map(row => {
+    const source = row || {};
+    const slug = readText(source.slug ?? source.plan_slug ?? source.planSlug);
+    return {
+      slug: slug || 'other',
+      label: readText(source.label ?? source.plan ?? source.name) || financePlanLabel(slug),
+      count: readCount(source.company_count != null ? source.company_count : source.count, 0),
+      pct: readCount(source.pct, 0),
+    };
+  });
+}
+
+function readVisitSeries(value: any): VisitPoint[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.map(point => {
+    const source = point || {};
+    const countValue = source.count != null ? source.count : source.visits;
+    const numeric = Number(countValue);
+    return {
+      date: readText(source.date || source.day),
+      count: Number.isFinite(numeric) ? numeric : 0,
+    };
+  }).filter(point => !!point.date);
 }
 
 function readMetric(source: any, snake: string, camel: string): number | null {

@@ -1,10 +1,17 @@
 import { Dashboard } from './admin.model';
 import {
   buildAdminQuery,
+  formatAdminDate,
+  formatAdminDay,
+  formatAdminMoney,
   isPublishedStatus,
   jobStatusLabel,
+  jobStatusQueryValue,
+  normalizeApplication,
   normalizeCompany,
+  normalizeCompanyDetail,
   normalizeDashboard,
+  normalizeFinance,
   normalizeJob,
   normalizePage,
   normalizeUser,
@@ -38,11 +45,37 @@ describe('admin response normalizers', () => {
       applications7d: 2,
       applications30d: 9,
       companiesTotal: 3,
+      range: null,
+      from: null,
+      to: null,
+      visitsTotal: null,
+      visitsPrevious: null,
+      visitsSeries: [],
+      visitsMetricLabel: null,
+      applicationsInRange: null,
+      applicationsInRangeFixture: false,
+      fixtureMode: 'live',
     } as Dashboard);
 
     expect(normalizeDashboard({ usersTotal: 0, jobsActive: 1 }).usersTotal).toBe(0);
     expect(normalizeDashboard({ data: {} })).toBeNull();
     expect(normalizeDashboard(null)).toBeNull();
+
+    const visits = normalizeDashboard({
+      data: {
+        visits_total: 12,
+        visits_previous: 9,
+        visits_metric_label: 'Sessions',
+        visits_series: [{ date: '2026-09-23', count: 12 }],
+        applications_in_range: 4,
+      }
+    });
+    expect(visits.visitsTotal).toBe(12);
+    expect(visits.visitsPrevious).toBe(9);
+    expect(visits.visitsMetricLabel).toBe('Sessions');
+    expect(visits.visitsSeries).toEqual([{ date: '2026-09-23', count: 12 }]);
+    expect(visits.applicationsInRange).toBe(4);
+    expect(visits.fixtureMode).toBe('live');
   });
 
   it('maps user, job, and company rows from snake_case or camelCase', () => {
@@ -73,6 +106,32 @@ describe('admin response normalizers', () => {
     expect(isPublishedStatus(job.status)).toBeTrue();
     expect(isPublishedStatus('draft')).toBeFalse();
     expect(jobStatusLabel(4)).toBe('Archived');
+    expect(jobStatusQueryValue('draft')).toBe(1);
+    expect(jobStatusQueryValue('published')).toBe(2);
+    expect(jobStatusQueryValue('expired')).toBe(3);
+    expect(jobStatusQueryValue('archived')).toBe(4);
+    expect(jobStatusQueryValue('2')).toBe(2);
+    expect(jobStatusQueryValue('')).toBeUndefined();
+
+    expect(normalizeApplication({
+      application_id: 'AP-1',
+      date_applied: '2026-09-23T09:00:00+08:00',
+      seeker_name: 'Ada Cruz',
+      seeker_email: 'ada.cruz@example.com',
+      job_id: 'JB-1',
+      job_title: 'Chef',
+      company_name: 'Acme',
+      status: 'Submitted',
+    })).toEqual(jasmine.objectContaining({
+      applicationId: 'AP-1',
+      seekerEmail: 'ada.cruz@example.com',
+      jobTitle: 'Chef',
+    }));
+    expect(normalizeUser({ email: 'a@b.com' }).lastLogin).toBeNull();
+    expect(formatAdminDate(null)).toBe('—');
+    expect(formatAdminDay('2026-09-23T09:00:00+08:00')).toBe('Sep 23, 2026');
+    expect(formatAdminMoney(null)).toBe('—');
+    expect(formatAdminMoney(3490).replace(/[^\d]/g, '')).toBe('3490');
 
     expect(normalizeCompany({
       company_id: 'CO-1',
@@ -116,6 +175,45 @@ describe('admin response normalizers', () => {
     expect(labels).toContain('Profile city');
     expect(labels.some(label => /password|token/i.test(label))).toBeFalse();
     expect(fields.find(field => field.label === 'Role').value).toBe('Admin');
+  });
+
+  it('normalizes finance and company detail, and ignores a company list', () => {
+    const finance = normalizeFinance({
+      data: {
+        currency: 'PHP',
+        active_count: 2,
+        mrr: 4980,
+        plans: [{ slug: 'business', label: 'Business', company_count: 1, pct: 20 }],
+        revenue_in_range: 1490,
+        subscriptions: { items: [{ company_id: 'CO-1', company_name: 'Acme', plan_slug: 'business', status: 'active', mrr_php: 5990, cycle: 'monthly' }], total: 1 },
+        payments: [{ external_id: 'pay_1', amount_php: 1490, status: 'succeeded', paid_at: '2026-09-24', plan_slug: 'business' }],
+      }
+    });
+    expect(finance.mrr).toBe(4980);
+    expect(finance.plans[0].label).toBe('Business');
+    expect(finance.plans[0].pct).toBe(20);
+    expect(finance.subscriptions.items[0].planLabel).toBe('Business');
+    expect(finance.payments.items[0].externalId).toBe('pay_1');
+    expect(finance.payments.items[0].status).toBe('succeeded');
+    expect(finance.fromFixture).toBeFalse();
+    expect(normalizeFinance({ data: { items: [] } })).toBeNull();
+
+    expect(normalizeCompanyDetail({ data: { items: [{ company_id: 'CO-1' }], total: 1 } })).toBeNull();
+    const detail = normalizeCompanyDetail({
+      data: {
+        company_id: 'CO-20',
+        company_name: "Lola's Table",
+        admin_contact: { name: 'Rosa', email: 'rosa@example.com', phone: '+63 917', role: 'Company admin' },
+        subscription: { plan_slug: 'growth', plan: 'Growth', status: 'active', mrr: 3490 },
+        payments: [{ invoice_id: 'INV-CO-20', amount: 3490, status: 'Paid' }],
+        history: [{ at: '2026-08-01', kind: 'Plan change', summary: 'Moved from Starter to Growth', actor: 'Rosa' }],
+      }
+    });
+    expect(detail.companyId).toBe('CO-20');
+    expect(detail.adminContact.role).toBe('Company admin');
+    expect(detail.admins.length).toBe(1);
+    expect(detail.history[0].actor).toBe('Rosa');
+    expect(detail.subscription.plan).toBe('Growth');
   });
 
   it('builds query strings and reads http errors', () => {

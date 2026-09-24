@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { AdminTimeRange } from '../admin-time';
 import * as Model from '../admin.model';
 
 enum AllFeatureActionTypes {
@@ -17,7 +18,8 @@ enum AllFeatureActionTypes {
 
 
 export const adminDashboard = createAction(
-  AllFeatureActionTypes.GetAdminDashboard
+  AllFeatureActionTypes.GetAdminDashboard,
+  props<{ range: AdminTimeRange }>()
 );
 
 export const adminDashboardSuccess = createAction(

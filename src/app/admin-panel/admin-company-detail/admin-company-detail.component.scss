@@ -1,0 +1,37 @@
+@import "../styles/admin-surface";
+
+caption {
+  caption-side: bottom;
+  text-align: left;
+  padding: 8px 14px 0;
+}
+
+a {
+  color: #0d1024;
+  font-weight: 600;
+}
+
+.admin-back {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.admin-time-chip {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: #f4f4f4;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    background: #fff0ee;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(242, 82, 72, 0.85);
+    outline-offset: 2px;
+  }
+}

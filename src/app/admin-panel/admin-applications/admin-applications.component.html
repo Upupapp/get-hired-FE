@@ -1,0 +1,64 @@
+<section class="admin-page" aria-labelledby="admin-applications-title">
+  <div class="admin-page-toolbar admin-page-toolbar--sticky">
+    <header class="admin-page-header">
+      <h1 id="admin-applications-title">Applications</h1>
+      <p>Recent applications in the selected range. Open a job to review it. Status is not changed here.</p>
+    </header>
+    <app-admin-time-filter [range]="range" [updating]="loading" (rangeChange)="onRange($event)"></app-admin-time-filter>
+  </div>
+
+  <form class="admin-filters" (ngSubmit)="applySearch()">
+    <label class="admin-field">
+      <span>Search</span>
+      <input type="search" name="application-search" [ngModel]="searchText" (ngModelChange)="onSearch($event)"
+        placeholder="Seeker email, name, or job title" autocomplete="off">
+    </label>
+    <button type="submit" class="admin-btn admin-btn--primary">Search</button>
+  </form>
+
+  <p class="admin-state" *ngIf="fromFixture && !loading && !error">
+    These rows are fixtures. GET /admin/applications is not on the API yet.
+  </p>
+
+  <app-admin-status
+    [loading]="loading"
+    [error]="error"
+    [empty]="!loading && !error && !range.invalid && rows.length === 0"
+    loadingText="Loading applications…"
+    emptyText="No applications in this range."
+    (retry)="retry()">
+  </app-admin-status>
+
+  <p class="admin-state" *ngIf="range.invalid && !loading">Choose a valid date range to load applications.</p>
+
+  <div class="admin-card admin-table-wrap" *ngIf="!loading && !error && rows.length">
+    <table class="admin-table">
+      <caption class="admin-muted">Applications in range</caption>
+      <thead>
+        <tr>
+          <th scope="col">Applied at</th>
+          <th scope="col">Seeker</th>
+          <th scope="col">Job</th>
+          <th scope="col">Company</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows; trackBy: trackApplication">
+          <td>{{ when(row.dateApplied) }}</td>
+          <td>
+            <div>{{ row.seekerName || '—' }}</div>
+            <div class="admin-muted">{{ row.seekerEmail || '—' }}</div>
+          </td>
+          <td class="admin-ellipsis">
+            <a *ngIf="row.jobTitle; else untitledJob" [routerLink]="['/admin/jobs']" [queryParams]="{ q: row.jobTitle }">{{ row.jobTitle }}</a>
+            <ng-template #untitledJob>—</ng-template>
+          </td>
+          <td class="admin-ellipsis">{{ row.companyName || '—' }}</td>
+          <td>{{ row.status || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <app-admin-pager [page]="page" [pageSize]="pageSize" [total]="total" (pageChange)="goTo($event)"></app-admin-pager>
+  </div>
+</section>

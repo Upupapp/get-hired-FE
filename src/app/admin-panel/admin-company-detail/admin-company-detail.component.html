@@ -1,0 +1,185 @@
+<section class="admin-page" aria-labelledby="admin-company-detail-title">
+  <p class="admin-back">
+    <a routerLink="/admin/companies">← Companies</a>
+  </p>
+
+  <div class="admin-page-toolbar" *ngIf="detail as company">
+    <header class="admin-page-header">
+      <h1 id="admin-company-detail-title">{{ company.companyName || 'Company' }}</h1>
+      <p class="admin-chip-row">
+        <span>{{ company.slug || '—' }}</span>
+        <span>Created {{ when(company.createdAt) }}</span>
+        <ng-container *ngIf="company.subscription as sub">
+          <span [class]="statusClass(sub.status)">{{ sub.plan }}</span>
+          <span [class]="statusClass(sub.status)">{{ statusLabel(sub.status) }}</span>
+        </ng-container>
+      </p>
+    </header>
+    <a class="admin-btn admin-btn--primary" [routerLink]="['/admin/jobs']" [queryParams]="{ q: company.companyName }">Open jobs →</a>
+  </div>
+
+  <h1 id="admin-company-detail-title" *ngIf="!detail">Company</h1>
+
+  <p class="admin-state" *ngIf="detail?.fromFixture && !loading && !error">
+    This employer record is a fixture. GET /admin/companies/{{ detail?.companyId }} is not on the API yet.
+  </p>
+
+  <div class="admin-skeleton-stack" *ngIf="loading && !detail" aria-hidden="true">
+    <span class="admin-skeleton admin-skeleton--label"></span>
+    <span class="admin-skeleton admin-skeleton--value"></span>
+    <span class="admin-skeleton admin-skeleton--spark"></span>
+  </div>
+
+  <app-admin-status
+    [loading]="loading && !detail"
+    [error]="error"
+    [empty]="false"
+    loadingText="Loading company…"
+    (retry)="retry()">
+  </app-admin-status>
+
+  <ng-container *ngIf="detail as company">
+    <div class="admin-tabs" role="tablist" aria-label="Company sections">
+      <button type="button" class="admin-tab" role="tab" *ngFor="let item of tabs; let index = index"
+        [id]="'company-tab-' + item.id"
+        [attr.aria-selected]="tab === item.id"
+        [attr.aria-controls]="'company-panel'"
+        [attr.tabindex]="tab === item.id ? 0 : -1"
+        (click)="selectTab(item.id)" (keydown)="onTabKey($event, index)">{{ item.label }}</button>
+    </div>
+
+    <div id="company-panel" role="tabpanel" [attr.aria-labelledby]="'company-tab-' + tab">
+      <ng-container *ngIf="tab === 'overview'">
+        <div class="admin-hero-grid">
+          <article class="admin-card">
+            <h2 class="admin-section-title">Company</h2>
+            <dl class="admin-detail-grid">
+              <dt>Name</dt>
+              <dd>{{ company.companyName || '—' }}</dd>
+              <dt>Slug</dt>
+              <dd>{{ company.slug || '—' }}</dd>
+              <dt>Company id</dt>
+              <dd>{{ company.companyId || '—' }}</dd>
+              <dt>Created</dt>
+              <dd>{{ when(company.createdAt) }}</dd>
+              <dt>Open jobs</dt>
+              <dd>
+                {{ count(company.openJobsCount) }}
+                <a [routerLink]="['/admin/jobs']" [queryParams]="{ q: company.companyName }">View jobs</a>
+              </dd>
+            </dl>
+          </article>
+          <article class="admin-card">
+            <h2 class="admin-section-title">Admin contact</h2>
+            <p class="admin-muted" *ngIf="!company.admins.length">No company admin on this record.</p>
+            <div *ngFor="let admin of visibleAdmins()">
+              <dl class="admin-detail-grid">
+                <dt>Name</dt>
+                <dd>{{ admin.name || '—' }}</dd>
+                <dt>Email</dt>
+                <dd>{{ admin.email || '—' }}</dd>
+                <dt>Phone</dt>
+                <dd>{{ admin.phone || '—' }}</dd>
+                <dt>Role</dt>
+                <dd>{{ admin.role || '—' }}</dd>
+              </dl>
+            </div>
+            <button type="button" class="admin-btn admin-btn--ghost" *ngIf="hiddenAdminCount() > 0" (click)="toggleAdmins()">
+              +{{ hiddenAdminCount() }} more
+            </button>
+          </article>
+        </div>
+        <div class="admin-card admin-snapshot" *ngIf="company.subscription as sub">
+          <span [class]="statusClass(sub.status)">{{ sub.plan }}</span>
+          <span [class]="statusClass(sub.status)">{{ statusLabel(sub.status) }}</span>
+          <span>Period end {{ when(sub.periodEnd) }}</span>
+          <span>Open jobs {{ count(company.openJobsCount) }}</span>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="tab === 'subscription'">
+        <article class="admin-card" *ngIf="company.subscription as sub; else noSub">
+          <dl class="admin-detail-grid">
+            <dt>Plan</dt>
+            <dd>{{ sub.plan || '—' }} <span class="admin-muted">{{ sub.planSlug || '' }}</span></dd>
+            <dt>Billing cycle</dt>
+            <dd>{{ cycle(sub.cycle) }}</dd>
+            <dt>Status</dt>
+            <dd><span [class]="statusClass(sub.status)">{{ statusLabel(sub.status) }}</span></dd>
+            <dt>Started</dt>
+            <dd>{{ when(sub.startedAt) }}</dd>
+            <dt>Period end</dt>
+            <dd>{{ when(sub.periodEnd) }}</dd>
+            <dt>MRR</dt>
+            <dd>{{ money(sub.mrr) }}</dd>
+            <dt *ngIf="sub.trialDaysLeft != null">Trial days left</dt>
+            <dd *ngIf="sub.trialDaysLeft != null">{{ sub.trialDaysLeft }}</dd>
+          </dl>
+          <h3 class="admin-section-title">Entitlement usage</h3>
+          <div class="admin-meter" *ngFor="let meter of sub.entitlements">
+            <div class="admin-meter-label">
+              <span>{{ meter.label }}</span>
+              <span>{{ meterText(meter.used, meter.limit) }}</span>
+            </div>
+            <div class="admin-meter-bar" *ngIf="meter.limit != null" aria-hidden="true">
+              <span [style.width]="meterWidth(meter.used, meter.limit)"></span>
+            </div>
+          </div>
+          <p class="admin-visits-note" *ngIf="sub.planSlug === 'enterprise'">Other is a legacy Enterprise agreement. MRR here is a contracted fixture. The public price is Custom.</p>
+          <p class="admin-visits-note">Read only. Upgrade and payment recovery stay on the employer account.</p>
+        </article>
+        <ng-template #noSub>
+          <p class="admin-state">No subscription on this company.</p>
+        </ng-template>
+      </ng-container>
+
+      <ng-container *ngIf="tab === 'payments'">
+        <div class="admin-page-toolbar">
+          <button type="button" class="admin-time-chip" [attr.aria-pressed]="!paymentRange" (click)="showAllHistory()">All history</button>
+          <app-admin-time-filter [range]="paymentRange || allHistoryRange" [inactive]="!paymentRange" (rangeChange)="onPaymentRange($event)"></app-admin-time-filter>
+        </div>
+        <p class="admin-state" *ngIf="paymentRange?.invalid">Choose a valid date range.</p>
+        <p class="admin-state" *ngIf="!company.payments.length">No payment records yet.</p>
+        <p class="admin-state" *ngIf="company.payments.length && paymentRange && !paymentRange.invalid && !visiblePayments().length">No payments in this range.</p>
+        <div class="admin-card admin-table-wrap" *ngIf="visiblePayments().length">
+          <table class="admin-table">
+            <caption class="admin-muted">Payment history for this company. All history is shown until a range is chosen.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Paid at</th>
+                <th scope="col">Company</th>
+                <th scope="col">Plan</th>
+                <th scope="col">Amount (₱)</th>
+                <th scope="col">Method</th>
+                <th scope="col">Status</th>
+                <th scope="col">External id</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of visiblePayments(); trackBy: trackPayment">
+                <td>{{ when(row.paidAt) }}</td>
+                <td>{{ row.companyName || company.companyName }}</td>
+                <td>{{ row.planLabel || '—' }}</td>
+                <td>{{ money(row.amount) }}</td>
+                <td>{{ row.method || '—' }}</td>
+                <td><span [class]="statusClass(row.status)">{{ statusLabel(row.status) }}</span></td>
+                <td [attr.title]="row.externalId">{{ external(row.externalId) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="tab === 'history'">
+        <p class="admin-state" *ngIf="!company.history.length">No history yet.</p>
+        <ol class="admin-timeline" *ngIf="company.history.length">
+          <li *ngFor="let event of company.history; trackBy: trackEvent">
+            <time [attr.datetime]="event.at">{{ when(event.at) }}</time>
+            <span class="admin-muted">{{ event.kind || 'Event' }}<ng-container *ngIf="event.actor"> · {{ event.actor }}</ng-container></span>
+            <p>{{ event.summary || '—' }}</p>
+          </li>
+        </ol>
+      </ng-container>
+    </div>
+  </ng-container>
+</section>

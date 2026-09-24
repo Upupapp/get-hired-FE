@@ -16,7 +16,11 @@ import { adminReducer } from './state/admin.reducer';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { AdminJobsComponent } from './admin-jobs/admin-jobs.component';
 import { AdminCompaniesComponent } from './admin-companies/admin-companies.component';
+import { AdminCompanyDetailComponent } from './admin-company-detail/admin-company-detail.component';
+import { AdminApplicationsComponent } from './admin-applications/admin-applications.component';
+import { AdminFinanceComponent } from './admin-finance/admin-finance.component';
 import { AdminEmailVerifyComponent } from './admin-email-verify/admin-email-verify.component';
+import { AdminTimeFilterComponent } from './admin-time-filter/admin-time-filter.component';
 import { AdminNavIconComponent } from './admin-nav-icon/admin-nav-icon.component';
 import { AdminPagerComponent } from './admin-pager/admin-pager.component';
 import { AdminStatusComponent } from './admin-status/admin-status.component';
@@ -30,6 +34,9 @@ const routes: Routes = [
       { path: 'users', component: AdminUsersComponent },
       { path: 'jobs', component: AdminJobsComponent },
       { path: 'companies', component: AdminCompaniesComponent },
+      { path: 'companies/:companyId', component: AdminCompanyDetailComponent },
+      { path: 'applications', component: AdminApplicationsComponent },
+      { path: 'finance', component: AdminFinanceComponent },
       {
         path: 'tools',
         children: [
@@ -50,7 +57,11 @@ const routes: Routes = [
     AdminUsersComponent,
     AdminJobsComponent,
     AdminCompaniesComponent,
+    AdminCompanyDetailComponent,
+    AdminApplicationsComponent,
+    AdminFinanceComponent,
     AdminEmailVerifyComponent,
+    AdminTimeFilterComponent,
     AdminNavIconComponent,
     AdminPagerComponent,
     AdminStatusComponent,

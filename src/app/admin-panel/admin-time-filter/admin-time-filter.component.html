@@ -1,0 +1,25 @@
+<div class="admin-time-filter" role="group" aria-label="Time range">
+  <p class="admin-time-status" *ngIf="updating" role="status">Updating…</p>
+  <div class="admin-time-presets">
+    <button type="button" class="admin-time-chip" *ngFor="let preset of presets"
+      [attr.aria-pressed]="pressed(preset.value)"
+      (click)="select(preset.value)">
+      {{ preset.label }}
+    </button>
+  </div>
+  <div class="admin-time-custom" *ngIf="range.preset === 'custom'">
+    <label class="admin-time-date">
+      <span>From</span>
+      <input type="date" name="admin-range-from" [ngModel]="draftFrom" (ngModelChange)="onFrom($event)"
+        (blur)="applyCustom()" [attr.aria-invalid]="rangeError ? true : null" autocomplete="off">
+    </label>
+    <label class="admin-time-date">
+      <span>To</span>
+      <input type="date" name="admin-range-to" [ngModel]="draftTo" (ngModelChange)="onTo($event)"
+        (blur)="applyCustom()" [attr.aria-invalid]="rangeError ? true : null" autocomplete="off">
+    </label>
+    <button type="button" class="admin-btn admin-btn--primary" (click)="applyCustom()">Apply</button>
+    <p class="admin-time-error" *ngIf="rangeError" role="alert">{{ rangeError }}</p>
+    <p class="admin-time-hint">Up to 90 days. Dates use Asia/Manila.</p>
+  </div>
+</div>

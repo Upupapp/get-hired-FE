@@ -1,7 +1,7 @@
 <section class="admin-page" aria-labelledby="admin-companies-title">
   <header class="admin-page-header">
     <h1 id="admin-companies-title">Companies</h1>
-    <p>Employer companies and how many jobs are currently open.</p>
+    <p>Employer companies. Open a company for profile, contacts, subscription, payments, and history.</p>
   </header>
 
   <form class="admin-filters" (ngSubmit)="applySearch()">
@@ -12,6 +12,8 @@
     </label>
     <button type="submit" class="admin-btn admin-btn--primary">Search</button>
   </form>
+
+  <p class="admin-state" *ngIf="fromFixture && !loading && !error">These rows are fixtures. The live company list did not load.</p>
 
   <app-admin-status
     [loading]="loading"
@@ -35,7 +37,10 @@
       </thead>
       <tbody>
         <tr *ngFor="let row of rows; trackBy: trackCompany">
-          <td class="admin-ellipsis">{{ row.companyName || '—' }}</td>
+          <td class="admin-ellipsis">
+            <a *ngIf="row.companyId; else unnamed" [routerLink]="['/admin/companies', row.companyId]">{{ row.companyName || '—' }}</a>
+            <ng-template #unnamed>{{ row.companyName || '—' }}</ng-template>
+          </td>
           <td class="admin-ellipsis">{{ row.slug || '—' }}</td>
           <td>{{ count(row.openJobsCount) }}</td>
           <td>{{ when(row.createdAt) }}</td>
